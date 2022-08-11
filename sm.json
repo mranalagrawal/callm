@@ -1,0 +1,5 @@
+{
+  "_latest": "0.0.41",
+  "apiEndpoint": "https://callmewine-test.prismic.io/api/v2",
+  "libraries": ["@/slices"]
+}

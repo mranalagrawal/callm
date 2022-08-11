@@ -1,0 +1,9 @@
+$theme-colors: (
+  "dark-green": #11312b,
+  "light-green": #5bbd0c,
+  "dark-red": #8e2440,
+  "light-red": #d94965,
+);
+
+@import "~bootstrap/scss/bootstrap";
+@import "~bootstrap-vue/src/index.scss";

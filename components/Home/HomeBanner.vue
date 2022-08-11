@@ -1,0 +1,133 @@
+<template>
+  <div class="position-relative" style="overflow: hidden">
+    <b-carousel
+      id="carousel-1"
+      v-model="slide"
+      :interval="4000"
+      controls
+      indicators
+      fade
+      background="#ababab"
+      style="text-shadow: 1px 1px 2px #333"
+      @sliding-start="onSlideStart"
+      @sliding-end="onSlideEnd"
+      class="home-carousel"
+    >
+      <b-carousel-slide
+        v-for="(content, i) in contents"
+        :key="i"
+        :img-src="content.data.image.url"
+      >
+        <h1 class="mb-5">{{ content.data.description[0].text }}</h1>
+      </b-carousel-slide>
+    </b-carousel>
+    <div class="" style="position: absolute; bottom: -70px; z-index: 10">
+      <svg
+        width="3840px"
+        height="148px"
+        viewBox="0 0 3840 148"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+      >
+        <title>Onda_3840@1</title>
+        <g
+          id="Onda_3840"
+          stroke="none"
+          stroke-width="1"
+          fill="none"
+          fill-rule="evenodd"
+        >
+          <path
+            d="M-569,148 L-569,20.3662102 C-405.287174,40.8088863 -322.507397,51.1344162 -320.660668,51.3427998 C-138.928633,71.8493163 1.12492311,78.6312979 99.5,71.6887445 C280.371464,58.9242331 494.524628,0 646.701493,0 C762.943373,0 878.040299,7.21186649 989.039971,23.9905006 C1133.50589,42.0303423 1206.6052,51.147121 1208.33933,51.3427998 C1390.07137,71.8493163 1530.12492,78.6312979 1628.5,71.6887445 C1809.37146,58.9242331 2023.52463,0 2175.70149,0 C2294.98992,0 2413.07259,7.59484721 2526.75894,25.3294944 C2664.12368,42.4815314 2733.64864,51.1520231 2735.33933,51.3427998 C2917.07137,71.8493163 3057.12492,78.6312979 3155.5,71.6887445 C3336.37146,58.9242331 3550.52463,0 3702.70149,0 C3861.0824,0 4017.33777,13.3883812 4164,46.1216729 C4165.02494,46.3504264 4246.02494,62.8585339 4407,95.6459954 L4407,95.6459954 L4407,148 L-569,148 Z"
+            id="Combined-Shape"
+            fill="#FFFFFF"
+          ></path>
+        </g>
+      </svg>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      contents: null,
+      slide: 0,
+      sliding: null,
+    };
+  },
+  async fetch() {
+    this.contents = (
+      await this.$prismic.api.query(
+        this.$prismic.predicates.at("document.type", "banner")
+      )
+    ).results;
+  },
+  methods: {
+    onSlideStart(slide) {
+      this.sliding = true;
+    },
+    onSlideEnd(slide) {
+      this.sliding = false;
+    },
+  },
+};
+</script>
+
+<style lang="css" scoped>
+.home-carousel :deep(.carousel-indicators) {
+  display: flex;
+  justify-content: end;
+  margin-right: 5%;
+  bottom: 30px;
+}
+
+.home-carousel :deep(.carousel-indicators li) {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid gray;
+  background-color: #8b0000;
+}
+
+.home-carousel :deep(.carousel-control-prev),
+.home-carousel :deep(.carousel-control-next) {
+  opacity: 1 !important;
+}
+
+.home-carousel :deep(.carousel-control-prev-icon),
+.home-carousel :deep(.carousel-control-next-icon) {
+  background-color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  opacity: 1;
+}
+
+.home-carousel :deep(.carousel-control-prev-icon) {
+  background-image: url("../../assets/images/chevron-left.svg") !important;
+}
+
+.home-carousel :deep(.carousel-control-next-icon) {
+  background-image: url("../../assets/images/chevron-right.svg") !important;
+}
+
+.home-carousel :deep(.carousel-item img) {
+  height: 400px;
+  object-fit: cover;
+}
+
+@media screen and (max-width: 760px) {
+  .home-carousel :deep(.carousel-item img) {
+    height: 90vh;
+    object-fit: cover;
+  }
+}
+
+:deep(.carousel-caption) {
+  text-align: left;
+  bottom: 40px;
+}
+</style>

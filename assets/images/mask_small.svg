@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="313px" height="364px" viewBox="0 0 313 364" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Maschera_rossa_DS_313@1</title>
+    <defs>
+        <path d="M0,0 C62.5482187,75.4435732 156.98209,123.496504 262.639324,123.496504 C279.402039,123.496504 295.882258,122.286992 311.997468,119.95048 L312.618185,355.475421 C312.629829,359.893683 309.057559,363.484832 304.639296,363.496476 C304.632268,363.496495 304.62524,363.496504 304.618212,363.496504 L8,363.496504 C3.581722,363.496504 5.41083001e-16,359.914782 0,355.496504 L0,0 L0,0 Z" id="path-1"></path>
+        <linearGradient x1="37.1073639%" y1="99.6317163%" x2="43.4341984%" y2="24.0585328%" id="linearGradient-3">
+            <stop stop-color="#000000" offset="0.073902027%"></stop>
+            <stop stop-color="#000000" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="42.0006919%" y1="6.21007404%" x2="104.282798%" y2="64.9201477%" id="linearGradient-4">
+            <stop stop-color="#000000" stop-opacity="0" offset="0%"></stop>
+            <stop stop-color="#000000" offset="99.926098%"></stop>
+            <stop stop-color="#000000" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="COMPONENTS" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="COMPONENTS/DS/Banner/Partner-313x400-v2" transform="translate(0.000000, -36.000000)">
+            <g id="Banner-313x400-rubesco-scontorno" transform="translate(-78.000000, -522.000000)">
+                <g id="Maschera_rossa_DS_313" transform="translate(78.360676, 558.503496)">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <use id="Path" fill="#FF17FA" xlink:href="#path-1"></use>
+                    <rect id="Rectangle-Copy-3" fill="#992645" mask="url(#mask-2)" x="-0.360676144" y="-36.5034958" width="313" height="400" rx="8"></rect>
+                    <g id="Group-4" mask="url(#mask-2)" opacity="0.199242728">
+                        <g transform="translate(-1037.360676, -847.503496)">
+                            <ellipse id="Oval-Copy-3" fill="url(#linearGradient-3)" transform="translate(1497.080872, 651.207552) rotate(96.000000) translate(-1497.080872, -651.207552) " cx="1497.08087" cy="651.207552" rx="442" ry="864"></ellipse>
+                            <ellipse id="Oval-Copy-3" fill="url(#linearGradient-3)" transform="translate(969.080872, 755.207552) rotate(66.000000) translate(-969.080872, -755.207552) " cx="969.080872" cy="755.207552" rx="442" ry="864"></ellipse>
+                            <circle id="Oval-Copy-4" fill="url(#linearGradient-4)" cx="1454.11237" cy="1086.31628" r="211"></circle>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

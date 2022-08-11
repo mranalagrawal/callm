@@ -1,0 +1,39 @@
+<template>
+  <div>
+    <home-banner />
+    <home-boxes />
+    <!-- <car-test /> -->
+    <featured-products />
+    <home-selections />
+    <home-slider />
+    <home-partners />
+    <home-last />
+    <home-cta />
+    <home-description />
+  </div>
+</template>
+
+<script>
+import CarTest from "../components/CarTest.vue";
+import FeaturedProducts from "../components/FeaturedProducts.vue";
+import HomeBanner from "../components/Home/HomeBanner.vue";
+import HomeBoxes from "../components/Home/HomeBoxes.vue";
+import HomeCta from "../components/Home/HomeCta.vue";
+import HomeDescription from "../components/Home/HomeDescription.vue";
+import HomeLast from "../components/Home/HomeLast.vue";
+import HomeSlider from "../components/Home/HomeSlider.vue";
+import ProductCardVertical from "../components/ProductCardVertical.vue";
+
+export default {
+  components: {
+    HomeBanner,
+    HomeBoxes,
+    ProductCardVertical,
+    HomeLast,
+    HomeCta,
+    HomeSlider,
+    HomeDescription,
+  },
+  name: "IndexPage",
+};
+</script>
