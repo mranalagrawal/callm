@@ -19,6 +19,7 @@ const featuredQuery = `query {
 const queryByCollection = (collection) => `query {
     
     collectionByHandle(handle: "${collection}") {
+        title
         description
         products(first: 10) {
             nodes {

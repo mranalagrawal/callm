@@ -3,7 +3,8 @@
     <!-- <div v-for="product in products" :key="product.id">{{ product.title }}</div> -->
     <div class="row">
       <div class="col-12 text-center" v-if="data">
-        <h3>{{ data.description }} (questo arriva da shopify)</h3>
+        <h3>{{ data.title }}</h3>
+        <p>{{ data.description }}</p>
       </div>
 
       <div class="col-12 py-4" v-if="data">
@@ -94,6 +95,7 @@ export default {
         return {
           products: res.data.collectionByHandle.products.nodes,
           description: res.data.collectionByHandle.description,
+          title: res.data.collectionByHandle.title,
         };
       });
   },

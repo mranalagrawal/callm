@@ -3,7 +3,8 @@
     <!-- <div v-for="product in products" :key="product.id">{{ product.title }}</div> -->
     <div class="row">
       <div class="col-12 text-center" v-if="data">
-        <h3>{{ data.description }} (questo arriva da shopify)</h3>
+        <h3>{{ data.title }}</h3>
+        <p>{{ data.description }}</p>
       </div>
 
       <div class="col-12 py-4" v-if="data">
@@ -73,7 +74,7 @@ export default {
   async fetch() {
     const GRAPHQL_URL = this.$config.DOMAIN;
 
-    const productQuery = queryByCollection("test");
+    const productQuery = queryByCollection("featured");
 
     const GRAPHQL_BODY = () => {
       return {
@@ -91,10 +92,12 @@ export default {
     this.data = await fetch(GRAPHQL_URL, GRAPHQL_BODY())
       .then((res) => res.json())
       .then((res) => {
+        console.log(res.data, "res");
         /* console.log(res.data.collectionByHandle.products.nodes, "prods"); */
         return {
           products: res.data.collectionByHandle.products.nodes,
           description: res.data.collectionByHandle.description,
+          title: res.data.collectionByHandle.title,
         };
       });
   },
