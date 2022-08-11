@@ -4,22 +4,23 @@
       <p>{{ item }}</p>
     </div> -->
 
-    <div class="row pb-3">
+    <div class="row pb-3 shadow-menu">
       <div
         class="col text-center"
         v-for="(item, i) in data"
         @mouseenter="onTab(item)"
         :key="i"
       >
-        {{ item.title }}
-        <!-- <nuxt-link :to="`/${item.title.toLowerCase()}`">{{
+        <!-- <span class="menu-link">{{ item.title }}</span> -->
+
+        <nuxt-link :to="`/${item.url.split('.com/')[1]}`" class="menu-link">{{
           item.title
-        }}</nuxt-link> -->
+        }}</nuxt-link>
       </div>
     </div>
     <div
       v-if="selectedItem"
-      class="row bg-white w-100 position-absolute shadow"
+      class="row bg-white w-100 position-absolute shadow-menu"
       style="min-height: 300px; z-index: 10"
       @mouseleave="onTab(null)"
     >
@@ -29,16 +30,33 @@
         class="col-3 pt-3"
         style="border-right: 1px solid #ddd"
       >
-        <p class="font-weight-bold">{{ item.title }}</p>
+        <p class="text-dark-green">{{ item.title }}</p>
         <p v-for="el in item.items" :key="el.id">
-          <nuxt-link :to="`/${el.url.split('.com/')[1]}`">{{
-            el.title
-          }}</nuxt-link>
+          <nuxt-link
+            class="menu-link small"
+            :to="`/${el.url.split('.com/')[1]}`"
+            >{{ el.title }}</nuxt-link
+          >
         </p>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.shadow-menu {
+  box-shadow: 0 0.5rem 0.75rem rgb(0 0 0 / 15%) !important;
+  border-bottom: 1px solid #ddd;
+}
+.menu-link {
+  color: black;
+  text-decoration: none;
+}
+.menu-link:hover {
+  color: var(--dark-red);
+  text-decoration: none;
+}
+</style>
 
 <script>
 import { queryByCollection } from "../utilities/productQueries";
