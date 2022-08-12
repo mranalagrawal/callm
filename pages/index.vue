@@ -8,6 +8,7 @@
     <home-slider />
     <home-partners />
     <home-last />
+    <home-productors />
     <home-cta />
     <home-description />
   </div>

@@ -27,7 +27,7 @@
       <div
         v-for="item in selectedItem.items"
         :key="item.id"
-        class="col-3 pt-3"
+        class="col pt-3"
         style="border-right: 1px solid #ddd"
       >
         <p class="text-dark-green">{{ item.title }}</p>
@@ -77,10 +77,8 @@ export default {
     onTab(item) {
       console.log(item);
       if (item) {
-        console.log("ok");
         this.selectedItem = item;
       } else {
-        console.log("else");
         this.selectedItem = null;
       }
     },
@@ -126,20 +124,20 @@ export default {
         const menu = res.data.menu.items;
         console.log(menu, "menu");
 
-        let r = menu.find((el) => {
-          console.log(
-            el.items.some((x) => x.title === "Marketing"),
-            "qui"
-          );
+        let elementoMarketing = menu.find((el) => {
           return el.items.some((x) => x.title === "Marketing");
-          /* console.log(
-            el.items.some((x) => x.title === "Marketing"),
-            "SS"
-          ); */
         });
 
-        console.log(r);
-        console.log(menu.indexOf(r));
+        console.log(elementoMarketing, "elemento");
+
+        let indexOfElementoMarketing = menu.indexOf(elementoMarketing);
+        console.log(indexOfElementoMarketing, "index");
+
+        let elementoDaSwitchare = menu[indexOfElementoMarketing].items.find(
+          (x) => x.title === "Marketing"
+        );
+        console.log(elementoDaSwitchare, "elementoDaSwitchare");
+
         return menu;
       });
   },

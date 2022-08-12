@@ -16,6 +16,7 @@
     "bootstrap": "^4.6.1",
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.19.3",
+    "multi-range-slider-vue": "^1.1.4",
     "nuxt": "^2.15.8",
     "sass": "^1.53.0",
     "sass-loader": "^10.1.1",

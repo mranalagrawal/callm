@@ -100,9 +100,31 @@
             },
           ]"
         />
+
+        <dropdown-range label="Prezzo" min="0" max="999" />
+
+        <div class="float-right">
+          <b-button
+            v-b-toggle.more-filters
+            variant="danger"
+            class="bg-transparent border-0"
+          >
+            <span class="small text-dark-red"
+              >Altri filtri <i class="fal fa-plus ml-3"></i
+            ></span>
+          </b-button>
+        </div>
       </div>
+    </div>
+    <div class="row">
+      <b-collapse class="col-12" id="more-filters">
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aliquam quod
+        unde cum cumque dolorum totam accusantium magni aperiam, facilis odio!
+      </b-collapse>
+    </div>
+    <div class="row">
       <div class="col-12">
-        <hr class="mt-2" />
+        <hr />
       </div>
     </div>
     <div class="row">
@@ -228,9 +250,11 @@
 
 <script>
 import Dropdown from "../components/UI/Dropdown.vue";
+import DropdownRange from "../components/UI/DropdownRange.vue";
 export default {
   components: {
     Dropdown,
+    DropdownRange,
   },
   data() {
     return {
