@@ -92,8 +92,6 @@ export default {
     this.data = await fetch(GRAPHQL_URL, GRAPHQL_BODY())
       .then((res) => res.json())
       .then((res) => {
-        console.log(res.data, "res");
-        /* console.log(res.data.collectionByHandle.products.nodes, "prods"); */
         return {
           products: res.data.collectionByHandle.products.nodes,
           description: res.data.collectionByHandle.description,

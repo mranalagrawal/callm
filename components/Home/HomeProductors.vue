@@ -127,8 +127,6 @@ export default {
     ).results;
 
     this.data = response.concat(response);
-
-    console.log(this.data, "prod");
   },
 };
 </script>
