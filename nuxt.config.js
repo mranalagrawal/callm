@@ -46,13 +46,15 @@ export default {
   bootstrapVue: {
     bootstrapCSS: false,
     bootstrapVueCSS: false,
-    icons: true,
+    icons: false,
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     transpile: ["@prismicio/vue"],
   },
+
+  babel: { compact: true },
 
   publicRuntimeConfig: {
     DOMAIN: process.env.DOMAIN,
