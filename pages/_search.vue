@@ -232,7 +232,7 @@ export default {
         };
       })
       .sort((a, b) => a.label.localeCompare(b.label));
-    console.log(brands);
+    /* console.log(brands); */
     this.brands = brands;
 
     console.log(data.hits.hits, "SS");
@@ -240,7 +240,7 @@ export default {
       t[n.brand] ? t[n.brand]++ : (t[n.brand] = 1);
       return t;
     }, {});
-    console.log(testBrands);
+    /* console.log(testBrands); */
   },
 };
 </script>
