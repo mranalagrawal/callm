@@ -56,6 +56,8 @@ export default {
 
   babel: { compact: true },
 
+  target: "static",
+
   publicRuntimeConfig: {
     DOMAIN: process.env.DOMAIN,
     STOREFRONT_ACCESS_TOKEN: process.env.STOREFRONT_ACCESS_TOKEN,
