@@ -1,16 +1,14 @@
 <template>
   <div class="card product-card mx-auto justify-content-between">
-    <!-- {{ product.images.nodes[0].url }} -->
-    <nuxt-link
-      class="text-decoration-none text-dark"
-      :to="`/product/${product.handle}`"
-    >
+    <!-- {{ product.variants.nodes[0].id }} -->
+    <div>
       <div class="ribbon-1">
         <span><i class="fal fa-tag"></i> PROMO</span>
       </div>
 
-      <div
-        class="row mx-0 mt-2 img-wrapper"
+      <nuxt-link
+        :to="`/product/${product.handle}`"
+        class="row mx-0 mt-2 img-wrapper text-decoration-none text-dark"
         :style="{ backgroundImage: 'url(' + product.images.nodes[0].url + ')' }"
       >
         <div
@@ -31,7 +29,7 @@
             <i class="fal fa-heart fa-2x text-light-red"></i>
           </div>
         </div>
-      </div>
+      </nuxt-link>
       <div class="p-3">
         <p class="font-weight-bold">{{ product.title }}</p>
         <p class="mb-0 text-muted" style="text-decoration: line-through">
@@ -43,19 +41,51 @@
           </div>
           <!-- <nuxt-link :to="`/product/${product.handle}`">detail</nuxt-link> -->
           <div>
-            <button class="btn btn-cart">
+            <button class="btn btn-cart" @click="addToCart">
               <b-icon icon="cart" aria-hidden="true"></b-icon>
             </button>
           </div>
         </div>
       </div>
-    </nuxt-link>
+    </div>
   </div>
 </template>
 
 <script>
+import { addItem } from "../utilities/cart";
 export default {
   props: ["product"],
+  name: "ProductCardVertical",
+  methods: {
+    addToCart() {
+      const domain = this.$config.DOMAIN;
+      const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
+
+      const cartId = localStorage.getItem("call-me-wine-cart");
+      console.log(cartId);
+
+      const cartMutation = addItem(cartId, this.product.variants.nodes[0].id);
+
+      console.log(JSON.parse(cartMutation));
+
+      const GRAPHQL_BODY_CART = {
+        async: true,
+        crossDomain: true,
+        method: "POST",
+        headers: {
+          "X-Shopify-Storefront-Access-Token": access_token,
+          "Content-Type": "application/json",
+        },
+        body: cartMutation,
+      };
+
+      fetch(domain, GRAPHQL_BODY_CART)
+        .then((res) => res.json())
+        .then((res) => {
+          console.log(res);
+        });
+    },
+  },
 };
 </script>
 <style scoped>

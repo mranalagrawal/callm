@@ -13,8 +13,9 @@
       v-for="(item, i) in filteredItems"
       :key="i"
       class="mb-2"
-      :href="item.link"
-      >{{ item.label }}</b-dropdown-item
+      :href="item.label"
+      ><span>{{ item.label }}</span>
+      <span>({{ item.link }})</span></b-dropdown-item
     >
   </b-dropdown>
 </template>
@@ -29,7 +30,11 @@ export default {
   },
   computed: {
     filteredItems: function () {
-      return this.items.filter((el) => el.label.includes(this.search));
+      if (this.search.length > 2) {
+        return this.items.filter((el) => el.label.includes(this.search));
+      } else {
+        return this.items;
+      }
     },
   },
 };

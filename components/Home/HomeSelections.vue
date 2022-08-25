@@ -6,11 +6,22 @@
         <h2>Le nostre selezioni</h2>
       </div>
       <div class="col-12 px-0 py-4">
-        <VueSlickCarousel v-bind="settings" ref="carousel">
-          <div v-for="n in 12" :key="n" class="px-2">
-            <div class="selection-card px-3">
-              <i class="fal fa-leaf fa-2x mr-2"></i> Vini {{ n }}
-            </div>
+        <VueSlickCarousel v-bind="settings" ref="carousel" v-if="data">
+          <div v-for="(item, i) in data" :key="i" class="px-2">
+            <nuxt-link
+              :to="item.link"
+              class="selection-card px-3 text-decoration-none"
+            >
+              <img
+                :src="item.icon.url"
+                width="24px"
+                height="24px"
+                class="mr-2"
+                :style="{ filter: 'contrast(0) brightness(5) !important' }"
+              />
+              {{ item.label }}
+              <!-- <img :src="item." alt=""> {{ item.label }} -->
+            </nuxt-link>
           </div>
         </VueSlickCarousel>
       </div>
@@ -19,8 +30,6 @@
 </template>
 
 <script>
-import { queryByCollection } from "../../utilities/productQueries";
-
 import VueSlickCarousel from "vue-slick-carousel";
 // optional style for arrows & dots
 import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
@@ -37,7 +46,7 @@ export default {
       slidesToShow: 5.5,
       slidesToScroll: 4,
       autoplay: true,
-      speed: 8000,
+      speed: 10000,
       autoplaySpeed: 0,
       cssEase: "linear",
       pauseOnFocus: false,
@@ -64,35 +73,12 @@ export default {
       ],
     },
   }),
-  /* async fetch() {
-    const GRAPHQL_URL = this.$config.DOMAIN;
-
-    const productQuery = queryByCollection("test");
-
-    const GRAPHQL_BODY = () => {
-      return {
-        async: true,
-        crossDomain: true,
-        method: "POST",
-        headers: {
-          "X-Shopify-Storefront-Access-Token":
-            this.$config.STOREFRONT_ACCESS_TOKEN,
-          "Content-Type": "application/graphql",
-        },
-        body: productQuery,
-      };
-    };
-    this.data = await fetch(GRAPHQL_URL, GRAPHQL_BODY())
-      .then((res) => res.json())
-      .then((res) => {
-        console.log(res, "RES");
-        console.log(res.data.collectionByHandle.products.nodes, "prods");
-        return {
-          products: res.data.collectionByHandle.products.nodes,
-          description: res.data.collectionByHandle.description,
-        };
-      });
-  }, */
+  async fetch() {
+    const response = await this.$prismic.api.getSingle("selections");
+    const items = response.data.body[0].items;
+    this.data = items.concat(items);
+    console.log(items);
+  },
 };
 </script>
 

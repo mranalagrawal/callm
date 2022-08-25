@@ -1,20 +1,17 @@
 <template>
-  <div class="container-fluid py-5 mt-5 px-0 bg-light">
+  <div class="container-fluid pt-5 mt-5 px-0 bg-light">
     <div class="container-fluid px-md-5">
       <div class="row">
         <div class="col" v-for="item in data" :key="item.id">
-          <p class="text-uppercase text-dark-green">{{ item.title }}</p>
+          <p class="text-uppercase" style="color: #176a62">{{ item.title }}</p>
           <p class="" v-for="link in item.items" :key="link.title">
             <nuxt-link
               :to="`/${link.url.split('.com/')[1]}`"
-              class="text-decoration-none text-dark"
+              class="text-decoration-none menu-link"
             >
               {{ link.title }}
             </nuxt-link>
           </p>
-          <nuxt-link :to="item.title" class="text-decoration-none text-dark">
-            Tutti i {{ item.title }}
-          </nuxt-link>
         </div>
       </div>
     </div>
@@ -147,6 +144,19 @@
 <style scoped>
 .text-light-footer {
   color: #add3d1;
+}
+
+.shadow-menu {
+  box-shadow: 0 0.5rem 0.75rem rgb(0 0 0 / 15%) !important;
+  border-bottom: 1px solid #ddd;
+}
+.menu-link {
+  color: black;
+  text-decoration: none;
+}
+.menu-link:hover {
+  color: var(--dark-red);
+  text-decoration: none;
 }
 </style>
 

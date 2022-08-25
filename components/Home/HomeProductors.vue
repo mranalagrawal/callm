@@ -7,7 +7,7 @@
       </div>
 
       <div class="col-12 px-0 py-4">
-        <VueSlickCarousel v-bind="settingsTop" ref="carousel-top">
+        <VueSlickCarousel v-bind="settingsTop" ref="carousel-top" v-if="data">
           <div v-for="productor in data" :key="productor.id" class="">
             <div class="bg-white mx-2 p-1 product-card">
               <img
@@ -21,7 +21,11 @@
         </VueSlickCarousel>
       </div>
       <div class="col-12 px-0 py-4">
-        <VueSlickCarousel v-bind="settingsBottom" ref="carousel-bottom">
+        <VueSlickCarousel
+          v-bind="settingsBottom"
+          ref="carousel-bottom"
+          v-if="data"
+        >
           <div v-for="productor in data" :key="productor.id" class="">
             <div class="bg-white mx-2 p-1 product-card">
               <img

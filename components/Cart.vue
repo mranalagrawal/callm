@@ -1,24 +1,14 @@
 <template>
   <div class="position-relative">
     <div>
-      <button class="btn" @click="onSubmit" @mouseenter="show = true">
-        <p class="mb-0">
-          <b-icon icon="cart" aria-hidden="true"></b-icon>
-        </p>
-        <p class="mb-0" style="font-size: 12px">€ 500</p>
-      </button>
-      <div v-if="show" @mouseleave="show = false" class="content">
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ratione
-        commodi, incidunt tenetur itaque nostrum nam tempore minima distinctio
-        omnis eligendi ut, debitis voluptatibus optio! Quo est natus sunt
-        deleniti officia!
-      </div>
+      <button class="btn" @click="createCart">Crea</button>
+      <button class="btn" @click="getCart">Get cart</button>
     </div>
   </div>
 </template>
 
 <script>
-import createCart from "../utilities/cart";
+import { createCart, getCart } from "../utilities/cart";
 
 export default {
   data() {
@@ -27,7 +17,7 @@ export default {
     };
   },
   methods: {
-    onSubmit(event) {
+    createCart(event) {
       event.preventDefault();
       const domain = this.$config.DOMAIN;
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
@@ -50,7 +40,58 @@ export default {
 
         fetch(domain, GRAPHQL_BODY_USER)
           .then((res) => res.json())
-          .then((res) => console.log(res));
+          .then((res) => {
+            const cartId = res.data.cartCreate.cart.id;
+            if (process.client) {
+              console.log(res, "cartId from create");
+              localStorage.setItem("call-me-wine-cart", JSON.stringify(cartId));
+            }
+          });
+      }
+    },
+    getCart(event) {
+      event.preventDefault();
+      const domain = this.$config.DOMAIN;
+      const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
+      if (process.client) {
+        const cartId = JSON.parse(localStorage.getItem("call-me-wine-cart"));
+        console.log(cartId, "cartId from storage");
+        const retrievedCart = getCart(cartId);
+        console.log(retrievedCart, "Retrieved Cart");
+
+        const GRAPHQL_BODY_CART = {
+          async: true,
+          crossDomain: true,
+          method: "POST",
+          headers: {
+            "X-Shopify-Storefront-Access-Token": access_token,
+            "Content-Type": "application/graphql",
+          },
+          body: retrievedCart,
+        };
+
+        fetch(domain, GRAPHQL_BODY_CART)
+          .then((res) => res.json())
+          .then((res) => {
+            console.log(res);
+          });
+        /* const cartQuery = createCart(user.token);
+        console.log(cartQuery);
+
+        const GRAPHQL_BODY_USER = {
+          async: true,
+          crossDomain: true,
+          method: "POST",
+          headers: {
+            "X-Shopify-Storefront-Access-Token": access_token,
+            "Content-Type": "application/json",
+          },
+          body: cartQuery,
+        };
+
+        fetch(domain, GRAPHQL_BODY_USER)
+          .then((res) => res.json())
+          .then((res) => console.log(res)); */
       }
     },
   },

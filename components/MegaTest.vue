@@ -33,14 +33,45 @@
           class="col pt-3"
           style="border-right: 1px solid #ddd"
         >
-          <p class="text-dark-green">{{ item.title }}</p>
-          <p v-for="el in item.items" :key="el.id">
-            <nuxt-link
-              class="menu-link small"
-              :to="`/${el.url.split('.com/')[1]}`"
-              >{{ el.title }}</nuxt-link
+          <div v-if="item.title !== 'Marketing'">
+            <p class="text-dark-green">{{ item.title }}</p>
+            <p v-for="el in item.items" :key="el.id">
+              <nuxt-link
+                class="menu-link small"
+                :to="`/${el.url.split('.com/')[1]}`"
+                >{{ el.title }}</nuxt-link
+              >
+            </p>
+          </div>
+          <div v-else>
+            <div
+              v-for="(mkt, i) in marketing.filter(
+                (el) => el.section == item.url.split('.com/')[1]
+              )[0].items"
+              :key="i"
+              class="mb-3 shadow d-flex align-items-center"
+              style="max-width: 400px; border-radius: 10px"
             >
-          </p>
+              <img
+                :src="mkt.image.url"
+                alt=""
+                width="48px"
+                height="48px"
+                style="object-fit: cover; border-radius: 10px 0px 0px 10px"
+              />
+
+              <p class="text-light-red mb-0 pl-2">{{ mkt.text }}</p>
+            </div>
+            <p>
+              <!-- {{ item.url.split(".com/")[1] }} -->
+
+              <!-- {{
+                marketing.filter(
+                  (el) => el.section == item.url.split(".com/")[1]
+                )[0].items
+              }} -->
+            </p>
+          </div>
         </div>
       </div>
       <div
@@ -109,6 +140,7 @@ export default {
     selectedContent: null,
     data: null,
     promotions: null,
+    marketing: null,
   }),
   watch: {
     $route() {
@@ -179,11 +211,24 @@ export default {
 
       return promo;
     },
+    async getMarketing() {
+      let res = await this.$prismic.api.getSingle("marketing");
+      let promo = await res.data.body.map((el) => {
+        return {
+          section: el.primary.section,
+          items: el.items,
+        };
+      });
+      console.log(promo, "market ing");
+
+      return promo;
+    },
   },
 
   async fetch() {
     this.data = await this.getMenu();
     this.promotions = await this.getPromo();
+    this.marketing = await this.getMarketing();
   },
 
   /* async fetch() {

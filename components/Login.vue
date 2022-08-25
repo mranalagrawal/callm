@@ -1,7 +1,7 @@
 <template>
   <div class="position-relative">
     <div>
-      <button class="btn" @mouseenter="show = true">
+      <button class="btn" @click="show = !show">
         <p class="mb-0">
           <b-icon icon="person" aria-hidden="true"></b-icon>
         </p>

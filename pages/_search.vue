@@ -15,6 +15,7 @@
         <hr class="mb-2" />
       </div>
       <div class="col-12">
+        <dropdown label="Brands" :items="brands" />
         <dropdown
           label="Selezioni"
           :items="[
@@ -156,58 +157,7 @@
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo,
         fuga, nesciunt culpa corrupti tenetur temporibus ut itaque deserunt
         exercitationem reiciendis cupiditate aliquam cumque qui accusantium rem
-        ab pariatur quos. Iure fuga possimus porro itaque maiores? Ut eligendi,
-        odio possimus iste sed est, inventore pariatur quis dolor officiis
-        perferendis. Velit consequuntur sit quis quam voluptate facere
-        voluptatum natus, molestiae deleniti veniam debitis error nesciunt.
-        Illum sit minus velit repellendus, voluptatem laudantium excepturi,
-        architecto dolor vel magni repellat obcaecati necessitatibus.
-        Perspiciatis, sunt minus! Unde assumenda excepturi, deleniti qui culpa
-        maxime maiores consequuntur. Eveniet quia illum, voluptatem molestias
-        vero aspernatur vel. Voluptatem soluta tempora eos sunt voluptatibus!
-        Perferendis architecto quidem tempore libero, harum quas. Quibusdam
-        itaque praesentium vitae beatae, harum eius quae vel eum repellat
-        laudantium neque, similique ducimus iste, quos molestias provident
-        reprehenderit accusamus? Sequi commodi dicta non saepe id minima ea eum,
-        rerum, hic quidem blanditiis dolor odit neque. Vitae, aspernatur
-        doloribus, ipsa culpa praesentium beatae nobis ipsam odit debitis natus
-        blanditiis odio aliquid! Sunt minima impedit tenetur explicabo
-        molestiae! Iusto soluta assumenda sunt iste rem molestiae, quae
-        inventore repellat natus iure adipisci nisi eveniet delectus voluptatem,
-        fugit explicabo cum autem quisquam. Porro a excepturi reiciendis
-        laudantium nemo? Itaque exercitationem reprehenderit sunt ipsum pariatur
-        tempora eum adipisci, veritatis iusto quasi natus quas odio mollitia
-        recusandae fugiat facere quae amet obcaecati! Incidunt rerum, voluptate
-        expedita vel hic quia aliquam ipsum saepe fuga, dolor cumque. Labore
-        incidunt repudiandae numquam dignissimos dicta magnam aut accusamus
-        eveniet minus, assumenda, nesciunt pariatur saepe repellendus ratione,
-        mollitia nemo iusto! Quo porro corrupti maxime illo distinctio molestias
-        labore quos, tenetur iste quod maiores, fuga blanditiis ipsam at animi
-        architecto optio! Possimus, quam cumque mollitia corporis ex optio, amet
-        debitis accusamus quaerat ut voluptatibus? Quibusdam quod nisi non
-        dolorum laborum fugiat quia blanditiis quaerat iusto, quis, qui id
-        voluptatem, laboriosam ullam nulla ipsam. Itaque facilis similique
-        tempore error, labore voluptates quae, quo ad saepe libero accusantium
-        porro quidem amet excepturi harum iure obcaecati necessitatibus
-        consequuntur aperiam atque hic. Possimus eligendi rerum sint, ex eaque
-        at, eos id ducimus nobis assumenda fuga quo exercitationem! At sunt
-        blanditiis omnis temporibus repudiandae ipsa quas, natus reprehenderit
-        perferendis, quam laudantium praesentium possimus rem ipsum suscipit
-        officia facere minus totam, nulla corporis optio nisi eius. Facilis et
-        nisi harum quasi, modi in eum expedita reiciendis quaerat unde aliquam,
-        corporis aspernatur amet mollitia! Ipsum provident rerum temporibus
-        suscipit earum nisi fugit tempore dolores minus magni facilis, possimus
-        tenetur excepturi porro eligendi vero dolorem corrupti ex in sint
-        laudantium repellat dignissimos inventore pariatur! Sapiente tempora
-        maiores culpa illo voluptatibus natus laudantium facere ea eligendi
-        ipsum, doloribus dolore esse illum quidem nisi, tempore quisquam
-        excepturi recusandae blanditiis! Modi, quas aspernatur hic optio
-        dignissimos, distinctio enim laboriosam numquam quidem perferendis
-        repellat nisi unde neque deleniti natus ex vel veniam laborum dolorem
-        assumenda vero magnam? Deleniti ullam eius quidem aperiam! Nam sint
-        quidem animi saepe culpa ipsam vitae et debitis. Possimus vel porro
-        totam assumenda. Nesciunt eligendi dolores nam temporibus ipsam aliquam
-        delectus maiores quaerat voluptates. Accusamus, numquam libero!
+        ab pariatur quo
       </div>
     </div>
   </div>
@@ -216,7 +166,9 @@
 <style scoped>
 :deep(.dropdown-menu) {
   box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 15%) !important;
-  min-width: 250px;
+  min-width: 300px;
+  max-height: 300px !important;
+  overflow: scroll !important;
 }
 :deep(.dropdown-item:hover) {
   background: #fae4e8;
@@ -251,6 +203,9 @@
 <script>
 import Dropdown from "../components/UI/Dropdown.vue";
 import DropdownRange from "../components/UI/DropdownRange.vue";
+
+import fakeData from "../assets/example.json";
+
 export default {
   components: {
     Dropdown,
@@ -259,11 +214,33 @@ export default {
   data() {
     return {
       category: null,
+      brands: null,
     };
   },
 
   created() {
     this.category = this.$route.params.category;
+  },
+  async fetch() {
+    let data = fakeData;
+
+    const brands = data.aggregations["agg-brand.keyword"].buckets
+      .map((el) => {
+        return {
+          label: el.key,
+          link: el.doc_count,
+        };
+      })
+      .sort((a, b) => a.label.localeCompare(b.label));
+    console.log(brands);
+    this.brands = brands;
+
+    console.log(data.hits.hits, "SS");
+    const testBrands = data.hits.hits.reduce((t, n) => {
+      t[n.brand] ? t[n.brand]++ : (t[n.brand] = 1);
+      return t;
+    }, {});
+    console.log(testBrands);
   },
 };
 </script>

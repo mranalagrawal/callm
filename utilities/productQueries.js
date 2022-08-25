@@ -31,6 +31,7 @@ const queryByCollection = (collection) => `query {
                 createdAt
                 variants(first: 10) {
                     nodes {
+                        id
                         compareAtPrice
                         price
                     }
