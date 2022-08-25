@@ -53,6 +53,7 @@
 
 <script>
 import { addItem } from "../utilities/cart";
+
 export default {
   props: ["product"],
   name: "ProductCardVertical",
