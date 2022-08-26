@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid fixed-top bg-white">
     <div class="row align-items-center py-3 px-4">
       <div class="col-3">
         <nuxt-link to="/">
@@ -29,7 +29,7 @@
             background: #d94965;
           "
         >
-          <b-icon icon="search" aria-hidden="true" style=""></b-icon>
+          <i class="fal fa-search"></i>
         </b-button>
       </div>
       <div class="col-3">
@@ -39,7 +39,7 @@
             <div>
               <button class="btn" @mouseenter="switchToUser()">
                 <p class="mb-0">
-                  <b-icon icon="person" aria-hidden="true"></b-icon>
+                  <i class="fal fa-user"></i>
                 </p>
                 <p v-if="user" class="mb-0" style="font-size: 10px">
                   {{ user }}
@@ -69,17 +69,27 @@
           <!-- Cart -->
           <div class="position-relative" v-if="user">
             <div>
-              <button class="btn" @mouseenter="switchToCart()">
-                <p class="mb-0">
-                  <b-icon icon="cart" aria-hidden="true"></b-icon>
-                </p>
-                <!-- <p class="mb-0" style="font-size: 12px">€ 500</p> -->
+              <button v-if="cart" class="btn" @mouseenter="switchToCart()">
+                <div v-if="cart.lines.edges.length > 0">
+                  <p class="mb-0">
+                    <i class="fas fa-cart-plus text-dark-red"></i>
+                  </p>
+                  <p class="mb-0" style="font-size: 10px">
+                    {{ Number(cart.cost.totalAmount.amount).toFixed(2) }}
+                  </p>
+                </div>
+                <div v-else>
+                  <p class="mb-0">
+                    <i class="fal fa-shopping-cart"></i>
+                  </p>
+                  <p class="mb-0" style="font-size: 10px">Empty</p>
+                </div>
               </button>
               <div
                 v-if="showCart"
                 @mouseleave="showCart = false"
                 class="content card p-3 shadow"
-                style="width: 340px"
+                style="width: 440px"
               >
                 <Cart />
                 <!-- <button class="btn" @click="onSubmit">Submit</button> -->
@@ -94,7 +104,7 @@
 
 <script>
 import Login from "./Login.vue";
-import Cart from "./Cart.vue";
+import Cart from "./Cart/Cart.vue";
 import LoginForm from "./LoginForm.vue";
 import UserMenu from "./UserMenu.vue";
 
@@ -104,6 +114,11 @@ export default {
     $route() {
       this.showUser = false;
       this.showCart = false;
+    },
+  },
+  computed: {
+    cart() {
+      return this.$store.state.cart.cart;
     },
   },
   data() {

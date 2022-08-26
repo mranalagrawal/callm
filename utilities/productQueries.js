@@ -29,6 +29,7 @@ const queryByCollection = (collection) => `query {
                 handle
                 tags
                 createdAt
+                availableForSale
                 variants(first: 10) {
                     nodes {
                         id

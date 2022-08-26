@@ -1,6 +1,5 @@
 <template>
   <div class="card product-card mx-auto justify-content-between">
-    <!-- {{ product.variants.nodes[0].id }} -->
     <div>
       <div class="ribbon-1">
         <span><i class="fal fa-tag"></i> PROMO</span>
@@ -40,11 +39,37 @@
             <p class="h2">€ {{ product.variants.nodes[0].price }}</p>
           </div>
           <!-- <nuxt-link :to="`/product/${product.handle}`">detail</nuxt-link> -->
-          <div>
-            <button class="btn btn-cart" @click="addToCart">
-              <b-icon icon="cart" aria-hidden="true"></b-icon>
+          <div class="dropdown-cart" v-if="product.availableForSale">
+            <button class="btn btn-cart">
+              <i class="fal fa-shopping-cart text-white"></i>
             </button>
+            <div class="dropdown-cart-content">
+              <button @click="addToCart(5)" class="btn w-100 text-white">
+                5
+              </button>
+              <button @click="addToCart(2)" class="btn w-100 text-white">
+                2
+              </button>
+              <button @click="addToCart(1)" class="btn w-100 text-white">
+                1
+              </button>
+            </div>
           </div>
+          <button v-else class="btn btn-cart" disabled>
+            <i class="fal fa-shopping-cart text-white"></i>
+          </button>
+          <!-- <div>
+            <button
+              v-if="product.availableForSale"
+              class="btn btn-cart d-none"
+              @click="addToCart"
+            >
+              <i class="fal fa-shopping-cart text-white"></i>
+            </button>
+            <button v-else class="btn btn-cart" disabled>
+              <i class="fal fa-shopping-cart text-white"></i>
+            </button>
+          </div> -->
         </div>
       </div>
     </div>
@@ -52,39 +77,46 @@
 </template>
 
 <script>
-import { addItem } from "../utilities/cart";
+import {
+  addItemMutation,
+  createCart,
+  addProductToCart,
+} from "../utilities/cart";
 
 export default {
   props: ["product"],
   name: "ProductCardVertical",
+
   methods: {
-    addToCart() {
+    addToCart: async function (quantity) {
+      console.log(quantity);
       const domain = this.$config.DOMAIN;
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
 
-      const cartId = localStorage.getItem("call-me-wine-cart");
-      console.log(cartId);
+      // se non c'è cart
+      if (!this.$store.state.cart.cart) {
+        alert("no");
+        // crea cart su shopify
+        const cart = await createCart(domain, access_token);
 
-      const cartMutation = addItem(cartId, this.product.variants.nodes[0].id);
+        // crea cart su vuex
+        this.$store.commit("cart/setCart", cart);
+      }
 
-      console.log(JSON.parse(cartMutation));
+      // ora cart esiste sicuro
 
-      const GRAPHQL_BODY_CART = {
-        async: true,
-        crossDomain: true,
-        method: "POST",
-        headers: {
-          "X-Shopify-Storefront-Access-Token": access_token,
-          "Content-Type": "application/json",
-        },
-        body: cartMutation,
-      };
+      const cartId = this.$store.state.cart.cart.id;
+      console.log(cartId, "cartId");
 
-      fetch(domain, GRAPHQL_BODY_CART)
-        .then((res) => res.json())
-        .then((res) => {
-          console.log(res);
-        });
+      const all = await addProductToCart(
+        domain,
+        access_token,
+        this.product,
+        cartId,
+        quantity
+      );
+
+      this.$store.commit("cart/setCart", all);
     },
   },
 };
@@ -107,6 +139,30 @@ export default {
   border-radius: 12px;
   color: white;
   background: #da4865;
+}
+
+.dropdown-cart {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-cart-content {
+  /* display: none; */
+  position: absolute;
+  bottom: 36px;
+  background-color: #da4865;
+  width: 100%;
+  border-radius: 12px 12px 0 0;
+  z-index: 1;
+  height: 0px;
+  overflow: hidden;
+  transition-duration: 0.2s;
+}
+
+.dropdown-cart:hover .dropdown-cart-content {
+  transition-duration: 0.2s;
+  height: 120px;
+  overflow: auto;
 }
 
 .img-wrapper {

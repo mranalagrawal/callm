@@ -207,7 +207,6 @@ export default {
           items: el.items,
         };
       });
-      console.log(promo, "star t");
 
       return promo;
     },
@@ -219,7 +218,6 @@ export default {
           items: el.items,
         };
       });
-      console.log(promo, "market ing");
 
       return promo;
     },

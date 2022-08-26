@@ -207,7 +207,6 @@ export default {
         .then((res) => {
           const menu = res.data.menu.items;
 
-          console.log(menu);
           return menu;
         });
 

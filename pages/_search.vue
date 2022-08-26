@@ -235,7 +235,6 @@ export default {
     /* console.log(brands); */
     this.brands = brands;
 
-    console.log(data.hits.hits, "SS");
     const testBrands = data.hits.hits.reduce((t, n) => {
       t[n.brand] ? t[n.brand]++ : (t[n.brand] = 1);
       return t;

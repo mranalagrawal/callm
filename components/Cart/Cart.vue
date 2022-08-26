@@ -1,20 +1,30 @@
 <template>
   <div class="position-relative">
-    <div>
+    <!-- <div>
       <button class="btn" @click="createCart">Crea</button>
-      <button class="btn" @click="getCart">Get cart</button>
+      <button class="btn" @click="clearStorage">Clear Storage</button>
+    </div> -->
+
+    <!-- <div v-if="cart">{{ cart }}</div> -->
+    <div v-if="cart">
+      <div v-for="item in cart.lines.edges" :key="item.node.id">
+        <CartLine :item="item" />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { createCart, getCart } from "../utilities/cart";
+import { createCart, getCart } from "../../utilities/cart";
 
 export default {
   data() {
-    return {
-      show: false,
-    };
+    return {};
+  },
+  computed: {
+    cart() {
+      return this.$store.state.cart.cart;
+    },
   },
   methods: {
     createCart(event) {
@@ -22,9 +32,10 @@ export default {
       const domain = this.$config.DOMAIN;
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
       if (process.client) {
-        const user = JSON.parse(localStorage.getItem("call-me-wine-user"));
+        createCart(domain, access_token);
+        /* const user = JSON.parse(localStorage.getItem("call-me-wine-user"));
         console.log(user.token);
-        const cartQuery = createCart(user.token);
+        const cartQuery = createCartMutation(user.token);
         console.log(cartQuery);
 
         const GRAPHQL_BODY_USER = {
@@ -44,9 +55,9 @@ export default {
             const cartId = res.data.cartCreate.cart.id;
             if (process.client) {
               console.log(res, "cartId from create");
-              localStorage.setItem("call-me-wine-cart", JSON.stringify(cartId));
+              localStorage.setItem("call-me-wine-cart", cartId);
             }
-          });
+          }); */
       }
     },
     getCart(event) {
@@ -54,10 +65,10 @@ export default {
       const domain = this.$config.DOMAIN;
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
       if (process.client) {
-        const cartId = JSON.parse(localStorage.getItem("call-me-wine-cart"));
-        console.log(cartId, "cartId from storage");
+        const cartId = localStorage.getItem("call-me-wine-cart");
+        /* console.log(cartId, "cartId from storage"); */
         const retrievedCart = getCart(cartId);
-        console.log(retrievedCart, "Retrieved Cart");
+        /* console.log(retrievedCart, "Retrieved Cart"); */
 
         const GRAPHQL_BODY_CART = {
           async: true,
@@ -93,6 +104,10 @@ export default {
           .then((res) => res.json())
           .then((res) => console.log(res)); */
       }
+    },
+    clearStorage() {
+      localStorage.clear();
+      console.log("Cart removed");
     },
   },
 };
