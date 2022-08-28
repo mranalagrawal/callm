@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid fixed-top bg-white">
+  <div class="container-fluid fixed- bg-white">
     <div class="row align-items-center py-3 px-4">
       <div class="col-3">
         <nuxt-link to="/">

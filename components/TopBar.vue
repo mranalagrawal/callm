@@ -3,12 +3,11 @@
     class="container-fluid bg-dark-green py-2 text-white text-center"
     style="font-size: 12px"
   >
-    <span v-html="data.data.text[0].text"></span>
+    <span v-if="data" v-html="data.data.text[0].text"></span>
   </div>
 </template>
 
 <script>
-import menuQuery from "../utilities/menuQuery";
 export default {
   data: () => ({
     selectedItem: "",
