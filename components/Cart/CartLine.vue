@@ -108,6 +108,12 @@ export default {
       // this.$store.commit("cart/removeLineFromCart", e);
 
       this.$store.commit("cart/setCart", cart);
+      this.flashMessage.show({
+        status: "",
+        message: "Prodotto rimosso!",
+        time: 1000,
+        blockClass: "remove-product-notification",
+      });
     },
   },
 };

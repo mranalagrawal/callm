@@ -11,3 +11,15 @@ $theme-colors: (
 body {
   font-family: "Open Sans", Arial, "Helvetica Neue", Helvetica, sans-serif !important;
 }
+
+.add-product-notification {
+  width: 200px !important;
+  background: var(--dark-red) !important;
+  color: white !important;
+}
+
+.remove-product-notification {
+  width: 200px !important;
+  background: white !important;
+  color: var(--dark-red) !important;
+}

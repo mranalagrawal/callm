@@ -58,18 +58,6 @@
           <button v-else class="btn btn-cart" disabled>
             <i class="fal fa-shopping-cart text-white"></i>
           </button>
-          <!-- <div>
-            <button
-              v-if="product.availableForSale"
-              class="btn btn-cart d-none"
-              @click="addToCart"
-            >
-              <i class="fal fa-shopping-cart text-white"></i>
-            </button>
-            <button v-else class="btn btn-cart" disabled>
-              <i class="fal fa-shopping-cart text-white"></i>
-            </button>
-          </div> -->
         </div>
       </div>
     </div>
@@ -118,6 +106,12 @@ export default {
       );
 
       this.$store.commit("cart/setCart", all);
+      this.flashMessage.show({
+        status: "",
+        message: "Prodotto aggiunto!",
+        time: 1000,
+        blockClass: "add-product-notification",
+      });
     },
   },
 };

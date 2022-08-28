@@ -30,6 +30,7 @@ export default {
   plugins: [
     { src: "~plugins/vue-carousel-3d", ssr: false },
     { src: "~/plugins/vuex-persist", ssr: false },
+    { src: "~/plugins/vue-flash-message.js", mode: "client" },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

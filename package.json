@@ -13,6 +13,7 @@
     "@nuxtjs/prismic": "^1.4.2",
     "@nuxtjs/style-resources": "^1.2.1",
     "@prismicio/slice-simulator-vue": "^0.2.1",
+    "@smartweb/vue-flash-message": "^0.6.10",
     "bootstrap": "^4.6.1",
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.19.3",

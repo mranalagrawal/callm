@@ -8,6 +8,7 @@
     <nuxt></nuxt>
 
     <Footer />
+    <FlashMessage></FlashMessage>
   </div>
 </template>
 
