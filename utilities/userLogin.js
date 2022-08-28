@@ -42,45 +42,8 @@ async function userLogin(email, password, domain, access_token) {
     token: userToken,
     customer: res1.data.customer,
   };
-  $nuxt.$emit("login", userData);
-  if (process.client) {
-    localStorage.setItem("call-me-wine-user", JSON.stringify(userData));
-  }
 
   return userData;
-  /*   fetch(domain, GRAPHQL_BODY_TOKEN)
-    .then((res) => res.json())
-    .then((res) => {
-      const userToken =
-        res.data.customerAccessTokenCreate.customerAccessToken.accessToken;
-
-      const user = getUserQuery(
-        res.data.customerAccessTokenCreate.customerAccessToken.accessToken
-      );
-      const GRAPHQL_BODY_USER = {
-        async: true,
-        crossDomain: true,
-        method: "POST",
-        headers: {
-          "X-Shopify-Storefront-Access-Token": access_token,
-          "Content-Type": "application/graphql",
-        },
-        body: user,
-      };
-      fetch(domain, GRAPHQL_BODY_USER)
-        .then((res) => res.json())
-        .then((res) => {
-          console.log("Login completed");
-          const userData = {
-            token: userToken,
-            customer: res.data.customer,
-          };
-          $nuxt.$emit("login", userData);
-          if (process.client) {
-            localStorage.setItem("call-me-wine-user", JSON.stringify(userData));
-          }
-        });
-    }); */
 }
 
 export default userLogin;

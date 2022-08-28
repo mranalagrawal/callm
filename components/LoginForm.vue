@@ -59,11 +59,18 @@ export default {
     };
   },
   methods: {
-    onSubmit(event) {
+    async onSubmit(event) {
       event.preventDefault();
       const domain = this.$config.DOMAIN;
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
-      userLogin(this.form.email, this.form.password, domain, access_token);
+      const user = await userLogin(
+        this.form.email,
+        this.form.password,
+        domain,
+        access_token
+      );
+
+      this.$store.commit("user/setUser", user);
     },
   },
 };

@@ -42,7 +42,7 @@
                   <i class="fal fa-user"></i>
                 </p>
                 <p v-if="user" class="mb-0" style="font-size: 10px">
-                  {{ user }}
+                  {{ user.customer.firstName }}
                 </p>
                 <p v-else class="mb-0" style="font-size: 12px">Accedi</p>
               </button>
@@ -85,6 +85,7 @@
                   <p class="mb-0" style="font-size: 10px">Empty</p>
                 </div>
               </button>
+              <div v-else>Vuoto</div>
               <div
                 v-if="showCart"
                 @mouseleave="showCart = false"
@@ -120,12 +121,14 @@ export default {
     cart() {
       return this.$store.state.cart.cart;
     },
+    user() {
+      return this.$store.state.user.user;
+    },
   },
   data() {
     return {
       showUser: false,
       showCart: false,
-      user: "",
     };
   },
   methods: {
@@ -137,20 +140,6 @@ export default {
       this.showCart = false;
       this.showUser = true;
     },
-  },
-  created() {
-    this.$nuxt.$on("login", (e) => {
-      this.user = e.customer.firstName;
-    });
-    this.$nuxt.$on("logout", (e) => {
-      this.user = "";
-    });
-  },
-  mounted() {
-    if (process.client) {
-      const userData = localStorage.getItem("call-me-wine-user");
-      if (userData) this.user = JSON.parse(userData).customer.firstName;
-    }
   },
 };
 </script>

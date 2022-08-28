@@ -95,9 +95,10 @@ export default {
 
       // se non c'è cart
       if (!this.$store.state.cart.cart) {
-        alert("no");
+        alert("creo carrello");
         // crea cart su shopify
-        const cart = await createCart(domain, access_token);
+        const user = this.$store.state.user.user;
+        const cart = await createCart(domain, access_token, user);
 
         // crea cart su vuex
         this.$store.commit("cart/setCart", cart);

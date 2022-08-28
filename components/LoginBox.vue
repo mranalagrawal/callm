@@ -54,8 +54,6 @@
 </template>
 
 <script>
-import createTokenQuery from "../utilities/createUserToken";
-import getUserQuery from "../utilities/getUser";
 import userLogin from "../utilities/userLogin";
 export default {
   data() {

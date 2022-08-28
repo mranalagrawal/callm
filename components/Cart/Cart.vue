@@ -1,16 +1,11 @@
 <template>
   <div class="position-relative">
-    <!-- <div>
-      <button class="btn" @click="createCart">Crea</button>
-      <button class="btn" @click="clearStorage">Clear Storage</button>
-    </div> -->
-
-    <!-- <div v-if="cart">{{ cart }}</div> -->
-    <div v-if="cart">
+    <div v-if="cart.lines.edges.length > 0">
       <div v-for="item in cart.lines.edges" :key="item.node.id">
         <CartLine :item="item" />
       </div>
     </div>
+    <div v-else>Carrello vuoto!</div>
   </div>
 </template>
 

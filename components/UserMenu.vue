@@ -28,10 +28,7 @@ export default {
   },
   methods: {
     logout() {
-      if (process.client) {
-        localStorage.removeItem("call-me-wine-user");
-      }
-      $nuxt.$emit("logout", null);
+      this.$store.commit("user/setUser", null);
       this.$router.push("/");
     },
   },

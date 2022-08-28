@@ -177,9 +177,7 @@ export const addItemMutation = (cartId, productId, quantity) => {
   });
 };
 
-export const createCart = async (domain, access_token) => {
-  const user = JSON.parse(localStorage.getItem("call-me-wine-user"));
-
+export const createCart = async (domain, access_token, user) => {
   const cartQuery = createCartMutation(user.token);
 
   const GRAPHQL_BODY_USER = {
