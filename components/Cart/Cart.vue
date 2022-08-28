@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { createCart, getCart } from "../../utilities/cart";
+import { createCart } from "../../utilities/cart";
 
 export default {
   data() {
@@ -55,51 +55,7 @@ export default {
           }); */
       }
     },
-    getCart(event) {
-      event.preventDefault();
-      const domain = this.$config.DOMAIN;
-      const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
-      if (process.client) {
-        const cartId = localStorage.getItem("call-me-wine-cart");
-        /* console.log(cartId, "cartId from storage"); */
-        const retrievedCart = getCart(cartId);
-        /* console.log(retrievedCart, "Retrieved Cart"); */
 
-        const GRAPHQL_BODY_CART = {
-          async: true,
-          crossDomain: true,
-          method: "POST",
-          headers: {
-            "X-Shopify-Storefront-Access-Token": access_token,
-            "Content-Type": "application/graphql",
-          },
-          body: retrievedCart,
-        };
-
-        fetch(domain, GRAPHQL_BODY_CART)
-          .then((res) => res.json())
-          .then((res) => {
-            console.log(res);
-          });
-        /* const cartQuery = createCart(user.token);
-        console.log(cartQuery);
-
-        const GRAPHQL_BODY_USER = {
-          async: true,
-          crossDomain: true,
-          method: "POST",
-          headers: {
-            "X-Shopify-Storefront-Access-Token": access_token,
-            "Content-Type": "application/json",
-          },
-          body: cartQuery,
-        };
-
-        fetch(domain, GRAPHQL_BODY_USER)
-          .then((res) => res.json())
-          .then((res) => console.log(res)); */
-      }
-    },
     clearStorage() {
       localStorage.clear();
       console.log("Cart removed");

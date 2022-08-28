@@ -25,6 +25,17 @@
         </button>
       </div>
       <div class="col-2">
+        <p
+          class="mb-0 small text-right text-muted"
+          style="text-decoration: line-through"
+        >
+          {{
+            Number(
+              item.node.merchandise.product.compareAtPriceRange.maxVariantPrice
+                .amount * quantity
+            ).toFixed(2)
+          }}
+        </p>
         <p class="mb-0 small font-weight-bold text-right">
           {{ (item.node.merchandise.price * quantity).toFixed(2) }}
         </p>
@@ -32,7 +43,7 @@
       <div class="col-2 text-right">
         <button class="btn">
           <i
-            class="fas fa-trash text-light-red"
+            class="fas fa-trash-alt text-light-red"
             @click="remove(item.node.id)"
           ></i>
         </button>
@@ -96,6 +107,7 @@ export default {
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
       const cartId = this.$store.state.cart.cart.id;
 
+      console.log(lineId, "lineId");
       // remove from shopify
       const cart = await removeProductFromCart(
         domain,

@@ -1,12 +1,15 @@
 <template>
   <div class="px-4 pt-3 py-2" style="width: 340px">
-    <p class="mb-3 menu-link">I miei ordini</p>
+    <!-- <p class="mb-3 menu-link">I miei ordini</p>
     <p class="mb-3 menu-link">Compra di nuovo</p>
     <p class="mb-3 menu-link">I miei preferiti</p>
     <p class="mb-3 menu-link">Indirizzo di spedizioni</p>
     <p class="mb-3 menu-link">Dati di fatturazione</p>
     <p class="mb-3 menu-link">Accessi consensi</p>
-    <p class="mb-3 menu-link">Carte salvate</p>
+    <p class="mb-3 menu-link">Carte salvate</p> -->
+    <nuxt-link to="/profile" class="text-decoration-none text-dark"
+      >Profilo</nuxt-link
+    >
     <div class="mt-5">
       <button @click="logout" class="btn btn-outline-light-red w-100">
         Esci

@@ -44,33 +44,26 @@
             </p>
           </div>
           <div v-else>
-            <div
-              v-for="(mkt, i) in marketing.filter(
-                (el) => el.section == item.url.split('.com/')[1]
-              )[0].items"
-              :key="i"
-              class="mb-3 shadow d-flex align-items-center"
-              style="max-width: 400px; border-radius: 10px"
-            >
-              <img
-                :src="mkt.image.url"
-                alt=""
-                width="48px"
-                height="48px"
-                style="object-fit: cover; border-radius: 10px 0px 0px 10px"
-              />
+            <div v-if="marketing">
+              <div
+                v-for="(mkt, i) in marketing.filter(
+                  (el) => el.section == item.url.split('.com/')[1]
+                )[0].items"
+                :key="i"
+                class="mb-3 shadow d-flex align-items-center"
+                style="max-width: 400px; border-radius: 10px"
+              >
+                <img
+                  :src="mkt.image.url"
+                  alt=""
+                  width="48px"
+                  height="48px"
+                  style="object-fit: cover; border-radius: 10px 0px 0px 10px"
+                />
 
-              <p class="text-light-red mb-0 pl-2">{{ mkt.text }}</p>
+                <p class="text-light-red mb-0 pl-2">{{ mkt.text }}</p>
+              </div>
             </div>
-            <p>
-              <!-- {{ item.url.split(".com/")[1] }} -->
-
-              <!-- {{
-                marketing.filter(
-                  (el) => el.section == item.url.split(".com/")[1]
-                )[0].items
-              }} -->
-            </p>
           </div>
         </div>
       </div>
