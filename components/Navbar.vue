@@ -33,7 +33,6 @@
         </b-button>
       </div>
       <div class="col-3">
-        <!-- login -->
         <div class="d-flex justify-content-around">
           <div class="position-relative">
             <div>
@@ -41,7 +40,7 @@
                 <p class="mb-0">
                   <i class="fal fa-user"></i>
                 </p>
-                <p v-if="user" class="mb-0" style="font-size: 10px">
+                <p v-if="user" class="mb-0">
                   {{ user.customer.firstName }}
                 </p>
                 <p v-else class="mb-0" style="font-size: 12px">Accedi</p>
@@ -68,21 +67,39 @@
           </div>
           <!-- Cart -->
           <div class="position-relative" v-if="user">
-            <div>
+            <div class="bg-light">
               <button v-if="cart" class="btn" @mouseenter="switchToCart()">
-                <div v-if="cart.lines.edges.length > 0">
-                  <p class="mb-0">
-                    <i class="fas fa-cart-plus text-dark-red"></i>
-                  </p>
-                  <p class="mb-0" style="font-size: 10px">
-                    {{ Number(cart.cost.totalAmount.amount).toFixed(2) }}
-                  </p>
+                <div
+                  v-if="cart.lines.edges.length > 0"
+                  class="d-flex align-items-center"
+                >
+                  <div class="text-left">
+                    <p class="text-muted mb-0" style="font-size: 8px">
+                      Totale Carrello
+                    </p>
+                    <p class="mb-0 h4">
+                      {{ Number(cartTotalAmount).toFixed(0) }}.<span
+                        class="small"
+                        >{{
+                          Number(cartTotalAmount.split(".")[1])
+                            .toFixed(2)
+                            .split(".")[1]
+                        }}</span
+                      >
+                    </p>
+                  </div>
+                  <div class="">
+                    <p class="mb-0">
+                      <span class="totalItems">{{ cart.totalQuantity }}</span>
+                      <i class="fal fa-shopping-cart text-dark fa-2x"></i>
+                    </p>
+                  </div>
                 </div>
                 <div v-else>
                   <p class="mb-0">
                     <i class="fal fa-shopping-cart"></i>
                   </p>
-                  <p class="mb-0" style="font-size: 10px">Empty</p>
+                  <p class="mb-0"></p>
                 </div>
               </button>
               <div v-else>Vuoto</div>
@@ -120,6 +137,9 @@ export default {
   computed: {
     cart() {
       return this.$store.state.cart.cart;
+    },
+    cartTotalAmount() {
+      return this.$store.state.cart.cart.cost.totalAmount.amount;
     },
     user() {
       return this.$store.state.user.user;
@@ -165,5 +185,19 @@ export default {
   left: -60px;
   border-top: 4px solid var(--dark-red);
   padding-bottom: 0px;
+}
+.totalItems {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--light-red);
+  color: white;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
 }
 </style>
