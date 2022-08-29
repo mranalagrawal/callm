@@ -15,13 +15,25 @@
       </b-form-group>
 
       <b-form-group class="my-4 position-relative">
-        <b-icon
+        <i
+          v-if="passwordIsVisible"
+          class="fal fa-eye-slash position-absolute text-light-red pointer"
+          style="right: 10px; top: 12px"
+          @click="passwordIsVisible = !passwordIsVisible"
+        ></i>
+        <i
+          v-else
+          class="fal fa-eye position-absolute text-light-red pointer"
+          style="right: 10px; top: 12px"
+          @click="passwordIsVisible = !passwordIsVisible"
+        ></i>
+        <!-- <b-icon
           :icon="passwordIsVisible ? 'eye-slash' : 'eye'"
           font-scale="2"
           class="position-absolute text-light-red"
           style="right: 10px; top: 4px; cursor: pointer"
           @click="passwordIsVisible = !passwordIsVisible"
-        ></b-icon>
+        ></b-icon> -->
         <b-form-input
           class="custom-input"
           id="login-password"

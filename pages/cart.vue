@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid mt-5 pt-5">
-    <div class="container">
+    <div class="container-fluid px-md-5">
       <div class="row">
         <div class="col-12">
           <nuxt-link class="text-dark-red" to="/">Home</nuxt-link>
@@ -9,12 +9,12 @@
         </div>
       </div>
     </div>
-    <div class="container">
+    <div class="container-fluid px-md-5">
       <div class="row my-5">
         <div class="col-12 mb-3">
           <h2>Dettaglio carrello</h2>
         </div>
-        <div class="col-12 col-md-8" v-if="cart">
+        <div class="col-12 col-md-7" v-if="cart">
           <div class="row">
             <div class="col-6">
               <p class="font-weight-bold mb-0">
@@ -22,7 +22,7 @@
               </p>
             </div>
             <div class="col-6 text-right">
-              <p class="text-light-red pointer" @click="removeCart">
+              <p class="text-light-red pointer" @click="showModal">
                 Svuota carrello
               </p>
             </div>
@@ -37,10 +37,50 @@
             <hr />
           </div>
         </div>
-        <div class="col-12 col-md-4"></div>
+        <div class="col-12 col-md-5">
+          <div class="card shadow border-0 w-75 mx-auto">
+            <div class="card-body">
+              <h5 class="card-title font-weight-bold">
+                Totale carrello
+                <span class="float-right">{{
+                  Number(cart.cost.totalAmount.amount).toFixed(2)
+                }}</span>
+              </h5>
+              <hr />
+              <p>
+                Se hai un <strong>codice sconto</strong> potrai inserirlo in
+                seguito, prima del pagamento.
+              </p>
+              <p>
+                Le <strong>spese di spedizione</strong> verranno aggiunte alla
+                cassa, dopo aver scelto la modalità.
+              </p>
+              <a
+                :href="cart.checkoutUrl"
+                class="btn btn-light-red w-100 text-uppercase text-decoration-none text-center"
+              >
+                Vai alla cassa
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
-      {{ cart }}
+      <!-- {{ cart }} -->
     </div>
+
+    <b-modal ref="modal" hide-header centered title="">
+      <p class="text-center my-5 lead">Cancellare carrello?</p>
+      <template #modal-footer class="border-0">
+        <div class="w-100 d-flex justify-content-between">
+          <button class="btn btn-outline-dark-red" @click="hideModal">
+            Annulla
+          </button>
+          <button class="btn btn-dark-red" @click="removeCart">
+            Si, cancella
+          </button>
+        </div>
+      </template>
+    </b-modal>
   </div>
 </template>
 
@@ -56,6 +96,12 @@ export default {
   },
 
   methods: {
+    showModal() {
+      this.$refs["modal"].show();
+    },
+    hideModal() {
+      this.$refs["modal"].hide();
+    },
     async remove(lineId) {
       const domain = this.$config.DOMAIN;
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
@@ -86,6 +132,7 @@ export default {
         lineIds
       );
 
+      this.$refs["modal"].hide();
       this.$store.commit("cart/setCart", cart);
     },
   },
@@ -122,5 +169,10 @@ export default {
   transition-duration: 0.4s;
   height: 120px;
   overflow: auto;
+}
+
+:deep(.modal-footer),
+:deep(.modal-header) {
+  border: 0px;
 }
 </style>

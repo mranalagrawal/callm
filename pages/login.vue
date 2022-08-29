@@ -4,7 +4,7 @@
       <div class="col-12 col-lg-6">
         <LoginBox />
       </div>
-      <div class="col-12 col-lg-6 bg-light">
+      <div class="col-12 col-lg-6">
         <RegisterBox />
       </div>
     </div>

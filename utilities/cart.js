@@ -136,8 +136,6 @@ export const addProductToCart = async (
   cartId,
   quantity
 ) => {
-  /* const cartId = localStorage.getItem("call-me-wine-cart"); */
-
   const cartMutation = addItemMutation(
     cartId,
     product.variants.nodes[0].id,
@@ -358,8 +356,6 @@ export const updateItemInCart = async (
   cartId,
   quantity
 ) => {
-  /* const cartId = localStorage.getItem("call-me-wine-cart"); */
-
   const cartMutation = updateItemMutation(cartId, lineId, quantity);
 
   const GRAPHQL_BODY_CART = {

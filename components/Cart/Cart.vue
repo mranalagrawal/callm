@@ -4,6 +4,18 @@
       <div v-for="item in cart.lines.edges" :key="item.node.id">
         <CartLine :item="item" />
       </div>
+      <div class="row mt-4">
+        <div class="col-6">
+          <nuxt-link class="btn btn-outline-dark-red w-100" to="/cart"
+            >Dettaglio carrello</nuxt-link
+          >
+        </div>
+        <div class="col-6">
+          <a class="btn btn-dark-red w-100" :href="cart.checkoutUrl"
+            >Vai alla cassa</a
+          >
+        </div>
+      </div>
     </div>
     <div v-else>Carrello vuoto!</div>
   </div>
@@ -19,46 +31,6 @@ export default {
   computed: {
     cart() {
       return this.$store.state.cart.cart;
-    },
-  },
-  methods: {
-    createCart(event) {
-      event.preventDefault();
-      const domain = this.$config.DOMAIN;
-      const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
-      if (process.client) {
-        createCart(domain, access_token);
-        /* const user = JSON.parse(localStorage.getItem("call-me-wine-user"));
-        console.log(user.token);
-        const cartQuery = createCartMutation(user.token);
-        console.log(cartQuery);
-
-        const GRAPHQL_BODY_USER = {
-          async: true,
-          crossDomain: true,
-          method: "POST",
-          headers: {
-            "X-Shopify-Storefront-Access-Token": access_token,
-            "Content-Type": "application/json",
-          },
-          body: cartQuery,
-        };
-
-        fetch(domain, GRAPHQL_BODY_USER)
-          .then((res) => res.json())
-          .then((res) => {
-            const cartId = res.data.cartCreate.cart.id;
-            if (process.client) {
-              console.log(res, "cartId from create");
-              localStorage.setItem("call-me-wine-cart", cartId);
-            }
-          }); */
-      }
-    },
-
-    clearStorage() {
-      localStorage.clear();
-      console.log("Cart removed");
     },
   },
 };

@@ -92,9 +92,7 @@
         Acconsento a ricevere newslettter e comunicazioni promozionali da parte
         di Callmewine, come previsto dalla Privacy Policy.
       </b-form-checkbox>
-      <p>{{ Object.values(form) }}</p>
 
-      <p>{{ Object.values(form).every((e) => Boolean(e) == true) }}</p>
       <button
         type="submit"
         class="w-100 btn bg-light-red text-white mt-5 btn-lg"
@@ -113,7 +111,8 @@
 
 <script>
 import userRegister from "../utilities/userRegister";
-import setUser from "../utilities/setUser";
+import userLogin from "../utilities/userLogin";
+
 export default {
   data() {
     return {
@@ -131,11 +130,11 @@ export default {
     };
   },
   methods: {
-    onSubmit(event) {
+    async onSubmit(event) {
       event.preventDefault();
       const domain = this.$config.DOMAIN;
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
-      userRegister(
+      const token = await userRegister(
         this.form.firstname,
         this.form.lastname,
         this.form.email,
@@ -145,6 +144,15 @@ export default {
         domain,
         access_token
       );
+      const user = await userLogin(
+        this.form.email,
+        this.form.password,
+        domain,
+        access_token
+      );
+      this.$store.commit("user/setUser", user);
+      this.$router.push("/profile");
+      console.log(user);
     },
   },
 };

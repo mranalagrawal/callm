@@ -27,3 +27,9 @@ body {
 .pointer {
   cursor: pointer;
 }
+
+.btn:focus,
+.btn.focus {
+  outline: 0;
+  box-shadow: none !important;
+}

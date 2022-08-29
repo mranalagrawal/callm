@@ -3,7 +3,7 @@
     <div>
       <button class="btn" @click="show = !show">
         <p class="mb-0">
-          <b-icon icon="person" aria-hidden="true"></b-icon>
+          <i class="fal fa-user"></i>
         </p>
         <p v-if="user" class="mb-0" style="font-size: 10px">{{ user }}</p>
         <p v-else class="mb-0" style="font-size: 12px">Accedi</p>
