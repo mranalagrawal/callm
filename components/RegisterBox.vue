@@ -1,7 +1,6 @@
 <template>
   <div class="">
-    <b-form @submit="onSubmit" class="px-4 pt-3 py-2 w-75 mx-auto">
-      <h3 class="mt-3">Crea il tuo account</h3>
+    <form @submit="onSubmit" class="px-4 pt-3 py-2 w-75 mx-auto">
       <b-form-group class="my-4">
         <b-form-input
           id="name"
@@ -36,13 +35,13 @@
       </b-form-group>
 
       <b-form-group class="my-4 position-relative">
-        <b-icon
+        <!-- <b-icon
           :icon="passwordIsVisible ? 'eye-slash' : 'eye'"
           font-scale="2"
           class="position-absolute text-light-red"
           style="right: 10px; top: 4px; cursor: pointer"
           @click="passwordIsVisible = !passwordIsVisible"
-        ></b-icon>
+        ></b-icon> -->
         <b-form-input
           class="custom-input"
           id="input-2"
@@ -105,7 +104,7 @@
       >
         Registrati
       </button>
-    </b-form>
+    </form>
   </div>
 </template>
 

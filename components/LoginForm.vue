@@ -1,6 +1,10 @@
 <template>
   <div class="">
-    <b-form @submit="onSubmit" class="px-4 pt-3 py-2">
+    <form
+      @submit="onSubmit"
+      class="px-4 pt-3 py-2 mx-auto"
+      :style="{ width: width }"
+    >
       <b-form-group id="input-group-1">
         <label class="custom-label" for="input-1">Email</label>
         <b-form-input
@@ -12,14 +16,25 @@
         ></b-form-input>
       </b-form-group>
 
-      <b-form-group id="input-group-2">
+      <b-form-group id="input-group-2" class="position-relative">
         <label class="custom-label" for="input-2">Password</label>
-
+        <i
+          v-if="passwordIsVisible"
+          class="fal fa-eye-slash position-absolute text-light-red pointer"
+          style="right: 10px; bottom: 10px"
+          @click="passwordIsVisible = !passwordIsVisible"
+        ></i>
+        <i
+          v-else
+          class="fal fa-eye position-absolute text-light-red pointer"
+          style="right: 10px; bottom: 10px"
+          @click="passwordIsVisible = !passwordIsVisible"
+        ></i>
         <b-form-input
           class="custom-input"
           id="input-2"
           v-model="form.password"
-          type="password"
+          :type="passwordIsVisible ? 'text' : 'password'"
           required
         ></b-form-input>
       </b-form-group>
@@ -39,9 +54,9 @@
       </button>
 
       <div class="text-center my-3">
-        <a href="" class="text-light-red">Hai dimenticato la password</a>
+        <a href="" class="text-light-red">Hai dimenticato la password ?</a>
       </div>
-    </b-form>
+    </form>
   </div>
 </template>
 
@@ -49,8 +64,10 @@
 import userLogin from "../utilities/userLogin";
 
 export default {
+  props: ["width"],
   data() {
     return {
+      passwordIsVisible: false,
       form: {
         email: "",
         password: "",
@@ -71,19 +88,20 @@ export default {
       );
 
       this.$store.commit("user/setUser", user);
+      this.$router.push("/profile");
     },
   },
 };
 </script>
 
 <style scoped>
-:deep(form) {
+/* :deep(form) {
   width: 340px;
-}
+} */
 
 .custom-label {
   position: relative;
-  bottom: -20px;
+  bottom: -11px;
   left: 12px;
   padding: 0px 4px;
   background: white;

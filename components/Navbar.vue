@@ -52,7 +52,7 @@
                 class="content card shadow"
               >
                 <div v-if="!user">
-                  <login-form />
+                  <login-form width="340px" />
                   <div class="bg-light p-3 text-center">
                     Non hai ancora un profilo?
                     <nuxt-link to="/login" class="text-uppercase text-light-red"
