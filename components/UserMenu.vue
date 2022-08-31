@@ -26,6 +26,32 @@
         >I miei preferiti</nuxt-link
       >
     </p>
+    <p>
+      <nuxt-link
+        to="/profile#addresses"
+        class="text-decoration-none text-dark-red"
+        >Indirizzi di spedizione</nuxt-link
+      >
+    </p>
+    <p>
+      <nuxt-link
+        to="/profile#billing"
+        class="text-decoration-none text-dark-red"
+        >Dati di fatturazione</nuxt-link
+      >
+    </p>
+    <p>
+      <nuxt-link
+        to="/profile#consents"
+        class="text-decoration-none text-dark-red"
+        >Accessi consensi</nuxt-link
+      >
+    </p>
+    <p>
+      <nuxt-link to="/profile#cards" class="text-decoration-none text-dark-red"
+        >Carte salvate</nuxt-link
+      >
+    </p>
     <div class="mt-5">
       <button @click="logout" class="btn btn-outline-light-red w-100">
         Esci

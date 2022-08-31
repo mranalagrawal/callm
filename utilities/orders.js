@@ -1,6 +1,4 @@
-// mi deve arrivare il token!
-
-const getUserQuery = (token) => `query {
+export const getUserOrdersQuery = (token) => `query {
     customer(customerAccessToken: "${token}") {
         id
         firstName
@@ -61,4 +59,22 @@ const getUserQuery = (token) => `query {
     }
 }`;
 
-export default getUserQuery;
+export async function getUserOrders(domain, access_token, customerAccessToken) {
+  const ordersQuery = getUserOrdersQuery(customerAccessToken);
+  const GRAPHQL_BODY = {
+    async: true,
+    crossDomain: true,
+    method: "POST",
+    headers: {
+      "X-Shopify-Storefront-Access-Token": access_token,
+      "Content-Type": "application/graphql",
+    },
+    body: ordersQuery,
+  };
+
+  const customer = await fetch(domain, GRAPHQL_BODY);
+  const customerJSON = await customer.json();
+  const orders = await customerJSON.data.customer.orders;
+
+  return orders;
+}

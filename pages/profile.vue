@@ -1,6 +1,5 @@
 <template>
   <div class="container-fluid mt-5 pt-5">
-    {{ active }}
     <div class="container-fluid px-md-5">
       <div class="row">
         <div class="col-12 mb-4">
@@ -29,7 +28,7 @@
                 title="I miei ordini"
                 :active="active == 'orders' ? true : false"
               >
-                <Orders :orders="user.customer.orders.edges" />
+                <Orders />
               </b-tab>
               <b-tab
                 title="Compra di nuovo"
@@ -40,16 +39,16 @@
                 :active="active == 'wishlist' ? true : false"
               ></b-tab>
               <b-tab
+                title="Indirizzi di spedizione"
+                :active="active == 'addresses' ? true : false"
+              ></b-tab>
+              <b-tab
                 title="Dati di fatturazione"
-                :active="activeTab == 'Dati di fatturazione' ? true : false"
+                :active="active == 'billing' ? true : false"
               ></b-tab>
               <b-tab
-                title="Dati di accesso"
-                :active="activeTab == 'Dati di accesso' ? true : false"
-              ></b-tab>
-              <b-tab
-                title="Consensi"
-                :active="activeTab == 'Consensi' ? true : false"
+                title="Accessi consensi"
+                :active="active == 'consents' ? true : false"
               ></b-tab>
               <b-tab
                 title="Carte salvate"
