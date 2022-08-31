@@ -81,6 +81,11 @@ export default {
       const domain = this.$config.DOMAIN;
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
 
+      if (!this.$store.state.user.user) {
+        this.$router.push("/login");
+        return;
+      }
+
       // se non c'è cart
       if (!this.$store.state.cart.cart) {
         alert("creo carrello");

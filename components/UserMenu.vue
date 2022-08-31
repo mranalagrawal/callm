@@ -7,9 +7,25 @@
     <p class="mb-3 menu-link">Dati di fatturazione</p>
     <p class="mb-3 menu-link">Accessi consensi</p>
     <p class="mb-3 menu-link">Carte salvate</p> -->
-    <nuxt-link to="/profile" class="text-decoration-none text-dark"
-      >Profilo</nuxt-link
-    >
+    <p>
+      <nuxt-link to="/profile#orders" class="text-decoration-none text-dark-red"
+        >I miei ordini</nuxt-link
+      >
+    </p>
+    <p>
+      <nuxt-link
+        to="/profile#buyagain"
+        class="text-decoration-none text-dark-red"
+        >Compra di nuovo</nuxt-link
+      >
+    </p>
+    <p>
+      <nuxt-link
+        to="/profile#wishlist"
+        class="text-decoration-none text-dark-red"
+        >I miei preferiti</nuxt-link
+      >
+    </p>
     <div class="mt-5">
       <button @click="logout" class="btn btn-outline-light-red w-100">
         Esci
@@ -32,6 +48,7 @@ export default {
   methods: {
     logout() {
       this.$store.commit("user/setUser", null);
+      this.$store.commit("cart/setCart", null);
       this.$router.push("/");
     },
   },

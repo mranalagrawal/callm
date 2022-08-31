@@ -7,6 +7,16 @@ const setUser = (firstName, lastName, email, password, acceptsMarketing) => {
           lastName,
           email,
           acceptsMarketing
+          orders(first: 10) {
+            edges {
+                node {
+                    id
+                    name
+                    totalPrice
+                    fulfillmentStatus
+                }
+            }
+        }
         }
         customerUserErrors { field, message, code }
       }

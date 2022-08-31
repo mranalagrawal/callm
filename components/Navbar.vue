@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid fixed- bg-white">
     <div class="row align-items-center py-3 px-4">
-      <div class="col-3">
+      <div class="col-2">
         <nuxt-link to="/">
           <img
             src="../assets/images/logo.svg"
@@ -11,7 +11,7 @@
           />
         </nuxt-link>
       </div>
-      <div class="col-6 py-2" style="position: relative">
+      <div class="col-7 py-2" style="position: relative">
         <b-form-input
           size="sm"
           class="border border-dark p-4"
@@ -33,10 +33,17 @@
         </b-button>
       </div>
       <div class="col-3">
-        <div class="d-flex justify-content-around">
+        <div
+          class="d-flex"
+          :class="user ? 'justify-content-around' : 'justify-content-end'"
+        >
+          <button class="btn" v-if="user">
+            <i class="fal fa-heart"></i>
+            <p class="mb-0">Preferiti</p>
+          </button>
           <div class="position-relative">
             <div>
-              <button class="btn" @mouseenter="switchToUser()">
+              <button class="btn cart-box" @mouseenter="switchToUser()">
                 <p class="mb-0">
                   <i class="fal fa-user"></i>
                 </p>
@@ -45,6 +52,7 @@
                 </p>
                 <p v-else class="mb-0" style="font-size: 12px">Accedi</p>
               </button>
+
               <div
                 v-if="showUser"
                 @mouseleave="showUser = false"
@@ -67,16 +75,14 @@
           </div>
           <!-- Cart -->
           <div class="position-relative" v-if="user">
-            <div class="bg-light">
-              <button v-if="cart" class="btn" @mouseenter="switchToCart()">
+            <div class="">
+              <div v-if="1" class="btn cart-box" @mouseenter="switchToCart()">
                 <div
-                  v-if="cart.lines.edges.length > 0"
+                  v-if="cart && cart.lines.edges.length > 0"
                   class="d-flex align-items-center"
                 >
                   <div class="text-left">
-                    <p class="text-muted mb-0" style="font-size: 8px">
-                      Totale Carrello
-                    </p>
+                    <p class="mb-2" style="font-size: 8px">Totale Carrello</p>
                     <p class="mb-0 h4">
                       {{ Number(cartTotalAmount).toFixed(0) }}.<span
                         class="small"
@@ -91,7 +97,7 @@
                   <div class="">
                     <p class="mb-0">
                       <span class="totalItems">{{ cart.totalQuantity }}</span>
-                      <i class="fal fa-shopping-cart text-dark fa-2x"></i>
+                      <i class="fal fa-shopping-cart fa-2x"></i>
                     </p>
                   </div>
                 </div>
@@ -99,10 +105,10 @@
                   <p class="mb-0">
                     <i class="fal fa-shopping-cart"></i>
                   </p>
-                  <p class="mb-0"></p>
+                  <p class="mb-0">Carrello</p>
                 </div>
-              </button>
-              <div v-else>Vuoto</div>
+              </div>
+
               <div
                 v-if="showCart"
                 @mouseleave="showCart = false"
@@ -121,13 +127,12 @@
 </template>
 
 <script>
-import Login from "./Login.vue";
 import Cart from "./Cart/Cart.vue";
 import LoginForm from "./LoginForm.vue";
 import UserMenu from "./UserMenu.vue";
 
 export default {
-  components: { Login, Cart, LoginForm, UserMenu },
+  components: { Cart, LoginForm, UserMenu },
   watch: {
     $route() {
       this.showUser = false;
@@ -168,7 +173,7 @@ export default {
 .content {
   position: absolute;
   right: 0px;
-  transform: translateY(20px);
+  transform: translateY(-3px);
   z-index: 999;
   border-top: 4px solid var(--dark-red);
   padding-bottom: 0px;
@@ -199,5 +204,17 @@ export default {
   justify-content: center;
   align-items: center;
   font-size: 12px;
+}
+
+.cart-box {
+  background: #eee;
+  border-radius: 10px;
+}
+.cart-box:hover {
+  background: var(--dark-red);
+  border-radius: 10px 10px 0px 0px;
+}
+.cart-box:hover * {
+  color: white;
 }
 </style>

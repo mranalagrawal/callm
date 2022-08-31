@@ -1,6 +1,6 @@
 $theme-colors: (
   "dark-green": #11312b,
-  "light-green": #5bbd0c,
+  "light-green": #176a62,
   "dark-red": #8e2440,
   "light-red": #d94965,
 );
@@ -32,4 +32,8 @@ body {
 .btn.focus {
   outline: 0;
   box-shadow: none !important;
+}
+
+.text-barred {
+  text-decoration: line-through !important;
 }

@@ -6,9 +6,55 @@ const getUserQuery = (token) => `query {
         acceptsMarketing
         email
         phone
-        test: metafield(namespace: "custom", key: "birthday") {
-            value
-            type
+        orders(first: 10) {
+            edges {
+                node {
+                    id
+                    name
+                    totalPrice
+                    fulfillmentStatus
+                    orderNumber
+                    processedAt
+                    statusUrl
+                    financialStatus
+                    lineItems(first: 10) {
+                        edges {
+                            node {
+                                quantity
+                                title
+                                
+                                originalTotalPrice {
+                                    amount
+                                }
+                                discountedTotalPrice {
+                                    amount
+                                }
+                                variant {
+                                    id
+                                    product {
+                                        id
+                                        title
+                                        description
+                                        compareAtPriceRange {
+                                            maxVariantPrice {
+                                                amount
+                                            }
+                                            minVariantPrice {
+                                                amount
+                                            }
+                                        }
+                                        images(first: 1) {
+                                            nodes {
+                                                url
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }`;

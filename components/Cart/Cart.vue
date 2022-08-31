@@ -1,6 +1,6 @@
 <template>
-  <div class="position-relative">
-    <div v-if="cart.lines.edges.length > 0">
+  <div class="position-relative text-dark">
+    <div v-if="cart && cart.lines.edges.length > 0">
       <div v-for="item in cart.lines.edges" :key="item.node.id">
         <CartLine :item="item" />
       </div>
@@ -17,13 +17,17 @@
         </div>
       </div>
     </div>
-    <div v-else>Carrello vuoto!</div>
+    <div v-else class="text-center text-dark">
+      <strong>Il tuo carrello è vuoto!</strong>
+      <p class="my-4">Non sai dove cominciare?</p>
+      <nuxt-link to="/" class="btn btn-light-red text-uppercase w-100"
+        >Scopri le nostre promo</nuxt-link
+      >
+    </div>
   </div>
 </template>
 
 <script>
-import { createCart } from "../../utilities/cart";
-
 export default {
   data() {
     return {};

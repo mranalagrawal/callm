@@ -48,9 +48,9 @@ export const createCartMutation = (customerAccessToken) => {
                       }
                       images(first: 1) {
                         nodes {
-                            url
+                          url
                         }
-                    }
+                      }
                     }
                   }
                 }
@@ -87,10 +87,10 @@ export const createCartMutation = (customerAccessToken) => {
 export const addItemMutation = (cartId, productId, quantity) => {
   return JSON.stringify({
     query: `mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
-        cartLinesAdd(cartId: $cartId, lines: $lines) {
-          ${generalQuery}
-        }
-      }`,
+      cartLinesAdd(cartId: $cartId, lines: $lines) {
+        ${generalQuery}
+      }
+    }`,
     variables: {
       cartId: cartId,
       lines: [
@@ -162,75 +162,75 @@ export const addProductToCart = async (
 export const removeItemMutation = (cartId, lineId) => {
   return JSON.stringify({
     query: `mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
-        cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
-          cart {
-            id
-            updatedAt
-            totalQuantity
-            checkoutUrl
-            cost {
-              totalAmount {
-                amount
-                currencyCode
+          cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+            cart {
+              id
+              updatedAt
+              totalQuantity
+              checkoutUrl
+              cost {
+                totalAmount {
+                  amount
+                  currencyCode
+                }
+                subtotalAmount {
+                  amount
+                  currencyCode
+                }
+                totalTaxAmount {
+                  amount
+                  currencyCode
+                }
+                totalDutyAmount {
+                  amount
+                  currencyCode
+                }
               }
-              subtotalAmount {
-                amount
-                currencyCode
-              }
-              totalTaxAmount {
-                amount
-                currencyCode
-              }
-              totalDutyAmount {
-                amount
-                currencyCode
-              }
-            }
-            lines(first: 10) {
-              edges {
-                node {
-                  id
-                  quantity
-                  merchandise {
-                    ... on ProductVariant {
-                      id
-                      price
-                      product {
+              lines(first: 10) {
+                edges {
+                  node {
+                    id
+                    quantity
+                    merchandise {
+                      ... on ProductVariant {
                         id
-                        title
-                        description
-                        compareAtPriceRange {
-                          maxVariantPrice {
-                            amount
+                        price
+                        product {
+                          id
+                          title
+                          description
+                          compareAtPriceRange {
+                            maxVariantPrice {
+                              amount
+                            }
+                            minVariantPrice {
+                              amount
+                            }
                           }
-                          minVariantPrice {
-                            amount
+                          images(first: 1) {
+                            nodes {
+                              url
+                            }
                           }
                         }
-                        images(first: 1) {
-                          nodes {
-                              url
-                          }
-                      }
                       }
                     }
-                  }
-                  attributes {
-                    key
-                    value
+                    attributes {
+                      key
+                      value
+                    }
                   }
                 }
+                
               }
               
             }
-            
+            userErrors {
+              field
+              message
+            }
           }
-          userErrors {
-            field
-            message
-          }
-        }
-      }`,
+        }`,
     variables: {
       cartId: cartId,
       lineIds: lineId,
@@ -268,75 +268,75 @@ export const removeProductFromCart = async (
 export const updateItemMutation = (cartId, lineId, quantity) => {
   return JSON.stringify({
     query: `mutation cartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
-        cartLinesUpdate(cartId: $cartId, lines: $lines) {
-          cart {
-            id
-            updatedAt
-            totalQuantity
-            checkoutUrl
-            cost {
-              totalAmount {
-                amount
-                currencyCode
-              }
-              subtotalAmount {
-                amount
-                currencyCode
-              }
-              totalTaxAmount {
-                amount
-                currencyCode
-              }
-              totalDutyAmount {
-                amount
-                currencyCode
-              }
-            }
-            lines(first: 10) {
-              edges {
-                node {
-                  id
-                  quantity
-                  merchandise {
-                    ... on ProductVariant {
+            cartLinesUpdate(cartId: $cartId, lines: $lines) {
+              cart {
+                id
+                updatedAt
+                totalQuantity
+                checkoutUrl
+                cost {
+                  totalAmount {
+                    amount
+                    currencyCode
+                  }
+                  subtotalAmount {
+                    amount
+                    currencyCode
+                  }
+                  totalTaxAmount {
+                    amount
+                    currencyCode
+                  }
+                  totalDutyAmount {
+                    amount
+                    currencyCode
+                  }
+                }
+                lines(first: 10) {
+                  edges {
+                    node {
                       id
-                      price
-                      product {
-                        id
-                        title
-                        description
-                        compareAtPriceRange {
-                          maxVariantPrice {
-                            amount
-                          }
-                          minVariantPrice {
-                            amount
+                      quantity
+                      merchandise {
+                        ... on ProductVariant {
+                          id
+                          price
+                          product {
+                            id
+                            title
+                            description
+                            compareAtPriceRange {
+                              maxVariantPrice {
+                                amount
+                              }
+                              minVariantPrice {
+                                amount
+                              }
+                            }
+                            images(first: 1) {
+                              nodes {
+                                url
+                              }
+                            }
                           }
                         }
-                        images(first: 1) {
-                          nodes {
-                              url
-                          }
                       }
+                      attributes {
+                        key
+                        value
                       }
                     }
                   }
-                  attributes {
-                    key
-                    value
-                  }
+                  
                 }
+                
               }
-              
+              userErrors {
+                field
+                message
+              }
             }
-            
-          }
-          userErrors {
-            field
-            message
-          }
-        }
-      }`,
+          }`,
     variables: {
       cartId: cartId,
       lines: [
@@ -376,70 +376,70 @@ export const updateItemInCart = async (
 };
 
 const generalQuery = `
-cart {
-            id
-            updatedAt
-            totalQuantity
-            checkoutUrl
-            cost {
-              totalAmount {
-                amount
-                currencyCode
-              }
-              subtotalAmount {
-                amount
-                currencyCode
-              }
-              totalTaxAmount {
-                amount
-                currencyCode
-              }
-              totalDutyAmount {
-                amount
-                currencyCode
-              }
+        cart {
+          id
+          updatedAt
+          totalQuantity
+          checkoutUrl
+          cost {
+            totalAmount {
+              amount
+              currencyCode
             }
-            lines(first: 10) {
-              edges {
-                node {
-                  id
-                  quantity
-                  merchandise {
-                    ... on ProductVariant {
+            subtotalAmount {
+              amount
+              currencyCode
+            }
+            totalTaxAmount {
+              amount
+              currencyCode
+            }
+            totalDutyAmount {
+              amount
+              currencyCode
+            }
+          }
+          lines(first: 10) {
+            edges {
+              node {
+                id
+                quantity
+                merchandise {
+                  ... on ProductVariant {
+                    id
+                    price
+                    product {
                       id
-                      price
-                      product {
-                        id
-                        title
-                        description
-                        compareAtPriceRange {
-                          maxVariantPrice {
-                            amount
-                          }
-                          minVariantPrice {
-                            amount
-                          }
+                      title
+                      description
+                      compareAtPriceRange {
+                        maxVariantPrice {
+                          amount
                         }
-                        images(first: 1) {
-                          nodes {
-                              url
-                          }
+                        minVariantPrice {
+                          amount
+                        }
                       }
+                      images(first: 1) {
+                        nodes {
+                          url
+                        }
                       }
                     }
                   }
-                  attributes {
-                    key
-                    value
-                  }
+                }
+                attributes {
+                  key
+                  value
                 }
               }
-              
             }
             
           }
-          userErrors {
-            field
-            message
-          }
-`;
+          
+        }
+        userErrors {
+          field
+          message
+        }
+        `;
