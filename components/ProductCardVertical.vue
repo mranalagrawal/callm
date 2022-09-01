@@ -1,6 +1,7 @@
 <template>
   <div class="card product-card mx-auto justify-content-between">
     <div>
+      <!-- {{ this.product }} -->
       <div class="ribbon-1">
         <span><i class="fal fa-tag"></i> PROMO</span>
       </div>
@@ -77,7 +78,6 @@ export default {
 
   methods: {
     addToCart: async function (quantity) {
-      console.log(quantity);
       const domain = this.$config.DOMAIN;
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
 
@@ -85,10 +85,10 @@ export default {
         this.$router.push("/login");
         return;
       }
-
+      console.log(this.product, "SSS");
       // se non c'è cart
       if (!this.$store.state.cart.cart) {
-        alert("creo carrello");
+        /* alert("creo carrello"); */
         // crea cart su shopify
         const user = this.$store.state.user.user;
         const cart = await createCart(domain, access_token, user);
@@ -101,14 +101,18 @@ export default {
 
       const cartId = this.$store.state.cart.cart.id;
       console.log(cartId, "cartId");
+      console.log(this.product, "prod");
 
-      const all = await addProductToCart(
-        domain,
-        access_token,
-        this.product,
-        cartId,
-        quantity
-      );
+      const producVariantId = this.product.variants.nodes[0].id;
+
+      const lines = [
+        {
+          quantity: quantity,
+          merchandiseId: producVariantId,
+        },
+      ];
+
+      const all = await addProductToCart(domain, access_token, cartId, lines);
 
       this.$store.commit("cart/setCart", all);
       this.flashMessage.show({

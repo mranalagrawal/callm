@@ -6,7 +6,7 @@ export const getUserOrdersQuery = (token) => `query {
         acceptsMarketing
         email
         phone
-        orders(first: 10) {
+        orders(first: 100) {
             edges {
                 node {
                     id
@@ -35,18 +35,24 @@ export const getUserOrdersQuery = (token) => `query {
                                         id
                                         title
                                         description
-                                        compareAtPriceRange {
-                                            maxVariantPrice {
-                                                amount
-                                            }
-                                            minVariantPrice {
-                                                amount
+                                        handle
+                                        tags
+                                        createdAt
+                                        availableForSale
+                                        variants(first: 10) {
+                                            nodes {
+                                                id
+                                                compareAtPrice
+                                                price
                                             }
                                         }
-                                        images(first: 1) {
+                                        images(first: 10) {
                                             nodes {
                                                 url
                                             }
+                                        }
+                                        metafield1: metafield(namespace: "custom", key: "jsontest") {
+                                            value
                                         }
                                     }
                                 }

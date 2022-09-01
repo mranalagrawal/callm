@@ -84,7 +84,7 @@ export const createCartMutation = (customerAccessToken) => {
   });
 };
 
-export const addItemMutation = (cartId, productId, quantity) => {
+export const addItemMutation = (cartId, lines) => {
   return JSON.stringify({
     query: `mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
       cartLinesAdd(cartId: $cartId, lines: $lines) {
@@ -93,12 +93,7 @@ export const addItemMutation = (cartId, productId, quantity) => {
     }`,
     variables: {
       cartId: cartId,
-      lines: [
-        {
-          quantity: quantity,
-          merchandiseId: productId,
-        },
-      ],
+      lines: lines,
     },
   });
 };
@@ -129,18 +124,8 @@ export const createCart = async (domain, access_token, user) => {
   return cart;
 };
 
-export const addProductToCart = async (
-  domain,
-  access_token,
-  product,
-  cartId,
-  quantity
-) => {
-  const cartMutation = addItemMutation(
-    cartId,
-    product.variants.nodes[0].id,
-    quantity
-  );
+export const addProductToCart = async (domain, access_token, cartId, lines) => {
+  const cartMutation = addItemMutation(cartId, lines);
 
   const GRAPHQL_BODY_CART = {
     async: true,
@@ -154,6 +139,8 @@ export const addProductToCart = async (
   };
 
   const res = await fetch(domain, GRAPHQL_BODY_CART).then((res) => res.json());
+
+  console.log(res);
 
   console.log(res.data.cartLinesAdd.cart, "XXX");
   return res.data.cartLinesAdd.cart;

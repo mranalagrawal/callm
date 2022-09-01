@@ -39,6 +39,7 @@
         ></b-form-input>
       </b-form-group>
 
+      <p v-if="message" class="small text-danger">{{ message }}</p>
       <!-- <b-form-checkbox
         id="remember"
         v-model="form.remember"
@@ -54,7 +55,9 @@
       </button>
 
       <div class="text-center my-3">
-        <a href="" class="text-light-red">Hai dimenticato la password ?</a>
+        <nuxt-link to="/recover" class="btn text-light-red">
+          Hai dimenticato la password ?
+        </nuxt-link>
       </div>
     </form>
   </div>
@@ -73,6 +76,7 @@ export default {
         password: "",
         remember: false,
       },
+      message: "",
     };
   },
   methods: {
@@ -87,6 +91,10 @@ export default {
         access_token
       );
 
+      if (!user) {
+        this.message = "Ops! Sembra che username o password siano errate!";
+        return;
+      }
       this.$store.commit("user/setUser", user);
       this.$router.push("/profile");
     },

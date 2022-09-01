@@ -31,8 +31,6 @@ export default {
     };
   },
   async mounted() {
-    // arriveranno da shopify
-    /* console.log(this.$store.state.user.user.token); */
     const customerAccessToken = this.$store.state.user.user.token;
 
     const domain = this.$config.DOMAIN;

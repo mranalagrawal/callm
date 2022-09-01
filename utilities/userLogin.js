@@ -1,5 +1,5 @@
 import createTokenQuery from "./createUserToken";
-import getUserQuery from "./getUser";
+import { getUserQuery } from "./getUser";
 
 async function userLogin(email, password, domain, access_token) {
   const createToken = createTokenQuery(email, password);
@@ -18,6 +18,10 @@ async function userLogin(email, password, domain, access_token) {
   const response = await fetch(domain, GRAPHQL_BODY_TOKEN);
   const res = await response.json();
 
+  if (res.data.customerAccessTokenCreate.customerAccessToken === null) {
+    return null;
+  }
+  console.log(res);
   const userToken =
     res.data.customerAccessTokenCreate.customerAccessToken.accessToken;
 
