@@ -140,9 +140,6 @@ export const addProductToCart = async (domain, access_token, cartId, lines) => {
 
   const res = await fetch(domain, GRAPHQL_BODY_CART).then((res) => res.json());
 
-  console.log(res);
-
-  console.log(res.data.cartLinesAdd.cart, "XXX");
   return res.data.cartLinesAdd.cart;
 };
 
@@ -245,10 +242,9 @@ export const removeProductFromCart = async (
   };
 
   const res = await fetch(domain, GRAPHQL_BODY_CART).then((res) => res.json());
-  console.log(res);
 
   const cart = res.data.cartLinesRemove.cart;
-  console.log(cart, "RIMOZIONE");
+
   return cart;
 };
 
@@ -358,7 +354,6 @@ export const updateItemInCart = async (
 
   const res = await fetch(domain, GRAPHQL_BODY_CART).then((res) => res.json());
 
-  console.log(res.data.cartLinesUpdate.cart);
   return res.data.cartLinesUpdate.cart;
 };
 

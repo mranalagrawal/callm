@@ -1,40 +1,110 @@
 <template>
-  <b-dropdown variant="white" no-caret no-flip>
-    <template #button-content>
+  <div class="w-100 d-block">
+    <button class="btn px-0" @click="visible = !visible">
+      <i
+        class="fal fa-chevron-down text-light-red mr-3"
+        :class="visible ? 'fa-rotate-180' : ''"
+      ></i>
       <span class="small text-dark-red text-uppercase">{{ label }}</span>
-      <i class="fal fa-chevron-down ml-3 text-light-red"></i>
-    </template>
+    </button>
+    <div v-if="visible" class="content mb-5">
+      <div class="px-1 my-3">
+        <b-form-input v-model="search" placeholder="Cerca"></b-form-input>
+      </div>
 
-    <div class="px-4 my-3">
-      <b-form-input v-model="search" placeholder="Cerca"></b-form-input>
+      <div
+        v-for="item in filteredItems"
+        :key="item.key_as_string"
+        class="text-left"
+        @click="goto(item.key[0])"
+      >
+        <div
+          class="content-item p-2 d-flex justify-content-between align-items-center pointer"
+          :class="item.key[0] == active ? 'active' : ''"
+        >
+          <div>
+            <span>{{ item.key[1] }}</span>
+            <span class="text-muted">({{ item.doc_count }})</span>
+          </div>
+          <i class="fal fa-check float-right" v-if="item.key[0] == active"></i>
+        </div>
+        <p>debug: {{ item.key_as_string }}</p>
+      </div>
     </div>
-
-    <b-dropdown-item
-      v-for="(item, i) in filteredItems"
-      :key="i"
-      class="mb-2"
-      :href="item.label"
-      ><span>{{ item.label }}</span>
-      <span>({{ item.link }})</span></b-dropdown-item
-    >
-  </b-dropdown>
+  </div>
 </template>
+
+<style scoped>
+.content {
+  max-height: 350px;
+  overflow: scroll;
+}
+.content-item:hover {
+  background: #fae4e8;
+  color: var(--dark-red);
+}
+.active {
+  background: #fae4e8;
+  color: var(--dark-red);
+}
+</style>
 
 <script>
 export default {
-  props: ["label", "items"],
+  props: ["label", "items", "keyword"],
   data() {
     return {
       search: "",
+      visible: false,
+      /* active: this.$route.query[this.keyword], */
     };
   },
   computed: {
+    active() {
+      return this.$route.query[this.keyword];
+    },
     filteredItems: function () {
       if (this.search.length > 2) {
-        return this.items.filter((el) => el.label.includes(this.search));
+        return this.items.filter((el) => el.key[1].includes(this.search));
       } else {
         return this.items;
       }
+    },
+  },
+  methods: {
+    goto(id) {
+      const query = Object.assign({}, this.$route.query);
+
+      /* query[this.keyword] = id; */
+
+      if (query[this.keyword] == id) {
+        delete query[this.keyword];
+      } else {
+        query[this.keyword] = id;
+      }
+
+      if (id !== this.active) query["page"] = 1;
+      /* if (query[this.keyword]) {
+        let active = query[this.keyword].split(",");
+        const newId = String(id);
+        if (active.includes(newId)) {
+          active = active.filter((el) => el !== newId);
+        } else {
+          active.push(newId);
+        }
+
+        const setIds = [...new Set(active)];
+        const setIdsAsString = setIds.join(",");
+
+        query[this.keyword] = setIdsAsString;
+      } else {
+        query[this.keyword] = id;
+      } */
+
+      this.$router.push({
+        path: "search",
+        query: query,
+      });
     },
   },
 };

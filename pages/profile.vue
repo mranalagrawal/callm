@@ -28,7 +28,7 @@
                 title="I miei ordini"
                 :active="active == 'orders' ? true : false"
               >
-                <!-- <Orders /> -->
+                <Orders />
               </b-tab>
               <b-tab
                 title="Compra di nuovo"

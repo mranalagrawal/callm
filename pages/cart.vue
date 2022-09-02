@@ -123,7 +123,6 @@ export default {
       const cartId = this.$store.state.cart.cart.id;
       const lineIds = this.cart.lines.edges.map((el) => el.node.id);
 
-      console.log(lineIds);
       // remove from shopify
       const cart = await removeProductFromCart(
         domain,

@@ -21,7 +21,7 @@ async function userLogin(email, password, domain, access_token) {
   if (res.data.customerAccessTokenCreate.customerAccessToken === null) {
     return null;
   }
-  console.log(res);
+
   const userToken =
     res.data.customerAccessTokenCreate.customerAccessToken.accessToken;
 
@@ -42,7 +42,6 @@ async function userLogin(email, password, domain, access_token) {
   const response1 = await fetch(domain, GRAPHQL_BODY_USER);
   const res1 = await response1.json();
 
-  console.log(res1);
   const userData = {
     token: userToken,
     customer: res1.data.customer,

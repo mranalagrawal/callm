@@ -17,6 +17,16 @@ export const getUserOrdersQuery = (token) => `query {
                     processedAt
                     statusUrl
                     financialStatus
+                    shippingAddress {
+                        city
+                        country
+                        address1
+                        address2
+                        zip
+                        name
+                        phone
+                        formattedArea
+                    }
                     lineItems(first: 10) {
                         edges {
                             node {

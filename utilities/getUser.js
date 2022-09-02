@@ -75,7 +75,6 @@ export const customerRecoverMutation = (email) => {
 export async function customerRecover(domain, access_token, email) {
   const recoverMutation = customerRecoverMutation(email);
 
-  console.log(JSON.parse(recoverMutation));
   const GRAPHQL_BODY = {
     async: true,
     crossDomain: true,
@@ -91,7 +90,6 @@ export async function customerRecover(domain, access_token, email) {
 
   const responseJSON = await response.json();
 
-  console.log(responseJSON, "customer Recover");
   return;
 }
 
@@ -128,7 +126,6 @@ export async function customerReset(
 ) {
   const resetMutation = customerResetMutation(id, password, resetToken);
 
-  console.log(JSON.parse(resetMutation));
   const GRAPHQL_BODY = {
     async: true,
     crossDomain: true,
@@ -144,6 +141,5 @@ export async function customerReset(
 
   const responseJSON = await response.json();
 
-  console.log(responseJSON, "response from customerReset");
   return responseJSON;
 }

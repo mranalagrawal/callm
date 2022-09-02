@@ -85,7 +85,7 @@ export default {
         this.$router.push("/login");
         return;
       }
-      console.log(this.product, "SSS");
+
       // se non c'è cart
       if (!this.$store.state.cart.cart) {
         /* alert("creo carrello"); */
@@ -100,8 +100,6 @@ export default {
       // ora cart esiste sicuro
 
       const cartId = this.$store.state.cart.cart.id;
-      console.log(cartId, "cartId");
-      console.log(this.product, "prod");
 
       const producVariantId = this.product.variants.nodes[0].id;
 

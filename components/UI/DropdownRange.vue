@@ -9,8 +9,6 @@
       <div class="d-flex justify-content-between">
         <span>{{ choosenMin }}</span>
         <span>{{ choosenMax }}</span>
-        <!-- <input type="number" v-model="choosenMin" />
-        <input type="number" v-model="choosenMax" /> -->
       </div>
       <div class="py-4">
         <div class="sliders_control my-4">
@@ -79,9 +77,7 @@ export default {
       console.log(e.target);
     },
   },
-  components: {
-    /* MultiRangeSlider, */
-  },
+  components: {},
 };
 </script>
 

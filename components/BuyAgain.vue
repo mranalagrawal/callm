@@ -42,15 +42,10 @@ export default {
 
     let ids = [...new Set(products.map((el) => el.id))];
 
-    console.log(ids, "ids");
-
-    console.log(products, "ba");
-
     let uniqueProducts = ids.map((el) => {
       return products.find((x) => x.id == el);
     });
 
-    console.log(uniqueProducts);
     this.products = uniqueProducts;
   },
 };

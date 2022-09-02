@@ -54,9 +54,8 @@ const userRegister = async (
 
   return customerAccessToken.data.customerAccessTokenCreate.customerAccessToken
     .accessToken;
-  console.log("before");
+
   const user = await userLogin(email, password, domain, access_token);
-  console.log("after");
 };
 
 export default userRegister;

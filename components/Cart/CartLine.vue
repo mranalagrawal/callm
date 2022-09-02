@@ -71,7 +71,6 @@ export default {
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
       const cartId = this.$store.state.cart.cart.id;
       const lineId = this.item.node.id;
-      console.log(lineId, "lineId");
 
       const cart = await updateItemInCart(
         domain,
@@ -91,7 +90,6 @@ export default {
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
       const cartId = this.$store.state.cart.cart.id;
       const lineId = this.item.node.id;
-      console.log(lineId, "lineId");
 
       const cart = await updateItemInCart(
         domain,
@@ -107,7 +105,6 @@ export default {
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
       const cartId = this.$store.state.cart.cart.id;
 
-      console.log(lineId, "lineId");
       // remove from shopify
       const cart = await removeProductFromCart(
         domain,

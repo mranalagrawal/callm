@@ -77,7 +77,6 @@ export default {
     const response = await this.$prismic.api.getSingle("selections");
     const items = response.data.body[0].items;
     this.data = items.concat(items);
-    console.log(items);
   },
 };
 </script>

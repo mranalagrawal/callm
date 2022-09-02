@@ -144,7 +144,6 @@ export default {
       );
       this.$store.commit("user/setUser", user);
       this.$router.push("/profile");
-      console.log(user);
     },
   },
 };

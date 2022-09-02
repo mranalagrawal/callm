@@ -31,16 +31,29 @@
 
     <b-collapse v-model="visible" class="row px-5 mt-5">
       <div class="col-12">
+        {{ order.shippingAddress }}
         <div class="row bg-light pt-3">
           <div class="col-12 col-md-4">
             <p class="font-weight-bold lead">Riepilogo</p>
-            <p class="text-light-green">Stato dell'ordine: XXX</p>
-            <p class="text-light-green">Spedizione: XXX</p>
-            <p class="text-light-green">Telefono: XXX</p>
+            <p class="text-light-green">
+              Stato dell'ordine: {{ order?.fulfillmentStatus }}
+            </p>
+            <p class="text-light-green">Spedizione: ???</p>
+            <p class="text-light-green">Telefono: ???</p>
           </div>
           <div class="col-12 col-md-4">
             <p class="font-weight-bold lead">Indirizzo di spedizione</p>
-            <p>Lorem ipsum dolor sit amet consectetur.</p>
+            <p>{{ order.shippingAddress?.name }}</p>
+            <p>
+              {{ order.shippingAddress?.address1 }}
+              {{ order.shippingAddress?.address2 }}
+            </p>
+            <p>
+              {{ order.shippingAddress?.zip }}
+              {{ order.shippingAddress?.city }}
+              {{ order.shippingAddress?.country }}
+            </p>
+            <p>{{ order.shippingAddress?.phone }}</p>
           </div>
           <div class="col-12 col-md-4">
             <p class="font-weight-bold lead">Note di consegna</p>
@@ -86,17 +99,22 @@
           </div>
           <div class="col-1">x{{ item.node.quantity }}</div>
           <div class="col-2 text-right">
-            <!-- <p class="text-barred mb-0 text-muted">
+            <p class="text-barred mb-0 text-muted">
               {{
                 Number(
-                  item.node.variant.product.compareAtPriceRange.maxVariantPrice
-                    .amount * item.node.quantity
+                  item.node.variant.product.variants.nodes[0].compareAtPrice *
+                    item.node.quantity
                 ).toFixed(2)
               }}
             </p>
             <p class="mb-0">
-              {{ Number(item.node.originalTotalPrice.amount).toFixed(2) }}
-            </p> -->
+              {{
+                Number(
+                  item.node.variant.product.variants.nodes[0].price *
+                    item.node.quantity
+                ).toFixed(2)
+              }}
+            </p>
           </div>
           <div class="col-12">
             <hr class="mb-0 mt-2" />
@@ -186,8 +204,6 @@ export default {
       const domain = this.$config.DOMAIN;
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
 
-      console.log(this.order.lineItems.edges);
-
       const variantIds = this.order.lineItems.edges.map(
         (el) => el.node.variant.id
       );
@@ -196,15 +212,12 @@ export default {
         (el) => el.node.quantity
       );
 
-      console.log(quantities);
       const lines = this.order.lineItems.edges.map((el) => {
         return {
           quantity: el.node.quantity,
           merchandiseId: el.node.variant.id,
         };
       });
-
-      console.log(lines);
 
       if (!this.$store.state.cart.cart) {
         /* alert("creo carrello"); */
