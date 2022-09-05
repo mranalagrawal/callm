@@ -39,7 +39,7 @@
         >
           <button class="btn" v-if="user">
             <i class="fal fa-heart"></i>
-            <p class="mb-0">Preferiti</p>
+            <p class="mb-0">{{ $t("navbar.favorites") }}</p>
           </button>
           <div class="position-relative">
             <div>
@@ -82,7 +82,9 @@
                   class="d-flex align-items-center"
                 >
                   <div class="text-left">
-                    <p class="mb-2" style="font-size: 8px">Totale Carrello</p>
+                    <p class="mb-2" style="font-size: 8px">
+                      {{ $t("navbar.cart.total") }}
+                    </p>
                     <p class="mb-0 h4">
                       {{ Number(cartTotalAmount).toFixed(0) }}.<span
                         class="small"

@@ -16,7 +16,10 @@ const featuredQuery = `query {
     
 }`;
 
-const queryByCollection = (collection) => `query {
+const queryByCollection = (
+  collection,
+  language
+) => `query @inContext(language: ${language}){
     
     collectionByHandle(handle: "${collection}") {
         title

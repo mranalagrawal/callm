@@ -45,7 +45,44 @@ export default {
   },
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ["bootstrap-vue/nuxt", "@nuxtjs/style-resources"],
+  modules: [
+    "bootstrap-vue/nuxt",
+    "@nuxtjs/style-resources",
+    [
+      "@nuxtjs/i18n",
+      {
+        locales: [
+          { code: "en", iso: "en-GB", file: "en.js", dir: "ltr" },
+          { code: "it", iso: "it-IT", file: "it.js", dir: "ltr" },
+        ],
+        defaultLocale: "en",
+        langDir: "locales/",
+
+        vueI18n: {
+          fallbackLocale: "en",
+        },
+      },
+    ],
+  ],
+
+  /* i18n: {
+    locales: ["en", "fr", "es"],
+    defaultLocale: "en",
+    vueI18n: {
+      fallbackLocale: "en",
+      messages: {
+        en: {
+          welcome: "Welcome",
+        },
+        fr: {
+          welcome: "Bienvenue",
+        },
+        es: {
+          welcome: "Bienvenido",
+        },
+      },
+    },
+  }, */
 
   bootstrapVue: {
     bootstrapCSS: false,

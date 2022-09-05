@@ -1,14 +1,35 @@
 <template>
   <div
-    class="container-fluid bg-dark-green py-2 text-white text-center"
+    class="container-fluid bg-dark-green py-2 text-white text-center position-relative"
     style="font-size: 12px"
   >
     <span v-if="data" v-html="data.data.text[0].text"></span>
+
+    <span class="position-absolute" style="right: 10px">
+      <nuxt-link
+        class="h3"
+        v-if="$i18n.locale !== 'en'"
+        :to="switchLocalePath('en')"
+      >
+        🇬🇧
+      </nuxt-link>
+
+      <nuxt-link
+        class="h3"
+        v-if="$i18n.locale !== 'it'"
+        :to="switchLocalePath('it')"
+      >
+        🇮🇹
+      </nuxt-link>
+    </span>
   </div>
 </template>
 
 <script>
 export default {
+  watch: {
+    "$i18n.locale": "$fetch",
+  },
   data: () => ({
     selectedItem: "",
     selectedContent: null,
@@ -16,7 +37,16 @@ export default {
     document: null,
   }),
   async fetch() {
-    this.data = await this.$prismic.api.getSingle("topbar");
+    console.log(this.$i18n.locale, "LAN");
+
+    let lang = "";
+    if (this.$i18n.locale == "en") {
+      lang = "en-gb";
+    } else {
+      lang = "it-it";
+    }
+    this.data = await this.$prismic.api.getSingle("topbar", { lang: lang });
+    /* console.log(this.data); */
   },
 };
 </script>

@@ -5,14 +5,14 @@
         <div class="col-12 mb-4">
           <nuxt-link class="text-dark-red" to="/">Home</nuxt-link>
           <i class="fal fa-chevron-right mx-2"></i>
-          Il mio account
+          {{ $t("profile.myAccount") }}
         </div>
         <div class="col-8">
           <h1 v-if="user">Ciao {{ user.customer.firstName }}</h1>
         </div>
         <div class="col-4 text-right">
           <button class="btn text-uppercase text-light-red" @click="logout">
-            ESCI
+            {{ $t("profile.logout") }}
             <i class="fal fa-long-arrow-right"></i>
           </button>
         </div>
@@ -25,35 +25,35 @@
           <div>
             <b-tabs content-class="mt-3" justified>
               <b-tab
-                title="I miei ordini"
+                :title="$t('profile.myOrders')"
                 :active="active == 'orders' ? true : false"
               >
                 <Orders />
               </b-tab>
               <b-tab
-                title="Compra di nuovo"
+                :title="$t('profile.buyAgain')"
                 :active="active == 'buyagain' ? true : false"
               >
                 <BuyAgain />
               </b-tab>
               <b-tab
-                title="I miei preferiti"
+                :title="$t('profile.favorites')"
                 :active="active == 'wishlist' ? true : false"
               ></b-tab>
               <b-tab
-                title="Indirizzi di spedizione"
+                :title="$t('profile.addresses')"
                 :active="active == 'addresses' ? true : false"
               ></b-tab>
-              <b-tab
+              <!-- <b-tab
                 title="Dati di fatturazione"
                 :active="active == 'billing' ? true : false"
-              ></b-tab>
+              ></b-tab> -->
               <b-tab
-                title="Accessi consensi"
+                :title="$t('profile.consents')"
                 :active="active == 'consents' ? true : false"
               ></b-tab>
               <b-tab
-                title="Carte salvate"
+                :title="$t('profile.cards')"
                 :active="active == 'cards' ? true : false"
               ></b-tab>
             </b-tabs>

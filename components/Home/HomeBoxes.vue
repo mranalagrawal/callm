@@ -1,13 +1,13 @@
 <template>
   <div class="container-fluid px-md-5 mt-5">
-    <div class="row">
+    <div class="row" v-if="data">
       <div
-        v-for="(content, ind) in contents"
+        v-for="(box, ind) in data.data.box"
         :key="ind"
         class="col-12 col-md-4"
       >
         <img
-          :src="content.data.icon.url"
+          :src="box.image.url"
           class="d-block mx-auto rounded-circle"
           alt=""
           style="position: relative; bottom: -24px; z-index: 1"
@@ -16,34 +16,45 @@
         />
         <div class="card">
           <div class="card-body text-center">
-            <h5 class="card-title mt-4">{{ content.data.title[0].text }}</h5>
+            <h5 class="card-title mt-4">{{ box.text }}</h5>
 
             <p class="card-text">
-              {{ content.data.description[0].text }}
+              {{ box.description }}
             </p>
           </div>
         </div>
       </div>
-      <!-- {{ contents }} -->
     </div>
   </div>
 </template>
 
 <script>
 export default {
+  watch: {
+    "$i18n.locale": "$fetch",
+  },
   data() {
     return {
-      contents: null,
+      data: null,
       slide: 0,
       sliding: null,
     };
   },
   async fetch() {
-    this.contents = (
+    let lang = "";
+    if (this.$i18n.locale == "en") {
+      lang = "en-gb";
+    } else {
+      lang = "it-it";
+    }
+
+    this.data = await this.$prismic.api.getSingle("home-boxes", { lang: lang });
+    console.log(this.data);
+    /* this.contents = (
       await this.$prismic.api.query(
         this.$prismic.predicates.at("document.type", "box")
       )
-    ).results;
+    ).results; */
   },
   methods: {
     onSlideStart(slide) {

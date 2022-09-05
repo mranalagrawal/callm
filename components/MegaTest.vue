@@ -17,7 +17,7 @@
       </div>
       <div class="col text-center" @mouseenter="onTab(promotions)">
         <span class="text-light-red"
-          ><i class="fas fa-tags me-3"></i> Promozioni</span
+          ><i class="fas fa-tags me-3"></i> {{ $t("navbar.promotions") }}</span
         >
       </div>
     </div>
@@ -136,9 +136,7 @@ export default {
     marketing: null,
   }),
   watch: {
-    $route() {
-      this.selectedItem = "";
-    },
+    "$i18n.locale": "$fetch",
   },
   methods: {
     onTab(item) {
@@ -193,14 +191,21 @@ export default {
       return data;
     },
     async getPromo() {
-      let res = await this.$prismic.api.getSingle("promo-menu");
+      let lang = "";
+      if (this.$i18n.locale == "en") {
+        lang = "en-gb";
+      } else {
+        lang = "it-it";
+      }
+
+      let res = await this.$prismic.api.getSingle("promo-menu", { lang: lang });
       let promo = await res.data.body.map((el) => {
         return {
           id: el.id,
           items: el.items,
         };
       });
-
+      console.log(promo, "promoMENU");
       return promo;
     },
     async getMarketing() {
@@ -212,6 +217,7 @@ export default {
         };
       });
 
+      console.log(promo);
       return promo;
     },
   },
@@ -219,15 +225,7 @@ export default {
   async fetch() {
     this.data = await this.getMenu();
     this.promotions = await this.getPromo();
-    this.marketing = await this.getMarketing();
+    /* this.marketing = await this.getMarketing(); */
   },
-
-  /* async fetch() {
-    
-      await this.$prismic.api.query(
-        this.$prismic.predicates.at("document.type", "partner")
-      )
-    ).results;
-  }, */
 };
 </script>

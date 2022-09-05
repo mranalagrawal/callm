@@ -8,53 +8,57 @@
     <p class="mb-3 menu-link">Accessi consensi</p>
     <p class="mb-3 menu-link">Carte salvate</p> -->
     <p>
-      <nuxt-link to="/profile#orders" class="text-decoration-none text-dark-red"
-        >I miei ordini</nuxt-link
+      <nuxt-link
+        to="/profile#orders"
+        class="text-decoration-none text-dark-red"
+        >{{ $t("navbar.user.myOrders") }}</nuxt-link
       >
     </p>
     <p>
       <nuxt-link
         to="/profile#buyagain"
         class="text-decoration-none text-dark-red"
-        >Compra di nuovo</nuxt-link
+        >{{ $t("navbar.user.buyAgain") }}</nuxt-link
       >
     </p>
     <p>
       <nuxt-link
         to="/profile#wishlist"
         class="text-decoration-none text-dark-red"
-        >I miei preferiti</nuxt-link
+        >{{ $t("navbar.user.favorites") }}</nuxt-link
       >
     </p>
     <p>
       <nuxt-link
         to="/profile#addresses"
         class="text-decoration-none text-dark-red"
-        >Indirizzi di spedizione</nuxt-link
+        >{{ $t("navbar.user.addresses") }}</nuxt-link
       >
     </p>
-    <p>
+    <!-- <p>
       <nuxt-link
         to="/profile#billing"
         class="text-decoration-none text-dark-red"
         >Dati di fatturazione</nuxt-link
       >
-    </p>
+    </p> -->
     <p>
       <nuxt-link
         to="/profile#consents"
         class="text-decoration-none text-dark-red"
-        >Accessi consensi</nuxt-link
+        >{{ $t("navbar.user.consents") }}</nuxt-link
       >
     </p>
     <p>
-      <nuxt-link to="/profile#cards" class="text-decoration-none text-dark-red"
-        >Carte salvate</nuxt-link
+      <nuxt-link
+        to="/profile#cards"
+        class="text-decoration-none text-dark-red"
+        >{{ $t("navbar.user.cards") }}</nuxt-link
       >
     </p>
     <div class="mt-5">
       <button @click="logout" class="btn btn-outline-light-red w-100">
-        Esci
+        {{ $t("navbar.user.logout") }}
       </button>
     </div>
   </div>

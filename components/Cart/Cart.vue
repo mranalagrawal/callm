@@ -6,23 +6,23 @@
       </div>
       <div class="row mt-4">
         <div class="col-6">
-          <nuxt-link class="btn btn-outline-dark-red w-100" to="/cart"
-            >Dettaglio carrello</nuxt-link
-          >
+          <nuxt-link class="btn btn-outline-dark-red w-100" to="/cart">{{
+            $t("navbar.cart.detail")
+          }}</nuxt-link>
         </div>
         <div class="col-6">
-          <a class="btn btn-dark-red w-100" :href="cart.checkoutUrl"
-            >Vai alla cassa</a
-          >
+          <a class="btn btn-dark-red w-100" :href="cart.checkoutUrl">{{
+            $t("navbar.cart.checkout")
+          }}</a>
         </div>
       </div>
     </div>
     <div v-else class="text-center text-dark">
-      <strong>Il tuo carrello è vuoto!</strong>
-      <p class="my-4">Non sai dove cominciare?</p>
-      <nuxt-link to="/" class="btn btn-light-red text-uppercase w-100"
-        >Scopri le nostre promo</nuxt-link
-      >
+      <strong>{{ $t("navbar.cart.empty") }}</strong>
+      <p class="my-4">{{ $t("navbar.cart.startFromMessage") }}</p>
+      <nuxt-link to="/" class="btn btn-light-red text-uppercase w-100">{{
+        $t("navbar.cart.cta")
+      }}</nuxt-link>
     </div>
   </div>
 </template>

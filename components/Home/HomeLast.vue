@@ -32,6 +32,9 @@ import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
 import ProductCardVertical from "../ProductCardVertical.vue";
 
 export default {
+  watch: {
+    "$i18n.locale": "$fetch",
+  },
   components: { ProductCardVertical, VueSlickCarousel },
   data: () => ({
     data: null,
@@ -74,7 +77,10 @@ export default {
   async fetch() {
     const GRAPHQL_URL = this.$config.DOMAIN;
 
-    const productQuery = queryByCollection("last");
+    const productQuery = queryByCollection(
+      "last",
+      this.$i18n.locale.toUpperCase()
+    );
 
     const GRAPHQL_BODY = () => {
       return {
