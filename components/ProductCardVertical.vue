@@ -35,30 +35,41 @@
         <p class="mb-0 text-muted" style="text-decoration: line-through">
           € {{ product.variants.nodes[0].compareAtPrice }}
         </p>
-        <div class="d-flex justify-content-between">
+        <div
+          class="d-flex justify-content-between align-items-center position-relative"
+        >
           <div>
             <p class="h2">€ {{ product.variants.nodes[0].price }}</p>
           </div>
           <!-- <nuxt-link :to="`/product/${product.handle}`">detail</nuxt-link> -->
-          <div class="dropdown-cart" v-if="product.availableForSale">
-            <button class="btn btn-cart">
-              <i class="fal fa-shopping-cart text-white"></i>
-            </button>
-            <div class="dropdown-cart-content">
-              <button @click="addToCart(5)" class="btn w-100 text-white">
-                5
-              </button>
-              <button @click="addToCart(2)" class="btn w-100 text-white">
-                2
-              </button>
-              <button @click="addToCart(1)" class="btn w-100 text-white">
-                1
-              </button>
+
+          <div
+            v-if="cartQuantity > 0"
+            style="
+              width: 42px;
+              border-radius: 10px;
+              background: darkred;
+              position: absolute;
+              bottom: 2px;
+              right: 2px;
+              display: flex;
+              flex-direction: column;
+              justify-content: space-between;
+            "
+          >
+            <div class="btn text-white">
+              <i class="fas fa-minus" @click.stop="decreaseQuantity()"></i>
+            </div>
+            <p class="mb-0 text-white text-center">{{ cartQuantity }}</p>
+            <div class="btn text-white">
+              <i class="fas fa-plus" @click.stop="addToCart()"></i>
             </div>
           </div>
-          <button v-else class="btn btn-cart" disabled>
-            <i class="fal fa-shopping-cart text-white"></i>
-          </button>
+          <div v-else>
+            <button class="btn btn-cart" @click="addToCart()">
+              <i class="fal fa-shopping-cart text-white"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -70,14 +81,38 @@ import {
   addItemMutation,
   createCart,
   addProductToCart,
+  updateItemInCart,
 } from "../utilities/cart";
 
 export default {
   props: ["product"],
   name: "ProductCardVertical",
+  data() {
+    return { quantity: 0 };
+  },
+  computed: {
+    cartQuantity() {
+      if (!this.$store.state.cart.cart) {
+        return 0;
+      }
+      let cartList = this.$store.state.cart.cart.lines.edges.map((el) => ({
+        merchandise: el.node.merchandise.id,
+        quantity: el.node.quantity,
+      }));
 
+      let isInCart = cartList.find(
+        (el) => el.merchandise == this.product.variants.nodes[0].id
+      );
+
+      if (isInCart) {
+        return isInCart.quantity;
+      } else {
+        return 0;
+      }
+    },
+  },
   methods: {
-    addToCart: async function (quantity) {
+    addToCart: async function () {
       const domain = this.$config.DOMAIN;
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
 
@@ -105,7 +140,7 @@ export default {
 
       const lines = [
         {
-          quantity: quantity,
+          quantity: 1,
           merchandiseId: producVariantId,
         },
       ];
@@ -113,11 +148,39 @@ export default {
       const all = await addProductToCart(domain, access_token, cartId, lines);
 
       this.$store.commit("cart/setCart", all);
+
       this.flashMessage.show({
         status: "",
         message: "Prodotto aggiunto!",
         time: 1000,
         blockClass: "add-product-notification",
+      });
+    },
+    async decreaseQuantity() {
+      const domain = this.$config.DOMAIN;
+      const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
+      const cartId = this.$store.state.cart.cart.id;
+
+      const lineId = this.$store.state.cart.cart.lines.edges
+        .map((el) => el.node)
+        .find(
+          (el) => el.merchandise.id == this.product.variants.nodes[0].id
+        ).id;
+
+      const cart = await updateItemInCart(
+        domain,
+        access_token,
+        lineId,
+        cartId,
+        this.cartQuantity - 1
+      );
+      this.$store.commit("cart/setCart", cart);
+
+      this.flashMessage.show({
+        status: "",
+        message: "Prodotto rimosso!",
+        time: 1000,
+        blockClass: "remove-product-notification",
       });
     },
   },
@@ -141,6 +204,7 @@ export default {
   border-radius: 12px;
   color: white;
   background: #da4865;
+  position: relative;
 }
 
 .dropdown-cart {
@@ -161,11 +225,11 @@ export default {
   transition-duration: 0.2s;
 }
 
-.dropdown-cart:hover .dropdown-cart-content {
+/* .dropdown-cart:hover .dropdown-cart-content {
   transition-duration: 0.2s;
   height: 120px;
   overflow: auto;
-}
+} */
 
 .img-wrapper {
   height: 320px;

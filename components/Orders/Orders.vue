@@ -42,7 +42,7 @@ export default {
       customerAccessToken
     );
 
-    console.log(orders);
+    /* console.log(orders); */
     this.orders = orders.edges;
   },
 };

@@ -308,7 +308,7 @@ export default {
     );
 
     const search = await searchResult.json();
-    console.log(search);
+    /* console.log(search); */
 
     const total = search.hits.total.value;
     this.total = total;

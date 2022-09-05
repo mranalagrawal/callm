@@ -74,7 +74,7 @@ export default {
   },
   methods: {
     test() {
-      console.log(e.target);
+      /* console.log(e.target); */
     },
   },
   components: {},

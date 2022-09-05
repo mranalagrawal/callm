@@ -130,7 +130,7 @@ export default {
         this.token
       );
 
-      console.log(response, "response after customerReset");
+      /* console.log(response, "response after customerReset"); */
       this.$router.push("/login");
     },
   },

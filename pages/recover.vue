@@ -62,7 +62,7 @@ export default {
       const domain = this.$config.DOMAIN;
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
 
-      console.log(this.email);
+      /* console.log(this.email); */
       const res = await customerRecover(domain, access_token, this.email);
 
       alert("Ti abbiamo inviato una email!");

@@ -87,7 +87,7 @@ export default {
   },
   created() {
     this.active = this.$route.hash.split("#")[1];
-    console.log(this.link);
+    /* console.log(this.link); */
   },
 };
 </script>
