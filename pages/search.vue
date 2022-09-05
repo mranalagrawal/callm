@@ -5,12 +5,27 @@
         <!-- <h1>{{ results.length }}</h1> -->
       </div>
       <div class="col-12 col-md-9">
-        <p class="h3">
-          {{ view.region }} {{ view.pairing }} {{ view.brand }}
-          {{ view.aging }} {{ view.philosophy }} {{ view.size }}
-          {{ view.dosagecontent }} {{ view.category }} {{ view.winelists }}
-          {{ view.award }}
-        </p>
+        <div class="h3">
+          <!-- {{ view.region?.name }} {{ view.pairing?.name }}
+          {{ view.brand?.name }} {{ view.aging?.name }}
+          {{ view.philosophy?.name }} {{ view.size?.name }}
+          {{ view.dosagecontent?.name }} {{ view.category?.name }}
+          {{ view.winelists?.name }}
+          {{ view.award?.name }} -->
+          <!-- {{ view }} -->
+
+          <!-- {{ Object.entries(view).filter((el) => el[1] !== null) }} -->
+          <button
+            class="btn btn-dark-red mx-2"
+            v-for="(item, ind) in Object.entries(view).filter(
+              (el) => el[1] !== null
+            )"
+            :key="ind"
+            @click="removeFromQuery(item[1])"
+          >
+            {{ item[1].name }}
+          </button>
+        </div>
         <p class="h3">
           {{ total }}
         </p>
@@ -213,6 +228,17 @@ export default {
   computed: {},
 
   methods: {
+    removeFromQuery(obj) {
+      console.log(obj);
+      const query = Object.assign({}, this.$route.query);
+
+      delete query[obj.field];
+
+      this.$router.push({
+        path: "search",
+        query: query,
+      });
+    },
     forward() {
       const query = Object.assign({}, this.$route.query);
 
@@ -367,35 +393,80 @@ export default {
     const awardId = this.$route.query.awards;
 
     this.view.brand = brandId
-      ? brands.find((x) => x.key[0] == brandId).key[1]
+      ? {
+          key: brandId,
+          name: brands.find((x) => x.key[0] == brandId).key[1],
+          field: "brands",
+        }
       : null;
     this.view.region = regionId
-      ? regions.find((x) => x.key[0] == regionId).key[1]
+      ? {
+          key: regionId,
+          name: regions.find((x) => x.key[0] == regionId).key[1],
+          field: "regions",
+        }
       : null;
 
     this.view.pairing = pairingId
-      ? pairings.find((x) => x.key[0] == pairingId).key[1]
+      ? {
+          key: pairingId,
+          name: pairings.find((x) => x.key[0] == pairingId).key[1],
+          field: "pairings",
+        }
       : null;
     this.view.aging = agingId
-      ? agings.find((x) => x.key[0] == agingId).key[1]
+      ? {
+          key: agingId,
+          name: agings.find((x) => x.key[0] == agingId).key[1],
+          field: "agings",
+        }
       : null;
+
     this.view.philosophy = philosophyId
-      ? philosophies.find((x) => x.key[0] == philosophyId).key[1]
+      ? {
+          key: philosophyId,
+          name: philosophies.find((x) => x.key[0] == philosophyId).key[1],
+          field: "philosophies",
+        }
       : null;
     this.view.size = sizeId
-      ? sizes.find((x) => x.key[0] == sizeId).key[1]
+      ? {
+          key: sizeId,
+          name: sizes.find((x) => x.key[0] == sizeId).key[1],
+          field: "sizes",
+        }
       : null;
+
     this.view.dosagecontent = dosagecontentId
-      ? dosagecontents.find((x) => x.key[0] == dosagecontentId).key[1]
+      ? {
+          key: dosagecontentId,
+          name: dosagecontents.find((x) => x.key[0] == dosagecontentId).key[1],
+          field: "dosagecontents",
+        }
       : null;
+
     this.view.category = categoryId
-      ? categories.find((x) => x.key[0] == categoryId).key[1]
+      ? {
+          key: categoryId,
+          name: categories.find((x) => x.key[0] == categoryId).key[1],
+          field: "categories",
+        }
       : null;
+
     this.view.winelists = winelistsId
-      ? winelists.find((x) => x.key[0] == winelistsId).key[1]
+      ? {
+          key: winelistsId,
+          name: winelists.find((x) => x.key[0] == winelistsId).key[1],
+          field: "winelists",
+        }
       : null;
+
     this.view.award = awardId
-      ? awards.find((x) => x.key[0] == awardId).key[1]
+      ? {
+          key: awardId,
+          name: awards.find((x) => x.key[0] == awardId).key[1],
+          field: "awards",
+        }
       : null;
 
     /* 
