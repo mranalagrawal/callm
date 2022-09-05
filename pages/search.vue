@@ -5,7 +5,12 @@
         <!-- <h1>{{ results.length }}</h1> -->
       </div>
       <div class="col-12 col-md-9">
-        <p class="h3">{{ view.region }} {{ view.pairing }}</p>
+        <p class="h3">
+          {{ view.region }} {{ view.pairing }} {{ view.brand }}
+          {{ view.aging }} {{ view.philosophy }} {{ view.size }}
+          {{ view.dosagecontent }} {{ view.category }} {{ view.winelists }}
+          {{ view.award }}
+        </p>
         <p class="h3">
           {{ total }}
         </p>
@@ -18,93 +23,6 @@
         <hr class="mb-2" />
       </div>
       <div class="col-12">
-        <!-- <dropdown label="Brands" :items="brands" />
-        <dropdown
-          label="Selezioni"
-          :items="[
-            {
-              label: 'Preferiti di Callmewine',
-              link: 'preferiti',
-            },
-            {
-              label: 'Artigianali',
-              link: 'artigianali',
-            },
-            {
-              label: 'Biologici e Biodinamici',
-              link: 'bio',
-            },
-            {
-              label: 'Perfetti da regalare',
-              link: 'regali',
-            },
-            {
-              label: 'Vini rari',
-              link: 'rari',
-            },
-          ]"
-        />
-
-        <dropdown
-          label="Carta vini e altri prodotti"
-          :items="[
-            {
-              label: 'Aglianico',
-              link: 'aglianico',
-            },
-            {
-              label: 'Aglianico del Vulture',
-              link: 'vulture',
-            },
-            {
-              label: 'Aidani',
-              link: 'aidani',
-            },
-            {
-              label: 'Airén',
-              link: 'airen',
-            },
-            {
-              label: 'Albana Secco',
-              link: 'albana-secco',
-            },
-            {
-              label: 'Albarino',
-              link: 'albarino',
-            },
-          ]"
-        />
-
-        <dropdown
-          label="Filosofia produttiva"
-          :items="[
-            {
-              label: 'Artigianali',
-              link: 'artigianali',
-            },
-            {
-              label: 'Biologici',
-              link: 'biologici',
-            },
-            {
-              label: 'Biodinamici',
-              link: 'biodinamici',
-            },
-            {
-              label: 'Lieviti indigeni',
-              link: 'lieviti-indigeni',
-            },
-            {
-              label: 'Vignaioli indipendenti',
-              link: 'vignaioli-indipendenti',
-            },
-            {
-              label: 'Triple A',
-              link: 'triple-a',
-            },
-          ]"
-        /> -->
-
         <dropdown-range label="Prezzo" min="0" max="999" />
 
         <div class="float-right">
@@ -141,9 +59,25 @@
 
     <div class="row mt-5" v-if="results">
       <div class="col-12 col-md-3">
+        <dropdown label="categories" :items="categories" keyword="categories" />
+        <dropdown label="winelists" :items="winelists" keyword="winelists" />
+        <dropdown label="pairings" :items="pairings" keyword="pairings" />
+        <dropdown
+          label="dosagecontents"
+          :items="dosagecontents"
+          keyword="dosagecontent"
+        />
         <dropdown label="Provenienza" :items="regions" keyword="regions" />
-        <dropdown label="Abbinamenti" :items="pairings" keyword="pairings" />
-        <dropdown label="Premi" :items="awards" keyword="awards" />
+        <dropdown label="Brands" :items="brands" keyword="brands" />
+        <dropdown label="sizes" :items="sizes" keyword="sizes" />
+        <dropdown label="vintages" :items="vintages" keyword="vintages" />
+        <dropdown label="awards" :items="awards" keyword="awards" />
+        <dropdown label="agings" :items="agings" keyword="agings" />
+        <dropdown
+          label="philosophies"
+          :items="philosophies"
+          keyword="philosophies"
+        />
       </div>
       <div class="col-12 col-md-9">
         <div class="row">
@@ -252,13 +186,27 @@ export default {
       brands: null,
       regions: null,
       pairings: null,
+      agings: null,
+      philosophies: null,
+      sizes: null,
+      dosagecontents: null,
+      categories: null,
+      winelists: null,
       awards: null,
       results: null,
       total: null,
       currentPage: 1,
       view: {
+        brand: null,
         region: null,
         pairing: null,
+        aging: null,
+        philosophy: null,
+        size: null,
+        dosagecontent: null,
+        category: null,
+        winelists: null,
+        award: null,
       },
     };
   },
@@ -292,7 +240,7 @@ export default {
   },
   /* computed: {
     currentPage(){
-      return 
+      return
     }
   }, */
   async fetch() {
@@ -310,24 +258,117 @@ export default {
     const search = await searchResult.json();
     /* console.log(search); */
 
+    this.results = search.hits.hits;
+
     const total = search.hits.total.value;
     this.total = total;
 
     const regions = search.aggregations["agg-regions"]["agg-regions"].buckets;
+    console.log(regions);
     this.regions = regions;
 
-    const pairings =
-      search.aggregations["agg-pairings"]["agg-pairings"].buckets;
-    this.pairings = pairings;
+    const brands = search.aggregations["agg-brands"]["agg-brands"].buckets;
+    this.brands = brands;
 
-    const awards = search.aggregations["agg-awards"]["agg-awards"].buckets;
+    const vintages =
+      search.aggregations["agg-vintages"]["agg-vintages"].buckets;
+    this.vintages = vintages;
+
+    const sizes = search.aggregations["agg-sizes"]["agg-sizes"].buckets;
+    this.sizes = sizes;
+
+    const awards = search.aggregations["agg-awards"]["inner"]["result"][
+      "buckets"
+    ].map((el) => {
+      return {
+        key: [el.key, el.name.buckets[0].key],
+        key_as_string: `${el.key}|${el.name.buckets[0].key}`,
+        doc_count: el.doc_count,
+      };
+    });
     this.awards = awards;
 
-    this.results = search.hits.hits;
+    const agings = search.aggregations["agg-agings"]["inner"]["result"][
+      "buckets"
+    ].map((el) => {
+      return {
+        key: [el.key, el.name.buckets[0].key],
+        key_as_string: `${el.key}|${el.name.buckets[0].key}`,
+        doc_count: el.doc_count,
+      };
+    });
+    this.agings = agings;
 
+    const categories = search.aggregations["agg-categories"]["inner"]["result"][
+      "buckets"
+    ].map((el) => {
+      return {
+        key: [el.key, el.name.buckets[0].key],
+        key_as_string: `${el.key}|${el.name.buckets[0].key}`,
+        doc_count: el.doc_count,
+      };
+    });
+    this.categories = categories;
+
+    const philosophies = search.aggregations["agg-philosophies"]["inner"][
+      "result"
+    ]["buckets"].map((el) => {
+      return {
+        key: [el.key, el.name.buckets[0].key],
+        key_as_string: `${el.key}|${el.name.buckets[0].key}`,
+        doc_count: el.doc_count,
+      };
+    });
+    this.philosophies = philosophies;
+
+    const dosagecontents = search.aggregations["agg-dosagecontent"][
+      "agg-dosagecontent"
+    ]["buckets"].map((el) => {
+      return {
+        key: [el.key, el.key],
+        key_as_string: `${el.key}|${el.key}`,
+        doc_count: el.doc_count,
+      };
+    });
+    this.dosagecontents = dosagecontents;
+
+    console.log(dosagecontents, "dosagecontents");
+    const winelists = search.aggregations["agg-winelists"]["inner"]["result"][
+      "buckets"
+    ].map((el) => {
+      return {
+        key: [el.key, el.name.buckets[0].key],
+        key_as_string: `${el.key}|${el.name.buckets[0].key}`,
+        doc_count: el.doc_count,
+      };
+    });
+    this.winelists = winelists;
+
+    const pairings = search.aggregations["agg-pairings"]["inner"]["result"][
+      "buckets"
+    ].map((el) => {
+      return {
+        key: [el.key, el.name.buckets[0].key],
+        key_as_string: `${el.key}|${el.name.buckets[0].key}`,
+        doc_count: el.doc_count,
+      };
+    });
+    this.pairings = pairings;
+
+    const brandId = this.$route.query.brands;
     const regionId = this.$route.query.regions;
     const pairingId = this.$route.query.pairings;
+    const agingId = this.$route.query.agings;
+    const philosophyId = this.$route.query.philosophies;
+    const sizeId = this.$route.query.sizes;
+    const dosagecontentId = this.$route.query.dosagecontent;
+    const categoryId = this.$route.query.categories;
+    const winelistsId = this.$route.query.winelists;
+    const awardId = this.$route.query.awards;
 
+    this.view.brand = brandId
+      ? brands.find((x) => x.key[0] == brandId).key[1]
+      : null;
     this.view.region = regionId
       ? regions.find((x) => x.key[0] == regionId).key[1]
       : null;
@@ -335,9 +376,38 @@ export default {
     this.view.pairing = pairingId
       ? pairings.find((x) => x.key[0] == pairingId).key[1]
       : null;
-    /* if (regionId)
-      this.view.region = regions.find((x) => x.key[0] == regionId).key[1]; */
-    /* console.log(, "region"); */
+    this.view.aging = agingId
+      ? agings.find((x) => x.key[0] == agingId).key[1]
+      : null;
+    this.view.philosophy = philosophyId
+      ? philosophies.find((x) => x.key[0] == philosophyId).key[1]
+      : null;
+    this.view.size = sizeId
+      ? sizes.find((x) => x.key[0] == sizeId).key[1]
+      : null;
+    this.view.dosagecontent = dosagecontentId
+      ? dosagecontents.find((x) => x.key[0] == dosagecontentId).key[1]
+      : null;
+    this.view.category = categoryId
+      ? categories.find((x) => x.key[0] == categoryId).key[1]
+      : null;
+    this.view.winelists = winelistsId
+      ? winelists.find((x) => x.key[0] == winelistsId).key[1]
+      : null;
+    this.view.award = awardId
+      ? awards.find((x) => x.key[0] == awardId).key[1]
+      : null;
+
+    /* 
+        
+        pairing: null,
+        aging: null,
+        philosophy: null,
+        size: null,
+        dosagecontent: null,
+        category: null,
+        winelists: null,
+        award: null, */
 
     this.loading = false;
   },

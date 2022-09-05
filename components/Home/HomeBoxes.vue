@@ -49,7 +49,7 @@ export default {
     }
 
     this.data = await this.$prismic.api.getSingle("home-boxes", { lang: lang });
-    console.log(this.data);
+
     /* this.contents = (
       await this.$prismic.api.query(
         this.$prismic.predicates.at("document.type", "box")

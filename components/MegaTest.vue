@@ -45,6 +45,12 @@
           </div>
           <div v-else>
             <div v-if="marketing">
+              <!-- {{ item.url.split(".com/")[1] }} -->
+              <!-- {{
+                marketing.filter(
+                  (el) => el.section == item.url.split(".com/")[1]
+                )
+              }} -->
               <div
                 v-for="(mkt, i) in marketing.filter(
                   (el) => el.section == item.url.split('.com/')[1]
@@ -149,24 +155,28 @@ export default {
     async getMenu() {
       const GRAPHQL_URL = this.$config.DOMAIN;
 
-      const productQuery = `query {
-      menu(handle:"main-menu"){
-        items{
-          id
-          title
-          url
-          items {
-            title
-            url
+      console.log(this.$i18n.locale.toUpperCase(), "GETMENU");
+      let language = this.$i18n.locale.toUpperCase();
+      const menuQuery = `query @inContext(language: ${language}){
+        
+          menu(handle: "main-menu"){
             items{
+              id
               title
               url
+              items {
+                title
+                url
+                items{
+                  title
+                  url
+                }
+              }
             }
           }
-        }
-      }
-    }`;
+        }`;
 
+      console.log(menuQuery);
       const GRAPHQL_BODY = () => {
         return {
           async: true,
@@ -177,7 +187,7 @@ export default {
               this.$config.STOREFRONT_ACCESS_TOKEN,
             "Content-Type": "application/graphql",
           },
-          body: productQuery,
+          body: menuQuery,
         };
       };
       let data = await fetch(GRAPHQL_URL, GRAPHQL_BODY())
@@ -188,6 +198,7 @@ export default {
           return menu;
         });
 
+      console.log(data, "GET MENU");
       return data;
     },
     async getPromo() {
@@ -205,11 +216,20 @@ export default {
           items: el.items,
         };
       });
-      console.log(promo, "promoMENU");
+
       return promo;
     },
     async getMarketing() {
-      let res = await this.$prismic.api.getSingle("marketing");
+      let lang = "";
+      if (this.$i18n.locale == "en") {
+        lang = "en-gb";
+      } else {
+        lang = "it-it";
+      }
+
+      let res = await this.$prismic.api.getSingle("marketing", {
+        lang: lang,
+      });
       let promo = await res.data.body.map((el) => {
         return {
           section: el.primary.section,
@@ -225,7 +245,7 @@ export default {
   async fetch() {
     this.data = await this.getMenu();
     this.promotions = await this.getPromo();
-    /* this.marketing = await this.getMarketing(); */
+    this.marketing = await this.getMarketing();
   },
 };
 </script>
