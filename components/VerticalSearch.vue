@@ -1,74 +1,102 @@
 <template>
-  <div class="card product-card mx-auto justify-content-between">
-    <div>
-      <!-- {{ this.product }} -->
-      <div class="ribbon-1">
+  <div
+    class="card mx-auto"
+    :class="horizontal ? 'product-card-horizontal' : 'product-card-vertical'"
+  >
+    <div class="row h-100">
+      <div v-if="product._source.inpromotion" class="ribbon-1">
         <span><i class="fal fa-tag"></i> PROMO</span>
       </div>
-
-      <nuxt-link
-        :to="`/product/${product.handle}`"
-        class="row mx-0 mt-2 img-wrapper text-decoration-none text-dark"
-        :style="{ backgroundImage: 'url(' + product.images.nodes[0].url + ')' }"
-      >
+      <div class="position-relative" :class="horizontal ? 'col-4' : 'col-12'">
         <div
-          class="col-2 pl-2 h-100 d-flex justify-content-end align-items-center flex-column"
+          class="position-absolute"
+          style="left: 20px; top: 10px; z-index: 10"
         >
-          <div class="">
-            <i class="fal fa-user"></i>
-          </div>
-
-          <div class="">
-            <i class="fal fa-users"></i>
-          </div>
+          <img
+            title="Favoriti"
+            v-if="product._source.favourite"
+            :src="require(`@/assets/images/selections/favourite.svg`)"
+            class="selection-svg d-block"
+          />
+          <img
+            title="Every day"
+            v-if="product._source.foreveryday"
+            :src="require(`@/assets/images/selections/foreveryday.svg`)"
+            class="selection-svg d-block"
+          />
+          <img
+            title="Novità"
+            v-if="product._source.isnew"
+            :src="require(`@/assets/images/selections/isnew.svg`)"
+            class="selection-svg d-block"
+          />
+          <img
+            title="Novità"
+            v-if="product._source.artisanal"
+            :src="require(`@/assets/images/selections/artisanal.svg`)"
+            class="selection-svg d-block"
+          />
         </div>
-        <div
-          class="col-2 offset-8 pr-2 h-100 d-flex justify-content-end align-items-center flex-column"
-        >
-          <div class="">
-            <i class="fal fa-heart fa-2x text-light-red"></i>
-          </div>
+        <div :class="horizontal ? 'heart-horizontal' : 'heart-vertical'">
+          <i class="fas fa-heart fa-2x text-light-red"></i>
         </div>
-      </nuxt-link>
-      <div class="p-3">
-        <p class="font-weight-bold">{{ product.title }}</p>
-        <p class="mb-0 text-muted" style="text-decoration: line-through">
-          € {{ product.variants.nodes[0].compareAtPrice }}
-        </p>
-        <div
-          class="d-flex justify-content-between align-items-center position-relative"
+        <nuxt-link
+          :to="`/product/${product._source.id}`"
+          class="row mx-0 mt-2 text-decoration-none text-dark"
         >
-          <div>
-            <p class="h2">€ {{ product.variants.nodes[0].price }}</p>
+          <img
+            :src="require(`~/assets/images/img-test.jpeg`)"
+            style="width: 200px"
+            class="d-block mx-auto"
+            alt=""
+          />
+        </nuxt-link>
+      </div>
+      <div :class="horizontal ? 'col-8' : 'col-12'">
+        <div class="p-2">
+          <div style="height: 60px">
+            <p class="font-weight-bold mb-0 small" :title="product._source.id">
+              {{ product._source.shortName }}
+            </p>
           </div>
-          <!-- <nuxt-link :to="`/product/${product.handle}`">detail</nuxt-link> -->
-
+          <p class="mb-0 text-muted" style="text-decoration: line-through">
+            € 99
+          </p>
           <div
-            v-if="cartQuantity > 0"
-            style="
-              width: 42px;
-              border-radius: 10px;
-              background: darkred;
-              position: absolute;
-              bottom: 2px;
-              right: 2px;
-              display: flex;
-              flex-direction: column;
-              justify-content: space-between;
-            "
+            class="d-flex justify-content-between align-items-center position-relative"
           >
-            <div class="btn text-white">
-              <i class="fas fa-minus" @click.stop="decreaseQuantity()"></i>
+            <div>
+              <p class="h2">€ {{ product._source.price.toFixed(2) }}</p>
             </div>
-            <p class="mb-0 text-white text-center">{{ cartQuantity }}</p>
-            <div class="btn text-white">
-              <i class="fas fa-plus" @click.stop="addToCart()"></i>
+            <!-- <nuxt-link :to="`/product/${product.handle}`">detail</nuxt-link> -->
+
+            <div
+              v-if="false"
+              style="
+                width: 42px;
+                border-radius: 10px;
+                background: darkred;
+                position: absolute;
+                bottom: 2px;
+                right: 2px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+              "
+            >
+              <div class="btn text-white">
+                <i class="fas fa-minus" @click.stop="decreaseQuantity()"></i>
+              </div>
+              <p class="mb-0 text-white text-center">3</p>
+              <div class="btn text-white">
+                <i class="fas fa-plus" @click.stop="addToCart()"></i>
+              </div>
             </div>
-          </div>
-          <div v-else>
-            <button class="btn btn-cart" @click="addToCart()">
-              <i class="fal fa-shopping-cart text-white"></i>
-            </button>
+            <div v-else>
+              <button class="btn btn-cart" @click="addToCart()">
+                <i class="fal fa-shopping-cart text-white"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -84,14 +112,13 @@ import {
 } from "../utilities/cart";
 
 export default {
-  props: ["product"],
+  props: ["product", "horizontal"],
   name: "ProductCardVertical",
   data() {
     return { quantity: 0 };
   },
   computed: {
     cartQuantity() {
-      console.log(this.product, "COPIA QUESTO");
       if (!this.$store.state.cart.cart) {
         return 0;
       }
@@ -187,15 +214,37 @@ export default {
 };
 </script>
 <style scoped>
-.product-card {
-  height: 500px;
-  width: 300px;
+.product-card-vertical {
+  height: 520px;
+  width: 230px;
   transition: 0.4s;
   margin-bottom: 48px;
+  position: relative;
 }
 
-.product-card:hover {
+.product-card-horizontal {
+  height: 400px;
+  width: 100%;
+  transition: 0.4s;
+  margin-bottom: 48px;
+  position: relative;
+}
+
+.product-card-vertical:hover,
+.product-card-horizontal:hover {
   box-shadow: 0 20px 36px 3px rgb(51 51 51 / 20%);
+}
+
+.heart-vertical {
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
+}
+
+.heart-horizontal {
+  position: absolute;
+  top: 10px;
+  right: 20px;
 }
 
 .btn-cart {
@@ -329,4 +378,9 @@ export default {
   border-bottom: 30px solid transparent;
   bottom: -30px;
 } */
+
+.selection-svg {
+  filter: brightness(0.7);
+  width: 36px;
+}
 </style>

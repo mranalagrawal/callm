@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid fixed- bg-white">
     <div class="row align-items-center py-3 px-4">
-      <div class="col-2">
+      <div class="col-12 col-md-2">
         <nuxt-link to="/">
           <img
             src="../assets/images/logo.svg"
@@ -11,28 +11,31 @@
           />
         </nuxt-link>
       </div>
-      <div class="col-7 py-2" style="position: relative">
+
+      <div class="col-12 col-md-7 py-2" style="position: relative">
         <b-form-input
           size="sm"
           class="border border-dark p-4"
           style="border-radius: 8px"
           placeholder="Cosa stai cercando?"
+          v-model="search"
         ></b-form-input>
         <b-button
           size="sm"
           class="my-2 my-sm-0 border-0"
-          type="submit"
+          type="button"
           style="
             position: absolute;
             top: 18px;
             right: 30px;
             background: #d94965;
           "
+          @click="startSearch"
         >
           <i class="fal fa-search"></i>
         </b-button>
       </div>
-      <div class="col-3">
+      <div class="col-12 col-md-3">
         <div
           class="d-flex"
           :class="user ? 'justify-content-around' : 'justify-content-end'"
@@ -156,6 +159,7 @@ export default {
     return {
       showUser: false,
       showCart: false,
+      search: "",
     };
   },
   methods: {
@@ -166,6 +170,15 @@ export default {
     switchToUser() {
       this.showCart = false;
       this.showUser = true;
+    },
+    startSearch() {
+      console.log(this.search);
+      const query = { search: this.search };
+      this.$router.push({
+        path: "search",
+        query: query,
+      });
+      this.search = "";
     },
   },
 };

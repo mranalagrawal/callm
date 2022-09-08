@@ -5,7 +5,7 @@
         <!-- <h1>{{ results.length }}</h1> -->
       </div>
       <div class="col-12 col-md-9">
-        <div class="h3">
+        <div>
           <!-- {{ view.region?.name }} {{ view.pairing?.name }}
           {{ view.brand?.name }} {{ view.aging?.name }}
           {{ view.philosophy?.name }} {{ view.size?.name }}
@@ -15,16 +15,6 @@
           <!-- {{ view }} -->
 
           <!-- {{ Object.entries(view).filter((el) => el[1] !== null) }} -->
-          <button
-            class="btn btn-dark-red mx-2"
-            v-for="(item, ind) in Object.entries(view).filter(
-              (el) => el[1] !== null
-            )"
-            :key="ind"
-            @click="removeFromQuery(item[1])"
-          >
-            {{ item[1].name }}
-          </button>
         </div>
         <p class="h3">
           {{ total }}
@@ -32,33 +22,6 @@
       </div>
     </div>
 
-    <div class="row mt-5 d-none">
-      <div class="col-12">
-        <p class="font-weight-bold">Filtra per:</p>
-        <hr class="mb-2" />
-      </div>
-      <div class="col-12">
-        <dropdown-range label="Prezzo" min="0" max="999" />
-
-        <div class="float-right">
-          <b-button
-            v-b-toggle.more-filters
-            variant="danger"
-            class="bg-transparent border-0"
-          >
-            <span class="small text-dark-red"
-              >Altri filtri <i class="fal fa-plus ml-3"></i
-            ></span>
-          </b-button>
-        </div>
-      </div>
-    </div>
-    <div class="row d-none">
-      <b-collapse class="col-12" id="more-filters">
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aliquam quod
-        unde cum cumque dolorum totam accusantium magni aperiam, facilis odio!
-      </b-collapse>
-    </div>
     <div class="row">
       <div class="col-12">
         <hr />
@@ -67,47 +30,159 @@
 
     <div class="row">
       <div class="col-12">
-        <button @click="backward">pagina prima</button>
-        <button @click="forward">pagina dopo</button>
+        <button class="btn btn-outline-dark-red btn-small" @click="backward">
+          pagina prima
+        </button>
+        <button class="btn btn-outline-dark-red btn-small" @click="forward">
+          pagina dopo
+        </button>
       </div>
     </div>
 
     <div class="row mt-5" v-if="results">
       <div class="col-12 col-md-3">
-        <dropdown label="categories" :items="categories" keyword="categories" />
-        <dropdown label="winelists" :items="winelists" keyword="winelists" />
-        <dropdown label="pairings" :items="pairings" keyword="pairings" />
-        <dropdown
-          label="dosagecontents"
-          :items="dosagecontents"
-          keyword="dosagecontent"
-        />
-        <dropdown label="Provenienza" :items="regions" keyword="regions" />
-        <dropdown label="Brands" :items="brands" keyword="brands" />
-        <dropdown label="sizes" :items="sizes" keyword="sizes" />
-        <dropdown label="vintages" :items="vintages" keyword="vintages" />
-        <dropdown label="awards" :items="awards" keyword="awards" />
-        <dropdown label="agings" :items="agings" keyword="agings" />
-        <dropdown
-          label="philosophies"
-          :items="philosophies"
-          keyword="philosophies"
-        />
-      </div>
-      <div class="col-12 col-md-9">
-        <div class="row">
+        <div>
           <div
-            class="col-12 col-md-6 col-lg-3 mb-3"
-            v-for="result in results"
-            :key="result._id"
+            v-if="
+              activeSelections.length > 0 ||
+              Object.values(view).filter((el) => el != null).length > 0
+            "
           >
-            <div class="card shadow">
-              <p>
-                {{ result._source.shortName }}
-              </p>
+            <p class="lead">{{ $t("search.activeFilters") }}</p>
+            <div v-if="activeSelections">
+              <!-- selections -->
+              <span
+                v-for="item in activeSelections"
+                :key="item"
+                class="badge badge-pill badge-light-red mx-1"
+                @click="removeSelectionFromQuery(item)"
+              >
+                {{ $t(`selections.${item}`) }}
+                <i class="fal fa-times ml-1"></i>
+              </span>
+              <!-- other filters -->
+              <span
+                class="badge badge-pill badge-light-red mx-1"
+                v-for="(item, ind) in Object.entries(view).filter(
+                  (el) => el[1] !== null
+                )"
+                :key="ind"
+                @click="removeFromQuery(item[1])"
+              >
+                {{ item[1].name }}
+                <i class="fal fa-times ml-1"></i>
+              </span>
+            </div>
+
+            <button
+              class="btn btn-small ml-auto d-block"
+              style="font-size: 12px"
+              @click="resetFilter"
+            >
+              <i class="fal fa-times"></i> {{ $t("search.removeAll") }}
+            </button>
+          </div>
+
+          <!-- <dropdown-range label="Prezzo" min="0" max="2000" /> -->
+          <dropdown-selections
+            label="selections"
+            :items="null"
+            keyword="selections"
+            :search="search"
+          />
+          <dropdown
+            label="categories"
+            :items="categories"
+            keyword="categories"
+          />
+          <dropdown label="winelists" :items="winelists" keyword="winelists" />
+          <dropdown label="pairings" :items="pairings" keyword="pairings" />
+          <dropdown
+            label="dosagecontents"
+            :items="dosagecontents"
+            keyword="dosagecontent"
+          />
+          <dropdown label="Provenienza" :items="regions" keyword="regions" />
+          <dropdown label="Brands" :items="brands" keyword="brands" />
+          <dropdown label="sizes" :items="sizes" keyword="sizes" />
+          <dropdown label="vintages" :items="vintages" keyword="vintages" />
+          <dropdown label="awards" :items="awards" keyword="awards" />
+          <dropdown label="agings" :items="agings" keyword="agings" />
+          <dropdown
+            label="philosophies"
+            :items="philosophies"
+            keyword="philosophies"
+          />
+        </div>
+      </div>
+      <div class="col-12 col-md-9 px-0" v-if="results.length > 0">
+        <div class="row mb-5">
+          <div class="col-4">
+            <div class="btn shadow text-light-red" @click="column = !column">
+              <i :class="column ? 'fal fa-bars' : 'fal fa-th-large'"></i>
+            </div>
+          </div>
+          <div class="col-4"></div>
+          <div class="col-4 text-right">
+            <div>
+              <!-- {{ this.$router }} -->
+              <b-dropdown
+                id="sorting"
+                :text="$t('search.sortBy')"
+                variant="null"
+                right
+                class="shadow"
+              >
+                <div class="shadow">
+                  <button class="btn" @click="sortBy('price', 'desc')">
+                    {{ $t("search.highestPrice") }}
+                  </button>
+                  <button class="btn" @click="sortBy('price', 'asc')">
+                    {{ $t("search.lowestPrice") }}
+                  </button>
+                  <button class="btn" @click="sortBy('awardcount', 'desc')">
+                    {{ $t("search.mostAwarded") }}
+                  </button>
+                  <button class="btn" @click="sortBy('brandname', 'asc')">
+                    brand asc
+                  </button>
+                  <button class="btn" @click="sortBy('brandname', 'desc')">
+                    brand desc
+                  </button>
+                </div>
+              </b-dropdown>
             </div>
           </div>
         </div>
+        <div class="row" v-if="column">
+          <div
+            class="col-12 col-md-6 col-lg-4 col-xl-3 mb-3"
+            v-for="result in results"
+            :key="result._id"
+          >
+            <vertical-search :product="result" :horizontal="false" />
+          </div>
+        </div>
+        <div class="row" v-else>
+          <div
+            class="d-none d-lg-block col-12 mb-3"
+            v-for="result in results"
+            :key="'desktop' + result._id"
+          >
+            <vertical-search :product="result" :horizontal="true" />
+          </div>
+          <div
+            class="d-lg-none col-12 mb-3"
+            v-for="result in results"
+            :key="'mobile' + result._id"
+          >
+            <vertical-search :product="result" :horizontal="false" />
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-9" v-else>
+        <p class="lead mt-5">{{ $t("search.noResultsAlert") }}</p>
+        <div v-html="$t('search.noResultsMessage')"></div>
       </div>
     </div>
 
@@ -180,12 +255,106 @@
         </div>
       </div>
     </div>
+
+    <div class="row w-100 d-lg-none" style="position: fixed; bottom: 10px">
+      <div class="col-12 text-center">
+        <button class="btn btn-light-red text-center" @click="showModal">
+          <i class="fal fa-bars mr-2"></i> Mostra filtri
+          <span
+            v-if="
+              activeSelections &&
+              (activeSelections.length > 0 ||
+                Object.values(view).filter((el) => el != null).length > 0)
+            "
+          >
+            ({{
+              activeSelections.length +
+              Object.values(view).filter((el) => el != null).length
+            }})
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <b-modal
+      ref="modalFilter"
+      size="xl"
+      scrollable
+      centered
+      hide-footer
+      title=""
+    >
+      <div
+        v-if="
+          activeSelections &&
+          (activeSelections.length > 0 ||
+            Object.values(view).filter((el) => el != null).length > 0)
+        "
+      >
+        <span
+          v-for="item in activeSelections"
+          :key="item"
+          class="badge badge-pill badge-light-red mx-1"
+          @click="removeSelectionFromQuery(item)"
+        >
+          {{ $t(`selections.${item}`) }}
+          <i class="fal fa-times ml-1"></i>
+        </span>
+        <span
+          class="badge badge-pill badge-light-red mx-1"
+          v-for="(item, ind) in Object.entries(view).filter(
+            (el) => el[1] !== null
+          )"
+          :key="ind"
+          @click="removeFromQuery(item[1])"
+        >
+          {{ item[1].name }}
+          <i class="fal fa-times ml-1"></i>
+        </span>
+      </div>
+
+      <dropdown label="categories" :items="categories" keyword="categories" />
+      <dropdown label="winelists" :items="winelists" keyword="winelists" />
+      <dropdown label="pairings" :items="pairings" keyword="pairings" />
+      <dropdown
+        label="dosagecontents"
+        :items="dosagecontents"
+        keyword="dosagecontent"
+      />
+      <dropdown label="Provenienza" :items="regions" keyword="regions" />
+      <dropdown label="Brands" :items="brands" keyword="brands" />
+      <dropdown label="sizes" :items="sizes" keyword="sizes" />
+      <dropdown label="vintages" :items="vintages" keyword="vintages" />
+      <dropdown label="awards" :items="awards" keyword="awards" />
+      <dropdown label="agings" :items="agings" keyword="agings" />
+      <dropdown
+        label="philosophies"
+        :items="philosophies"
+        keyword="philosophies"
+      />
+
+      <selections-box-mobile
+        label="selections"
+        :items="null"
+        keyword="selections"
+        :search="search"
+      />
+
+      <template #modal-footer class="border-0">
+        <div class="w-100 text-center">
+          <button class="btn btn-light-red btn-lg px-5">INVIA</button>
+        </div>
+      </template>
+    </b-modal>
   </div>
 </template>
 
 <script>
 import Dropdown from "../components/UI/Dropdown.vue";
 import DropdownRange from "../components/UI/DropdownRange.vue";
+import DropdownSelections from "../components/UI/DropdownSelections.vue";
+import SelectionsBoxMobile from "../components/UI/SelectionsBoxMobile.vue";
+import VerticalSearch from "../components/VerticalSearch.vue";
 
 export default {
   watch: {
@@ -193,13 +362,19 @@ export default {
   },
   components: {
     Dropdown,
+    DropdownSelections,
     DropdownRange,
+    SelectionsBoxMobile,
+    VerticalSearch,
   },
   data() {
     return {
       loading: null,
+      column: true,
       brands: null,
+      search: null,
       regions: null,
+      selections: null,
       pairings: null,
       agings: null,
       philosophies: null,
@@ -208,7 +383,9 @@ export default {
       categories: null,
       winelists: null,
       awards: null,
+      vintages: null,
       results: null,
+      activeSelections: null,
       total: null,
       currentPage: 1,
       view: {
@@ -228,12 +405,42 @@ export default {
   computed: {},
 
   methods: {
-    removeFromQuery(obj) {
-      console.log(obj);
+    showModal() {
+      this.$refs["modalFilter"].show();
+    },
+    hideModal() {
+      this.$refs["modalFilter"].hide();
+    },
+    resetFilter() {
+      this.$router.push({
+        path: "search",
+        query: null,
+      });
+    },
+    removeSelectionFromQuery(selection) {
       const query = Object.assign({}, this.$route.query);
 
+      delete query[selection];
+
+      this.$router.push({
+        path: "search",
+        query: query,
+      });
+    },
+    removeFromQuery(obj) {
+      const query = Object.assign({}, this.$route.query);
+      console.log(obj);
       delete query[obj.field];
 
+      this.$router.push({
+        path: "search",
+        query: query,
+      });
+    },
+    sortBy(field, direction) {
+      const query = Object.assign({}, this.$route.query);
+      query["sort"] = field;
+      query["direction"] = direction;
       this.$router.push({
         path: "search",
         query: query,
@@ -274,23 +481,24 @@ export default {
     let route = this.$route;
     /* console.log(route.fullPath.split("search?")[1], "SSSS"); */
 
-    this.currentPage = this.$route.query["page"];
+    this.currentPage = this.$route.query["page"]
+      ? this.$route.query["page"]
+      : 1;
 
+    console.log(this.currentPage, "CURRENTPAGE");
     let query = route.fullPath.split("search?")[1];
     const searchResult = await fetch(
       "http://callmewine-api.dojo.sh/api/products/search?" + query
     );
 
     const search = await searchResult.json();
-    /* console.log(search); */
-
+    this.search = search;
     this.results = search.hits.hits;
 
     const total = search.hits.total.value;
     this.total = total;
 
     const regions = search.aggregations["agg-regions"]["agg-regions"].buckets;
-    console.log(regions);
     this.regions = regions;
 
     const brands = search.aggregations["agg-brands"]["agg-brands"].buckets;
@@ -358,7 +566,6 @@ export default {
     });
     this.dosagecontents = dosagecontents;
 
-    console.log(dosagecontents, "dosagecontents");
     const winelists = search.aggregations["agg-winelists"]["inner"]["result"][
       "buckets"
     ].map((el) => {
@@ -391,6 +598,25 @@ export default {
     const categoryId = this.$route.query.categories;
     const winelistsId = this.$route.query.winelists;
     const awardId = this.$route.query.awards;
+    const vintageId = this.$route.query.vintages;
+
+    const allSelections = [
+      "favourite",
+      "rarewine",
+      "foreveryday",
+      "artisanal",
+      "unusualvariety",
+      "isnew",
+      "togift",
+      "inpromotion",
+      "topsale",
+    ];
+    const activeSelections = Object.keys(this.$route.query).filter((el) =>
+      allSelections.includes(el)
+    );
+
+    this.activeSelections = activeSelections;
+    console.log(activeSelections);
 
     this.view.brand = brandId
       ? {
@@ -468,17 +694,13 @@ export default {
           field: "awards",
         }
       : null;
-
-    /* 
-        
-        pairing: null,
-        aging: null,
-        philosophy: null,
-        size: null,
-        dosagecontent: null,
-        category: null,
-        winelists: null,
-        award: null, */
+    this.view.vintage = vintageId
+      ? {
+          key: vintageId,
+          name: vintages.find((x) => x.key[0] == vintageId).key[1],
+          field: "vintages",
+        }
+      : null;
 
     this.loading = false;
   },
@@ -486,6 +708,11 @@ export default {
 </script>
 
 <style scoped>
+:deep(.dropdown-menu.dropdown-menu-right.show) {
+  padding-top: 0px;
+  padding-bottom: 0px;
+  border: 0px;
+}
 .badge {
   border-radius: 2rem !important;
   padding: 0.25em 1em;
@@ -564,5 +791,13 @@ export default {
   100% {
     transform: rotateZ(30deg);
   }
+}
+
+:deep(.modal-footer),
+:deep(.modal-header) {
+  border: 0px;
+}
+:deep(.modal-content) {
+  height: 100vh;
 }
 </style>

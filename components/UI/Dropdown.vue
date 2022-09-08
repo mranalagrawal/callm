@@ -1,11 +1,16 @@
 <template>
   <div class="w-100 d-block">
-    <button class="btn px-0" @click="visible = !visible">
-      <i
-        class="fal fa-chevron-down text-light-red mr-3"
-        :class="visible ? 'fa-rotate-180' : ''"
-      ></i>
+    <button
+      class="btn d-flex w-100 justify-content-between px-0"
+      @click="visible = !visible"
+    >
       <span class="small text-dark-red text-uppercase">{{ label }}</span>
+      <span
+        ><i
+          class="fal fa-chevron-down text-light-red mr-3"
+          :class="visible ? 'fa-rotate-180' : ''"
+        ></i
+      ></span>
     </button>
     <div v-if="visible" class="content mb-5">
       <div class="px-1 my-3">
@@ -28,7 +33,7 @@
           </div>
           <i class="fal fa-check float-right" v-if="item.key[0] == active"></i>
         </div>
-        <p>debug: {{ item.key_as_string }}</p>
+        <!-- <p>debug: {{ item.key_as_string }}</p> -->
       </div>
     </div>
   </div>
@@ -84,22 +89,6 @@ export default {
       }
 
       if (id !== this.active) query["page"] = 1;
-      /* if (query[this.keyword]) {
-        let active = query[this.keyword].split(",");
-        const newId = String(id);
-        if (active.includes(newId)) {
-          active = active.filter((el) => el !== newId);
-        } else {
-          active.push(newId);
-        }
-
-        const setIds = [...new Set(active)];
-        const setIdsAsString = setIds.join(",");
-
-        query[this.keyword] = setIdsAsString;
-      } else {
-        query[this.keyword] = id;
-      } */
 
       this.$router.push({
         path: "search",

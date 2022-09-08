@@ -1,40 +1,45 @@
 <template>
-  <b-dropdown variant="white" no-caret no-flip>
-    <template #button-content>
+  <div class="w-100 d-block">
+    <button class="btn px-0" @click="visible = !visible">
+      <i
+        class="fal fa-chevron-down text-light-red mr-3"
+        :class="visible ? 'fa-rotate-180' : ''"
+      ></i>
       <span class="small text-dark-red text-uppercase">{{ label }}</span>
-      <i class="fal fa-chevron-down ml-3 text-light-red"></i>
-    </template>
-
-    <div class="mt-5 px-2">
-      <div class="d-flex justify-content-between">
-        <span>{{ choosenMin }}</span>
-        <span>{{ choosenMax }}</span>
-      </div>
-      <div class="py-4">
-        <div class="sliders_control my-4">
-          <input
-            id="start"
-            type="range"
-            :min="min"
-            :max="max"
-            v-model="choosenMin"
-          />
-          <input
-            id="end"
-            type="range"
-            :min="min"
-            :max="max"
-            v-model="choosenMax"
-          />
-          <div
-            class="middle"
-            :style="{ marginLeft: marginLeft, width: width }"
-          ></div>
-          <div class="track"></div>
+    </button>
+    <div v-if="visible" class="content mb-5">
+      <div class="mt-5 px-2">
+        <div class="d-flex justify-content-between">
+          <span>{{ choosenMin }}</span>
+          <span>{{ choosenMax }}</span>
+        </div>
+        <div class="py-4">
+          <div class="sliders_control my-4">
+            <input
+              id="start"
+              type="range"
+              :min="min"
+              :max="max"
+              v-model="choosenMin"
+            />
+            <input
+              id="end"
+              type="range"
+              :min="min"
+              :max="max"
+              v-model="choosenMax"
+            />
+            <div
+              class="middle"
+              :style="{ marginLeft: marginLeft, width: width }"
+            ></div>
+            <div class="track"></div>
+          </div>
         </div>
       </div>
+      <button class="btn" @click="goto">Vai</button>
     </div>
-  </b-dropdown>
+  </div>
 </template>
 
 <script>
@@ -42,6 +47,7 @@ export default {
   props: ["label", "min", "max"],
   data() {
     return {
+      visible: true,
       choosenMin: +this.min,
       choosenMax: +this.max,
     };
@@ -73,8 +79,23 @@ export default {
     },
   },
   methods: {
-    test() {
-      /* console.log(e.target); */
+    goto() {
+      console.log(this.choosenMin);
+      console.log(this.choosenMax);
+
+      const query = Object.assign({}, this.$route.query);
+
+      /* query[this.keyword] = id; */
+
+      query["price_from"] = this.choosenMin;
+      query["price_to"] = this.choosenMax;
+
+      /* if (id !== this.active) query["page"] = 1; */
+
+      this.$router.push({
+        path: "search",
+        query: query,
+      });
     },
   },
   components: {},
