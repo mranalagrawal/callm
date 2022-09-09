@@ -165,14 +165,14 @@
         </div>
         <div class="row" v-else>
           <div
-            class="d-none d-lg-block col-12 mb-3"
+            class="d-none d-lg-block col-12 mb-1"
             v-for="result in results"
             :key="'desktop' + result._id"
           >
             <vertical-search :product="result" :horizontal="true" />
           </div>
           <div
-            class="d-lg-none col-12 mb-3"
+            class="d-lg-none col-12 mb-1"
             v-for="result in results"
             :key="'mobile' + result._id"
           >

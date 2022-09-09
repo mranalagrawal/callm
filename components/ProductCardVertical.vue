@@ -91,7 +91,6 @@ export default {
   },
   computed: {
     cartQuantity() {
-      console.log(this.product, "COPIA QUESTO");
       if (!this.$store.state.cart.cart) {
         return 0;
       }

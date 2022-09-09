@@ -106,6 +106,7 @@ export default {
           title: res.data.collectionByHandle.title,
         };
       });
+    console.log(this.data);
   },
 };
 </script>

@@ -59,7 +59,9 @@ const queryProductByHandle = (handle) => `query {
         id
         title
         description
+        descriptionHtml
         handle
+        vendor
         variants(first: 1) {
             nodes {
                 compareAtPrice
@@ -77,6 +79,9 @@ const queryProductByHandle = (handle) => `query {
                 id
                 url
             }
+        }
+        metafield1: metafield(namespace: "custom", key: "details") {
+            value
         }
     }
 }`;

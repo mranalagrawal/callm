@@ -46,7 +46,7 @@
         >
           <img
             :src="require(`~/assets/images/img-test.jpeg`)"
-            style="width: 200px"
+            :style="{ width: horizontal ? '180px' : '200px' }"
             class="d-block mx-auto"
             alt=""
           />
@@ -223,7 +223,7 @@ export default {
 }
 
 .product-card-horizontal {
-  height: 400px;
+  height: 350px;
   width: 100%;
   transition: 0.4s;
   margin-bottom: 48px;
@@ -345,6 +345,7 @@ export default {
   right: 25px;
   font-size: 12px;
   border-radius: 0px 0px 15px 15px;
+  z-index: 2;
 }
 
 .ribbon-1 span {
