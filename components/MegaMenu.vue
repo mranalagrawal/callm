@@ -18,7 +18,25 @@
         class="row bg-white w-100 position-absolute shadow-menu"
         style="min-height: 300px; z-index: 100"
       >
-        {{ selectedItem }}
+        <!-- {{ Object.entries(selectedItem.items) }} -->
+        <div
+          v-for="(secondLevel, i) in Object.entries(selectedItem.items)"
+          :key="i"
+          class="col"
+        >
+          <h3>{{ secondLevel[0] }}</h3>
+          <div v-for="(thirdLevel, j) in secondLevel[1]" :key="j">
+            <div class="card" v-if="!thirdLevel.marketingCTA">
+              {{ thirdLevel.name }}
+            </div>
+            <div class="card" v-else>
+              {{ thirdLevel.name }}
+              {{ thirdLevel.marketingCTA }}
+              <img :src="thirdLevel.marketingImage" alt="" width="32px" />
+            </div>
+          </div>
+          <!-- {{ item[1] }} -->
+        </div>
       </div>
     </div>
     <div class="row">
@@ -90,7 +108,7 @@ export default {
         return {
           name: firstLevel.primary.group_label,
           link: firstLevel.primary.first_level_link,
-          position: firstLevel.primary.position,
+          position: firstLevel.primary.first_level_position,
           items: firstLevel.items.reduce((t, n) => {
             let temp = {
               name: n.third_level_name,
@@ -98,9 +116,11 @@ export default {
               marketingImage: n.marketing_image.url,
               marketingCTA: n.marketing_cta,
             };
-            t[n.secondlevelname]
-              ? t[n.secondlevelname].push(temp)
-              : (t[n.secondlevelname] = [temp]);
+            if (t[n.secondlevelname]) {
+              t[n.secondlevelname].push(temp);
+            } else {
+              t[n.secondlevelname] = [temp];
+            }
 
             return t;
           }, {}),

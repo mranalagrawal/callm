@@ -2,7 +2,7 @@
   <div>
     <top-bar></top-bar>
     <navbar />
-    <!-- <mega-menu /> -->
+    <mega-menu />
     <!-- <mega-test /> -->
 
     <nuxt></nuxt>
