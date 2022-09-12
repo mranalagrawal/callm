@@ -1,11 +1,14 @@
 <template>
   <div class="w-100 d-block">
-    <button class="btn px-0" @click="visible = !visible">
+    <button
+      class="btn d-flex w-100 justify-content-between px-0"
+      @click="visible = !visible"
+    >
+      <span class="small text-dark-red text-uppercase">{{ label }}</span>
       <i
         class="fal fa-chevron-down text-light-red mr-3"
         :class="visible ? 'fa-rotate-180' : ''"
       ></i>
-      <span class="small text-dark-red text-uppercase">{{ label }}</span>
     </button>
     <div v-if="visible" class="content mb-5">
       <div class="mt-5 px-2">
@@ -21,6 +24,7 @@
               :min="min"
               :max="max"
               v-model="choosenMin"
+              @change="checkIfSwap"
             />
             <input
               id="end"
@@ -28,6 +32,7 @@
               :min="min"
               :max="max"
               v-model="choosenMax"
+              @change="checkIfSwap"
             />
             <div
               class="middle"
@@ -37,7 +42,9 @@
           </div>
         </div>
       </div>
-      <button class="btn" @click="goto">Vai</button>
+      <button class="btn btn-outline-light-red w-100" @click="goto">
+        Applica
+      </button>
     </div>
   </div>
 </template>
@@ -52,6 +59,7 @@ export default {
       choosenMax: +this.max,
     };
   },
+  watch: {},
   computed: {
     marginLeft() {
       let value = (100 * this.choosenMin) / (this.max - this.min);
@@ -62,23 +70,14 @@ export default {
         (100 * (this.choosenMax - this.choosenMin)) / (this.max - this.min);
       return value + "%";
     },
-    actualMin() {
-      return this.choosenMin;
-    },
-  },
-  watch: {
-    choosenMin() {
-      if (this.choosenMin > this.choosenMax) {
-        [this.choosenMin, this.choosenMax] = [this.choosenMax, this.choosenMin];
-      }
-    },
-    choosenMax() {
-      if (this.choosenMax < this.choosenMin) {
-        [this.choosenMin, this.choosenMax] = [this.choosenMax, this.choosenMin];
-      }
-    },
   },
   methods: {
+    checkIfSwap(e) {
+      if (+this.choosenMin > +this.choosenMax) {
+        [this.choosenMin, this.choosenMax] = [this.choosenMax, this.choosenMin];
+      }
+    },
+
     goto() {
       console.log(this.choosenMin);
       console.log(this.choosenMax);
@@ -168,9 +167,12 @@ input[type="range"] {
   pointer-events: none;
 }
 
-#start,
-#end {
+#start {
   height: 0;
   z-index: 5;
+}
+#end {
+  height: 0;
+  z-index: 15;
 }
 </style>

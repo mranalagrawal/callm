@@ -40,7 +40,7 @@
     </div>
 
     <div class="row mt-5" v-if="results">
-      <div class="col-12 col-md-3">
+      <div class="d-none d-md-block col-md-3">
         <div>
           <div
             v-if="
@@ -83,7 +83,7 @@
             </button>
           </div>
 
-          <!-- <dropdown-range label="Prezzo" min="0" max="2000" /> -->
+          <dropdown-range label="Prezzo" min="0" max="2000" />
           <dropdown-selections
             label="selections"
             :items="null"
@@ -332,6 +332,7 @@
         :items="philosophies"
         keyword="philosophies"
       />
+      <dropdown-range label="Prezzo" min="0" max="2000" />
 
       <selections-box-mobile
         label="selections"
@@ -399,6 +400,8 @@ export default {
         category: null,
         winelists: null,
         award: null,
+        priceFrom: null,
+        priceTo: null,
       },
     };
   },
@@ -599,6 +602,9 @@ export default {
     const winelistsId = this.$route.query.winelists;
     const awardId = this.$route.query.awards;
     const vintageId = this.$route.query.vintages;
+    const priceFrom = this.$route.query.price_from;
+    const priceTo = this.$route.query.price_to;
+    console.log(priceFrom);
 
     const allSelections = [
       "favourite",
@@ -701,6 +707,20 @@ export default {
           field: "vintages",
         }
       : null;
+    this.view.priceFrom = priceFrom
+      ? {
+          key: "priceFrom",
+          name: "From " + priceFrom,
+          field: "price_from",
+        }
+      : null;
+    this.view.priceTo = priceTo
+      ? {
+          key: "priceTo",
+          name: "To " + priceTo,
+          field: "price_to",
+        }
+      : null;
 
     this.loading = false;
   },
@@ -717,6 +737,7 @@ export default {
   border-radius: 2rem !important;
   padding: 0.25em 1em;
   font-weight: normal;
+  cursor: pointer;
 }
 
 .loader {

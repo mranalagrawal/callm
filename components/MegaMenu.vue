@@ -8,9 +8,6 @@
         :key="i"
       >
         {{ item.name }}
-        <!-- <nuxt-link :to="`/${item.url.split('.com/')[1]}`" class="menu-link">{{
-          item.title
-        }}</nuxt-link> -->
       </div>
     </div>
     <div v-if="selectedItem" @mouseleave="onTab(null)">
@@ -18,13 +15,39 @@
         class="row bg-white w-100 position-absolute shadow-menu"
         style="min-height: 300px; z-index: 100"
       >
-        <!-- {{ Object.entries(selectedItem.items) }} -->
         <div
-          v-for="(secondLevel, i) in Object.entries(selectedItem.items)"
+          v-for="(secondLevel, i) in selectedItem.items"
           :key="i"
           class="col"
         >
-          <h3>{{ secondLevel[0] }}</h3>
+          <p class="lead text-light-green">{{ secondLevel.name }}</p>
+          <div v-for="(thirdLevel, j) in secondLevel.items" :key="j">
+            <!-- {{ thirdLevel }} -->
+            <p v-if="!thirdLevel.marketing_cta">
+              {{ thirdLevel.third_level_name }}
+            </p>
+            <div v-else class="shadow row align-items-center mb-4">
+              <div
+                class="col-3"
+                style="
+                  height: 70px;
+                  background-position: center;
+                  background-size: cover;
+                  border-radius: 10px 0px 0px 10px;
+                "
+                :style="{
+                  backgroundImage:
+                    'url(' + thirdLevel.marketing_image.url + ')',
+                }"
+              ></div>
+
+              <div class="col-9">
+                <p class="mb-0">{{ thirdLevel.third_level_name }}</p>
+                <p class="mb-0">{{ thirdLevel.marketing_cta }}</p>
+              </div>
+            </div>
+          </div>
+          <!-- <h3>{{ secondLevel[0] }}</h3>
           <div v-for="(thirdLevel, j) in secondLevel[1]" :key="j">
             <div class="card" v-if="!thirdLevel.marketingCTA">
               {{ thirdLevel.name }}
@@ -34,32 +57,7 @@
               {{ thirdLevel.marketingCTA }}
               <img :src="thirdLevel.marketingImage" alt="" width="32px" />
             </div>
-          </div>
-          <!-- {{ item[1] }} -->
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col" v-for="item in data" :key="item.position">
-        <p>{{ item.name }}</p>
-        <div
-          class="pl-4"
-          v-for="(secondLevel, i) in Object.entries(item.items)"
-          :key="i"
-        >
-          <p>{{ secondLevel[0] }}</p>
-          <div>
-            <div v-for="thirdLevel in secondLevel[1]" :key="thirdLevel.name">
-              <div class="card" v-if="!thirdLevel.marketingCTA">
-                {{ thirdLevel.name }}
-              </div>
-              <div class="card" v-else>
-                {{ thirdLevel.name }}
-                {{ thirdLevel.marketingCTA }}
-                <img :src="thirdLevel.marketingImage" alt="" width="32px" />
-              </div>
-            </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -105,32 +103,41 @@ export default {
 
     let mapped = data
       .map((firstLevel) => {
+        const secondLevelNames = [
+          ...new Set(firstLevel.items.map((el) => el.secondlevelname)),
+        ];
+        const secondLevels = firstLevel.items.map((el) => {
+          return {
+            name: el.secondlevelname,
+            position: el.second_level_position,
+          };
+        });
+        const secondLevelsSet = [
+          ...new Set(secondLevels.map((el) => JSON.stringify(el))),
+        ]
+          .map((el) => JSON.parse(el))
+          .sort((a, b) => a.position - b.position);
+
+        const items = secondLevelsSet.map((el) => {
+          let temp = firstLevel.items
+            .filter((x) => x.secondlevelname === el.name)
+            .sort((a, b) => a.third_level_position - b.third_level_position);
+          return { ...el, items: temp };
+        });
+
         return {
           name: firstLevel.primary.group_label,
           link: firstLevel.primary.first_level_link,
           position: firstLevel.primary.first_level_position,
-          items: firstLevel.items.reduce((t, n) => {
-            let temp = {
-              name: n.third_level_name,
-              link: n.third_level_link,
-              marketingImage: n.marketing_image.url,
-              marketingCTA: n.marketing_cta,
-            };
-            if (t[n.secondlevelname]) {
-              t[n.secondlevelname].push(temp);
-            } else {
-              t[n.secondlevelname] = [temp];
-            }
-
-            return t;
-          }, {}),
+          items,
         };
       })
       .sort((a, b) => a.position - b.position);
 
     this.data = mapped;
-
-    console.log(mapped);
+    console.clear();
+    console.log(mapped[0]);
+    this.selectedItem = mapped[3];
   },
 };
 </script>
