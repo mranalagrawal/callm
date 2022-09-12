@@ -51,15 +51,22 @@
 
 <script>
 export default {
-  props: ["label", "min", "max"],
+  props: ["label"],
   data() {
     return {
       visible: true,
-      choosenMin: +this.min,
-      choosenMax: +this.max,
+      min: 0,
+      max: 2000,
+      choosenMin: 0,
+      choosenMax: 2000,
     };
   },
-  watch: {},
+  watch: {
+    "$route.query": function () {
+      this.choosenMin = this.$route.query.price_from || this.min;
+      this.choosenMax = this.$route.query.price_to || this.max;
+    },
+  },
   computed: {
     marginLeft() {
       let value = (100 * this.choosenMin) / (this.max - this.min);
@@ -72,16 +79,13 @@ export default {
     },
   },
   methods: {
-    checkIfSwap(e) {
+    checkIfSwap() {
       if (+this.choosenMin > +this.choosenMax) {
         [this.choosenMin, this.choosenMax] = [this.choosenMax, this.choosenMin];
       }
     },
 
     goto() {
-      console.log(this.choosenMin);
-      console.log(this.choosenMax);
-
       const query = Object.assign({}, this.$route.query);
 
       /* query[this.keyword] = id; */
@@ -97,7 +101,6 @@ export default {
       });
     },
   },
-  components: {},
 };
 </script>
 

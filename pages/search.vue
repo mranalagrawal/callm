@@ -83,7 +83,14 @@
             </button>
           </div>
 
-          <dropdown-range label="Prezzo" min="0" max="2000" />
+          <!-- <dropdown-range
+            label="Prezzo"
+            :activeMin="minPrice"
+            :activeMax="maxPrice"
+            min="0"
+            max="2000"
+          /> -->
+          <dropdown-range label="Prezzo" />
           <dropdown-selections
             label="selections"
             :items="null"
@@ -332,7 +339,7 @@
         :items="philosophies"
         keyword="philosophies"
       />
-      <dropdown-range label="Prezzo" min="0" max="2000" />
+      <dropdown-range label="Prezzo" />
 
       <selections-box-mobile
         label="selections"
@@ -388,6 +395,7 @@ export default {
       results: null,
       activeSelections: null,
       total: null,
+
       currentPage: 1,
       view: {
         brand: null,
@@ -604,7 +612,6 @@ export default {
     const vintageId = this.$route.query.vintages;
     const priceFrom = this.$route.query.price_from;
     const priceTo = this.$route.query.price_to;
-    console.log(priceFrom);
 
     const allSelections = [
       "favourite",

@@ -135,7 +135,7 @@ export default {
       .sort((a, b) => a.position - b.position);
 
     this.data = mapped;
-    console.clear();
+    /* console.clear(); */
     console.log(mapped[0]);
     this.selectedItem = mapped[3];
   },
