@@ -29,13 +29,50 @@
     </div>
 
     <div class="row">
-      <div class="col-12">
-        <button class="btn btn-outline-dark-red btn-small" @click="backward">
-          pagina prima
-        </button>
-        <button class="btn btn-outline-dark-red btn-small" @click="forward">
-          pagina dopo
-        </button>
+      <div class="col-4 text-right">
+        <span class="d-inline-flex" v-if="+currentPage > 4">
+          <button
+            class="btn btn-outline-dark-red btn-small"
+            @click="changePage(1)"
+          >
+            Prima
+          </button>
+        </span>
+      </div>
+      <div class="col-4 text-center">
+        <span class="d-inline-flex" v-for="i in 3" :key="i">
+          <button
+            class="btn btn-outline-dark-red btn-small"
+            v-if="+currentPage - 4 + i > 0 && +currentPage - 4 + i < totalPages"
+            @click="changePage(+currentPage - 4 + i)"
+          >
+            {{ +currentPage - 4 + i }}
+          </button>
+        </span>
+        <span class="d-inline-flex">
+          <button class="btn btn-dark-red btn-small disabled">
+            {{ currentPage }}
+          </button>
+        </span>
+        <span class="d-inline-flex" v-for="i in 3" :key="i">
+          <button
+            class="btn btn-outline-dark-red btn-small"
+            v-if="+currentPage + i > 0 && +currentPage + i < totalPages"
+            @click="changePage(+currentPage + i)"
+          >
+            {{ +currentPage + i }}
+          </button>
+        </span>
+      </div>
+      <div class="col-4 text-left">
+        <span class="d-inline-flex" v-if="+currentPage < totalPages">
+          <button
+            class="btn btn-outline-dark-red btn-small"
+            @click="changePage(totalPages)"
+          >
+            Ultima
+          </button>
+        </span>
       </div>
     </div>
 
@@ -83,13 +120,6 @@
             </button>
           </div>
 
-          <!-- <dropdown-range
-            label="Prezzo"
-            :activeMin="minPrice"
-            :activeMax="maxPrice"
-            min="0"
-            max="2000"
-          /> -->
           <dropdown-range label="Prezzo" />
           <dropdown-selections
             label="selections"
@@ -395,7 +425,7 @@ export default {
       results: null,
       activeSelections: null,
       total: null,
-
+      totalPages: null,
       currentPage: 1,
       view: {
         brand: null,
@@ -416,6 +446,16 @@ export default {
   computed: {},
 
   methods: {
+    changePage(page) {
+      console.log(page);
+      const query = Object.assign({}, this.$route.query);
+      query["page"] = page;
+
+      this.$router.push({
+        path: "search",
+        query: query,
+      });
+    },
     showModal() {
       this.$refs["modalFilter"].show();
     },
@@ -508,6 +548,8 @@ export default {
 
     const total = search.hits.total.value;
     this.total = total;
+
+    this.totalPages = Math.ceil(total / 50);
 
     const regions = search.aggregations["agg-regions"]["agg-regions"].buckets;
     this.regions = regions;

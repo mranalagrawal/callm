@@ -92,7 +92,7 @@ export default {
 
       query["price_from"] = this.choosenMin;
       query["price_to"] = this.choosenMax;
-
+      query["page"] = 1;
       /* if (id !== this.active) query["page"] = 1; */
 
       this.$router.push({
