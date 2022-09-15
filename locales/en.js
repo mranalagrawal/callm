@@ -42,6 +42,7 @@ export default {
     topsale: "Top Sale",
   },
   search: {
+    results: "results",
     noResultsAlert: "There are no results for your search",
     noResultsMessage: `
       <p class="lead">Suggestions for your search:</p>

@@ -34,7 +34,15 @@
             />
           </div>
           <img
+            v-if="!data.images.nodes[0].url"
             :src="require(`~/assets/images/img-test.jpeg`)"
+            class="d-block mx-auto"
+            alt=""
+            style="height: 500px"
+          />
+          <img
+            v-else
+            :src="data.images.nodes[0].url"
             class="d-block mx-auto"
             alt=""
             style="height: 500px"
@@ -56,9 +64,12 @@
             <div class="col-8 text-center">
               <div class="d-flex align-items-end justify-content-center">
                 <div>
-                  <p class="text-light-green">Disponibilità immediata</p>
+                  <p v-if="data.totalInventory > 0" class="text-light-green">
+                    Disponibilità immediata ({{ data.totalInventory }})
+                  </p>
                   <button
                     class="btn btn-light-red text-uppercase d-inline-flex align-items-center"
+                    :class="data.totalInventory > 0 ? '' : 'disabled'"
                   >
                     <i class="fal fa-shopping-cart fa-2x mr-2"></i>
                     <span>Aggiungi al carrello</span>
@@ -133,7 +144,23 @@
               </b-tab>
               <b-tab :title="$t('Produttore')"> </b-tab>
               <b-tab :title="$t('Abbinamenti')">
-                {{ metafield.foodPairings }}
+                <!-- {{ metafield.foodPairings }} -->
+                <h3 class="mb-5">Perfetto da bere con</h3>
+
+                <div class="row">
+                  <div
+                    class="col-6 col-md-4 col-lg-3"
+                    v-for="pairing in metafield.foodPairings"
+                    :key="pairing.id"
+                  >
+                    <img
+                      :src="pairing.image"
+                      class="img-fluid"
+                      style="border-radius: 10px"
+                    />
+                    <p>{{ pairing.name }}</p>
+                  </div>
+                </div>
               </b-tab>
             </b-tabs>
           </div>
@@ -210,7 +237,7 @@ export default {
     };
   },
   async fetch() {
-    console.log(this.product);
+    console.log(this.product, "product");
 
     const domain = this.$config.DOMAIN;
     const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
@@ -236,6 +263,10 @@ export default {
 
     this.price = product.variants.nodes[0].price;
     this.metafield = JSON.parse(product.metafield1.value);
+
+    const brandId = this.metafield.brandId;
+
+    console.log(brandId, "brand");
   },
 };
 </script>
@@ -249,6 +280,7 @@ export default {
   margin-bottom: -1px;
   border: none;
   color: #666;
+  width: 200px;
 }
 
 :deep(.nav-tabs) {
@@ -260,5 +292,9 @@ export default {
   /* font-weight: bold; */
   background-color: #fff;
   border-bottom: 4px solid var(--dark-red);
+}
+:deep(ul.nav.nav-tabs.nav-justified) {
+  flex-wrap: nowrap;
+  overflow-x: scroll;
 }
 </style>

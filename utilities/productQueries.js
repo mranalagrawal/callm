@@ -62,6 +62,7 @@ const queryProductByHandle = (handle) => `query {
         descriptionHtml
         handle
         vendor
+        totalInventory
         variants(first: 1) {
             nodes {
                 compareAtPrice

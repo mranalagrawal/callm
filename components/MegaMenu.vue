@@ -12,21 +12,26 @@
     </div>
     <div v-if="selectedItem" @mouseleave="onTab(null)">
       <div
-        class="row bg-white w-100 position-absolute shadow-menu"
+        class="row bg-white w-100 position-absolute shadow-menu pt-3"
         style="min-height: 300px; z-index: 100"
       >
         <div
           v-for="(secondLevel, i) in selectedItem.items"
           :key="i"
           class="col"
+          style="border-right: 1px solid #ddd"
         >
           <p class="lead text-light-green">{{ secondLevel.name }}</p>
           <div v-for="(thirdLevel, j) in secondLevel.items" :key="j">
             <!-- {{ thirdLevel }} -->
-            <p v-if="!thirdLevel.marketing_cta">
+            <p v-if="!thirdLevel.marketing_cta" class="small">
               {{ thirdLevel.third_level_name }}
             </p>
-            <div v-else class="shadow row align-items-center mb-4">
+            <div
+              v-else
+              class="shadow row align-items-center mb-4 ml-2"
+              style="max-width: 350px; border-radius: 10px"
+            >
               <div
                 class="col-3"
                 style="
@@ -43,7 +48,9 @@
 
               <div class="col-9">
                 <p class="mb-0">{{ thirdLevel.third_level_name }}</p>
-                <p class="mb-0">{{ thirdLevel.marketing_cta }}</p>
+                <p class="mb-0 small text-light-red">
+                  {{ thirdLevel.marketing_cta }}
+                </p>
               </div>
             </div>
           </div>
@@ -137,7 +144,7 @@ export default {
     this.data = mapped;
     /* console.clear(); */
     console.log(mapped[0]);
-    /* this.selectedItem = mapped[3]; */
+    /* this.selectedItem = mapped[4]; */
   },
 };
 </script>

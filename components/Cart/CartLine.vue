@@ -1,15 +1,15 @@
 <template>
   <div class="">
     <div class="row align-items-center">
-      <div class="col-4 d-flex align-items-center">
+      <div class="col-6 d-flex align-items-center">
         <img
           :src="item.node.merchandise.product.images.nodes[0].url"
           alt=""
           style="width: 40px"
         />
-        <p class="">{{ item.node.merchandise.product.title }}</p>
+        <p class="small">{{ item.node.merchandise.product.title }}</p>
       </div>
-      <div class="col-4 d-flex justify-content-center align-items-center">
+      <div class="col-2 d-flex justify-content-center align-items-center">
         <button
           class="btn btn-sm btn-outline-light-red"
           @click="increaseQuantity"
@@ -40,7 +40,7 @@
           {{ (item.node.merchandise.price * quantity).toFixed(2) }}
         </p>
       </div>
-      <div class="col-2 text-right">
+      <div class="col-1 text-right">
         <button class="btn">
           <i
             class="fas fa-trash-alt text-light-red"

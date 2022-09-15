@@ -135,12 +135,12 @@ export default {
 
       const cartId = this.$store.state.cart.cart.id;
 
-      const producVariantId = this.product.variants.nodes[0].id;
+      const productVariantId = this.product.variants.nodes[0].id;
 
       const lines = [
         {
           quantity: 1,
-          merchandiseId: producVariantId,
+          merchandiseId: productVariantId,
         },
       ];
 

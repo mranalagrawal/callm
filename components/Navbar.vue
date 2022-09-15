@@ -2,7 +2,7 @@
   <div class="container-fluid fixed- bg-white">
     <div class="row align-items-center py-3 px-4">
       <div class="col-12 col-md-2">
-        <nuxt-link to="/">
+        <nuxt-link :to="localePath('/')">
           <img
             src="../assets/images/logo.svg"
             class="img-fluid"
@@ -13,12 +13,64 @@
       </div>
 
       <div class="col-12 col-md-7 py-2" style="position: relative">
+        <div
+          v-if="search && data"
+          class="bg-white px-3 shadow"
+          style="
+            position: absolute;
+            top: 70px;
+            left: 0px;
+            z-index: 999;
+            width: 100%;
+            height: 50vh;
+            overflow-y: scroll;
+            border-radius: 10px;
+          "
+        >
+          <!-- {{ data }} -->
+          <div v-if="data" class="pt-3">
+            <div v-if="data.products && data.products.length > 0">
+              <p class="font-weight-bold mb-0">Prodotti</p>
+              <nuxt-link
+                v-for="item in data.products"
+                :key="item.id"
+                class="suggest-voice p-2 mb-0"
+                :to="`/${item.handle}-P${item.id}`"
+              >
+                {{ item.name }}
+              </nuxt-link>
+            </div>
+            <div v-if="data.brands && data.brands.length > 0">
+              <p class="font-weight-bold mb-0">Produttori</p>
+              <nuxt-link
+                v-for="item in data.brands"
+                :key="item.id"
+                class="suggest-voice p-2 mb-0"
+                :to="`/winery/${item.handle}-B${item.id}`"
+              >
+                {{ item.name }}
+              </nuxt-link>
+            </div>
+            <div v-if="data.categories && data.categories.length > 0">
+              <p class="font-weight-bold mb-0">Tipologia</p>
+              <p
+                v-for="item in data.categories"
+                :key="item.id"
+                class="suggest-voice p-2 mb-0"
+              >
+                {{ item.name }}
+              </p>
+            </div>
+          </div>
+        </div>
         <b-form-input
+          type="search"
           size="sm"
           class="border border-dark p-4"
           style="border-radius: 8px"
           placeholder="Cosa stai cercando?"
           v-model="search"
+          @input="suggest"
         ></b-form-input>
         <b-button
           size="sm"
@@ -118,7 +170,7 @@
                 v-if="showCart"
                 @mouseleave="showCart = false"
                 class="content card p-3 shadow"
-                style="width: 440px"
+                style="width: 540px"
               >
                 <Cart />
                 <!-- <button class="btn" @click="onSubmit">Submit</button> -->
@@ -142,6 +194,8 @@ export default {
     $route() {
       this.showUser = false;
       this.showCart = false;
+      this.data = null;
+      this.search = null;
     },
   },
   computed: {
@@ -160,9 +214,30 @@ export default {
       showUser: false,
       showCart: false,
       search: "",
+      visible: false,
+      data: null,
     };
   },
   methods: {
+    async suggest() {
+      if (this.search && this.search.length > 3) {
+        const result = await fetch(
+          "http://callmewine-api.dojo.sh/api/autocomplete/search/?search=" +
+            this.search
+        );
+        const resultJSON = await result.json();
+        this.data = resultJSON;
+        /* if (resultJSON.categories.length > 0) {
+          this.categories = resultJSON.categories;
+        }
+        if (resultJSON.brands.length > 0) {
+          this.brands = resultJSON.brands;
+        }
+        if (resultJSON.products.length > 0) {
+          this.products = resultJSON.products;
+        } */
+      }
+    },
     switchToCart() {
       this.showUser = false;
       this.showCart = true;
@@ -175,7 +250,7 @@ export default {
       console.log(this.search);
       const query = { search: this.search };
       this.$router.push({
-        path: "search",
+        path: "/search",
         query: query,
       });
       this.search = "";
@@ -231,5 +306,15 @@ export default {
 }
 .cart-box:hover * {
   color: white;
+}
+
+.suggest-voice {
+  color: black;
+  display: block;
+}
+
+.suggest-voice:hover {
+  background: #fae4e8;
+  color: var(--dark-red);
 }
 </style>

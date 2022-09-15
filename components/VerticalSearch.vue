@@ -36,17 +36,49 @@
             :src="require(`@/assets/images/selections/artisanal.svg`)"
             class="selection-svg d-block"
           />
+          <img
+            title="To gift"
+            v-if="product._source.togift"
+            :src="require(`@/assets/images/selections/togift.svg`)"
+            class="selection-svg d-block"
+          />
+          <img
+            title="Rare"
+            v-if="product._source.rarewine"
+            :src="require(`@/assets/images/selections/rarewine.svg`)"
+            class="selection-svg d-block"
+          />
+          <img
+            title="Rare"
+            v-if="product._source.unusualvariety"
+            :src="require(`@/assets/images/selections/unusualvariety.svg`)"
+            class="selection-svg d-block"
+          />
+          <img
+            title="Rare"
+            v-if="product._source.topsale"
+            :src="require(`@/assets/images/selections/topsale.svg`)"
+            class="selection-svg d-block"
+          />
         </div>
         <div :class="horizontal ? 'heart-horizontal' : 'heart-vertical'">
           <i class="fas fa-heart fa-2x text-light-red"></i>
         </div>
         <nuxt-link
-          :to="`/product/${product._source.id}`"
+          :to="`/product/${product._source.handle}`"
           class="row mx-0 mt-2 text-decoration-none text-dark"
         >
           <img
+            v-if="!product._source.shopifyImageUrl"
             :src="require(`~/assets/images/img-test.jpeg`)"
-            :style="{ width: horizontal ? '180px' : '200px' }"
+            :style="{ width: horizontal ? '180px' : '140px' }"
+            class="d-block mx-auto"
+            alt=""
+          />
+          <img
+            v-else
+            :src="product._source.shopifyImageUrl"
+            :style="{ width: horizontal ? '180px' : '140px' }"
             class="d-block mx-auto"
             alt=""
           />
@@ -59,6 +91,7 @@
               {{ product._source.shortName }}
             </p>
           </div>
+          <!-- {{ product._source.awardcount }} -->
           <p class="mb-0 text-muted" style="text-decoration: line-through">
             € 99
           </p>
@@ -143,6 +176,9 @@ export default {
       const domain = this.$config.DOMAIN;
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
 
+      console.log(this.product);
+      /* return; */
+
       if (!this.$store.state.user.user) {
         this.$router.push("/login");
         return;
@@ -163,12 +199,12 @@ export default {
 
       const cartId = this.$store.state.cart.cart.id;
 
-      const producVariantId = this.product.variants.nodes[0].id;
-
+      const producVariantId = this.product._source.variantId;
+      /* return; */
       const lines = [
         {
           quantity: 1,
-          merchandiseId: producVariantId,
+          merchandiseId: "gid://shopify/ProductVariant/" + producVariantId,
         },
       ];
 
@@ -178,7 +214,9 @@ export default {
 
       this.flashMessage.show({
         status: "",
-        message: "Prodotto aggiunto!",
+        message: this.product._source.shortName + " aggiunto!",
+        icon: this.product._source.shopifyImageUrl,
+        iconClass: "bg-transparent ",
         time: 1000,
         blockClass: "add-product-notification",
       });
@@ -215,7 +253,8 @@ export default {
 </script>
 <style scoped>
 .product-card-vertical {
-  height: 520px;
+  /* height: 420px; */
+  height: auto;
   width: 230px;
   transition: 0.4s;
   margin-bottom: 48px;

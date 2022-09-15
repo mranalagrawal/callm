@@ -9,49 +9,49 @@
     <p class="mb-3 menu-link">Carte salvate</p> -->
     <p>
       <nuxt-link
-        to="/profile#orders"
+        :to="localePath('/profile#orders')"
         class="text-decoration-none text-dark-red"
         >{{ $t("navbar.user.myOrders") }}</nuxt-link
       >
     </p>
     <p>
       <nuxt-link
-        to="/profile#buyagain"
+        :to="localePath('/profile#buyagain')"
         class="text-decoration-none text-dark-red"
         >{{ $t("navbar.user.buyAgain") }}</nuxt-link
       >
     </p>
     <p>
       <nuxt-link
-        to="/profile#wishlist"
+        :to="localePath('/profile#wishlist')"
         class="text-decoration-none text-dark-red"
         >{{ $t("navbar.user.favorites") }}</nuxt-link
       >
     </p>
     <p>
       <nuxt-link
-        to="/profile#addresses"
+        :to="localePath('/profile#addresses')"
         class="text-decoration-none text-dark-red"
         >{{ $t("navbar.user.addresses") }}</nuxt-link
       >
     </p>
     <!-- <p>
       <nuxt-link
-        to="/profile#billing"
+        :to="localePath('/profile#billing')"
         class="text-decoration-none text-dark-red"
         >Dati di fatturazione</nuxt-link
       >
     </p> -->
     <p>
       <nuxt-link
-        to="/profile#consents"
+        :to="localePath('/profile#consents')"
         class="text-decoration-none text-dark-red"
         >{{ $t("navbar.user.consents") }}</nuxt-link
       >
     </p>
     <p>
       <nuxt-link
-        to="/profile#cards"
+        :to="localePath('/profile#cards')"
         class="text-decoration-none text-dark-red"
         >{{ $t("navbar.user.cards") }}</nuxt-link
       >

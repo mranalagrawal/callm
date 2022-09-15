@@ -139,6 +139,7 @@ export const addProductToCart = async (domain, access_token, cartId, lines) => {
   };
 
   const res = await fetch(domain, GRAPHQL_BODY_CART).then((res) => res.json());
+  console.log(res, "qui");
 
   return res.data.cartLinesAdd.cart;
 };

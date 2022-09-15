@@ -42,6 +42,7 @@ export default {
     topsale: "Più venduti",
   },
   search: {
+    results: "risultati",
     noResultsAlert: "There are no results for your search",
     noResultsMessage: `
       <p class="lead">Suggerimenti per la ricerca:</p>

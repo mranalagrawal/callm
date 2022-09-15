@@ -31,7 +31,6 @@
 
     <b-collapse v-model="visible" class="row px-5 mt-5">
       <div class="col-12">
-        {{ order.shippingAddress }}
         <div class="row bg-light pt-3">
           <div class="col-12 col-md-4">
             <p class="font-weight-bold lead">Riepilogo</p>
@@ -75,24 +74,31 @@
             <button class="btn text-light-red" @click="showModal">
               RICHIEDI ASSISTENZA
             </button>
-            <button class="btn btn-light-red" @click="orderAgain">
+            <button
+              class="btn btn-light-red"
+              @click="orderAgain"
+              :class="canBuyAgain ? '' : 'disabled'"
+            >
               ORDINA DI NUOVO
             </button>
           </div>
         </div>
       </div>
-      <div class="col-12">
+      <div class="col-12" v-if="order.lineItems.edges">
         <div
           class="row align-items-center mb-3"
-          v-for="item in order.lineItems.edges"
-          :key="item.node.variant.id"
+          v-for="(item, i) in order.lineItems.edges"
+          :key="i"
         >
+          <!-- {{ canBuyAgain }} -->
           <div class="col-1">
-            <img
-              :src="item.node.variant.product.images.nodes[0].url"
-              alt=""
-              style="width: 40px"
-            />
+            <nuxt-link :to="`/product/${item.node.variant.product.handle}`">
+              <img
+                :src="item.node.variant.product.images.nodes[0].url"
+                alt=""
+                style="width: 40px"
+              />
+            </nuxt-link>
           </div>
           <div class="col-8">
             <strong>{{ item.node.title }}</strong>
@@ -172,6 +178,7 @@ export default {
   data() {
     return {
       visible: false,
+
       form: {
         message: "",
         sender: {
@@ -188,6 +195,11 @@ export default {
       return this.order.lineItems.edges
         .map((el) => el.node.quantity)
         .reduce((t, n) => t + n);
+    },
+    canBuyAgain() {
+      return this.order.lineItems.edges
+        .map((el) => el.node.variant.product.availableForSale)
+        .every((el) => el == true);
     },
   },
   methods: {

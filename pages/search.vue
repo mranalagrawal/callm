@@ -40,7 +40,7 @@
         </span>
       </div>
       <div class="col-4 text-center">
-        <span class="d-inline-flex" v-for="i in 3" :key="i">
+        <span class="d-inline-flex" v-for="i in 3" :key="i + 'prev'">
           <button
             class="btn btn-outline-dark-red btn-small"
             v-if="+currentPage - 4 + i > 0 && +currentPage - 4 + i < totalPages"
@@ -54,7 +54,7 @@
             {{ currentPage }}
           </button>
         </span>
-        <span class="d-inline-flex" v-for="i in 3" :key="i">
+        <span class="d-inline-flex" v-for="i in 3" :key="i + 'next'">
           <button
             class="btn btn-outline-dark-red btn-small"
             v-if="+currentPage + i > 0 && +currentPage + i < totalPages"
@@ -153,8 +153,11 @@
         </div>
       </div>
       <div class="col-12 col-md-9 px-0" v-if="results.length > 0">
-        <div class="row mb-5">
+        <div class="row aling-items-center mb-5">
           <div class="col-4">
+            <span
+              ><strong>{{ total }}</strong> {{ $t("search.results") }}</span
+            >
             <div class="btn shadow text-light-red" @click="column = !column">
               <i :class="column ? 'fal fa-bars' : 'fal fa-th-large'"></i>
             </div>
@@ -181,10 +184,13 @@
                     {{ $t("search.mostAwarded") }}
                   </button>
                   <button class="btn" @click="sortBy('brandname', 'asc')">
-                    brand asc
+                    Brand (A-Z)
                   </button>
                   <button class="btn" @click="sortBy('brandname', 'desc')">
-                    brand desc
+                    Brand (Z-A)
+                  </button>
+                  <button class="btn" @click="sortBy('awardcount', 'desc')">
+                    Più premiati
                   </button>
                 </div>
               </b-dropdown>

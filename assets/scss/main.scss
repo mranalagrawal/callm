@@ -1,6 +1,6 @@
 $theme-colors: (
   "dark-green": #11312b,
-  "light-green": #299100,
+  "light-green": #155b53,
   "dark-red": #8e2440,
   "light-red": #d94965,
 );
@@ -13,9 +13,11 @@ body {
 }
 
 .add-product-notification {
-  width: 200px !important;
-  background: var(--dark-red) !important;
-  color: white !important;
+  width: 400px !important;
+  /* background: var(--dark-red) !important; */
+  /* color: white !important; */
+  background: white;
+  color: black !important;
 }
 
 .remove-product-notification {
