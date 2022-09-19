@@ -61,11 +61,11 @@
             class="selection-svg d-block"
           />
         </div>
-        <div :class="horizontal ? 'heart-horizontal' : 'heart-vertical'">
+        <!-- <div :class="horizontal ? 'heart-horizontal' : 'heart-vertical'">
           <i class="fas fa-heart fa-2x text-light-red"></i>
-        </div>
+        </div> -->
         <nuxt-link
-          :to="`/product/${product._source.handle}`"
+          :to="`/${product._source.handle}-P${product._source.id}`"
           class="row mx-0 mt-2 text-decoration-none text-dark"
         >
           <img
@@ -93,18 +93,18 @@
           </div>
           <!-- {{ product._source.awardcount }} -->
           <p class="mb-0 text-muted" style="text-decoration: line-through">
-            € 99
+            {{ product._source.price.toFixed(2) }}
           </p>
           <div
             class="d-flex justify-content-between align-items-center position-relative"
           >
             <div>
-              <p class="h2">€ {{ product._source.price.toFixed(2) }}</p>
+              <p class="h2">€ {{ product._source.saleprice.toFixed(2) }}</p>
             </div>
             <!-- <nuxt-link :to="`/product/${product.handle}`">detail</nuxt-link> -->
-
+            <!-- {{ cartQuantity }} -->
             <div
-              v-if="false"
+              v-if="cartQuantity > 0"
               style="
                 width: 42px;
                 border-radius: 10px;
@@ -120,7 +120,7 @@
               <div class="btn text-white">
                 <i class="fas fa-minus" @click.stop="decreaseQuantity()"></i>
               </div>
-              <p class="mb-0 text-white text-center">3</p>
+              <p class="mb-0 text-white text-center">{{ cartQuantity }}</p>
               <div class="btn text-white">
                 <i class="fas fa-plus" @click.stop="addToCart()"></i>
               </div>
@@ -155,13 +155,21 @@ export default {
       if (!this.$store.state.cart.cart) {
         return 0;
       }
+
       let cartList = this.$store.state.cart.cart.lines.edges.map((el) => ({
         merchandise: el.node.merchandise.id,
         quantity: el.node.quantity,
       }));
 
+      console.log(
+        this.product._source.shortName,
+        " >>> ",
+        this.product._source.variantId
+      );
       let isInCart = cartList.find(
-        (el) => el.merchandise == this.product.variants.nodes[0].id
+        (el) =>
+          el.merchandise.split("/ProductVariant/")[1] ==
+          this.product._source.variantId
       );
 
       if (isInCart) {
@@ -175,9 +183,6 @@ export default {
     addToCart: async function () {
       const domain = this.$config.DOMAIN;
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
-
-      console.log(this.product);
-      /* return; */
 
       if (!this.$store.state.user.user) {
         this.$router.push("/login");
@@ -229,7 +234,9 @@ export default {
       const lineId = this.$store.state.cart.cart.lines.edges
         .map((el) => el.node)
         .find(
-          (el) => el.merchandise.id == this.product.variants.nodes[0].id
+          (el) =>
+            el.merchandise.id.split("/ProductVariant/")[1] ==
+            this.product._source.variantId
         ).id;
 
       const cart = await updateItemInCart(

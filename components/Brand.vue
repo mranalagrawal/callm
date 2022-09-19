@@ -18,7 +18,7 @@
 <script>
 /* import { queryProductByHandle } from "../../utilities/productQueries"; */
 
-import { queryProductByHandle } from "../utilities/productQueries";
+import { getBrandForProduct } from "../utilities/brandForProduct";
 export default {
   props: ["brandId"],
   data() {
@@ -30,35 +30,10 @@ export default {
     const domain = this.$config.DOMAIN;
     const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
 
-    /* , query: "blog_title: Rosso Giovanni") */
-    const brandQuery = `query {
-      articles(first: 200, query:"tag:${this.brandId}")  {
-          nodes {
-              title
-              handle
-              id   
-              contentHtml    
-              image {
-                url
-              }
-          }
-      }
-    }`;
+    const data = await getBrandForProduct(domain, access_token, this.brandId);
 
-    const GRAPHQL_BODY = {
-      async: true,
-      crossDomain: true,
-      method: "POST",
-      headers: {
-        "X-Shopify-Storefront-Access-Token": access_token,
-        "Content-Type": "application/graphql",
-      },
-      body: brandQuery,
-    };
-    const data = await fetch(domain, GRAPHQL_BODY).then((res) => res.json());
-
-    console.log(data.data.articles.nodes[0]);
-    this.data = data.data.articles.nodes[0];
+    console.log(data);
+    this.data = data;
   },
 };
 </script>

@@ -17,7 +17,12 @@
     </div>
     <div class="row mt-5">
       <div class="col-12 text-center">
-        <button class="btn pox-5 btn-outline-light-red">Vedi tutti</button>
+        <!-- <button class="btn pox-5 btn-outline-light-red">Vedi tutti</button> -->
+        <nuxt-link
+          :to="localePath('/search?search=&favourite=true&page=1')"
+          class="btn pox-5 btn-outline-light-red"
+          >Vedi tutti</nuxt-link
+        >
       </div>
     </div>
   </div>

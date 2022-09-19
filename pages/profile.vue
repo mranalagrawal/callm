@@ -36,14 +36,16 @@
               >
                 <BuyAgain />
               </b-tab>
-              <b-tab
+              <!-- <b-tab
                 :title="$t('profile.favorites')"
                 :active="active == 'wishlist' ? true : false"
-              ></b-tab>
+              ></b-tab> -->
               <b-tab
                 :title="$t('profile.addresses')"
                 :active="active == 'addresses' ? true : false"
-              ></b-tab>
+              >
+                <ShippingAddress />
+              </b-tab>
               <!-- <b-tab
                 title="Dati di fatturazione"
                 :active="active == 'billing' ? true : false"

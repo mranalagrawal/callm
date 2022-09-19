@@ -140,16 +140,7 @@
                     <p class="mb-2" style="font-size: 8px">
                       {{ $t("navbar.cart.total") }}
                     </p>
-                    <p class="mb-0 h4">
-                      {{ Number(cartTotalAmount).toFixed(0) }}.<span
-                        class="small"
-                        >{{
-                          Number(cartTotalAmount.split(".")[1])
-                            .toFixed(2)
-                            .split(".")[1]
-                        }}</span
-                      >
-                    </p>
+                    {{ Number(cartTotalAmount).toFixed(2) }}
                   </div>
                   <div class="">
                     <p class="mb-0">

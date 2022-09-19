@@ -18,12 +18,14 @@ body {
   /* color: white !important; */
   background: white;
   color: black !important;
+  z-index: 999;
 }
 
 .remove-product-notification {
   width: 200px !important;
   background: white !important;
   color: var(--dark-red) !important;
+  z-index: 999;
 }
 
 .pointer {

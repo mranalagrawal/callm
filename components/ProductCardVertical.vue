@@ -7,7 +7,7 @@
       </div>
 
       <nuxt-link
-        :to="`/product/${product.handle}`"
+        :to="`/${product.handle}-${product.tags[0]}`"
         class="row mx-0 mt-2 img-wrapper text-decoration-none text-dark"
         :style="{ backgroundImage: 'url(' + product.images.nodes[0].url + ')' }"
       >
@@ -31,7 +31,9 @@
         </div>
       </nuxt-link>
       <div class="p-3">
-        <p class="font-weight-bold">{{ product.title }}</p>
+        <p class="font-weight-bold" style="font-size: 14px">
+          {{ product.title }}
+        </p>
         <p class="mb-0 text-muted" style="text-decoration: line-through">
           € {{ product.variants.nodes[0].compareAtPrice }}
         </p>
@@ -112,6 +114,8 @@ export default {
   },
   methods: {
     addToCart: async function () {
+      console.log(this.product, "this.product");
+      /* return; */
       const domain = this.$config.DOMAIN;
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
 
@@ -150,7 +154,9 @@ export default {
 
       this.flashMessage.show({
         status: "",
-        message: "Prodotto aggiunto!",
+        message: this.product.title + " aggiunto!",
+        icon: this.product.images.nodes[0].url,
+        iconClass: "bg-transparent ",
         time: 1000,
         blockClass: "add-product-notification",
       });

@@ -106,7 +106,6 @@ export default {
     });
     let data = response.data.body;
     /* console.clear(); */
-    console.log(data, "DATA");
 
     let mapped = data
       .map((firstLevel) => {
@@ -143,7 +142,7 @@ export default {
 
     this.data = mapped;
     /* console.clear(); */
-    console.log(mapped[0]);
+
     /* this.selectedItem = mapped[4]; */
   },
 };

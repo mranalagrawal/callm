@@ -142,7 +142,13 @@
                   </tbody>
                 </table>
               </b-tab>
-              <b-tab :title="$t('Produttore')"> </b-tab>
+              <b-tab :title="$t('Produttore')">
+                <div v-if="brand">
+                  <h3 class="mb-5">{{ brand.title }}</h3>
+                  <img :src="brand.image.url" alt="" />
+                  <div v-html="brand.contentHtml"></div>
+                </div>
+              </b-tab>
               <b-tab :title="$t('Abbinamenti')">
                 <!-- {{ metafield.foodPairings }} -->
                 <h3 class="mb-5">Perfetto da bere con</h3>
@@ -224,9 +230,11 @@
 </template>
 
 <script>
-/* import { queryProductByHandle } from "../../utilities/productQueries"; */
+/* import { queryProductByIdAsTag } from "../../utilities/productQueries"; */
 
-import { queryProductByHandle } from "../utilities/productQueries";
+import { queryProductByIdAsTag } from "../utilities/productQueries";
+import { getBrandForProduct } from "../utilities/brandForProduct";
+
 export default {
   props: ["product"],
   data() {
@@ -234,15 +242,16 @@ export default {
       data: null,
       price: null,
       metafield: null,
+      brand: null,
     };
   },
   async fetch() {
-    console.log(this.product, "product");
+    console.log(this.product, "product QUA");
 
     const domain = this.$config.DOMAIN;
     const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
 
-    const productQuery = queryProductByHandle(this.product);
+    const productQuery = queryProductByIdAsTag(this.product);
 
     const GRAPHQL_BODY = {
       async: true,
@@ -254,19 +263,23 @@ export default {
       },
       body: productQuery,
     };
-    const product = await fetch(domain, GRAPHQL_BODY)
-      .then((res) => res.json())
-      .then((res) => res.data.productByHandle);
+    const data = await fetch(domain, GRAPHQL_BODY).then((res) => res.json());
+    this.data = data.data.products.edges[0].node;
 
-    console.log(product, "PRODUCT");
-    this.data = product;
+    /* return; */
 
-    this.price = product.variants.nodes[0].price;
-    this.metafield = JSON.parse(product.metafield1.value);
+    this.price = this.data.variants.nodes[0].price;
+    this.metafield = JSON.parse(this.data.metafield1.value);
 
     const brandId = this.metafield.brandId;
-
-    console.log(brandId, "brand");
+    alert("qui c'è un brand statico, cambialo!");
+    const dataBrand = await getBrandForProduct(
+      domain,
+      access_token,
+      "B" + brandId
+    );
+    this.brand = dataBrand;
+    console.log(dataBrand, "brand");
   },
 };
 </script>
