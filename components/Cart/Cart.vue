@@ -11,7 +11,7 @@
           }}</nuxt-link>
         </div>
         <div class="col-6">
-          <a class="btn btn-dark-red w-100" :href="cart.checkoutUrl">{{
+          <a class="btn btn-dark-red w-100" :href="checkoutUrl">{{
             $t("navbar.cart.checkout")
           }}</a>
         </div>
@@ -35,6 +35,38 @@ export default {
   computed: {
     cart() {
       return this.$store.state.cart.cart;
+    },
+    checkoutUrl() {
+      let baseUrl = this.cart.checkoutUrl + "/?";
+
+      this.$store.state.user.user.customer.email &&
+        (baseUrl += `&checkout[email]=${this.$store.state.user.user.customer.email}`);
+
+      this.$store.state.user.user.customer.defaultAddress?.firstName &&
+        (baseUrl += `&checkout[shipping_address][first_name]=${this.$store.state.user.user.customer.defaultAddress.firstName}`);
+
+      this.$store.state.user.user.customer.defaultAddress?.lastName &&
+        (baseUrl += `&checkout[shipping_address][last_name]=${this.$store.state.user.user.customer.defaultAddress.lastName}`);
+
+      this.$store.state.user.user.customer.defaultAddress?.address1 &&
+        (baseUrl += `&checkout[shipping_address][address1]=${this.$store.state.user.user.customer.defaultAddress.address1}`);
+
+      this.$store.state.user.user.customer.defaultAddress?.address2 &&
+        (baseUrl += `&checkout[shipping_address][address2]=${this.$store.state.user.user.customer.defaultAddress.address2}`);
+
+      this.$store.state.user.user.customer.defaultAddress?.country &&
+        (baseUrl += `&checkout[shipping_address][country]=${this.$store.state.user.user.customer.defaultAddress.country}`);
+
+      this.$store.state.user.user.customer.defaultAddress?.province &&
+        (baseUrl += `&checkout[shipping_address][province]=${this.$store.state.user.user.customer.defaultAddress.province}`);
+
+      this.$store.state.user.user.customer.defaultAddress?.city &&
+        (baseUrl += `&checkout[shipping_address][city]=${this.$store.state.user.user.customer.defaultAddress.city}`);
+
+      this.$store.state.user.user.customer.defaultAddress?.zip &&
+        (baseUrl += `&checkout[shipping_address][zip]=${this.$store.state.user.user.customer.defaultAddress.zip}`);
+
+      return baseUrl;
     },
   },
 };

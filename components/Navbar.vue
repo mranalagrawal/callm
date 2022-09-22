@@ -188,13 +188,28 @@ export default {
       this.data = null;
       this.search = null;
     },
+    cartTotalAmount(total) {
+      if (Number(total) > 50) {
+        this.flashMessage.show({
+          status: "",
+          message: "Hai raggiunto la spedizione gratuita!",
+
+          time: 1000,
+          blockClass: "free-shipping-notification",
+        });
+      }
+    },
   },
   computed: {
     cart() {
       return this.$store.state.cart.cart;
     },
     cartTotalAmount() {
-      return this.$store.state.cart.cart.cost.totalAmount.amount;
+      if (this.$store.state.cart.cart) {
+        return this.$store.state.cart.cart.cost.totalAmount.amount;
+      } else {
+        return 0;
+      }
     },
     user() {
       return this.$store.state.user.user;

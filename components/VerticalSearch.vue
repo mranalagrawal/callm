@@ -102,7 +102,7 @@
               <p class="h2">€ {{ product._source.saleprice.toFixed(2) }}</p>
             </div>
             <!-- <nuxt-link :to="`/product/${product.handle}`">detail</nuxt-link> -->
-            <!-- {{ cartQuantity }} -->
+            {{ product._source.quantity }}
             <div
               v-if="cartQuantity > 0"
               style="
@@ -126,7 +126,11 @@
               </div>
             </div>
             <div v-else>
-              <button class="btn btn-cart" @click="addToCart()">
+              <button
+                class="btn btn-cart"
+                :class="product._source.quantity > 0 ? '' : 'disabled'"
+                @click="addToCart()"
+              >
                 <i class="fal fa-shopping-cart text-white"></i>
               </button>
             </div>
@@ -205,6 +209,8 @@ export default {
       const cartId = this.$store.state.cart.cart.id;
 
       const producVariantId = this.product._source.variantId;
+      console.clear();
+      console.log(this.product);
       /* return; */
       const lines = [
         {

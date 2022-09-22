@@ -21,6 +21,13 @@
             class="mx-auto d-block"
           />
           <p class="mt-5 text-center font-weight-bold">{{ brand.title }}</p>
+          <p class="text-center">
+            {{ JSON.parse(brand.details.value).region }}
+          </p>
+          <p class="text-center text-light-green pb-5">
+            {{ JSON.parse(brand.details.value).country }}
+          </p>
+          <p>{{ JSON.parse(brand.details.value).isPartner }}</p>
         </nuxt-link>
       </div>
     </div>
@@ -48,6 +55,9 @@ export default {
               tags 
               image {
                 url
+              }
+              details: metafield(namespace: "custom", key: "details") {
+                  value
               }
           }
           pageInfo {

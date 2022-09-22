@@ -9,12 +9,15 @@ const getBrandById = (brandId) => {
                 image {
                   url
                 }
+                details: metafield(namespace: "custom", key: "details") {
+                  value
+                }
             }
         }
       }`;
 };
 
-export async function getBrandForProduct(domain, access_token, brandId) {
+export async function getBrand(domain, access_token, brandId) {
   const brandQuery = getBrandById(brandId);
 
   const GRAPHQL_BODY = {

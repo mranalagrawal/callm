@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container-fluid px-md-5" v-if="data">
+    <div class="container-fluid px-md-5" v-if="data && brandMetafields">
       <div class="row px-3">
         <!-- {{ JSON.parse(data.metafield1.value).countryName }} -->
         <div class="col-12 col-md-4 position-relative">
@@ -53,6 +53,10 @@
             <div class="col-12 mb-5">
               <h1>{{ data.title }}</h1>
               <p class="lead text-light-red">{{ data.vendor }}</p>
+              <nuxt-link
+                :to="`winery/${data.vendor}-B${brandMetafields.brandId}`"
+                >{{ data.vendor }}</nuxt-link
+              >
               <div v-html="metafield.shortDescription"></div>
             </div>
             <div class="col-4">
@@ -86,8 +90,8 @@
 
       <div class="row px-3 mt-5">
         <div class="col-12 col-md-8 pt-5">
-          <div class="pt-5">
-            <b-tabs content-class="mt-5" justified>
+          <div class="pt-2">
+            <b-tabs content-class="mt-4" justified>
               <b-tab :title="$t('Descrizione')">
                 <div v-html="data.descriptionHtml"></div>
               </b-tab>
@@ -120,10 +124,9 @@
                       <th style="border-radius: 15px 0px 0px 0px" scope="col">
                         GUIDA
                       </th>
-                      <th scope="col">ANNATA</th>
-                      <th scope="col">PUNTEGGIO</th>
+
                       <th style="border-radius: 0px 15px 0px 0px" scope="col">
-                        CITAZIONE
+                        PUNTEGGIO
                       </th>
                     </tr>
                   </thead>
@@ -132,21 +135,75 @@
                       <th scope="row">
                         <strong>{{ award.title }}</strong>
                       </th>
-                      <td>XXX</td>
+
                       <td>
                         <strong>{{ award.value }}</strong> /
                         {{ award.maxValue }}
                       </td>
-                      <td>XXX</td>
                     </tr>
                   </tbody>
                 </table>
               </b-tab>
               <b-tab :title="$t('Produttore')">
                 <div v-if="brand">
-                  <h3 class="mb-5">{{ brand.title }}</h3>
-                  <img :src="brand.image.url" alt="" />
-                  <div v-html="brand.contentHtml"></div>
+                  <div v-if="brandMetafields.isPartner" class="ribbon">
+                    <img
+                      :src="require(`@/assets/images/selections/favourite.svg`)"
+                      class="svg-favourite"
+                      style="width: 20px"
+                    />
+                    <span class="small">Consigliato da Callmewine</span>
+                  </div>
+                  <h3 class="text-light-red">{{ brand.title }}</h3>
+                  <div class="row">
+                    <div class="col-12 col-md-8">
+                      <div class="row py-3 bg-light">
+                        <div class="col-6 font-weight-bold">
+                          Vini Principali
+                        </div>
+                        <div class="col-6"></div>
+                      </div>
+                      <div class="row py-3">
+                        <div class="col-6 font-weight-bold">
+                          Anno di fondazione
+                        </div>
+                        <div class="col-6">{{ brandMetafields.year }}</div>
+                      </div>
+                      <div class="row py-3 bg-light">
+                        <div class="col-6 font-weight-bold">Ettari vitati</div>
+                        <div class="col-6">{{ brandMetafields.hectares }}</div>
+                      </div>
+                      <div class="row py-3">
+                        <div class="col-6 font-weight-bold">
+                          Uve di proprietà
+                        </div>
+                        <div class="col-6">
+                          {{ brandMetafields.ownedGrapes }}
+                        </div>
+                      </div>
+                      <div class="row py-3 bg-light">
+                        <div class="col-6 font-weight-bold">
+                          Produzione annua
+                        </div>
+                        <div class="col-6">
+                          {{ brandMetafields.annualProduction }}
+                        </div>
+                      </div>
+                      <div class="row py-3">
+                        <div class="col-6 font-weight-bold">Enologo</div>
+                        <div class="col-6"></div>
+                      </div>
+                      <div class="row py-3 bg-light">
+                        <div class="col-6 font-weight-bold">Indirizzo</div>
+                        <div class="col-6">{{ brandMetafields.address }}</div>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <img :src="brand.image.url" alt="" />
+                    </div>
+                  </div>
+                  <!-- <img :src="brand.image.url" alt="" />
+                  <div v-html="brand.contentHtml"></div> -->
                 </div>
               </b-tab>
               <b-tab :title="$t('Abbinamenti')">
@@ -224,7 +281,7 @@
           </div>
         </div>
       </div>
-      {{ metafield }}
+      <!-- {{ metafield }} -->
     </div>
   </div>
 </template>
@@ -233,7 +290,7 @@
 /* import { queryProductByIdAsTag } from "../../utilities/productQueries"; */
 
 import { queryProductByIdAsTag } from "../utilities/productQueries";
-import { getBrandForProduct } from "../utilities/brandForProduct";
+import { getBrand } from "../utilities/brandForProduct";
 
 export default {
   props: ["product"],
@@ -243,10 +300,11 @@ export default {
       price: null,
       metafield: null,
       brand: null,
+      brandMetafields: null,
     };
   },
   async fetch() {
-    console.log(this.product, "product QUA");
+    console.log(this.product, "product");
 
     const domain = this.$config.DOMAIN;
     const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
@@ -264,6 +322,7 @@ export default {
       body: productQuery,
     };
     const data = await fetch(domain, GRAPHQL_BODY).then((res) => res.json());
+    console.log(data, "D");
     this.data = data.data.products.edges[0].node;
 
     /* return; */
@@ -272,19 +331,54 @@ export default {
     this.metafield = JSON.parse(this.data.metafield1.value);
 
     const brandId = this.metafield.brandId;
-    alert("qui c'è un brand statico, cambialo!");
-    const dataBrand = await getBrandForProduct(
-      domain,
-      access_token,
-      "B" + brandId
-    );
+
+    const dataBrand = await getBrand(domain, access_token, "B" + brandId);
     this.brand = dataBrand;
-    console.log(dataBrand, "brand");
+    console.log(this.metafield, "BRAND");
+    this.brandMetafields = JSON.parse(dataBrand.details.value);
+    console.log(this.brandMetafields, "brand");
   },
 };
 </script>
 
 <style scoped>
+.ribbon {
+  background: var(--dark-green);
+  color: white;
+  position: relative;
+  display: inline-block;
+  padding: 0px 32px 0px 32px;
+  height: 24px;
+}
+
+.ribbon::before {
+  position: absolute;
+  content: "";
+  width: 0;
+  height: 0;
+  top: 0px;
+  left: 0px;
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  border-left: 12px solid white;
+}
+
+.ribbon::after {
+  position: absolute;
+  content: "";
+  width: 0;
+  height: 0;
+  top: 0px;
+  right: 0px;
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  border-right: 12px solid white;
+}
+
+.svg-favourite {
+  filter: brightness(100);
+}
+
 .selection-svg {
   filter: brightness(0.7);
   width: 36px;

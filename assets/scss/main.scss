@@ -2,7 +2,7 @@ $theme-colors: (
   "dark-green": #11312b,
   "light-green": #155b53,
   "dark-red": #8e2440,
-  "light-red": #d94965,
+  "light-red": #d86c82,
 );
 
 @import "~bootstrap/scss/bootstrap";
@@ -14,8 +14,6 @@ body {
 
 .add-product-notification {
   width: 400px !important;
-  /* background: var(--dark-red) !important; */
-  /* color: white !important; */
   background: white;
   color: black !important;
   z-index: 999;
@@ -25,6 +23,13 @@ body {
   width: 200px !important;
   background: white !important;
   color: var(--dark-red) !important;
+  z-index: 999;
+}
+
+.free-shipping-notification {
+  width: 400px !important;
+  background: var(--light-green) !important;
+  color: white !important;
   z-index: 999;
 }
 
@@ -40,4 +45,19 @@ body {
 
 .text-barred {
   text-decoration: line-through !important;
+}
+
+.custom-input {
+  border-radius: 10px;
+  border-color: #11312b;
+  border-width: 2px;
+}
+
+.custom-label {
+  position: relative;
+  bottom: -11px;
+  left: 12px;
+  padding: 0px 4px;
+  background: white;
+  color: #11312b;
 }

@@ -44,18 +44,18 @@
     </p> -->
     <p>
       <nuxt-link
-        :to="localePath('/profile#consents')"
+        :to="localePath('/profile#accessData')"
         class="text-decoration-none text-dark-red"
-        >{{ $t("navbar.user.consents") }}</nuxt-link
+        >{{ $t("navbar.user.accessData") }}</nuxt-link
       >
     </p>
-    <p>
+    <!-- <p>
       <nuxt-link
         :to="localePath('/profile#cards')"
         class="text-decoration-none text-dark-red"
         >{{ $t("navbar.user.cards") }}</nuxt-link
       >
-    </p>
+    </p> -->
     <div class="mt-5">
       <button @click="logout" class="btn btn-outline-light-red w-100">
         {{ $t("navbar.user.logout") }}

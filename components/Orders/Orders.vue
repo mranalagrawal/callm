@@ -43,7 +43,7 @@ export default {
     );
 
     /* console.log(orders); */
-    this.orders = orders.edges;
+    this.orders = orders.edges.reverse();
   },
 };
 </script>

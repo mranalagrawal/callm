@@ -51,13 +51,15 @@
                 :active="active == 'billing' ? true : false"
               ></b-tab> -->
               <b-tab
-                :title="$t('profile.consents')"
-                :active="active == 'consents' ? true : false"
-              ></b-tab>
-              <b-tab
+                :title="$t('profile.accessData')"
+                :active="active == 'accessData' ? true : false"
+              >
+                <AccessData />
+              </b-tab>
+              <!-- <b-tab
                 :title="$t('profile.cards')"
                 :active="active == 'cards' ? true : false"
-              ></b-tab>
+              ></b-tab> -->
             </b-tabs>
           </div>
         </div>

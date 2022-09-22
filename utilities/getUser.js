@@ -6,6 +6,34 @@ export const getUserQuery = (token) => `query {
         acceptsMarketing
         email
         phone
+        addresses(first: 30) {
+          edges {
+              node {
+                  firstName
+                  lastName
+                  address1
+                  address2
+                  phone
+                  country
+                  city
+                  province
+                  zip
+                  id
+              }
+        }
+      }
+        defaultAddress {
+          firstName
+          lastName
+          address1
+          address2
+          country
+          city
+          province
+          zip
+          id
+        }
+        
         orders(first: 10) {
             edges {
                 node {
