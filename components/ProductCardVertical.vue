@@ -22,14 +22,20 @@
             <i class="fal fa-users"></i>
           </div>
         </div>
-        <div
-          class="col-2 offset-8 pr-2 h-100 d-flex justify-content-end align-items-center flex-column"
-        >
-          <div class="">
-            <i class="fal fa-heart fa-2x text-light-red"></i>
+      </nuxt-link>
+      <div class="row">
+        <div class="col-12">
+          <div class="text-right">
+            <i
+              class="text-light-red mr-2"
+              :class="
+                isInWishList ? 'fas fa-heart fa-2x' : 'fal fa-heart fa-2x '
+              "
+              @click.stop="toggleWishlist"
+            ></i>
           </div>
         </div>
-      </nuxt-link>
+      </div>
       <div class="p-3">
         <p class="font-weight-bold" style="font-size: 14px">
           {{ product.title }}
@@ -92,6 +98,20 @@ export default {
     return { quantity: 0 };
   },
   computed: {
+    isInWishList() {
+      if (!this.$store.state.user.user) return false;
+      let wishlist = this.$store.state.user.user.customer.wishlist;
+
+      // wishlist is null by default
+      if (wishlist) {
+        /* console.log(wishlist); */
+        return JSON.parse(wishlist.value).includes(
+          String(this.product.variants.nodes[0].id.split("ProductVariant/")[1])
+        );
+      }
+
+      return false;
+    },
     cartQuantity() {
       if (!this.$store.state.cart.cart) {
         return 0;
@@ -113,6 +133,27 @@ export default {
     },
   },
   methods: {
+    async toggleWishlist() {
+      if (!this.$store.state.user.user) {
+        this.$router.push("/login");
+        return;
+      }
+
+      const userId =
+        this.$store.state.user.user.customer.id.split("Customer/")[1];
+
+      const variantId =
+        this.product.variants.nodes[0].id.split("ProductVariant/")[1];
+
+      const response = await fetch(
+        `http://callmewine-api.dojo.sh/api/customers/${userId}/wishlist/${variantId}`,
+        { async: true, crossDomain: true, method: "POST" }
+      );
+      const updatedWishlist = await response.text();
+      console.log(updatedWishlist);
+
+      this.$store.commit("user/updateWishlist", updatedWishlist);
+    },
     addToCart: async function () {
       console.log(this.product, "this.product");
       /* return; */

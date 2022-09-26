@@ -14,7 +14,7 @@ export default {
     };
   },
   created() {
-    console.clear();
+    /* console.clear(); */
     console.log(this.$route.path.split("product/")[1], "route");
 
     this.brandId = this.$route.path.split("-").at(-1);

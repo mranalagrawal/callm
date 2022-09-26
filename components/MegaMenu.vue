@@ -24,9 +24,15 @@
           <p class="lead text-light-green">{{ secondLevel.name }}</p>
           <div v-for="(thirdLevel, j) in secondLevel.items" :key="j">
             <!-- {{ thirdLevel }} -->
-            <p v-if="!thirdLevel.marketing_cta" class="small">
+            <nuxt-link
+              v-if="!thirdLevel.marketing_cta"
+              class="small"
+              :to="thirdLevel.third_level_link"
+              >{{ thirdLevel.third_level_name }}</nuxt-link
+            >
+            <!-- <p v-if="!thirdLevel.marketing_cta" class="small">
               {{ thirdLevel.third_level_name }}
-            </p>
+            </p> -->
             <div
               v-else
               class="shadow row align-items-center mb-4 ml-2"
@@ -93,7 +99,7 @@ export default {
     },
   },
   async fetch() {
-    console.log(this.$i18n.locale, "LAN");
+    /* console.log(this.$i18n.locale, "LAN"); */
 
     let lang = "";
     if (this.$i18n.locale == "en") {

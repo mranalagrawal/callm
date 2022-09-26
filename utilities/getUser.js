@@ -6,6 +6,9 @@ export const getUserQuery = (token) => `query {
         acceptsMarketing
         email
         phone
+        wishlist: metafield(namespace: "custom", key: "wishlist") {
+          value
+        }
         addresses(first: 30) {
           edges {
               node {

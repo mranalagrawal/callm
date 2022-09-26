@@ -92,10 +92,15 @@
           class="d-flex"
           :class="user ? 'justify-content-around' : 'justify-content-end'"
         >
-          <button class="btn" v-if="user">
-            <i class="fal fa-heart"></i>
-            <p class="mb-0">{{ $t("navbar.favorites") }}</p>
-          </button>
+          <div class="btn" v-if="user">
+            <nuxt-link
+              :to="localePath('/wishlist')"
+              class="text-decoration-none text-dark"
+            >
+              <i class="fal fa-heart"></i>
+              <p class="mb-0">{{ $t("navbar.favorites") }}</p>
+            </nuxt-link>
+          </div>
           <div class="position-relative">
             <div>
               <button class="btn cart-box" @mouseenter="switchToUser()">

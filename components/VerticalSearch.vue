@@ -61,9 +61,13 @@
             class="selection-svg d-block"
           />
         </div>
-        <!-- <div :class="horizontal ? 'heart-horizontal' : 'heart-vertical'">
-          <i class="fas fa-heart fa-2x text-light-red"></i>
-        </div> -->
+        <div :class="horizontal ? 'heart-horizontal' : 'heart-vertical'">
+          <i
+            class="text-light-red"
+            :class="isInWishList ? 'fas fa-heart fa-2x' : 'fal fa-heart fa-2x '"
+            @click="toggleWishlist"
+          ></i>
+        </div>
         <nuxt-link
           :to="`/${product._source.handle}-P${product._source.id}`"
           class="row mx-0 mt-2 text-decoration-none text-dark"
@@ -101,8 +105,6 @@
             <div>
               <p class="h2">€ {{ product._source.saleprice.toFixed(2) }}</p>
             </div>
-            <!-- <nuxt-link :to="`/product/${product.handle}`">detail</nuxt-link> -->
-            {{ product._source.quantity }}
             <div
               v-if="cartQuantity > 0"
               style="
@@ -155,6 +157,19 @@ export default {
     return { quantity: 0 };
   },
   computed: {
+    isInWishList() {
+      if (!this.$store.state.user.user) return null;
+      let wishlist = this.$store.state.user.user.customer.wishlist;
+
+      // wishlist is null by default
+      if (wishlist) {
+        return JSON.parse(wishlist.value).includes(
+          String(this.product._source.variantId)
+        );
+      }
+
+      return null;
+    },
     cartQuantity() {
       if (!this.$store.state.cart.cart) {
         return 0;
@@ -183,6 +198,7 @@ export default {
       }
     },
   },
+
   methods: {
     addToCart: async function () {
       const domain = this.$config.DOMAIN;
@@ -260,6 +276,26 @@ export default {
         time: 1000,
         blockClass: "remove-product-notification",
       });
+    },
+    async toggleWishlist() {
+      if (!this.$store.state.user.user) {
+        this.$router.push("/login");
+        return;
+      }
+
+      const userId =
+        this.$store.state.user.user.customer.id.split("Customer/")[1];
+
+      const variantId = this.product._source.variantId;
+
+      const response = await fetch(
+        `http://callmewine-api.dojo.sh/api/customers/${userId}/wishlist/${variantId}`,
+        { async: true, crossDomain: true, method: "POST" }
+      );
+      const updatedWishlist = await response.text();
+      console.log(updatedWishlist);
+
+      this.$store.commit("user/updateWishlist", updatedWishlist);
     },
   },
 };

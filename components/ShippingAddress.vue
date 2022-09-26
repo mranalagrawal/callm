@@ -514,7 +514,7 @@ export default {
     },
   },
   async mounted() {
-    console.clear();
+    /* console.clear(); */
     console.log(this.$store.state.user.user.customer.addresses.edges);
     this.addresses = this.$store.state.user.user.customer.addresses.edges;
 
@@ -554,7 +554,7 @@ export default {
     },
     async onSubmit(e) {
       e.preventDefault();
-      console.log(this.form);
+      /* console.log(this.form); */
 
       const customerAccessToken = this.$store.state.user.user.token;
 

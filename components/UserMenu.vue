@@ -21,13 +21,13 @@
         >{{ $t("navbar.user.buyAgain") }}</nuxt-link
       >
     </p>
-    <p>
+    <!-- <p>
       <nuxt-link
         :to="localePath('/profile#wishlist')"
         class="text-decoration-none text-dark-red"
         >{{ $t("navbar.user.favorites") }}</nuxt-link
       >
-    </p>
+    </p> -->
     <p>
       <nuxt-link
         :to="localePath('/profile#addresses')"

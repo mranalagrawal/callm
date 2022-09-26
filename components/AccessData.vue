@@ -144,7 +144,7 @@
             :placeholder="currentLastName"
           ></b-form-input>
 
-          <label class="custom-label">Telefono</label>
+          <label class="custom-label">Telefono (+XXYYYYYYYYYY)</label>
           <b-form-input
             class="custom-input mb-3"
             v-model="newPhone"
@@ -380,9 +380,17 @@ export default {
       };
 
       const response = await fetch(domain, GRAPHQL_BODY);
+
       const responseJSON = await response.json();
 
       console.log(responseJSON, "RESPONSE PERSONAL");
+
+      if (responseJSON.data.customerUpdate.customerUserErrors.length > 0) {
+        let error =
+          responseJSON.data.customerUpdate.customerUserErrors[0].message;
+        alert(error);
+        return;
+      }
 
       const updatedFirstName =
         responseJSON.data.customerUpdate.customer.firstName;

@@ -17,7 +17,7 @@ export default {
     let path = this.$route.path;
     let isProduct = /[P][0-9]+/;
 
-    console.clear();
+    /* console.clear(); */
 
     if (isProduct.test(path)) {
       /* this.product = this.$route.path.split("-P")[0].split("/").at(-1); */

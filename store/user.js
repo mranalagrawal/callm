@@ -38,6 +38,11 @@ export const mutations = {
   updateAccessToken(state, newToken) {
     state.user.token = newToken;
   },
+  updateWishlist(state, wishlist) {
+    state.user.customer.wishlist = {};
+    state.user.customer.wishlist.value = wishlist;
+  },
+
   /* setCart(state, cart) {
     state.cart = cart;
   },
