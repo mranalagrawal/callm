@@ -2,7 +2,6 @@
   <div>
     <div class="container-fluid px-md-5" v-if="data && brandMetafields">
       <div class="row px-3">
-        <!-- {{ JSON.parse(data.metafield1.value).countryName }} -->
         <div class="col-12 col-md-4 position-relative">
           <div
             class="position-absolute"
