@@ -4,24 +4,6 @@
       <div class="col-12 col-md-3">filtri</div>
       <div class="col-12 col-md-9">
         <div class="row">
-          <div class="col-12">
-            <button
-              class="btn btn-outline-light-red"
-              v-if="links.prev"
-              @click="fetchPrev"
-            >
-              Prev
-            </button>
-            <button
-              class="btn btn-outline-light-red"
-              v-if="links.next"
-              @click="fetchNext"
-            >
-              next
-            </button>
-          </div>
-        </div>
-        <div class="row">
           <div
             class="col-12 col-md-6 col-lg-4 mb-3"
             v-for="brand in data"
@@ -32,13 +14,14 @@
                 localePath('/winery' + '/' + brand.name + '-B' + brand.brandId)
               "
               class="card shadow h-100 p-3 text-decoration-none text-dark"
+              :class="brand.isPartner ? 'partner' : ''"
             >
               <img
                 v-if="brand.url"
                 :src="brand.url"
                 alt=""
                 width="40%"
-                class="mx-auto d-block"
+                class="mx-auto d-block mt-5"
               />
               <p class="mt-5 text-center font-weight-bold">{{ brand.name }}</p>
               <p class="text-center">
@@ -49,6 +32,22 @@
               </p>
             </nuxt-link>
           </div>
+        </div>
+        <div class="row justify-content-between">
+          <button
+            class="btn text-light-red"
+            v-if="links.prev"
+            @click="fetchPrev"
+          >
+            Pagina Precedente
+          </button>
+          <button
+            class="btn text-light-red"
+            v-if="links.next"
+            @click="fetchNext"
+          >
+            Pagina successiva
+          </button>
         </div>
       </div>
     </div>
@@ -88,3 +87,11 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.partner {
+  background: linear-gradient(90deg, transparent 60px, white 60px),
+    url("@/assets/images/red.svg");
+  background-size: cover;
+}
+</style>

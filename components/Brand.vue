@@ -1,66 +1,135 @@
 <template>
-  <div
-    v-if="data && metafields"
-    class="container-fluid"
-    :class="metafields.isPartner ? 'partner' : ''"
-  >
-    <div class="container">
-      <div class="row align-items-center mt-5">
-        <div class="col-12 mb-3 mt-5 bg-white pt-2">
-          <div v-if="metafields.isPartner" class="ribbon">
-            <img
-              :src="require(`@/assets/images/selections/favourite.svg`)"
-              class="svg-favourite"
-              style="width: 20px"
-            />
-            <span class="small">Consigliato da Callmewine</span>
+  <div class="container-fluid px-0 mt-n5" v-if="data && metafields">
+    <div class="container-fluid px-0" v-if="metafields.isPartner">
+      <div class="container-fluid partner-bg px-md-5">
+        <div class="row text-white">
+          <div class="col-12">
+            <div class="ribbon mt-5">
+              <img
+                :src="require(`@/assets/images/selections/favourite.svg`)"
+                class="svg-favourite"
+                style="width: 20px"
+              />
+              <span class="small">Consigliato da Callmewine</span>
+            </div>
+            <h1 class="py-3">{{ data.title }}</h1>
+            <p>{{ metafields.subtitle }}</p>
           </div>
-          <h1>{{ data.title }}</h1>
-          <p>{{ metafields.subtitle }}</p>
-        </div>
-        <div class="col-12 col-md-5 h-100 bg-white">
-          <img :src="data.image.url" alt="" class="d-block mx-auto" />
-        </div>
-        <div class="col-12 col-md-7 h-100 bg-white">
-          <div class="row">
+          <div class="row mb-5">
             <div class="col-12">
-              <div class="row py-3 bg-light">
-                <div class="col-6 font-weight-bold">Vini Principali</div>
-                <div class="col-6"></div>
-              </div>
-              <div class="row py-3">
-                <div class="col-6 font-weight-bold">Anno di fondazione</div>
-                <div class="col-6">{{ metafields.year }}</div>
-              </div>
-              <div class="row py-3 bg-light">
-                <div class="col-6 font-weight-bold">Ettari vitati</div>
-                <div class="col-6">{{ metafields.hectares }}</div>
-              </div>
-              <div class="row py-3">
-                <div class="col-6 font-weight-bold">Uve di proprietà</div>
-                <div class="col-6">
-                  {{ metafields.ownedGrapes }}
-                </div>
-              </div>
-              <div class="row py-3 bg-light">
-                <div class="col-6 font-weight-bold">Produzione annua</div>
-                <div class="col-6">
-                  {{ metafields.annualProduction }}
-                </div>
-              </div>
-              <div class="row py-3">
-                <div class="col-6 font-weight-bold">Enologo</div>
-                <div class="col-6"></div>
-              </div>
-              <div class="row py-3 bg-light">
-                <div class="col-6 font-weight-bold">Indirizzo</div>
-                <div class="col-6">{{ metafields.address }}</div>
-              </div>
+              <img
+                src="https://picsum.photos/1920/540"
+                class="img-fluid"
+                alt=""
+              />
             </div>
           </div>
         </div>
       </div>
-      <div class="mt-5" v-html="data.contentHtml"></div>
+      <div class="container-fluid px-md-5 mt-5">
+        <div class="row">
+          <div class="col-12 col-md-8">
+            <div class="row py-3 bg-light">
+              <div class="col-6 font-weight-bold">Vini Principali</div>
+              <div class="col-6"></div>
+            </div>
+            <div class="row py-3">
+              <div class="col-6 font-weight-bold">Anno di fondazione</div>
+              <div class="col-6">{{ metafields.year }}</div>
+            </div>
+            <div class="row py-3 bg-light">
+              <div class="col-6 font-weight-bold">Ettari vitati</div>
+              <div class="col-6">{{ metafields.hectares }}</div>
+            </div>
+            <div class="row py-3">
+              <div class="col-6 font-weight-bold">Uve di proprietà</div>
+              <div class="col-6">
+                {{ metafields.ownedGrapes }}
+              </div>
+            </div>
+            <div class="row py-3 bg-light">
+              <div class="col-6 font-weight-bold">Produzione annua</div>
+              <div class="col-6">
+                {{ metafields.annualProduction }}
+              </div>
+            </div>
+            <div class="row py-3">
+              <div class="col-6 font-weight-bold">Enologo</div>
+              <div class="col-6"></div>
+            </div>
+            <div class="row py-3 bg-light">
+              <div class="col-6 font-weight-bold">Indirizzo</div>
+              <div class="col-6">{{ metafields.address }}</div>
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <img :src="data.image.url" alt="" />
+          </div>
+        </div>
+      </div>
+      <div class="container-fluid px-md-5">
+        <div class="row">
+          <div class="col-12">
+            <div class="mt-5" v-html="data.contentHtml"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-else class="container-fluid px-md-5">
+      <div class="row">
+        <div class="col-12">
+          <h1 class="py-3">{{ data.title }}</h1>
+          <p>{{ metafields.subtitle }}</p>
+        </div>
+        <div class="col-12 col-md-6">
+          <img
+            src="https://picsum.photos/600/400"
+            class="img-fluid w-100"
+            alt=""
+          />
+          <!-- {{ data }} -->
+          <div class="mt-5" v-html="data.contentHtml"></div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="row py-3 bg-light">
+            <div class="col-6 font-weight-bold">Vini Principali</div>
+            <div class="col-6"></div>
+          </div>
+          <div class="row py-3">
+            <div class="col-6 font-weight-bold">Anno di fondazione</div>
+            <div class="col-6">{{ metafields.year }}</div>
+          </div>
+          <div class="row py-3 bg-light">
+            <div class="col-6 font-weight-bold">Ettari vitati</div>
+            <div class="col-6">{{ metafields.hectares }}</div>
+          </div>
+          <div class="row py-3">
+            <div class="col-6 font-weight-bold">Uve di proprietà</div>
+            <div class="col-6">
+              {{ metafields.ownedGrapes }}
+            </div>
+          </div>
+          <div class="row py-3 bg-light">
+            <div class="col-6 font-weight-bold">Produzione annua</div>
+            <div class="col-6">
+              {{ metafields.annualProduction }}
+            </div>
+          </div>
+          <div class="row py-3">
+            <div class="col-6 font-weight-bold">Enologo</div>
+            <div class="col-6"></div>
+          </div>
+          <div class="row py-3 bg-light">
+            <div class="col-6 font-weight-bold">Indirizzo</div>
+            <div class="col-6">{{ metafields.address }}</div>
+          </div>
+          <div class="row py-3">
+            <div class="col-12">
+              <img :src="data.image.url" alt="" />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -92,6 +161,13 @@ export default {
 </script>
 
 <style scoped>
+.partner-bg {
+  background: linear-gradient(transparent, transparent 70%, white),
+    url("assets/images/selections/red.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
 .ribbon {
   background: var(--dark-green);
   color: white;
@@ -110,7 +186,7 @@ export default {
   left: 0px;
   border-top: 12px solid transparent;
   border-bottom: 12px solid transparent;
-  border-left: 12px solid white;
+  border-left: 12px solid var(--dark-red);
 }
 
 .ribbon::after {
@@ -122,17 +198,10 @@ export default {
   right: 0px;
   border-top: 12px solid transparent;
   border-bottom: 12px solid transparent;
-  border-right: 12px solid white;
+  border-right: 12px solid var(--dark-red);
 }
 
 .svg-favourite {
   filter: brightness(100);
-}
-
-.partner {
-  background: url("assets/images/selections/red.svg");
-  background-size: 100%;
-  background-repeat: no-repeat;
-  background-position: center top;
 }
 </style>
