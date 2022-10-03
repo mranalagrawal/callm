@@ -9,25 +9,25 @@
           >
             <img
               title="Favoriti"
-              v-if="true"
+              v-if="metafield.favourite"
               :src="require(`@/assets/images/selections/favourite.svg`)"
               class="selection-svg d-block mb-3"
             />
             <img
               title="Every day"
-              v-if="true"
+              v-if="metafield.foreveryday"
               :src="require(`@/assets/images/selections/foreveryday.svg`)"
               class="selection-svg d-block mb-3"
             />
             <img
               title="Novità"
-              v-if="true"
+              v-if="metafield.isnew"
               :src="require(`@/assets/images/selections/isnew.svg`)"
               class="selection-svg d-block mb-3 ml-1"
             />
             <img
               title="Novità"
-              v-if="true"
+              v-if="metafield.artisanal"
               :src="require(`@/assets/images/selections/artisanal.svg`)"
               class="selection-svg d-block mb-3"
             />

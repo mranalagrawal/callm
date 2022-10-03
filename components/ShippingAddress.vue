@@ -519,7 +519,7 @@ export default {
     this.addresses = this.$store.state.user.user.customer.addresses.edges;
 
     const countries = await fetch(
-      "http://callmewine-api.dojo.sh/api/countries"
+      "https://callmewine-api.dojo.sh/api/countries"
     ).then((r) => r.json());
     console.log(countries.countries, "countries");
     const mappedCountries = countries.countries.map((el) => el.name);
@@ -744,10 +744,19 @@ export default {
       const response = await fetch(domain, GRAPHQL_BODY);
       const responseJSON = await response.json();
 
+      console.log(responseJSON, "A");
+      /* return; */
       const newDefaultAddress =
         responseJSON.data.customerDefaultAddressUpdate.customer.defaultAddress;
       console.log(newDefaultAddress, "response");
       this.$store.commit("user/updateDefaultAddress", newDefaultAddress);
+
+      this.flashMessage.show({
+        status: "",
+        message: "Indirizzo impostato come predefinito!",
+        time: 1000,
+        blockClass: "free-shipping-notification",
+      });
     },
     async deleteAddress(e) {
       console.log(e);
@@ -790,6 +799,13 @@ export default {
       console.log(responseJSON);
 
       this.$store.commit("user/removeFromAddresses", e.split("?model_name")[0]);
+
+      this.flashMessage.show({
+        status: "",
+        message: "Indirizzo rimosso!",
+        time: 1000,
+        blockClass: "free-shipping-notification",
+      });
     },
     editAddress(e) {
       console.log(e);
@@ -877,6 +893,13 @@ export default {
 
       this.$store.commit("user/editAddress", newAddress);
       this.hideEditAddressModal();
+
+      this.flashMessage.show({
+        status: "",
+        message: "Indirizzo aggiornato!",
+        time: 1000,
+        blockClass: "free-shipping-notification",
+      });
       /* this.$store.state.user.user.customer.addresses.edges.push(
         responseJSON.data.customerAddressCreate.customerAddress
       ) */

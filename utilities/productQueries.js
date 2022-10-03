@@ -45,7 +45,7 @@ const queryByCollection = (
                             url
                         }
                     }
-                    metafield1: metafield(namespace: "custom", key: "jsontest") {
+                    metafield1: metafield(namespace: "custom", key: "details") {
                         value
                     }
                 }

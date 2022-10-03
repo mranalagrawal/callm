@@ -271,6 +271,12 @@ export default {
       });
 
       this.hideEditMailModal();
+      this.flashMessage.show({
+        status: "",
+        message: "Indirizzo email aggiornato!",
+        time: 1000,
+        blockClass: "free-shipping-notification",
+      });
     },
     async editPassword(e) {
       e.preventDefault();
@@ -330,6 +336,12 @@ export default {
       this.$store.commit("user/updateAccessToken", newAccessToken);
 
       this.hideEditPasswordModal();
+      this.flashMessage.show({
+        status: "",
+        message: "Password aggiornata!",
+        time: 1000,
+        blockClass: "free-shipping-notification",
+      });
     },
     async editPersonal(e) {
       e.preventDefault();
@@ -412,6 +424,12 @@ export default {
       });
 
       this.hideEditPersonalModal();
+      this.flashMessage.show({
+        status: "",
+        message: "Dati personali aggiornati!",
+        time: 1000,
+        blockClass: "free-shipping-notification",
+      });
     },
   },
 };

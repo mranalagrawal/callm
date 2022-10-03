@@ -105,6 +105,7 @@
             <div>
               <p class="h2">€ {{ product._source.saleprice.toFixed(2) }}</p>
             </div>
+            {{ product._source.quantity }}
             <div
               v-if="cartQuantity > 0"
               style="
@@ -129,12 +130,23 @@
             </div>
             <div v-else>
               <button
+                v-if="product._source.quantity > 0"
+                class="btn btn-cart"
+                @click="addToCart()"
+              >
+                <i class="fal fa-shopping-cart text-white"></i>
+              </button>
+              <button v-else class="btn btn-cart disabled">
+                <i class="fal fa-times text-white"></i>
+              </button>
+              <!-- <button
+                :disabled="product._source.quantity > 0"
                 class="btn btn-cart"
                 :class="product._source.quantity > 0 ? '' : 'disabled'"
                 @click="addToCart()"
               >
                 <i class="fal fa-shopping-cart text-white"></i>
-              </button>
+              </button> -->
             </div>
           </div>
         </div>
@@ -149,6 +161,7 @@ import {
   addProductToCart,
   updateItemInCart,
 } from "../utilities/cart";
+import { queryProductByIdAsTag } from "../utilities/productQueries";
 
 export default {
   props: ["product", "horizontal"],
@@ -180,11 +193,11 @@ export default {
         quantity: el.node.quantity,
       }));
 
-      console.log(
+      /* console.log(
         this.product._source.shortName,
         " >>> ",
         this.product._source.variantId
-      );
+      ); */
       let isInCart = cartList.find(
         (el) =>
           el.merchandise.split("/ProductVariant/")[1] ==
@@ -204,8 +217,42 @@ export default {
       const domain = this.$config.DOMAIN;
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
 
+      if (this.product._source.quantity < 1) {
+        return;
+      }
+
       if (!this.$store.state.user.user) {
         this.$router.push("/login");
+        return;
+      }
+
+      console.log("P" + this.product._id);
+
+      // check if product is available in shopify
+      const productQuery = queryProductByIdAsTag("P" + this.product._id);
+      const GRAPHQL_BODY = {
+        async: true,
+        crossDomain: true,
+        method: "POST",
+        headers: {
+          "X-Shopify-Storefront-Access-Token": access_token,
+          "Content-Type": "application/graphql",
+        },
+        body: productQuery,
+      };
+      const availability = await fetch(domain, GRAPHQL_BODY).then((res) =>
+        res.json()
+      );
+
+      console.log(availability.data.products.edges[0], "SS");
+
+      if (!availability.data.products.edges[0]) {
+        alert("Prodotto non disponibile su STOREFRONT");
+        return;
+      }
+      /* return; */
+      if (availability.data.products.edges[0].node.totalInventory == 0) {
+        alert("Prodotto esaurito");
         return;
       }
 
@@ -289,13 +336,29 @@ export default {
       const variantId = this.product._source.variantId;
 
       const response = await fetch(
-        `http://callmewine-api.dojo.sh/api/customers/${userId}/wishlist/${variantId}`,
+        `https://callmewine-api.dojo.sh/api/customers/${userId}/wishlist/${variantId}`,
         { async: true, crossDomain: true, method: "POST" }
       );
       const updatedWishlist = await response.text();
       console.log(updatedWishlist);
 
       this.$store.commit("user/updateWishlist", updatedWishlist);
+
+      if (this.isInWishList) {
+        this.flashMessage.show({
+          status: "",
+          message: "Aggiunto ai preferiti!",
+          time: 1000,
+          blockClass: "add-product-notification",
+        });
+      } else {
+        this.flashMessage.show({
+          status: "",
+          message: "Rimosso preferiti!",
+          time: 1000,
+          blockClass: "add-product-notification",
+        });
+      }
     },
   },
 };

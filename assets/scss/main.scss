@@ -14,21 +14,21 @@ body {
 
 .add-product-notification {
   width: 400px !important;
-  background: white;
-  color: black !important;
+  background: rgba(0, 0, 0, 0.7) !important;
+  color: white !important;
   z-index: 999;
 }
 
 .remove-product-notification {
   width: 200px !important;
-  background: white !important;
-  color: var(--dark-red) !important;
+  background: rgba(0, 0, 0, 0.7) !important;
+  color: white !important;
   z-index: 999;
 }
 
 .free-shipping-notification {
   width: 400px !important;
-  background: var(--light-green) !important;
+  background: rgba(0, 0, 0, 0.7) !important;
   color: white !important;
   z-index: 999;
 }

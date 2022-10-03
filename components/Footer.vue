@@ -1,15 +1,29 @@
 <template>
   <div class="container-fluid pt-5 mt-5 px-0 bg-light">
+    <!-- <nuxt-link
+      class=""
+      v-if="$i18n.locale !== 'en'"
+      :to="switchLocalePath('en')"
+    >
+      🇬🇧
+    </nuxt-link>
+
+    <nuxt-link
+      class=""
+      v-if="$i18n.locale !== 'it'"
+      :to="switchLocalePath('it')"
+    >
+      🇮🇹
+    </nuxt-link> -->
     <div class="container-fluid px-md-5">
-      <div class="row">
+      <div class="row" v-if="data">
         <div class="col" v-for="item in data" :key="item.id">
-          <p class="text-uppercase" style="color: #176a62">{{ item.title }}</p>
-          <p class="" v-for="link in item.items" :key="link.title">
-            <nuxt-link
-              :to="`/${link.url.split('.com/')[1]}`"
-              class="text-decoration-none menu-link"
-            >
-              {{ link.title }}
+          <p class="text-uppercase" style="color: #176a62">
+            {{ item.primary.title }}
+          </p>
+          <p class="" v-for="link in item.items" :key="`inner_${link.name}`">
+            <nuxt-link :to="link.link" class="text-decoration-none menu-link"
+              >{{ link.name }}
             </nuxt-link>
           </p>
         </div>
@@ -167,54 +181,24 @@ export default {
       data: null,
     };
   },
-  methods: {
-    async getFooter() {
-      const GRAPHQL_URL = this.$config.DOMAIN;
-
-      const productQuery = `query {
-      menu(handle:"footer"){
-        items{
-          id
-          title
-          url
-          items {
-            title
-            url
-            items{
-              title
-              url
-            }
-          }
-        }
-      }
-    }`;
-
-      const GRAPHQL_BODY = () => {
-        return {
-          async: true,
-          crossDomain: true,
-          method: "POST",
-          headers: {
-            "X-Shopify-Storefront-Access-Token":
-              this.$config.STOREFRONT_ACCESS_TOKEN,
-            "Content-Type": "application/graphql",
-          },
-          body: productQuery,
-        };
-      };
-      let data = await fetch(GRAPHQL_URL, GRAPHQL_BODY())
-        .then((res) => res.json())
-        .then((res) => {
-          const menu = res.data.menu.items;
-
-          return menu;
-        });
-
-      return data;
-    },
+  watch: {
+    "$i18n.locale": "$fetch",
   },
   async fetch() {
-    this.data = await this.getFooter();
+    console.log(this.$i18n.locale, "LAN");
+
+    let lang = "";
+    if (this.$i18n.locale == "en") {
+      lang = "en-gb";
+    } else {
+      lang = "it-it";
+    }
+    const response = await this.$prismic.api.getSingle("footer", {
+      lang: lang,
+    });
+    const data = response.data.body;
+    this.data = data;
+    console.log(data, "footer");
   },
 };
 </script>

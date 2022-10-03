@@ -29,18 +29,26 @@
       </div>
     </div>
 
-    <b-collapse v-model="visible" class="row px-5 mt-5">
+    <b-collapse v-model="visible" class="row px-5 mt-5" v-if="order">
       <div class="col-12">
         <div class="row bg-light pt-3">
-          <div class="col-12 col-md-4">
+          <div class="col-12 col-md-6">
             <p class="font-weight-bold lead">Riepilogo</p>
             <p class="text-light-green">
               Stato dell'ordine: {{ order?.fulfillmentStatus }}
             </p>
-            <p class="text-light-green">Spedizione: ???</p>
-            <p class="text-light-green">Telefono: ???</p>
+            <p class="text-light-green">
+              Spedizione:
+              {{
+                order.successfulFulfillments.trackingCompany || "Non inserita"
+              }}
+            </p>
+            <p class="text-light-green">
+              Telefono:
+              {{ order.successfulFulfillments.trackingInfo || "Non inserito" }}
+            </p>
           </div>
-          <div class="col-12 col-md-4">
+          <div class="col-12 col-md-6">
             <p class="font-weight-bold lead">Indirizzo di spedizione</p>
             <p>{{ order.shippingAddress?.name }}</p>
             <p>
@@ -54,10 +62,10 @@
             </p>
             <p>{{ order.shippingAddress?.phone }}</p>
           </div>
-          <div class="col-12 col-md-4">
+          <!-- <div class="col-12 col-md-4">
             <p class="font-weight-bold lead">Note di consegna</p>
-            <p>Lorem ipsum dolor sit.</p>
-          </div>
+            <p>METAFIELD?</p>
+          </div> -->
         </div>
       </div>
       <div class="col-12 mt-5">
@@ -129,19 +137,14 @@
       </div>
     </b-collapse>
 
-    <b-modal ref="modal" size="lg" hide-header centered title="">
+    <b-modal ref="modal" size="lg" hide-header hide-footer centered title="">
       <p class="text-center mt-5 mb-2 lead text-light-green">
         Richiedi assistenza per l'ordine N° {{ order.orderNumber }}
-      </p>
-      <p class="text-center">
-        Inviaci un messaggio e se necessario allega la documentazione in tuo
-        possesso. <br />
-        Ti risponderemo prima possibile.
       </p>
 
       <form @submit="onSubmit" class="px-4 pt-3 py-2 w-75 mx-auto">
         <b-form-group class="my-4">
-          <label class="custom-label" for="input-1">Email</label>
+          <label class="custom-label" for="input-1">Il tuo messaggio</label>
           <b-form-textarea
             class="custom-input"
             v-model="form.message"
@@ -157,15 +160,13 @@
             required
           ></b-form-input> -->
         </b-form-group>
-      </form>
 
-      {{ form }}
+        {{ form }}
 
-      <template #modal-footer class="border-0">
         <div class="w-100 text-center">
           <button class="btn btn-light-red btn-lg px-5">INVIA</button>
         </div>
-      </template>
+      </form>
     </b-modal>
   </div>
 </template>
@@ -181,12 +182,11 @@ export default {
 
       form: {
         message: "",
-        sender: {
-          firstName: this.$store.state.user.user.customer.firstName,
-          lastName: this.$store.state.user.user.customer.lastName,
-          email: this.$store.state.user.user.customer.email,
-        },
         order: this.order.orderNumber,
+        fullname:
+          this.$store.state.user.user.customer.firstName +
+          this.$store.state.user.user.customer.lastName,
+        email: this.$store.state.user.user.customer.email,
       },
     };
   },
@@ -205,6 +205,22 @@ export default {
   methods: {
     async onSubmit(e) {
       e.preventDefault();
+      console.log(this.form);
+      const response = await fetch(
+        "https://callmewine-api.dojo.sh/api/send-email",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+          crossDomain: true,
+          body: JSON.stringify(this.form),
+        }
+      );
+      const responseJSON = await response.json();
+
+      console.log(responseJSON);
     },
     showModal() {
       this.$refs["modal"].show();

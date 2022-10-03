@@ -2,7 +2,7 @@
   <div class="card product-card mx-auto justify-content-between">
     <div>
       <!-- {{ this.product }} -->
-      <div class="ribbon-1">
+      <div v-if="details.inpromotion" class="ribbon-1">
         <span><i class="fal fa-tag"></i> PROMO</span>
       </div>
 
@@ -12,15 +12,57 @@
         :style="{ backgroundImage: 'url(' + product.images.nodes[0].url + ')' }"
       >
         <div
-          class="col-2 pl-2 h-100 d-flex justify-content-end align-items-center flex-column"
+          class="position-absolute"
+          style="left: 20px; top: 10px; z-index: 10"
         >
-          <div class="">
-            <i class="fal fa-user"></i>
-          </div>
-
-          <div class="">
-            <i class="fal fa-users"></i>
-          </div>
+          <img
+            title="Favoriti"
+            v-if="details.favourite"
+            :src="require(`@/assets/images/selections/favourite.svg`)"
+            class="selection-svg d-block"
+          />
+          <img
+            title="Every day"
+            v-if="details.foreveryday"
+            :src="require(`@/assets/images/selections/foreveryday.svg`)"
+            class="selection-svg d-block"
+          />
+          <img
+            title="Novità"
+            v-if="details.isnew"
+            :src="require(`@/assets/images/selections/isnew.svg`)"
+            class="selection-svg d-block"
+          />
+          <img
+            title="Novità"
+            v-if="details.artisanal"
+            :src="require(`@/assets/images/selections/artisanal.svg`)"
+            class="selection-svg d-block"
+          />
+          <img
+            title="To gift"
+            v-if="details.togift"
+            :src="require(`@/assets/images/selections/togift.svg`)"
+            class="selection-svg d-block"
+          />
+          <img
+            title="Rare"
+            v-if="details.rarewine"
+            :src="require(`@/assets/images/selections/rarewine.svg`)"
+            class="selection-svg d-block"
+          />
+          <img
+            title="Rare"
+            v-if="details.unusualvariety"
+            :src="require(`@/assets/images/selections/unusualvariety.svg`)"
+            class="selection-svg d-block"
+          />
+          <img
+            title="Rare"
+            v-if="details.topsale"
+            :src="require(`@/assets/images/selections/topsale.svg`)"
+            class="selection-svg d-block"
+          />
         </div>
       </nuxt-link>
       <div class="row">
@@ -95,7 +137,10 @@ export default {
   props: ["product"],
   name: "ProductCardVertical",
   data() {
-    return { quantity: 0 };
+    return {
+      quantity: 0,
+      details: JSON.parse(this.product.metafield1.value),
+    };
   },
   computed: {
     isInWishList() {
@@ -146,17 +191,33 @@ export default {
         this.product.variants.nodes[0].id.split("ProductVariant/")[1];
 
       const response = await fetch(
-        `http://callmewine-api.dojo.sh/api/customers/${userId}/wishlist/${variantId}`,
+        `https://callmewine-api.dojo.sh/api/customers/${userId}/wishlist/${variantId}`,
         { async: true, crossDomain: true, method: "POST" }
       );
       const updatedWishlist = await response.text();
       console.log(updatedWishlist);
 
       this.$store.commit("user/updateWishlist", updatedWishlist);
+
+      if (this.isInWishList) {
+        this.flashMessage.show({
+          status: "",
+          message: "Aggiunto ai preferiti!",
+          time: 1000,
+          blockClass: "add-product-notification",
+        });
+      } else {
+        this.flashMessage.show({
+          status: "",
+          message: "Rimosso preferiti!",
+          time: 1000,
+          blockClass: "add-product-notification",
+        });
+      }
     },
     addToCart: async function () {
-      console.log(this.product, "this.product");
-      /* return; */
+      /* console.log(JSON.parse(this.product.metafield1.value), "this.product");
+      return; */
       const domain = this.$config.DOMAIN;
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
 
@@ -234,7 +295,7 @@ export default {
 </script>
 <style scoped>
 .product-card {
-  height: 500px;
+  height: 550px;
   width: 300px;
   transition: 0.4s;
   margin-bottom: 48px;

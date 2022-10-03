@@ -1,18 +1,56 @@
 <template>
   <div class="container-fluid fixed- bg-white">
-    <div class="row align-items-center py-3 px-4">
-      <div class="col-12 col-md-2">
+    <div class="row align-items-center py-md-3 px-md-4">
+      <div
+        class="col-12 col-md-2 px-0 px-md-2 bg-white"
+        style="position: relative; z-index: 1040"
+      >
+        <button
+          class="btn d-md-none"
+          v-b-toggle.sidebar
+          @click="isMobileMenuOpen = !isMobileMenuOpen"
+        >
+          <i class="fal" :class="isMobileMenuOpen ? 'fa-times' : 'fa-bars'"></i>
+        </button>
         <nuxt-link :to="localePath('/')">
           <img
             src="../assets/images/logo.svg"
-            class="img-fluid"
+            class="img-fluid d-md-none"
+            width="80px"
+            alt=""
+          />
+          <img
+            src="../assets/images/logo.svg"
+            class="img-fluid d-none d-md-block"
             width="180px"
             alt=""
           />
         </nuxt-link>
+        <div class="d-inline-block float-right d-md-none">
+          <button class="btn">
+            <i class="fal fa-user"></i>
+          </button>
+          <button class="btn">
+            <i class="fal fa-shopping-cart"></i>
+          </button>
+        </div>
       </div>
 
       <div class="col-12 col-md-7 py-2" style="position: relative">
+        <b-button
+          size="sm"
+          class="border-0"
+          type="button"
+          style="
+            position: absolute;
+            top: 18px;
+            right: 30px;
+            background: #d94965;
+          "
+          @click="startSearch"
+        >
+          <i class="fal fa-search"></i>
+        </b-button>
         <div
           v-if="search && data"
           class="bg-white px-3 shadow"
@@ -72,22 +110,8 @@
           v-model="search"
           @input="suggest"
         ></b-form-input>
-        <b-button
-          size="sm"
-          class="my-2 my-sm-0 border-0"
-          type="button"
-          style="
-            position: absolute;
-            top: 18px;
-            right: 30px;
-            background: #d94965;
-          "
-          @click="startSearch"
-        >
-          <i class="fal fa-search"></i>
-        </b-button>
       </div>
-      <div class="col-12 col-md-3">
+      <div class="d-none d-md-block col-md-3">
         <div
           class="d-flex"
           :class="user ? 'justify-content-around' : 'justify-content-end'"
@@ -136,13 +160,17 @@
           <!-- Cart -->
           <div class="position-relative" v-if="user">
             <div class="">
-              <div v-if="1" class="btn cart-box" @mouseenter="switchToCart()">
+              <div
+                v-if="1"
+                class="btn cart-box pb-1"
+                @mouseenter="switchToCart()"
+              >
                 <div
                   v-if="cart && cart.lines.edges.length > 0"
                   class="d-flex align-items-center"
                 >
                   <div class="text-left">
-                    <p class="mb-2" style="font-size: 8px">
+                    <p class="pr-1 mb-2" style="font-size: 11px">
                       {{ $t("navbar.cart.total") }}
                     </p>
                     {{ Number(cartTotalAmount).toFixed(2) }}
@@ -176,16 +204,42 @@
         </div>
       </div>
     </div>
+
+    <b-sidebar
+      id="sidebar"
+      title=""
+      shadow
+      width="100%"
+      z-index="1029"
+      no-header
+      ref="sidebar"
+    >
+      <div class="px-3 py-2 mt-5">
+        <div v-for="(item, i) in data" :key="`mobile_${i}`">
+          <dropdown-mobile-menu :data="item" />
+        </div>
+      </div>
+    </b-sidebar>
+    <!-- <b-modal
+      ref="modalFilter"
+      size="xl"
+      scrollable
+      centered
+      hide-footer
+      title=""
+    >
+    </b-modal> -->
   </div>
 </template>
 
 <script>
 import Cart from "./Cart/Cart.vue";
 import LoginForm from "./LoginForm.vue";
+import DropdownMobileMenu from "./UI/DropdownMobileMenu.vue";
 import UserMenu from "./UserMenu.vue";
 
 export default {
-  components: { Cart, LoginForm, UserMenu },
+  components: { Cart, LoginForm, UserMenu, DropdownMobileMenu },
   watch: {
     $route() {
       this.showUser = false;
@@ -195,13 +249,14 @@ export default {
     },
     cartTotalAmount(total) {
       if (Number(total) > 50) {
-        this.flashMessage.show({
-          status: "",
-          message: "Hai raggiunto la spedizione gratuita!",
-
-          time: 1000,
-          blockClass: "free-shipping-notification",
-        });
+        setTimeout(() => {
+          this.flashMessage.show({
+            status: "",
+            message: "Hai raggiunto la spedizione gratuita!",
+            time: 1000,
+            blockClass: "free-shipping-notification",
+          });
+        }, 3000);
       }
     },
   },
@@ -227,9 +282,21 @@ export default {
       search: "",
       visible: false,
       data: null,
+      isMobileMenuOpen: false,
+      data: null,
     };
   },
   methods: {
+    test() {
+      console.log(this.$refs.sidebar);
+    },
+
+    showSidebar() {
+      this.$refs["sidebar"].show();
+    },
+    hideSidebar() {
+      this.$refs["sidebar"].hide();
+    },
     async suggest() {
       if (this.search && this.search.length > 3) {
         const result = await fetch(
@@ -267,6 +334,54 @@ export default {
       this.search = "";
     },
   },
+  async fetch() {
+    let lang = "";
+    if (this.$i18n.locale == "en") {
+      lang = "en-gb";
+    } else {
+      lang = "it-it";
+    }
+    let response = await this.$prismic.api.getSingle("mega-menu-test", {
+      lang: lang,
+    });
+    let data = response.data.body;
+
+    let mapped = data
+      .map((firstLevel) => {
+        const secondLevelNames = [
+          ...new Set(firstLevel.items.map((el) => el.secondlevelname)),
+        ];
+        const secondLevels = firstLevel.items.map((el) => {
+          return {
+            name: el.secondlevelname,
+            position: el.second_level_position,
+          };
+        });
+        const secondLevelsSet = [
+          ...new Set(secondLevels.map((el) => JSON.stringify(el))),
+        ]
+          .map((el) => JSON.parse(el))
+          .sort((a, b) => a.position - b.position);
+
+        const items = secondLevelsSet.map((el) => {
+          let temp = firstLevel.items
+            .filter((x) => x.secondlevelname === el.name)
+            .sort((a, b) => a.third_level_position - b.third_level_position);
+          return { ...el, items: temp };
+        });
+
+        return {
+          name: firstLevel.primary.group_label,
+          link: firstLevel.primary.first_level_link,
+          position: firstLevel.primary.first_level_position,
+          items,
+        };
+      })
+      .sort((a, b) => a.position - b.position);
+
+    console.log(mapped, "NAVBAR ");
+    this.data = mapped;
+  },
 };
 </script>
 
@@ -292,6 +407,10 @@ export default {
   border-top: 4px solid var(--dark-red);
   padding-bottom: 0px;
 }
+
+:deep(.b-sidebar) {
+  padding-top: 48px !important;
+}
 .totalItems {
   width: 20px;
   height: 20px;
@@ -310,6 +429,7 @@ export default {
 .cart-box {
   background: #eee;
   border-radius: 10px;
+  height: 64px !important;
 }
 .cart-box:hover {
   background: var(--dark-red);

@@ -1,13 +1,13 @@
 <template>
   <div
     class="container-fluid bg-dark-green py-2 text-white text-center position-relative"
-    style="font-size: 12px"
+    style="font-size: 12px; z-index: 1030"
   >
     <span v-if="data" v-html="data.data.text[0].text"></span>
 
     <span class="position-absolute" style="right: 10px">
       <nuxt-link
-        class="h3"
+        class=""
         v-if="$i18n.locale !== 'en'"
         :to="switchLocalePath('en')"
       >
@@ -15,7 +15,7 @@
       </nuxt-link>
 
       <nuxt-link
-        class="h3"
+        class=""
         v-if="$i18n.locale !== 'it'"
         :to="switchLocalePath('it')"
       >

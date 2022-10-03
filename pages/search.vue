@@ -5,74 +5,20 @@
         <!-- <h1>{{ results.length }}</h1> -->
       </div>
       <div class="col-12 col-md-9">
-        <div>
-          <!-- {{ view.region?.name }} {{ view.pairing?.name }}
+        <div class="h3">
+          {{ view.region?.name }} {{ view.pairing?.name }}
           {{ view.brand?.name }} {{ view.aging?.name }}
           {{ view.philosophy?.name }} {{ view.size?.name }}
           {{ view.dosagecontent?.name }} {{ view.category?.name }}
           {{ view.winelists?.name }}
-          {{ view.award?.name }} -->
+          {{ view.award?.name }}
           <!-- {{ view }} -->
 
           <!-- {{ Object.entries(view).filter((el) => el[1] !== null) }} -->
         </div>
-        <p class="h3">
+        <!-- <p class="h3">
           {{ total }}
-        </p>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-12">
-        <hr />
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-4 text-right">
-        <span class="d-inline-flex" v-if="+currentPage > 4">
-          <button
-            class="btn btn-outline-dark-red btn-small"
-            @click="changePage(1)"
-          >
-            Prima
-          </button>
-        </span>
-      </div>
-      <div class="col-4 text-center">
-        <span class="d-inline-flex" v-for="i in 3" :key="i + 'prev'">
-          <button
-            class="btn btn-outline-dark-red btn-small"
-            v-if="+currentPage - 4 + i > 0 && +currentPage - 4 + i < totalPages"
-            @click="changePage(+currentPage - 4 + i)"
-          >
-            {{ +currentPage - 4 + i }}
-          </button>
-        </span>
-        <span class="d-inline-flex">
-          <button class="btn btn-dark-red btn-small disabled">
-            {{ currentPage }}
-          </button>
-        </span>
-        <span class="d-inline-flex" v-for="i in 3" :key="i + 'next'">
-          <button
-            class="btn btn-outline-dark-red btn-small"
-            v-if="+currentPage + i > 0 && +currentPage + i < totalPages"
-            @click="changePage(+currentPage + i)"
-          >
-            {{ +currentPage + i }}
-          </button>
-        </span>
-      </div>
-      <div class="col-4 text-left">
-        <span class="d-inline-flex" v-if="+currentPage < totalPages">
-          <button
-            class="btn btn-outline-dark-red btn-small"
-            @click="changePage(totalPages)"
-          >
-            Ultima
-          </button>
-        </span>
+        </p> -->
       </div>
     </div>
 
@@ -226,6 +172,54 @@
       <div class="col-12 col-md-9" v-else>
         <p class="lead mt-5">{{ $t("search.noResultsAlert") }}</p>
         <div v-html="$t('search.noResultsMessage')"></div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-4 text-right">
+        <span class="d-inline-flex" v-if="+currentPage > 4">
+          <button
+            class="btn btn-outline-dark-red btn-small"
+            @click="changePage(1)"
+          >
+            Prima
+          </button>
+        </span>
+      </div>
+      <div class="col-4 text-center">
+        <span class="d-inline-flex" v-for="i in 3" :key="i + 'prev'">
+          <button
+            class="btn btn-outline-dark-red btn-small"
+            v-if="+currentPage - 4 + i > 0 && +currentPage - 4 + i < totalPages"
+            @click="changePage(+currentPage - 4 + i)"
+          >
+            {{ +currentPage - 4 + i }}
+          </button>
+        </span>
+        <span class="d-inline-flex">
+          <button class="btn btn-dark-red btn-small disabled">
+            {{ currentPage }}
+          </button>
+        </span>
+        <span class="d-inline-flex" v-for="i in 3" :key="i + 'next'">
+          <button
+            class="btn btn-outline-dark-red btn-small"
+            v-if="+currentPage + i > 0 && +currentPage + i < totalPages"
+            @click="changePage(+currentPage + i)"
+          >
+            {{ +currentPage + i }}
+          </button>
+        </span>
+      </div>
+      <div class="col-4 text-left">
+        <span class="d-inline-flex" v-if="+currentPage < totalPages">
+          <button
+            class="btn btn-outline-dark-red btn-small"
+            @click="changePage(totalPages)"
+          >
+            Ultima
+          </button>
+        </span>
       </div>
     </div>
 
@@ -545,7 +539,7 @@ export default {
     console.log(this.currentPage, "CURRENTPAGE");
     let query = route.fullPath.split("search?")[1];
     const searchResult = await fetch(
-      "http://callmewine-api.dojo.sh/api/products/search?" + query
+      "https://callmewine-api.dojo.sh/api/products/search?" + query
     );
 
     const search = await searchResult.json();
@@ -614,8 +608,8 @@ export default {
     });
     this.philosophies = philosophies;
 
-    const dosagecontents = search.aggregations["agg-dosagecontent"][
-      "agg-dosagecontent"
+    const dosagecontents = search.aggregations["agg-dosagecontents"][
+      "agg-dosagecontents"
     ]["buckets"].map((el) => {
       return {
         key: [el.key, el.key],

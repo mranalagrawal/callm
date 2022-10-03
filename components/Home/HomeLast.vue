@@ -135,6 +135,7 @@ export default {
   justify-content: center;
   align-items: center;
   z-index: 99;
+  left: 1px;
 }
 :deep(.slick-arrow.slick-next) {
   width: 48px;
@@ -150,6 +151,8 @@ export default {
   justify-content: center;
   align-items: center;
   z-index: 99;
+
+  right: 10px;
 }
 :deep(.slick-prev::before) {
   color: red;

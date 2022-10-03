@@ -1,8 +1,12 @@
 <template>
   <div>
     <top-bar></top-bar>
-    <navbar />
-    <mega-menu />
+    <div class="">
+      <navbar />
+    </div>
+    <div class="d-none d-md-block">
+      <mega-menu />
+    </div>
     <!-- <mega-test /> -->
 
     <nuxt></nuxt>

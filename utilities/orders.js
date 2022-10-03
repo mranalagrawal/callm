@@ -27,6 +27,12 @@ export const getUserOrdersQuery = (token) => `query {
                         phone
                         formattedArea
                     }
+                    successfulFulfillments(first: 10) {
+                        trackingCompany
+                        trackingInfo {
+                            number
+                        }
+                    }
                     lineItems(first: 10) {
                         edges {
                             node {
@@ -61,7 +67,7 @@ export const getUserOrdersQuery = (token) => `query {
                                                 url
                                             }
                                         }
-                                        metafield1: metafield(namespace: "custom", key: "jsontest") {
+                                        metafield1: metafield(namespace: "custom", key: "details") {
                                             value
                                         }
                                     }

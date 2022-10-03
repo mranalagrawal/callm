@@ -30,9 +30,6 @@
               :to="thirdLevel.third_level_link"
               >{{ thirdLevel.third_level_name }}</nuxt-link
             >
-            <!-- <p v-if="!thirdLevel.marketing_cta" class="small">
-              {{ thirdLevel.third_level_name }}
-            </p> -->
             <div
               v-else
               class="shadow row align-items-center mb-4 ml-2"
@@ -99,8 +96,6 @@ export default {
     },
   },
   async fetch() {
-    /* console.log(this.$i18n.locale, "LAN"); */
-
     let lang = "";
     if (this.$i18n.locale == "en") {
       lang = "en-gb";
@@ -111,7 +106,6 @@ export default {
       lang: lang,
     });
     let data = response.data.body;
-    /* console.clear(); */
 
     let mapped = data
       .map((firstLevel) => {
@@ -147,9 +141,6 @@ export default {
       .sort((a, b) => a.position - b.position);
 
     this.data = mapped;
-    /* console.clear(); */
-
-    /* this.selectedItem = mapped[4]; */
   },
 };
 </script>
