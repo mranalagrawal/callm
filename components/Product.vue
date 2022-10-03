@@ -322,6 +322,7 @@ export default {
     };
     const data = await fetch(domain, GRAPHQL_BODY).then((res) => res.json());
     console.log(data, "D");
+
     this.data = data.data.products.edges[0].node;
 
     /* return; */

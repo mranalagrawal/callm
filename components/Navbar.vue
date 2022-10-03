@@ -300,7 +300,7 @@ export default {
     async suggest() {
       if (this.search && this.search.length > 3) {
         const result = await fetch(
-          "http://callmewine-api.dojo.sh/api/autocomplete/search/?search=" +
+          "https://callmewine-api.dojo.sh/api/autocomplete/search/?search=" +
             this.search
         );
         const resultJSON = await result.json();

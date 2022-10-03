@@ -220,6 +220,15 @@ export default {
       );
       const responseJSON = await response.json();
 
+      if (responseJSON.status == 200) {
+        this.hideModal();
+        this.flashMessage.show({
+          status: "",
+          message: "Messaggio inviato!",
+          time: 1000,
+          blockClass: "add-product-notification",
+        });
+      }
       console.log(responseJSON);
     },
     showModal() {

@@ -124,7 +124,7 @@ export default {
       if (id !== this.active) query["page"] = 1;
 
       this.$router.push({
-        path: "search",
+        path: "catalog",
         query: query,
       });
     },

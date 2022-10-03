@@ -1,14 +1,19 @@
 <template>
   <div class="mt-5">
-    <product v-if="product" :product="product" />
-    <filter-page
+    <div v-if="product">
+      <product :product="product" />
+    </div>
+    <div v-else>
+      <search-filter :inputParameters="inputParameters" />
+    </div>
+    <!-- <search-filter
       v-if="winelist || categories || region || dosage || selections"
       :winelist="winelist"
       :categories="categories"
       :region="region"
       :dosage="dosage"
       :selections="selections"
-    />
+    /> -->
   </div>
 </template>
 
@@ -22,6 +27,7 @@ export default {
       region: null,
       dosage: null,
       selections: null,
+      inputParameters: {},
     };
   },
   created() {
@@ -31,14 +37,15 @@ export default {
     const isProduct = /[P][0-9]+/;
     if (isProduct.test(path)) {
       this.product = "P" + this.$route.path.split("-P")[1];
+
       return;
     }
 
     // rules
     const filters = [
-      { name: "winelist", rule: /[V][0-9]+/ },
+      { name: "winelists", rule: /[V][0-9]+/ },
       { name: "categories", rule: /[C][0-9]+/ },
-      { name: "region", rule: /[R][0-9]+/ },
+      { name: "regions", rule: /[R][0-9]+/ },
       { name: "dosage", rule: /[D][0-9]+/ },
       { name: "selections", rule: null },
     ];
@@ -47,6 +54,8 @@ export default {
     filters.forEach((el) => {
       if (el.name != "selections" && path.match(el.rule)) {
         this[el.name] = path.match(el.rule)[0].substring(1);
+        this.inputParameters[el.name] = path.match(el.rule)[0].substring(1);
+        console.log(this.inputParameters, "this.inputParameters");
       }
       if (el.name == "selections") {
         if (this.$route.fullPath.split("?sel=")[1]) {
@@ -55,7 +64,7 @@ export default {
       }
     });
 
-    console.clear();
+    /* console.clear(); */
 
     /* this.$router.push("/search"); */
 
