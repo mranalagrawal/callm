@@ -2,6 +2,7 @@
   <div class="container-fluid px-md-5 mt-5">
     <div class="row pt-5">
       <div class="col-12 col-md-3">
+        <!-- {{ inputParameters }} -->
         <!-- <h1>{{ results.length }}</h1> -->
       </div>
       <div class="col-12 col-md-9">
@@ -12,6 +13,9 @@
           {{ view.dosagecontent?.name }} {{ view.category?.name }}
           {{ view.winelists?.name }}
           {{ view.award?.name }}
+          <span v-for="selection in activeSelections" :key="selection">
+            {{ $t(`selections.${selection}`) }}
+          </span>
           <!-- {{ view }} -->
 
           <!-- {{ Object.entries(view).filter((el) => el[1] !== null) }} -->
@@ -537,13 +541,26 @@ export default {
       ? this.inputParameters["page"]
       : 1;
 
-    console.log(this.currentPage, "CURRENTPAGE");
     let query = new URLSearchParams(this.inputParameters).toString();
+    /* console.clear();
+    console.log(this.inputParameters, "SS"); */
+    let sel = "&";
+
+    if (this.inputParameters.sel) {
+      sel += this.inputParameters.sel
+        .split(",")
+        .map((el) => el + "=true")
+        .join("&");
+    }
+    console.log(sel, "sel");
     const searchResult = await fetch(
-      "https://callmewine-api.dojo.sh/api/products/search?" + query
+      "https://callmewine-api.dojo.sh/api/products/search?" + query + sel
     );
 
-    console.log(query, "query");
+    const allFields = await fetch(
+      "https://callmewine-api.dojo.sh/api/products/search?"
+    );
+    const allFieldsJSON = await allFields.json();
 
     const search = await searchResult.json();
     this.search = search;
@@ -554,25 +571,22 @@ export default {
 
     this.totalPages = Math.ceil(total / 50);
 
-    const regions = search.aggregations["agg-regions"]["agg-regions"].buckets;
+    const regions =
+      allFieldsJSON.aggregations["agg-regions"]["agg-regions"].buckets;
     this.regions = regions;
 
-    const brands = search.aggregations["agg-brands"]["agg-brands"].buckets;
+    const brands =
+      allFieldsJSON.aggregations["agg-brands"]["agg-brands"].buckets;
     this.brands = brands;
 
     const vintages =
-      search.aggregations["agg-vintages"]["agg-vintages"].buckets;
+      allFieldsJSON.aggregations["agg-vintages"]["agg-vintages"].buckets;
     this.vintages = vintages;
 
-    const sizes = search.aggregations["agg-sizes"]["agg-sizes"].buckets;
+    const sizes = allFieldsJSON.aggregations["agg-sizes"]["agg-sizes"].buckets;
     this.sizes = sizes;
 
-    console.clear();
-    console.log(
-      search.aggregations["agg-awards"]["inner"]["result"]["buckets"],
-      "SSSS"
-    );
-    const awards = search.aggregations["agg-awards"]["inner"]["result"][
+    const awards = allFieldsJSON.aggregations["agg-awards"]["inner"]["result"][
       "buckets"
     ].map((el) => {
       return {
@@ -583,7 +597,7 @@ export default {
     });
     this.awards = awards;
 
-    const agings = search.aggregations["agg-agings"]["inner"]["result"][
+    const agings = allFieldsJSON.aggregations["agg-agings"]["inner"]["result"][
       "buckets"
     ].map((el) => {
       return {
@@ -594,18 +608,7 @@ export default {
     });
     this.agings = agings;
 
-    const categories = search.aggregations["agg-categories"]["inner"]["result"][
-      "buckets"
-    ].map((el) => {
-      return {
-        key: [el.key, el.name.buckets[0].key],
-        key_as_string: `${el.key}|${el.name.buckets[0].key}`,
-        doc_count: el.doc_count,
-      };
-    });
-    this.categories = categories;
-
-    const philosophies = search.aggregations["agg-philosophies"]["inner"][
+    const categories = allFieldsJSON.aggregations["agg-categories"]["inner"][
       "result"
     ]["buckets"].map((el) => {
       return {
@@ -614,9 +617,20 @@ export default {
         doc_count: el.doc_count,
       };
     });
+    this.categories = categories;
+
+    const philosophies = allFieldsJSON.aggregations["agg-philosophies"][
+      "inner"
+    ]["result"]["buckets"].map((el) => {
+      return {
+        key: [el.key, el.name.buckets[0].key],
+        key_as_string: `${el.key}|${el.name.buckets[0].key}`,
+        doc_count: el.doc_count,
+      };
+    });
     this.philosophies = philosophies;
 
-    const dosagecontents = search.aggregations["agg-dosagecontents"][
+    const dosagecontents = allFieldsJSON.aggregations["agg-dosagecontents"][
       "agg-dosagecontents"
     ]["buckets"].map((el) => {
       return {
@@ -627,9 +641,9 @@ export default {
     });
     this.dosagecontents = dosagecontents;
 
-    const winelists = search.aggregations["agg-winelists"]["inner"]["result"][
-      "buckets"
-    ].map((el) => {
+    const winelists = allFieldsJSON.aggregations["agg-winelists"]["inner"][
+      "result"
+    ]["buckets"].map((el) => {
       return {
         key: [el.key, el.name.buckets[0].key],
         key_as_string: `${el.key}|${el.name.buckets[0].key}`,
@@ -637,10 +651,11 @@ export default {
       };
     });
     this.winelists = winelists;
+    console.log(winelists, " >>> winelists");
 
-    const pairings = search.aggregations["agg-pairings"]["inner"]["result"][
-      "buckets"
-    ].map((el) => {
+    const pairings = allFieldsJSON.aggregations["agg-pairings"]["inner"][
+      "result"
+    ]["buckets"].map((el) => {
       return {
         key: [el.key, el.name.buckets[0].key],
         key_as_string: `${el.key}|${el.name.buckets[0].key}`,
@@ -679,7 +694,22 @@ export default {
     );
 
     this.activeSelections = activeSelections;
-    console.log(activeSelections);
+    console.log(activeSelections, "activeSelections");
+
+    /*     console.clear();
+    console.log(
+      winelists.map((el) => el.key),
+      "winelistswinelistswinelists"
+    );
+    console.log(winelistsId); */
+
+    this.view.winelists = winelistsId
+      ? {
+          key: winelistsId,
+          name: winelists.find((x) => x.key[0] == winelistsId).key[1],
+          field: "winelists",
+        }
+      : null;
 
     this.view.brand = brandId
       ? {
@@ -739,14 +769,6 @@ export default {
           key: categoryId,
           name: categories.find((x) => x.key[0] == categoryId).key[1],
           field: "categories",
-        }
-      : null;
-
-    this.view.winelists = winelistsId
-      ? {
-          key: winelistsId,
-          name: winelists.find((x) => x.key[0] == winelistsId).key[1],
-          field: "winelists",
         }
       : null;
 

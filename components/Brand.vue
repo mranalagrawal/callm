@@ -15,13 +15,14 @@
             <h1 class="py-3">{{ data.title }}</h1>
             <p>{{ metafields.subtitle }}</p>
           </div>
-          <div class="row mb-5">
+          <div class="row mb-5 w-100">
             <div class="col-12">
-              <img
+              <BrandCarouselVue />
+              <!-- <img
                 src="https://picsum.photos/1920/540"
                 class="img-fluid"
                 alt=""
-              />
+              /> -->
             </div>
           </div>
         </div>
@@ -77,16 +78,44 @@
     </div>
     <div v-else class="container-fluid px-md-5">
       <div class="row">
-        <div class="col-12">
-          <h1 class="py-3">{{ data.title }}</h1>
-          <p>{{ metafields.subtitle }}</p>
+        <div class="col-12 mt-5">
+          <h1 class="pt-3 font-weight-bold">{{ data.title }}</h1>
+          <p class="h3">{{ metafields.subtitle }}</p>
         </div>
         <div class="col-12 col-md-6">
-          <img
-            src="https://picsum.photos/600/400"
-            class="img-fluid w-100"
-            alt=""
-          />
+          <BrandCarouselVue />
+          <!-- <VueSlickCarousel
+            ref="c1"
+            :asNavFor="$refs.c2"
+            :focusOnSelect="true"
+            v-bind="settingsMain"
+          >
+            >
+            <div v-for="i in 10" :key="i">
+              <img
+                :src="`https://picsum.photos/id/${i}/400/250`"
+                alt=""
+                class="mx-auto d-block img-fluid w-100"
+              />
+            </div>
+          </VueSlickCarousel>
+
+          <div class="mt-3">
+            <VueSlickCarousel
+              v-bind="settingsNav"
+              ref="c2"
+              :asNavFor="$refs.c1"
+              :focusOnSelect="true"
+            >
+              <div v-for="i in 10" :key="i">
+                <img
+                  :src="`https://picsum.photos/id/${i}/120/60`"
+                  alt=""
+                  class="mx-auto d-block"
+                />
+              </div>
+            </VueSlickCarousel>
+          </div> -->
           <!-- {{ data }} -->
           <div class="mt-5" v-html="data.contentHtml"></div>
         </div>
@@ -138,8 +167,11 @@
 /* import { queryProductByHandle } from "../../utilities/productQueries"; */
 
 import { getBrand } from "../utilities/brandForProduct";
+import BrandCarouselVue from "./UI/BrandCarousel.vue";
+
 export default {
   props: ["brandId"],
+  components: { BrandCarouselVue },
   data() {
     return {
       data: null,
@@ -161,8 +193,62 @@ export default {
 </script>
 
 <style scoped>
+:deep(.slick-arrow.slick-prev) {
+  width: 48px;
+  height: 48px;
+  background: white;
+  box-shadow: 0 0.5rem 1rem rgba(102, 101, 101, 0.5) !important;
+  background-image: url("../assets/images/chevron-left.svg") !important;
+  background-size: 75%;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99;
+  left: 10px;
+}
+:deep(.slick-arrow.slick-next) {
+  width: 48px;
+  height: 48px;
+  background: white;
+  box-shadow: 0 0.5rem 1rem rgba(102, 101, 101, 0.5) !important;
+  background-image: url("../assets/images/chevron-right.svg") !important;
+  background-size: 75%;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99;
+  right: 10px;
+}
+:deep(.slick-prev::before) {
+  color: red;
+  /* content: "\2039"; */
+  content: "";
+  font-size: 60px;
+  line-height: unset;
+}
+:deep(.slick-next::before) {
+  color: red;
+  /* content: "\203A"; */
+  content: "";
+  font-size: 60px;
+  line-height: unset;
+}
+
 .partner-bg {
   background: linear-gradient(transparent, transparent 70%, white),
+    url("assets/images/selections/red.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.partner-bg {
+  background: url("assets/images/onda.svg"),
     url("assets/images/selections/red.svg");
   background-size: cover;
   background-repeat: no-repeat;

@@ -5,7 +5,9 @@
     <!-- <car-test /> -->
     <featured-products />
     <home-selections />
-    <home-slider />
+    <div class="d-none d-md-block">
+      <home-slider />
+    </div>
     <home-partners />
     <home-last />
     <home-productors />

@@ -86,7 +86,6 @@ export default {
         }
       });
 
-      console.log(selectionsListMapped, "MAPPED");
       return selectionsListMapped;
     },
   },

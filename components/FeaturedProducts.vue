@@ -19,7 +19,7 @@
       <div class="col-12 text-center">
         <!-- <button class="btn pox-5 btn-outline-light-red">Vedi tutti</button> -->
         <nuxt-link
-          :to="localePath('/search?search=&favourite=true&page=1')"
+          :to="localePath('/catalog?favourite=true&page=1')"
           class="btn pox-5 btn-outline-light-red"
           >Vedi tutti</nuxt-link
         >
@@ -111,7 +111,6 @@ export default {
           title: res.data.collectionByHandle.title,
         };
       });
-    console.log(this.data);
   },
 };
 </script>
@@ -135,7 +134,7 @@ export default {
   background: white;
   box-shadow: 0 0.5rem 1rem rgba(102, 101, 101, 0.5) !important;
   background-image: url("../assets/images/chevron-left.svg") !important;
-  background-size: 75%;
+  background-size: 24px;
   background-position: center;
   background-repeat: no-repeat;
   border-radius: 5px;
@@ -150,7 +149,7 @@ export default {
   background: white;
   box-shadow: 0 0.5rem 1rem rgba(102, 101, 101, 0.5) !important;
   background-image: url("../assets/images/chevron-right.svg") !important;
-  background-size: 75%;
+  background-size: 24px;
   background-position: center;
   background-repeat: no-repeat;
   border-radius: 5px;

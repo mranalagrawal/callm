@@ -6,7 +6,7 @@
           <h2>I nostri partners</h2>
         </div>
       </div>
-      <div class="col-12 col-md-8 px-2">
+      <div class="col-12 col-md-8 px-2 mb-3 mb-md-0">
         <div
           class="partners partners-first p-3 text-white d-flex flex-column justify-content-between"
           :style="{

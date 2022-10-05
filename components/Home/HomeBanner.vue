@@ -135,16 +135,24 @@ export default {
 .home-carousel :deep(.carousel-indicators) {
   display: flex;
   justify-content: end;
+  align-items: center;
   margin-right: 5%;
-  bottom: 30px;
+  bottom: 90px;
 }
 
 .home-carousel :deep(.carousel-indicators li) {
-  width: 16px;
-  height: 16px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  border: 2px solid gray;
+  opacity: 1;
+  border: 1px solid #ddd;
+  background-color: white;
+  margin: 0px 6px;
+}
+.home-carousel :deep(.carousel-indicators li.active) {
   background-color: #8b0000;
+  width: 20px;
+  height: 20px;
 }
 
 .home-carousel :deep(.carousel-control-prev),
@@ -152,21 +160,32 @@ export default {
   opacity: 1 !important;
 }
 
+.home-carousel :deep(.carousel-control-prev) {
+  left: -48px;
+}
+.home-carousel :deep(.carousel-control-next) {
+  right: -48px;
+}
+
 .home-carousel :deep(.carousel-control-prev-icon),
 .home-carousel :deep(.carousel-control-next-icon) {
   background-color: white;
-  width: 32px;
-  height: 32px;
+  width: 48px;
+  height: 48px;
   border-radius: 10px;
   opacity: 1;
 }
 
 .home-carousel :deep(.carousel-control-prev-icon) {
   background-image: url("../../assets/images/chevron-left.svg") !important;
+  background-position: center;
+  background-size: 32px;
 }
 
 .home-carousel :deep(.carousel-control-next-icon) {
   background-image: url("../../assets/images/chevron-right.svg") !important;
+  background-position: center;
+  background-size: 32px;
 }
 
 .home-carousel :deep(.carousel-item img) {

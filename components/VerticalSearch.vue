@@ -90,63 +90,80 @@
       </div>
       <div :class="horizontal ? 'col-8' : 'col-12'">
         <div class="p-2">
-          <div style="height: 60px">
-            <p class="font-weight-bold mb-0 small" :title="product._source.id">
+          <div style="height: 60px" class="">
+            <p
+              class="font-weight-bold mb-0"
+              :title="product._source.id"
+              :class="horizontal ? 'pt-2' : 'small'"
+            >
               {{ product._source.shortName }}
             </p>
           </div>
-          <!-- {{ product._source.awardcount }} -->
-          <p class="mb-0 text-muted" style="text-decoration: line-through">
-            {{ product._source.price.toFixed(2) }}
-          </p>
-          <div
-            class="d-flex justify-content-between align-items-center position-relative"
-          >
-            <div>
-              <p class="h2">€ {{ product._source.saleprice.toFixed(2) }}</p>
-            </div>
-            {{ product._source.quantity }}
+          <div v-if="!horizontal">
+            <p class="mb-0 text-muted" style="text-decoration: line-through">
+              {{ product._source.price.toFixed(2) }}
+            </p>
             <div
-              v-if="cartQuantity > 0"
-              style="
-                width: 42px;
-                border-radius: 10px;
-                background: darkred;
-                position: absolute;
-                bottom: 2px;
-                right: 2px;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-              "
+              class="d-flex justify-content-between align-items-center position-relative"
             >
-              <div class="btn text-white">
-                <i class="fas fa-minus" @click.stop="decreaseQuantity()"></i>
+              <div>
+                <p class="h2">€ {{ product._source.saleprice.toFixed(2) }}</p>
               </div>
-              <p class="mb-0 text-white text-center">{{ cartQuantity }}</p>
-              <div class="btn text-white">
-                <i class="fas fa-plus" @click.stop="addToCart()"></i>
+
+              <div
+                v-if="cartQuantity > 0"
+                style="
+                  width: 42px;
+                  border-radius: 10px;
+                  background: darkred;
+                  position: absolute;
+                  bottom: 2px;
+                  right: 2px;
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: space-between;
+                "
+              >
+                <div class="btn text-white">
+                  <i class="fas fa-minus" @click.stop="decreaseQuantity()"></i>
+                </div>
+                <p class="mb-0 text-white text-center">{{ cartQuantity }}</p>
+                <div class="btn text-white">
+                  <i class="fas fa-plus" @click.stop="addToCart()"></i>
+                </div>
+              </div>
+              <div v-else>
+                <button class="btn btn-cart" @click="addToCart()">
+                  <i class="fal fa-shopping-cart text-white"></i>
+                </button>
               </div>
             </div>
-            <div v-else>
+          </div>
+          <div v-else class="row">
+            <div class="col-6">
+              <p>Produttore: {{ product._source.brandname }}</p>
+              <p>
+                Regione: {{ product._source.regionname }}
+                <span v-if="product._source.areas.name"
+                  >({{ product._source.areas.name }})</span
+                >
+              </p>
+              <p>Size: {{ product._source.sizes.name }}</p>
+            </div>
+            <div class="col-6">
+              <p class="text-light-green text-center text-uppercase mt-5">
+                Disponibilità immediata
+              </p>
+              <p class="h2 mb-5 text-center">
+                € {{ product._source.saleprice.toFixed(2) }}
+              </p>
               <button
-                v-if="product._source.quantity > 0"
-                class="btn btn-cart"
+                class="btn bg-light-red text-white text-uppercase mx-auto d-block mt-5"
                 @click="addToCart()"
               >
-                <i class="fal fa-shopping-cart text-white"></i>
+                <i class="fal fa-shopping-cart text-white"></i> aggiungi al
+                carrello
               </button>
-              <button v-else class="btn btn-cart disabled">
-                <i class="fal fa-times text-white"></i>
-              </button>
-              <!-- <button
-                :disabled="product._source.quantity > 0"
-                class="btn btn-cart"
-                :class="product._source.quantity > 0 ? '' : 'disabled'"
-                @click="addToCart()"
-              >
-                <i class="fal fa-shopping-cart text-white"></i>
-              </button> -->
             </div>
           </div>
         </div>
@@ -217,9 +234,9 @@ export default {
       const domain = this.$config.DOMAIN;
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
 
-      if (this.product._source.quantity < 1) {
+      /* if (this.product._source.quantity < 1) {
         return;
-      }
+      } */
 
       if (!this.$store.state.user.user) {
         this.$router.push("/login");

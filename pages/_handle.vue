@@ -59,7 +59,13 @@ export default {
       }
       if (el.name == "selections") {
         if (this.$route.fullPath.split("?sel=")[1]) {
-          this.selections = this.$route.fullPath.split("?sel=")[1];
+          console.log(this.$route.fullPath.split("?sel=")[1].split(","), "XX");
+          let selectionsInQuery = this.$route.fullPath
+            .split("?sel=")[1]
+            .split(",");
+          selectionsInQuery.forEach(
+            (selection) => (this.inputParameters[selection] = true)
+          );
         }
       }
     });

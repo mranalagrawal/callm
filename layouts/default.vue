@@ -7,7 +7,6 @@
     <div class="d-none d-md-block">
       <mega-menu />
     </div>
-    <!-- <mega-test /> -->
 
     <nuxt></nuxt>
 

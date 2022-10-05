@@ -79,7 +79,7 @@
         </div>
       </div>
       <div class="p-3">
-        <p class="font-weight-bold" style="font-size: 14px">
+        <p class="font-weight-bold" style="font-size: 14px; height: 60px">
           {{ product.title }}
         </p>
         <p class="mb-0 text-muted" style="text-decoration: line-through">

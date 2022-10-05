@@ -17,7 +17,11 @@
     </div>
     <div class="row mt-5">
       <div class="col-12 text-center">
-        <button class="btn pox-5 btn-outline-light-red">Vedi tutti</button>
+        <nuxt-link
+          :to="localePath('/catalog?isnew=true&page=1')"
+          class="btn pox-5 btn-outline-light-red"
+          >Vedi tutti</nuxt-link
+        >
       </div>
     </div>
   </div>
@@ -127,7 +131,7 @@ export default {
   background: white;
   box-shadow: 0 0.5rem 1rem rgba(102, 101, 101, 0.5) !important;
   background-image: url("../../assets/images/chevron-left.svg") !important;
-  background-size: 75%;
+  background-size: 24px;
   background-position: center;
   background-repeat: no-repeat;
   border-radius: 5px;
@@ -135,7 +139,7 @@ export default {
   justify-content: center;
   align-items: center;
   z-index: 99;
-  left: 1px;
+  left: 10px;
 }
 :deep(.slick-arrow.slick-next) {
   width: 48px;
@@ -143,7 +147,7 @@ export default {
   background: white;
   box-shadow: 0 0.5rem 1rem rgba(102, 101, 101, 0.5) !important;
   background-image: url("../../assets/images/chevron-right.svg") !important;
-  background-size: 75%;
+  background-size: 24px;
   background-position: center;
   background-repeat: no-repeat;
   border-radius: 5px;

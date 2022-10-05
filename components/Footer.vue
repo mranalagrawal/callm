@@ -16,10 +16,36 @@
       🇮🇹
     </nuxt-link> -->
     <div class="container-fluid px-md-5">
-      <div class="row" v-if="data">
-        <div class="col" v-for="item in data" :key="item.id">
-          <p class="text-uppercase" style="color: #176a62">
+      <div class="row">
+        <div class="col-12">
+          <p class="font-weight-bold h2 text-center mb-5">
+            Esplora il nostro catalogo
+          </p>
+        </div>
+      </div>
+      <div class="row d-md-none" v-if="data">
+        <div class="col-12" v-for="item in data" :key="item.id">
+          <nuxt-link
+            :to="item.primary.link"
+            style="color: #176a62"
+            class="text-uppercase"
+          >
             {{ item.primary.title }}
+          </nuxt-link>
+
+          <hr />
+        </div>
+      </div>
+      <div class="row d-none d-md-flex" v-if="data">
+        <div class="col" v-for="item in data" :key="item.id">
+          <p class="mb-3">
+            <nuxt-link
+              :to="item.primary.link"
+              style="color: #176a62"
+              class="text-uppercase text-decoration-none"
+            >
+              {{ item.primary.title }}
+            </nuxt-link>
           </p>
           <p class="" v-for="link in item.items" :key="`inner_${link.name}`">
             <nuxt-link :to="link.link" class="text-decoration-none menu-link"

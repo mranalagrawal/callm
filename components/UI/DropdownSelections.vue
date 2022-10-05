@@ -78,7 +78,7 @@ export default {
     });
 
     this.selections = selectionsListMapped;
-    console.log(selectionsListMapped, "m");
+    
   },
  */
   computed: {
@@ -101,14 +101,11 @@ export default {
         }
       });
 
-      console.log(selectionsListMapped, "MAPPED");
       return selectionsListMapped;
     },
   },
   methods: {
     goto(id) {
-      console.log(id);
-
       const query = Object.assign({}, this.$route.query);
 
       let activeFilter = Object.keys(query).filter((el) =>

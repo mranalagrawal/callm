@@ -1,7 +1,7 @@
 <template>
   <div
     class="container-fluid bg-dark-green py-2 text-white text-center position-relative"
-    style="font-size: 12px; z-index: 1030"
+    style="font-size: 16px; z-index: 1030"
   >
     <span v-if="data" v-html="data.data.text[0].text"></span>
 

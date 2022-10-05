@@ -1,17 +1,14 @@
 <template>
   <div class="container-fluid fixed- bg-white">
-    <div class="row align-items-center py-md-3 px-md-4">
+    <div class="row align-items-center py-md-3 px-md-5">
       <div
-        class="col-12 col-md-2 px-0 px-md-2 bg-white"
+        class="col-12 col-md-3 px-0 px-md-2 bg-white"
         style="position: relative; z-index: 1040"
       >
-        <button
-          class="btn d-md-none"
-          v-b-toggle.sidebar
-          @click="isMobileMenuOpen = !isMobileMenuOpen"
-        >
+        <button class="btn d-md-none" @click="toggleSidebar">
           <i class="fal" :class="isMobileMenuOpen ? 'fa-times' : 'fa-bars'"></i>
         </button>
+
         <nuxt-link :to="localePath('/')">
           <img
             src="../assets/images/logo.svg"
@@ -22,7 +19,7 @@
           <img
             src="../assets/images/logo.svg"
             class="img-fluid d-none d-md-block"
-            width="180px"
+            width="270px"
             alt=""
           />
         </nuxt-link>
@@ -36,10 +33,10 @@
         </div>
       </div>
 
-      <div class="col-12 col-md-7 py-2" style="position: relative">
+      <div class="col-12 col-md-6 py-2" style="position: relative">
         <b-button
           size="sm"
-          class="border-0"
+          class="border-0 text-white"
           type="button"
           style="
             position: absolute;
@@ -104,8 +101,8 @@
         <b-form-input
           type="search"
           size="sm"
-          class="border border-dark p-4"
-          style="border-radius: 8px"
+          class="p-4"
+          style="border-radius: 12px; border: 1px solid #8c8d8e"
           placeholder="Cosa stai cercando?"
           v-model="search"
           @input="suggest"
@@ -129,12 +126,12 @@
             <div>
               <button class="btn cart-box" @mouseenter="switchToUser()">
                 <p class="mb-0">
-                  <i class="fal fa-user"></i>
+                  <i class="fal fa-user" style="font-size: 28px"></i>
                 </p>
                 <p v-if="user" class="mb-0">
                   {{ user.customer.firstName }}
                 </p>
-                <p v-else class="mb-0" style="font-size: 12px">Accedi</p>
+                <p v-else class="mb-0">Accedi</p>
               </button>
 
               <div
@@ -158,7 +155,7 @@
             </div>
           </div>
           <!-- Cart -->
-          <div class="position-relative" v-if="user">
+          <div class="position-relative" v-if="true">
             <div class="">
               <div
                 v-if="1"
@@ -178,13 +175,16 @@
                   <div class="">
                     <p class="mb-0">
                       <span class="totalItems">{{ cart.totalQuantity }}</span>
-                      <i class="fal fa-shopping-cart fa-2x"></i>
+                      <i
+                        class="fal fa-shopping-cart"
+                        style="font-size: 28px"
+                      ></i>
                     </p>
                   </div>
                 </div>
                 <div v-else>
                   <p class="mb-0">
-                    <i class="fal fa-shopping-cart"></i>
+                    <i class="fal fa-shopping-cart" style="font-size: 28px"></i>
                   </p>
                   <p class="mb-0">Carrello</p>
                 </div>
@@ -206,15 +206,15 @@
     </div>
 
     <b-sidebar
-      id="sidebar"
       title=""
       shadow
       width="100%"
       z-index="1029"
       no-header
-      ref="sidebar"
+      v-model="isSidebarOpen"
     >
-      <div class="px-3 py-2 mt-5">
+      <div v-if="data" class="px-3 py-2 mt-5">
+        qui
         <div v-for="(item, i) in data" :key="`mobile_${i}`">
           <dropdown-mobile-menu :data="item" />
         </div>
@@ -244,8 +244,8 @@ export default {
     $route() {
       this.showUser = false;
       this.showCart = false;
-      this.data = null;
       this.search = null;
+      this.isSidebarOpen = false;
     },
     cartTotalAmount(total) {
       if (Number(total) > 50) {
@@ -283,14 +283,14 @@ export default {
       visible: false,
       data: null,
       isMobileMenuOpen: false,
+      isSidebarOpen: false,
       data: null,
     };
   },
   methods: {
-    test() {
-      console.log(this.$refs.sidebar);
+    toggleSidebar() {
+      this.isSidebarOpen = !this.isSidebarOpen;
     },
-
     showSidebar() {
       this.$refs["sidebar"].show();
     },
@@ -325,7 +325,6 @@ export default {
       this.showUser = true;
     },
     startSearch() {
-      console.log(this.search);
       const query = { search: this.search };
       this.$router.push({
         path: "/search",
@@ -379,7 +378,6 @@ export default {
       })
       .sort((a, b) => a.position - b.position);
 
-    console.log(mapped, "NAVBAR ");
     this.data = mapped;
   },
 };
@@ -398,10 +396,10 @@ export default {
 :deep(.dropdown-toggle::after) {
   display: none;
 }
-:deep(.btn-secondary) {
+/* :deep(.btn-secondary) {
   background-color: var(--dark-red) !important;
   border-color: var(--dark-red) !important;
-}
+} */
 :deep(.dropdown-menu) {
   left: -60px;
   border-top: 4px solid var(--dark-red);
@@ -427,7 +425,7 @@ export default {
 }
 
 .cart-box {
-  background: #eee;
+  /* background: #eee; */
   border-radius: 10px;
   height: 64px !important;
 }

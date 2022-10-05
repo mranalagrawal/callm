@@ -46,7 +46,7 @@ export default {
       slidesToShow: 5.5,
       slidesToScroll: 4,
       autoplay: true,
-      speed: 10000,
+      speed: 20000,
       autoplaySpeed: 0,
       cssEase: "linear",
       pauseOnFocus: false,
@@ -76,7 +76,7 @@ export default {
   async fetch() {
     const response = await this.$prismic.api.getSingle("selections");
     const items = response.data.body[0].items;
-    this.data = items.concat(items);
+    this.data = items.concat(items).concat(items).concat(items);
   },
 };
 </script>

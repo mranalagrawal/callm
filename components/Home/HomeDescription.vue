@@ -3,7 +3,16 @@
     <div class="container">
       <div class="row">
         <div class="col-12 col-md-8">
-          <p class="lead" style="font-size: 2rem; line-height: 1.5">
+          <p
+            class="lead d-none d-mb-block"
+            style="font-size: 2rem; line-height: 1.5"
+          >
+            Callmewine, la tua enoteca online, il tuo personale sommelier
+          </p>
+          <p
+            class="d-md-none text-center font-weight-bold"
+            style="font-size: 1.6rem"
+          >
             Callmewine, la tua enoteca online, il tuo personale sommelier
           </p>
           <p class="">

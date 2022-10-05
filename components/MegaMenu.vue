@@ -2,7 +2,7 @@
   <div class="container-fluid position-relative" @mouseleave="onTab(null)">
     <div class="row pb-3 shadow-menu">
       <div
-        class="col text-center"
+        class="col text-center text-uppercase menu-link"
         v-for="(item, i) in data"
         @mouseenter="onTab(item)"
         :key="i"
@@ -26,8 +26,9 @@
             <!-- {{ thirdLevel }} -->
             <nuxt-link
               v-if="!thirdLevel.marketing_cta"
-              class="small"
-              :to="thirdLevel.third_level_link"
+              class="menu-link px-2"
+              style="font-weight: 300"
+              :to="thirdLevel.third_level_link || '/'"
               >{{ thirdLevel.third_level_name }}</nuxt-link
             >
             <div
@@ -153,6 +154,8 @@ export default {
 .menu-link {
   color: black;
   text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 600;
 }
 .menu-link:hover {
   color: var(--dark-red);
