@@ -50,11 +50,11 @@
         :key="i"
         :img-src="slide.image.mobile.url"
       >
-        <h1 class="mb-5">{{ slide.text }}</h1>
+        <h1 class="mb-md-5">{{ slide.text }}</h1>
         <div>
           <nuxt-link
             :to="slide.link"
-            class="btn text-uppercase bg-white text-light-red"
+            class="btn text-uppercase bg-white text-light-red d-none d-md-block"
             style="text-shadow: none"
           >
             scopri di più
@@ -151,8 +151,8 @@ export default {
 }
 .home-carousel :deep(.carousel-indicators li.active) {
   background-color: #8b0000;
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
 }
 
 .home-carousel :deep(.carousel-control-prev),
@@ -223,7 +223,8 @@ export default {
 
   :deep(.carousel-caption) {
     text-align: left;
-    top: 40px;
+    top: 0px;
+    justify-content: space-between;
   }
 }
 

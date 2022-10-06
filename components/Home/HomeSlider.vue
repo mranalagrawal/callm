@@ -1,6 +1,7 @@
 <template>
   <div class="my-5">
-    <h3 class="text-center">In evidenza</h3>
+    <h2 class="text-center font-weight-bold text-dark-green">In evidenza</h2>
+
     <client-only placeholder="Loading..." v-if="contents">
       <carousel-3d
         :width="1100"

@@ -1,28 +1,29 @@
 <template>
   <div class="container my-5">
-    <div v-if="contents" class="row">
+    <div v-if="data" class="row">
       <div class="col-12">
-        <div class="col-12 text-center">
-          <h2>I nostri partners</h2>
+        <div class="col-12 text-center mt-5 mb-5">
+          <h2 class="text-center font-weight-bold text-dark-green">
+            I nostri partners
+          </h2>
         </div>
       </div>
       <div class="col-12 col-md-8 px-2 mb-3 mb-md-0">
         <div
           class="partners partners-first p-3 text-white d-flex flex-column justify-content-between"
           :style="{
-            backgroundImage:
-              'linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),url(' +
-              contents[1].data.image.url +
-              ')',
+            backgroundImage: `url(${mask_left}),url('${data[0].content.image.url}')`,
           }"
         >
-          <div class="">
-            <p class="small text-uppercase">
-              {{ contents[1].data.subtitle[0].text }}
+          <div class="w-50">
+            <p class="text-uppercase pt-5">
+              {{ data[0].content.upper_text }}
             </p>
-            <h3 class="my-3">{{ contents[1].data.title[0].text }}</h3>
-            <p class="small">
-              {{ contents[1].data.description[0].text }}
+            <h3 class="my-3 font-weight-bold">
+              {{ data[0].content.main_text }}
+            </h3>
+            <p class="">
+              {{ data[0].content.lower_text }}
             </p>
           </div>
           <div>
@@ -34,16 +35,16 @@
         <div
           class="partners partners-last p-3 text-white d-flex flex-column justify-content-end"
           :style="{
-            backgroundImage: `url(${mask}),linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),url('${contents[1].data.image.url}')`,
+            backgroundImage: `url(${mask}), url('${data[1].content.image.url}')`,
           }"
         >
           <div class="">
             <p class="small text-uppercase">
-              {{ contents[0].data.subtitle[0].text }}
+              {{ data[1].content.upper_text }}
             </p>
-            <h3 class="my-3">{{ contents[0].data.title[0].text }}</h3>
+            <h3 class="my-3">{{ data[1].content.main_text }}</h3>
             <p class="small">
-              {{ contents[0].data.description[0].text }}
+              {{ data[1].content.lower_text }}
             </p>
           </div>
           <div>
@@ -57,20 +58,37 @@
 
 <script>
 import mask from "assets/images/mask_small.svg";
+import mask_left from "assets/images/mask_left.svg";
 
 export default {
   data() {
     return {
       contents: null,
       mask: mask,
+      mask_left: mask_left,
+      data: null,
     };
   },
   async fetch() {
-    this.contents = (
-      await this.$prismic.api.query(
-        this.$prismic.predicates.at("document.type", "partner")
-      )
-    ).results;
+    console.log(this.$i18n.locale, "LAN");
+
+    let lang = "";
+    if (this.$i18n.locale == "en") {
+      lang = "en-gb";
+    } else {
+      lang = "it-it";
+    }
+    const response = await this.$prismic.api.getSingle("partners", {
+      lang: lang,
+    });
+    const data = response.data.body.map((el) => {
+      return {
+        id: el.id,
+        content: el.items[0],
+      };
+    });
+    this.data = data;
+    console.log(data, "partners");
   },
 };
 </script>
@@ -83,12 +101,12 @@ export default {
 
 .partners-first {
   background-size: cover;
-  background-position: center;
+  background-position: -150px, center;
   background-repeat: no-repeat;
 }
 .partners-last {
   background-size: cover;
-  background-position: 0px 30px, center, center;
+  background-position: 0px 60px, center, center;
   background-repeat: no-repeat;
 }
 </style>

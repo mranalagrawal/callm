@@ -3,7 +3,7 @@
     <!-- <div v-for="product in products" :key="product.id">{{ product.title }}</div> -->
     <div class="row">
       <div class="col-12 text-center" v-if="data">
-        <h3>{{ data.title }}</h3>
+        <h2 class="font-weight-bold text-dark-green">{{ data.title }}</h2>
         <p>{{ data.description }}</p>
       </div>
 
@@ -20,7 +20,7 @@
         <!-- <button class="btn pox-5 btn-outline-light-red">Vedi tutti</button> -->
         <nuxt-link
           :to="localePath('/catalog?favourite=true&page=1')"
-          class="btn pox-5 btn-outline-light-red"
+          class="btn px-5 py-2 text-uppercase view-more font-weight-bold"
           >Vedi tutti</nuxt-link
         >
       </div>
@@ -57,25 +57,24 @@ export default {
           settings: {
             slidesToShow: 3,
             slidesToScroll: 3,
-            infinite: true,
-            dots: true,
           },
         },
         {
           breakpoint: 600,
           settings: {
-            slidesToShow: 2,
-            slidesToScroll: 2,
-            initialSlide: 2,
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            dots: true,
+            arrows: false,
           },
         },
-        {
+        /* {
           breakpoint: 480,
           settings: {
             slidesToShow: 1,
             slidesToScroll: 1,
           },
-        },
+        }, */
       ],
     },
   }),
@@ -128,6 +127,12 @@ export default {
   opacity: 1;
   visibility: visible;
 } */
+
+.view-more {
+  border: 2px solid var(--light-red);
+  border-radius: 12px;
+  color: var(--light-red);
+}
 :deep(.slick-arrow.slick-prev) {
   width: 48px;
   height: 48px;
@@ -174,14 +179,15 @@ export default {
 }
 
 :deep(.slick-dots li button:before) {
-  font-size: 16px;
-
-  opacity: 0.25;
-  color: var(--dark-red);
+  font-size: 10px;
+  opacity: 0.6;
+  color: var(--light-red);
 }
 
 :deep(.slick-dots li.slick-active button:before) {
   opacity: 1;
+  font-size: 16px;
+  color: var(--dark-red);
 }
 :deep(.slick-dots) {
   bottom: -48px;

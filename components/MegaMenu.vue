@@ -13,7 +13,12 @@
     <div v-if="selectedItem" @mouseleave="onTab(null)">
       <div
         class="row bg-white w-100 position-absolute shadow-menu pt-3"
-        style="min-height: 300px; z-index: 100"
+        style="
+          min-height: 300px;
+          z-index: 100;
+          max-height: 400px;
+          overflow-y: scroll;
+        "
       >
         <div
           v-for="(secondLevel, i) in selectedItem.items"
@@ -21,19 +26,26 @@
           class="col"
           style="border-right: 1px solid #ddd"
         >
-          <p class="lead text-light-green">{{ secondLevel.name }}</p>
+          <p class="fs-14 px-2" style="color: #155b53; font-weight: 600">
+            {{ secondLevel.name }}
+          </p>
           <div v-for="(thirdLevel, j) in secondLevel.items" :key="j">
             <!-- {{ thirdLevel }} -->
-            <nuxt-link
-              v-if="!thirdLevel.marketing_cta"
-              class="menu-link px-2"
-              style="font-weight: 300"
-              :to="thirdLevel.third_level_link || '/'"
-              >{{ thirdLevel.third_level_name }}</nuxt-link
-            >
+            <p v-if="!thirdLevel.marketing_cta" class="mb-2">
+              <nuxt-link
+                class="menu-link px-2"
+                style="
+                  font-weight: 300;
+                  padding-top: 0.5rem;
+                  padding-bottom: 0.5rem;
+                "
+                :to="thirdLevel.third_level_link || '/'"
+                >{{ thirdLevel.third_level_name }}</nuxt-link
+              >
+            </p>
             <div
               v-else
-              class="shadow row align-items-center mb-4 ml-2"
+              class="shadow row align-items-center mb-4 mx-auto"
               style="max-width: 350px; border-radius: 10px"
             >
               <div
@@ -142,6 +154,7 @@ export default {
       .sort((a, b) => a.position - b.position);
 
     this.data = mapped;
+    /* this.selectedItem = mapped[0] */
   },
 };
 </script>

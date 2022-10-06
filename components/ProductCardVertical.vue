@@ -1,5 +1,5 @@
 <template>
-  <div class="card product-card mx-auto justify-content-between">
+  <div class="card product-card mx-auto justify-content-between mt-4">
     <div>
       <!-- {{ this.product }} -->
       <div v-if="details.inpromotion" class="ribbon-1">
@@ -82,9 +82,17 @@
         <p class="font-weight-bold" style="font-size: 14px; height: 60px">
           {{ product.title }}
         </p>
-        <p class="mb-0 text-muted" style="text-decoration: line-through">
+        <p
+          class="mb-0 text-muted"
+          style="text-decoration: line-through"
+          v-if="
+            product.variants.nodes[0].compareAtPrice !==
+            product.variants.nodes[0].price
+          "
+        >
           € {{ product.variants.nodes[0].compareAtPrice }}
         </p>
+        <p v-else class="mb-0">&nbsp;</p>
         <div
           class="d-flex justify-content-between align-items-center position-relative"
         >
@@ -302,7 +310,8 @@ export default {
 }
 
 .product-card:hover {
-  box-shadow: 0 20px 36px 3px rgb(51 51 51 / 20%);
+  /* box-shadow: 0 20px 36px 3px rgb(51 51 51 / 20%); */
+  box-shadow: 5px 5px 8px 1px rgb(120 120 120 / 50%);
 }
 
 .btn-cart {

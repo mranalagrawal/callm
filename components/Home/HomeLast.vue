@@ -19,7 +19,7 @@
       <div class="col-12 text-center">
         <nuxt-link
           :to="localePath('/catalog?isnew=true&page=1')"
-          class="btn pox-5 btn-outline-light-red"
+          class="btn px-5 py-2 text-uppercase view-more font-weight-bold"
           >Vedi tutti</nuxt-link
         >
       </div>
@@ -125,6 +125,12 @@ export default {
   opacity: 1;
   visibility: visible;
 } */
+.view-more {
+  border: 2px solid var(--light-red);
+  border-radius: 12px;
+  color: var(--light-red);
+}
+
 :deep(.slick-arrow.slick-prev) {
   width: 48px;
   height: 48px;

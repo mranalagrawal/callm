@@ -3,7 +3,7 @@
     <!-- <div v-for="product in products" :key="product.id">{{ product.title }}</div> -->
     <div class="row py-5 px-0">
       <div class="col-12 text-center">
-        <h2>Le nostre selezioni</h2>
+        <h2 class="font-weight-bold text-dark-green">Le nostre selezioni</h2>
       </div>
       <div class="col-12 px-0 py-4">
         <VueSlickCarousel v-bind="settings" ref="carousel" v-if="data">
@@ -17,6 +17,7 @@
                 width="24px"
                 height="24px"
                 class="mr-2"
+                style="user-select: none"
                 :style="{ filter: 'contrast(0) brightness(5) !important' }"
               />
               {{ item.label }}
@@ -33,14 +34,22 @@
 import VueSlickCarousel from "vue-slick-carousel";
 // optional style for arrows & dots
 import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
-import ProductCardVertical from "../ProductCardVertical.vue";
 
 export default {
-  components: { ProductCardVertical, VueSlickCarousel },
+  components: { VueSlickCarousel },
   data: () => ({
     data: null,
     settings: {
       arrows: false,
+      dots: true,
+      infinite: true,
+      slidesToShow: 6,
+      slidesToScroll: 1,
+      autoplay: true,
+      speed: 20000,
+      autoplaySpeed: 20000,
+      cssEase: "linear",
+      /* arrows: false,
       dots: true,
       infinite: true,
       slidesToShow: 5.5,
@@ -49,8 +58,8 @@ export default {
       speed: 20000,
       autoplaySpeed: 0,
       cssEase: "linear",
-      pauseOnFocus: false,
-      pauseOnHover: false,
+      pauseOnFocus: true,
+      pauseOnHover: true, */
       responsive: [
         {
           breakpoint: 1025,
@@ -76,7 +85,7 @@ export default {
   async fetch() {
     const response = await this.$prismic.api.getSingle("selections");
     const items = response.data.body[0].items;
-    this.data = items.concat(items).concat(items).concat(items);
+    this.data = items.concat(items).concat(items);
   },
 };
 </script>
@@ -139,7 +148,6 @@ export default {
 
 :deep(.slick-dots li button:before) {
   font-size: 16px;
-
   opacity: 0.25;
   color: var(--dark-red);
 }
