@@ -53,7 +53,7 @@
           </p>
           <button
             v-if="!readMore"
-            class="btn btn-outline-light-red text-uppercase px-5"
+            class="btn px-5 py-2 text-uppercase view-more font-weight-bold"
             @click="readMore = true"
           >
             Leggi di più

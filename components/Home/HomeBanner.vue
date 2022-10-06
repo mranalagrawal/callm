@@ -23,8 +23,8 @@
         <div>
           <nuxt-link
             :to="slide.link"
-            class="btn text-uppercase bg-white text-light-red"
-            style="text-shadow: none"
+            class="btn btn-more px-3 py-2"
+            style="text-shadow: none; border-radius: 10px"
           >
             scopri di più
           </nuxt-link>
@@ -234,5 +234,16 @@ export default {
   margin: -102px auto 0;
   left: 50%;
   transform: translate(-50%);
+}
+
+.btn-more {
+  text-transform: uppercase;
+  background-color: white;
+  color: var(--dark-red);
+  font-weight: 700;
+}
+.btn-more:hover {
+  background-color: #ad2b48;
+  color: white;
 }
 </style>

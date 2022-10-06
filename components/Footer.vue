@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid pt-5 mt-5 px-0 bg-light">
+  <div class="container-fluid pt-5 mt-5 px-0" style="background: #f8f8f8">
     <!-- <nuxt-link
       class=""
       v-if="$i18n.locale !== 'en'"
@@ -27,8 +27,7 @@
         <div class="col-12" v-for="item in data" :key="item.id">
           <nuxt-link
             :to="item.primary.link"
-            style="color: #176a62"
-            class="text-uppercase"
+            class="text-uppercase primary-title"
           >
             {{ item.primary.title }}
           </nuxt-link>
@@ -38,17 +37,19 @@
       </div>
       <div class="row d-none d-md-flex" v-if="data">
         <div class="col" v-for="item in data" :key="item.id">
-          <p class="mb-3">
+          <p class="" style="margin-bottom: 32px">
             <nuxt-link
               :to="item.primary.link"
               style="color: #176a62"
-              class="text-uppercase text-decoration-none"
+              class="text-uppercase text-decoration-none primary-title"
             >
               {{ item.primary.title }}
             </nuxt-link>
           </p>
           <p class="" v-for="link in item.items" :key="`inner_${link.name}`">
-            <nuxt-link :to="link.link" class="text-decoration-none menu-link"
+            <nuxt-link
+              :to="link.link"
+              class="text-decoration-none secondary-title"
               >{{ link.name }}
             </nuxt-link>
           </p>
@@ -67,7 +68,7 @@
             width="180px"
             alt=""
           />
-          <p class="mt-2">
+          <p class="mt-2 fs-14">
             Callmewine è un’enoteca online specializzata nella vendita di vino,
             champagne e distillati.
           </p>
@@ -75,24 +76,47 @@
       </div>
       <div class="row">
         <div class="col-12 col-lg-6">
-          <p class="lead">Newsletter</p>
-          <div class="mb-5">
-            <form>
-              <div class="row border border-light rounded-lg py-2 mx-0">
-                <div class="col-9">
+          <p class="fs-14">
+            <i class="fal fa-envelope mr-2"></i> Iscriviti alla newsletter per
+            scoprire tutte le novità e le promozioni
+          </p>
+          <form class="mb-5">
+            <div class="row border border-light rounded-lg py-2 mx-0">
+              <div class="col-7 col-md-9">
+                <input
+                  type="email"
+                  class="form-control bg-transparent border-0"
+                  id=""
+                  placeholder="Inserisci qui la tua email"
+                />
+              </div>
+              <div class="col-5 col-md-3">
+                <button
+                  class="btn btn-light text-light-red font-weight-bold text-uppercase w-100"
+                  style="border-radius: 10px"
+                >
+                  Iscriviti
+                </button>
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-12">
+                <div class="form-check">
                   <input
-                    type="email"
-                    class="form-control bg-transparent border-0"
-                    id=""
-                    placeholder="Inserisci qui la tua email"
+                    class="form-check-input bg-transparent"
+                    type="checkbox"
+                    value=""
+                    id="defaultCheck1"
                   />
-                </div>
-                <div class="col-3">
-                  <button class="btn btn-light w-100">Iscriviti</button>
+                  <label class="form-check-label fs-14" for="defaultCheck1">
+                    Acconsento a ricevere newsletter e comunicazioni
+                    promozionali da parte di Callmewine, come previsto dalla
+                    Privacy Policy
+                  </label>
                 </div>
               </div>
-            </form>
-          </div>
+            </div>
+          </form>
         </div>
         <div class="col-12 col-lg-6" style="font-size: 0.875rem">
           <div class="row">
@@ -197,6 +221,27 @@
 .menu-link:hover {
   color: var(--dark-red);
   text-decoration: none;
+}
+
+.primary-title {
+  font-size: 0.875rem;
+  color: #176a62;
+  font-weight: normal;
+  line-height: 1.5;
+  letter-spacing: 2.1px;
+  font-style: normal;
+}
+
+.secondary-title {
+  font-size: 14px;
+  color: #000;
+  font-weight: normal;
+  line-height: 1.3;
+  letter-spacing: normal;
+  font-style: normal;
+}
+.secondary-title:hover {
+  color: var(--dark-red);
 }
 </style>
 

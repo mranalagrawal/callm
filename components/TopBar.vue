@@ -5,7 +5,7 @@
   >
     <span v-if="data" v-html="data.data.text[0].text"></span>
 
-    <span class="position-absolute" style="right: 10px">
+    <!-- <div class="position-absolute" style="right: 10px">
       <nuxt-link
         class=""
         v-if="$i18n.locale !== 'en'"
@@ -21,7 +21,7 @@
       >
         🇮🇹
       </nuxt-link>
-    </span>
+    </div> -->
   </div>
 </template>
 

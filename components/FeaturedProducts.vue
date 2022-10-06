@@ -4,7 +4,7 @@
     <div class="row">
       <div class="col-12 text-center" v-if="data">
         <h2 class="font-weight-bold text-dark-green">{{ data.title }}</h2>
-        <p>{{ data.description }}</p>
+        <!-- <p>{{ data.description }}</p> -->
       </div>
 
       <div class="col-12 py-4" v-if="data">

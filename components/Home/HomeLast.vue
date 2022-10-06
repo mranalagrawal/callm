@@ -3,8 +3,8 @@
     <!-- <div v-for="product in products" :key="product.id">{{ product.title }}</div> -->
     <div class="row">
       <div class="col-12 text-center" v-if="data">
-        <h3>{{ data.title }}</h3>
-        <p>{{ data.description }}</p>
+        <h3 class="font-weight-bold text-dark-green">{{ data.title }}</h3>
+        <!-- <p>{{ data.description }}</p> -->
       </div>
 
       <div class="col-12 py-4" v-if="data">

@@ -10,8 +10,8 @@
 
     <nuxt></nuxt>
 
-    <Footer />
-    <FlashMessage></FlashMessage>
+    <!-- <Footer /> -->
+    <!-- <FlashMessage></FlashMessage> -->
   </div>
 </template>
 

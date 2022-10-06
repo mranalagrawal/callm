@@ -109,20 +109,23 @@
         ></b-form-input>
       </div>
       <div class="d-none d-md-block col-md-3">
-        <div
-          class="d-flex"
-          :class="user ? 'justify-content-around' : 'justify-content-end'"
-        >
-          <div class="btn" v-if="user">
+        <div class="d-flex justify-content-around">
+          <!--           <div class="position-relative" v-if="user">
+            <i class="fal fa-heart"></i>
             <nuxt-link
               :to="localePath('/wishlist')"
               class="text-decoration-none text-dark"
             >
-              <i class="fal fa-heart"></i>
-              <p class="mb-0">{{ $t("navbar.favorites") }}</p>
             </nuxt-link>
-          </div>
-          <div class="position-relative">
+          </div> -->
+
+          <div class="position-relative d-flex">
+            <div v-if="user">
+              <button class="btn cart-box">
+                <i class="fal fa-heart" style="font-size: 28px"></i>
+                <p class="text-decoration-none text-dark">Favoriti</p>
+              </button>
+            </div>
             <div>
               <button class="btn cart-box" @mouseenter="switchToUser()">
                 <p class="mb-0">
@@ -154,7 +157,7 @@
               </div>
             </div>
           </div>
-          <!-- Cart -->
+
           <div class="position-relative" v-if="true">
             <div class="">
               <div
@@ -197,7 +200,6 @@
                 style="width: 540px"
               >
                 <Cart />
-                <!-- <button class="btn" @click="onSubmit">Submit</button> -->
               </div>
             </div>
           </div>
