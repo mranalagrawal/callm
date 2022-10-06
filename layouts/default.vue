@@ -1,17 +1,21 @@
 <template>
   <div>
     <top-bar></top-bar>
-    <div class="">
-      <navbar />
-    </div>
+    <client-only>
+      <div class="">
+        <navbar />
+      </div>
+    </client-only>
     <div class="d-none d-md-block">
       <mega-menu />
     </div>
 
     <nuxt></nuxt>
 
-    <!-- <Footer /> -->
-    <!-- <FlashMessage></FlashMessage> -->
+    <Footer />
+    <client-only>
+      <FlashMessage></FlashMessage>
+    </client-only>
   </div>
 </template>
 

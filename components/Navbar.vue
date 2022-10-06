@@ -110,24 +110,15 @@
       </div>
       <div class="d-none d-md-block col-md-3">
         <div class="d-flex justify-content-around">
-          <!--           <div class="position-relative" v-if="user">
-            <i class="fal fa-heart"></i>
-            <nuxt-link
-              :to="localePath('/wishlist')"
-              class="text-decoration-none text-dark"
-            >
-            </nuxt-link>
-          </div> -->
-
           <div class="position-relative d-flex">
             <div v-if="user">
-              <button class="btn cart-box">
+              <div class="btn cart-box">
                 <i class="fal fa-heart" style="font-size: 28px"></i>
                 <p class="text-decoration-none text-dark">Favoriti</p>
-              </button>
+              </div>
             </div>
             <div>
-              <button class="btn cart-box" @mouseenter="switchToUser()">
+              <div class="btn cart-box" @mouseenter="switchToUser()">
                 <p class="mb-0">
                   <i class="fal fa-user" style="font-size: 28px"></i>
                 </p>
@@ -135,7 +126,7 @@
                   {{ user.customer.firstName }}
                 </p>
                 <p v-else class="mb-0">Accedi</p>
-              </button>
+              </div>
 
               <div
                 v-if="showUser"
