@@ -6,7 +6,6 @@
       :interval="4000"
       controls
       indicators
-      fade
       background="#ababab"
       style="text-shadow: 1px 1px 2px #333"
       @sliding-start="onSlideStart"
@@ -32,7 +31,7 @@
       </b-carousel-slide>
     </b-carousel>
     <b-carousel
-      id="carousel-1"
+      id="carousel-2"
       v-model="slide"
       :interval="4000"
       controls
@@ -179,17 +178,17 @@ export default {
 .home-carousel :deep(.carousel-control-prev-icon) {
   background-image: url("../../assets/images/chevron-left.svg") !important;
   background-position: center;
-  background-size: 32px;
+  background-size: 20px;
 }
 
 .home-carousel :deep(.carousel-control-next-icon) {
   background-image: url("../../assets/images/chevron-right.svg") !important;
   background-position: center;
-  background-size: 32px;
+  background-size: 20px;
 }
 
 .home-carousel :deep(.carousel-item img) {
-  height: 550px;
+  height: 505px;
   object-fit: cover;
 }
 
@@ -205,7 +204,9 @@ export default {
   top: 40px;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: center;
+  left: 10%;
+  right: 10%;
 }
 
 @media screen and (max-width: 760px) {
@@ -239,7 +240,7 @@ export default {
 .btn-more {
   text-transform: uppercase;
   background-color: white;
-  color: var(--dark-red);
+  color: #d94965;
   font-weight: 700;
 }
 .btn-more:hover {

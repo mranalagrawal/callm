@@ -3,7 +3,7 @@ export default {
     favorites: "Favorites",
     promotions: "Promotions",
     cart: {
-      total: "Total Cart",
+      total: "Total Order",
       detail: "Cart detail",
       checkout: "Go to checkout",
       empty: "Your cart is empty!",

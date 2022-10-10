@@ -1,20 +1,24 @@
 <template>
-  <div class="card product-card mx-auto justify-content-between mt-4">
+  <div class="product-card mx-auto mt-4" style="width: 94%">
     <div>
-      <!-- {{ this.product }} -->
-      <div v-if="details.inpromotion" class="ribbon-1">
+      <!-- <div v-if="details.inpromotion" class="ribbon-1">
         <span><i class="fal fa-tag"></i> PROMO</span>
+      </div> -->
+      <div v-if="details.inpromotion" class="ribbon-1">
+        <span style="letter-spacing: 3px">
+          <img
+            :src="require(`@/assets/images/selections/inpromotion.svg`)"
+            class="text-white d-inline icon-promo"
+          />PROMO</span
+        >
       </div>
 
       <nuxt-link
         :to="`/${product.handle}-${product.tags[0]}`"
-        class="row mx-0 mt-2 img-wrapper text-decoration-none text-dark"
+        class="position-relative row mx-0 mt-2 img-wrapper text-decoration-none text-dark"
         :style="{ backgroundImage: 'url(' + product.images.nodes[0].url + ')' }"
       >
-        <div
-          class="position-absolute"
-          style="left: 20px; top: 10px; z-index: 10"
-        >
+        <div class="position-absolute" style="left: 0px; top: 0px; z-index: 10">
           <img
             title="Favoriti"
             v-if="details.favourite"
@@ -64,8 +68,17 @@
             class="selection-svg d-block"
           />
         </div>
+        <div style="position: absolute; bottom: 0px; right: 2px">
+          <i
+            class="text-light-red"
+            style="font-size: 26px"
+            :class="isInWishList ? 'fas fa-heart ' : 'fal fa-heart  '"
+            @click.stop="toggleWishlist"
+          ></i>
+        </div>
       </nuxt-link>
-      <div class="row">
+
+      <!-- <div class="row">
         <div class="col-12">
           <div class="text-right">
             <i
@@ -77,56 +90,57 @@
             ></i>
           </div>
         </div>
-      </div>
-      <div class="p-3">
-        <p class="font-weight-bold" style="font-size: 14px; height: 60px">
+      </div> -->
+      <div class="">
+        <div class="prodotto-box__nome">
           {{ product.title }}
-        </p>
-        <p
-          class="mb-0 text-muted"
-          style="text-decoration: line-through"
-          v-if="
-            product.variants.nodes[0].compareAtPrice !==
-            product.variants.nodes[0].price
-          "
-        >
-          € {{ product.variants.nodes[0].compareAtPrice }}
-        </p>
-        <p v-else class="mb-0">&nbsp;</p>
+        </div>
+
         <div
-          class="d-flex justify-content-between align-items-center position-relative"
+          style="margin-top: 30px"
+          class="d-flex justify-content-between align-items-end position-relative"
         >
           <div>
-            <p class="h2">€ {{ product.variants.nodes[0].price }}</p>
+            <p
+              class="mb-1"
+              style="text-decoration: line-through; color: #8c8d8e"
+              v-if="
+                product.variants.nodes[0].compareAtPrice !==
+                product.variants.nodes[0].price
+              "
+            >
+              {{ product.variants.nodes[0].compareAtPrice }} €
+            </p>
+            <p v-else class="mb-1">&nbsp;</p>
+            <p class="mb-0">
+              <span class="integer">{{
+                product.variants.nodes[0].price.split(".")[0]
+              }}</span
+              >,<span>{{ product.variants.nodes[0].price.split(".")[1] }}</span>
+              €
+            </p>
           </div>
-          <!-- <nuxt-link :to="`/product/${product.handle}`">detail</nuxt-link> -->
 
-          <div
-            v-if="cartQuantity > 0"
-            style="
-              width: 42px;
-              border-radius: 10px;
-              background: darkred;
-              position: absolute;
-              bottom: 2px;
-              right: 2px;
-              display: flex;
-              flex-direction: column;
-              justify-content: space-between;
-            "
-          >
-            <div class="btn text-white">
-              <i class="fas fa-minus" @click.stop="decreaseQuantity()"></i>
+          <div class="position-relative">
+            <button class="btn btn-cart" @click.stop="addToCart()"></button>
+            <span v-show="cartQuantity > 0" class="cart-quantity">
+              {{ cartQuantity }}
+            </span>
+            <div
+              v-show="isOpen"
+              class="cart-dropup"
+              @mouseleave="isOpen = false"
+            >
+              <div class="btn text-white">
+                <span style="font-size: 24px" @click.stop="addToCart()">+</span>
+              </div>
+              <p class="mb-0 text-white text-center py-2">{{ cartQuantity }}</p>
+              <div class="btn text-white">
+                <span style="font-size: 24px" @click.stop="decreaseQuantity()"
+                  >-</span
+                >
+              </div>
             </div>
-            <p class="mb-0 text-white text-center">{{ cartQuantity }}</p>
-            <div class="btn text-white">
-              <i class="fas fa-plus" @click.stop="addToCart()"></i>
-            </div>
-          </div>
-          <div v-else>
-            <button class="btn btn-cart" @click="addToCart()">
-              <i class="fal fa-shopping-cart text-white"></i>
-            </button>
           </div>
         </div>
       </div>
@@ -148,6 +162,7 @@ export default {
     return {
       quantity: 0,
       details: JSON.parse(this.product.metafield1.value),
+      isOpen: false,
     };
   },
   computed: {
@@ -224,6 +239,7 @@ export default {
       }
     },
     addToCart: async function () {
+      this.isOpen = true;
       /* console.log(JSON.parse(this.product.metafield1.value), "this.product");
       return; */
       const domain = this.$config.DOMAIN;
@@ -264,10 +280,10 @@ export default {
 
       this.flashMessage.show({
         status: "",
-        message: this.product.title + " aggiunto!",
+        message: `N° ${this.cartQuantity} - ${this.product.title} è stata modificata la quantità`,
         icon: this.product.images.nodes[0].url,
         iconClass: "bg-transparent ",
-        time: 1000,
+        time: 8000,
         blockClass: "add-product-notification",
       });
     },
@@ -291,36 +307,71 @@ export default {
       );
       this.$store.commit("cart/setCart", cart);
 
-      this.flashMessage.show({
+      if (this.cartQuantity > 0) {
+        this.flashMessage.show({
+          status: "",
+          message: `N° ${this.cartQuantity} - ${this.product.title} è stata modificata la quantità`,
+          icon: this.product.images.nodes[0].url,
+          iconClass: "bg-transparent ",
+          time: 8000,
+          blockClass: "add-product-notification",
+        });
+      } else {
+        this.flashMessage.show({
+          status: "",
+          message: `N° ${this.cartQuantity} - ${this.product.title} è stato rimosso dal carrello`,
+          icon: this.product.images.nodes[0].url,
+          iconClass: "bg-transparent ",
+          time: 8000,
+          blockClass: "add-product-notification",
+        });
+      }
+      /* this.flashMessage.show({
         status: "",
         message: "Prodotto rimosso!",
         time: 1000,
         blockClass: "remove-product-notification",
-      });
+      }); */
     },
   },
 };
 </script>
 <style scoped>
+.integer {
+  font-size: 2.5rem;
+  font-weight: bold;
+  line-height: 1.5rem;
+}
+
 .product-card {
-  height: 550px;
-  width: 300px;
+  position: relative;
+  padding: 8px 23px 14px;
+  border: 1px solid #e1e2e3;
+  border-radius: 8px;
+  /* height: 550px; */
+  /* width: 313px; */
+
   transition: 0.4s;
   margin-bottom: 48px;
+}
+
+.prodotto-box__nome {
+  overflow: hidden;
+  height: 4.4rem;
+  margin-bottom: 0;
+  font-family: "Open Sans", Arial, "Helvetica Neue", Helvetica, sans-serif;
+  font-size: 16px;
+  font-size: 1rem;
+  color: #000;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: normal;
+  font-style: normal;
 }
 
 .product-card:hover {
   /* box-shadow: 0 20px 36px 3px rgb(51 51 51 / 20%); */
   box-shadow: 5px 5px 8px 1px rgb(120 120 120 / 50%);
-}
-
-.btn-cart {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  color: white;
-  background: #da4865;
-  position: relative;
 }
 
 .dropdown-cart {
@@ -341,14 +392,13 @@ export default {
   transition-duration: 0.2s;
 }
 
-/* .dropdown-cart:hover .dropdown-cart-content {
-  transition-duration: 0.2s;
-  height: 120px;
-  overflow: auto;
-} */
+.selection-svg {
+  filter: brightness(0.7);
+  width: 36px;
+}
 
 .img-wrapper {
-  height: 320px;
+  height: 300px;
   background-image: url(~/assets/images/img-test.jpeg);
   background-position: center;
   background-size: contain;
@@ -356,87 +406,6 @@ export default {
   /* border: 1px solid red; */
 }
 
-.ribbon1 {
-  position: absolute;
-  width: 90px;
-  top: -6.1px;
-  right: 10px;
-}
-.ribbon1:after {
-  position: absolute;
-  content: "";
-  width: 0;
-  height: 0;
-  border-left: 45px solid transparent;
-  border-right: 45px solid transparent;
-  border-top: 10px solid var(--dark-green);
-}
-.ribbon1 span {
-  position: relative;
-  display: block;
-  text-align: center;
-
-  font-size: 14px;
-  line-height: 1;
-  padding: 12px 8px 10px;
-  border-top-right-radius: 8px;
-}
-.ribbon1 span:before,
-.ribbon1 span:after {
-  position: absolute;
-  content: "";
-}
-.ribbon1 span:before {
-  height: 6px;
-  width: 6px;
-  left: -6px;
-  top: 0;
-  background: black;
-}
-.ribbon1 span:after {
-  height: 6px;
-  width: 8px;
-  left: -8px;
-  top: 0;
-  border-radius: 8px 8px 0 0;
-  background: black;
-}
-
-.ribbon-1 {
-  position: absolute;
-  width: 90px;
-  height: 30px;
-  background: var(--dark-green);
-  color: white;
-  top: -6px;
-  right: 25px;
-  font-size: 12px;
-  border-radius: 0px 0px 15px 15px;
-}
-
-.ribbon-1 span {
-  padding-left: 8px;
-  position: relative;
-  top: 8px;
-}
-.ribbon-1:before {
-  content: "";
-  position: absolute;
-  height: 0;
-  width: 0;
-  border-bottom: 6px solid #081815;
-  border-right: 6px solid transparent;
-  right: -6px;
-}
-.ribbon-1:after {
-  content: "";
-  position: absolute;
-  height: 0;
-  width: 0;
-  border-bottom: 6px solid #081815;
-  border-left: 6px solid transparent;
-  left: -6px;
-}
 /* .ribbon-1:after {
   height: 0;
   width: 0;

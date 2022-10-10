@@ -1,20 +1,16 @@
 <template>
   <div>
-    <top-bar></top-bar>
     <client-only>
       <div class="">
         <navbar />
       </div>
     </client-only>
-    <div class="d-none d-md-block">
-      <mega-menu />
-    </div>
 
-    <nuxt></nuxt>
+    <nuxt class=""></nuxt>
 
     <Footer />
     <client-only>
-      <FlashMessage></FlashMessage>
+      <FlashMessage :position="'right top'"></FlashMessage>
     </client-only>
   </div>
 </template>

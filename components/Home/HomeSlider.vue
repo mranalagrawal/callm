@@ -5,7 +5,7 @@
     <client-only placeholder="Loading..." v-if="contents">
       <carousel-3d
         :width="1100"
-        :height="500"
+        :height="450"
         :autoplay="true"
         :autoplayTimeout="3000"
         :clickable="true"
@@ -23,16 +23,16 @@
               background: `url(${mask}),url('${content.data.image.url}')`,
             }"
           >
-            <p class="">{{ content.data.subtitle[0].text }}</p>
-            <p class="h3">{{ content.data.title[0].text }}</p>
-            <p class="">{{ content.data.description[0].text }}</p>
-            <a
-              :href="contents[0].data.link.url"
-              class="btn btn-lg btn-outline-light position-absolute"
-              style="bottom: 20px"
+            <p class="h3 font-weight-bold mt-4">
+              {{ content.data.title[0].text }}
+            </p>
+
+            <nuxt-link
+              :to="contents[0].data.link.url"
+              class="btn btn-cta mb-3 px-5 py-2"
             >
               Scopri di più
-            </a>
+            </nuxt-link>
           </div>
           <div class="w-100 loader"></div>
         </slide>
@@ -61,6 +61,18 @@ export default {
 </script>
 
 <style scoped>
+.btn-cta {
+  position: absolute;
+  text-transform: uppercase;
+  bottom: 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  border: 2px solid white;
+  color: white;
+}
+.btn-cta:hover {
+  background: #da4865;
+}
 .loader {
   position: absolute;
   background: #ddd;
@@ -87,7 +99,7 @@ export default {
 }
 
 :deep(.carousel-3d-slide.current .loader::after) {
-  background: var(--dark-red);
+  background: #da4865;
   animation-name: fill;
   animation-duration: 3000ms;
   animation-iteration-count: 1;

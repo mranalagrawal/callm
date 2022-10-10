@@ -3,7 +3,7 @@ export default {
     favorites: "Preferiti",
     promotions: "Promozioni",
     cart: {
-      total: "Totale Carrello",
+      total: "Totale Ordine",
       detail: "Dettaglio carrello",
       checkout: "Vai alla cassa",
       empty: "Il tuo carrello è vuoto!",

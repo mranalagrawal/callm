@@ -51,11 +51,14 @@
           <div class="row">
             <div class="col-12 mb-5">
               <h1>{{ data.title }}</h1>
-              <p class="lead text-light-red">{{ data.vendor }}</p>
-              <nuxt-link
-                :to="`winery/${data.vendor}-B${brandMetafields.brandId}`"
-                >{{ data.vendor }}</nuxt-link
-              >
+
+              <div class="mb-5">
+                <nuxt-link
+                  class="lead text-light-red"
+                  :to="`winery/${data.vendor}-B${brandMetafields.brandId}`"
+                  >{{ data.vendor }}</nuxt-link
+                >
+              </div>
               <div v-html="metafield.shortDescription"></div>
             </div>
             <div class="col-4">

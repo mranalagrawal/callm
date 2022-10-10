@@ -1,27 +1,23 @@
 <template>
-  <div class="">
+  <div class="px-3 bg-white">
     <div class="row align-items-center">
-      <div class="col-6 d-flex align-items-center">
+      <div class="col-7 d-flex align-items-center">
         <img
           :src="item.node.merchandise.product.images.nodes[0].url"
           alt=""
-          style="width: 40px"
+          style="width: 50px"
         />
-        <p class="small">{{ item.node.merchandise.product.title }}</p>
+        <p class="small font-weight-bold">
+          {{ item.node.merchandise.product.title }}
+        </p>
       </div>
       <div class="col-2 d-flex justify-content-center align-items-center">
-        <button
-          class="btn btn-sm btn-outline-light-red"
-          @click="increaseQuantity"
-        >
-          <i class="fal fa-plus"></i>
-        </button>
-        <p class="mb-0 mx-2 small">{{ quantity }}</p>
-        <button
-          class="btn btn-sm btn-outline-light-red"
-          @click="decreaseQuantity"
-        >
+        <button class="btn btn-change-quantity" @click="decreaseQuantity">
           <i class="fal fa-minus"></i>
+        </button>
+        <p class="mb-0 mx-3">{{ quantity }}</p>
+        <button class="btn btn-change-quantity" @click="increaseQuantity">
+          <i class="fal fa-plus"></i>
         </button>
       </div>
       <div class="col-2">
@@ -34,19 +30,22 @@
               item.node.merchandise.product.compareAtPriceRange.maxVariantPrice
                 .amount * quantity
             ).toFixed(2)
-          }}
+          }}€
         </p>
-        <p class="mb-0 small font-weight-bold text-right">
-          {{ (item.node.merchandise.price * quantity).toFixed(2) }}
+        <p class="mb-0 font-weight-bold text-right">
+          {{ (item.node.merchandise.price * quantity).toFixed(2) }}€
         </p>
       </div>
       <div class="col-1 text-right">
         <button class="btn">
           <i
-            class="fas fa-trash-alt text-light-red"
+            class="fal fa-trash-alt text-light-red"
             @click="remove(item.node.id)"
           ></i>
         </button>
+      </div>
+      <div class="col-12">
+        <hr class="mb-0" />
       </div>
     </div>
   </div>
@@ -128,4 +127,16 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.btn-change-quantity {
+  border-radius: 10px;
+  width: 32px;
+  height: 32px;
+  border: 2px solid;
+  background: white;
+  color: #d94965;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>

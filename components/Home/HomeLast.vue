@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid px-md-5 my-5">
+  <div class="container-fluid container-large px-md-0 my-5">
     <!-- <div v-for="product in products" :key="product.id">{{ product.title }}</div> -->
     <div class="row">
       <div class="col-12 text-center" v-if="data">
@@ -140,12 +140,12 @@ export default {
   background-size: 24px;
   background-position: center;
   background-repeat: no-repeat;
-  border-radius: 5px;
+  border-radius: 12px;
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 99;
-  left: 10px;
+  left: -14px;
 }
 :deep(.slick-arrow.slick-next) {
   width: 48px;
@@ -156,13 +156,13 @@ export default {
   background-size: 24px;
   background-position: center;
   background-repeat: no-repeat;
-  border-radius: 5px;
+  border-radius: 12px;
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 99;
 
-  right: 10px;
+  right: -14px;
 }
 :deep(.slick-prev::before) {
   color: red;

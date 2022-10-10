@@ -1,28 +1,28 @@
 <template>
   <div class="container-fluid px-md-5 mt-5">
-    <div class="row" v-if="data">
+    <div class="row pt-md-5" v-if="data">
       <div
         v-for="(box, ind) in data.data.box"
         :key="ind"
         class="col-12 col-md-4 mb-5"
       >
-        <div class="card p-2 h-100">
+        <div class="box-card p-2 h-100">
           <img
             :src="box.image.url"
             class="d-block mx-auto rounded-circle icon-img"
             alt=""
-            width="64px"
-            height="64px"
+            width="80px"
+            height="80px"
           />
           <div class="card-body text-center">
             <h5
               class="card-title mt-4 text-dark-green mb-0"
-              style="font-size: 17px; font-weight: 600"
+              style="font-size: 16px; font-weight: 600"
             >
               {{ box.title }}
             </h5>
 
-            <p class="card-text" style="font-size: 17px">
+            <p class="card-text" style="font-size: 16px">
               {{ box.description }}
             </p>
           </div>
@@ -72,11 +72,16 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.box-card {
+  border-radius: 8px;
+  padding: 43px 55px 23px;
+  border: 1px solid #e1e2e3;
+}
 .icon-img {
   position: absolute;
-  top: -32px;
+  top: -40px;
   z-index: 1;
-  left: calc(50% - 32px);
+  left: calc(50% - 40px);
 }
 .home-carousel :deep(.carousel-indicators) {
   display: flex;

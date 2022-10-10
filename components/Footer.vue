@@ -1,20 +1,5 @@
 <template>
   <div class="container-fluid pt-5 mt-5 px-0" style="background: #f8f8f8">
-    <!-- <nuxt-link
-      class=""
-      v-if="$i18n.locale !== 'en'"
-      :to="switchLocalePath('en')"
-    >
-      🇬🇧
-    </nuxt-link>
-
-    <nuxt-link
-      class=""
-      v-if="$i18n.locale !== 'it'"
-      :to="switchLocalePath('it')"
-    >
-      🇮🇹
-    </nuxt-link> -->
     <div class="container-fluid px-md-5">
       <div class="row">
         <div class="col-12">
@@ -37,7 +22,7 @@
       </div>
       <div class="row d-none d-md-flex" v-if="data">
         <div class="col" v-for="item in data" :key="item.id">
-          <p class="" style="margin-bottom: 32px">
+          <p class="" style="margin-bottom: 36px">
             <nuxt-link
               :to="item.primary.link"
               style="color: #176a62"
@@ -46,7 +31,11 @@
               {{ item.primary.title }}
             </nuxt-link>
           </p>
-          <p class="" v-for="link in item.items" :key="`inner_${link.name}`">
+          <p
+            class="pb-0"
+            v-for="link in item.items"
+            :key="`inner_${link.name}`"
+          >
             <nuxt-link
               :to="link.link"
               class="text-decoration-none secondary-title"
@@ -60,6 +49,20 @@
     <div
       class="container-fluid bg-dark-green text-light-footer px-md-5 py-5 mt-5"
     >
+      <div class="row justify-content-end">
+        <nuxt-link
+          class="text-decoration-none text-white fs-0875 mr-3"
+          :to="switchLocalePath('it')"
+          :class="$i18n.locale == 'it' ? 'font-weight-bold' : ''"
+          >IT</nuxt-link
+        >
+        <nuxt-link
+          class="text-decoration-none text-white fs-0875 mr-3"
+          :to="switchLocalePath('en')"
+          :class="$i18n.locale == 'en' ? 'font-weight-bold' : ''"
+          >EN</nuxt-link
+        >
+      </div>
       <div class="row">
         <div class="col-12">
           <img
@@ -75,25 +78,34 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-12 col-lg-6">
+        <div class="col-12 col-lg-6 pr-md-5">
           <p class="fs-14">
-            <i class="fal fa-envelope mr-2"></i> Iscriviti alla newsletter per
-            scoprire tutte le novità e le promozioni
+            <i
+              class="fal fa-envelope mr-2 text-white"
+              style="font-size: 18px"
+            ></i>
+            Newsletter
           </p>
-          <form class="mb-5">
-            <div class="row border border-light rounded-lg py-2 mx-0">
-              <div class="col-7 col-md-9">
+          <p class="">
+            Iscriviti alla nostra Newsletter: ogni giorno info, promozioni e
+            subito per te <br />
+            uno sconto del 5% sul tuo primo ordine!
+          </p>
+          <form class="mb-5 pr-md-4">
+            <div
+              class="row border border-light py-1 mx-0"
+              style="border-radius: 10px"
+            >
+              <div class="col-7 col-md-10">
                 <input
                   type="email"
                   class="form-control bg-transparent border-0"
                   id=""
-                  placeholder="Inserisci qui la tua email"
                 />
               </div>
-              <div class="col-5 col-md-3">
+              <div class="col-5 col-md-2 px-md-1 text-right">
                 <button
-                  class="btn btn-light text-light-red font-weight-bold text-uppercase w-100"
-                  style="border-radius: 10px"
+                  class="btn font-weight-bold text-uppercase w-100 btn-newsletter"
                 >
                   Iscriviti
                 </button>
@@ -101,18 +113,43 @@
             </div>
             <div class="row mt-3">
               <div class="col-12">
-                <div class="form-check">
+                <div class="custom-control form-control-lg custom-checkbox">
                   <input
-                    class="form-check-input bg-transparent"
                     type="checkbox"
-                    value=""
-                    id="defaultCheck1"
+                    class="custom-control-input"
+                    id="customCheck1"
+                    v-model="newsletter"
                   />
-                  <label class="form-check-label fs-14" for="defaultCheck1">
-                    Acconsento a ricevere newsletter e comunicazioni
+                  <label
+                    class="custom-control-label fs-0875 pl-3"
+                    for="customCheck1"
+                    >Acconsento a ricevere newsletter e comunicazioni
                     promozionali da parte di Callmewine, come previsto dalla
-                    Privacy Policy
-                  </label>
+                    <a href="#" class="text-decoration-none text-white"
+                      >Privacy Policy</a
+                    ></label
+                  >
+                </div>
+              </div>
+              <div v-show="newsletter" class="col-12 mt-3">
+                <div class="custom-control form-control-lg custom-checkbox">
+                  <input
+                    type="checkbox"
+                    class="custom-control-input"
+                    id="customCheck2"
+                    v-model="marketing"
+                  />
+                  <label
+                    class="custom-control-label fs-0875 pl-3"
+                    for="customCheck2"
+                    >Acconsento all'uso dei miei dati per attività di
+                    profilazione volte a migliorare la mia esperienza di
+                    navigazione e ricevere proposte legate ai miei interessi ed
+                    alle mie abitudini di acquisto, come previsto dalla
+                    <a href="#" class="text-decoration-none text-white"
+                      >Privacy Policy</a
+                    ></label
+                  >
                 </div>
               </div>
             </div>
@@ -121,13 +158,13 @@
         <div class="col-12 col-lg-6" style="font-size: 0.875rem">
           <div class="row">
             <div class="col-12 col-lg-4 mb-5">
-              <p class="h4 mb-4">L'azienda</p>
+              <p class="h5 mb-4" style="font-weight: 400">L'azienda</p>
               <nuxt-link to="/" class="text-decoration-none text-white"
                 >Chi siamo</nuxt-link
               >
             </div>
             <div class="col-12 col-lg-4 mb-5">
-              <p class="h4 mb-4">Servizi offerti</p>
+              <p class="h5 mb-4" style="font-weight: 400">Servizi offerti</p>
               <nuxt-link
                 to="/"
                 class="text-decoration-none text-white d-block mb-2"
@@ -150,7 +187,7 @@
               >
             </div>
             <div class="col-12 col-lg-4 mb-5">
-              <p class="h4 mb-4">Supporto</p>
+              <p class="h5 mb-4" style="font-weight: 400">Supporto</p>
               <nuxt-link
                 to="/"
                 class="text-decoration-none text-white d-block mb-2"
@@ -176,29 +213,60 @@
         </div>
       </div>
 
+      <hr class="separator" />
+
       <div class="row">
-        <div class="col-12 text-white text-center">
-          <span class="h3"
-            ><i class="fal fa-wallet mr-2"></i>Metodi di pagamento</span
+        <div class="col-12 text-center">
+          <span class="payment"
+            ><i
+              class="fal fa-wallet text-white mr-2"
+              style="font-size: 24px"
+            ></i
+            >Metodi di pagamento</span
           >
-          <img src="../assets/images/american-express.png" />
-          <img src="../assets/images/mastercard.png" />
-          <img src="../assets/images/visa.png" />
-          <img src="../assets/images/paypal.png" />
-          <img src="../assets/images/bonifico.png" />
-          <img src="../assets/images/comodo.png" />
+          <img
+            src="../assets/images/american-express.png"
+            width="65px"
+            height="65px"
+            style="margin: 0px 2px"
+          />
+          <img
+            src="../assets/images/mastercard.png"
+            width="65px"
+            height="65px"
+            style="margin: 0px 2px"
+          />
+          <img
+            src="../assets/images/visa.png"
+            width="65px"
+            height="65px"
+            style="margin: 0px 2px"
+          />
+          <img
+            src="../assets/images/paypal.png"
+            width="65px"
+            height="65px"
+            style="margin: 0px 2px"
+          />
+          <img
+            src="../assets/images/bonifico.png"
+            width="65px"
+            height="65px"
+            style="margin: 0px 2px"
+          />
+          <img
+            src="../assets/images/comodo.png"
+            width="65px"
+            height="65px"
+            style="margin: 0px 2px"
+          />
         </div>
       </div>
 
-      <hr class="bg-light" />
-      <div class="row">
-        <div class="col-12 px-4">
-          <p class="small text-center">
-            © Callmewine 2021, tutti i diritti riservati. CALLMEWINE S.R.L., Via
-            Lovanio 5, 20121 Milano (IT), Capitale Sociale 12.245,92 euro (IV),
-            CF/P.IVA 07130650968, Cam.Com MI REA 1937916 - Società soggetta a
-            direzione e coordinamento di Italmobiliare S.p.A., C.F. 00796400158
-          </p>
+      <hr class="separator" />
+      <div class="row justify-content-center mt-4">
+        <div class="col-12 col-md-10 text-center px-4">
+          <p class="credit">{{ info }}</p>
         </div>
       </div>
     </div>
@@ -206,6 +274,36 @@
 </template>
 
 <style scoped>
+.credit {
+  font-size: 0.75rem;
+}
+.separator {
+  background: #134c45;
+}
+.payment {
+  font-size: 1.25rem;
+  font-weight: 400;
+}
+.btn-newsletter {
+  border-radius: 10px;
+  height: 34px;
+  position: relative;
+  top: 2px;
+  right: 4px;
+  font-size: 13px;
+  background: white;
+  color: #d86c82;
+}
+
+.btn-newsletter:hover {
+  background: #ad2b48;
+  color: white;
+}
+
+.fs-0875 {
+  font-size: 0.875rem;
+}
+
 .text-light-footer {
   color: #add3d1;
 }
@@ -230,18 +328,36 @@
   line-height: 1.5;
   letter-spacing: 2.1px;
   font-style: normal;
+  text-transform: uppercase;
 }
 
 .secondary-title {
-  font-size: 14px;
+  font-size: 15px;
   color: #000;
   font-weight: normal;
-  line-height: 1.3;
   letter-spacing: normal;
   font-style: normal;
+  padding: 8px 0px !important;
 }
 .secondary-title:hover {
   color: var(--dark-red);
+}
+
+.custom-control-label:before {
+  background-color: transparent;
+  border-radius: 2px;
+  border: 2px solid #add3d1;
+  width: 18px;
+  height: 18px;
+}
+.custom-control-label::after {
+  width: 18px;
+  height: 18px;
+}
+
+.custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+  background-color: transparent;
+  border-color: #add3d1;
 }
 </style>
 
@@ -250,14 +366,15 @@ export default {
   data() {
     return {
       data: null,
+      info: null,
+      newsletter: false,
+      marketing: false,
     };
   },
   watch: {
     "$i18n.locale": "$fetch",
   },
   async fetch() {
-    console.log(this.$i18n.locale, "LAN");
-
     let lang = "";
     if (this.$i18n.locale == "en") {
       lang = "en-gb";
@@ -269,7 +386,13 @@ export default {
     });
     const data = response.data.body;
     this.data = data;
-    console.log(data, "footer");
+
+    const responseInfo = await this.$prismic.api.getSingle("footer-info", {
+      lang: lang,
+    });
+    const info = responseInfo.data.info;
+
+    this.info = info;
   },
 };
 </script>

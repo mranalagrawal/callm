@@ -1,10 +1,10 @@
 <template>
-  <div class="position-relative text-dark">
+  <div class="position-relative text-dark bg-light">
     <div v-if="cart && cart.lines.edges.length > 0">
       <div v-for="item in cart.lines.edges" :key="item.node.id">
         <CartLine :item="item" />
       </div>
-      <div class="row mt-4">
+      <div class="row py-3 px-3">
         <div class="col-6">
           <nuxt-link class="btn btn-outline-dark-red w-100" to="/cart">{{
             $t("navbar.cart.detail")

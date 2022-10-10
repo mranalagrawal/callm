@@ -34,7 +34,6 @@
           </div>
           <div v-for="item in cart.lines.edges" :key="item.node.id">
             <CartLine :item="item" />
-            <hr />
           </div>
         </div>
         <div class="col-12 col-md-5">
