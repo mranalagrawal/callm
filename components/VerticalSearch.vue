@@ -390,6 +390,12 @@ export default {
   position: relative;
 }
 
+@media screen and (max-width: 768px) {
+  .product-card-vertical {
+    width: 90%;
+  }
+}
+
 .product-card-horizontal {
   height: 350px;
   width: 100%;
@@ -456,7 +462,7 @@ export default {
   background-repeat: no-repeat;
   /* border: 1px solid red; */
 }
-
+/* 
 .ribbon1 {
   position: absolute;
   width: 90px;
@@ -538,7 +544,7 @@ export default {
   border-bottom: 6px solid #081815;
   border-left: 6px solid transparent;
   left: -6px;
-}
+} */
 /* .ribbon-1:after {
   height: 0;
   width: 0;

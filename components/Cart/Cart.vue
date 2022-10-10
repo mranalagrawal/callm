@@ -1,17 +1,30 @@
 <template>
   <div class="position-relative text-dark bg-light">
     <div v-if="cart && cart.lines.edges.length > 0">
+      <div v-if="cartTotalAmount < 49">
+        <p class="text-light-green small text-center text-uppercase py-3 mb-0">
+          <i class="fal fa-truck mr-2"></i> Spedizione in Italia in 1 - 2 giorni
+          lavorativi
+        </p>
+      </div>
+      <div v-else>
+        <p class="text-light-green small text-center text-uppercase py-3 mb-0">
+          <i class="fal fa-check-circle mr-2"></i> hai diritto alla spedizione
+          gratuita
+        </p>
+      </div>
+
       <div v-for="item in cart.lines.edges" :key="item.node.id">
         <CartLine :item="item" />
       </div>
-      <div class="row py-3 px-3">
+      <div class="row py-4 px-md-5">
         <div class="col-6">
-          <nuxt-link class="btn btn-outline-dark-red w-100" to="/cart">{{
+          <nuxt-link class="btn btn-detail w-100" to="/cart">{{
             $t("navbar.cart.detail")
           }}</nuxt-link>
         </div>
         <div class="col-6">
-          <a class="btn btn-dark-red w-100" :href="checkoutUrl">{{
+          <a class="btn btn-checkout w-100" :href="checkoutUrl">{{
             $t("navbar.cart.checkout")
           }}</a>
         </div>
@@ -35,6 +48,13 @@ export default {
   computed: {
     cart() {
       return this.$store.state.cart.cart;
+    },
+    cartTotalAmount() {
+      if (this.$store.state.cart.cart) {
+        return this.$store.state.cart.cart.cost.totalAmount.amount;
+      } else {
+        return 0;
+      }
     },
     checkoutUrl() {
       let baseUrl = this.cart.checkoutUrl + "/?";
@@ -73,6 +93,23 @@ export default {
 </script>
 
 <style scoped>
+.btn-detail {
+  border: 2px solid #da4865;
+  border-radius: 12px;
+  color: #da4865;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.btn-checkout {
+  border: 2px solid #da4865;
+  background: #da4865;
+  border-radius: 12px;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
 :deep(.dropdown-toggle::after) {
   display: none;
 }

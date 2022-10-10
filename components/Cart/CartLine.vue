@@ -45,7 +45,7 @@
         </button>
       </div>
       <div class="col-12">
-        <hr class="mb-0" />
+        <hr class="w-75" />
       </div>
     </div>
   </div>
@@ -120,7 +120,7 @@ export default {
         status: "",
         message: "Prodotto rimosso!",
         time: 1000,
-        blockClass: "remove-product-notification",
+        blockClass: "add-product-notification",
       });
     },
   },

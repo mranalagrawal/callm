@@ -2,7 +2,7 @@
   <div class="container-fluid px-md-5 mt-5">
     <div class="row pt-5">
       <div class="col-12 col-md-3">
-        <!-- <h1>{{ results.length }}</h1> -->
+        <h1>questa pagina è di servizio, andrà rimossa</h1>
       </div>
       <div class="col-12 col-md-9">
         <div class="h3">

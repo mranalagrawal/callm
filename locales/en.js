@@ -54,7 +54,7 @@ export default {
       </ul>`,
     activeFilters: "Active filters",
     removeAll: "Remove all",
-    sortBy: "Sort by",
+    sortBy: "Ordinato per",
     highestPrice: "Highest price",
     lowestPrice: "Lowest price",
     mostAwarded: "Most awarded",

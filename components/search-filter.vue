@@ -102,44 +102,71 @@
           />
         </div>
       </div>
-      <div class="col-12 col-md-9 px-0" v-if="results.length > 0">
-        <div class="row aling-items-center mb-5">
-          <div class="col-4">
-            <span
+      <div class="col-12 col-md-9 px-md-0" v-if="results.length > 0">
+        <div class="row align-items-center mb-5">
+          <div class="col-6 col-md-4">
+            <span class="mr-3"
               ><strong>{{ total }}</strong> {{ $t("search.results") }}</span
             >
-            <div class="btn shadow text-light-red" @click="column = !column">
-              <i :class="column ? 'fal fa-bars' : 'fal fa-th-large'"></i>
+            <div
+              class="btn text-dark-red br-10 mr-1"
+              :class="column ? 'bg-gray' : 'shadow'"
+              @click="column = true"
+            >
+              <i class="fas fa-th-large"></i>
+            </div>
+            <div
+              class="btn text-dark-red br-10"
+              @click="column = false"
+              :class="!column ? 'bg-light' : 'shadow'"
+            >
+              <i class="fal fa-bars"></i>
             </div>
           </div>
-          <div class="col-4"></div>
-          <div class="col-4 text-right">
+          <div class="d-none d-md-block col-4"></div>
+          <div class="col-6 col-md-4 text-right">
             <div>
               <!-- {{ this.$router }} -->
-              <b-dropdown
-                id="sorting"
-                :text="$t('search.sortBy')"
-                variant="null"
-                right
-                class="shadow"
-              >
-                <div class="shadow">
-                  <button class="btn" @click="sortBy('price', 'desc')">
+              <b-dropdown id="sorting" variant="null" right class="" no-caret>
+                <template #button-content>
+                  {{ $t("search.sortBy") }}
+                  <i class="fal fa-chevron-down text-light-red ml-5"></i>
+                </template>
+                <div class="shadow br-10" style="width: 300px">
+                  <button
+                    class="btn py-3 btn-sort-by w-100 text-left d-block"
+                    @click="sortBy('price', 'desc')"
+                  >
                     {{ $t("search.highestPrice") }}
                   </button>
-                  <button class="btn" @click="sortBy('price', 'asc')">
+                  <button
+                    class="btn py-3 btn-sort-by w-100 text-left d-block"
+                    @click="sortBy('price', 'asc')"
+                  >
                     {{ $t("search.lowestPrice") }}
                   </button>
-                  <button class="btn" @click="sortBy('awardcount', 'desc')">
+                  <button
+                    class="btn py-3 btn-sort-by w-100 text-left d-block"
+                    @click="sortBy('awardcount', 'desc')"
+                  >
                     {{ $t("search.mostAwarded") }}
                   </button>
-                  <button class="btn" @click="sortBy('brandname', 'asc')">
+                  <button
+                    class="btn py-3 btn-sort-by w-100 text-left d-block"
+                    @click="sortBy('brandname', 'asc')"
+                  >
                     Brand (A-Z)
                   </button>
-                  <button class="btn" @click="sortBy('brandname', 'desc')">
+                  <button
+                    class="btn py-3 btn-sort-by w-100 text-left d-block"
+                    @click="sortBy('brandname', 'desc')"
+                  >
                     Brand (Z-A)
                   </button>
-                  <button class="btn" @click="sortBy('awardcount', 'desc')">
+                  <button
+                    class="btn py-3 btn-sort-by w-100 text-left d-block"
+                    @click="sortBy('awardcount', 'desc')"
+                  >
                     Più premiati
                   </button>
                 </div>
@@ -149,7 +176,7 @@
         </div>
         <div class="row" v-if="column">
           <div
-            class="col-12 col-md-6 col-lg-4 col-xl-3 mb-3"
+            class="col-6 col-md-6 col-lg-4 col-xl-3 mb-3 px-0 px-md-2"
             v-for="result in results"
             :key="result._id"
           >
@@ -807,6 +834,9 @@ export default {
 </script>
 
 <style scoped>
+.btn-sort-by:hover {
+  background: #fae4e8;
+}
 :deep(.dropdown-menu.dropdown-menu-right.show) {
   padding-top: 0px;
   padding-bottom: 0px;
