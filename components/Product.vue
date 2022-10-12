@@ -160,6 +160,9 @@
                           class="award-img pr-2"
                           width="24px"
                         /> -->
+                        <p class="bg-danger">
+                          {{ award.id }}-{{ getPath(award.id) }}
+                        </p>
                         <strong>{{ award.title }}</strong>
                       </td>
                       <td>{{ award.year }}</td>
@@ -391,6 +394,13 @@ export default {
     console.log(this.metafield, "brandMetafields");
   },
   methods: {
+    /* getPath(id) {
+      const path = require("path");
+      if (path.existsSync(`@/assets/images/awards/${id}.svg`)) {
+        return `@/assets/images/awards/${id}.svg`;
+      }
+    }, */
+
     async toggleWishlist() {
       if (!this.$store.state.user.user) {
         this.$router.push("/login");
