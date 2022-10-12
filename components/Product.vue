@@ -160,9 +160,7 @@
                           class="award-img pr-2"
                           width="24px"
                         /> -->
-                        <p class="bg-danger">
-                          {{ award.id }}-{{ getPath(award.id) }}
-                        </p>
+
                         <strong>{{ award.title }}</strong>
                       </td>
                       <td>{{ award.year }}</td>
@@ -316,19 +314,27 @@
           </div>
         </div>
       </div>
-      <!-- {{ metafield }} -->
+
+      <RecentProducts />
+      <VendorProducts :vendor="brand.title" />
+      <RecommendedProducts :product="data.id" />
     </div>
   </div>
 </template>
 
 <script>
-/* import { queryProductByIdAsTag } from "../../utilities/productQueries"; */
-
-import { queryProductByIdAsTag } from "../utilities/productQueries";
+import {
+  queryProductByIdAsTag,
+  productRecommendations,
+} from "../utilities/productQueries";
 import { getBrand } from "../utilities/brandForProduct";
+import VueSlickCarousel from "vue-slick-carousel";
+import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
+import ProductCardVertical from "./ProductCardVertical.vue";
 
 export default {
   props: ["product"],
+  components: { ProductCardVertical, VueSlickCarousel },
   data() {
     return {
       data: null,
@@ -358,7 +364,9 @@ export default {
     },
   },
   async fetch() {
-    console.log(this.product, "product");
+    console.log(this.product, "AAAAAAAA");
+
+    this.$store.commit("recent/addRecent", this.product);
 
     const domain = this.$config.DOMAIN;
     const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
@@ -380,8 +388,6 @@ export default {
 
     this.data = data.data.products.edges[0].node;
 
-    /* return; */
-
     this.price = this.data.variants.nodes[0].price;
     this.metafield = JSON.parse(this.data.metafield1.value);
 
@@ -394,13 +400,6 @@ export default {
     console.log(this.metafield, "brandMetafields");
   },
   methods: {
-    /* getPath(id) {
-      const path = require("path");
-      if (path.existsSync(`@/assets/images/awards/${id}.svg`)) {
-        return `@/assets/images/awards/${id}.svg`;
-      }
-    }, */
-
     async toggleWishlist() {
       if (!this.$store.state.user.user) {
         this.$router.push("/login");

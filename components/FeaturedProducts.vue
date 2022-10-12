@@ -1,10 +1,8 @@
 <template>
   <div class="container-fluid container-large px-md-0 my-5">
-    <!-- <div v-for="product in products" :key="product.id">{{ product.title }}</div> -->
     <div class="row">
       <div class="col-12 text-center" v-if="data">
         <h2 class="font-weight-bold text-dark-green">{{ data.title }}</h2>
-        <!-- <p>{{ data.description }}</p> -->
       </div>
 
       <div class="col-12 py-4" v-if="data">
@@ -32,7 +30,6 @@
 import { queryByCollection } from "../utilities/productQueries";
 
 import VueSlickCarousel from "vue-slick-carousel";
-// optional style for arrows & dots
 import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
 import ProductCardVertical from "./ProductCardVertical.vue";
 
@@ -68,13 +65,6 @@ export default {
             arrows: false,
           },
         },
-        /* {
-          breakpoint: 480,
-          settings: {
-            slidesToShow: 1,
-            slidesToScroll: 1,
-          },
-        }, */
       ],
     },
   }),

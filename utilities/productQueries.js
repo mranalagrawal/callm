@@ -54,8 +54,8 @@ const queryByCollection = (
         
     }`;
 
-const queryProductByIdAsTag = (handle) => `query {
-        products(first: 10, query:"tag:${handle}") {
+const queryProductByIdAsTag = (tag) => `query {
+        products(first: 10, query:"tag:${tag}") {
             edges {
                 node {
                     id
@@ -92,10 +92,64 @@ const queryProductByIdAsTag = (handle) => `query {
     }`;
 
 const productRecommendations = (id) => `query {
-        productRecommendations(productId: ${id}) {
-            handle
+        productRecommendations(productId: "${id}") {
             id
+            title
+            description
+            handle
+            tags
+            createdAt
+            availableForSale
+            variants(first: 10) {
+                nodes {
+                    id
+                    compareAtPrice
+                    price
+                }
+            }
+            images(first: 10) {
+                nodes {
+                    url
+                }
+            }
+            metafield1: metafield(namespace: "custom", key: "details") {
+                value
+            }
         }
     }`;
 
-export { queryByCollection, queryProductByIdAsTag, productRecommendations };
+const queryProductsByVendor = (vendor) => `query {
+        products(first: 10, query:"vendor:${vendor}") {
+            nodes {
+                id
+                title
+                description
+                handle
+                tags
+                createdAt
+                availableForSale
+                variants(first: 10) {
+                    nodes {
+                        id
+                        compareAtPrice
+                        price
+                    }
+                }
+                images(first: 10) {
+                    nodes {
+                        url
+                    }
+                }
+                metafield1: metafield(namespace: "custom", key: "details") {
+                    value
+                }
+            }
+        }
+    }`;
+
+export {
+  queryByCollection,
+  queryProductByIdAsTag,
+  productRecommendations,
+  queryProductsByVendor,
+};
