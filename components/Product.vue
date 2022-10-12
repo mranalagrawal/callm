@@ -90,7 +90,7 @@
         </div>
       </div>
 
-      <div class="row px-3 mt-5">
+      <div class="row mt-5">
         <div class="col-12 col-md-8 pt-5">
           <div class="pt-2">
             <b-tabs content-class="mt-4" justified>
@@ -390,7 +390,10 @@ export default {
   margin-bottom: -1px;
   border: none;
   color: #666;
-  width: 200px;
+  /* width: 200px; */
+  padding-left: 0px;
+  padding-right: 0px;
+  font-size: 14px;
 }
 
 :deep(.nav-tabs) {
@@ -405,6 +408,16 @@ export default {
 }
 :deep(ul.nav.nav-tabs.nav-justified) {
   flex-wrap: nowrap;
-  overflow-x: scroll;
+  /* overflow-x: scroll; */
+}
+
+@media screen and (max-width: 766px) {
+  :deep(ul.nav.nav-tabs.nav-justified) {
+    flex-wrap: nowrap;
+    overflow-x: scroll;
+  }
+  :deep(.nav-tabs .nav-link) {
+    width: 160px;
+  }
 }
 </style>

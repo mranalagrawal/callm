@@ -41,8 +41,12 @@
 
 <style scoped>
 .content {
-  max-height: 350px;
-  overflow: scroll;
+  /* max-height: 350px;
+  overflow: scroll; */
+}
+
+.content-item {
+  font-size: 14px;
 }
 .content-item:hover {
   background: #fae4e8;
@@ -70,7 +74,9 @@ export default {
     },
     filteredItems: function () {
       if (this.search.length > 2) {
-        return this.items.filter((el) => el.key[1].includes(this.search));
+        return this.items.filter((el) =>
+          el.key[1].toLowerCase().includes(this.search.toLowerCase())
+        );
       } else {
         return this.items;
       }

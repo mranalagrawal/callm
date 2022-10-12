@@ -135,6 +135,10 @@ export default {
   width: 36px;
 }
 
+.content-item {
+  font-size: 14px;
+}
+
 .content-item:hover {
   background: #fae4e8;
   color: var(--dark-red);

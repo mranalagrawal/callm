@@ -1,11 +1,7 @@
 <template>
   <div class="container-fluid px-md-5 mt-5">
     <div class="row pt-5">
-      <div class="col-12 col-md-3">
-        <!-- {{ inputParameters }} -->
-        <!-- <h1>{{ results.length }}</h1> -->
-      </div>
-      <div class="col-12 col-md-9">
+      <div class="col-12">
         <div class="h3">
           {{ view.region?.name }} {{ view.pairing?.name }}
           {{ view.brand?.name }} {{ view.aging?.name }}
@@ -109,14 +105,14 @@
               ><strong>{{ total }}</strong> {{ $t("search.results") }}</span
             >
             <div
-              class="btn text-dark-red br-10 mr-1"
+              class="btn text-dark-red br-10 btn-sort mr-1"
               :class="column ? 'bg-gray' : 'shadow'"
               @click="column = true"
             >
               <i class="fas fa-th-large"></i>
             </div>
             <div
-              class="btn text-dark-red br-10"
+              class="btn text-dark-red br-10 btn-sort"
               @click="column = false"
               :class="!column ? 'bg-light' : 'shadow'"
             >
@@ -130,7 +126,7 @@
               <b-dropdown id="sorting" variant="null" right class="" no-caret>
                 <template #button-content>
                   {{ $t("search.sortBy") }}
-                  <i class="fal fa-chevron-down text-light-red ml-5"></i>
+                  <i class="fal fa-chevron-down text-light-red ml-3"></i>
                 </template>
                 <div class="shadow br-10" style="width: 300px">
                   <button
@@ -324,9 +320,16 @@
       </div>
     </div>
 
-    <div class="row w-100 d-lg-none" style="position: fixed; bottom: 10px">
+    <div
+      class="row w-100 d-lg-none"
+      style="position: fixed; bottom: 30px; z-index: 10"
+    >
       <div class="col-12 text-center">
-        <button class="btn btn-light-red text-center" @click="showModal">
+        <button
+          class="btn text-center br-10 px-5"
+          style="background: #db4865; color: white"
+          @click="showModal"
+        >
           <i class="fal fa-bars mr-2"></i> Mostra filtri
           <span
             v-if="
@@ -588,6 +591,7 @@ export default {
       "https://callmewine-api.dojo.sh/api/products/search?"
     );
     const allFieldsJSON = await allFields.json();
+    console.log(allFieldsJSON, "allFieldsJSON");
 
     const search = await searchResult.json();
     this.search = search;
@@ -837,6 +841,11 @@ export default {
 .btn-sort-by:hover {
   background: #fae4e8;
 }
+
+.btn-sort {
+  padding: 4px 8px !important;
+}
+
 :deep(.dropdown-menu.dropdown-menu-right.show) {
   padding-top: 0px;
   padding-bottom: 0px;

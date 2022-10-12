@@ -100,14 +100,30 @@
             </p>
           </div>
           <div v-if="!horizontal">
-            <p class="mb-0 text-muted" style="text-decoration: line-through">
-              {{ product._source.price.toFixed(2) }}
+            <p class="mb-0 text-muted">
+              <span
+                style="text-decoration: line-through"
+                v-if="
+                  product._source.saleprice.toFixed(2) !==
+                  product._source.price.toFixed(2)
+                "
+                >{{ product._source.price.toFixed(2) }}€</span
+              >
+              <span v-else>&nbsp;</span>
             </p>
             <div
               class="d-flex justify-content-between align-items-center position-relative"
             >
               <div>
-                <p class="h2">€ {{ product._source.saleprice.toFixed(2) }}</p>
+                <p class="mb-0">
+                  <span class="integer">{{
+                    product._source.saleprice.toFixed(2).split(".")[0]
+                  }}</span
+                  >,<span>{{
+                    product._source.saleprice.toFixed(2).split(".")[1]
+                  }}</span>
+                  €
+                </p>
               </div>
 
               <div
@@ -448,12 +464,6 @@ export default {
   transition-duration: 0.2s;
 }
 
-/* .dropdown-cart:hover .dropdown-cart-content {
-  transition-duration: 0.2s;
-  height: 120px;
-  overflow: auto;
-} */
-
 .img-wrapper {
   height: 320px;
   background-image: url(~/assets/images/img-test.jpeg);
@@ -462,100 +472,14 @@ export default {
   background-repeat: no-repeat;
   /* border: 1px solid red; */
 }
-/* 
-.ribbon1 {
-  position: absolute;
-  width: 90px;
-  top: -6.1px;
-  right: 10px;
-}
-.ribbon1:after {
-  position: absolute;
-  content: "";
-  width: 0;
-  height: 0;
-  border-left: 45px solid transparent;
-  border-right: 45px solid transparent;
-  border-top: 10px solid var(--dark-green);
-}
-.ribbon1 span {
-  position: relative;
-  display: block;
-  text-align: center;
-
-  font-size: 14px;
-  line-height: 1;
-  padding: 12px 8px 10px;
-  border-top-right-radius: 8px;
-}
-.ribbon1 span:before,
-.ribbon1 span:after {
-  position: absolute;
-  content: "";
-}
-.ribbon1 span:before {
-  height: 6px;
-  width: 6px;
-  left: -6px;
-  top: 0;
-  background: black;
-}
-.ribbon1 span:after {
-  height: 6px;
-  width: 8px;
-  left: -8px;
-  top: 0;
-  border-radius: 8px 8px 0 0;
-  background: black;
-}
-
-.ribbon-1 {
-  position: absolute;
-  width: 90px;
-  height: 30px;
-  background: var(--dark-green);
-  color: white;
-  top: -6px;
-  right: 25px;
-  font-size: 12px;
-  border-radius: 0px 0px 15px 15px;
-  z-index: 2;
-}
-
-.ribbon-1 span {
-  padding-left: 8px;
-  position: relative;
-  top: 8px;
-}
-.ribbon-1:before {
-  content: "";
-  position: absolute;
-  height: 0;
-  width: 0;
-  border-bottom: 6px solid #081815;
-  border-right: 6px solid transparent;
-  right: -6px;
-}
-.ribbon-1:after {
-  content: "";
-  position: absolute;
-  height: 0;
-  width: 0;
-  border-bottom: 6px solid #081815;
-  border-left: 6px solid transparent;
-  left: -6px;
-} */
-/* .ribbon-1:after {
-  height: 0;
-  width: 0;
-  border-left: 30px solid #ee583a;
-  border-right: 30px solid #ee583a;
-  border-bottom: 30px solid transparent;
-  bottom: -30px;
-} */
 
 .selection-svg {
   filter: brightness(0.7);
   width: 36px;
+}
+.integer {
+  font-size: 2.5rem;
+  font-weight: bold;
+  line-height: 1.5rem;
 }
 </style>

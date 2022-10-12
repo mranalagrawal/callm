@@ -1,6 +1,6 @@
 <template>
   <div class="container my-5">
-    <div v-if="data" class="row">
+    <div v-if="data" class="row px-3">
       <div class="col-12">
         <div class="col-12 text-center mt-5 mb-5">
           <h2 class="text-center font-weight-bold text-dark-green">
@@ -8,47 +8,47 @@
           </h2>
         </div>
       </div>
-      <div class="col-12 col-md-8 px-2 mb-3 mb-md-0">
+      <div class="col-12 col-md-8 px-0 mb-3 mb-md-0">
         <div
-          class="partners partners-first p-3 text-white d-flex flex-column justify-content-between"
+          class="partners partners-first p-3 text-white d-flex flex-column justify-content-end"
           :style="{
             backgroundImage: `url(${mask_left}),url('${data[0].content.image.url}')`,
           }"
         >
           <div class="w-50">
-            <p class="text-uppercase pt-5">
-              {{ data[0].content.upper_text }}
-            </p>
-            <h3 class="my-3 font-weight-bold">
+            <h3 class="mb-5 font-weight-bold">
               {{ data[0].content.main_text }}
             </h3>
-            <p class="">
-              {{ data[0].content.lower_text }}
-            </p>
           </div>
           <div>
-            <button class="btn btn-outline-light">Scopri di più</button>
+            <nuxt-link
+              :to="data[0].content.cta_link"
+              class="btn btn-cta mb-3 px-5 py-2"
+            >
+              Scopri di più
+            </nuxt-link>
           </div>
         </div>
       </div>
-      <div class="col-12 col-md-4 px-2">
+      <div class="col-12 col-md-4 pl-4">
         <div
           class="partners partners-last p-3 text-white d-flex flex-column justify-content-end"
           :style="{
             backgroundImage: `url(${mask}), url('${data[1].content.image.url}')`,
           }"
         >
-          <div class="">
-            <p class="small text-uppercase">
-              {{ data[1].content.upper_text }}
-            </p>
-            <h3 class="my-3">{{ data[1].content.main_text }}</h3>
-            <p class="small">
-              {{ data[1].content.lower_text }}
-            </p>
+          <div class="w-75">
+            <h3 class="mb-5 font-weight-bold">
+              {{ data[1].content.main_text }}
+            </h3>
           </div>
           <div>
-            <button class="btn btn-outline-light">Scopri di più</button>
+            <nuxt-link
+              :to="data[1].content.cta_link"
+              class="btn btn-cta mb-3 px-5 py-2"
+            >
+              Scopri di più
+            </nuxt-link>
           </div>
         </div>
       </div>
@@ -88,14 +88,26 @@ export default {
       };
     });
     this.data = data;
-    console.log(data, "partners");
+    console.log(data, "partners ");
   },
 };
 </script>
 
 <style scoped>
-.partners {
+.btn-cta {
+  text-transform: uppercase;
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
   border-radius: 10px;
+  font-weight: 600;
+  border: 2px solid white;
+  color: white;
+}
+.btn-cta:hover {
+  background: #da4865;
+}
+
+.partners {
   height: 400px;
 }
 
@@ -103,10 +115,12 @@ export default {
   background-size: cover;
   background-position: -150px, center;
   background-repeat: no-repeat;
+  border-radius: 0px 0px 10px 10px;
 }
 .partners-last {
   background-size: cover;
   background-position: 0px 60px, center, center;
   background-repeat: no-repeat;
+  border-radius: 0px 0px 10px 10px;
 }
 </style>

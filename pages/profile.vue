@@ -34,7 +34,7 @@
                 :title="$t('profile.buyAgain')"
                 :active="active == 'buyagain' ? true : false"
               >
-                <BuyAgain />
+                <!-- <BuyAgain /> -->
               </b-tab>
               <!-- <b-tab
                 :title="$t('profile.favorites')"

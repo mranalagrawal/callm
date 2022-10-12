@@ -52,51 +52,56 @@
         </b-button>
         <div
           v-if="search && data"
-          class="bg-white px-3 shadow"
+          class="bg-white px-2 shadowed"
           style="
             position: absolute;
             top: 70px;
             left: 0px;
             z-index: 999;
             width: 100%;
-            height: 50vh;
+            height: 90vh;
             overflow-y: scroll;
             border-radius: 10px;
           "
         >
           <!-- {{ data }} -->
           <div v-if="data" class="pt-3">
-            <div v-if="data.products && data.products.length > 0">
-              <p class="font-weight-bold mb-0">Prodotti</p>
+            <div v-if="data.categories && data.categories.length > 0">
+              <p class="text-uppercase suggest-title p-2 mb-0">Tipologia</p>
               <nuxt-link
-                v-for="item in data.products"
+                v-for="item in data.categories"
                 :key="item.id"
                 class="suggest-voice p-2 mb-0"
-                :to="`/${item.handle}-P${item.id}`"
+                :to="`/`"
               >
-                {{ item.name }}
+                <span v-html="bolder(item.name)"></span>
               </nuxt-link>
             </div>
+
             <div v-if="data.brands && data.brands.length > 0">
-              <p class="font-weight-bold mb-0">Produttori</p>
+              <p class="text-uppercase suggest-title p-2 mt-5 mb-0">
+                Produttore
+              </p>
               <nuxt-link
                 v-for="item in data.brands"
                 :key="item.id"
                 class="suggest-voice p-2 mb-0"
                 :to="`/winery/${item.handle}-B${item.id}`"
               >
-                {{ item.name }}
+                <span v-html="bolder(item.name)"></span>
               </nuxt-link>
             </div>
-            <div v-if="data.categories && data.categories.length > 0">
-              <p class="font-weight-bold mb-0">Tipologia</p>
-              <p
-                v-for="item in data.categories"
+
+            <div v-if="data.products && data.products.length > 0">
+              <p class="text-uppercase suggest-title p-2 mt-5 mb-0">Prodotti</p>
+              <nuxt-link
+                v-for="item in data.products"
                 :key="item.id"
                 class="suggest-voice p-2 mb-0"
+                :to="`/${item.handle}-P${item.id}`"
               >
-                {{ item.name }}
-              </p>
+                <span v-html="bolder(item.name)"></span>
+              </nuxt-link>
             </div>
           </div>
         </div>
@@ -383,6 +388,14 @@ export default {
     };
   },
   methods: {
+    bolder(text) {
+      let regexValue = new RegExp(`(${this.search})`, "ig");
+      let newStr = text.replace(
+        regexValue,
+        "<span class='font-weight-bold'>$1</span>"
+      );
+      return newStr;
+    },
     toggleSidebar() {
       this.isSidebarOpen = !this.isSidebarOpen;
     },
@@ -420,9 +433,9 @@ export default {
       this.showUser = true;
     },
     startSearch() {
-      const query = { search: this.search };
+      const query = { search: this.search || "" };
       this.$router.push({
-        path: "/search",
+        path: "/catalog",
         query: query,
       });
       this.search = "";
@@ -556,10 +569,22 @@ export default {
 .suggest-voice {
   color: black;
   display: block;
+  font-size: 14px;
+  text-decoration: none;
 }
 
 .suggest-voice:hover {
   background: #fae4e8;
   color: var(--dark-red);
+}
+
+.suggest-title {
+  font-size: 14px;
+  color: #2c8982;
+}
+
+.shadowed {
+  box-shadow: 0 1px 8px 0 rgb(51 51 51 / 20%),
+    0 3px 3px -2px rgb(51 51 51 / 12%), 0 3px 4px 0 rgb(51 51 51 / 14%);
 }
 </style>
