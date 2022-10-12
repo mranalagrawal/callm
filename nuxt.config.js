@@ -81,6 +81,10 @@ export default {
 
   target: "static",
 
+  generate: {
+    exclude: ["/my-secret-page"],
+  },
+
   publicRuntimeConfig: {
     DOMAIN: process.env.DOMAIN,
     STOREFRONT_ACCESS_TOKEN: process.env.STOREFRONT_ACCESS_TOKEN,
