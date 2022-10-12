@@ -79,11 +79,11 @@ export default {
 
   babel: { compact: true },
 
-  /* target: "static", */
+  target: "static",
 
-  generate: {
+  /* generate: {
     exclude: ["/"],
-  },
+  }, */
 
   publicRuntimeConfig: {
     DOMAIN: process.env.DOMAIN,
