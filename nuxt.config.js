@@ -79,7 +79,7 @@ export default {
 
   babel: { compact: true },
 
-  target: "static",
+  /* target: "static", */
 
   /* generate: {
     exclude: ["/"],

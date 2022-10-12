@@ -91,4 +91,11 @@ const queryProductByIdAsTag = (handle) => `query {
         }
     }`;
 
-export { queryByCollection, queryProductByIdAsTag };
+const productRecommendations = (id) => `query {
+        productRecommendations(productId: ${id}) {
+            handle
+            id
+        }
+    }`;
+
+export { queryByCollection, queryProductByIdAsTag, productRecommendations };
