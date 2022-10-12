@@ -17,7 +17,7 @@
           </div>
           <div class="row mb-5 w-100">
             <div class="col-12">
-              <BrandCarouselVue />
+              <BrandCarouselVue v-if="images" :images="images" />
               <!-- <img
                 src="https://picsum.photos/1920/540"
                 class="img-fluid"
@@ -83,7 +83,7 @@
           <p class="h3">{{ metafields.subtitle }}</p>
         </div>
         <div class="col-12 col-md-6">
-          <BrandCarouselVue />
+          <BrandCarouselVue v-if="images" :images="images" />
           <!-- <VueSlickCarousel
             ref="c1"
             :asNavFor="$refs.c2"
@@ -176,6 +176,7 @@ export default {
     return {
       data: null,
       metafields: null,
+      images: null,
     };
   },
   async fetch() {
@@ -187,7 +188,8 @@ export default {
     console.log(data);
     this.data = data;
     this.metafields = JSON.parse(data.details.value);
-    console.log(this.metafields);
+    this.images = this.metafields.images;
+    console.log(this.images);
   },
 };
 </script>

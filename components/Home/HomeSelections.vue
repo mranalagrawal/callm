@@ -5,24 +5,26 @@
       <div class="col-12 text-center">
         <h2 class="font-weight-bold text-dark-green">Le nostre selezioni</h2>
       </div>
-      <div class="col-12 px-0 py-4">
-        <VueSlickCarousel v-bind="settings" ref="carousel" v-if="data">
+      <div class="col-12 px-0 py-4" v-if="data">
+        <VueSlickCarousel v-bind="settings" ref="carousel">
           <div v-for="(item, i) in data" :key="i" class="px-2">
-            <nuxt-link
-              :to="item.link"
-              class="selection-card px-3 text-decoration-none"
-            >
+            <div class="selection-card px-3 text-decoration-none">
               <img
                 :src="item.icon.url"
                 width="24px"
                 height="24px"
                 class="mr-2"
-                style="user-select: none"
+                style=""
                 :style="{ filter: 'contrast(0) brightness(5) !important' }"
               />
-              {{ item.label }}
+              <nuxt-link
+                :to="item.link"
+                class="text-decoration-none text-white"
+              >
+                {{ item.label }}
+              </nuxt-link>
               <!-- <img :src="item." alt=""> {{ item.label }} -->
-            </nuxt-link>
+            </div>
           </div>
         </VueSlickCarousel>
       </div>
@@ -43,12 +45,22 @@ export default {
       arrows: false,
       dots: true,
       infinite: true,
+      speed: 500,
+      slidesToShow: 5.5,
+      slidesToScroll: 2,
+      autoplay: true,
+      speed: 8000,
+      autoplaySpeed: 0,
+      cssEase: "linear",
+      /* arrows: false,
+      dots: true,
+      infinite: true,
       slidesToShow: 6,
       slidesToScroll: 1,
-      autoplay: true,
-      speed: 20000,
-      autoplaySpeed: 20000,
-      cssEase: "linear",
+      autoplay: false,
+      speed: 2000,
+      autoplaySpeed: 2000,
+      cssEase: "linear", */
       /* arrows: false,
       dots: true,
       infinite: true,
@@ -99,6 +111,7 @@ export default {
   justify-content: center;
   align-items: center;
   color: white;
+  /* pointer-events: none !important; */
 }
 
 :deep(.slick-arrow.slick-prev) {

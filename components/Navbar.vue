@@ -67,21 +67,19 @@
           <!-- {{ data }} -->
           <div v-if="data" class="pt-3">
             <div v-if="data.categories && data.categories.length > 0">
-              <p class="text-uppercase suggest-title p-2 mb-0">Tipologia</p>
+              <p class="text-uppercase suggest-title p-2 my-3">Tipologia</p>
               <nuxt-link
                 v-for="item in data.categories"
                 :key="item.id"
                 class="suggest-voice p-2 mb-0"
-                :to="`/`"
+                :to="`/catalog?&categories=${item.id}`"
               >
                 <span v-html="bolder(item.name)"></span>
               </nuxt-link>
             </div>
 
             <div v-if="data.brands && data.brands.length > 0">
-              <p class="text-uppercase suggest-title p-2 mt-5 mb-0">
-                Produttore
-              </p>
+              <p class="text-uppercase suggest-title p-2 my-3">Produttore</p>
               <nuxt-link
                 v-for="item in data.brands"
                 :key="item.id"
@@ -93,7 +91,7 @@
             </div>
 
             <div v-if="data.products && data.products.length > 0">
-              <p class="text-uppercase suggest-title p-2 mt-5 mb-0">Prodotti</p>
+              <p class="text-uppercase suggest-title p-2 my-3">Prodotti</p>
               <nuxt-link
                 v-for="item in data.products"
                 :key="item.id"

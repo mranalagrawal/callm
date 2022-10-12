@@ -6,11 +6,12 @@
       v-bind="settingsMain"
       @beforeChange="syncSliders"
     >
-      <div v-for="i in 10" :key="i">
+      <div v-for="(image, i) in images" :key="i">
         <img
-          :src="`https://picsum.photos/id/${i}/1920/560`"
+          :src="image"
           alt=""
           class="mx-auto d-block img-fluid w-100"
+          height="500"
         />
       </div>
     </VueSlickCarousel>
@@ -23,12 +24,8 @@
         :focusOnSelect="true"
         @beforeChange="syncSliders"
       >
-        <div v-for="j in 10" :key="j">
-          <img
-            :src="`https://picsum.photos/id/${j}/160/120`"
-            alt=""
-            class="rounded-sm"
-          />
+        <div v-for="(image, j) in images" :key="j">
+          <img :src="image" alt="" class="rounded-sm" width="120" />
         </div>
       </VueSlickCarousel>
     </div>
@@ -39,6 +36,7 @@
 import VueSlickCarousel from "vue-slick-carousel";
 export default {
   components: { VueSlickCarousel },
+  props: ["images"],
   data() {
     return {
       data: null,

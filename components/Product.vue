@@ -50,39 +50,54 @@
         <div class="col-12 col-md-8">
           <div class="row">
             <div class="col-12 mb-5">
-              <h1>{{ data.title }}</h1>
+              <h1 class="font-weight-bold">{{ data.title }}</h1>
 
               <div class="mb-5">
                 <nuxt-link
-                  class="lead text-light-red"
+                  class="h3 font-weight-bold text-dark"
                   :to="`winery/${data.vendor}-B${brandMetafields.brandId}`"
                   >{{ data.vendor }}</nuxt-link
                 >
               </div>
               <div v-html="metafield.shortDescription"></div>
             </div>
-            <div class="col-4">
+            <div class="col-12 col-md-4">
               <span style="font-size: 2.5rem; font-weight: 900">{{
                 price.split(".")[0]
               }}</span
-              >.<span style="font-size: 16px">{{ price.split(".")[1] }} €</span>
+              >,<span style="font-size: 16px">{{ price.split(".")[1] }}€</span>
             </div>
-            <div class="col-8 text-center">
+            <div class="col-12 col-md-6 offset-md-2 text-center">
               <div class="d-flex align-items-end justify-content-center">
                 <div>
                   <p v-if="data.totalInventory > 0" class="text-light-green">
                     Disponibilità immediata ({{ data.totalInventory }})
                   </p>
+                  <p v-else class="text-light-red">Non disponibile</p>
                   <button
-                    class="btn btn-light-red text-uppercase d-inline-flex align-items-center"
+                    class="btn p-2 px-3 text-uppercase text-white d-inline-flex align-items-center br-10"
+                    style="background: #da4865"
                     :class="data.totalInventory > 0 ? '' : 'disabled'"
                   >
-                    <i class="fal fa-shopping-cart fa-2x mr-2"></i>
-                    <span>Aggiungi al carrello</span>
+                    <!-- <i class="fal fa-shopping-cart fa-2x mr-2"></i> -->
+                    <img
+                      :src="require(`~/assets/images/cart.svg`)"
+                      class="mr-2"
+                      alt=""
+                    />
+                    <span class="font-weight-bold">Aggiungi al carrello</span>
                   </button>
                 </div>
                 <button class="btn ml-2">
-                  <i class="fal fa-heart text-light-red fa-2x"></i>
+                  <i
+                    class="text-light-red"
+                    :class="
+                      isInWishList
+                        ? 'fas fa-heart fa-2x'
+                        : 'fal fa-heart fa-2x '
+                    "
+                    @click="toggleWishlist"
+                  ></i>
                 </button>
               </div>
             </div>
@@ -126,21 +141,36 @@
                       <th style="border-radius: 15px 0px 0px 0px" scope="col">
                         GUIDA
                       </th>
+                      <th style="" scope="col">ANNATA</th>
+
+                      <th style="" scope="col">PUNTEGGIO</th>
 
                       <th style="border-radius: 0px 15px 0px 0px" scope="col">
-                        PUNTEGGIO
+                        CITAZIONE
                       </th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr v-for="(award, i) in metafield.awards" :key="i">
-                      <th scope="row">
+                      <td scope="row">
+                        <img
+                          :src="
+                            require(`@/assets/images/awards/${award.id}.svg`)
+                          "
+                          class="award-img pr-2"
+                          width="24px"
+                        />
                         <strong>{{ award.title }}</strong>
-                      </th>
-
+                      </td>
+                      <td>{{ award.year }}</td>
                       <td>
                         <strong>{{ award.value }}</strong> /
                         {{ award.maxValue }}
+                      </td>
+                      <td>
+                        <em>
+                          {{ award.quote }}
+                        </em>
                       </td>
                     </tr>
                   </tbody>
@@ -305,6 +335,25 @@ export default {
       brandMetafields: null,
     };
   },
+  computed: {
+    isInWishList() {
+      if (!this.$store.state.user.user) return null;
+      let wishlist = this.$store.state.user.user.customer.wishlist;
+
+      console.log(this.data);
+
+      // wishlist is null by default
+      if (wishlist) {
+        return JSON.parse(wishlist.value).includes(
+          String(
+            this.data.variants.edges[0].node.id.split("ProductVariant/")[1]
+          )
+        );
+      }
+
+      return null;
+    },
+  },
   async fetch() {
     console.log(this.product, "product");
 
@@ -337,9 +386,50 @@ export default {
 
     const dataBrand = await getBrand(domain, access_token, "B" + brandId);
     this.brand = dataBrand;
-    console.log(this.metafield, "BRAND");
+
     this.brandMetafields = JSON.parse(dataBrand.details.value);
-    console.log(this.brandMetafields, "brand");
+    console.log(this.metafield, "brandMetafields");
+  },
+  methods: {
+    async toggleWishlist() {
+      if (!this.$store.state.user.user) {
+        this.$router.push("/login");
+        return;
+      }
+
+      console.log(this.data);
+
+      const userId =
+        this.$store.state.user.user.customer.id.split("Customer/")[1];
+
+      const variantId =
+        this.data.variants.edges[0].node.id.split("ProductVariant/")[1];
+
+      const response = await fetch(
+        `https://callmewine-api.dojo.sh/api/customers/${userId}/wishlist/${variantId}`,
+        { async: true, crossDomain: true, method: "POST" }
+      );
+      const updatedWishlist = await response.text();
+      console.log(updatedWishlist);
+
+      this.$store.commit("user/updateWishlist", updatedWishlist);
+
+      if (this.isInWishList) {
+        this.flashMessage.show({
+          status: "",
+          message: "Aggiunto ai preferiti!",
+          time: 1000,
+          blockClass: "add-product-notification",
+        });
+      } else {
+        this.flashMessage.show({
+          status: "",
+          message: "Rimosso preferiti!",
+          time: 1000,
+          blockClass: "add-product-notification",
+        });
+      }
+    },
   },
 };
 </script>
@@ -419,5 +509,9 @@ export default {
   :deep(.nav-tabs .nav-link) {
     width: 160px;
   }
+}
+
+.award-img {
+  filter: brightness(0);
 }
 </style>
