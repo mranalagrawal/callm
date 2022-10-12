@@ -153,13 +153,13 @@
                   <tbody>
                     <tr v-for="(award, i) in metafield.awards" :key="i">
                       <td scope="row">
-                        <img
+                        <!-- <img
                           :src="
                             require(`@/assets/images/awards/${award.id}.svg`)
                           "
                           class="award-img pr-2"
                           width="24px"
-                        />
+                        /> -->
                         <strong>{{ award.title }}</strong>
                       </td>
                       <td>{{ award.year }}</td>
