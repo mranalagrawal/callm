@@ -82,7 +82,7 @@ export default {
   target: "static",
 
   generate: {
-    exclude: ["/my-secret-page"],
+    exclude: ["/"],
   },
 
   publicRuntimeConfig: {
