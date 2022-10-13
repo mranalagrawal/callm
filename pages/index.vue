@@ -2,16 +2,32 @@
   <div>
     <home-banner />
     <home-boxes />
-    <!-- <car-test /> -->
-    <featured-products />
-    <home-selections />
+
+    <client-only>
+      <featured-products />
+    </client-only>
+
+    <client-only>
+      <home-selections />
+    </client-only>
     <div class="d-none d-md-block">
       <home-slider />
     </div>
-    <home-partners />
-    <home-last />
-    <home-productors />
+
+    <client-only>
+      <home-partners />
+    </client-only>
+
+    <client-only>
+      <home-last />
+    </client-only>
+
+    <client-only>
+      <home-productors />
+    </client-only>
+
     <home-cta />
+
     <home-description />
   </div>
 </template>

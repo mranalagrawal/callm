@@ -81,9 +81,11 @@ export default {
 
   /* target: "static", */
 
-  /* generate: {
-    exclude: ["/"],
-  }, */
+  generate: {
+    exclude: [
+      /^\//, // eczclude all
+    ],
+  },
 
   publicRuntimeConfig: {
     DOMAIN: process.env.DOMAIN,

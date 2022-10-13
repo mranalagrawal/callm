@@ -1,9 +1,6 @@
 <template>
   <div class="product-card mx-auto mt-4" style="width: 94%">
     <div>
-      <!-- <div v-if="details.inpromotion" class="ribbon-1">
-        <span><i class="fal fa-tag"></i> PROMO</span>
-      </div> -->
       <div v-if="details.inpromotion" class="ribbon-1">
         <span style="letter-spacing: 3px">
           <img
@@ -13,7 +10,7 @@
         >
       </div>
 
-      <nuxt-link
+      <div
         :to="`/${product.handle}-${product.tags[0]}`"
         class="position-relative row mx-0 mt-2 img-wrapper text-decoration-none text-dark"
         :style="{ backgroundImage: 'url(' + product.images.nodes[0].url + ')' }"
@@ -76,7 +73,7 @@
             @click.stop="toggleWishlist"
           ></i>
         </div>
-      </nuxt-link>
+      </div>
 
       <!-- <div class="row">
         <div class="col-12">
@@ -92,9 +89,12 @@
         </div>
       </div> -->
       <div class="">
-        <div class="prodotto-box__nome">
+        <nuxt-link
+          :to="`/${product.handle}-${product.tags[0]}`"
+          class="prodotto-box__nome"
+        >
           {{ product.title }}
-        </div>
+        </nuxt-link>
 
         <div
           style="margin-top: 30px"
@@ -367,6 +367,7 @@ export default {
   line-height: 1.5;
   letter-spacing: normal;
   font-style: normal;
+  display: block;
 }
 
 .product-card:hover {
