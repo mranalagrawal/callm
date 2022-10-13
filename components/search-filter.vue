@@ -2,6 +2,10 @@
   <div class="container-fluid px-md-5 mt-5">
     <div class="row pt-5">
       <div class="col-12">
+        <div class="" v-if="searchedTerm">
+          <h2 class="font-weight-bold">"{{ searchedTerm }}"</h2>
+          <p class="h3">I risultati della tua ricerca</p>
+        </div>
         <div class="h3">
           {{ view.region?.name }} {{ view.pairing?.name }}
           {{ view.brand?.name }} {{ view.aging?.name }}
@@ -83,7 +87,7 @@
           <dropdown
             label="dosagecontents"
             :items="dosagecontents"
-            keyword="dosagecontent"
+            keyword="dosagecontents"
           />
           <dropdown label="Provenienza" :items="regions" keyword="regions" />
           <dropdown label="Brands" :items="brands" keyword="brands" />
@@ -429,6 +433,7 @@ import SelectionsBoxMobile from "./UI/SelectionsBoxMobile.vue";
 import VerticalSearch from "./VerticalSearch.vue";
 
 export default {
+  scrollToTop: true,
   watch: {
     "$route.query": "$fetch",
   },
@@ -442,6 +447,7 @@ export default {
   },
   data() {
     return {
+      searchedTerm: "",
       loading: null,
       column: true,
       brands: null,
@@ -487,7 +493,7 @@ export default {
       query["page"] = page;
 
       this.$router.push({
-        path: "search",
+        path: "catalog",
         query: query,
       });
     },
@@ -563,6 +569,10 @@ export default {
     }
   }, */
   async fetch() {
+    if (process.client) window.scrollTo(0, 0);
+
+    console.log(this.inputParameters, "this.inputParameters");
+
     this.loading = true;
     let route = this.$route;
     /* console.log(route.fullPath.split("search?")[1], "SSSS"); */
@@ -570,6 +580,10 @@ export default {
     this.currentPage = this.inputParameters["page"]
       ? this.inputParameters["page"]
       : 1;
+
+    this.searchedTerm = this.inputParameters["search"]
+      ? this.inputParameters["search"]
+      : "";
 
     let query = new URLSearchParams(this.inputParameters).toString();
     /* console.clear();
@@ -582,7 +596,7 @@ export default {
         .map((el) => el + "=true")
         .join("&");
     }
-    console.log(sel, "sel");
+
     const searchResult = await fetch(
       "https://callmewine-api.dojo.sh/api/products/search?" + query + sel
     );
@@ -591,7 +605,6 @@ export default {
       "https://callmewine-api.dojo.sh/api/products/search?"
     );
     const allFieldsJSON = await allFields.json();
-    console.log(allFieldsJSON, "allFieldsJSON");
 
     const search = await searchResult.json();
     this.search = search;
@@ -661,7 +674,7 @@ export default {
     });
     this.philosophies = philosophies;
 
-    const dosagecontents = allFieldsJSON.aggregations["agg-dosagecontents"][
+    /*     const dosagecontents = allFieldsJSON.aggregations["agg-dosagecontents"][
       "agg-dosagecontents"
     ]["buckets"].map((el) => {
       return {
@@ -669,7 +682,10 @@ export default {
         key_as_string: `${el.key}|${el.key}`,
         doc_count: el.doc_count,
       };
-    });
+    }); */
+    const dosagecontents =
+      allFieldsJSON.aggregations["agg-dosagecontents"]["agg-dosagecontents"]
+        .buckets;
     this.dosagecontents = dosagecontents;
 
     const winelists = allFieldsJSON.aggregations["agg-winelists"]["inner"][
@@ -682,7 +698,6 @@ export default {
       };
     });
     this.winelists = winelists;
-    console.log(winelists, " >>> winelists");
 
     const pairings = allFieldsJSON.aggregations["agg-pairings"]["inner"][
       "result"
@@ -701,7 +716,7 @@ export default {
     const agingId = this.inputParameters.agings;
     const philosophyId = this.inputParameters.philosophies;
     const sizeId = this.inputParameters.sizes;
-    const dosagecontentId = this.inputParameters.dosagecontent;
+    const dosagecontentId = this.inputParameters.dosagecontents;
     const categoryId = this.inputParameters.categories;
     const winelistsId = this.inputParameters.winelists;
     const awardId = this.inputParameters.awards;

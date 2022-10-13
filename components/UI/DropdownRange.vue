@@ -12,9 +12,33 @@
     </button>
     <div v-if="visible" class="content mb-5">
       <div class="mt-5 px-2">
-        <div class="d-flex justify-content-between">
-          <span>{{ choosenMin }}</span>
-          <span>{{ choosenMax }}</span>
+        <div class="d-flex justify-content-between align-items-center">
+          <!-- <span>{{ choosenMin }}</span>
+          <span>{{ choosenMax }}</span> -->
+          <div class="input-box">
+            <input
+              type="number"
+              class="form-control bg-white"
+              disabled
+              v-model="choosenMin"
+              :max="choosenMax"
+              @input="checkIfSwap"
+              :min="min"
+            />
+          </div>
+
+          <div></div>
+          <div class="input-box">
+            <input
+              type="number"
+              class="form-control bg-white"
+              disabled
+              v-model="choosenMax"
+              :min="choosenMin"
+              @input="checkIfSwap"
+              :max="max"
+            />
+          </div>
         </div>
         <div class="py-4">
           <div class="sliders_control my-4">
@@ -42,9 +66,7 @@
           </div>
         </div>
       </div>
-      <button class="btn btn-outline-light-red w-100" @click="goto">
-        Applica
-      </button>
+      <button class="btn apply px-5" @click="goto">Applica</button>
     </div>
   </div>
 </template>
@@ -105,13 +127,34 @@ export default {
 </script>
 
 <style scoped>
+.apply {
+  border: 2px solid #da4865;
+  border-radius: 12px;
+  color: #da4865;
+}
+.input-box {
+  position: relative;
+  width: 35%;
+}
+
+.input-box::after {
+  position: absolute;
+  right: 8px;
+  top: 7px;
+  content: "€";
+  height: 66%;
+  width: 20px;
+  background: white;
+  color: #da4865;
+}
+
 .track {
   position: relative;
   top: -2px;
   z-index: 0;
   width: 100%;
-  height: 2px;
-  background: #ddd;
+  height: 1px;
+  background: rgba(218, 72, 101, 0.5);
 }
 .middle {
   height: 2px;
@@ -130,9 +173,10 @@ input[type="range"]::-webkit-slider-thumb {
   pointer-events: all;
   width: 24px;
   height: 24px;
-  background-color: #fff;
+  background-color: rgb(218, 72, 101);
   border-radius: 50%;
-  box-shadow: 0 0 0 1px #c6c6c6;
+  /* box-shadow: 0 0 0 1px #0f0; */
+  /* box-shadow: 0px 0px 14px 0px rgba(218, 72, 101, 1); */
   cursor: pointer;
   position: relative;
   z-index: 2;
@@ -152,7 +196,7 @@ input[type="range"]::-moz-range-thumb {
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
-  background: #f7f7f7;
+  background: #da4865;
 }
 
 input[type="range"]::-webkit-slider-thumb:active {

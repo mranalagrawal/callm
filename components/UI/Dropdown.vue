@@ -41,8 +41,8 @@
 
 <style scoped>
 .content {
-  /* max-height: 350px;
-  overflow: scroll; */
+  max-height: 350px;
+  overflow: scroll;
 }
 
 .content-item {

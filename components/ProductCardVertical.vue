@@ -172,10 +172,11 @@ export default {
 
       // wishlist is null by default
       if (wishlist) {
-        /* console.log(wishlist); */
+        console.log(this.product, "SS");
         return JSON.parse(wishlist.value).includes(
           String(this.product.variants.nodes[0].id.split("ProductVariant/")[1])
         );
+        /* return false */
       }
 
       return false;

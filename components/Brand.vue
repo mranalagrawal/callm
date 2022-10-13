@@ -17,12 +17,10 @@
           </div>
           <div class="row mb-5 w-100">
             <div class="col-12">
-              <BrandCarouselVue v-if="images" :images="images" />
-              <!-- <img
-                src="https://picsum.photos/1920/540"
-                class="img-fluid"
-                alt=""
-              /> -->
+              <BrandCarouselVue
+                v-if="images && images.length > 0"
+                :images="images"
+              />
             </div>
           </div>
         </div>
@@ -83,39 +81,11 @@
           <p class="h3">{{ metafields.subtitle }}</p>
         </div>
         <div class="col-12 col-md-6">
-          <BrandCarouselVue v-if="images" :images="images" />
-          <!-- <VueSlickCarousel
-            ref="c1"
-            :asNavFor="$refs.c2"
-            :focusOnSelect="true"
-            v-bind="settingsMain"
-          >
-            >
-            <div v-for="i in 10" :key="i">
-              <img
-                :src="`https://picsum.photos/id/${i}/400/250`"
-                alt=""
-                class="mx-auto d-block img-fluid w-100"
-              />
-            </div>
-          </VueSlickCarousel>
+          <BrandCarouselVue
+            v-if="images && images.length > 0"
+            :images="images"
+          />
 
-          <div class="mt-3">
-            <VueSlickCarousel
-              v-bind="settingsNav"
-              ref="c2"
-              :asNavFor="$refs.c1"
-              :focusOnSelect="true"
-            >
-              <div v-for="i in 10" :key="i">
-                <img
-                  :src="`https://picsum.photos/id/${i}/120/60`"
-                  alt=""
-                  class="mx-auto d-block"
-                />
-              </div>
-            </VueSlickCarousel>
-          </div> -->
           <!-- {{ data }} -->
           <div class="mt-5" v-html="data.contentHtml"></div>
         </div>
@@ -159,6 +129,10 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <div v-if="data">
+      <VendorProductsInBrand :vendor="data.title" />
     </div>
   </div>
 </template>

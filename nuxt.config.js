@@ -83,7 +83,7 @@ export default {
 
   generate: {
     exclude: [
-      /^\//, // eczclude all
+      /^\//, // rotte da escludere dalla generazione, che poi sono tutte
     ],
   },
 

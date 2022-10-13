@@ -69,6 +69,7 @@ const queryProductByIdAsTag = (tag) => `query {
                         nodes {
                             compareAtPrice
                             price
+                            id
                         }
                         edges {
                             node {

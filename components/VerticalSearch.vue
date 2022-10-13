@@ -77,6 +77,7 @@
             :src="require(`~/assets/images/img-test.jpeg`)"
             :style="{ width: horizontal ? '180px' : '140px' }"
             class="d-block mx-auto"
+            loading="lazy"
             alt=""
           />
           <img
@@ -84,6 +85,7 @@
             :src="product._source.shopifyImageUrl"
             :style="{ width: horizontal ? '180px' : '140px' }"
             class="d-block mx-auto"
+            loading="lazy"
             alt=""
           />
         </nuxt-link>

@@ -316,7 +316,11 @@
       </div>
 
       <RecentProducts />
+
+      <!-- ok -->
       <VendorProducts :vendor="brand.title" />
+
+      <!-- ok -->
       <RecommendedProducts :product="data.id" />
     </div>
   </div>
