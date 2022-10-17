@@ -15,6 +15,14 @@
         class="position-relative row mx-0 mt-2 img-wrapper text-decoration-none text-dark"
         :style="{ backgroundImage: 'url(' + product.images.nodes[0].url + ')' }"
       >
+        <div
+          class="position-absolute"
+          style="left: 0px; bottom: 10px; z-index: 10"
+        >
+          <div v-for="(award, i) in awards" :key="product.id + 'award_' + i">
+            <AwardTooltip :award="award" />
+          </div>
+        </div>
         <div class="position-absolute" style="left: 0px; top: 0px; z-index: 10">
           <img
             title="Favoriti"
@@ -121,10 +129,10 @@
             </p>
           </div>
 
-          <div class="position-relative">
-            <button class="btn btn-cart" @click.stop="addToCart()"></button>
-            <span v-show="cartQuantity > 0" class="cart-quantity">
-              {{ cartQuantity }}
+          <div class="position-relative" v-if="product.availableForSale">
+            <button class="btn btn-cart" @click.stop="isOpen = true"></button>
+            <span v-show="userCartQuantity > 0" class="cart-quantity">
+              {{ userCartQuantity }}
             </span>
             <div
               v-show="isOpen"
@@ -132,15 +140,22 @@
               @mouseleave="isOpen = false"
             >
               <div class="btn text-white">
-                <span style="font-size: 24px" @click.stop="addToCart()">+</span>
+                <span style="font-size: 24px" @click.stop="addToUserCart()"
+                  >+</span
+                >
               </div>
-              <p class="mb-0 text-white text-center py-2">{{ cartQuantity }}</p>
+              <p class="mb-0 text-white text-center py-2">
+                {{ userCartQuantity }}
+              </p>
               <div class="btn text-white">
-                <span style="font-size: 24px" @click.stop="decreaseQuantity()"
+                <span style="font-size: 24px" @click.stop="removeFromUserCart()"
                   >-</span
                 >
               </div>
             </div>
+          </div>
+          <div v-else class="position-relative">
+            <button class="btn btn-cart disabled" disabled></button>
           </div>
         </div>
       </div>
@@ -154,15 +169,17 @@ import {
   addProductToCart,
   updateItemInCart,
 } from "../utilities/cart";
-
+import AwardTooltip from "./UI/AwardTooltip.vue";
 export default {
   props: ["product"],
   name: "ProductCardVertical",
+  components: { AwardTooltip },
   data() {
     return {
       quantity: 0,
       details: JSON.parse(this.product.metafield1.value),
       isOpen: false,
+      awards: JSON.parse(this.product.metafield1.value).awards,
     };
   },
   computed: {
@@ -172,14 +189,18 @@ export default {
 
       // wishlist is null by default
       if (wishlist) {
-        console.log(this.product, "SS");
-        return JSON.parse(wishlist.value).includes(
-          String(this.product.variants.nodes[0].id.split("ProductVariant/")[1])
-        );
-        /* return false */
+        return JSON.parse(wishlist.value).includes(this.product.tags[0]);
       }
 
       return false;
+    },
+    userCartQuantity() {
+      const productVariantId = this.product.variants.nodes[0].id;
+      let isInCart = this.$store.state.userCart.userCart.find(
+        (el) => el.productVariantId == productVariantId
+      );
+
+      return isInCart ? isInCart.quantity : 0;
     },
     cartQuantity() {
       if (!this.$store.state.cart.cart) {
@@ -211,15 +232,11 @@ export default {
       const userId =
         this.$store.state.user.user.customer.id.split("Customer/")[1];
 
-      const variantId =
-        this.product.variants.nodes[0].id.split("ProductVariant/")[1];
-
       const response = await fetch(
-        `https://callmewine-api.dojo.sh/api/customers/${userId}/wishlist/${variantId}`,
+        `https://callmewine-api.dojo.sh/api/customers/${userId}/wishlist/${this.product.tags[0]}`,
         { async: true, crossDomain: true, method: "POST" }
       );
       const updatedWishlist = await response.text();
-      console.log(updatedWishlist);
 
       this.$store.commit("user/updateWishlist", updatedWishlist);
 
@@ -239,10 +256,39 @@ export default {
         });
       }
     },
+    async addToUserCart() {
+      const productVariantId = this.product.variants.nodes[0].id;
+      const amount = Number(this.product.variants.nodes[0].price);
+      const amountFullPrice = Number(
+        this.product.variants.nodes[0].compareAtPrice
+      );
+      const tag = this.product.tags[0];
+      const image = this.product.images.nodes[0].url;
+      const title = this.product.title;
+      this.$store.commit("userCart/addProduct", {
+        productVariantId: productVariantId,
+        singleAmount: amount,
+        singleAmountFullPrice: amountFullPrice,
+        tag: tag,
+        image: image,
+        title: title,
+      });
+      this.flashMessage.show({
+        status: "",
+        message: `${this.product.title} è stato aggiunto al carrello!`,
+        icon: this.product.images.nodes[0].url,
+        iconClass: "bg-transparent ",
+        time: 8000,
+        blockClass: "add-product-notification",
+      });
+    },
+    async removeFromUserCart() {
+      const productVariantId = this.product.variants.nodes[0].id;
+      this.$store.commit("userCart/removeProduct", productVariantId);
+    },
     addToCart: async function () {
       this.isOpen = true;
-      /* console.log(JSON.parse(this.product.metafield1.value), "this.product");
-      return; */
+
       const domain = this.$config.DOMAIN;
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
 
@@ -395,7 +441,7 @@ export default {
 }
 
 .selection-svg {
-  filter: brightness(0.7);
+  filter: brightness(0) opacity(0.4);
   width: 36px;
 }
 

@@ -94,46 +94,44 @@ export default {
     });
     this.$nuxt.$on("changeproductionTypes", (event) => {
       this.fetchProductionTypes(event);
-      console.log(event);
     });
     this.$nuxt.$on("changecountries", (event) => {
       this.fetchCountries(event);
-      console.log(event);
     });
   },
   methods: {
     async fetchNext() {
       const data = await fetch(this.links.next);
       const dataJSON = await data.json();
-      console.log(dataJSON);
+
       this.data = dataJSON.brands.data;
       this.links = dataJSON.links;
     },
     async fetchPrev() {
       const data = await fetch(this.links.prev);
       const dataJSON = await data.json();
-      console.log(dataJSON);
+
       this.data = dataJSON.brands.data;
       this.links = dataJSON.links;
     },
     async fetchRegions(id) {
       const data = await fetch(this.baseURL + `?region=${id}`);
       const dataJSON = await data.json();
-      console.log(dataJSON);
+
       this.data = dataJSON.brands.data;
       this.links = dataJSON.links;
     },
     async fetchProductionTypes(id) {
       const data = await fetch(this.baseURL + `?type=${id}`);
       const dataJSON = await data.json();
-      console.log(dataJSON);
+
       this.data = dataJSON.brands.data;
       this.links = dataJSON.links;
     },
     async fetchCountries(id) {
       const data = await fetch(this.baseURL + `?country=${id}`);
       const dataJSON = await data.json();
-      console.log(dataJSON);
+
       this.data = dataJSON.brands.data;
       this.links = dataJSON.links;
     },
@@ -141,7 +139,7 @@ export default {
   async fetch() {
     const data = await fetch(this.baseURL);
     const dataJSON = await data.json();
-    console.log(dataJSON, "dataJSON");
+
     this.data = dataJSON.brands.data;
     this.links = dataJSON.links;
     this.filters = dataJSON.brands.filters;

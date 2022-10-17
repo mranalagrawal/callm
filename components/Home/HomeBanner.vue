@@ -104,7 +104,6 @@ export default {
         this.$prismic.predicates.at("document.type", "banner")
       )
     ).results; */
-    console.log(this.$i18n.locale, "LAN");
 
     let lang = "";
     if (this.$i18n.locale == "en") {
@@ -117,7 +116,6 @@ export default {
     });
     const data = response.data.body[0].items;
     this.data = data;
-    console.log(data, "home-carousel");
   },
   methods: {
     onSlideStart(slide) {

@@ -46,8 +46,6 @@ export default {
     readMore: false,
   }),
   async fetch() {
-    console.log(this.$i18n.locale, "LAN");
-
     let lang = "";
     if (this.$i18n.locale == "en") {
       lang = "en-gb";

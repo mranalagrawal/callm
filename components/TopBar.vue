@@ -1,7 +1,7 @@
 <template>
   <div
-    class="container-fluid bg-dark-green py-2 text-white text-center position-relative"
-    style="font-size: 16px; z-index: 1030"
+    class="container-fluid bg-dark-green py-2 text-white text-center fixed-top"
+    style="font-size: 16px; z-index: 1050"
   >
     <span v-if="data" v-html="data.data.text[0].text"></span>
 
@@ -37,8 +37,6 @@ export default {
     document: null,
   }),
   async fetch() {
-    console.log(this.$i18n.locale, "LAN");
-
     let lang = "";
     if (this.$i18n.locale == "en") {
       lang = "en-gb";
@@ -46,7 +44,6 @@ export default {
       lang = "it-it";
     }
     this.data = await this.$prismic.api.getSingle("topbar", { lang: lang });
-    /* console.log(this.data); */
   },
 };
 </script>

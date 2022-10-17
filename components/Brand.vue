@@ -159,11 +159,9 @@ export default {
 
     const data = await getBrand(domain, access_token, this.brandId);
 
-    console.log(data);
     this.data = data;
     this.metafields = JSON.parse(data.details.value);
     this.images = this.metafields.images;
-    console.log(this.images);
   },
 };
 </script>

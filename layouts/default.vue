@@ -1,14 +1,15 @@
 <template>
   <div>
+    <TopBar />
     <client-only>
       <div class="">
         <navbar />
       </div>
     </client-only>
 
-    <nuxt class=""></nuxt>
+    <nuxt class="pt-5" style="position: relative; top: 120px"></nuxt>
 
-    <Footer />
+    <Footer style="position: relative; top: 120px" />
     <client-only>
       <FlashMessage :position="'right top'"></FlashMessage>
     </client-only>

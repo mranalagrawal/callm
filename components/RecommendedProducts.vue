@@ -62,7 +62,6 @@ export default {
   async fetch() {
     const GRAPHQL_URL = this.$config.DOMAIN;
     const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
-    console.log(this.$i18n.locale, "this.$i18n.locale");
 
     const recommendationsQuery = productRecommendations(this.product);
 
@@ -80,8 +79,7 @@ export default {
       GRAPHQL_URL,
       GRAPHQL_BODY_RECCOMENDATIONS
     ).then((res) => res.json());
-    console.clear();
-    console.log(dataReccomendations, "dataReccosmendations ");
+
     this.data = dataReccomendations.data.productRecommendations;
   },
 };

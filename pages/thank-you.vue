@@ -47,7 +47,7 @@ export default {
       lineIds
     ); */
 
-    this.$store.commit("cart/setCart", null);
+    this.$store.commit("userCart/resetCart");
     const customerAccessToken = this.$store.state.user.user.token;
 
     const domain = this.$config.DOMAIN;
@@ -59,7 +59,6 @@ export default {
       customerAccessToken
     );
 
-    console.log(orders);
     const ords = orders.edges
       .map((el) => {
         return {
@@ -70,7 +69,6 @@ export default {
       .at(-1);
 
     this.order = ords;
-    console.log(ords);
   },
 };
 </script>

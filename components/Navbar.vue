@@ -1,9 +1,8 @@
 <template>
-  <div class="container-fluid bg-white fixed- px-0">
-    <TopBar />
-    <div class="row align-items-center py-md-3 px-md-5 w-100">
+  <div class="container-fluid bg-white fixed-top pt-5">
+    <div class="row align-items-center py-md-3 px-md-5">
       <div
-        class="col-12 col-md-3 px-0 px-md-2 bg-white"
+        class="col-12 col-md-3 px-md-2 bg-white"
         style="position: relative; z-index: 1040"
       >
         <button class="btn d-md-none" @click="toggleSidebar">
@@ -117,6 +116,49 @@
       <div class="d-none d-md-block col-md-3">
         <div class="d-flex justify-content-end">
           <div class="position-relative d-flex">
+            <div v-if="user" class="btn px-4 pb-0 pt-1 box">
+              <nuxt-link
+                :to="localePath('/profile#wishlist')"
+                class="text-decoration-none text-dark"
+              >
+                <svg
+                  width="27px"
+                  height="24px"
+                  viewBox="0 0 27 26"
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                >
+                  <title>COMPONENTS/DS/Header/Accessi/Icona preferiti</title>
+                  <g
+                    id="COMPONENTS"
+                    stroke="none"
+                    stroke-width="1"
+                    fill="none"
+                    fill-rule="evenodd"
+                  >
+                    <g
+                      id="COMPONENTS/DS/Header/Accessi/Combo-Logged-sticky"
+                      transform="translate(-89.000000, -20.000000)"
+                      fill="#000000"
+                    >
+                      <g
+                        id="ICONS/System/Shopping/Shopping-3"
+                        transform="translate(86.500000, 16.000000)"
+                      >
+                        <path
+                          d="M22.5,4 C19.7919641,4 17.7428072,5.55911706 16,7.18833583 C14.3392712,5.45946594 12.2080784,4 9.5,4 C5.68611438,4 3,7.21701001 3,10.725013 C3,12.606923 3.78569281,13.9627784 4.64611438,15.2356955 L14.7479216,27.1170185 C15.8821928,28.2943272 16.0958856,28.2943272 17.2301144,27.1170185 L27.3546503,15.2356955 C28.3662288,13.9627784 29,12.606923 29,10.725013 C29,7.21705169 26.3138431,4 22.5,4 Z M25.75,14.905734 L16,26.3183508 L6.25,14.85868 C5.08407843,13.2685131 4.625,12.1956485 4.625,10.725013 C4.625,7.98462791 6.61969281,5.51764786 9.5,5.4944019 C11.8692712,5.47538678 14.5545784,7.84909238 16,9.6385615 C17.4072712,7.91127535 20.1307288,5.4944019 22.5,5.4944019 C25.3039216,5.4944019 27.375,7.98462791 27.375,10.725013 C27.375,12.1956485 27.0118072,13.3482007 25.75,14.905734 Z"
+                          id="Shape"
+                        ></path>
+                      </g>
+                    </g>
+                  </g>
+                </svg>
+                <p class="mb-0 fs-14" style="position: relative; top: 4px">
+                  Preferiti
+                </p>
+              </nuxt-link>
+            </div>
             <div>
               <div
                 class="btn px-4 pb-0 pt-1 box user-box"
@@ -189,7 +231,7 @@
                 @mouseenter="switchToCart()"
               >
                 <div
-                  v-if="cart && cart.lines.edges.length > 0"
+                  v-if="Number(cartTotalAmount) > 0"
                   class="d-flex align-items-center"
                 >
                   <div class="d-flex flex-column justify-content-between">
@@ -200,16 +242,12 @@
                       <span style="font-weight: bold; font-size: 1.75rem">{{
                         cartTotalAmount.split(".")[0]
                       }}</span
-                      ><span
-                        >,{{
-                          Number(cartTotalAmount).toFixed(2).split(".")[1]
-                        }}€</span
-                      >
+                      ><span>,{{ cartTotalAmount.split(".")[1] }}€</span>
                     </div>
                   </div>
                   <div class="">
                     <p class="mb-0">
-                      <span class="totalItems">{{ cart.totalQuantity }}</span>
+                      <span class="totalItems">{{ cartTotalQuantity }} </span>
                       <svg
                         width="27px"
                         height="26px"
@@ -291,9 +329,9 @@
                 v-if="showCart"
                 @mouseleave="showCart = false"
                 class="content card shadow"
-                style="width: 640px"
               >
-                <Cart />
+                <!-- <Cart /> -->
+                <Card />
               </div>
             </div>
           </div>
@@ -331,13 +369,15 @@
 </template>
 
 <script>
-import Cart from "./Cart/Cart.vue";
+import Card from "./Cart/Card.vue";
+/* import Cart from "./Cart/Cart.vue"; */
+
 import LoginForm from "./LoginForm.vue";
 import DropdownMobileMenu from "./UI/DropdownMobileMenu.vue";
 import UserMenu from "./UserMenu.vue";
 
 export default {
-  components: { Cart, LoginForm, UserMenu, DropdownMobileMenu },
+  components: { LoginForm, UserMenu, DropdownMobileMenu, Card },
   watch: {
     $route() {
       this.showUser = false;
@@ -363,11 +403,17 @@ export default {
       return this.$store.state.cart.cart;
     },
     cartTotalAmount() {
-      if (this.$store.state.cart.cart) {
-        return this.$store.state.cart.cart.cost.totalAmount.amount;
-      } else {
-        return 0;
-      }
+      const cart = this.$store.state.userCart.userCart;
+      const total = cart
+        .reduce((t, n) => t + n.quantity * n.singleAmount, 0)
+        .toFixed(2);
+      return total;
+    },
+    cartTotalQuantity() {
+      const cart = this.$store.state.userCart.userCart;
+      const total = cart.reduce((t, n) => t + n.quantity, 0);
+
+      return total;
     },
     user() {
       return this.$store.state.user.user;

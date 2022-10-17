@@ -63,7 +63,7 @@ export default {
     });
 
     this.selections = selectionsListMapped;
-    console.log(selectionsListMapped, "m");
+    
   },
  */
   computed: {
@@ -72,7 +72,7 @@ export default {
     },
     selections() {
       const aggregations = JSON.parse(JSON.stringify(this.search.aggregations));
-      console.log(aggregations, "aggregations");
+
       const selectionsListMapped = [];
       this.allSelections.forEach((el) => {
         let tmp = aggregations[`agg-${el}`][`agg-${el}`].buckets.find(
@@ -91,8 +91,6 @@ export default {
   },
   methods: {
     goto(id) {
-      console.log(id);
-
       const query = Object.assign({}, this.$route.query);
 
       let activeFilter = Object.keys(query).filter((el) =>

@@ -77,7 +77,7 @@ export default {
       return;
       // se filtro non attivo, crealo e appendilo
       const rule = new RegExp(`[${this.keyword}][0-9]+`);
-      /* console.log(rule); */
+
       /* return; */
       if (!path.match(rule)) {
         let newPath = path + this.keyword + item.key;

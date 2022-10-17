@@ -514,14 +514,12 @@ export default {
     },
   },
   async mounted() {
-    /* console.clear(); */
-    console.log(this.$store.state.user.user.customer.addresses.edges);
     this.addresses = this.$store.state.user.user.customer.addresses.edges;
 
     const countries = await fetch(
       "https://callmewine-api.dojo.sh/api/countries"
     ).then((r) => r.json());
-    console.log(countries.countries, "countries");
+
     const mappedCountries = countries.countries.map((el) => el.name);
     this.countries = mappedCountries;
     this.allCountries = countries.countries;
@@ -549,12 +547,9 @@ export default {
 
       const response = await fetch(domain, GRAPHQL_BODY);
       const responseJSON = await response.json();
-
-      console.log(responseJSON, "response");
     },
     async onSubmit(e) {
       e.preventDefault();
-      /* console.log(this.form); */
 
       const customerAccessToken = this.$store.state.user.user.token;
 
@@ -615,7 +610,6 @@ export default {
 
       const response = await fetch(domain, GRAPHQL_BODY);
       const responseJSON = await response.json();
-      console.log(responseJSON, "response");
 
       const newAddress = {
         node: responseJSON.data.customerAddressCreate.customerAddress,
@@ -691,10 +685,8 @@ export default {
       const responseJSON = await response.json();
 
       window.location.reload();
-      console.log(responseJSON, "response");
     },
     async setAsDefaultAddress(e) {
-      console.log(e);
       const customerAccessToken = this.$store.state.user.user.token;
 
       const domain = this.$config.DOMAIN;
@@ -744,11 +736,9 @@ export default {
       const response = await fetch(domain, GRAPHQL_BODY);
       const responseJSON = await response.json();
 
-      console.log(responseJSON, "A");
-      /* return; */
       const newDefaultAddress =
         responseJSON.data.customerDefaultAddressUpdate.customer.defaultAddress;
-      console.log(newDefaultAddress, "response");
+
       this.$store.commit("user/updateDefaultAddress", newDefaultAddress);
 
       this.flashMessage.show({
@@ -759,8 +749,6 @@ export default {
       });
     },
     async deleteAddress(e) {
-      console.log(e);
-
       const customerAccessToken = this.$store.state.user.user.token;
 
       const domain = this.$config.DOMAIN;
@@ -796,7 +784,6 @@ export default {
 
       const response = await fetch(domain, GRAPHQL_BODY);
       const responseJSON = await response.json();
-      console.log(responseJSON);
 
       this.$store.commit("user/removeFromAddresses", e.split("?model_name")[0]);
 
@@ -808,7 +795,6 @@ export default {
       });
     },
     editAddress(e) {
-      console.log(e);
       this.editForm.firstName = e.firstName;
       this.editForm.lastName = e.lastName;
       /* this.editForm.country = e.country; */
@@ -823,7 +809,6 @@ export default {
     },
     async onEditSubmit(e) {
       e.preventDefault();
-      console.log(this.form);
 
       const customerAccessToken = this.$store.state.user.user.token;
 
@@ -885,7 +870,6 @@ export default {
 
       const response = await fetch(domain, GRAPHQL_BODY);
       const responseJSON = await response.json();
-      console.log(responseJSON, "response");
 
       const newAddress = {
         node: responseJSON.data.customerAddressUpdate.customerAddress,

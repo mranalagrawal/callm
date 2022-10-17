@@ -131,7 +131,7 @@ export default {
 
 <style scoped>
 .selection-svg {
-  filter: brightness(0.7);
+  filter: brightness(0) opacity(0.4);
   width: 36px;
 }
 

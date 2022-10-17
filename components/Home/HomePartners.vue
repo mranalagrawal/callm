@@ -70,8 +70,6 @@ export default {
     };
   },
   async fetch() {
-    console.log(this.$i18n.locale, "LAN");
-
     let lang = "";
     if (this.$i18n.locale == "en") {
       lang = "en-gb";
@@ -88,7 +86,6 @@ export default {
       };
     });
     this.data = data;
-    console.log(data, "partners ");
   },
 };
 </script>

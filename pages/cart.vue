@@ -9,63 +9,63 @@
         </div>
       </div>
     </div>
-    <div class="container-fluid px-md-5">
-      <div class="row my-5">
-        <div class="col-12 mb-3">
-          <h2>Dettaglio carrello</h2>
-        </div>
-        <div class="col-12 col-md-7" v-if="cart">
-          <div class="row">
-            <div class="col-6">
-              <p class="font-weight-bold mb-0">
-                {{ cart.totalQuantity }} articoli
-              </p>
+
+    <client-only>
+      <div
+        class="container-fluid px-md-5"
+        style="min-height: 600px"
+        v-show="userCart && userCart.length > 0"
+      >
+        <div class="row my-5">
+          <div class="col-12 mb-3">
+            <h2>Dettaglio carrello</h2>
+          </div>
+          <div class="col-12 col-md-7">
+            <div class="row">
+              <div class="col-6">
+                <p class="font-weight-bold mb-0">
+                  {{ cartTotalQuantity }} articoli
+                </p>
+              </div>
+              <div class="col-6 text-right">
+                <p class="text-light-red pointer" @click="showModal">
+                  Svuota carrello
+                </p>
+              </div>
             </div>
-            <div class="col-6 text-right">
-              <p class="text-light-red pointer" @click="showModal">
-                Svuota carrello
-              </p>
+            <div class="row">
+              <div class="col-12">
+                <hr class="" />
+              </div>
+            </div>
+            <div v-for="item in userCart" :key="item.id">
+              <CardLine :item="item" />
             </div>
           </div>
-          <div class="row">
-            <div class="col-12">
-              <hr class="" />
-            </div>
-          </div>
-          <div v-for="item in cart.lines.edges" :key="item.node.id">
-            <CartLine :item="item" />
-          </div>
-        </div>
-        <div class="col-12 col-md-5">
-          <div class="card shadow border-0 w-75 mx-auto">
-            <div class="card-body">
-              <h5 class="card-title font-weight-bold">
-                Totale carrello
-                <span class="float-right">{{
-                  Number(cart.cost.totalAmount.amount).toFixed(2)
-                }}</span>
-              </h5>
-              <hr />
-              <p>
-                Se hai un <strong>codice sconto</strong> potrai inserirlo in
-                seguito, prima del pagamento.
-              </p>
-              <p>
-                Le <strong>spese di spedizione</strong> verranno aggiunte alla
-                cassa, dopo aver scelto la modalità.
-              </p>
-              <a
-                :href="checkoutUrl"
-                class="btn btn-light-red w-100 text-uppercase text-decoration-none text-center"
-              >
-                Vai alla cassa
-              </a>
+          <div class="col-12 col-md-5">
+            <div class="card shadow border-0 w-75 mx-auto">
+              <div class="card-body">
+                <h5 class="card-title font-weight-bold">
+                  Totale carrello
+                  <span class="float-right">{{ cartTotalAmount }}€</span>
+                </h5>
+                <hr />
+                <p>
+                  Le <strong>spese di spedizione</strong> verranno aggiunte alla
+                  cassa, dopo aver scelto la modalità.
+                </p>
+                <button
+                  @click="checkout()"
+                  class="btn btn-light-red w-100 text-uppercase text-decoration-none text-center"
+                >
+                  Vai alla cassa
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      {{ checkoutUrl }}
-    </div>
+    </client-only>
 
     <b-modal ref="modal" hide-header centered title="">
       <p class="text-center my-5 lead">Cancellare carrello?</p>
@@ -84,45 +84,36 @@
 </template>
 
 <script>
-import { removeProductFromCart } from "../utilities/cart";
+import {
+  createCart,
+  addProductToCart,
+  removeProductFromCart,
+} from "../utilities/cart";
+import CardLine from "../components/Cart/CardLine.vue";
 
 export default {
-  middleware: "auth",
+  /* middleware: "auth", */
+  components: { CardLine },
   computed: {
     cart() {
       return this.$store.state.cart.cart;
     },
-    checkoutUrl() {
-      let baseUrl = this.cart.checkoutUrl + "/?";
+    userCart() {
+      return this.$store.state.userCart.userCart;
+    },
+    cartTotalAmount() {
+      const cart = this.$store.state.userCart.userCart;
+      const total = cart
+        .reduce((t, n) => t + n.quantity * n.singleAmount, 0)
+        .toFixed(2);
 
-      this.$store.state.user.user.customer.email &&
-        (baseUrl += `&checkout[email]=${this.$store.state.user.user.customer.email}`);
+      return total;
+    },
+    cartTotalQuantity() {
+      const cart = this.$store.state.userCart.userCart;
+      const total = cart.reduce((t, n) => t + n.quantity, 0);
 
-      this.$store.state.user.user.customer.defaultAddress?.firstName &&
-        (baseUrl += `&checkout[shipping_address][first_name]=${this.$store.state.user.user.customer.defaultAddress.firstName}`);
-
-      this.$store.state.user.user.customer.defaultAddress?.lastName &&
-        (baseUrl += `&checkout[shipping_address][last_name]=${this.$store.state.user.user.customer.defaultAddress.lastName}`);
-
-      this.$store.state.user.user.customer.defaultAddress?.address1 &&
-        (baseUrl += `&checkout[shipping_address][address1]=${this.$store.state.user.user.customer.defaultAddress.address1}`);
-
-      this.$store.state.user.user.customer.defaultAddress?.address2 &&
-        (baseUrl += `&checkout[shipping_address][address2]=${this.$store.state.user.user.customer.defaultAddress.address2}`);
-
-      this.$store.state.user.user.customer.defaultAddress?.country &&
-        (baseUrl += `&checkout[shipping_address][country]=${this.$store.state.user.user.customer.defaultAddress.country}`);
-
-      this.$store.state.user.user.customer.defaultAddress?.province &&
-        (baseUrl += `&checkout[shipping_address][province]=${this.$store.state.user.user.customer.defaultAddress.province}`);
-
-      this.$store.state.user.user.customer.defaultAddress?.city &&
-        (baseUrl += `&checkout[shipping_address][city]=${this.$store.state.user.user.customer.defaultAddress.city}`);
-
-      this.$store.state.user.user.customer.defaultAddress?.zip &&
-        (baseUrl += `&checkout[shipping_address][zip]=${this.$store.state.user.user.customer.defaultAddress.zip}`);
-
-      return baseUrl;
+      return total;
     },
   },
 
@@ -149,21 +140,69 @@ export default {
       this.$store.commit("cart/setCart", cart);
     },
     async removeCart() {
+      this.$store.commit("userCart/resetCart");
+
+      this.$refs["modal"].hide();
+    },
+    async checkout() {
+      // redirect if not user
+      if (!this.$store.state.user.user) {
+        this.$router.push("/login");
+        return;
+      }
+
+      // crea carrello su shop
       const domain = this.$config.DOMAIN;
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
-      const cartId = this.$store.state.cart.cart.id;
-      const lineIds = this.cart.lines.edges.map((el) => el.node.id);
+      const user = this.$store.state.user.user;
+      const cart = await createCart(domain, access_token, user);
+      const cartId = cart.id;
 
-      // remove from shopify
-      const cart = await removeProductFromCart(
+      // update in bulk del cart
+      const lines = this.$store.state.userCart.userCart.map((el) => {
+        return {
+          merchandiseId: el.productVariantId,
+          quantity: el.quantity,
+        };
+      });
+
+      const cartFilled = await addProductToCart(
         domain,
         access_token,
         cartId,
-        lineIds
+        lines
       );
+      // crea checkoutUrl
+      let checkoutUrl = cartFilled.checkoutUrl + "/?";
+      this.$store.state.user.user.customer.email &&
+        (checkoutUrl += `&checkout[email]=${this.$store.state.user.user.customer.email}`);
 
-      this.$refs["modal"].hide();
-      this.$store.commit("cart/setCart", cart);
+      this.$store.state.user.user.customer.defaultAddress?.firstName &&
+        (checkoutUrl += `&checkout[shipping_address][first_name]=${this.$store.state.user.user.customer.defaultAddress.firstName}`);
+
+      this.$store.state.user.user.customer.defaultAddress?.lastName &&
+        (checkoutUrl += `&checkout[shipping_address][last_name]=${this.$store.state.user.user.customer.defaultAddress.lastName}`);
+
+      this.$store.state.user.user.customer.defaultAddress?.address1 &&
+        (checkoutUrl += `&checkout[shipping_address][address1]=${this.$store.state.user.user.customer.defaultAddress.address1}`);
+
+      this.$store.state.user.user.customer.defaultAddress?.address2 &&
+        (checkoutUrl += `&checkout[shipping_address][address2]=${this.$store.state.user.user.customer.defaultAddress.address2}`);
+
+      this.$store.state.user.user.customer.defaultAddress?.country &&
+        (checkoutUrl += `&checkout[shipping_address][country]=${this.$store.state.user.user.customer.defaultAddress.country}`);
+
+      this.$store.state.user.user.customer.defaultAddress?.province &&
+        (checkoutUrl += `&checkout[shipping_address][province]=${this.$store.state.user.user.customer.defaultAddress.province}`);
+
+      this.$store.state.user.user.customer.defaultAddress?.city &&
+        (checkoutUrl += `&checkout[shipping_address][city]=${this.$store.state.user.user.customer.defaultAddress.city}`);
+
+      this.$store.state.user.user.customer.defaultAddress?.zip &&
+        (checkoutUrl += `&checkout[shipping_address][zip]=${this.$store.state.user.user.customer.defaultAddress.zip}`);
+      // redirect al checkoutUrl
+
+      if (process.client) window.location = checkoutUrl;
     },
   },
 };

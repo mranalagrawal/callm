@@ -3,7 +3,7 @@ import { apiEndpoint } from "./sm.json";
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: "wine",
+    title: "CallMeWine",
     htmlAttrs: {
       lang: "en",
     },

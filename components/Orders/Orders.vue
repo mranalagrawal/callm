@@ -44,7 +44,6 @@ export default {
       customerAccessToken
     );
 
-    console.log(orders);
     this.orders = orders.edges.reverse();
   },
 };

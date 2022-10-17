@@ -34,12 +34,14 @@
                 :title="$t('profile.buyAgain')"
                 :active="active == 'buyagain' ? true : false"
               >
-                <!-- <BuyAgain /> -->
+                <BuyAgain />
               </b-tab>
-              <!-- <b-tab
+              <b-tab
                 :title="$t('profile.favorites')"
                 :active="active == 'wishlist' ? true : false"
-              ></b-tab> -->
+              >
+                <!-- <FavouritesProducts /> -->
+              </b-tab>
               <b-tab
                 :title="$t('profile.addresses')"
                 :active="active == 'addresses' ? true : false"
@@ -91,7 +93,6 @@ export default {
   },
   created() {
     this.active = this.$route.hash.split("#")[1];
-    /* console.log(this.link); */
   },
 };
 </script>

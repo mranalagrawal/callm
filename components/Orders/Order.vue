@@ -205,7 +205,7 @@ export default {
   methods: {
     async onSubmit(e) {
       e.preventDefault();
-      console.log(this.form);
+
       const response = await fetch(
         "https://callmewine-api.dojo.sh/api/send-email",
         {
@@ -229,7 +229,6 @@ export default {
           blockClass: "add-product-notification",
         });
       }
-      console.log(responseJSON);
     },
     showModal() {
       this.$refs["modal"].show();

@@ -80,8 +80,6 @@ export default {
     if (this.categories) query += "&categories=" + this.categories;
     if (this.region) query += "&regions=" + this.region;
     if (this.dosage) query += "&dosagecontent=" + "Dry";
-    console.clear();
-    console.log(query, "query");
 
     /* console.log("nofitlers");
     const searchResult = await fetch(
@@ -93,8 +91,6 @@ export default {
     const search = await searchResult.json();
     this.search = search;
     this.hits = search.hits.hits;
-
-    console.log(search);
 
     const winelists = search.aggregations["agg-winelists"]["inner"]["result"][
       "buckets"

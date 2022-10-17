@@ -129,31 +129,40 @@
               </div>
 
               <div
-                v-if="cartQuantity > 0"
-                style="
-                  width: 42px;
-                  border-radius: 10px;
-                  background: darkred;
-                  position: absolute;
-                  bottom: 2px;
-                  right: 2px;
-                  display: flex;
-                  flex-direction: column;
-                  justify-content: space-between;
-                "
+                class="position-relative"
+                v-if="product._source.quantity > 0"
               >
-                <div class="btn text-white">
-                  <i class="fas fa-minus" @click.stop="decreaseQuantity()"></i>
-                </div>
-                <p class="mb-0 text-white text-center">{{ cartQuantity }}</p>
-                <div class="btn text-white">
-                  <i class="fas fa-plus" @click.stop="addToCart()"></i>
+                <button
+                  class="btn btn-cart"
+                  @click.stop="isOpen = true"
+                ></button>
+                <span v-show="userCartQuantity > 0" class="cart-quantity">
+                  {{ userCartQuantity }}
+                </span>
+                <div
+                  v-show="isOpen"
+                  class="cart-dropup"
+                  @mouseleave="isOpen = false"
+                >
+                  <div class="btn text-white">
+                    <span style="font-size: 24px" @click.stop="addToUserCart()"
+                      >+</span
+                    >
+                  </div>
+                  <p class="mb-0 text-white text-center py-2">
+                    {{ userCartQuantity }}
+                  </p>
+                  <div class="btn text-white">
+                    <span
+                      style="font-size: 24px"
+                      @click.stop="removeFromUserCart()"
+                      >-</span
+                    >
+                  </div>
                 </div>
               </div>
-              <div v-else>
-                <button class="btn btn-cart" @click="addToCart()">
-                  <i class="fal fa-shopping-cart text-white"></i>
-                </button>
+              <div v-else class="position-relative">
+                <button class="btn btn-cart disabled" disabled></button>
               </div>
             </div>
           </div>
@@ -202,7 +211,7 @@ export default {
   props: ["product", "horizontal"],
   name: "ProductCardVertical",
   data() {
-    return { quantity: 0 };
+    return { quantity: 0, isOpen: false };
   },
   computed: {
     isInWishList() {
@@ -212,11 +221,19 @@ export default {
       // wishlist is null by default
       if (wishlist) {
         return JSON.parse(wishlist.value).includes(
-          String(this.product._source.variantId)
+          "P" + this.product._source.id
         );
       }
 
       return null;
+    },
+    userCartQuantity() {
+      const productVariantId = this.product._source.variantId;
+      let isInCart = this.$store.state.userCart.userCart.find((el) =>
+        el.productVariantId.includes(productVariantId)
+      );
+
+      return isInCart ? isInCart.quantity : 0;
     },
     cartQuantity() {
       if (!this.$store.state.cart.cart) {
@@ -228,7 +245,7 @@ export default {
         quantity: el.node.quantity,
       }));
 
-      /* console.log(
+      /* 
         this.product._source.shortName,
         " >>> ",
         this.product._source.variantId
@@ -248,6 +265,28 @@ export default {
   },
 
   methods: {
+    async addToUserCart() {
+      const productVariantId =
+        "gid://shopify/ProductVariant/" + this.product._source.variantId;
+      const amount = Number(this.product._source.saleprice);
+      const amountFullPrice = Number(this.product._source.price);
+      const tag = "P" + this.product._source.id;
+      const image = this.product._source.shopifyImageUrl;
+      const title = this.product._source.shortName;
+      this.$store.commit("userCart/addProduct", {
+        productVariantId: productVariantId,
+        singleAmount: amount,
+        singleAmountFullPrice: amountFullPrice,
+        tag: tag,
+        image: image,
+        title: title,
+      });
+    },
+    async removeFromUserCart() {
+      const productVariantId =
+        "gid://shopify/ProductVariant/" + this.product._source.variantId;
+      this.$store.commit("userCart/removeProduct", productVariantId);
+    },
     addToCart: async function () {
       const domain = this.$config.DOMAIN;
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
@@ -256,12 +295,12 @@ export default {
         return;
       } */
 
+      /* return; */
+
       if (!this.$store.state.user.user) {
         this.$router.push("/login");
         return;
       }
-
-      console.log("P" + this.product._id);
 
       // check if product is available in shopify
       const productQuery = queryProductByIdAsTag("P" + this.product._id);
@@ -278,8 +317,6 @@ export default {
       const availability = await fetch(domain, GRAPHQL_BODY).then((res) =>
         res.json()
       );
-
-      console.log(availability.data.products.edges[0], "SS");
 
       if (!availability.data.products.edges[0]) {
         alert("Prodotto non disponibile su STOREFRONT");
@@ -307,8 +344,7 @@ export default {
       const cartId = this.$store.state.cart.cart.id;
 
       const producVariantId = this.product._source.variantId;
-      console.clear();
-      console.log(this.product);
+
       /* return; */
       const lines = [
         {
@@ -370,12 +406,13 @@ export default {
 
       const variantId = this.product._source.variantId;
 
+      const tag = "P" + this.product._source.id;
+
       const response = await fetch(
-        `https://callmewine-api.dojo.sh/api/customers/${userId}/wishlist/${variantId}`,
+        `https://callmewine-api.dojo.sh/api/customers/${userId}/wishlist/${tag}`,
         { async: true, crossDomain: true, method: "POST" }
       );
       const updatedWishlist = await response.text();
-      console.log(updatedWishlist);
 
       this.$store.commit("user/updateWishlist", updatedWishlist);
 
@@ -439,14 +476,14 @@ export default {
   right: 20px;
 }
 
-.btn-cart {
+/* .btn-cart {
   width: 48px;
   height: 48px;
   border-radius: 12px;
   color: white;
   background: #da4865;
   position: relative;
-}
+} */
 
 .dropdown-cart {
   position: relative;
@@ -476,7 +513,7 @@ export default {
 }
 
 .selection-svg {
-  filter: brightness(0.7);
+  filter: brightness(0) opacity(0.4);
   width: 36px;
 }
 .integer {

@@ -2,7 +2,7 @@
   <div class="container-fluid container-large px-md-0 my-5">
     <div class="row">
       <div class="col-12 text-center" v-if="data">
-        <h2 class="font-weight-bold text-dark-green">RecentSeen</h2>
+        <h2 class="font-weight-bold text-dark-green">Favoriti</h2>
       </div>
 
       <div class="col-12 py-4" v-if="data">
@@ -11,6 +11,9 @@
             <ProductCardVertical :product="product" />
           </div>
         </VueSlickCarousel>
+      </div>
+      <div v-else class="col-12 py-4">
+        <p>Non hai nessun prodotto preferito</p>
       </div>
     </div>
   </div>
@@ -26,6 +29,7 @@ import ProductCardVertical from "./ProductCardVertical.vue";
 export default {
   watch: {
     "$i18n.locale": "$fetch",
+    wishlist: "$fetch",
   },
   props: ["vendor"],
   components: { ProductCardVertical, VueSlickCarousel },
@@ -59,8 +63,18 @@ export default {
       ],
     },
   }),
+
+  computed: {
+    wishlist() {
+      return this.$store.state.user.user.customer.wishlist;
+    },
+  },
   async fetch() {
-    const allTags = this.$store.state.recent.recent.join(" OR ");
+    if (JSON.parse(this.wishlist.value).length == 0) {
+      this.data = null;
+      return;
+    }
+    const allTags = JSON.parse(this.wishlist.value).join(" OR ");
 
     const GRAPHQL_URL = this.$config.DOMAIN;
     const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;

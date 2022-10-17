@@ -71,8 +71,6 @@ export default {
   async fetch() {
     const GRAPHQL_URL = this.$config.DOMAIN;
 
-    console.log(this.$i18n.locale, "this.$i18n.locale");
-
     const productQuery = queryByCollection(
       "featured",
       this.$i18n.locale.toUpperCase()

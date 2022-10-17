@@ -2,7 +2,7 @@
   <div class="my-5">
     <h2 class="text-center font-weight-bold text-dark-green">In evidenza</h2>
 
-    <client-only placeholder="Loading..." v-if="contents">
+    <client-only placeholder="Loading..." v-if="data">
       <carousel-3d
         :width="1100"
         :height="450"
@@ -12,7 +12,7 @@
         class="position-relative"
       >
         <slide
-          v-for="(content, i) in contents"
+          v-for="(content, i) in data"
           :index="i"
           :key="i"
           style="border-radius: 10px; border: none"
@@ -20,17 +20,14 @@
           <div
             class="h-100 w-100 p-4 position-relative text-white slide-content"
             :style="{
-              background: `url(${mask}),url('${content.data.image.url}')`,
+              background: `url(${mask}),url('${content.image.url}')`,
             }"
           >
             <p class="h3 font-weight-bold mt-4">
-              {{ content.data.title[0].text }}
+              {{ content.title }}
             </p>
 
-            <nuxt-link
-              :to="contents[0].data.link.url"
-              class="btn btn-cta mb-3 px-5 py-2"
-            >
+            <nuxt-link :to="content.link" class="btn btn-cta mb-3 px-5 py-2">
               Scopri di più
             </nuxt-link>
           </div>
@@ -46,16 +43,23 @@ import mask from "assets/images/mask_left.svg";
 export default {
   data() {
     return {
-      contents: null,
+      data: null,
       mask: mask,
     };
   },
   async fetch() {
-    this.contents = (
-      await this.$prismic.api.query(
-        this.$prismic.predicates.at("document.type", "featured")
-      )
-    ).results;
+    let lang = "";
+    if (this.$i18n.locale == "en") {
+      lang = "en-gb";
+    } else {
+      lang = "it-it";
+    }
+
+    const data = await this.$prismic.api.getSingle("home-featured", {
+      lang: lang,
+    });
+    console.log(data.data.featured, "data");
+    this.data = data.data.featured;
   },
 };
 </script>

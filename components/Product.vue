@@ -78,6 +78,7 @@
                     class="btn p-2 px-3 text-uppercase text-white d-inline-flex align-items-center br-10"
                     style="background: #da4865"
                     :class="data.totalInventory > 0 ? '' : 'disabled'"
+                    @click="addToUserCart()"
                   >
                     <!-- <i class="fal fa-shopping-cart fa-2x mr-2"></i> -->
                     <img
@@ -339,6 +340,11 @@ import ProductCardVertical from "./ProductCardVertical.vue";
 export default {
   props: ["product"],
   components: { ProductCardVertical, VueSlickCarousel },
+  head() {
+    return {
+      title: this.title,
+    };
+  },
   data() {
     return {
       data: null,
@@ -349,11 +355,12 @@ export default {
     };
   },
   computed: {
+    title() {
+      return this.data ? this.data.title : "CallMeWine";
+    },
     isInWishList() {
       if (!this.$store.state.user.user) return null;
       let wishlist = this.$store.state.user.user.customer.wishlist;
-
-      console.log(this.data);
 
       // wishlist is null by default
       if (wishlist) {
@@ -368,8 +375,6 @@ export default {
     },
   },
   async fetch() {
-    console.log(this.product, "AAAAAAAA");
-
     this.$store.commit("recent/addRecent", this.product);
 
     const domain = this.$config.DOMAIN;
@@ -388,7 +393,6 @@ export default {
       body: productQuery,
     };
     const data = await fetch(domain, GRAPHQL_BODY).then((res) => res.json());
-    console.log(data, "D");
 
     this.data = data.data.products.edges[0].node;
 
@@ -401,16 +405,39 @@ export default {
     this.brand = dataBrand;
 
     this.brandMetafields = JSON.parse(dataBrand.details.value);
-    console.log(this.metafield, "brandMetafields");
   },
   methods: {
+    async addToUserCart() {
+      const productVariantId = this.data.variants.nodes[0].id;
+      const amount = Number(this.data.variants.nodes[0].price);
+      const amountFullPrice = Number(
+        this.data.variants.nodes[0].compareAtPrice
+      );
+      const tag = this.data.tags[0];
+      const image = this.data.images.nodes[0].url;
+      const title = this.data.title;
+      this.$store.commit("userCart/addProduct", {
+        productVariantId: productVariantId,
+        singleAmount: amount,
+        singleAmountFullPrice: amountFullPrice,
+        tag: tag,
+        image: image,
+        title: title,
+      });
+      this.flashMessage.show({
+        status: "",
+        message: `${this.data.title} è stato aggiunto al carrello!`,
+        icon: this.data.images.nodes[0].url,
+        iconClass: "bg-transparent ",
+        time: 8000,
+        blockClass: "add-product-notification",
+      });
+    },
     async toggleWishlist() {
       if (!this.$store.state.user.user) {
         this.$router.push("/login");
         return;
       }
-
-      console.log(this.data);
 
       const userId =
         this.$store.state.user.user.customer.id.split("Customer/")[1];
@@ -423,7 +450,6 @@ export default {
         { async: true, crossDomain: true, method: "POST" }
       );
       const updatedWishlist = await response.text();
-      console.log(updatedWishlist);
 
       this.$store.commit("user/updateWishlist", updatedWishlist);
 

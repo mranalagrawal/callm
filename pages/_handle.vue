@@ -18,13 +18,13 @@ export default {
     };
   },
   created() {
+    console.log("qui");
     /* const path = this.$route.path; */
     const path = this.$route.params.handle;
     // check if product page
     const isProduct = /[P][0-9]+/;
     if (isProduct.test(path)) {
       this.product = "P" + this.$route.path.split("-P")[1];
-
       return;
     }
 
@@ -34,9 +34,11 @@ export default {
       { name: "categories", rule: /[C][0-9]+/ },
       { name: "regions", rule: /[R][0-9]+/ },
       { name: "dosagecontents", rule: /[D][0-9]+/ },
+      { name: "brands", rule: /[B][0-9]+/ },
       { name: "selections", rule: null },
     ];
 
+    console.log("qui");
     // loop and assign, MUST BE this way
     filters.forEach((el) => {
       if (el.name != "selections" && path.match(el.rule)) {
@@ -62,6 +64,8 @@ export default {
     const noFilterInURL = filters
       .filter((el) => el.rule !== null)
       .every((el) => !el.rule.test(path));
+
+    console.log(noFilterInURL, ">> noFilterInUrl");
 
     const noSelection = !this.$route.fullPath.split("?sel=")[1];
 

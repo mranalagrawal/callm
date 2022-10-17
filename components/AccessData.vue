@@ -261,8 +261,6 @@ export default {
       const response = await fetch(domain, GRAPHQL_BODY);
       const responseJSON = await response.json();
 
-      console.log(responseJSON, "RESPONSE MAIL");
-
       const updatedEmail = responseJSON.data.customerUpdate.customer.email;
 
       this.$store.commit("user/updateGenericField", {
@@ -280,7 +278,7 @@ export default {
     },
     async editPassword(e) {
       e.preventDefault();
-      console.log(e);
+
       const customerAccessToken = this.$store.state.user.user.token;
 
       const domain = this.$config.DOMAIN;
@@ -328,8 +326,6 @@ export default {
       const response = await fetch(domain, GRAPHQL_BODY);
       const responseJSON = await response.json();
 
-      console.log(responseJSON, "RESPONSE PASSWORD");
-      console.log(newAccessToken);
       const newAccessToken =
         responseJSON.data.customerUpdate.customerAccessToken.accessToken;
 
@@ -394,8 +390,6 @@ export default {
       const response = await fetch(domain, GRAPHQL_BODY);
 
       const responseJSON = await response.json();
-
-      console.log(responseJSON, "RESPONSE PERSONAL");
 
       if (responseJSON.data.customerUpdate.customerUserErrors.length > 0) {
         let error =

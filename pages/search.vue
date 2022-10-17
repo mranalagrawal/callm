@@ -447,7 +447,6 @@ export default {
 
   methods: {
     changePage(page) {
-      console.log(page);
       const query = Object.assign({}, this.$route.query);
       query["page"] = page;
 
@@ -480,7 +479,7 @@ export default {
     },
     removeFromQuery(obj) {
       const query = Object.assign({}, this.$route.query);
-      console.log(obj);
+
       delete query[obj.field];
 
       this.$router.push({
@@ -530,13 +529,11 @@ export default {
   async fetch() {
     this.loading = true;
     let route = this.$route;
-    /* console.log(route.fullPath.split("search?")[1], "SSSS"); */
 
     this.currentPage = this.$route.query["page"]
       ? this.$route.query["page"]
       : 1;
 
-    console.log(this.currentPage, "CURRENTPAGE");
     let query = route.fullPath.split("search?")[1];
     const searchResult = await fetch(
       "https://callmewine-api.dojo.sh/api/products/search?" + query
@@ -671,7 +668,6 @@ export default {
     );
 
     this.activeSelections = activeSelections;
-    console.log(activeSelections);
 
     this.view.brand = brandId
       ? {

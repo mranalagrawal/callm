@@ -8,14 +8,16 @@
 
       <div class="col-12 px-0 py-4">
         <VueSlickCarousel v-bind="settingsTop" ref="carousel-top" v-if="data">
-          <div v-for="productor in data" :key="productor.id" class="">
+          <div v-for="productor in data" :key="productor.name" class="">
             <div class="bg-white mx-2 p-1 product-card">
-              <img
-                :src="productor.data.logo.url"
-                alt=""
-                height="120px"
-                class="mx-auto d-block"
-              />
+              <nuxt-link :to="productor.link">
+                <img
+                  :src="productor.logo.url"
+                  alt=""
+                  height="120px"
+                  class="mx-auto d-block"
+                />
+              </nuxt-link>
             </div>
           </div>
         </VueSlickCarousel>
@@ -26,14 +28,16 @@
           ref="carousel-bottom"
           v-if="data"
         >
-          <div v-for="productor in data" :key="productor.id" class="">
+          <div v-for="productor in data" :key="productor.name" class="">
             <div class="bg-white mx-2 p-1 product-card">
-              <img
-                :src="productor.data.logo.url"
-                alt=""
-                height="120px"
-                class="mx-auto d-block"
-              />
+              <nuxt-link :to="productor.link">
+                <img
+                  :src="productor.logo.url"
+                  alt=""
+                  height="120px"
+                  class="mx-auto d-block"
+                />
+              </nuxt-link>
             </div>
           </div>
         </VueSlickCarousel>
@@ -124,13 +128,11 @@ export default {
     },
   }),
   async fetch() {
-    let response = (
-      await this.$prismic.api.query(
-        this.$prismic.predicates.at("document.type", "productor")
-      )
-    ).results;
+    const response = await this.$prismic.api.getSingle("productors");
+    const data = response.data.productor;
 
-    this.data = response.concat(response);
+    this.data = data.concat(data);
+    console.log(this.data);
   },
 };
 </script>

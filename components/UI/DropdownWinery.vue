@@ -71,7 +71,6 @@ export default {
   },
   methods: {
     goto(id) {
-      console.log("change" + this.keyword);
       $nuxt.$emit("change" + this.keyword, id);
       /* const query = Object.assign({}, this.$route.query);
 
