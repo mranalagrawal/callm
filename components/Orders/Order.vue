@@ -1,7 +1,7 @@
 <template>
   <div class="mb-3 order-line" :class="visible ? 'shadow' : ''">
     <div
-      class="d-flex flex-row py-4 pointer bg-light"
+      class="d-none d-md-flex flex-row py-4 pointer bg-light"
       :class="visible ? '' : 'collapsed'"
       @click="visible = !visible"
     >
@@ -26,6 +26,34 @@
           class="fal fa-chevron-down text-dark-red"
           :class="visible ? 'fa-rotate-180' : ''"
         ></i>
+      </div>
+    </div>
+
+    <div
+      class="d-md-none pt-4 pointer bg-light"
+      :class="visible ? '' : 'collapsed'"
+      @click="visible = !visible"
+    >
+      <div class="px-3">
+        <p class="text-light-green">
+          ORDINE: <strong class="text-dark">{{ order.orderNumber }}</strong>
+        </p>
+        <p class="text-light-green">
+          Data: {{ order.processedAt.split("T")[0] }}
+        </p>
+        <p class="text-light-green">Pagamento: {{ order.financialStatus }}</p>
+        <p class="text-light-green">
+          Stato dell'ordine: {{ order.fulfillmentStatus }}
+        </p>
+        <p class="text-light-green">Totale: {{ order.totalPrice }}</p>
+      </div>
+
+      <div
+        class="text-center py-2"
+        style="background: #ddd"
+        :class="visible ? 'd-none' : ''"
+      >
+        <i class="fal fa-chevron-down fa-2x text-light-red"></i>
       </div>
     </div>
 
@@ -79,11 +107,15 @@
             </p>
           </div>
           <div class="col-12 col-md-8 text-right">
-            <button class="btn text-light-red" @click="showModal">
-              RICHIEDI ASSISTENZA
+            <button
+              class="btn text-light-red d-block ml-auto"
+              @click="showModal"
+            >
+              Richiedi assistenza
             </button>
             <button
-              class="btn btn-light-red"
+              class="btn text-white d-block ml-auto"
+              style="background: #da4865; border-radius: 10px"
               @click="orderAgain"
               :class="canBuyAgain ? '' : 'disabled'"
             >
@@ -111,9 +143,11 @@
           <div class="col-8">
             <strong>{{ item.node.title }}</strong>
           </div>
-          <div class="col-1">x{{ item.node.quantity }}</div>
+          <div class="col-1">
+            <span class="d-none d-md-block">x{{ item.node.quantity }}</span>
+          </div>
           <div class="col-2 text-right">
-            <p class="text-barred mb-0 text-muted">
+            <p class="text-barred mb-0 text-muted small">
               {{
                 Number(
                   item.node.variant.product.variants.nodes[0].compareAtPrice *
@@ -121,7 +155,7 @@
                 ).toFixed(2)
               }}
             </p>
-            <p class="mb-0">
+            <p class="mb-0 font-weight-bold">
               {{
                 Number(
                   item.node.variant.product.variants.nodes[0].price *
@@ -161,10 +195,13 @@
           ></b-form-input> -->
         </b-form-group>
 
-        {{ form }}
-
         <div class="w-100 text-center">
-          <button class="btn btn-light-red btn-lg px-5">INVIA</button>
+          <button
+            class="btn btn-lg px-5 text-white"
+            style="background: #da4865; border-radius: 10px"
+          >
+            INVIA
+          </button>
         </div>
       </form>
     </b-modal>

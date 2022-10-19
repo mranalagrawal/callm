@@ -20,9 +20,9 @@
       </div>
       <div class="row py-4 px-md-5">
         <div class="col-6">
-          <nuxt-link class="btn btn-detail w-100" to="/cart"
-            >TODO {{ $t("navbar.cart.detail") }}</nuxt-link
-          >
+          <nuxt-link class="btn btn-detail w-100" to="/cart">{{
+            $t("navbar.cart.detail")
+          }}</nuxt-link>
         </div>
         <div class="col-6">
           <button class="btn btn-checkout w-100" @click="checkout()">
@@ -105,34 +105,6 @@ export default {
   async fetch() {
     const userCart = this.$store.state.userCart.userCart;
     this.data = userCart;
-
-    const GRAPHQL_URL = this.$config.DOMAIN;
-    const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
-
-    const productQuery = queryProductByIdAsTag(products);
-
-    const GRAPHQL_BODY = {
-      async: true,
-      crossDomain: true,
-      method: "POST",
-      headers: {
-        "X-Shopify-Storefront-Access-Token": access_token,
-        "Content-Type": "application/graphql",
-      },
-      body: productQuery,
-    };
-    const data = await fetch(GRAPHQL_URL, GRAPHQL_BODY).then((res) =>
-      res.json()
-    );
-
-    const images = data.data.products.edges
-      .map((el) => el.node)
-      .map((el) => {
-        return {
-          image: el.images.nodes[0].url,
-          tag: el.tags[0],
-        };
-      });
   },
   methods: {
     async checkout() {

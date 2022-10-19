@@ -67,7 +67,8 @@
               max-width: 450px;
               border-radius: 10px;
               height: 100px;
-              background: #efefef;
+              background: #f8f8f8;
+              border: 1px solid #ddd;
             "
           >
             <div
@@ -86,18 +87,21 @@
             <div class="col-9">
               <nuxt-link
                 :to="thirdLevel.third_level_link || '/'"
-                class="mb-0 text-decoration-none text-dark"
+                class="mb-0 text-decoration-none text-dark d-block"
                 >{{ thirdLevel.third_level_name }}</nuxt-link
               >
-              <p
+              <nuxt-link
                 v-if="thirdLevel.marketing_cta.length < 40"
-                class="mb-0 small text-light-red"
+                :to="thirdLevel.third_level_link || '/'"
+                class="mb-0 text-decoration-none text-light-red small"
+                >{{ thirdLevel.marketing_cta }}</nuxt-link
               >
-                {{ thirdLevel.marketing_cta }}
-              </p>
-              <p v-else class="mb-0 small text-light-red">
-                {{ thirdLevel.marketing_cta.substring(0, 40) }}...
-              </p>
+              <nuxt-link
+                v-else
+                :to="thirdLevel.third_level_link || '/'"
+                class="mb-0 text-decoration-none text-light-red small"
+                >{{ thirdLevel.marketing_cta.substring(0, 40) }}...</nuxt-link
+              >
             </div>
           </div>
         </div>
@@ -184,7 +188,7 @@ export default {
       .sort((a, b) => a.position - b.position);
 
     this.data = mapped;
-    this.selectedItem = mapped[1];
+    /* this.selectedItem = mapped[3]; */
   },
 };
 </script>

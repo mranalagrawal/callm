@@ -1,14 +1,20 @@
 <template>
   <div class="award-tooltip">
-    {{ award.value }} <strong>{{ preview }}</strong>
-    <!-- {{ award.id }} -->
+    {{ award.value }}
+
+    <img
+      v-if="this.awards.includes(award.id)"
+      :src="require(`@/assets/images/awards/${award.id}.svg`)"
+      alt=""
+      class="award-img"
+    />
+    <strong v-else>{{ preview }}</strong>
 
     <span class="award-tooltiptext px-2 shadow">
-      <p class="mb-0 font-weight-bold">Guida {{ award.title }}</p>
+      <p class="mb-0 font-weight-bold">Guida {{ award.title || award.name }}</p>
       <p class="mb-0">Annata {{ award.year }}</p>
       <p class="mb-0">Punteggio {{ award.value }} su {{ award.maxValue }}</p>
       <em v-if="award.quote">"{{ award.quote }}"</em>
-      <!-- {{ award }} -->
     </span>
   </div>
 </template>
@@ -17,20 +23,32 @@
 export default {
   name: "AwardTooltip",
   props: ["award"],
+  data() {
+    return {
+      awards: [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 14, 20],
+    };
+  },
   computed: {
     preview() {
       return this.award.title
-        .split(" ")
-        .map((el) => el[0])
-        .join("");
-    },
-    imagePath() {
-      return require(`../../assets/images/awards/${1}.svg`);
+        ? this.award.title
+            .split(" ")
+            .map((el) => el[0])
+            .join("")
+        : this.award.name
+            .split(" ")
+            .map((el) => el[0])
+            .join("");
     },
   },
 };
 </script>
 <style scoped>
+.award-img {
+  filter: brightness(0);
+  width: 20px;
+}
+
 .award-tooltip {
   position: relative;
   display: inline-block;

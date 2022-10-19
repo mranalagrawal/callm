@@ -40,7 +40,7 @@
                 :title="$t('profile.favorites')"
                 :active="active == 'wishlist' ? true : false"
               >
-                <!-- <FavouritesProducts /> -->
+                <FavouritesProducts />
               </b-tab>
               <b-tab
                 :title="$t('profile.addresses')"
@@ -113,5 +113,19 @@ export default {
   /* font-weight: bold; */
   background-color: #fff;
   border-bottom: 4px solid var(--dark-red);
+}
+
+:deep(ul.nav.nav-tabs.nav-justified) {
+  flex-wrap: nowrap;
+}
+
+@media screen and (max-width: 766px) {
+  :deep(ul.nav.nav-tabs.nav-justified) {
+    flex-wrap: nowrap;
+    overflow-x: scroll;
+  }
+  :deep(.nav-tabs .nav-link) {
+    width: 240px;
+  }
 }
 </style>

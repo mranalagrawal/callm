@@ -87,7 +87,7 @@
           />
 
           <!-- {{ data }} -->
-          <div class="mt-5" v-html="data.contentHtml"></div>
+          <div class="pt-5 pt-md-0 mt-5" v-html="data.contentHtml"></div>
         </div>
         <div class="col-12 col-md-6">
           <div class="row py-3 bg-light">
@@ -124,7 +124,7 @@
           </div>
           <div class="row py-3">
             <div class="col-12">
-              <img :src="data.image.url" alt="" />
+              <img :src="data.image.url" alt="" class="d-block mx-auto" />
             </div>
           </div>
         </div>
@@ -167,53 +167,6 @@ export default {
 </script>
 
 <style scoped>
-:deep(.slick-arrow.slick-prev) {
-  width: 48px;
-  height: 48px;
-  background: white;
-  box-shadow: 0 0.5rem 1rem rgba(102, 101, 101, 0.5) !important;
-  background-image: url("../assets/images/chevron-left.svg") !important;
-  background-size: 75%;
-  background-position: center;
-  background-repeat: no-repeat;
-  border-radius: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 99;
-  left: 10px;
-}
-:deep(.slick-arrow.slick-next) {
-  width: 48px;
-  height: 48px;
-  background: white;
-  box-shadow: 0 0.5rem 1rem rgba(102, 101, 101, 0.5) !important;
-  background-image: url("../assets/images/chevron-right.svg") !important;
-  background-size: 75%;
-  background-position: center;
-  background-repeat: no-repeat;
-  border-radius: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 99;
-  right: 10px;
-}
-:deep(.slick-prev::before) {
-  color: red;
-  /* content: "\2039"; */
-  content: "";
-  font-size: 60px;
-  line-height: unset;
-}
-:deep(.slick-next::before) {
-  color: red;
-  /* content: "\203A"; */
-  content: "";
-  font-size: 60px;
-  line-height: unset;
-}
-
 .partner-bg {
   background: linear-gradient(transparent, transparent 70%, white),
     url("assets/images/selections/red.svg");

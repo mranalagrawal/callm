@@ -11,10 +11,20 @@
       </div>
 
       <div
-        :to="`/${product.handle}-${product.tags[0]}`"
-        class="position-relative row mx-0 mt-2 img-wrapper text-decoration-none text-dark"
-        :style="{ backgroundImage: 'url(' + product.images.nodes[0].url + ')' }"
+        class="position-relative mx-0 mt-2 img-wrapper text-decoration-none text-dark"
       >
+        <nuxt-link
+          :to="`/${product.handle}-${product.tags[0]}`"
+          draggable="false"
+        >
+          <img
+            :src="product.images.nodes[0].url"
+            alt=""
+            class="d-block mx-auto"
+            style="height: 300px; user-drag: none"
+            draggable="false"
+          />
+        </nuxt-link>
         <div
           class="position-absolute"
           style="left: 0px; bottom: 10px; z-index: 10"
@@ -97,12 +107,9 @@
         </div>
       </div> -->
       <div class="">
-        <nuxt-link
-          :to="`/${product.handle}-${product.tags[0]}`"
-          class="prodotto-box__nome"
-        >
+        <div class="prodotto-box__nome">
           {{ product.title }}
-        </nuxt-link>
+        </div>
 
         <div
           style="margin-top: 30px"
@@ -179,7 +186,7 @@ export default {
       quantity: 0,
       details: JSON.parse(this.product.metafield1.value),
       isOpen: false,
-      awards: JSON.parse(this.product.metafield1.value).awards,
+      awards: JSON.parse(this.product.metafield1.value).awards.slice(0, 5),
     };
   },
   computed: {

@@ -61,6 +61,17 @@
             class="selection-svg d-block"
           />
         </div>
+        <div
+          class="position-absolute"
+          style="left: 20px; bottom: 10px; z-index: 10"
+        >
+          <div
+            v-for="(award, i) in product._source.awards.slice(0, 5)"
+            :key="'award_' + i"
+          >
+            <AwardTooltip :award="award" />
+          </div>
+        </div>
         <div :class="horizontal ? 'heart-horizontal' : 'heart-vertical'">
           <i
             class="text-light-red"
@@ -206,14 +217,19 @@ import {
   updateItemInCart,
 } from "../utilities/cart";
 import { queryProductByIdAsTag } from "../utilities/productQueries";
+import AwardTooltip from "../components/UI/AwardTooltip.vue";
 
 export default {
   props: ["product", "horizontal"],
   name: "ProductCardVertical",
+  components: { AwardTooltip },
   data() {
     return { quantity: 0, isOpen: false };
   },
   computed: {
+    filteredAwards() {
+      return this.product._source.awards.filter((el) => el.title);
+    },
     isInWishList() {
       if (!this.$store.state.user.user) return null;
       let wishlist = this.$store.state.user.user.customer.wishlist;
@@ -245,7 +261,7 @@ export default {
         quantity: el.node.quantity,
       }));
 
-      /* 
+      /*
         this.product._source.shortName,
         " >>> ",
         this.product._source.variantId
@@ -266,6 +282,7 @@ export default {
 
   methods: {
     async addToUserCart() {
+      console.log(this.product);
       const productVariantId =
         "gid://shopify/ProductVariant/" + this.product._source.variantId;
       const amount = Number(this.product._source.saleprice);

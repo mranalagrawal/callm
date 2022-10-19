@@ -30,7 +30,7 @@
           </div>
         </div>
       </div>
-      <div class="col-12 col-md-4 pl-4">
+      <div class="col-12 col-md-4 px-0 pl-md-4">
         <div
           class="partners partners-last p-3 text-white d-flex flex-column justify-content-end"
           :style="{

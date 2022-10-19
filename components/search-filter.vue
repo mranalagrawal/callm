@@ -31,7 +31,7 @@
         <div>
           <div
             v-if="
-              activeSelections.length > 0 ||
+              (activeSelections && activeSelections.length > 0) ||
               Object.values(view).filter((el) => el != null).length > 0
             "
           >
@@ -70,7 +70,7 @@
             </button>
           </div>
 
-          <dropdown-range label="Prezzo" />
+          <dropdown-range label="Prezzo" :min="minPrice" :max="maxPrice" />
           <dropdown-selections
             label="selections"
             :items="null"
@@ -407,7 +407,13 @@
         :items="philosophies"
         keyword="philosophies"
       />
-      <dropdown-range label="Prezzo" />
+      <dropdown-range
+        label="Prezzo"
+        :min="minPrice"
+        :max="maxPrice"
+        :choosenMin="minPrice"
+        :choosenMax="maxPrice"
+      />
 
       <selections-box-mobile
         label="selections"
@@ -447,6 +453,8 @@ export default {
   },
   data() {
     return {
+      minPrice: null,
+      maxPrice: null,
       searchedTerm: "",
       loading: null,
       column: true,
@@ -571,7 +579,7 @@ export default {
   async fetch() {
     if (process.client) window.scrollTo(0, 0);
 
-    console.log(this.inputParameters, "this.inputParameters");
+    /* console.log(this.inputParameters, "this.inputParameters"); */
 
     this.loading = true;
     let route = this.$route;
@@ -607,30 +615,33 @@ export default {
     const allFieldsJSON = await allFields.json();
 
     const search = await searchResult.json();
+
     this.search = search;
     this.results = search.hits.hits;
+
+    console.clear();
+    console.log("min", this.minPrice);
+    console.log("max", this.maxPrice);
 
     const total = search.hits.total.value;
     this.total = total;
 
     this.totalPages = Math.ceil(total / 50);
 
-    const regions =
-      allFieldsJSON.aggregations["agg-regions"]["agg-regions"].buckets;
+    const regions = search.aggregations["agg-regions"]["agg-regions"].buckets;
     this.regions = regions;
 
-    const brands =
-      allFieldsJSON.aggregations["agg-brands"]["agg-brands"].buckets;
+    const brands = search.aggregations["agg-brands"]["agg-brands"].buckets;
     this.brands = brands;
 
     const vintages =
-      allFieldsJSON.aggregations["agg-vintages"]["agg-vintages"].buckets;
+      search.aggregations["agg-vintages"]["agg-vintages"].buckets;
     this.vintages = vintages;
 
-    const sizes = allFieldsJSON.aggregations["agg-sizes"]["agg-sizes"].buckets;
+    const sizes = search.aggregations["agg-sizes"]["agg-sizes"].buckets;
     this.sizes = sizes;
 
-    const awards = allFieldsJSON.aggregations["agg-awards"]["inner"]["result"][
+    const awards = search.aggregations["agg-awards"]["inner"]["result"][
       "buckets"
     ].map((el) => {
       return {
@@ -641,7 +652,7 @@ export default {
     });
     this.awards = awards;
 
-    const agings = allFieldsJSON.aggregations["agg-agings"]["inner"]["result"][
+    const agings = search.aggregations["agg-agings"]["inner"]["result"][
       "buckets"
     ].map((el) => {
       return {
@@ -652,9 +663,9 @@ export default {
     });
     this.agings = agings;
 
-    const categories = allFieldsJSON.aggregations["agg-categories"]["inner"][
-      "result"
-    ]["buckets"].map((el) => {
+    const categories = search.aggregations["agg-categories"]["inner"]["result"][
+      "buckets"
+    ].map((el) => {
       return {
         key: [el.key, el.name.buckets[0].key],
         key_as_string: `${el.key}|${el.name.buckets[0].key}`,
@@ -663,9 +674,9 @@ export default {
     });
     this.categories = categories;
 
-    const philosophies = allFieldsJSON.aggregations["agg-philosophies"][
-      "inner"
-    ]["result"]["buckets"].map((el) => {
+    const philosophies = search.aggregations["agg-philosophies"]["inner"][
+      "result"
+    ]["buckets"].map((el) => {
       return {
         key: [el.key, el.name.buckets[0].key],
         key_as_string: `${el.key}|${el.name.buckets[0].key}`,
@@ -674,34 +685,25 @@ export default {
     });
     this.philosophies = philosophies;
 
-    /*     const dosagecontents = allFieldsJSON.aggregations["agg-dosagecontents"][
-      "agg-dosagecontents"
-    ]["buckets"].map((el) => {
-      return {
-        key: [el.key, el.key],
-        key_as_string: `${el.key}|${el.key}`,
-        doc_count: el.doc_count,
-      };
-    }); */
     const dosagecontents =
-      allFieldsJSON.aggregations["agg-dosagecontents"]["agg-dosagecontents"]
-        .buckets;
+      search.aggregations["agg-dosagecontents"]["agg-dosagecontents"].buckets;
     this.dosagecontents = dosagecontents;
 
-    const winelists = allFieldsJSON.aggregations["agg-winelists"]["inner"][
-      "result"
-    ]["buckets"].map((el) => {
+    const winelists = search.aggregations["agg-winelists"]["inner"]["result"][
+      "buckets"
+    ].map((el) => {
       return {
         key: [el.key, el.name.buckets[0].key],
         key_as_string: `${el.key}|${el.name.buckets[0].key}`,
         doc_count: el.doc_count,
       };
     });
+    console.log(winelists, "winelists");
     this.winelists = winelists;
 
-    const pairings = allFieldsJSON.aggregations["agg-pairings"]["inner"][
-      "result"
-    ]["buckets"].map((el) => {
+    const pairings = search.aggregations["agg-pairings"]["inner"]["result"][
+      "buckets"
+    ].map((el) => {
       return {
         key: [el.key, el.name.buckets[0].key],
         key_as_string: `${el.key}|${el.name.buckets[0].key}`,
@@ -846,6 +848,13 @@ export default {
           field: "price_to",
         }
       : null;
+
+    this.maxPrice = Math.round(
+      +search.aggregations.max_price["agg-max-price"].value
+    );
+    this.minPrice = Math.round(
+      +search.aggregations.min_price["agg-min-price"].value
+    );
 
     this.loading = false;
   },

@@ -73,25 +73,32 @@
 
 <script>
 export default {
-  props: ["label"],
+  props: ["label", "min", "max"],
   data() {
     return {
       visible: true,
-      min: 0,
-      max: 2000,
-      choosenMin: 0,
-      choosenMax: 2000,
+      choosenMin: +this.min,
+      choosenMax: +this.max,
     };
   },
   watch: {
     "$route.query": function () {
-      this.choosenMin = this.$route.query.price_from || this.min;
-      this.choosenMax = this.$route.query.price_to || this.max;
+      this.choosenMin = this.$route.query.price_from || +this.min;
+      this.choosenMax = this.$route.query.price_to || +this.max;
+      console.log(this.$route.query.price_from);
+    },
+    min(value) {
+      this.choosenMin = +value;
+    },
+    max(value) {
+      this.choosenMax = +value;
     },
   },
+
   computed: {
     marginLeft() {
-      let value = (100 * this.choosenMin) / (this.max - this.min);
+      console.log(this.min, this.max, "delta");
+      let value = (100 * (this.choosenMin - this.min)) / (this.max - this.min);
       return value + "%";
     },
     width() {
@@ -118,7 +125,7 @@ export default {
       /* if (id !== this.active) query["page"] = 1; */
 
       this.$router.push({
-        path: "search",
+        path: "catalog",
         query: query,
       });
     },

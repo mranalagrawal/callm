@@ -1,6 +1,45 @@
 <template>
   <div>
     <div class="container-fluid px-md-5" v-if="data && brandMetafields">
+      <div class="row mb-3" v-if="breadcrumb">
+        <div class="col-12">
+          <nuxt-link class="text-light-red" :to="localePath(`/catalog`)">{{
+            breadcrumb.parent_category_name
+          }}</nuxt-link>
+          <i class="fal fa-chevron-right small px-1"></i>
+          <nuxt-link
+            class="text-light-red"
+            :to="
+              localePath(
+                `/${breadcrumb.category_handle}-${breadcrumb.category_id}`
+              )
+            "
+            >{{ breadcrumb.category_name }}</nuxt-link
+          >
+          <i class="fal fa-chevron-right small px-1"></i>
+          <nuxt-link
+            class="text-light-red"
+            :to="
+              localePath(
+                `/${breadcrumb.category_handle}-${breadcrumb.region_handle}-${breadcrumb.category_id}${breadcrumb.region_id}`
+              )
+            "
+            >{{ breadcrumb.region_name }}</nuxt-link
+          >
+          <i class="fal fa-chevron-right small px-1"></i>
+          <nuxt-link
+            class="text-light-red"
+            :to="
+              localePath(
+                `/${breadcrumb.winelist_handle}-${breadcrumb.winelist_id}`
+              )
+            "
+            >{{ breadcrumb.winelist_name }}</nuxt-link
+          >
+          <i class="fal fa-chevron-right small px-1"></i>
+          <span class="text-dark">{{ breadcrumb.name }}</span>
+        </div>
+      </div>
       <div class="row px-3">
         <div class="col-12 col-md-4 position-relative">
           <div
@@ -352,6 +391,7 @@ export default {
       metafield: null,
       brand: null,
       brandMetafields: null,
+      breadcrumb: null,
     };
   },
   computed: {
@@ -375,6 +415,13 @@ export default {
     },
   },
   async fetch() {
+    // breadcrumb
+    const urls = await fetch(
+      `https://callmewine-api.dojo.sh/api/product/${this.product.substring(1)}`
+    ).then((r) => r.json());
+    console.log(urls);
+    this.breadcrumb = urls.data;
+
     this.$store.commit("recent/addRecent", this.product);
 
     const domain = this.$config.DOMAIN;
@@ -396,6 +443,7 @@ export default {
 
     this.data = data.data.products.edges[0].node;
 
+    console.log(this.data);
     this.price = this.data.variants.nodes[0].price;
     this.metafield = JSON.parse(this.data.metafield1.value);
 
@@ -537,7 +585,6 @@ export default {
 }
 :deep(ul.nav.nav-tabs.nav-justified) {
   flex-wrap: nowrap;
-  /* overflow-x: scroll; */
 }
 
 @media screen and (max-width: 766px) {

@@ -2,7 +2,7 @@
   <div>
     <div v-if="orders">
       <div v-if="orders.length > 0">
-        <div class="row mt-5 mb-3 text-light-green">
+        <div class="row mt-5 mb-3 text-light-green d-none d-md-flex">
           <div class="col-1">Order</div>
           <div class="col-2">Date</div>
           <div class="col-2">Products</div>

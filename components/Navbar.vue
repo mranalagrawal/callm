@@ -24,7 +24,7 @@
           />
         </nuxt-link>
         <div class="d-inline-block float-right d-md-none">
-          <button class="btn">
+          <button class="btn" @click="toggleMobileLogin">
             <i class="fal fa-user"></i>
           </button>
           <button class="btn">
@@ -356,15 +356,17 @@
         </div>
       </div>
     </b-sidebar>
-    <!-- <b-modal
-      ref="modalFilter"
-      size="xl"
-      scrollable
-      centered
-      hide-footer
+
+    <b-sidebar
       title=""
+      shadow
+      width="100%"
+      z-index="1029"
+      no-header
+      v-model="mobileLogin"
     >
-    </b-modal> -->
+      Login TODO
+    </b-sidebar>
   </div>
 </template>
 
@@ -428,6 +430,7 @@ export default {
       data: null,
       isMobileMenuOpen: false,
       isSidebarOpen: false,
+      mobileLogin: false,
       data: null,
     };
   },
@@ -439,6 +442,9 @@ export default {
         "<span class='font-weight-bold'>$1</span>"
       );
       return newStr;
+    },
+    toggleMobileLogin() {
+      this.mobileLogin = !this.mobileLogin;
     },
     toggleSidebar() {
       this.isSidebarOpen = !this.isSidebarOpen;

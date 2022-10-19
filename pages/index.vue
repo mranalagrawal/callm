@@ -1,7 +1,9 @@
 <template>
   <div>
     <home-banner />
-    <home-boxes />
+    <client-only>
+      <home-boxes />
+    </client-only>
 
     <client-only>
       <featured-products />

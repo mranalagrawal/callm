@@ -120,7 +120,7 @@
         :key="'address_' + i"
         class="col-12 col-md-6 mb-3"
       >
-        <div class="card p-3" style="height: 250px">
+        <div class="card p-3 shipping-card">
           <!-- {{ address }} -->
           <p class="font-weight-bold mb-5">
             {{ address.node.firstName }} {{ address.node.lastName }}
@@ -133,7 +133,7 @@
               >
             </span>
           </p>
-          {{ address.node.id.split("?model_name")[0] }}
+
           <p class="mb-0">
             {{ address.node.address1 }} {{ address.node.address2 }}
           </p>
@@ -892,4 +892,14 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.shipping-card {
+  height: 250px;
+}
+/* 
+@media screen and (max-width: 768px) {
+  .shipping-card {
+    height: 350px;
+  }
+} */
+</style>
