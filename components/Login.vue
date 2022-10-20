@@ -19,7 +19,7 @@
           </div>
         </div>
         <div v-else>
-          <user-menu />
+          <user-menu wid="340px" />
         </div>
       </div>
     </div>

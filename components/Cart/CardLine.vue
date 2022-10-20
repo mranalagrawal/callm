@@ -1,13 +1,20 @@
 <template>
   <div class="px-3 bg-white">
-    <div class="row align-items-center">
-      <div class="col-7 d-flex align-items-center">
+    <div class="row align-items-md-center">
+      <div class="col-10 col-md-7 d-flex align-items-md-center mb-3 mb-md-0">
         <img :src="item.image" alt="" style="width: 50px" />
         <p class="small font-weight-bold">
           {{ item.title }}
         </p>
       </div>
-      <div class="col-2 d-flex justify-content-center align-items-center">
+      <div class="col-2 d-md-none mb-3">
+        <button class="btn">
+          <i class="fal fa-trash-alt text-light-red" @click="remove()"></i>
+        </button>
+      </div>
+      <div
+        class="col-4 offset-2 offset-md-0 col-md-2 d-flex justify-content-center align-items-center"
+      >
         <button class="btn btn-change-quantity" @click="decreaseQuantity">
           <i class="fal fa-minus"></i>
         </button>
@@ -16,7 +23,7 @@
           <i class="fal fa-plus"></i>
         </button>
       </div>
-      <div class="col-2">
+      <div class="col-6 col-md-2">
         <p
           v-if="item.singleAmount !== item.singleAmountFullPrice"
           class="mb-0 small text-right text-muted"
@@ -29,7 +36,7 @@
           {{ (item.quantity * item.singleAmount).toFixed(2) }} €
         </p>
       </div>
-      <div class="col-1 text-right">
+      <div class="d-none d-md-block col-md-1 text-right">
         <button class="btn">
           <i class="fal fa-trash-alt text-light-red" @click="remove()"></i>
         </button>

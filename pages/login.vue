@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid vh-100">
     <div class="row h-100 mt-4">
-      <div class="col-12 col-lg-6">
+      <div class="d-none d-lg-block col-lg-6">
         <h3 class="text-center">Ho già un account</h3>
         <login-form width="400px" />
       </div>

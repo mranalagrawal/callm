@@ -1,63 +1,44 @@
 <template>
-  <div class="px-4 pt-3 py-2" style="width: 340px">
-    <!-- <p class="mb-3 menu-link">I miei ordini</p>
-    <p class="mb-3 menu-link">Compra di nuovo</p>
-    <p class="mb-3 menu-link">I miei preferiti</p>
-    <p class="mb-3 menu-link">Indirizzo di spedizioni</p>
-    <p class="mb-3 menu-link">Dati di fatturazione</p>
-    <p class="mb-3 menu-link">Accessi consensi</p>
-    <p class="mb-3 menu-link">Carte salvate</p> -->
-    <p>
+  <div class="px-4 pt-3 py-2 width">
+    <p class="voice">
       <nuxt-link
         :to="localePath('/profile#orders')"
         class="text-decoration-none text-dark-red"
         >{{ $t("navbar.user.myOrders") }}</nuxt-link
       >
     </p>
-    <p>
+    <p class="voice">
       <nuxt-link
         :to="localePath('/profile#buyagain')"
         class="text-decoration-none text-dark-red"
         >{{ $t("navbar.user.buyAgain") }}</nuxt-link
       >
     </p>
-    <!-- <p>
+    <p class="voice">
       <nuxt-link
         :to="localePath('/profile#wishlist')"
         class="text-decoration-none text-dark-red"
         >{{ $t("navbar.user.favorites") }}</nuxt-link
       >
-    </p> -->
-    <p>
+    </p>
+    <p class="voice">
       <nuxt-link
         :to="localePath('/profile#addresses')"
         class="text-decoration-none text-dark-red"
         >{{ $t("navbar.user.addresses") }}</nuxt-link
       >
     </p>
-    <!-- <p>
-      <nuxt-link
-        :to="localePath('/profile#billing')"
-        class="text-decoration-none text-dark-red"
-        >Dati di fatturazione</nuxt-link
-      >
-    </p> -->
-    <p>
+
+    <p class="voice">
       <nuxt-link
         :to="localePath('/profile#accessData')"
         class="text-decoration-none text-dark-red"
         >{{ $t("navbar.user.accessData") }}</nuxt-link
       >
     </p>
-    <!-- <p>
-      <nuxt-link
-        :to="localePath('/profile#cards')"
-        class="text-decoration-none text-dark-red"
-        >{{ $t("navbar.user.cards") }}</nuxt-link
-      >
-    </p> -->
+
     <div class="mt-5">
-      <button @click="logout" class="btn btn-outline-light-red w-100">
+      <button @click="logout" class="btn btn-outline-light-red br-10 w-100">
         {{ $t("navbar.user.logout") }}
       </button>
     </div>
@@ -92,5 +73,18 @@ export default {
 .menu-link:hover {
   color: var(--dark-red);
   font-weight: bold;
+}
+
+@media screen and (max-width: 768px) {
+  .voice {
+    padding-bottom: 18px;
+    border-bottom: 1px solid #ddd;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .width {
+    width: 340px;
+  }
 }
 </style>

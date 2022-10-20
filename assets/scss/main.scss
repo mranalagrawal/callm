@@ -49,6 +49,13 @@ body {
   color: white;
 }
 
+@media screen and (max-width: 768px) {
+  .add-product-notification {
+    width: 300px !important;
+    right: 10px !important;
+  }
+}
+
 .free-shipping-notification {
   width: 400px !important;
   background: rgba(0, 0, 0, 0.7) !important;
@@ -214,4 +221,11 @@ body {
 
 .bg-gray {
   background: #f4f4f4;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
 }

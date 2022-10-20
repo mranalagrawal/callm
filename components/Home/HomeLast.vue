@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid container-large px-md-0 my-5">
+  <div class="container-fluid container-large px-md-3 my-5">
     <div class="row">
       <div class="col-12 text-center" v-if="data">
         <h3 class="font-weight-bold text-dark-green">{{ data.title }}</h3>
@@ -54,23 +54,16 @@ export default {
           settings: {
             slidesToShow: 3,
             slidesToScroll: 3,
-            infinite: true,
-            dots: true,
+            arrows: false,
           },
         },
         {
           breakpoint: 600,
           settings: {
-            slidesToShow: 2,
-            slidesToScroll: 2,
-            initialSlide: 2,
-          },
-        },
-        {
-          breakpoint: 480,
-          settings: {
             slidesToShow: 1,
             slidesToScroll: 1,
+            dots: true,
+            arrows: false,
           },
         },
       ],
@@ -159,7 +152,6 @@ export default {
   justify-content: center;
   align-items: center;
   z-index: 99;
-
   right: -14px;
 }
 :deep(.slick-prev::before) {

@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid container-large px-md-0 my-5">
+  <div class="container-fluid container-large px-md-3 my-5">
     <div class="row">
       <div class="col-12 text-center" v-if="data">
         <h2 class="font-weight-bold text-dark-green">{{ data.title }}</h2>
@@ -15,7 +15,6 @@
     </div>
     <div class="row mt-5">
       <div class="col-12 text-center">
-        <!-- <button class="btn pox-5 btn-outline-light-red">Vedi tutti</button> -->
         <nuxt-link
           :to="localePath('/catalog?favourite=true&page=1')"
           class="btn px-5 py-2 text-uppercase view-more font-weight-bold"
@@ -54,6 +53,7 @@ export default {
           settings: {
             slidesToShow: 3,
             slidesToScroll: 3,
+            arrows: false,
           },
         },
         {

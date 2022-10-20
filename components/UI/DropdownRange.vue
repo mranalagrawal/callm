@@ -82,11 +82,11 @@ export default {
     };
   },
   watch: {
-    "$route.query": function () {
+    /* "$route.query": function () {
       this.choosenMin = this.$route.query.price_from || +this.min;
       this.choosenMax = this.$route.query.price_to || +this.max;
-      console.log(this.$route.query.price_from);
-    },
+      console.log("qui");
+    }, */
     min(value) {
       this.choosenMin = +value;
     },

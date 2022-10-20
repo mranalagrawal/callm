@@ -11,13 +11,14 @@
           class="card align-items-center justify-content-around py-3 shadow"
           style="height: 120px"
         >
-          <div>
+          <div class="text-center">
             <img
               :src="require(`@/assets/images/selections/${item.key[1]}.svg`)"
               class="selection-svg mx-auto d-block"
             />
             <div>
               <span class="small">{{ $t(`selections.${item.key[1]}`) }}</span>
+              <br />
               <span class="small text-muted">({{ item.doc_count }})</span>
             </div>
           </div>
@@ -106,7 +107,7 @@ export default {
       if (id !== this.active) query["page"] = 1;
 
       this.$router.push({
-        path: "search",
+        path: "catalog",
         query: query,
       });
     },

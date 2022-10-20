@@ -104,27 +104,31 @@
       </div>
       <div class="col-12 col-md-9 px-md-0" v-if="results.length > 0">
         <div class="row align-items-center mb-5">
-          <div class="col-6 col-md-4">
+          <div
+            class="col-12 col-md-4 d-flex justify-content-between justify-content-md-start"
+          >
             <span class="mr-3"
               ><strong>{{ total }}</strong> {{ $t("search.results") }}</span
             >
-            <div
-              class="btn text-dark-red br-10 btn-sort mr-1"
-              :class="column ? 'bg-gray' : 'shadow'"
-              @click="column = true"
-            >
-              <i class="fas fa-th-large"></i>
-            </div>
-            <div
-              class="btn text-dark-red br-10 btn-sort"
-              @click="column = false"
-              :class="!column ? 'bg-light' : 'shadow'"
-            >
-              <i class="fal fa-bars"></i>
+            <div>
+              <div
+                class="btn text-dark-red br-10 btn-sort mr-1"
+                :class="column ? 'bg-gray' : 'shadow'"
+                @click="column = true"
+              >
+                <i class="fas fa-th-large"></i>
+              </div>
+              <div
+                class="btn text-dark-red br-10 btn-sort"
+                @click="column = false"
+                :class="!column ? 'bg-light' : 'shadow'"
+              >
+                <i class="fal fa-bars"></i>
+              </div>
             </div>
           </div>
           <div class="d-none d-md-block col-4"></div>
-          <div class="col-6 col-md-4 text-right">
+          <div class="col-12 col-md-4 text-right">
             <div>
               <!-- {{ this.$router }} -->
               <b-dropdown id="sorting" variant="null" right class="" no-caret>
@@ -356,71 +360,86 @@
       size="xl"
       scrollable
       centered
+      hide-header
       hide-footer
       title=""
     >
-      <div
-        v-if="
-          activeSelections &&
-          (activeSelections.length > 0 ||
-            Object.values(view).filter((el) => el != null).length > 0)
-        "
-      >
-        <span
-          v-for="item in activeSelections"
-          :key="item"
-          class="badge badge-pill badge-light-red mx-1"
-          @click="removeSelectionFromQuery(item)"
+      <div class="mt-4">
+        <div class="text-right" @click="hideModal">
+          <i class="fal fa-times fa-2x text-light-red"></i>
+        </div>
+        <div>
+          <button
+            class="btn btn-small"
+            style="font-size: 12px"
+            @click="resetFilter"
+          >
+            <i class="fal fa-times"></i> {{ $t("search.removeAll") }}
+          </button>
+        </div>
+        <div
+          v-if="
+            activeSelections &&
+            (activeSelections.length > 0 ||
+              Object.values(view).filter((el) => el != null).length > 0)
+          "
         >
-          {{ $t(`selections.${item}`) }}
-          <i class="fal fa-times ml-1"></i>
-        </span>
-        <span
-          class="badge badge-pill badge-light-red mx-1"
-          v-for="(item, ind) in Object.entries(view).filter(
-            (el) => el[1] !== null
-          )"
-          :key="ind"
-          @click="removeFromQuery(item[1])"
-        >
-          {{ item[1].name }}
-          <i class="fal fa-times ml-1"></i>
-        </span>
+          <span
+            v-for="item in activeSelections"
+            :key="item"
+            class="badge badge-pill badge-light-red mx-1"
+            @click="removeSelectionFromQuery(item)"
+          >
+            {{ $t(`selections.${item}`) }}
+            <i class="fal fa-times ml-1"></i>
+          </span>
+          <span
+            class="badge badge-pill badge-light-red mx-1"
+            v-for="(item, ind) in Object.entries(view).filter(
+              (el) => el[1] !== null
+            )"
+            :key="ind"
+            @click="removeFromQuery(item[1])"
+          >
+            {{ item[1].name }}
+            <i class="fal fa-times ml-1"></i>
+          </span>
+        </div>
+
+        <dropdown label="categories" :items="categories" keyword="categories" />
+        <dropdown label="winelists" :items="winelists" keyword="winelists" />
+        <dropdown label="pairings" :items="pairings" keyword="pairings" />
+        <dropdown
+          label="dosagecontents"
+          :items="dosagecontents"
+          keyword="dosagecontent"
+        />
+        <dropdown label="Provenienza" :items="regions" keyword="regions" />
+        <dropdown label="Brands" :items="brands" keyword="brands" />
+        <dropdown label="sizes" :items="sizes" keyword="sizes" />
+        <dropdown label="vintages" :items="vintages" keyword="vintages" />
+        <dropdown label="awards" :items="awards" keyword="awards" />
+        <dropdown label="agings" :items="agings" keyword="agings" />
+        <dropdown
+          label="philosophies"
+          :items="philosophies"
+          keyword="philosophies"
+        />
+        <dropdown-range
+          label="Prezzo"
+          :min="minPrice"
+          :max="maxPrice"
+          :choosenMin="minPrice"
+          :choosenMax="maxPrice"
+        />
+
+        <selections-box-mobile
+          label="selections"
+          :items="null"
+          keyword="selections"
+          :search="search"
+        />
       </div>
-
-      <dropdown label="categories" :items="categories" keyword="categories" />
-      <dropdown label="winelists" :items="winelists" keyword="winelists" />
-      <dropdown label="pairings" :items="pairings" keyword="pairings" />
-      <dropdown
-        label="dosagecontents"
-        :items="dosagecontents"
-        keyword="dosagecontent"
-      />
-      <dropdown label="Provenienza" :items="regions" keyword="regions" />
-      <dropdown label="Brands" :items="brands" keyword="brands" />
-      <dropdown label="sizes" :items="sizes" keyword="sizes" />
-      <dropdown label="vintages" :items="vintages" keyword="vintages" />
-      <dropdown label="awards" :items="awards" keyword="awards" />
-      <dropdown label="agings" :items="agings" keyword="agings" />
-      <dropdown
-        label="philosophies"
-        :items="philosophies"
-        keyword="philosophies"
-      />
-      <dropdown-range
-        label="Prezzo"
-        :min="minPrice"
-        :max="maxPrice"
-        :choosenMin="minPrice"
-        :choosenMax="maxPrice"
-      />
-
-      <selections-box-mobile
-        label="selections"
-        :items="null"
-        keyword="selections"
-        :search="search"
-      />
 
       <template #modal-footer class="border-0">
         <div class="w-100 text-center">
@@ -619,9 +638,9 @@ export default {
     this.search = search;
     this.results = search.hits.hits;
 
-    console.clear();
+    /*     console.clear();
     console.log("min", this.minPrice);
-    console.log("max", this.maxPrice);
+    console.log("max", this.maxPrice); */
 
     const total = search.hits.total.value;
     this.total = total;
@@ -725,6 +744,8 @@ export default {
     const vintageId = this.inputParameters.vintages;
     const priceFrom = this.inputParameters.price_from;
     const priceTo = this.inputParameters.price_to;
+
+    console.log(this.inputParameters);
 
     const allSelections = [
       "favourite",
@@ -849,12 +870,12 @@ export default {
         }
       : null;
 
-    this.maxPrice = Math.round(
-      +search.aggregations.max_price["agg-max-price"].value
-    );
-    this.minPrice = Math.round(
-      +search.aggregations.min_price["agg-min-price"].value
-    );
+    this.maxPrice =
+      priceTo ||
+      Math.round(+search.aggregations.max_price["agg-max-price"].value);
+    this.minPrice =
+      priceFrom ||
+      Math.round(+search.aggregations.min_price["agg-min-price"].value);
 
     this.loading = false;
   },

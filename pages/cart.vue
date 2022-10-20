@@ -42,8 +42,8 @@
               <CardLine :item="item" />
             </div>
           </div>
-          <div class="col-12 col-md-5">
-            <div class="card shadow border-0 w-75 mx-auto">
+          <div class="col-12 col-md-5 px-0 px-md-5">
+            <div class="card shadow border-0 mx-auto">
               <div class="card-body">
                 <h5 class="card-title font-weight-bold">
                   Totale carrello
@@ -56,7 +56,8 @@
                 </p>
                 <button
                   @click="checkout()"
-                  class="btn btn-light-red w-100 text-uppercase text-decoration-none text-center"
+                  class="btn w-100 text-white br-10 text-uppercase text-decoration-none text-center"
+                  style="background: #d94965"
                 >
                   Vai alla cassa
                 </button>

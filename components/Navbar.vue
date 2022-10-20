@@ -1,39 +1,106 @@
 <template>
   <div class="container-fluid bg-white fixed-top pt-5">
-    <div class="row align-items-center py-md-3 px-md-5">
+    <div class="row align-items-center py-md-3 px-lg-5">
       <div
-        class="col-12 col-md-3 px-md-2 bg-white"
+        class="col-12 col-lg-3 px-lg-2 bg-white"
         style="position: relative; z-index: 1040"
       >
-        <button class="btn d-md-none" @click="toggleSidebar">
-          <i class="fal" :class="isMobileMenuOpen ? 'fa-times' : 'fa-bars'"></i>
+        <button class="btn d-lg-none" @click="toggleSidebar">
+          <i
+            class="fal fa-2x"
+            :class="isMobileMenuOpen ? 'fa-times' : 'fa-bars'"
+          ></i>
         </button>
 
         <nuxt-link :to="localePath('/')">
           <img
             src="../assets/images/logo.svg"
-            class="img-fluid d-md-none"
+            class="img-fluid d-lg-none"
             width="80px"
             alt=""
           />
           <img
             src="../assets/images/logo.svg"
-            class="img-fluid d-none d-md-block"
+            class="img-fluid d-none d-lg-block"
             width="270px"
             alt=""
           />
         </nuxt-link>
-        <div class="d-inline-block float-right d-md-none">
+        <div class="d-inline-block float-right d-lg-none">
           <button class="btn" @click="toggleMobileLogin">
-            <i class="fal fa-user"></i>
+            <svg
+              width="27px"
+              height="26px"
+              viewBox="0 0 27 26"
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+            >
+              <g
+                id="COMPONENTS"
+                stroke="none"
+                stroke-width="1"
+                fill="none"
+                fill-rule="evenodd"
+              >
+                <g
+                  id="COMPONENTS/DS/Header/Accessi/Combo-Logged-sticky"
+                  transform="translate(-161.000000, -19.000000)"
+                  fill="#000000"
+                >
+                  <g
+                    id="ICONS/System/User-2"
+                    transform="translate(158.500000, 16.000000)"
+                  >
+                    <path
+                      d="M16.1584763,3 C20.2024884,3 23.4794871,6.10401132 23.4794871,9.93454669 C23.4794871,12.5233105 21.9833701,14.7797105 19.7652026,15.9713769 C24.3487689,17.3116885 27.9528504,21.036168 28.9358618,25.8237109 C29.0213794,26.1994992 29.0213794,26.5886489 28.9358618,26.9644372 C28.7128108,27.7218594 28.176783,28.3540188 27.4573773,28.7064247 C27.087095,28.8918136 26.6780212,28.9920238 26.2618944,28.9987045 L5.92545934,28.9987045 C5.50580603,29.0120658 5.08967921,28.9218767 4.71498875,28.7373229 C4.32707392,28.5669655 3.98764844,28.3080891 3.72404268,27.9815708 C3.45073905,27.6951366 3.24708376,27.3535868 3.12630119,26.9794687 C3.00111049,26.6078558 2.96760876,26.2111904 3.03196736,25.8237109 C4.03084805,20.9551648 7.7398428,17.1872608 12.4327306,15.9054052 C10.2806849,14.6987072 8.83658382,12.4765457 8.83658382,9.93454669 C8.83658382,6.10484641 12.1153458,3 16.1584763,3 L16.1584763,3 Z M16.0507388,17.0003269 L16.0621113,17.0003269 C10.4720917,16.9594626 5.63528136,20.7541214 4.52952475,26.0517692 C4.49015842,26.2209474 4.49015842,26.3950293 4.52952475,26.5650248 C4.57501474,26.7325685 4.66074587,26.8878528 4.77884487,27.016984 C4.90831638,27.1698165 5.07452979,27.2891402 5.26261339,27.3643305 C5.44632296,27.4534147 5.65015309,27.5 5.85573284,27.5 L26.1442672,27.5 C26.3498469,27.5 26.5528022,27.4534147 26.7373866,27.3643305 C27.0925584,27.217219 27.3619991,26.9229961 27.4704752,26.5650248 C27.5098416,26.3958466 27.5098416,26.2209474 27.4704752,26.0517692 C26.412833,20.8685415 21.7641063,17.1131124 16.3245536,17.003596 L16.1268471,17.0011442 L16.0822319,17.0011442 L16.0507388,17.0003269 L16.0507388,17.0003269 Z M16.2504423,4.5 C13.0744288,4.5 10.5,6.96268657 10.5,9.99915372 C10.5,13.0373134 13.0744288,15.5 16.2504423,15.5 C19.4264559,15.5 22,13.0373134 22,9.99915372 C22,6.960994 19.4255712,4.5 16.2495577,4.5 L16.2504423,4.5 Z"
+                      id="Shape"
+                    ></path>
+                  </g>
+                </g>
+              </g>
+            </svg>
           </button>
-          <button class="btn">
-            <i class="fal fa-shopping-cart"></i>
-          </button>
+          <nuxt-link :to="localePath('/cart')" class="btn">
+            <span class="totalItems">{{ cartTotalQuantity }} </span>
+            <svg
+              width="27px"
+              height="26px"
+              viewBox="0 0 27 26"
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+            >
+              <g
+                id="COMPONENTS"
+                stroke="none"
+                stroke-width="1"
+                fill="#000000"
+                fill-rule="evenodd"
+              >
+                <g
+                  id="COMPONENTS/DS/Header/Accessi/Combo-Logged-sticky"
+                  transform="translate(-233.000000, -19.000000)"
+                  fill="#000000"
+                >
+                  <g
+                    id="ICONS/System/Shopping/Shopping-3"
+                    transform="translate(230.500000, 16.000000)"
+                  >
+                    <path
+                      fill="#000000"
+                      d="M7.875,25.75 C7.875,27.5448072 9.33019281,29 11.125,29 C12.9198072,29 14.375,27.5448072 14.375,25.75 C14.375,23.9551928 12.9198072,22.5 11.125,22.5 C9.33019281,22.5 7.875,23.9551928 7.875,25.75 Z M11.125,24.125 C12.0228072,24.125 12.75,24.8521928 12.75,25.75 C12.75,26.6478072 12.0228072,27.375 11.125,27.375 C10.2271928,27.375 9.5,26.647 9.5,25.75 C9.5,24.853 10.2271928,24.125 11.125,24.125 Z M17.625,25.75 C17.625,27.5448072 19.0801928,29 20.875,29 C22.6698072,29 24.125,27.5448072 24.125,25.75 C24.125,23.9551928 22.6698072,22.5 20.875,22.5 C19.0801928,22.5 17.625,23.9551928 17.625,25.75 Z M20.875,24.125 C21.7728072,24.125 22.5,24.8521928 22.5,25.75 C22.5,26.6478072 21.7728072,27.375 20.875,27.375 C19.9771928,27.375 19.25,26.647 19.25,25.75 C19.25,24.853 19.9771928,24.125 20.875,24.125 Z M9.5,20.875 C8.60219281,20.875 7.875,20.1478072 7.875,19.25 L26.5625,17.625 C26.5625,17.625 29,7.77342157 29,7.0625 C29,6.614 28.636,6.25 28.1875,6.25 L7.875,6.25 L7.875,4.625 L8.6875,4.625 C9.136,4.625 9.5,4.261 9.5,3.8125 C9.5,3.364 9.136,3 8.6875,3 L3.8125,3 C3.364,3 3,3.364 3,3.8125 C3,4.261 3.364,4.625 3.8125,4.625 L6.25,4.625 L6.25,19.25 C6.25,21.0448072 7.70519281,22.5 9.5,22.5 L11.125,22.5 L20.875,22.5 L28.1875,22.5 C28.2126928,22.5 28.1875,21.694 28.1875,20.875 L9.5,20.875 Z M7.875,7.875 L27.375,7.875 L25.2974641,16.1852288 L7.875,17.625 L7.875,7.875 Z"
+                      id="Shape"
+                    ></path>
+                  </g>
+                </g>
+              </g>
+            </svg>
+          </nuxt-link>
         </div>
       </div>
 
-      <div class="col-12 col-md-6 py-2" style="position: relative">
+      <div class="col-12 col-lg-6 py-2" style="position: relative">
         <b-button
           size="sm"
           class="border-0 text-white"
@@ -113,10 +180,10 @@
         ></b-form-input>
       </div>
 
-      <div class="d-none d-md-block col-md-3">
+      <div class="d-none d-lg-block col-lg-3">
         <div class="d-flex justify-content-end">
           <div class="position-relative d-flex">
-            <div v-if="user" class="btn px-4 pb-0 pt-1 box">
+            <div v-if="user" class="btn px-md-2 px-xl-4 pb-0 pt-1 box">
               <nuxt-link
                 :to="localePath('/profile#wishlist')"
                 class="text-decoration-none text-dark"
@@ -161,7 +228,7 @@
             </div>
             <div>
               <div
-                class="btn px-4 pb-0 pt-1 box user-box"
+                class="btn px-md-2 px-xl-4 pb-0 pt-1 box user-box"
                 @mouseenter="switchToUser()"
               >
                 <div>
@@ -227,7 +294,7 @@
           <div class="position-relative d-flex">
             <div class="">
               <div
-                class="btn px-4 pb-0 pt-1 box cart-box"
+                class="btn px-md-2 px-xl-4 pb-0 pt-1 box cart-box"
                 @mouseenter="switchToCart()"
               >
                 <div
@@ -338,7 +405,7 @@
         </div>
       </div>
     </div>
-    <div class="d-none d-md-block">
+    <div class="d-none d-lg-block">
       <MegaMenu />
     </div>
 
@@ -361,11 +428,37 @@
       title=""
       shadow
       width="100%"
-      z-index="1029"
+      z-index="2089"
       no-header
       v-model="mobileLogin"
     >
-      Login TODO
+      <div class="">
+        <div
+          class="p-3 d-flex justify-content-between align-items-center shadow"
+          @click="toggleMobileLogin"
+        >
+          <i class="fal fa-chevron-left fa-2x text-light-red"></i>
+          <p class="mb-0">{{ user ? user.customer.firstName : "Account" }}</p>
+          <i class="fal fa-times fa-2x text-light-red"></i>
+        </div>
+        <div v-if="!user">
+          <h3 class="px-3 text-center text-dark-green mt-5 font-weight-bold">
+            Accedi
+          </h3>
+          <div class="px-3">
+            <login-form width="340px" />
+          </div>
+          <div class="bg-light p-3 text-center">
+            Non hai ancora un profilo?
+            <nuxt-link to="/login" class="text-uppercase text-light-red"
+              >Registrati</nuxt-link
+            >
+          </div>
+        </div>
+        <div v-else class="mt-5">
+          <UserMenu />
+        </div>
+      </div>
     </b-sidebar>
   </div>
 </template>
@@ -551,6 +644,15 @@ export default {
   padding-bottom: 0px;
   background: white;
 }
+
+:deep(.b-sidebar-body) {
+  background: white;
+}
+
+:deep(.b-sidebar.shadow.bg-light) {
+  padding-top: 40px !important;
+}
+
 :deep(.dropdown-toggle::after) {
   display: none;
 }
@@ -580,6 +682,23 @@ export default {
   justify-content: center;
   align-items: center;
   font-size: 12px;
+}
+
+@media screen and (max-width: 768px) {
+  .totalItems {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #d94965;
+    color: white;
+    position: absolute;
+    top: 2px;
+    right: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+  }
 }
 
 .box {

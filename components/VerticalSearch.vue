@@ -298,6 +298,15 @@ export default {
         image: image,
         title: title,
       });
+
+      this.flashMessage.show({
+        status: "",
+        message: this.product._source.shortName + " aggiunto!",
+        icon: this.product._source.shopifyImageUrl,
+        iconClass: "bg-transparent ",
+        time: 1000,
+        blockClass: "add-product-notification",
+      });
     },
     async removeFromUserCart() {
       const productVariantId =
@@ -537,5 +546,11 @@ export default {
   font-size: 2.5rem;
   font-weight: bold;
   line-height: 1.5rem;
+}
+
+@media screen and (max-width: 768px) {
+  .integer {
+    font-size: 2rem;
+  }
 }
 </style>
