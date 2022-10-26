@@ -1,47 +1,53 @@
 <template>
   <div class="position-relative text-dark bg-light">
-    <div v-if="data && data.length > 0" style="width: 640px">
-      <div v-if="cartTotalAmount < 49">
+    <div v-if="shipping">
+      <div v-if="data && data.length > 0" style="width: 640px">
+        <div v-if="cartTotalAmount < shipping.threshold">
+          <p
+            class="text-light-green small text-center text-uppercase py-3 mb-0"
+          >
+            <i class="fal fa-truck mr-2"></i>
+            {{ shipping.threshold_not_reached }}
+          </p>
+        </div>
+        <div v-else>
+          <p
+            class="text-light-green small text-center text-uppercase py-3 mb-0"
+          >
+            <i class="fal fa-check-circle mr-2"></i>
+            {{ shipping.threshold_reached }}
+          </p>
+        </div>
+        <div>
+          <div v-for="item in data" :key="item.id">
+            <CardLine :item="item" />
+          </div>
+        </div>
+        <div class="row py-4 px-md-5">
+          <div class="col-6">
+            <nuxt-link class="btn btn-detail w-100" to="/cart">{{
+              $t("navbar.cart.detail")
+            }}</nuxt-link>
+          </div>
+          <div class="col-6">
+            <button class="btn btn-checkout w-100" @click="checkout()">
+              {{ $t("navbar.cart.checkout") }}
+            </button>
+          </div>
+        </div>
+      </div>
+      <div v-else class="text-center text-dark p-2" style="width: 440px">
         <p class="text-light-green small text-center text-uppercase py-3 mb-0">
           <i class="fal fa-truck mr-2"></i>
-          Spedizione gratuita oltre i 49 €
+          {{ shipping.threshold_not_reached }}
         </p>
+        <hr />
+        <strong>{{ $t("navbar.cart.empty") }}</strong>
+        <p class="my-4">{{ $t("navbar.cart.startFromMessage") }}</p>
+        <nuxt-link to="/" class="btn btn-checkout text-uppercase w-100">{{
+          $t("navbar.cart.cta")
+        }}</nuxt-link>
       </div>
-      <div v-else>
-        <p class="text-light-green small text-center text-uppercase py-3 mb-0">
-          <i class="fal fa-check-circle mr-2"></i>
-          hai diritto alla spedizione gratuita
-        </p>
-      </div>
-      <div>
-        <div v-for="item in data" :key="item.id">
-          <CardLine :item="item" />
-        </div>
-      </div>
-      <div class="row py-4 px-md-5">
-        <div class="col-6">
-          <nuxt-link class="btn btn-detail w-100" to="/cart">{{
-            $t("navbar.cart.detail")
-          }}</nuxt-link>
-        </div>
-        <div class="col-6">
-          <button class="btn btn-checkout w-100" @click="checkout()">
-            {{ $t("navbar.cart.checkout") }}
-          </button>
-        </div>
-      </div>
-    </div>
-    <div v-else class="text-center text-dark p-2" style="width: 440px">
-      <p class="text-light-green small text-center text-uppercase py-3 mb-0">
-        <i class="fal fa-truck mr-2"></i>
-        Spedizione gratuita oltre i 49 €
-      </p>
-      <hr />
-      <strong>{{ $t("navbar.cart.empty") }}</strong>
-      <p class="my-4">{{ $t("navbar.cart.startFromMessage") }}</p>
-      <nuxt-link to="/" class="btn btn-checkout text-uppercase w-100">{{
-        $t("navbar.cart.cta")
-      }}</nuxt-link>
     </div>
   </div>
 </template>
@@ -54,6 +60,7 @@ export default {
   data() {
     return {
       data: null,
+      shipping: null,
     };
   },
   components: { CardLine },
@@ -105,6 +112,20 @@ export default {
   async fetch() {
     const userCart = this.$store.state.userCart.userCart;
     this.data = userCart;
+
+    let lang = "";
+    if (this.$i18n.locale == "en") {
+      lang = "en-gb";
+    } else {
+      lang = "it-it";
+    }
+    const response = await this.$prismic.api.getSingle("shipping", {
+      lang: lang,
+    });
+    const shipping = response.data;
+    this.shipping = shipping;
+
+    console.log(shipping, "datas");
   },
   methods: {
     async checkout() {

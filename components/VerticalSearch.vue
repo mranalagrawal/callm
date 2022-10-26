@@ -63,7 +63,7 @@
         </div>
         <div
           class="position-absolute"
-          style="left: 20px; bottom: 10px; z-index: 10"
+          :class="horizontal ? 'horizontal-awards' : 'vertical-awards'"
         >
           <div
             v-for="(award, i) in product._source.awards.slice(0, 5)"
@@ -81,7 +81,7 @@
         </div>
         <nuxt-link
           :to="`/${product._source.handle}-P${product._source.id}`"
-          class="row mx-0 mt-2 text-decoration-none text-dark"
+          class="row mx-0 mt-2 text-decoration-none text-dark d-none d-lg-block"
         >
           <img
             v-if="!product._source.shopifyImageUrl"
@@ -95,6 +95,27 @@
             v-else
             :src="product._source.shopifyImageUrl"
             :style="{ width: horizontal ? '180px' : '140px' }"
+            class="d-block mx-auto"
+            loading="lazy"
+            alt=""
+          />
+        </nuxt-link>
+        <nuxt-link
+          :to="`/${product._source.handle}-P${product._source.id}`"
+          class="row mx-0 mt-2 text-decoration-none text-dark d-lg-none"
+        >
+          <img
+            v-if="!product._source.shopifyImageUrl"
+            :src="require(`~/assets/images/img-test.jpeg`)"
+            :style="{ width: horizontal ? '180px' : '100px' }"
+            class="d-block mx-auto"
+            loading="lazy"
+            alt=""
+          />
+          <img
+            v-else
+            :src="product._source.shopifyImageUrl"
+            :style="{ width: horizontal ? '180px' : '100px' }"
             class="d-block mx-auto"
             loading="lazy"
             alt=""
@@ -179,29 +200,80 @@
           </div>
           <div v-else class="row">
             <div class="col-6">
-              <p>Produttore: {{ product._source.brandname }}</p>
-              <p>
-                Regione: {{ product._source.regionname }}
+              <p class="mb-0">
+                <strong>Produttore</strong>: {{ product._source.brandname }}
+              </p>
+              <p class="mb-0">
+                <strong>Regione</strong>: {{ product._source.regionname }}
                 <span v-if="product._source.areas.name"
                   >({{ product._source.areas.name }})</span
                 >
               </p>
-              <p>Size: {{ product._source.sizes.name }}</p>
+              <p class="mb-0">
+                <strong>Formato</strong>: {{ product._source.sizes.name }}
+              </p>
+              <p class="mb-0">
+                <strong>Vitigni</strong>: {{ product._source.grapes }}
+              </p>
             </div>
             <div class="col-6">
-              <p class="text-light-green text-center text-uppercase mt-5">
+              <p
+                class="text-light-green text-center text-uppercase mt-5"
+                v-if="product._source.quantity > 0"
+              >
                 Disponibilità immediata
               </p>
-              <p class="h2 mb-5 text-center">
-                € {{ product._source.saleprice.toFixed(2) }}
-              </p>
-              <button
-                class="btn bg-light-red text-white text-uppercase mx-auto d-block mt-5"
-                @click="addToCart()"
+              <p
+                class="text-light-green text-center text-uppercase mt-5"
+                v-else
               >
-                <i class="fal fa-shopping-cart text-white"></i> aggiungi al
-                carrello
-              </button>
+                Non disponibile
+              </p>
+              <p class="mb-0 text-center">
+                <span class="integer">{{
+                  product._source.saleprice.toFixed(2).split(".")[0]
+                }}</span
+                >,<span>{{
+                  product._source.saleprice.toFixed(2).split(".")[1]
+                }}</span>
+                €
+              </p>
+
+              <div
+                class="position-relative"
+                v-if="product._source.quantity > 0"
+              >
+                <button
+                  class="btn bg-red text-white text-uppercase w-100 br-10 mt-3"
+                  @click.stop="isOpen = true"
+                  v-show="!isOpen"
+                >
+                  <i class="fal fa-shopping-cart"></i>
+                  aggiungi al carrello
+                </button>
+                <span v-show="userCartQuantity > 0" class="cart-quantity">
+                  {{ userCartQuantity }}
+                </span>
+                <div v-show="isOpen" class="" @mouseleave="isOpen = false">
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <button
+                      class="btn bg-red text-white px-5"
+                      @click.stop="removeFromUserCart()"
+                    >
+                      -
+                    </button>
+                    {{ userCartQuantity }}
+                    <button
+                      class="btn bg-red text-white px-5"
+                      @click.stop="addToUserCart()"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -462,6 +534,17 @@ export default {
 };
 </script>
 <style scoped>
+.horizontal-awards {
+  left: 30px;
+  bottom: 30px;
+  z-index: 10;
+}
+.vertical-awards {
+  left: 20px;
+  bottom: 10px;
+  z-index: 10;
+}
+
 .product-card-vertical {
   /* height: 420px; */
   height: auto;

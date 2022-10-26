@@ -70,7 +70,6 @@
             </button>
           </div>
 
-          <dropdown-range label="Prezzo" :min="minPrice" :max="maxPrice" />
           <dropdown-selections
             label="selections"
             :items="null"
@@ -100,6 +99,8 @@
             :items="philosophies"
             keyword="philosophies"
           />
+
+          <dropdown-range label="Prezzo" :min="minPrice" :max="maxPrice" />
         </div>
       </div>
       <div class="col-12 col-md-9 px-md-0" v-if="results.length > 0">
@@ -361,49 +362,52 @@
       scrollable
       centered
       hide-header
-      hide-footer
       title=""
     >
       <div class="mt-4">
         <div class="text-right" @click="hideModal">
           <i class="fal fa-times fa-2x text-light-red"></i>
         </div>
-        <div>
+
+        <div
+          v-if="
+            (activeSelections && activeSelections.length > 0) ||
+            Object.values(view).filter((el) => el != null).length > 0
+          "
+        >
+          <p class="lead">{{ $t("search.activeFilters") }}</p>
+          <div v-if="activeSelections">
+            <!-- selections -->
+            <span
+              v-for="item in activeSelections"
+              :key="item"
+              class="badge badge-pill badge-light-red mx-1"
+              @click="removeSelectionFromQuery(item)"
+            >
+              {{ $t(`selections.${item}`) }}
+              <i class="fal fa-times ml-1"></i>
+            </span>
+            <!-- other filters -->
+            <span
+              class="badge badge-pill badge-light-red mx-1"
+              v-for="(item, ind) in Object.entries(view).filter(
+                (el) => el[1] !== null
+              )"
+              :key="ind"
+              @click="removeFromQuery(item[1])"
+            >
+              {{ item[1].name }}
+              <i class="fal fa-times ml-1"></i>
+            </span>
+          </div>
+
           <button
-            class="btn btn-small"
+            class="btn btn-small ml-auto d-block"
             style="font-size: 12px"
             @click="resetFilter"
           >
             <i class="fal fa-times"></i> {{ $t("search.removeAll") }}
           </button>
-        </div>
-        <div
-          v-if="
-            activeSelections &&
-            (activeSelections.length > 0 ||
-              Object.values(view).filter((el) => el != null).length > 0)
-          "
-        >
-          <span
-            v-for="item in activeSelections"
-            :key="item"
-            class="badge badge-pill badge-light-red mx-1"
-            @click="removeSelectionFromQuery(item)"
-          >
-            {{ $t(`selections.${item}`) }}
-            <i class="fal fa-times ml-1"></i>
-          </span>
-          <span
-            class="badge badge-pill badge-light-red mx-1"
-            v-for="(item, ind) in Object.entries(view).filter(
-              (el) => el[1] !== null
-            )"
-            :key="ind"
-            @click="removeFromQuery(item[1])"
-          >
-            {{ item[1].name }}
-            <i class="fal fa-times ml-1"></i>
-          </span>
         </div>
 
         <dropdown label="categories" :items="categories" keyword="categories" />
@@ -412,7 +416,7 @@
         <dropdown
           label="dosagecontents"
           :items="dosagecontents"
-          keyword="dosagecontent"
+          keyword="dosagecontents"
         />
         <dropdown label="Provenienza" :items="regions" keyword="regions" />
         <dropdown label="Brands" :items="brands" keyword="brands" />
@@ -425,13 +429,14 @@
           :items="philosophies"
           keyword="philosophies"
         />
-        <dropdown-range
+        <!--         <dropdown-range
           label="Prezzo"
           :min="minPrice"
           :max="maxPrice"
           :choosenMin="minPrice"
           :choosenMax="maxPrice"
-        />
+        /> -->
+        <dropdown-range label="Prezzo" :min="minPrice" :max="maxPrice" />
 
         <selections-box-mobile
           label="selections"
@@ -443,7 +448,12 @@
 
       <template #modal-footer class="border-0">
         <div class="w-100 text-center">
-          <button class="btn btn-light-red btn-lg px-5">INVIA</button>
+          <button
+            class="btn view-results text-uppercase px-5"
+            @click="hideModal"
+          >
+            Mostra {{ total }} risultati
+          </button>
         </div>
       </template>
     </b-modal>
@@ -883,6 +893,13 @@ export default {
 </script>
 
 <style scoped>
+.view-results {
+  border: 2px solid #d94965;
+  border-radius: 12px;
+  background-color: #d94965;
+  color: white;
+}
+
 .btn-sort-by:hover {
   background: #fae4e8;
 }

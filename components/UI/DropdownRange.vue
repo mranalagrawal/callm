@@ -76,7 +76,7 @@ export default {
   props: ["label", "min", "max"],
   data() {
     return {
-      visible: true,
+      visible: false,
       choosenMin: +this.min,
       choosenMax: +this.max,
     };

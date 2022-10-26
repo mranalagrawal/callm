@@ -159,52 +159,54 @@
           <div class="row">
             <div class="col-12 col-lg-4 mb-5">
               <p class="h5 mb-4" style="font-weight: 400">L'azienda</p>
-              <nuxt-link to="/" class="text-decoration-none text-white"
+              <nuxt-link
+                :to="localePath('/about-us')"
+                class="text-decoration-none text-white"
                 >Chi siamo</nuxt-link
               >
             </div>
             <div class="col-12 col-lg-4 mb-5">
               <p class="h5 mb-4" style="font-weight: 400">Servizi offerti</p>
               <nuxt-link
-                to="/"
+                :to="localePath('/restaurants-wineshops')"
                 class="text-decoration-none text-white d-block mb-2"
                 >Enoteche e Ristoranti</nuxt-link
               >
               <nuxt-link
-                to="/"
+                :to="localePath('/business-gifts')"
                 class="text-decoration-none text-white d-block mb-2"
                 >Regali aziendali</nuxt-link
               >
               <nuxt-link
-                to="/"
+                :to="localePath('/gift-cards')"
                 class="text-decoration-none text-white d-block mb-2"
                 >Buoni regalo</nuxt-link
               >
-              <nuxt-link
+              <!--  <nuxt-link
                 to="/"
                 class="text-decoration-none text-white d-block mb-2"
                 >Guida ai nostri vini</nuxt-link
-              >
+              > -->
             </div>
             <div class="col-12 col-lg-4 mb-5">
               <p class="h5 mb-4" style="font-weight: 400">Supporto</p>
               <nuxt-link
-                to="/"
+                :to="localePath('/shipping')"
                 class="text-decoration-none text-white d-block mb-2"
                 >Spedizioni</nuxt-link
               >
               <nuxt-link
-                to="/"
+                :to="localePath('/payments')"
                 class="text-decoration-none text-white d-block mb-2"
                 >Pagamenti</nuxt-link
               >
               <nuxt-link
-                to="/"
+                :to="localePath('/terms-of-sales')"
                 class="text-decoration-none text-white d-block mb-2"
                 >Condizioni di vendita</nuxt-link
               >
               <nuxt-link
-                to="/"
+                :to="localePath('/contact')"
                 class="text-decoration-none text-white d-block mb-2"
                 >Contattaci</nuxt-link
               >

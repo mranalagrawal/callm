@@ -175,7 +175,10 @@
                 </div>
               </b-tab>
               <b-tab :title="$t('Premi e riconoscimenti')">
-                <table class="table table-striped">
+                <table
+                  class="table table-striped"
+                  v-if="metafield.awards.length > 0"
+                >
                   <thead>
                     <tr class="bg-dark-green text-white">
                       <th style="border-radius: 15px 0px 0px 0px" scope="col">

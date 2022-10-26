@@ -42,6 +42,7 @@ export default {
   prismic: {
     endpoint: apiEndpoint,
     modern: true,
+    preview: false,
     /* see configuration for more */
   },
 

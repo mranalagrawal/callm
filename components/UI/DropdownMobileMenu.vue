@@ -42,8 +42,9 @@
           >
             <div v-if="!thirdLevel.marketing_cta">
               <hr class="m-0 mb-3" />
+              <!-- {{ thirdLevel.third_level_link }} -->
               <nuxt-link
-                :to="`/${thirdLevel.third_level_link}`"
+                :to="`${thirdLevel.third_level_link}`"
                 class="text-decoration-none text-dark"
               >
                 {{ thirdLevel.third_level_name }}

@@ -117,6 +117,7 @@
           <i class="fal fa-search"></i>
         </b-button>
         <div
+          @mouseleave="search = ''"
           v-if="search && data"
           class="bg-white px-2 shadowed"
           style="
@@ -125,15 +126,32 @@
             left: 0px;
             z-index: 999;
             width: 100%;
-            height: 90vh;
+            height: 70vh;
             overflow-y: scroll;
             border-radius: 10px;
           "
         >
           <!-- {{ data }} -->
+
+          <div v-if="data.winelists && data.winelists.length > 0">
+            <p class="text-uppercase suggest-title p-2 mt-3 mb-1">
+              Carte dei Vini
+            </p>
+            <nuxt-link
+              v-for="item in data.winelists"
+              :key="item.id"
+              class="suggest-voice p-2 mb-0"
+              :to="`/${item.handle}-V${item.id}`"
+            >
+              <span v-html="bolder(item.name)"></span>
+            </nuxt-link>
+          </div>
+
           <div v-if="data" class="pt-3">
             <div v-if="data.categories && data.categories.length > 0">
-              <p class="text-uppercase suggest-title p-2 my-3">Tipologia</p>
+              <p class="text-uppercase suggest-title p-2 mt-3 mb-1">
+                Tipologia
+              </p>
               <nuxt-link
                 v-for="item in data.categories"
                 :key="item.id"
@@ -145,7 +163,9 @@
             </div>
 
             <div v-if="data.brands && data.brands.length > 0">
-              <p class="text-uppercase suggest-title p-2 my-3">Produttore</p>
+              <p class="text-uppercase suggest-title p-2 mt-3 mb-1">
+                Produttore
+              </p>
               <nuxt-link
                 v-for="item in data.brands"
                 :key="item.id"
@@ -157,7 +177,7 @@
             </div>
 
             <div v-if="data.products && data.products.length > 0">
-              <p class="text-uppercase suggest-title p-2 my-3">Prodotti</p>
+              <p class="text-uppercase suggest-title p-2 mt-3 mb-1">Prodotti</p>
               <nuxt-link
                 v-for="item in data.products"
                 :key="item.id"
@@ -556,6 +576,7 @@ export default {
         );
         const resultJSON = await result.json();
         this.data = resultJSON;
+        console.log(resultJSON, "res");
         /* if (resultJSON.categories.length > 0) {
           this.categories = resultJSON.categories;
         }

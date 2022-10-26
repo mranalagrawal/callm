@@ -43,7 +43,9 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      data: null,
+    };
   },
   computed: {
     cart() {
@@ -88,6 +90,21 @@ export default {
 
       return baseUrl;
     },
+  },
+  async fetch() {
+    let lang = "";
+    if (this.$i18n.locale == "en") {
+      lang = "en-gb";
+    } else {
+      lang = "it-it";
+    }
+    const response = await this.$prismic.api.getSingle("shipping", {
+      lang: lang,
+    });
+    const data = response.data.body;
+    this.data = data;
+
+    console.log(data, "datas");
   },
 };
 </script>
