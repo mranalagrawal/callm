@@ -70,6 +70,7 @@ export default {
     },
   },
   async fetch() {
+    if (!this.wishlist) return;
     if (JSON.parse(this.wishlist.value).length == 0) {
       this.data = null;
       return;

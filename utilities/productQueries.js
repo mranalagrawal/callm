@@ -65,6 +65,7 @@ const queryProductByIdAsTag = (tag) => `query {
                     handle
                     vendor
                     totalInventory
+                    availableForSale
                     variants(first: 1) {
                         nodes {
                             compareAtPrice

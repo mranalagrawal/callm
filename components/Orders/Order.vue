@@ -97,24 +97,24 @@
         </div>
       </div>
       <div class="col-12 mt-5">
-        <div class="row">
-          <div class="col-12 col-md-4">
-            <p v-if="order.lineItems.edges.length == 1">
+        <div class="row align-items-end">
+          <div class="col-4 col-md-4 px-0">
+            <p class="small" v-if="order.lineItems.edges.length == 1">
               <strong>{{ order.lineItems.edges.length }}</strong> articolo
             </p>
-            <p v-else>
+            <p class="small" v-else>
               <strong>{{ order.lineItems.edges.length }}</strong> articoli
             </p>
           </div>
-          <div class="col-12 col-md-8 text-right">
+          <div class="col-8 col-md-8 text-right px-0">
             <button
-              class="btn text-light-red d-block ml-auto"
+              class="btn text-light-red d-block ml-auto fs-14"
               @click="showModal"
             >
               Richiedi assistenza
             </button>
             <button
-              class="btn text-white d-block ml-auto"
+              class="btn text-white d-block ml-auto fs-14"
               style="background: #da4865; border-radius: 10px"
               @click="orderAgain"
               :class="canBuyAgain ? '' : 'disabled'"
@@ -124,30 +124,31 @@
           </div>
         </div>
       </div>
-      <div class="col-12" v-if="order.lineItems.edges">
+      <div class="col-12 px-0" v-if="order.lineItems.edges">
         <div
-          class="row align-items-center mb-3"
+          class="row mt-2 mb-3"
           v-for="(item, i) in order.lineItems.edges"
           :key="i"
         >
-          <!-- {{ canBuyAgain }} -->
-          <div class="col-1">
+          <!-- {{ order.lineItems.edges[0].node.variant.id }} -->
+          <div class="col-2">
             <nuxt-link :to="`/product/${item.node.variant.product.handle}`">
               <img
                 :src="item.node.variant.product.images.nodes[0].url"
                 alt=""
-                style="width: 40px"
+                class="img-fluid"
+                style="max-width: 60px"
               />
             </nuxt-link>
           </div>
-          <div class="col-8">
-            <strong>{{ item.node.title }}</strong>
+          <div class="col-8 col-md-7">
+            <p class="mb-0 fs-14">{{ item.node.title }}</p>
           </div>
-          <div class="col-1">
-            <span class="d-none d-md-block">x{{ item.node.quantity }}</span>
+          <div class="d-none d-md-block col-md-1">
+            <span class="">x{{ item.node.quantity }}</span>
           </div>
-          <div class="col-2 text-right">
-            <p class="text-barred mb-0 text-muted small">
+          <div class="col-2 col-md-2 text-right px-0">
+            <p class="text-barred mb-0 text-muted small text-">
               {{
                 Number(
                   item.node.variant.product.variants.nodes[0].compareAtPrice *
@@ -274,45 +275,29 @@ export default {
       this.$refs["modal"].hide();
     },
     async orderAgain() {
-      const domain = this.$config.DOMAIN;
-      const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
+      console.log(this.order.lineItems.edges);
+      const items = [];
+      this.order.lineItems.edges
+        .map((el) => el.node)
+        .forEach((el) => {
+          const productVariantId = el.variant.id;
+          const amount = Number(el.variant.product.variants.nodes[0].price);
+          const amountFullPrice = Number(
+            el.variant.product.variants.nodes[0].compareAtPrice
+          );
+          const tag = el.variant.product.tags[0];
+          const image = el.variant.product.images.nodes[0].url;
 
-      const variantIds = this.order.lineItems.edges.map(
-        (el) => el.node.variant.id
-      );
-
-      const quantities = this.order.lineItems.edges.map(
-        (el) => el.node.quantity
-      );
-
-      const lines = this.order.lineItems.edges.map((el) => {
-        return {
-          quantity: el.node.quantity,
-          merchandiseId: el.node.variant.id,
-        };
-      });
-
-      if (!this.$store.state.cart.cart) {
-        /* alert("creo carrello"); */
-        // crea cart su shopify
-        const user = this.$store.state.user.user;
-        const cart = await createCart(domain, access_token, user);
-
-        // crea cart su vuex
-        this.$store.commit("cart/setCart", cart);
-      }
-
-      const cartId = this.$store.state.cart.cart.id;
-
-      const all = await addProductToCart(domain, access_token, cartId, lines);
-
-      this.$store.commit("cart/setCart", all);
-      this.flashMessage.show({
-        status: "",
-        message: "Prodotto aggiunto!",
-        time: 1000,
-        blockClass: "add-product-notification",
-      });
+          const title = el.title;
+          this.$store.commit("userCart/addProduct", {
+            productVariantId: productVariantId,
+            singleAmount: amount,
+            singleAmountFullPrice: amountFullPrice,
+            tag: tag,
+            image: image,
+            title: title,
+          });
+        });
     },
   },
 };

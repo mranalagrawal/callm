@@ -8,16 +8,9 @@
         <img :src="data.image.url" class="img-fluid w-100" alt="" />
       </div>
     </div>
-    <div class="row mt-5" v-for="(section, i) in data.section" :key="i">
-      <div
-        class="col-12"
-        v-for="(content, j) in section.section_content"
-        :key="j"
-      >
-        <!-- <prismic-rich-text :field="content.text" /> -->
+    <div class="row mt-5">
+      <div class="col-12" v-for="(content, j) in data.section" :key="j">
         <prismic-rich-text :field="[content]" />
-
-        <!-- {{ content }} -->
       </div>
     </div>
   </div>
@@ -37,12 +30,12 @@ export default {
     } else {
       lang = "it-it";
     }
-    const response = await this.$prismic.api.getSingle("about_us", {
+    const response = await this.$prismic.api.getSingle("privacy-policy", {
       lang: lang,
     });
     const data = response.data;
     this.data = data;
-    console.log(data, "data");
+    console.log(data, "data ");
   },
 };
 </script>

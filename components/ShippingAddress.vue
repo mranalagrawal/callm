@@ -711,7 +711,10 @@ export default {
                 id
                 }
               }
-              
+              userErrors {
+                field
+                message
+              }
             }
           }`,
           variables: {
@@ -721,7 +724,12 @@ export default {
         });
       };
 
-      const setAddressMutation = setAddress(customerAccessToken, e);
+      console.clear();
+      console.log(e.split("&customer_access_token")[0]);
+      const setAddressMutation = setAddress(
+        customerAccessToken,
+        e.split("&customer_access_token")[0]
+      );
       const GRAPHQL_BODY = {
         async: true,
         crossDomain: true,
@@ -735,6 +743,7 @@ export default {
 
       const response = await fetch(domain, GRAPHQL_BODY);
       const responseJSON = await response.json();
+      console.log(responseJSON, "responseJSON");
 
       const newDefaultAddress =
         responseJSON.data.customerDefaultAddressUpdate.customer.defaultAddress;

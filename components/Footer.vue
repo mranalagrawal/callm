@@ -172,7 +172,7 @@
                 class="text-decoration-none text-white d-block mb-2"
                 >Enoteche e Ristoranti</nuxt-link
               >
-              <nuxt-link
+              <!-- <nuxt-link
                 :to="localePath('/business-gifts')"
                 class="text-decoration-none text-white d-block mb-2"
                 >Regali aziendali</nuxt-link
@@ -181,11 +181,6 @@
                 :to="localePath('/gift-cards')"
                 class="text-decoration-none text-white d-block mb-2"
                 >Buoni regalo</nuxt-link
-              >
-              <!--  <nuxt-link
-                to="/"
-                class="text-decoration-none text-white d-block mb-2"
-                >Guida ai nostri vini</nuxt-link
               > -->
             </div>
             <div class="col-12 col-lg-4 mb-5">

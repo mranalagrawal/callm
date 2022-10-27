@@ -98,7 +98,10 @@
                   >{{ data.vendor }}</nuxt-link
                 >
               </div>
-              <div v-html="metafield.shortDescription"></div>
+              <div v-html="strippedContent"></div>
+              <!-- <div>
+                {{ metafield.shortDescription }}
+              </div> -->
             </div>
             <div class="col-12 col-md-4">
               <span style="font-size: 2.5rem; font-weight: 900">{{
@@ -398,6 +401,14 @@ export default {
     };
   },
   computed: {
+    strippedContent() {
+      /* let regex = /(<([^>]+)>)/gi;
+      return this.metafield.shortDescription.replace(regex, ""); */
+
+      return this.metafield.shortDescription
+        .replace("href", "")
+        .replace("style", "");
+    },
     title() {
       return this.data ? this.data.title : "CallMeWine";
     },
@@ -405,13 +416,8 @@ export default {
       if (!this.$store.state.user.user) return null;
       let wishlist = this.$store.state.user.user.customer.wishlist;
 
-      // wishlist is null by default
       if (wishlist) {
-        return JSON.parse(wishlist.value).includes(
-          String(
-            this.data.variants.edges[0].node.id.split("ProductVariant/")[1]
-          )
-        );
+        return JSON.parse(wishlist.value).includes(this.data.tags[0]);
       }
 
       return null;
@@ -497,7 +503,7 @@ export default {
         this.data.variants.edges[0].node.id.split("ProductVariant/")[1];
 
       const response = await fetch(
-        `https://callmewine-api.dojo.sh/api/customers/${userId}/wishlist/${variantId}`,
+        `https://callmewine-api.dojo.sh/api/customers/${userId}/wishlist/${this.data.tags[0]}`,
         { async: true, crossDomain: true, method: "POST" }
       );
       const updatedWishlist = await response.text();
