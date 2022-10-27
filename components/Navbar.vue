@@ -134,7 +134,7 @@
           <!-- {{ data }} -->
 
           <div v-if="data.winelists && data.winelists.length > 0">
-            <p class="text-uppercase suggest-title p-2 mt-3 mb-1">
+            <p class="text-uppercase suggest-title px-2 mt-3 mb-0 pb-0">
               Carte dei Vini
             </p>
             <nuxt-link
@@ -149,7 +149,7 @@
 
           <div v-if="data" class="pt-3">
             <div v-if="data.categories && data.categories.length > 0">
-              <p class="text-uppercase suggest-title p-2 mt-3 mb-1">
+              <p class="text-uppercase suggest-title px-2 mt-3 mb-0 pb-0">
                 Tipologia
               </p>
               <nuxt-link
@@ -163,7 +163,7 @@
             </div>
 
             <div v-if="data.brands && data.brands.length > 0">
-              <p class="text-uppercase suggest-title p-2 mt-3 mb-1">
+              <p class="text-uppercase suggest-title px-2 mt-3 mb-0 pb-0">
                 Produttore
               </p>
               <nuxt-link
@@ -177,7 +177,9 @@
             </div>
 
             <div v-if="data.products && data.products.length > 0">
-              <p class="text-uppercase suggest-title p-2 mt-3 mb-1">Prodotti</p>
+              <p class="text-uppercase suggest-title px-2 mt-3 mb-0 pb-0">
+                Prodotti
+              </p>
               <nuxt-link
                 v-for="item in data.products"
                 :key="item.id"

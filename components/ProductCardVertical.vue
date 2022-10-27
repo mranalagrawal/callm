@@ -137,7 +137,7 @@
           </div>
 
           <div class="position-relative" v-if="product.availableForSale">
-            <button class="btn btn-cart" @click.stop="isOpen = true"></button>
+            <button class="btn btn-cart" @click.stop="addToUserCart()"></button>
             <span v-show="userCartQuantity > 0" class="cart-quantity">
               {{ userCartQuantity }}
             </span>
@@ -264,6 +264,7 @@ export default {
       }
     },
     async addToUserCart() {
+      if (!this.isOpen) this.isOpen = true;
       const productVariantId = this.product.variants.nodes[0].id;
       const amount = Number(this.product.variants.nodes[0].price);
       const amountFullPrice = Number(
@@ -292,100 +293,6 @@ export default {
     async removeFromUserCart() {
       const productVariantId = this.product.variants.nodes[0].id;
       this.$store.commit("userCart/removeProduct", productVariantId);
-    },
-    addToCart: async function () {
-      this.isOpen = true;
-
-      const domain = this.$config.DOMAIN;
-      const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
-
-      if (!this.$store.state.user.user) {
-        this.$router.push("/login");
-        return;
-      }
-
-      // se non c'è cart
-      if (!this.$store.state.cart.cart) {
-        /* alert("creo carrello"); */
-        // crea cart su shopify
-        const user = this.$store.state.user.user;
-        const cart = await createCart(domain, access_token, user);
-
-        // crea cart su vuex
-        this.$store.commit("cart/setCart", cart);
-      }
-
-      // ora cart esiste sicuro
-
-      const cartId = this.$store.state.cart.cart.id;
-
-      const productVariantId = this.product.variants.nodes[0].id;
-
-      const lines = [
-        {
-          quantity: 1,
-          merchandiseId: productVariantId,
-        },
-      ];
-
-      const all = await addProductToCart(domain, access_token, cartId, lines);
-
-      this.$store.commit("cart/setCart", all);
-
-      this.flashMessage.show({
-        status: "",
-        message: `N° ${this.cartQuantity} - ${this.product.title} è stata modificata la quantità`,
-        icon: this.product.images.nodes[0].url,
-        iconClass: "bg-transparent ",
-        time: 8000,
-        blockClass: "add-product-notification",
-      });
-    },
-    async decreaseQuantity() {
-      const domain = this.$config.DOMAIN;
-      const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
-      const cartId = this.$store.state.cart.cart.id;
-
-      const lineId = this.$store.state.cart.cart.lines.edges
-        .map((el) => el.node)
-        .find(
-          (el) => el.merchandise.id == this.product.variants.nodes[0].id
-        ).id;
-
-      const cart = await updateItemInCart(
-        domain,
-        access_token,
-        lineId,
-        cartId,
-        this.cartQuantity - 1
-      );
-      this.$store.commit("cart/setCart", cart);
-
-      if (this.cartQuantity > 0) {
-        this.flashMessage.show({
-          status: "",
-          message: `N° ${this.cartQuantity} - ${this.product.title} è stata modificata la quantità`,
-          icon: this.product.images.nodes[0].url,
-          iconClass: "bg-transparent ",
-          time: 8000,
-          blockClass: "add-product-notification",
-        });
-      } else {
-        this.flashMessage.show({
-          status: "",
-          message: `N° ${this.cartQuantity} - ${this.product.title} è stato rimosso dal carrello`,
-          icon: this.product.images.nodes[0].url,
-          iconClass: "bg-transparent ",
-          time: 8000,
-          blockClass: "add-product-notification",
-        });
-      }
-      /* this.flashMessage.show({
-        status: "",
-        message: "Prodotto rimosso!",
-        time: 1000,
-        blockClass: "remove-product-notification",
-      }); */
     },
   },
 };

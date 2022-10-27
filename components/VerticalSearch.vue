@@ -166,7 +166,7 @@
               >
                 <button
                   class="btn btn-cart"
-                  @click.stop="isOpen = true"
+                  @click.stop="addToUserCart()"
                 ></button>
                 <span v-show="userCartQuantity > 0" class="cart-quantity">
                   {{ userCartQuantity }}
@@ -354,6 +354,8 @@ export default {
 
   methods: {
     async addToUserCart() {
+      if (!this.isOpen) this.isOpen = true;
+
       console.log(this.product);
       const productVariantId =
         "gid://shopify/ProductVariant/" + this.product._source.variantId;
@@ -384,114 +386,6 @@ export default {
       const productVariantId =
         "gid://shopify/ProductVariant/" + this.product._source.variantId;
       this.$store.commit("userCart/removeProduct", productVariantId);
-    },
-    addToCart: async function () {
-      const domain = this.$config.DOMAIN;
-      const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
-
-      /* if (this.product._source.quantity < 1) {
-        return;
-      } */
-
-      /* return; */
-
-      if (!this.$store.state.user.user) {
-        this.$router.push("/login");
-        return;
-      }
-
-      // check if product is available in shopify
-      const productQuery = queryProductByIdAsTag("P" + this.product._id);
-      const GRAPHQL_BODY = {
-        async: true,
-        crossDomain: true,
-        method: "POST",
-        headers: {
-          "X-Shopify-Storefront-Access-Token": access_token,
-          "Content-Type": "application/graphql",
-        },
-        body: productQuery,
-      };
-      const availability = await fetch(domain, GRAPHQL_BODY).then((res) =>
-        res.json()
-      );
-
-      if (!availability.data.products.edges[0]) {
-        alert("Prodotto non disponibile su STOREFRONT");
-        return;
-      }
-      /* return; */
-      if (availability.data.products.edges[0].node.totalInventory == 0) {
-        alert("Prodotto esaurito");
-        return;
-      }
-
-      // se non c'è cart
-      if (!this.$store.state.cart.cart) {
-        /* alert("creo carrello"); */
-        // crea cart su shopify
-        const user = this.$store.state.user.user;
-        const cart = await createCart(domain, access_token, user);
-
-        // crea cart su vuex
-        this.$store.commit("cart/setCart", cart);
-      }
-
-      // ora cart esiste sicuro
-
-      const cartId = this.$store.state.cart.cart.id;
-
-      const producVariantId = this.product._source.variantId;
-
-      /* return; */
-      const lines = [
-        {
-          quantity: 1,
-          merchandiseId: "gid://shopify/ProductVariant/" + producVariantId,
-        },
-      ];
-
-      const all = await addProductToCart(domain, access_token, cartId, lines);
-
-      this.$store.commit("cart/setCart", all);
-
-      this.flashMessage.show({
-        status: "",
-        message: this.product._source.shortName + " aggiunto!",
-        icon: this.product._source.shopifyImageUrl,
-        iconClass: "bg-transparent ",
-        time: 1000,
-        blockClass: "add-product-notification",
-      });
-    },
-    async decreaseQuantity() {
-      const domain = this.$config.DOMAIN;
-      const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
-      const cartId = this.$store.state.cart.cart.id;
-
-      const lineId = this.$store.state.cart.cart.lines.edges
-        .map((el) => el.node)
-        .find(
-          (el) =>
-            el.merchandise.id.split("/ProductVariant/")[1] ==
-            this.product._source.variantId
-        ).id;
-
-      const cart = await updateItemInCart(
-        domain,
-        access_token,
-        lineId,
-        cartId,
-        this.cartQuantity - 1
-      );
-      this.$store.commit("cart/setCart", cart);
-
-      this.flashMessage.show({
-        status: "",
-        message: "Prodotto rimosso!",
-        time: 1000,
-        blockClass: "remove-product-notification",
-      });
     },
     async toggleWishlist() {
       if (!this.$store.state.user.user) {
