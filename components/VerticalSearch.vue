@@ -13,6 +13,12 @@
           style="left: 20px; top: 10px; z-index: 10"
         >
           <img
+            title="Organic"
+            v-if="product._source.organic"
+            :src="require(`@/assets/images/selections/organic.svg`)"
+            class="selection-svg d-block"
+          />
+          <img
             title="Favoriti"
             v-if="product._source.favourite"
             :src="require(`@/assets/images/selections/favourite.svg`)"

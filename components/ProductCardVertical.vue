@@ -35,6 +35,12 @@
         </div>
         <div class="position-absolute" style="left: 0px; top: 0px; z-index: 10">
           <img
+            title="Organic"
+            v-if="details.organic"
+            :src="require(`@/assets/images/selections/organic.svg`)"
+            class="selection-svg d-block"
+          />
+          <img
             title="Favoriti"
             v-if="details.favourite"
             :src="require(`@/assets/images/selections/favourite.svg`)"
