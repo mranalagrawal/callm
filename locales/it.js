@@ -40,6 +40,7 @@ export default {
     togift: "Da regalo",
     inpromotion: "In promozione",
     topsale: "Più venduti",
+    organic: "Organici e Biodinamici",
   },
   search: {
     results: "risultati",

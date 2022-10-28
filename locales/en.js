@@ -40,6 +40,7 @@ export default {
     togift: "To gift",
     inpromotion: "In promotion",
     topsale: "Top Sale",
+    organic: "Organic and Biodynamic",
   },
   search: {
     results: "results",

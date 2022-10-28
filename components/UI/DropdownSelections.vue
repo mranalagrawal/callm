@@ -49,6 +49,7 @@ export default {
       visible: true,
 
       allSelections: [
+        "organic",
         "favourite",
         "rarewine",
         "foreveryday",

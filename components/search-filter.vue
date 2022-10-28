@@ -758,6 +758,7 @@ export default {
     console.log(this.inputParameters);
 
     const allSelections = [
+      "organic",
       "favourite",
       "rarewine",
       "foreveryday",
