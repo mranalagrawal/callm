@@ -15,12 +15,14 @@
             <h1 class="py-3">{{ data.title }}</h1>
             <p>{{ metafields.subtitle }}</p>
           </div>
-          <div class="row mb-5 w-100">
-            <div class="col-12">
-              <BrandCarouselVue
-                v-if="images && images.length > 0"
-                :images="images"
-              />
+          <div class="col-12">
+            <div class="row mb-5">
+              <div class="col-12">
+                <BrandCarouselVue
+                  v-if="images && images.length > 0"
+                  :images="images"
+                />
+              </div>
             </div>
           </div>
         </div>

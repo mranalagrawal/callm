@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="">
     <VueSlickCarousel
       ref="slider-big"
       :focusOnSelect="true"
@@ -7,12 +7,23 @@
       @beforeChange="syncSliders"
     >
       <div v-for="(image, i) in images" :key="i">
-        <img
+        <div>
+          <div class="inner">
+            <div
+              :style="{
+                backgroundImage: 'url(' + image + ')',
+                backgroundSize: 'cover',
+              }"
+              class="h-100"
+            ></div>
+          </div>
+        </div>
+        <!-- <img
           :src="image"
           alt=""
           class="mx-auto d-block img-fluid w-100"
           height="500"
-        />
+        /> -->
       </div>
     </VueSlickCarousel>
 
@@ -148,5 +159,9 @@ export default {
 }
 :deep(.slick-dots) {
   bottom: -48px;
+}
+
+:deep(.inner) {
+  height: 400px;
 }
 </style>
