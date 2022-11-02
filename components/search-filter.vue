@@ -670,6 +670,10 @@ export default {
     const sizes = search.aggregations["agg-sizes"]["agg-sizes"].buckets;
     this.sizes = sizes;
 
+    const dosagecontents =
+      search.aggregations["agg-dosagecontents"]["agg-dosagecontents"].buckets;
+    this.dosagecontents = dosagecontents;
+
     const awards = search.aggregations["agg-awards"]["inner"]["result"][
       "buckets"
     ].map((el) => {
@@ -714,10 +718,6 @@ export default {
     });
     this.philosophies = philosophies;
 
-    const dosagecontents =
-      search.aggregations["agg-dosagecontents"]["agg-dosagecontents"].buckets;
-    this.dosagecontents = dosagecontents;
-
     const winelists = search.aggregations["agg-winelists"]["inner"]["result"][
       "buckets"
     ].map((el) => {
@@ -758,17 +758,18 @@ export default {
     console.log(this.inputParameters);
 
     const allSelections = [
-      "organic",
       "favourite",
-      "rarewine",
-      "foreveryday",
       "artisanal",
-      "unusualvariety",
       "isnew",
-      "togift",
       "inpromotion",
       "topsale",
+      "foreveryday",
+      "organic",
+      "togift",
+      "unusualvariety",
+      "rarewine",
     ];
+
     const activeSelections = Object.keys(this.inputParameters).filter((el) =>
       allSelections.includes(el)
     );

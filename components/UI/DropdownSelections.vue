@@ -49,16 +49,16 @@ export default {
       visible: true,
 
       allSelections: [
-        "organic",
         "favourite",
-        "rarewine",
-        "foreveryday",
         "artisanal",
-        "unusualvariety",
         "isnew",
-        "togift",
         "inpromotion",
         "topsale",
+        "foreveryday",
+        "organic",
+        "togift",
+        "unusualvariety",
+        "rarewine",
       ],
     };
   },

@@ -36,14 +36,15 @@ export default {
     return {
       allSelections: [
         "favourite",
-        "rarewine",
-        "foreveryday",
         "artisanal",
-        "unusualvariety",
         "isnew",
-        "togift",
         "inpromotion",
         "topsale",
+        "foreveryday",
+        "organic",
+        "togift",
+        "unusualvariety",
+        "rarewine",
       ],
     };
   },
