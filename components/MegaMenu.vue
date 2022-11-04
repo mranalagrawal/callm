@@ -62,9 +62,9 @@ export default {
     onTab(item) {
       if (item) {
         this.selectedItem = item;
-      } /*  else {
+      } else {
         this.selectedItem = null;
-      } */
+      }
     },
   },
   async fetch() {
