@@ -18,7 +18,6 @@ export default {
     };
   },
   created() {
-    console.log("qui");
     /* const path = this.$route.path; */
     const path = this.$route.params.handle;
     // check if product page
@@ -35,10 +34,10 @@ export default {
       { name: "regions", rule: /[R][0-9]+/ },
       { name: "dosagecontents", rule: /[D][0-9]+/ },
       { name: "brands", rule: /[B][0-9]+/ },
+      { name: "countries", rule: /[N][0-9]+/ },
       { name: "selections", rule: null },
     ];
 
-    console.log("qui");
     // loop and assign, MUST BE this way
     filters.forEach((el) => {
       if (el.name != "selections" && path.match(el.rule)) {

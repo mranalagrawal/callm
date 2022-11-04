@@ -63,5 +63,36 @@ export default {
     HomeProductors,
   },
   name: "IndexPage",
+  data() {
+    return {
+      links: {
+        "en-gb": "https://www.callmewine.co.uk",
+        it: "https://www.callmewine.com",
+        en: "https://www.callmewine.com/en",
+        fr: "https://www.callmewine.com/fr",
+        de: "https://www.callmewine.com/de",
+      },
+    };
+  },
+  head() {
+    return {
+      title: "CallMeWine",
+      link: Object.entries(this.links).map((el) => {
+        return {
+          hid: "alternate-" + el[0],
+          rel: "alternate",
+          href: el[1],
+          hreflang: el[0],
+        };
+      }),
+      /* link: [
+        {
+          hid: "alternate",
+          rel: "alternate",
+          href: this.canonical,
+        },
+      ], */
+    };
+  },
 };
 </script>

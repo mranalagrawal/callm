@@ -2,7 +2,7 @@
   <div class="container-fluid container-large px-md-3 my-5">
     <div class="row">
       <div class="col-12 text-center" v-if="data">
-        <h3 class="font-weight-bold text-dark-green">{{ data.title }}</h3>
+        <h3 class="font-weight-bold text-dark-green">{{ data.description }}</h3>
       </div>
 
       <div class="col-12 py-4" v-if="data">

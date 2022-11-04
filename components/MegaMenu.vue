@@ -36,93 +36,18 @@
         </p>
         <div v-for="(thirdLevel, j) in secondLevel.items" :key="j">
           <!-- {{ thirdLevel }} -->
-          <p v-if="!thirdLevel.marketing_cta" class="mb-2">
-            <nuxt-link
-              class="menu-link px-2"
-              style="
-                font-weight: 300;
-                padding-top: 0.5rem;
-                padding-bottom: 0.5rem;
-              "
-              :to="thirdLevel.third_level_link || '/'"
-            >
-              <!-- {{ thirdLevel.selection }} -->
-              <img
-                v-if="thirdLevel.selection"
-                :src="
-                  require(`@/assets/images/selections/${thirdLevel.selection}.svg`)
-                "
-                alt=""
-                width="20px"
-                class="img-selection"
-              />
-              {{ thirdLevel.third_level_name }}</nuxt-link
-            >
-          </p>
-          <div
-            v-else
-            class="row align-items-center mb-4 mx-1"
-            style="
-              width: 100%;
-              max-width: 450px;
-              border-radius: 10px;
-              height: 100px;
-              background: #f8f8f8;
-              border: 1px solid #ddd;
-            "
-          >
-            <div
-              class="col-3"
-              style="
-                height: 100%
-                background-position: center;
-                background-size: cover;
-                border-radius: 10px 0px 0px 10px;
-              "
-              :style="{
-                backgroundImage: 'url(' + thirdLevel.marketing_image.url + ')',
-              }"
-            ></div>
-
-            <div class="col-9">
-              <nuxt-link
-                :to="thirdLevel.third_level_link || '/'"
-                class="mb-0 text-decoration-none text-dark d-block"
-                >{{ thirdLevel.third_level_name }}</nuxt-link
-              >
-              <nuxt-link
-                v-if="thirdLevel.marketing_cta.length < 40"
-                :to="thirdLevel.third_level_link || '/'"
-                class="mb-0 text-decoration-none text-light-red small"
-                >{{ thirdLevel.marketing_cta }}</nuxt-link
-              >
-              <nuxt-link
-                v-else
-                :to="thirdLevel.third_level_link || '/'"
-                class="mb-0 text-decoration-none text-light-red small"
-                >{{ thirdLevel.marketing_cta.substring(0, 40) }}...</nuxt-link
-              >
-            </div>
-          </div>
+          <ThirdLevel :thirdLevel="thirdLevel" />
         </div>
-        <!-- <h3>{{ secondLevel[0] }}</h3>
-          <div v-for="(thirdLevel, j) in secondLevel[1]" :key="j">
-            <div class="card" v-if="!thirdLevel.marketingCTA">
-              {{ thirdLevel.name }}
-            </div>
-            <div class="card" v-else>
-              {{ thirdLevel.name }}
-              {{ thirdLevel.marketingCTA }}
-              <img :src="thirdLevel.marketingImage" alt="" width="32px" />
-            </div>
-          </div> -->
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import ThirdLevel from "./UI/ThirdLevel.vue";
+
 export default {
+  components: { ThirdLevel },
   watch: {
     "$i18n.locale": "$fetch",
   },
@@ -137,9 +62,9 @@ export default {
     onTab(item) {
       if (item) {
         this.selectedItem = item;
-      } else {
+      } /*  else {
         this.selectedItem = null;
-      }
+      } */
     },
   },
   async fetch() {
@@ -175,9 +100,10 @@ export default {
           let temp = firstLevel.items
             .filter((x) => x.secondlevelname === el.name)
             .sort((a, b) => a.third_level_position - b.third_level_position);
+
           return { ...el, items: temp };
         });
-
+        /* console.log(items, "ITEMS"); */
         return {
           name: firstLevel.primary.group_label,
           link: firstLevel.primary.first_level_link,
@@ -187,6 +113,7 @@ export default {
       })
       .sort((a, b) => a.position - b.position);
 
+    console.log(mapped, "mapped");
     this.data = mapped;
     /* this.selectedItem = mapped[3]; */
   },
@@ -206,7 +133,9 @@ export default {
   color: black;
   text-decoration: none;
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 300;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 .menu-link:hover {
   color: var(--dark-red);

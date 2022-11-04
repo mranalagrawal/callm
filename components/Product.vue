@@ -363,10 +363,8 @@
 
       <RecentProducts />
 
-      <!-- ok -->
       <VendorProducts :vendor="brand.title" />
 
-      <!-- ok -->
       <RecommendedProducts :product="data.id" />
     </div>
   </div>
@@ -388,6 +386,13 @@ export default {
   head() {
     return {
       title: this.title,
+      link: [
+        {
+          hid: "canonical",
+          rel: "canonical",
+          href: this.canonical,
+        },
+      ],
     };
   },
   data() {
@@ -411,6 +416,9 @@ export default {
     },
     title() {
       return this.data ? this.data.title : "CallMeWine";
+    },
+    canonical() {
+      return this.metafield ? this.metafield.canonical : "CallMeWine";
     },
     isInWishList() {
       if (!this.$store.state.user.user) return null;

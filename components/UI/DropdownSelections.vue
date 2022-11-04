@@ -46,7 +46,7 @@ export default {
   props: ["label", "items", "keyword", "search"],
   data() {
     return {
-      visible: true,
+      visible: false,
 
       allSelections: [
         "favourite",
