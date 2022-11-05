@@ -573,9 +573,11 @@ export default {
       ? this.inputParameters["search"]
       : "";
 
+    if (!this.inputParameters.search) delete this.inputParameters.search;
+
     let query = new URLSearchParams(this.inputParameters).toString();
-    /* console.clear();
-    console.log(this.inputParameters, "SS"); */
+    console.clear();
+    console.log(query, "asdSS");
     let sel = "&";
 
     if (this.inputParameters.sel) {
@@ -617,7 +619,7 @@ export default {
       "dosagecontents",
       "bodystyles",
     ];
-    console.clear();
+
     belong_filters.forEach((el) => {
       const buckets = search.aggregations[`agg-${el}`][`agg-${el}`].buckets.map(
         (x) => {
