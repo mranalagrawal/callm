@@ -3,7 +3,7 @@
     <!-- <div v-for="product in products" :key="product.id">{{ product.title }}</div> -->
     <div class="row py-5 px-0">
       <div class="col-12 text-center">
-        <h2 class="font-weight-bold text-dark-green">Le nostre selezioni</h2>
+        <h2 class="font-weight-bold text-dark-green">{{ label }}</h2>
       </div>
       <div class="col-12 px-0 py-4" v-if="data">
         <VueSlickCarousel v-bind="settings" ref="carousel">
@@ -41,6 +41,7 @@ export default {
   components: { VueSlickCarousel },
   data: () => ({
     data: null,
+    label: null,
     settings: {
       arrows: false,
       dots: true,
@@ -98,6 +99,7 @@ export default {
     const response = await this.$prismic.api.getSingle("selections");
     const items = response.data.body[0].items;
     this.data = items.concat(items).concat(items);
+    this.label = response.data.body[0].primary.label;
   },
 };
 </script>

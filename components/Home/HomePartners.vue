@@ -4,7 +4,7 @@
       <div class="col-12">
         <div class="col-12 text-center mt-5 mb-5">
           <h2 class="text-center font-weight-bold text-dark-green">
-            I nostri partners
+            {{ label }}
           </h2>
         </div>
       </div>
@@ -25,7 +25,7 @@
               :to="data[0].content.cta_link"
               class="btn btn-cta mb-3 px-5 py-2"
             >
-              Scopri di più
+              {{ data[0].content.cta_text }}
             </nuxt-link>
           </div>
         </div>
@@ -47,7 +47,7 @@
               :to="data[1].content.cta_link"
               class="btn btn-cta mb-3 px-5 py-2"
             >
-              Scopri di più
+              {{ data[1].content.cta_text }}
             </nuxt-link>
           </div>
         </div>
@@ -67,6 +67,7 @@ export default {
       mask: mask,
       mask_left: mask_left,
       data: null,
+      label: null,
     };
   },
   async fetch() {
@@ -86,6 +87,8 @@ export default {
       };
     });
     this.data = data;
+    console.log(data);
+    this.label = response.data.body[0].primary.label;
   },
 };
 </script>

@@ -25,7 +25,7 @@
             class="btn btn-more px-3 py-2"
             style="text-shadow: none; border-radius: 10px"
           >
-            scopri di più
+            {{ slide.cta }}
           </nuxt-link>
         </div>
       </b-carousel-slide>
@@ -53,10 +53,10 @@
         <div>
           <nuxt-link
             :to="slide.link"
-            class="btn text-uppercase bg-white text-light-red d-none d-md-block"
+            class="btn text-uppercase bg-white text-light-red mb-5"
             style="text-shadow: none"
           >
-            scopri di più
+            {{ slide.cta }}
           </nuxt-link>
         </div>
       </b-carousel-slide>

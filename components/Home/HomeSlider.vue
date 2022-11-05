@@ -1,6 +1,6 @@
 <template>
   <div class="my-5">
-    <h2 class="text-center font-weight-bold text-dark-green">In evidenza</h2>
+    <h2 class="text-center font-weight-bold text-dark-green">{{ label }}</h2>
 
     <client-only placeholder="Loading..." v-if="data">
       <carousel-3d
@@ -28,7 +28,7 @@
             </p>
 
             <nuxt-link :to="content.link" class="btn btn-cta mb-3 px-5 py-2">
-              Scopri di più
+              {{ content.cta }}
             </nuxt-link>
           </div>
           <div class="w-100 loader"></div>
@@ -45,6 +45,7 @@ export default {
     return {
       data: null,
       mask: mask,
+      label: null,
     };
   },
   async fetch() {
@@ -58,7 +59,8 @@ export default {
     const data = await this.$prismic.api.getSingle("home-featured", {
       lang: lang,
     });
-    console.log(data.data.featured, "data");
+    console.log(data.data, "dataa");
+    this.label = data.data.label;
     this.data = data.data.featured;
   },
 };
