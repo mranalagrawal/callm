@@ -71,46 +71,93 @@
             </button>
           </div>
 
-          <dropdown label="boxes" :items="boxes" keyword="boxes" />
-
           <dropdown-selections
-            label="selections"
+            :label="$t('search.selections')"
             :items="null"
             keyword="selections"
             :search="search"
           />
           <dropdown
-            label="categories"
+            :label="$t('search.categories')"
             :items="categories"
             keyword="categories"
           />
-          <dropdown label="winelists" :items="winelists" keyword="winelists" />
-          <dropdown label="pairings" :items="pairings" keyword="pairings" />
           <dropdown
-            label="dosagecontents"
+            :label="$t('search.winelists')"
+            :items="winelists"
+            keyword="winelists"
+          />
+          <dropdown
+            :label="$t('search.pairings')"
+            :items="pairings"
+            keyword="pairings"
+          />
+          <dropdown
+            :label="$t('search.dosagecontents')"
             :items="dosagecontents"
             keyword="dosagecontents"
           />
           <dropdown
-            label="bodystyles"
+            :label="$t('search.bodystyles')"
             :items="bodystyles"
             keyword="bodystyles"
           />
-          <dropdown label="areas" :items="areas" keyword="areas" />
-          <dropdown label="Provenienza" :items="regions" keyword="regions" />
-          <dropdown label="Brands" :items="brands" keyword="brands" />
-          <dropdown label="countries" :items="countries" keyword="countries" />
-          <dropdown label="sizes" :items="sizes" keyword="sizes" />
-          <dropdown label="vintages" :items="vintages" keyword="vintages" />
-          <dropdown label="awards" :items="awards" keyword="awards" />
-          <dropdown label="agings" :items="agings" keyword="agings" />
           <dropdown
-            label="philosophies"
+            :label="$t('search.boxes')"
+            :items="boxes"
+            keyword="boxes"
+          />
+          <dropdown
+            :label="$t('search.areas')"
+            :items="areas"
+            keyword="areas"
+          />
+          <dropdown
+            :label="$t('search.provenience')"
+            :items="regions"
+            keyword="regions"
+          />
+          <dropdown
+            :label="$t('search.brands')"
+            :items="brands"
+            keyword="brands"
+          />
+          <dropdown
+            :label="$t('search.countries')"
+            :items="countries"
+            keyword="countries"
+          />
+          <dropdown
+            :label="$t('search.sizes')"
+            :items="sizes"
+            keyword="sizes"
+          />
+          <dropdown
+            :label="$t('search.vintages')"
+            :items="vintages"
+            keyword="vintages"
+          />
+          <dropdown
+            :label="$t('search.awards')"
+            :items="awards"
+            keyword="awards"
+          />
+          <dropdown
+            :label="$t('search.agings')"
+            :items="agings"
+            keyword="agings"
+          />
+          <dropdown
+            :label="$t('search.philosophies')"
             :items="philosophies"
             keyword="philosophies"
           />
 
-          <dropdown-range label="Prezzo" :min="minPrice" :max="maxPrice" />
+          <dropdown-range
+            :label="$t('search.price')"
+            :min="minPrice"
+            :max="maxPrice"
+          />
         </div>
       </div>
       <div class="col-12 col-md-9 px-md-0" v-if="results.length > 0">
@@ -352,33 +399,75 @@
           </button>
         </div>
 
-        <dropdown label="categories" :items="categories" keyword="categories" />
-        <dropdown label="winelists" :items="winelists" keyword="winelists" />
-        <dropdown label="pairings" :items="pairings" keyword="pairings" />
         <dropdown
-          label="dosagecontents"
+          :label="$t('search.categories')"
+          :items="categories"
+          keyword="categories"
+        />
+        <dropdown
+          :label="$t('search.winelists')"
+          :items="winelists"
+          keyword="winelists"
+        />
+        <dropdown
+          :label="$t('search.pairings')"
+          :items="pairings"
+          keyword="pairings"
+        />
+        <dropdown
+          :label="$t('search.dosagecontents')"
           :items="dosagecontents"
           keyword="dosagecontents"
         />
-        <dropdown label="Provenienza" :items="regions" keyword="regions" />
-        <dropdown label="Brands" :items="brands" keyword="brands" />
-        <dropdown label="sizes" :items="sizes" keyword="sizes" />
-        <dropdown label="vintages" :items="vintages" keyword="vintages" />
-        <dropdown label="awards" :items="awards" keyword="awards" />
-        <dropdown label="agings" :items="agings" keyword="agings" />
         <dropdown
-          label="philosophies"
+          :label="$t('search.bodystyles')"
+          :items="bodystyles"
+          keyword="bodystyles"
+        />
+        <dropdown :label="$t('search.boxes')" :items="boxes" keyword="boxes" />
+        <dropdown :label="$t('search.areas')" :items="areas" keyword="areas" />
+        <dropdown
+          :label="$t('search.provenience')"
+          :items="regions"
+          keyword="regions"
+        />
+        <dropdown
+          :label="$t('search.brands')"
+          :items="brands"
+          keyword="brands"
+        />
+        <dropdown
+          :label="$t('search.countries')"
+          :items="countries"
+          keyword="countries"
+        />
+        <dropdown :label="$t('search.sizes')" :items="sizes" keyword="sizes" />
+        <dropdown
+          :label="$t('search.vintages')"
+          :items="vintages"
+          keyword="vintages"
+        />
+        <dropdown
+          :label="$t('search.awards')"
+          :items="awards"
+          keyword="awards"
+        />
+        <dropdown
+          :label="$t('search.agings')"
+          :items="agings"
+          keyword="agings"
+        />
+        <dropdown
+          :label="$t('search.philosophies')"
           :items="philosophies"
           keyword="philosophies"
         />
-        <!--         <dropdown-range
-          label="Prezzo"
+
+        <dropdown-range
+          :label="$t('search.price')"
           :min="minPrice"
           :max="maxPrice"
-          :choosenMin="minPrice"
-          :choosenMax="maxPrice"
-        /> -->
-        <dropdown-range label="Prezzo" :min="minPrice" :max="maxPrice" />
+        />
 
         <selections-box-mobile
           label="selections"
@@ -576,8 +665,7 @@ export default {
     if (!this.inputParameters.search) delete this.inputParameters.search;
 
     let query = new URLSearchParams(this.inputParameters).toString();
-    console.clear();
-    console.log(query, "asdSS");
+
     let sel = "&";
 
     if (this.inputParameters.sel) {
@@ -587,15 +675,10 @@ export default {
         .join("&");
     }
 
-    const searchResult = await fetch(
-      "https://callmewine-api-staging.dojo.sh/api/products/search?" +
-        query +
-        sel
-    );
+    const elastic_url = this.$config.ELASTIC_URL;
+    const searchResult = await fetch(elastic_url + query + sel);
 
-    const allFields = await fetch(
-      "https://callmewine-api-staging.dojo.sh/api/products/search?"
-    );
+    const allFields = await fetch(elastic_url);
     const allFieldsJSON = await allFields.json();
 
     const search = await searchResult.json();
@@ -630,7 +713,7 @@ export default {
           };
         }
       );
-      console.log(buckets, ">>>", el);
+
       this[`${el}`] = buckets;
 
       const filterId = this.inputParameters[el];

@@ -578,16 +578,6 @@ export default {
         );
         const resultJSON = await result.json();
         this.data = resultJSON;
-        console.log(resultJSON, "res");
-        /* if (resultJSON.categories.length > 0) {
-          this.categories = resultJSON.categories;
-        }
-        if (resultJSON.brands.length > 0) {
-          this.brands = resultJSON.brands;
-        }
-        if (resultJSON.products.length > 0) {
-          this.products = resultJSON.products;
-        } */
       }
     },
     switchToCart() {

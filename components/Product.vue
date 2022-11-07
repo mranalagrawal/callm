@@ -436,7 +436,7 @@ export default {
     const urls = await fetch(
       `https://callmewine-api.dojo.sh/api/product/${this.product.substring(1)}`
     ).then((r) => r.json());
-    console.log(urls);
+
     this.breadcrumb = urls.data;
 
     this.$store.commit("recent/addRecent", this.product);
@@ -460,7 +460,6 @@ export default {
 
     this.data = data.data.products.edges[0].node;
 
-    console.log(this.data);
     this.price = this.data.variants.nodes[0].price;
     this.metafield = JSON.parse(this.data.metafield1.value);
 

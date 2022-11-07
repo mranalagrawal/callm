@@ -91,5 +91,6 @@ export default {
   publicRuntimeConfig: {
     DOMAIN: process.env.DOMAIN,
     STOREFRONT_ACCESS_TOKEN: process.env.STOREFRONT_ACCESS_TOKEN,
+    ELASTIC_URL: process.env.ELASTIC_URL,
   },
 };
