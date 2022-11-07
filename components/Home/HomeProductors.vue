@@ -3,7 +3,7 @@
     <!-- <div v-for="product in products" :key="product.id">{{ product.title }}</div> -->
     <div class="row py-5 px-0">
       <div class="col-12 text-center">
-        <h2>I produttori</h2>
+        <h2>{{ label }}</h2>
       </div>
 
       <div class="col-12 px-0 py-4">
@@ -57,6 +57,7 @@ export default {
   components: { VueSlickCarousel },
   data: () => ({
     data: null,
+    label: null,
     settingsTop: {
       arrows: false,
       dots: false,
@@ -132,7 +133,8 @@ export default {
     const data = response.data.productor;
 
     this.data = data.concat(data);
-    console.log(this.data);
+    this.label = response.data.label;
+    console.log(response.data, "Prod");
   },
 };
 </script>

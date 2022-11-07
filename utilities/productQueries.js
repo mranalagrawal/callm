@@ -36,7 +36,10 @@ const queryByCollection = (
                     variants(first: 10) {
                         nodes {
                             id
-                            compareAtPrice
+                            compareAtPriceV2 {
+                                amount
+                                currencyCode
+                            }
                             price
                         }
                     }
@@ -68,7 +71,10 @@ const queryProductByIdAsTag = (tag) => `query {
                     availableForSale
                     variants(first: 1) {
                         nodes {
-                            compareAtPrice
+                            compareAtPriceV2 {
+                                amount
+                                currencyCode
+                            }
                             price
                             id
                         }
@@ -105,7 +111,10 @@ const productRecommendations = (id) => `query {
             variants(first: 10) {
                 nodes {
                     id
-                    compareAtPrice
+                    compareAtPriceV2 {
+                        amount
+                        currencyCode
+                    }
                     price
                 }
             }
@@ -133,7 +142,10 @@ const queryProductsByVendor = (vendor) => `query {
                 variants(first: 10) {
                     nodes {
                         id
-                        compareAtPrice
+                        compareAtPriceV2 {
+                            amount
+                            currencyCode
+                        }
                         price
                     }
                 }

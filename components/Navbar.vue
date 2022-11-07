@@ -135,7 +135,7 @@
 
           <div v-if="data.winelists && data.winelists.length > 0">
             <p class="text-uppercase suggest-title px-2 mt-3 mb-0 pb-0">
-              Carte dei Vini
+              {{ $t("search.winelists") }}
             </p>
             <nuxt-link
               v-for="item in data.winelists"
@@ -150,7 +150,7 @@
           <div v-if="data" class="pt-3">
             <div v-if="data.categories && data.categories.length > 0">
               <p class="text-uppercase suggest-title px-2 mt-3 mb-0 pb-0">
-                Tipologia
+                {{ $t("search.categories") }}
               </p>
               <nuxt-link
                 v-for="item in data.categories"
@@ -164,7 +164,7 @@
 
             <div v-if="data.brands && data.brands.length > 0">
               <p class="text-uppercase suggest-title px-2 mt-3 mb-0 pb-0">
-                Produttore
+                {{ $t("search.brands") }}
               </p>
               <nuxt-link
                 v-for="item in data.brands"
@@ -178,7 +178,7 @@
 
             <div v-if="data.products && data.products.length > 0">
               <p class="text-uppercase suggest-title px-2 mt-3 mb-0 pb-0">
-                Prodotti
+                {{ $t("search.products") }}
               </p>
               <nuxt-link
                 v-for="item in data.products"
@@ -196,7 +196,7 @@
           size="sm"
           class="p-4"
           style="border-radius: 12px; border: 1px solid #8c8d8e"
-          placeholder="Cosa stai cercando?"
+          :placeholder="$t('navbar.search')"
           v-model="search"
           @input="suggest"
         ></b-form-input>
@@ -287,7 +287,9 @@
                     </g>
                   </svg>
                   <p class="mb-0 fs-14" style="position: relative; top: 4px">
-                    {{ user ? user.customer.firstName : "Accedi" }}
+                    {{
+                      user ? user.customer.firstName : $t("navbar.user.signIn")
+                    }}
                   </p>
                 </div>
               </div>
@@ -300,9 +302,11 @@
                 <div v-if="!user">
                   <login-form width="340px" />
                   <div class="bg-light p-3 text-center">
-                    Non hai ancora un profilo?
-                    <nuxt-link to="/login" class="text-uppercase text-light-red"
-                      >Registrati</nuxt-link
+                    {{ $t("navbar.user.notRegisteredYet") }}
+                    <nuxt-link
+                      to="/login"
+                      class="text-uppercase text-light-red"
+                      >{{ $t("navbar.user.register") }}</nuxt-link
                     >
                   </div>
                 </div>
@@ -409,7 +413,7 @@
                   </svg>
 
                   <p class="mb-0 fs-14" style="position: relative; top: 4px">
-                    Carrello
+                    {{ $t("cart") }}
                   </p>
                 </div>
               </div>
@@ -465,16 +469,16 @@
         </div>
         <div v-if="!user">
           <h3 class="px-3 text-center text-dark-green mt-5 font-weight-bold">
-            Accedi
+            {{ $t("navbar.user.signIn") }}
           </h3>
           <div class="px-3">
             <login-form width="340px" />
           </div>
           <div class="bg-light p-3 text-center">
-            Non hai ancora un profilo?
-            <nuxt-link to="/login" class="text-uppercase text-light-red"
-              >Registrati</nuxt-link
-            >
+            {{ $t("navbar.user.notRegisteredYet") }}
+            <nuxt-link to="/login" class="text-uppercase text-light-red">{{
+              $t("navbar.user.register")
+            }}</nuxt-link>
           </div>
         </div>
         <div v-else class="mt-5">

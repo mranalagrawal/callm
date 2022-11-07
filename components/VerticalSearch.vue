@@ -147,7 +147,7 @@
                   product._source.saleprice.toFixed(2) !==
                   product._source.price.toFixed(2)
                 "
-                >{{ product._source.price.toFixed(2) }}€</span
+                >{{ product._source.price.toFixed(2) }} GBP</span
               >
               <span v-else>&nbsp;</span>
             </p>
@@ -162,7 +162,7 @@
                   >,<span>{{
                     product._source.saleprice.toFixed(2).split(".")[1]
                   }}</span>
-                  €
+                  GBP
                 </p>
               </div>
 
@@ -242,7 +242,7 @@
                 >,<span>{{
                   product._source.saleprice.toFixed(2).split(".")[1]
                 }}</span>
-                €
+                GBP
               </p>
 
               <div

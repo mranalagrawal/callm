@@ -2,7 +2,9 @@
   <div class="container-fluid container-large px-md-0 my-5">
     <div class="row">
       <div class="col-12 text-center" v-if="data">
-        <h2 class="font-weight-bold text-dark-green">Visti di recente</h2>
+        <h2 class="font-weight-bold text-dark-green">
+          {{ $t("recentlySeen") }}
+        </h2>
       </div>
 
       <div class="col-12 py-4" v-if="data">

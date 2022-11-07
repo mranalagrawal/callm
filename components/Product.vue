@@ -107,15 +107,20 @@
               <span style="font-size: 2.5rem; font-weight: 900">{{
                 price.split(".")[0]
               }}</span
-              >,<span style="font-size: 16px">{{ price.split(".")[1] }}€</span>
+              >,<span style="font-size: 16px"
+                >{{ price.split(".")[1] }}
+                {{ data.variants.nodes[0].compareAtPriceV2.currencyCode }}
+              </span>
             </div>
             <div class="col-12 col-md-6 offset-md-2 text-center">
               <div class="d-flex align-items-end justify-content-center">
                 <div>
                   <p v-if="data.totalInventory > 0" class="text-light-green">
-                    Disponibilità immediata ({{ data.totalInventory }})
+                    {{ $t("product.available") }} ({{ data.totalInventory }})
                   </p>
-                  <p v-else class="text-light-red">Non disponibile</p>
+                  <p v-else class="text-light-red">
+                    {{ $t("product.notAvailable") }}
+                  </p>
                   <button
                     class="btn p-2 px-3 text-uppercase text-white d-inline-flex align-items-center br-10"
                     style="background: #da4865"
@@ -128,7 +133,9 @@
                       class="mr-2"
                       alt=""
                     />
-                    <span class="font-weight-bold">Aggiungi al carrello</span>
+                    <span class="font-weight-bold">{{
+                      $t("product.addToCart")
+                    }}</span>
                   </button>
                 </div>
                 <button class="btn ml-2">
@@ -152,20 +159,24 @@
         <div class="col-12 col-md-8 pt-5">
           <div class="pt-2">
             <b-tabs content-class="mt-4" justified>
-              <b-tab :title="$t('Descrizione')">
+              <b-tab :title="$t('product.description')">
                 <div v-html="data.descriptionHtml"></div>
               </b-tab>
-              <b-tab :title="$t('Per gustarlo al meglio')">
+              <b-tab :title="$t('product.toEnjoyBetter')">
                 <div>
-                  <h3 class="mb-5">Per gustarlo al meglio</h3>
+                  <h3 class="mb-5">{{ $t("product.toEnjoyBetter") }}</h3>
 
                   <div class="mb-5">
-                    <h4 class="font-weight-bold">Temp. servizio</h4>
+                    <h4 class="font-weight-bold">
+                      {{ $t("product.temperature") }}
+                    </h4>
                     <p>{{ metafield.servingTemperature }}</p>
                   </div>
 
                   <div class="mb-5">
-                    <h4 class="font-weight-bold">Quando bere</h4>
+                    <h4 class="font-weight-bold">
+                      {{ $t("product.whenDrink") }}
+                    </h4>
                     <p>{{ metafield.drinkNotesDrinkingTitle }}</p>
                     <p>{{ metafield.drinkNotesServingDescription }}</p>
                     <p>{{ metafield.drinkNotesDrinkingLongevity }}</p>
@@ -177,7 +188,7 @@
                   </div>
                 </div>
               </b-tab>
-              <b-tab :title="$t('Premi e riconoscimenti')">
+              <b-tab :title="$t('product.awardsAndAcknowledgments')">
                 <table
                   class="table table-striped"
                   v-if="metafield.awards.length > 0"
@@ -185,14 +196,14 @@
                   <thead>
                     <tr class="bg-dark-green text-white">
                       <th style="border-radius: 15px 0px 0px 0px" scope="col">
-                        GUIDA
+                        {{ $t("product.guide") }}
                       </th>
-                      <th style="" scope="col">ANNATA</th>
+                      <th style="" scope="col">{{ $t("product.year") }}</th>
 
-                      <th style="" scope="col">PUNTEGGIO</th>
+                      <th style="" scope="col">{{ $t("product.score") }}</th>
 
                       <th style="border-radius: 0px 15px 0px 0px" scope="col">
-                        CITAZIONE
+                        {{ $t("product.quote") }}
                       </th>
                     </tr>
                   </thead>
@@ -223,7 +234,7 @@
                   </tbody>
                 </table>
               </b-tab>
-              <b-tab :title="$t('Produttore')">
+              <b-tab :title="$t('product.producer')">
                 <div v-if="brand">
                   <div v-if="brandMetafields.isPartner" class="ribbon">
                     <img
@@ -231,30 +242,34 @@
                       class="svg-favourite"
                       style="width: 20px"
                     />
-                    <span class="small">Consigliato da Callmewine</span>
+                    <span class="small">{{
+                      $t("product.recommendedByCallmewine")
+                    }}</span>
                   </div>
                   <h3 class="text-light-red">{{ brand.title }}</h3>
                   <div class="row">
                     <div class="col-12 col-md-8">
                       <div class="row py-3 bg-light">
                         <div class="col-6 font-weight-bold">
-                          Vini Principali
+                          {{ $t("product.mainWines") }}
                         </div>
                         <div class="col-6"></div>
                       </div>
                       <div class="row py-3">
                         <div class="col-6 font-weight-bold">
-                          Anno di fondazione
+                          {{ $t("product.foundation") }}
                         </div>
                         <div class="col-6">{{ brandMetafields.year }}</div>
                       </div>
                       <div class="row py-3 bg-light">
-                        <div class="col-6 font-weight-bold">Ettari vitati</div>
+                        <div class="col-6 font-weight-bold">
+                          {{ $t("product.vineyardHectares") }}
+                        </div>
                         <div class="col-6">{{ brandMetafields.hectares }}</div>
                       </div>
                       <div class="row py-3">
                         <div class="col-6 font-weight-bold">
-                          Uve di proprietà
+                          {{ $t("product.ownGrapes") }}
                         </div>
                         <div class="col-6">
                           {{ brandMetafields.ownedGrapes }}
@@ -262,18 +277,22 @@
                       </div>
                       <div class="row py-3 bg-light">
                         <div class="col-6 font-weight-bold">
-                          Produzione annua
+                          {{ $t("product.annualProduction") }}
                         </div>
                         <div class="col-6">
                           {{ brandMetafields.annualProduction }}
                         </div>
                       </div>
                       <div class="row py-3">
-                        <div class="col-6 font-weight-bold">Enologo</div>
+                        <div class="col-6 font-weight-bold">
+                          {{ $t("product.winemaker") }}
+                        </div>
                         <div class="col-6"></div>
                       </div>
                       <div class="row py-3 bg-light">
-                        <div class="col-6 font-weight-bold">Indirizzo</div>
+                        <div class="col-6 font-weight-bold">
+                          {{ $t("product.address") }}
+                        </div>
                         <div class="col-6">{{ brandMetafields.address }}</div>
                       </div>
                     </div>
@@ -285,9 +304,9 @@
                   <div v-html="brand.contentHtml"></div> -->
                 </div>
               </b-tab>
-              <b-tab :title="$t('Abbinamenti')">
+              <b-tab :title="$t('product.pairings')">
                 <!-- {{ metafield.foodPairings }} -->
-                <h3 class="mb-5">Perfetto da bere con</h3>
+                <h3 class="mb-5">{{ $t("product.pairings") }}</h3>
 
                 <div class="row">
                   <div
@@ -309,52 +328,66 @@
         </div>
         <div class="col-12 col-md-4">
           <div style="width: 80%" class="bg-light p-3 mx-auto">
-            <h3 class="mb-5">Caratteristiche</h3>
+            <h3 class="mb-5">{{ $t("product.features") }}</h3>
 
             <div v-if="metafield.denomination">
-              <p class="font-weight-bold mb-0">Denominazione</p>
+              <p class="font-weight-bold mb-0">
+                {{ $t("product.denomination") }}
+              </p>
               <p class="mb-4">{{ metafield.denomination }}</p>
               <hr />
             </div>
             <div v-if="metafield.grapes">
-              <p class="font-weight-bold mb-0">Vitigni</p>
+              <p class="font-weight-bold mb-0">
+                {{ $t("product.vines") }}
+              </p>
               <p class="mb-4">{{ metafield.grapes }}</p>
               <hr />
             </div>
 
             <div v-if="metafield.countryName || metafield.countryRegionName">
-              <p class="font-weight-bold mb-0">Regione</p>
+              <p class="font-weight-bold mb-0">{{ $t("product.region") }}</p>
               <p class="mb-4">
                 {{ metafield.countryRegionName }} ({{ metafield.countryName }})
               </p>
               <hr />
             </div>
             <div v-if="metafield.alcoholContent">
-              <p class="font-weight-bold mb-0">Gradazione alcolica</p>
+              <p class="font-weight-bold mb-0">
+                {{ $t("product.alcoholContent") }}
+              </p>
               <p class="mb-4">{{ metafield.alcoholContent }}%</p>
               <hr />
             </div>
             <div v-if="metafield.size">
-              <p class="font-weight-bold mb-0">Formato</p>
+              <p class="font-weight-bold mb-0">
+                {{ $t("product.format") }}
+              </p>
               <p class="mb-4">{{ metafield.size }}</p>
               <hr />
             </div>
             <div v-if="metafield.winemaking">
-              <p class="font-weight-bold mb-0">Vinificazione</p>
+              <p class="font-weight-bold mb-0">
+                {{ $t("product.vinification") }}
+              </p>
               <p class="mb-4">
                 {{ metafield.winemaking }}
               </p>
               <hr />
             </div>
             <div v-if="metafield.agingDescription">
-              <p class="font-weight-bold mb-0">Affinamento</p>
+              <p class="font-weight-bold mb-0">
+                {{ $t("product.refinement") }}
+              </p>
               <p class="mb-4">
                 {{ metafield.agingDescription }}
               </p>
               <hr />
             </div>
             <div v-if="metafield.productInformations">
-              <p class="font-weight-bold mb-0">Note aggiuntive</p>
+              <p class="font-weight-bold mb-0">
+                {{ $t("product.additionalNotes") }}
+              </p>
               <p class="mb-4">{{ metafield.productInformations }}</p>
             </div>
           </div>
@@ -457,7 +490,7 @@ export default {
       body: productQuery,
     };
     const data = await fetch(domain, GRAPHQL_BODY).then((res) => res.json());
-
+    console.log(data, "dA");
     this.data = data.data.products.edges[0].node;
 
     this.price = this.data.variants.nodes[0].price;

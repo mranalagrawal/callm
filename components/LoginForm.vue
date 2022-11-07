@@ -51,12 +51,12 @@
         Ricordami
       </b-form-checkbox> -->
       <button type="submit" class="w-100 btn bg-light-red text-white">
-        Accedi
+        {{ $t("navbar.user.signIn") }}
       </button>
 
       <div class="text-center my-3">
         <nuxt-link to="/recover" class="btn text-light-red">
-          Hai dimenticato la password ?
+          {{ $t("navbar.user.forgotPassword") }}
         </nuxt-link>
       </div>
     </form>

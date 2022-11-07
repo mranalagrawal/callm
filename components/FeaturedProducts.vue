@@ -18,7 +18,7 @@
         <nuxt-link
           :to="localePath('/catalog?favourite=true&page=1')"
           class="btn px-5 py-2 text-uppercase view-more font-weight-bold"
-          >Vedi tutti</nuxt-link
+          >{{ $t("viewMore") }}</nuxt-link
         >
       </div>
     </div>

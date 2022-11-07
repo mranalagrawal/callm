@@ -8,7 +8,7 @@
           v-model="form.firstname"
           type="text"
           required
-          placeholder="Nome"
+          :placeholder="$t('firstName')"
         ></b-form-input>
       </b-form-group>
 
@@ -19,7 +19,7 @@
           v-model="form.lastname"
           type="text"
           required
-          placeholder="Cognome"
+          :placeholder="$t('lastName')"
         ></b-form-input>
       </b-form-group>
 
@@ -30,7 +30,7 @@
           v-model="form.email"
           type="email"
           required
-          placeholder="Email"
+          :placeholder="$t('email')"
         ></b-form-input>
       </b-form-group>
 
@@ -41,12 +41,14 @@
           v-model="form.password"
           required
           :type="passwordIsVisible ? 'text' : 'password'"
-          placeholder="Password"
+          :placeholder="$t('password')"
         ></b-form-input>
       </b-form-group>
 
       <b-form-group class="my-4 position-relative">
-        <p class="mb-0 text-muted">Inserisci la tua data di nascita</p>
+        <p class="mb-0 text-muted">
+          {{ $t("birthday") }}
+        </p>
         <b-form-input
           class="custom-input"
           id="input-2"
@@ -71,8 +73,7 @@
         unchecked-value="not_accepted"
         class="mt-3"
       >
-        Dichiaro di aver letto la
-        <a href="" class="text-light-red">Privacy Policy</a> di Callmewine *.
+        {{ $t("privacyPolicy") }}
       </b-form-checkbox>
 
       <b-form-checkbox
@@ -81,8 +82,7 @@
         name="marketing"
         class="mt-3"
       >
-        Acconsento a ricevere newslettter e comunicazioni promozionali da parte
-        di Callmewine, come previsto dalla Privacy Policy.
+        {{ $t("acceptMarketing") }}
       </b-form-checkbox>
 
       <button
@@ -95,7 +95,7 @@
             : 'disabled'
         "
       >
-        Registrati
+        {{ $t("navbar.user.register") }}
       </button>
     </form>
   </div>

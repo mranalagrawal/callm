@@ -12,10 +12,10 @@
         <div v-if="!user">
           <login-form />
           <div class="bg-light p-3 text-center">
-            Non hai ancora un profilo?
-            <nuxt-link to="/login" class="text-uppercase text-light-red"
-              >Registrati</nuxt-link
-            >
+            {{ $t("navbar.user.notRegisteredYet") }}
+            <nuxt-link to="/login" class="text-uppercase text-light-red">{{
+              $t("navbar.user.register")
+            }}</nuxt-link>
           </div>
         </div>
         <div v-else>

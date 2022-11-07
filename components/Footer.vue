@@ -4,7 +4,7 @@
       <div class="row">
         <div class="col-12">
           <p class="font-weight-bold h2 text-center mb-5">
-            Esplora il nostro catalogo
+            {{ $t("footer.explore") }}
           </p>
         </div>
       </div>
@@ -47,6 +47,7 @@
     </div>
 
     <div
+      v-if="data && info"
       class="container-fluid bg-dark-green text-light-footer px-md-5 py-5 mt-5"
     >
       <div class="row justify-content-end">
@@ -72,8 +73,7 @@
             alt=""
           />
           <p class="mt-2 fs-14">
-            Callmewine è un’enoteca online specializzata nella vendita di vino,
-            champagne e distillati.
+            {{ info.description }}
           </p>
         </div>
       </div>
@@ -87,9 +87,7 @@
             Newsletter
           </p>
           <p class="">
-            Iscriviti alla nostra Newsletter: ogni giorno info, promozioni e
-            subito per te <br />
-            uno sconto del 5% sul tuo primo ordine!
+            {{ info.newsletter_cta }}
           </p>
           <form class="mb-5 pr-md-4">
             <div
@@ -107,7 +105,7 @@
                 <button
                   class="btn font-weight-bold text-uppercase w-100 btn-newsletter"
                 >
-                  Iscriviti
+                  {{ $t("navbar.user.signIn") }}
                 </button>
               </div>
             </div>
@@ -123,8 +121,7 @@
                   <label
                     class="custom-control-label fs-0875 pl-3"
                     for="customCheck1"
-                    >Acconsento a ricevere newsletter e comunicazioni
-                    promozionali da parte di Callmewine, come previsto dalla
+                    >{{ info.first_check }}
                     <a href="#" class="text-decoration-none text-white"
                       >Privacy Policy</a
                     ></label
@@ -142,10 +139,7 @@
                   <label
                     class="custom-control-label fs-0875 pl-3"
                     for="customCheck2"
-                    >Acconsento all'uso dei miei dati per attività di
-                    profilazione volte a migliorare la mia esperienza di
-                    navigazione e ricevere proposte legate ai miei interessi ed
-                    alle mie abitudini di acquisto, come previsto dalla
+                    >{{ info.second_check }}
                     <a href="#" class="text-decoration-none text-white"
                       >Privacy Policy</a
                     ></label
@@ -158,19 +152,23 @@
         <div class="col-12 col-lg-6" style="font-size: 0.875rem">
           <div class="row">
             <div class="col-12 col-lg-4 mb-5">
-              <p class="h5 mb-4" style="font-weight: 400">L'azienda</p>
+              <p class="h5 mb-4" style="font-weight: 400">
+                {{ $t("footer.company") }}
+              </p>
               <nuxt-link
                 :to="localePath('/about-us')"
                 class="text-decoration-none text-white"
-                >Chi siamo</nuxt-link
+                >{{ $t("footer.who") }}</nuxt-link
               >
             </div>
             <div class="col-12 col-lg-4 mb-5">
-              <p class="h5 mb-4" style="font-weight: 400">Servizi offerti</p>
+              <p class="h5 mb-4" style="font-weight: 400">
+                {{ $t("footer.services") }}
+              </p>
               <nuxt-link
                 :to="localePath('/restaurants-wineshops')"
                 class="text-decoration-none text-white d-block mb-2"
-                >Enoteche e Ristoranti</nuxt-link
+                >{{ $t("footer.restaurantsAndWineshops") }}</nuxt-link
               >
               <!-- <nuxt-link
                 :to="localePath('/business-gifts')"
@@ -184,26 +182,28 @@
               > -->
             </div>
             <div class="col-12 col-lg-4 mb-5">
-              <p class="h5 mb-4" style="font-weight: 400">Supporto</p>
+              <p class="h5 mb-4" style="font-weight: 400">
+                {{ $t("footer.support") }}
+              </p>
               <nuxt-link
                 :to="localePath('/shipping')"
                 class="text-decoration-none text-white d-block mb-2"
-                >Spedizioni</nuxt-link
+                >{{ $t("footer.shipping") }}</nuxt-link
               >
               <nuxt-link
                 :to="localePath('/payments')"
                 class="text-decoration-none text-white d-block mb-2"
-                >Pagamenti</nuxt-link
+                >{{ $t("footer.payments") }}</nuxt-link
               >
               <nuxt-link
                 :to="localePath('/terms-of-sales')"
                 class="text-decoration-none text-white d-block mb-2"
-                >Condizioni di vendita</nuxt-link
+                >{{ $t("footer.termsOfSales") }}</nuxt-link
               >
               <nuxt-link
                 :to="localePath('/contact')"
                 class="text-decoration-none text-white d-block mb-2"
-                >Contattaci</nuxt-link
+                >{{ $t("footer.contacts") }}</nuxt-link
               >
             </div>
           </div>
@@ -219,7 +219,7 @@
               class="fal fa-wallet text-white mr-2"
               style="font-size: 24px"
             ></i
-            >Metodi di pagamento</span
+            >{{ $t("footer.paymentMethods") }}</span
           >
           <img
             src="../assets/images/american-express.png"
@@ -263,7 +263,7 @@
       <hr class="separator" />
       <div class="row justify-content-center mt-4">
         <div class="col-12 col-md-10 text-center px-4">
-          <p class="credit">{{ info }}</p>
+          <p class="credit">{{ info.info }}</p>
         </div>
       </div>
     </div>
@@ -387,8 +387,8 @@ export default {
     const responseInfo = await this.$prismic.api.getSingle("footer-info", {
       lang: lang,
     });
-    const info = responseInfo.data.info;
-
+    const info = responseInfo.data;
+    console.log(responseInfo, "responseInfos");
     this.info = info;
   },
 };

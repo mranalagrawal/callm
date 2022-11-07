@@ -126,11 +126,14 @@
               class="mb-1"
               style="text-decoration: line-through; color: #8c8d8e"
               v-if="
-                product.variants.nodes[0].compareAtPrice !==
-                product.variants.nodes[0].price
+                +product.variants.nodes[0].compareAtPriceV2.amount !==
+                +product.variants.nodes[0].price
               "
             >
-              {{ product.variants.nodes[0].compareAtPrice }} €
+              {{
+                (+product.variants.nodes[0].compareAtPriceV2.amount).toFixed(2)
+              }}
+              {{ product.variants.nodes[0].compareAtPriceV2.currencyCode }}
             </p>
             <p v-else class="mb-1">&nbsp;</p>
             <p class="mb-0">
@@ -138,7 +141,7 @@
                 product.variants.nodes[0].price.split(".")[0]
               }}</span
               >,<span>{{ product.variants.nodes[0].price.split(".")[1] }}</span>
-              €
+              {{ product.variants.nodes[0].compareAtPriceV2.currencyCode }}
             </p>
           </div>
 

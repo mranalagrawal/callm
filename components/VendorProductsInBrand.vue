@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-12 text-center" v-if="data">
         <h2 class="font-weight-bold text-dark-green">
-          Dello stesso produttore
+          {{ $t("sameProducer") }}
         </h2>
       </div>
 
