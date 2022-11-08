@@ -542,8 +542,9 @@ export default {
       const variantId =
         this.data.variants.edges[0].node.id.split("ProductVariant/")[1];
 
+      const elastic_url = this.$config.ELASTIC_URL;
       const response = await fetch(
-        `https://callmewine-api.dojo.sh/api/customers/${userId}/wishlist/${this.data.tags[0]}`,
+        elastic_url + `customers/${userId}/wishlist/${this.data.tags[0]}`,
         { async: true, crossDomain: true, method: "POST" }
       );
       const updatedWishlist = await response.text();

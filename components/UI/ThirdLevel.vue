@@ -17,8 +17,7 @@
           alt=""
           width="20px"
           class="img-selection"
-        />
-        {{ thirdLevel.third_level_name }}</nuxt-link
+        />{{ thirdLevel.third_level_name }}</nuxt-link
       >
     </p>
     <div

@@ -250,9 +250,6 @@ export default {
 
       const elastic_url = this.$config.ELASTIC_URL;
 
-      console.log(
-        elastic_url + `customers/${userId}/wishlist/${this.product.tags[0]}`
-      );
       const response = await fetch(
         elastic_url + `customers/${userId}/wishlist/${this.product.tags[0]}`,
         { async: true, crossDomain: true, method: "POST" }
