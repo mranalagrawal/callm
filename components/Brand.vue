@@ -10,7 +10,9 @@
                 class="svg-favourite"
                 style="width: 20px"
               />
-              <span class="small">Consigliato da Callmewine</span>
+              <span class="small">
+                {{ $t("product.recommendedByCallmewine") }}
+              </span>
             </div>
             <h1 class="py-3">{{ data.title }}</h1>
             <p>{{ metafields.subtitle }}</p>
@@ -31,35 +33,49 @@
         <div class="row">
           <div class="col-12 col-md-8">
             <div class="row py-3 bg-light">
-              <div class="col-6 font-weight-bold">Vini Principali</div>
+              <div class="col-6 font-weight-bold">
+                {{ $t("product.mainWines") }}
+              </div>
               <div class="col-6"></div>
             </div>
             <div class="row py-3">
-              <div class="col-6 font-weight-bold">Anno di fondazione</div>
+              <div class="col-6 font-weight-bold">
+                {{ $t("product.foundation") }}
+              </div>
               <div class="col-6">{{ metafields.year }}</div>
             </div>
             <div class="row py-3 bg-light">
-              <div class="col-6 font-weight-bold">Ettari vitati</div>
+              <div class="col-6 font-weight-bold">
+                {{ $t("product.vineyardHectares") }}
+              </div>
               <div class="col-6">{{ metafields.hectares }}</div>
             </div>
             <div class="row py-3">
-              <div class="col-6 font-weight-bold">Uve di proprietà</div>
+              <div class="col-6 font-weight-bold">
+                {{ $t("product.ownGrapes") }}
+              </div>
               <div class="col-6">
                 {{ metafields.ownedGrapes }}
               </div>
             </div>
             <div class="row py-3 bg-light">
-              <div class="col-6 font-weight-bold">Produzione annua</div>
+              <div class="col-6 font-weight-bold">
+                {{ $t("product.annualProduction") }}
+              </div>
               <div class="col-6">
                 {{ metafields.annualProduction }}
               </div>
             </div>
             <div class="row py-3">
-              <div class="col-6 font-weight-bold">Enologo</div>
+              <div class="col-6 font-weight-bold">
+                {{ $t("product.winemaker") }}
+              </div>
               <div class="col-6"></div>
             </div>
             <div class="row py-3 bg-light">
-              <div class="col-6 font-weight-bold">Indirizzo</div>
+              <div class="col-6 font-weight-bold">
+                {{ $t("product.address") }}
+              </div>
               <div class="col-6">{{ metafields.address }}</div>
             </div>
           </div>
@@ -93,35 +109,49 @@
         </div>
         <div class="col-12 col-md-6">
           <div class="row py-3 bg-light">
-            <div class="col-6 font-weight-bold">Vini Principali</div>
+            <div class="col-6 font-weight-bold">
+              {{ $t("product.mainWines") }}
+            </div>
             <div class="col-6"></div>
           </div>
           <div class="row py-3">
-            <div class="col-6 font-weight-bold">Anno di fondazione</div>
+            <div class="col-6 font-weight-bold">
+              {{ $t("product.foundation") }}
+            </div>
             <div class="col-6">{{ metafields.year }}</div>
           </div>
           <div class="row py-3 bg-light">
-            <div class="col-6 font-weight-bold">Ettari vitati</div>
+            <div class="col-6 font-weight-bold">
+              {{ $t("product.vineyardHectares") }}
+            </div>
             <div class="col-6">{{ metafields.hectares }}</div>
           </div>
           <div class="row py-3">
-            <div class="col-6 font-weight-bold">Uve di proprietà</div>
+            <div class="col-6 font-weight-bold">
+              {{ $t("product.ownGrapes") }}
+            </div>
             <div class="col-6">
               {{ metafields.ownedGrapes }}
             </div>
           </div>
           <div class="row py-3 bg-light">
-            <div class="col-6 font-weight-bold">Produzione annua</div>
+            <div class="col-6 font-weight-bold">
+              {{ $t("product.annualProduction") }}
+            </div>
             <div class="col-6">
               {{ metafields.annualProduction }}
             </div>
           </div>
           <div class="row py-3">
-            <div class="col-6 font-weight-bold">Enologo</div>
+            <div class="col-6 font-weight-bold">
+              {{ $t("product.winemaker") }}
+            </div>
             <div class="col-6"></div>
           </div>
           <div class="row py-3 bg-light">
-            <div class="col-6 font-weight-bold">Indirizzo</div>
+            <div class="col-6 font-weight-bold">
+              {{ $t("product.address") }}
+            </div>
             <div class="col-6">{{ metafields.address }}</div>
           </div>
           <div class="row py-3">

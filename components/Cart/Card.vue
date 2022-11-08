@@ -194,16 +194,16 @@ export default {
 
 <style scoped>
 .btn-detail {
-  border: 2px solid #da4865;
+  border: 2px solid var(--light-red);
   border-radius: 12px;
-  color: #da4865;
+  color: var(--light-red);
   text-transform: uppercase;
   font-weight: bold;
 }
 
 .btn-checkout {
-  border: 2px solid #da4865;
-  background: #da4865;
+  border: 2px solid var(--light-red);
+  background: var(--light-red);
   border-radius: 12px;
   color: #fff;
   text-transform: uppercase;

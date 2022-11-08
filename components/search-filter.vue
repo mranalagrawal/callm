@@ -225,12 +225,6 @@
                   >
                     Brand (Z-A)
                   </button>
-                  <button
-                    class="btn py-3 btn-sort-by w-100 text-left d-block"
-                    @click="sortBy('awardcount', 'desc')"
-                  >
-                    Più premiati
-                  </button>
                 </div>
               </b-dropdown>
             </div>

@@ -571,39 +571,6 @@ export default {
 </script>
 
 <style scoped>
-.ribbon {
-  background: var(--dark-green);
-  color: white;
-  position: relative;
-  display: inline-block;
-  padding: 0px 32px 0px 32px;
-  height: 24px;
-}
-
-.ribbon::before {
-  position: absolute;
-  content: "";
-  width: 0;
-  height: 0;
-  top: 0px;
-  left: 0px;
-  border-top: 12px solid transparent;
-  border-bottom: 12px solid transparent;
-  border-left: 12px solid white;
-}
-
-.ribbon::after {
-  position: absolute;
-  content: "";
-  width: 0;
-  height: 0;
-  top: 0px;
-  right: 0px;
-  border-top: 12px solid transparent;
-  border-bottom: 12px solid transparent;
-  border-right: 12px solid white;
-}
-
 .svg-favourite {
   filter: brightness(100);
 }

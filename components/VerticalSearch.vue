@@ -4,7 +4,7 @@
     :class="horizontal ? 'product-card-horizontal' : 'product-card-vertical'"
   >
     <div class="row h-100">
-      <div v-if="product._source.inpromotion" class="ribbon-1">
+      <div v-if="product._source.inpromotion" class="ribbon">
         <span><i class="fal fa-tag"></i> PROMO</span>
       </div>
       <div class="position-relative" :class="horizontal ? 'col-4' : 'col-12'">
@@ -207,19 +207,23 @@
           <div v-else class="row">
             <div class="col-6">
               <p class="mb-0">
-                <strong>Produttore</strong>: {{ product._source.brandname }}
+                <strong>{{ $t("product.producer") }}</strong
+                >: {{ product._source.brandname }}
               </p>
               <p class="mb-0">
-                <strong>Regione</strong>: {{ product._source.regionname }}
+                <strong>{{ $t("product.region") }}</strong
+                >: {{ product._source.regionname }}
                 <span v-if="product._source.areas.name"
                   >({{ product._source.areas.name }})</span
                 >
               </p>
               <p class="mb-0">
-                <strong>Formato</strong>: {{ product._source.sizes.name }}
+                <strong>{{ $t("product.format") }}</strong
+                >: {{ product._source.sizes.name }}
               </p>
               <p class="mb-0">
-                <strong>Vitigni</strong>: {{ product._source.grapes }}
+                <strong>{{ $t("product.mainWines") }}</strong
+                >: {{ product._source.grapes }}
               </p>
             </div>
             <div class="col-6">
@@ -227,13 +231,13 @@
                 class="text-light-green text-center text-uppercase mt-5"
                 v-if="product._source.quantity > 0"
               >
-                Disponibilità immediata
+                {{ $t("product.available") }}
               </p>
               <p
                 class="text-light-green text-center text-uppercase mt-5"
                 v-else
               >
-                Non disponibile
+                {{ $t("product.notAvailable") }}
               </p>
               <p class="mb-0 text-center">
                 <span class="integer">{{
@@ -250,12 +254,12 @@
                 v-if="product._source.quantity > 0"
               >
                 <button
-                  class="btn bg-red text-white text-uppercase w-100 br-10 mt-3"
+                  class="btn bg-light-red text-white text-uppercase w-100 br-10 mt-3"
                   @click.stop="isOpen = true"
                   v-show="!isOpen"
                 >
                   <i class="fal fa-shopping-cart"></i>
-                  aggiungi al carrello
+                  {{ $t("product.addToCart") }}
                 </button>
                 <span v-show="userCartQuantity > 0" class="cart-quantity">
                   {{ userCartQuantity }}
@@ -265,14 +269,14 @@
                     class="d-flex justify-content-between align-items-center"
                   >
                     <button
-                      class="btn bg-red text-white px-5"
+                      class="btn bg-light-red text-white px-5"
                       @click.stop="removeFromUserCart()"
                     >
                       -
                     </button>
                     {{ userCartQuantity }}
                     <button
-                      class="btn bg-red text-white px-5"
+                      class="btn bg-light-red text-white px-5"
                       @click.stop="addToUserCart()"
                     >
                       +

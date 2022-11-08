@@ -29,11 +29,11 @@
           class="mb-0 small text-right text-muted"
           style="text-decoration: line-through"
         >
-          {{ (item.quantity * item.singleAmountFullPrice).toFixed(2) }} €
+          {{ (item.quantity * item.singleAmountFullPrice).toFixed(2) }} GBP
         </p>
 
         <p class="mb-0 font-weight-bold text-right">
-          {{ (item.quantity * item.singleAmount).toFixed(2) }} €
+          {{ (item.quantity * item.singleAmount).toFixed(2) }} GBP
         </p>
       </div>
       <div class="d-none d-md-block col-md-1 text-right">
@@ -88,7 +88,7 @@ export default {
   height: 32px;
   border: 2px solid;
   background: white;
-  color: #d94965;
+  color: var(--light-red);
   display: flex;
   justify-content: center;
   align-items: center;

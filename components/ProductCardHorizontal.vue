@@ -5,7 +5,7 @@
       class="text-decoration-none text-dark"
       :to="`/product/${product.handle}`"
     >
-      <div class="ribbon-1">
+      <div class="ribbon">
         <span><i class="fal fa-tag"></i> PROMO</span>
       </div>
 
@@ -102,48 +102,4 @@ export default {
   border-radius: 8px 8px 0 0;
   background: black;
 }
-
-.ribbon-1 {
-  position: absolute;
-  width: 90px;
-  height: 30px;
-  background: var(--dark-green);
-  color: white;
-  top: -6px;
-  right: 25px;
-  font-size: 12px;
-  border-radius: 0px 0px 15px 15px;
-}
-
-.ribbon-1 span {
-  padding-left: 8px;
-  position: relative;
-  top: 8px;
-}
-.ribbon-1:before {
-  content: "";
-  position: absolute;
-  height: 0;
-  width: 0;
-  border-bottom: 6px solid #081815;
-  border-right: 6px solid transparent;
-  right: -6px;
-}
-.ribbon-1:after {
-  content: "";
-  position: absolute;
-  height: 0;
-  width: 0;
-  border-bottom: 6px solid #081815;
-  border-left: 6px solid transparent;
-  left: -6px;
-}
-/* .ribbon-1:after {
-  height: 0;
-  width: 0;
-  border-left: 30px solid #ee583a;
-  border-right: 30px solid #ee583a;
-  border-bottom: 30px solid transparent;
-  bottom: -30px;
-} */
 </style>

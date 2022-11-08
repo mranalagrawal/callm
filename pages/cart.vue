@@ -47,7 +47,7 @@
               <div class="card-body">
                 <h5 class="card-title font-weight-bold">
                   Totale carrello
-                  <span class="float-right">{{ cartTotalAmount }}€</span>
+                  <span class="float-right">{{ cartTotalAmount }} GBP</span>
                 </h5>
                 <hr />
                 <p>

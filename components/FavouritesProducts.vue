@@ -12,8 +12,8 @@
           </div>
         </VueSlickCarousel>
       </div>
-      <div v-else class="col-12 py-4">
-        <p>Non hai nessun prodotto preferito</p>
+      <div v-else class="col-12">
+        <p class="lead">{{ $t("profile.noFavourite") }}</p>
       </div>
     </div>
   </div>

@@ -10,7 +10,7 @@
       </div>
     </div>
     <div v-else>
-      <p class="lead">Non hai ancora nessun ordine.</p>
+      <p class="lead">{{ $t("profile.noOrder") }}</p>
     </div>
   </div>
 </template>

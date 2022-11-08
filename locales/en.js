@@ -30,7 +30,7 @@ export default {
     favorites: "Favorites",
     promotions: "Promotions",
     cart: {
-      total: "Total Order",
+      total: "Total",
       detail: "Cart detail",
       checkout: "Go to checkout",
       empty: "Your cart is empty!",
@@ -53,6 +53,8 @@ export default {
     },
   },
   profile: {
+    noOrder: "You have no order yet",
+    noFavourite: "You have no favourite yet",
     myAccount: "My account",
     myOrders: "My orders",
     buyAgain: "Buy again",
@@ -105,7 +107,7 @@ export default {
       </ul>`,
     activeFilters: "Active filters",
     removeAll: "Remove all",
-    sortBy: "Ordinato per",
+    sortBy: "Sort by",
     highestPrice: "Highest price",
     lowestPrice: "Lowest price",
     mostAwarded: "Most awarded",

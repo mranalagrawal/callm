@@ -1,7 +1,7 @@
 <template>
   <div class="product-card mx-auto mt-4" style="width: 94%">
     <div>
-      <div v-if="details.inpromotion" class="ribbon-1">
+      <div v-if="details.inpromotion" class="ribbon">
         <span style="letter-spacing: 3px">
           <img
             :src="require(`@/assets/images/selections/inpromotion.svg`)"
@@ -354,7 +354,7 @@ export default {
   /* display: none; */
   position: absolute;
   bottom: 36px;
-  background-color: #da4865;
+  background-color: var(--light-red);
   width: 100%;
   border-radius: 12px 12px 0 0;
   z-index: 1;
@@ -376,13 +376,4 @@ export default {
   background-repeat: no-repeat;
   /* border: 1px solid red; */
 }
-
-/* .ribbon-1:after {
-  height: 0;
-  width: 0;
-  border-left: 30px solid #ee583a;
-  border-right: 30px solid #ee583a;
-  border-bottom: 30px solid transparent;
-  bottom: -30px;
-} */
 </style>

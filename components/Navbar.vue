@@ -103,15 +103,9 @@
       <div class="col-12 col-lg-6 py-2" style="position: relative">
         <b-button
           size="sm"
-          class="border-0 text-white"
+          class="border-0 text-white btn-search"
           type="button"
-          style="
-            position: absolute;
-            top: 18px;
-            right: 24px;
-            background: #d94965;
-            border-radius: 8px;
-          "
+          style=""
           @click="startSearch"
         >
           <i class="fal fa-search"></i>
@@ -288,7 +282,9 @@
                   </svg>
                   <p class="mb-0 fs-14" style="position: relative; top: 4px">
                     {{
-                      user ? user.customer.firstName : $t("navbar.user.signIn")
+                      user
+                        ? user.customer.firstName.split(" ")[0]
+                        : $t("navbar.user.signIn")
                     }}
                   </p>
                 </div>
@@ -327,7 +323,9 @@
                   v-if="Number(cartTotalAmount) > 0"
                   class="d-flex align-items-center"
                 >
-                  <div class="d-flex flex-column justify-content-between">
+                  <div
+                    class="d-flex flex-column justify-content-between align-items-start"
+                  >
                     <span class="pr-1" style="font-size: 11px">
                       {{ $t("navbar.cart.total") }}
                     </span>
@@ -335,7 +333,7 @@
                       <span style="font-weight: bold; font-size: 1.75rem">{{
                         cartTotalAmount.split(".")[0]
                       }}</span
-                      ><span>,{{ cartTotalAmount.split(".")[1] }}€</span>
+                      ><span>,{{ cartTotalAmount.split(".")[1] }}</span>
                     </div>
                   </div>
                   <div class="">
@@ -464,7 +462,9 @@
           @click="toggleMobileLogin"
         >
           <i class="fal fa-chevron-left fa-2x text-light-red"></i>
-          <p class="mb-0">{{ user ? user.customer.firstName : "Account" }}</p>
+          <p class="mb-0">
+            {{ user ? user.customer.firstName.split(" ") : "Account" }}
+          </p>
           <i class="fal fa-times fa-2x text-light-red"></i>
         </div>
         <div v-if="!user">
@@ -706,7 +706,7 @@ export default {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: #d94965;
+    background: var(--light-red);
     color: white;
     position: absolute;
     top: 2px;
@@ -729,7 +729,7 @@ export default {
   box-sizing: content-box;
 }
 .user-box:hover {
-  background: #751f3d;
+  background: var(--darker-red);
   border-radius: 10px 10px 0px 0px;
 }
 .user-box:hover * {
@@ -741,7 +741,7 @@ export default {
 }
 
 .cart-box:hover {
-  background: #751f3d;
+  background: var(--darker-red);
   border-radius: 10px 10px 0px 0px;
 }
 .cart-box:hover * {

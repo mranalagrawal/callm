@@ -1,8 +1,9 @@
 $theme-colors: (
   "dark-green": #11312b,
   "light-green": #155b53,
+  "darker-red": #751f3d,
   "dark-red": #8e2440,
-  "light-red": #d86c82,
+  "light-red": #da4865,
 );
 
 @import "~bootstrap/scss/bootstrap";
@@ -110,7 +111,7 @@ body {
   max-width: 1332px !important;
 }
 
-.ribbon-1 {
+.ribbon {
   position: absolute;
   z-index: 10;
   width: 90px;
@@ -124,12 +125,12 @@ body {
   font-weight: 600;
 }
 
-.ribbon-1 span {
+.ribbon span {
   position: relative;
   top: 8px;
 }
 
-.ribbon-1::before {
+.ribbon::before {
   content: "";
   position: absolute;
   left: -37px;
@@ -142,7 +143,7 @@ body {
   background-size: contain;
 }
 
-.ribbon-1::after {
+.ribbon::after {
   content: "";
   position: absolute;
   right: -37px;
@@ -155,15 +156,6 @@ body {
   background-size: contain;
   transform: scaleX(-1);
 }
-/* .ribbon-1:after {
-  content: "";
-  position: absolute;
-  height: 0;
-  width: 0;
-  border-bottom: 6px solid #081815;
-  border-left: 6px solid transparent;
-  left: -6px;
-} */
 
 .icon-cart {
   position: relative;
@@ -182,10 +174,18 @@ body {
   height: 48px;
   border-radius: 12px;
   color: white;
-  background: url("../images/cart.svg"), #da4865;
+  background: url("../images/cart.svg"), var(--light-red);
   background-repeat: no-repeat;
   background-position: center;
   position: relative;
+}
+
+.btn-search {
+  position: absolute;
+  top: 18px;
+  right: 24px;
+  background: var(--light-red) !important;
+  border-radius: 8px;
 }
 
 .cart-quantity {
@@ -199,7 +199,7 @@ body {
   height: 20px;
   border-radius: 50%;
   font-size: 10px;
-  background-color: #ad2b48;
+  background-color: var(--dark-red);
   color: white;
   border: 1px solid white;
 }
@@ -207,7 +207,7 @@ body {
 .cart-dropup {
   width: 48px;
   border-radius: 10px;
-  background: #d94965;
+  background: var(--light-red);
   position: absolute;
   bottom: 2px;
   right: 0px;
@@ -216,8 +216,8 @@ body {
   justify-content: space-between;
 }
 
-.bg-red {
-  background-color: #d94965;
+.bg-light-red {
+  background-color: var(--light-red);
 }
 
 .br-10 {
