@@ -669,7 +669,7 @@ export default {
         .join("&");
     }
 
-    const elastic_url = this.$config.ELASTIC_URL;
+    const elastic_url = this.$config.ELASTIC_URL + "products/search?";
     const searchResult = await fetch(elastic_url + query + sel);
 
     const allFields = await fetch(elastic_url);

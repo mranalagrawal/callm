@@ -248,8 +248,13 @@ export default {
       const userId =
         this.$store.state.user.user.customer.id.split("Customer/")[1];
 
+      const elastic_url = this.$config.ELASTIC_URL;
+
+      console.log(
+        elastic_url + `customers/${userId}/wishlist/${this.product.tags[0]}`
+      );
       const response = await fetch(
-        `https://callmewine-api.dojo.sh/api/customers/${userId}/wishlist/${this.product.tags[0]}`,
+        elastic_url + `customers/${userId}/wishlist/${this.product.tags[0]}`,
         { async: true, crossDomain: true, method: "POST" }
       );
 

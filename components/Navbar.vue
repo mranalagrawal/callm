@@ -575,10 +575,10 @@ export default {
       this.$refs["sidebar"].hide();
     },
     async suggest() {
+      const elastic_url = this.$config.ELASTIC_URL;
       if (this.search && this.search.length > 3) {
         const result = await fetch(
-          "https://callmewine-api.dojo.sh/api/autocomplete/search/?search=" +
-            this.search
+          elastic_url + "autocomplete/search/?search=" + this.search
         );
         const resultJSON = await result.json();
         this.data = resultJSON;
