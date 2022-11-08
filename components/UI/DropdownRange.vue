@@ -135,9 +135,9 @@ export default {
 
 <style scoped>
 .apply {
-  border: 2px solid #da4865;
+  border: 2px solid var(--light-red);
   border-radius: 12px;
-  color: #da4865;
+  color: var(--light-red);
 }
 .input-box {
   position: relative;
@@ -152,7 +152,7 @@ export default {
   height: 66%;
   width: 20px;
   background: white;
-  color: #da4865;
+  color: var(--light-red);
 }
 
 .track {
@@ -161,12 +161,12 @@ export default {
   z-index: 0;
   width: 100%;
   height: 1px;
-  background: rgba(218, 72, 101, 0.5);
+  background: var(--light-red);
 }
 .middle {
   height: 2px;
   width: 200px;
-  background: red;
+  background: var(--light-red);
   position: relative;
   z-index: 1;
 }
@@ -180,7 +180,7 @@ input[type="range"]::-webkit-slider-thumb {
   pointer-events: all;
   width: 24px;
   height: 24px;
-  background-color: rgb(218, 72, 101);
+  background-color: var(--dark-red);
   border-radius: 50%;
   /* box-shadow: 0 0 0 1px #0f0; */
   /* box-shadow: 0px 0px 14px 0px rgba(218, 72, 101, 1); */
@@ -203,12 +203,12 @@ input[type="range"]::-moz-range-thumb {
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
-  background: #da4865;
+  background: var(--light-red);
 }
 
 input[type="range"]::-webkit-slider-thumb:active {
-  box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
-  -webkit-box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
+  box-shadow: inset 0 0 3px var(--light-red), 0 0 9px var(--light-red);
+  -webkit-box-shadow: inset 0 0 3px var(--light-red), 0 0 9px var(--light-red);
 }
 
 input[type="range"] {

@@ -76,6 +76,11 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     transpile: ["@prismicio/vue", "swiper"],
+    loaders: {
+      scss: {
+        additionalData: `$MAIN_COLOR: ${process.env.MAIN_COLOR};`,
+      },
+    },
   },
 
   babel: { compact: true },
@@ -92,5 +97,6 @@ export default {
     DOMAIN: process.env.DOMAIN,
     STOREFRONT_ACCESS_TOKEN: process.env.STOREFRONT_ACCESS_TOKEN,
     ELASTIC_URL: process.env.ELASTIC_URL,
+    MAIN_COLOR: process.env.MAIN_COLOR,
   },
 };

@@ -147,7 +147,7 @@ export default {
   margin: 0px 6px;
 }
 .home-carousel :deep(.carousel-indicators li.active) {
-  background-color: #8b0000;
+  background-color: var(--dark-red);
   width: 16px;
   height: 16px;
 }
@@ -238,11 +238,11 @@ export default {
 .btn-more {
   text-transform: uppercase;
   background-color: white;
-  color: #d94965;
+  color: var(--light-red);
   font-weight: 700;
 }
 .btn-more:hover {
-  background-color: #ad2b48;
+  background-color: var(--dark-red);
   color: white;
 }
 </style>

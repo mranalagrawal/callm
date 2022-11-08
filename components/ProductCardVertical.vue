@@ -252,6 +252,10 @@ export default {
         `https://callmewine-api.dojo.sh/api/customers/${userId}/wishlist/${this.product.tags[0]}`,
         { async: true, crossDomain: true, method: "POST" }
       );
+
+      /* const js = await response.text();
+      console.log(js);
+      return; */
       const updatedWishlist = await response.text();
 
       this.$store.commit("user/updateWishlist", updatedWishlist);

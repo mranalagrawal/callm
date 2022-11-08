@@ -322,7 +322,7 @@
           style="background: #db4865; color: white"
           @click="showModal"
         >
-          <i class="fal fa-bars mr-2"></i> Mostra filtri
+          <i class="fal fa-bars mr-2"></i> {{ $t("search.showFilters") }}
           <span
             v-if="
               activeSelections &&
@@ -477,7 +477,7 @@
             class="btn view-results text-uppercase px-5"
             @click="hideModal"
           >
-            Mostra {{ total }} risultati
+            {{ $t("search.showResults") }} ({{ total }})
           </button>
         </div>
       </template>
@@ -682,6 +682,10 @@ export default {
 
     const total = search.hits.total.value;
     this.total = total;
+
+    if (total == 0) {
+      this.loading = false;
+    }
 
     this.totalPages = Math.ceil(total / 50);
 

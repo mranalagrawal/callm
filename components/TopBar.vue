@@ -1,27 +1,9 @@
 <template>
   <div
     class="container-fluid bg-dark-green py-2 text-white text-center fixed-top"
-    style="font-size: 16px; z-index: 1050"
+    style="z-index: 1050"
   >
-    <span v-if="data" v-html="data.data.text[0].text"></span>
-
-    <!-- <div class="position-absolute" style="right: 10px">
-      <nuxt-link
-        class=""
-        v-if="$i18n.locale !== 'en'"
-        :to="switchLocalePath('en')"
-      >
-        🇬🇧
-      </nuxt-link>
-
-      <nuxt-link
-        class=""
-        v-if="$i18n.locale !== 'it'"
-        :to="switchLocalePath('it')"
-      >
-        🇮🇹
-      </nuxt-link>
-    </div> -->
+    <span class="small" v-if="data" v-html="data.data.text[0].text"></span>
   </div>
 </template>
 

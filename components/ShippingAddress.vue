@@ -15,7 +15,7 @@
               v-model="form.firstName"
               type="text"
               required
-              placeholder="Nome"
+              :placeholder="$t('firstName')"
             ></b-form-input>
           </div>
           <div class="col-12 col-md-6 mb-3">
@@ -25,7 +25,7 @@
               v-model="form.lastName"
               type="text"
               required
-              placeholder="Cognome"
+              :placeholder="$t('lastName')"
             ></b-form-input>
           </div>
 
@@ -98,7 +98,7 @@
               spedizione
             </p>
           </div>
-          <div class="col-12 mb-3">
+          <!-- <div class="col-12 mb-3">
             <b-form-input
               id="name"
               class="custom-input"
@@ -106,11 +106,11 @@
               type="text"
               placeholder="Eventuali note"
             ></b-form-input>
-          </div>
+          </div> -->
 
           <div class="col-12 mt-5 text-right">
             <button type="submit" class="btn btn-light-red text-uppercase">
-              Aggiungi indirizzo
+              {{ $t("profile.addAddress") }}
             </button>
           </div>
         </form>
@@ -208,7 +208,7 @@
           @click="showNewAddressModal"
         >
           <p class="mb-0 text-light-red">
-            <i class="fas fa-plus mr-2"></i>Aggiungi nuovo indirizzo
+            <i class="fas fa-plus mr-2"></i>{{ $t("profile.addNewAddress") }}
           </p>
         </div>
       </div>
@@ -467,7 +467,7 @@ export default {
       form: {
         firstName: "",
         lastName: "",
-        country: "",
+        country: null,
         city: "",
         address1: "",
         province: "",
@@ -491,9 +491,11 @@ export default {
   },
   computed: {
     defaultAddress() {
-      return this.$store.state.user.user.customer.defaultAddress.id.split(
-        "?model_name"
-      )[0];
+      if (this.$store.state.user.user.customer.defaultAddress) {
+        return this.$store.state.user.user.customer.defaultAddress.id.split(
+          "?model_name"
+        )[0];
+      }
     },
     debug() {
       return this.$store.state.user.user.customer.addresses.edges;
@@ -520,8 +522,20 @@ export default {
       "https://callmewine-api.dojo.sh/api/countries"
     ).then((r) => r.json());
 
-    const mappedCountries = countries.countries.map((el) => el.name);
-    this.countries = mappedCountries;
+    const mappedCountries = countries.countries
+      .map((el) => el.name)
+      .map((el) => {
+        return {
+          value: el,
+          text: el,
+        };
+      });
+    console.log(mappedCountries);
+    this.countries = [
+      { value: null, text: this.$t("country"), disabled: true, selected: true },
+      ...mappedCountries,
+    ];
+    console.log(this.countries, "this.countries");
     this.allCountries = countries.countries;
   },
   methods: {

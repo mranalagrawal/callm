@@ -238,7 +238,7 @@
                   </g>
                 </svg>
                 <p class="mb-0 fs-14" style="position: relative; top: 4px">
-                  Preferiti
+                  {{ $t("navbar.favorites") }}
                 </p>
               </nuxt-link>
             </div>

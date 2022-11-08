@@ -14,7 +14,10 @@
     </button>
     <div v-if="visible" class="content mb-5">
       <div class="px-1 my-3">
-        <b-form-input v-model="search" placeholder="Cerca"></b-form-input>
+        <b-form-input
+          v-model="search"
+          :placeholder="$t('search.search')"
+        ></b-form-input>
       </div>
 
       <div

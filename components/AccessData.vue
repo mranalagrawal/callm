@@ -2,7 +2,9 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-12 mt-3">
-        <h4>Dati di accesso</h4>
+        <h4>
+          {{ $t("profile.accessData") }}
+        </h4>
       </div>
       <div class="col-12 col-md-6 mb-3">
         <div class="card p-3">
@@ -23,21 +25,29 @@
         </div>
       </div>
       <div class="col-12 mt-3">
-        <h4>Dati personali</h4>
+        <h4>
+          {{ $t("profile.personalData") }}
+        </h4>
       </div>
       <div class="col-12 mb-3">
         <div class="card p-3">
           <div class="row">
             <div class="col-12 col-md-4">
-              <p class="font-weight-bold text-light-green">Nome</p>
+              <p class="font-weight-bold text-light-green">
+                {{ $t("firstName") }}
+              </p>
               <p>{{ currentFirstName }}</p>
             </div>
             <div class="col-12 col-md-4">
-              <p class="font-weight-bold text-light-green">Cognome</p>
+              <p class="font-weight-bold text-light-green">
+                {{ $t("lastName") }}
+              </p>
               <p>{{ currentLastName }}</p>
             </div>
             <div class="col-12 col-md-4">
-              <p class="font-weight-bold text-light-green">Telefono</p>
+              <p class="font-weight-bold text-light-green">
+                {{ $t("phone") }}
+              </p>
               <p>{{ currentPhone }}</p>
             </div>
             <div class="col-12">
@@ -52,7 +62,7 @@
 
     <b-modal ref="editMailModal" size="lg" hide-header hide-footer centered>
       <p class="text-center mt-5 mb-2 lead text-light-green">
-        Imposta un nuovo indirizzo e-mail
+        {{ $t("profile.setNewEmailAddress") }}
       </p>
 
       <form
@@ -72,7 +82,7 @@
             type="submit"
             class="btn btn-light-red text-uppercase w-100 mt-5"
           >
-            Salva
+            {{ $t("save") }}
           </button>
         </div>
       </form>
@@ -80,7 +90,7 @@
 
     <b-modal ref="editPasswordModal" size="lg" hide-header hide-footer centered>
       <p class="text-center mt-5 mb-2 lead text-light-green">
-        Imposta una nuova password
+        {{ $t("profile.setNewPassword") }}
       </p>
 
       <form
@@ -88,7 +98,9 @@
         class="px-4 pt-3 py-2 row justify-content-center"
       >
         <div class="col-12 col-md-6 mb-3">
-          <label class="custom-label">Nuova password</label>
+          <label class="custom-label">
+            {{ $t("profile.newPassword") }}
+          </label>
           <b-form-input
             class="custom-input"
             v-model="newPassword"
@@ -97,7 +109,9 @@
             placeholder="******"
           ></b-form-input>
 
-          <label class="custom-label mt-4">Conferma password</label>
+          <label class="custom-label mt-4">
+            {{ $t("profile.confirmPassword") }}
+          </label>
           <b-form-input
             class="custom-input"
             v-model="newPasswordConfirm"
@@ -110,7 +124,7 @@
             class="btn btn-light-red text-uppercase w-100 mt-5"
             :class="passwordMatch ? '' : 'disabled'"
           >
-            Salva
+            {{ $t("save") }}
           </button>
         </div>
       </form>
@@ -118,7 +132,7 @@
 
     <b-modal ref="editPersonalModal" size="lg" hide-header hide-footer centered>
       <p class="text-center mt-5 mb-2 lead text-light-green">
-        Imposta nuovi dati personale
+        {{ $t("profile.setNewPersonalData") }}
       </p>
 
       <form
@@ -126,7 +140,9 @@
         class="px-4 pt-3 py-2 row justify-content-center"
       >
         <div class="col-12 col-md-6 mb-3">
-          <label class="custom-label">Nome</label>
+          <label class="custom-label">
+            {{ $t("firstName") }}
+          </label>
           <b-form-input
             class="custom-input mb-3"
             v-model="newFirstName"
@@ -135,7 +151,9 @@
             :placeholder="currentFirstName"
           ></b-form-input>
 
-          <label class="custom-label">Cognome</label>
+          <label class="custom-label">
+            {{ $t("lastName") }}
+          </label>
           <b-form-input
             class="custom-input mb-3"
             v-model="newLastName"
@@ -144,7 +162,7 @@
             :placeholder="currentLastName"
           ></b-form-input>
 
-          <label class="custom-label">Telefono (+XXYYYYYYYYYY)</label>
+          <label class="custom-label">{{ $t("phone") }} (+XXYYYYYYYYYY)</label>
           <b-form-input
             class="custom-input mb-3"
             v-model="newPhone"
@@ -158,7 +176,7 @@
             class="btn btn-light-red text-uppercase w-100 mt-5"
             :class="passwordMatch ? '' : 'disabled'"
           >
-            Salva
+            {{ $t("save") }}
           </button>
         </div>
       </form>

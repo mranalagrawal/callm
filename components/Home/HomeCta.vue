@@ -19,7 +19,12 @@
         <p class="lead">
           {{ contents[0].data.subtitle[0].text }}
         </p>
-        <button class="btn btn-outline-light mt-5 px-5">Scopri di più</button>
+        <nuxt-link
+          :to="contents[0].data.cta_link || '/'"
+          class="btn btn-outline-light mt-5 px-5"
+        >
+          {{ contents[0].data.cta_button }}
+        </nuxt-link>
       </div>
     </div>
   </div>
@@ -38,6 +43,7 @@ export default {
         this.$prismic.predicates.at("document.type", "call-to-action")
       )
     ).results;
+    console.log(this.contents, "contents");
   },
 };
 </script>
