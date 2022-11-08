@@ -1,4 +1,4 @@
-import { apiEndpoint } from "./sm.json";
+/* import { apiEndpoint } from "./sm.json"; */
 
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -40,32 +40,26 @@ export default {
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: ["@nuxtjs/prismic"],
   prismic: {
-    endpoint: apiEndpoint,
+    endpoint: process.env.PRISMIC,
     modern: true,
     preview: false,
     /* see configuration for more */
   },
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: [
-    "bootstrap-vue/nuxt",
-    "@nuxtjs/style-resources",
-    [
-      "@nuxtjs/i18n",
-      {
-        locales: [
-          { code: "en", iso: "en-GB", file: "en.js", dir: "ltr" },
-          { code: "it", iso: "it-IT", file: "it.js", dir: "ltr" },
-        ],
-        defaultLocale: "en",
-        langDir: "locales/",
+  modules: ["bootstrap-vue/nuxt", "@nuxtjs/style-resources", ["@nuxtjs/i18n"]],
 
-        vueI18n: {
-          fallbackLocale: "en",
-        },
-      },
+  i18n: {
+    locales: [
+      { code: "en", iso: "en-GB", file: "en.js", dir: "ltr" },
+      { code: "it", iso: "it-IT", file: "it.js", dir: "ltr" },
     ],
-  ],
+    defaultLocale: "en",
+    langDir: "locales/",
+    vueI18n: {
+      fallbackLocale: "en",
+    },
+  },
 
   bootstrapVue: {
     bootstrapCSS: false,
