@@ -76,11 +76,11 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     transpile: ["@prismicio/vue", "swiper"],
-    loaders: {
+    /* loaders: {
       scss: {
         additionalData: `$MAIN_COLOR: ${process.env.MAIN_COLOR};`,
       },
-    },
+    }, */
   },
 
   babel: { compact: true },
