@@ -1,13 +1,13 @@
 <template>
   <div class="container-fluid container-large px-md-0 my-5">
     <div class="row">
-      <div class="col-12 text-center" v-if="data">
+      <div class="col-12 text-center" v-if="data && data.length > 0">
         <h2 class="font-weight-bold text-dark-green">
           {{ $t("sameProducer") }}
         </h2>
       </div>
 
-      <div class="col-12 py-4" v-if="data">
+      <div class="col-12 py-4" v-if="data && data.length > 0">
         <VueSlickCarousel v-bind="settings">
           <div v-for="product in data" :key="product.id" class="mb-5">
             <ProductCardVertical :product="product" />
