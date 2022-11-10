@@ -129,7 +129,7 @@ export default {
       links: null,
       filters: null,
       loading: null,
-      baseURL: "https://callmewine-api.dojo.sh/api/brands",
+      baseURL: this.$config.ELASTIC_URL + "brands",
     };
   },
   created() {

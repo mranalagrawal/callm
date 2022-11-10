@@ -523,9 +523,10 @@ export default {
   async mounted() {
     this.addresses = this.$store.state.user.user.customer.addresses.edges;
 
-    const countries = await fetch(
-      "https://callmewine-api.dojo.sh/api/countries"
-    ).then((r) => r.json());
+    const elastic_url = this.$config.ELASTIC_URL;
+    const countries = await fetch(elastic_url + "countries").then((r) =>
+      r.json()
+    );
 
     const mappedCountries = countries.countries
       .map((el) => el.name)
