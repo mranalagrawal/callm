@@ -244,18 +244,16 @@ export default {
     async onSubmit(e) {
       e.preventDefault();
 
-      const response = await fetch(
-        "https://callmewine-api.dojo.sh/api/send-email",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+      const elastic_url = this.$config.ELASTIC_URL;
+      const response = await fetch(elastic_url + "send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
 
-          crossDomain: true,
-          body: JSON.stringify(this.form),
-        }
-      );
+        crossDomain: true,
+        body: JSON.stringify(this.form),
+      });
       const responseJSON = await response.json();
 
       if (responseJSON.status == 200) {
