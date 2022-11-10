@@ -13,13 +13,13 @@
           <b-form-group id="input-group-1" class="position-relative">
             <i
               v-if="passwordIsVisible"
-              class="fal fa-eye-slash position-absolute text-light-red pointer"
+              class="fal fa-eye-slash position-absolute text-light-secondary pointer"
               style="right: 10px; top: 10px"
               @click="passwordIsVisible = !passwordIsVisible"
             ></i>
             <i
               v-else
-              class="fal fa-eye position-absolute text-light-red pointer"
+              class="fal fa-eye position-absolute text-light-secondary pointer"
               style="right: 10px; top: 10px"
               @click="passwordIsVisible = !passwordIsVisible"
             ></i>
@@ -71,7 +71,7 @@
               </div>
             </div>
           </b-form-group>
-          <button class="btn btn-light-red w-100 mt-5">INVIA</button>
+          <button class="btn btn-light-secondary w-100 mt-5">INVIA</button>
         </form>
       </div>
     </div>

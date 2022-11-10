@@ -3,7 +3,7 @@
     <!-- <div v-for="product in products" :key="product.id">{{ product.title }}</div> -->
     <div class="row py-5 px-0">
       <div class="col-12 text-center">
-        <h2 class="font-weight-bold text-dark-green">{{ label }}</h2>
+        <h2 class="font-weight-bold text-dark-primary">{{ label }}</h2>
       </div>
       <div class="col-12 px-0 py-4" v-if="data">
         <VueSlickCarousel v-bind="settings" ref="carousel">
@@ -164,7 +164,7 @@ export default {
 :deep(.slick-dots li button:before) {
   font-size: 16px;
   opacity: 0.25;
-  color: var(--dark-red);
+  color: var(--dark-secondary);
 }
 
 :deep(.slick-dots li.slick-active button:before) {

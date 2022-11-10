@@ -2,7 +2,7 @@
   <div class="container-fluid container-large px-md-0 my-5">
     <div class="row">
       <div class="col-12 text-center" v-if="data">
-        <h2 class="font-weight-bold text-dark-green">
+        <h2 class="font-weight-bold text-dark-primary">
           {{ $t("recentlySeen") }}
         </h2>
       </div>
@@ -104,9 +104,9 @@ export default {
 } */
 
 .view-more {
-  border: 2px solid var(--light-red);
+  border: 2px solid var(--light-secondary);
   border-radius: 12px;
-  color: var(--light-red);
+  color: var(--light-secondary);
 }
 :deep(.slick-arrow.slick-prev) {
   width: 48px;
@@ -158,13 +158,13 @@ export default {
 :deep(.slick-dots li button:before) {
   font-size: 10px;
   opacity: 0.6;
-  color: var(--light-red);
+  color: var(--light-secondary);
 }
 
 :deep(.slick-dots li.slick-active button:before) {
   opacity: 1;
   font-size: 16px;
-  color: var(--dark-red);
+  color: var(--dark-secondary);
 }
 :deep(.slick-dots) {
   bottom: -48px;

@@ -3,7 +3,7 @@
     <div class="container-fluid px-md-5">
       <div class="row">
         <div class="col-12">
-          <nuxt-link class="text-dark-red" to="/">Home</nuxt-link>
+          <nuxt-link class="text-dark-secondary" to="/">Home</nuxt-link>
           <i class="fal fa-chevron-right mx-2"></i>
           Carrello
         </div>
@@ -28,7 +28,7 @@
                 </p>
               </div>
               <div class="col-6 text-right">
-                <p class="text-light-red pointer" @click="showModal">
+                <p class="text-light-secondary pointer" @click="showModal">
                   Svuota carrello
                 </p>
               </div>
@@ -72,10 +72,10 @@
       <p class="text-center my-5 lead">Cancellare carrello?</p>
       <template #modal-footer class="border-0">
         <div class="w-100 d-flex justify-content-between">
-          <button class="btn btn-outline-dark-red" @click="hideModal">
+          <button class="btn btn-outline-dark-secondary" @click="hideModal">
             Annulla
           </button>
-          <button class="btn btn-dark-red" @click="removeCart">
+          <button class="btn btn-dark-secondary" @click="removeCart">
             Si, cancella
           </button>
         </div>

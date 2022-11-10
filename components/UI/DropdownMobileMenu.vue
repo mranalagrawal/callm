@@ -4,10 +4,12 @@
       class="btn d-flex w-100 justify-content-between px-0"
       v-b-toggle="`sidebar_${data.position}`"
     >
-      <span class="small text-dark-red text-uppercase">{{ data.name }}</span>
+      <span class="small text-dark-secondary text-uppercase">{{
+        data.name
+      }}</span>
       <span
         ><i
-          class="fal fa-chevron-down text-light-red mr-3"
+          class="fal fa-chevron-down text-light-secondary mr-3"
           :class="visible ? 'fa-rotate-180' : ''"
         ></i
       ></span>
@@ -32,7 +34,7 @@
           :key="`secondLevel_${i}`"
           class="my-5"
         >
-          <p class="text-uppercase text-center text-light-green">
+          <p class="text-uppercase text-center text-light-primary">
             {{ secondLevel.name }}
           </p>
           <div
@@ -71,7 +73,7 @@
 
               <div class="col-9">
                 <p class="mb-0">{{ thirdLevel.third_level_name }}</p>
-                <p class="mb-0 small text-light-red">
+                <p class="mb-0 small text-light-secondary">
                   {{ thirdLevel.marketing_cta }}
                 </p>
               </div>

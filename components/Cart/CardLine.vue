@@ -9,7 +9,10 @@
       </div>
       <div class="col-2 d-md-none mb-3">
         <button class="btn">
-          <i class="fal fa-trash-alt text-light-red" @click="remove()"></i>
+          <i
+            class="fal fa-trash-alt text-light-secondary"
+            @click="remove()"
+          ></i>
         </button>
       </div>
       <div
@@ -38,7 +41,10 @@
       </div>
       <div class="d-none d-md-block col-md-1 text-right">
         <button class="btn">
-          <i class="fal fa-trash-alt text-light-red" @click="remove()"></i>
+          <i
+            class="fal fa-trash-alt text-light-secondary"
+            @click="remove()"
+          ></i>
         </button>
       </div>
       <div class="col-12">
@@ -88,7 +94,7 @@ export default {
   height: 32px;
   border: 2px solid;
   background: white;
-  color: var(--light-red);
+  color: var(--light-secondary);
   display: flex;
   justify-content: center;
   align-items: center;

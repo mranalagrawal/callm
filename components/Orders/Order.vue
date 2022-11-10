@@ -23,7 +23,7 @@
       </div>
       <div class="col-1 text-right">
         <i
-          class="fal fa-chevron-down text-dark-red"
+          class="fal fa-chevron-down text-dark-secondary"
           :class="visible ? 'fa-rotate-180' : ''"
         ></i>
       </div>
@@ -35,17 +35,17 @@
       @click="visible = !visible"
     >
       <div class="px-3">
-        <p class="text-light-green">
+        <p class="text-light-primary">
           ORDINE: <strong class="text-dark">{{ order.orderNumber }}</strong>
         </p>
-        <p class="text-light-green">
+        <p class="text-light-primary">
           Data: {{ order.processedAt.split("T")[0] }}
         </p>
-        <p class="text-light-green">Pagamento: {{ order.financialStatus }}</p>
-        <p class="text-light-green">
+        <p class="text-light-primary">Pagamento: {{ order.financialStatus }}</p>
+        <p class="text-light-primary">
           Stato dell'ordine: {{ order.fulfillmentStatus }}
         </p>
-        <p class="text-light-green">Totale: {{ order.totalPrice }}</p>
+        <p class="text-light-primary">Totale: {{ order.totalPrice }}</p>
       </div>
 
       <div
@@ -53,7 +53,7 @@
         style="background: #ddd"
         :class="visible ? 'd-none' : ''"
       >
-        <i class="fal fa-chevron-down fa-2x text-light-red"></i>
+        <i class="fal fa-chevron-down fa-2x text-light-secondary"></i>
       </div>
     </div>
 
@@ -62,16 +62,16 @@
         <div class="row bg-light pt-3">
           <div class="col-12 col-md-6">
             <p class="font-weight-bold lead">Riepilogo</p>
-            <p class="text-light-green">
+            <p class="text-light-primary">
               Stato dell'ordine: {{ order?.fulfillmentStatus }}
             </p>
-            <p class="text-light-green">
+            <p class="text-light-primary">
               Spedizione:
               {{
                 order.successfulFulfillments.trackingCompany || "Non inserita"
               }}
             </p>
-            <p class="text-light-green">
+            <p class="text-light-primary">
               Telefono:
               {{ order.successfulFulfillments.trackingInfo || "Non inserito" }}
             </p>
@@ -108,7 +108,7 @@
           </div>
           <div class="col-8 col-md-8 text-right px-0">
             <button
-              class="btn text-light-red d-block ml-auto fs-14"
+              class="btn text-light-secondary d-block ml-auto fs-14"
               @click="showModal"
             >
               Richiedi assistenza
@@ -173,7 +173,7 @@
     </b-collapse>
 
     <b-modal ref="modal" size="lg" hide-header hide-footer centered title="">
-      <p class="text-center mt-5 mb-2 lead text-light-green">
+      <p class="text-center mt-5 mb-2 lead text-light-primary">
         Richiedi assistenza per l'ordine N° {{ order.orderNumber }}
       </p>
 
@@ -321,11 +321,11 @@ export default {
   left: 12px;
   padding: 0px 4px;
   background: white;
-  color: var(--light-green);
+  color: var(--light-primary);
 }
 .custom-input {
   border-radius: 10px;
-  border-color: var(--light-green);
+  border-color: var(--light-primary);
   border-width: 2px;
 }
 </style>

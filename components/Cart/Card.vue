@@ -4,7 +4,7 @@
       <div v-if="data && data.length > 0" style="width: 640px">
         <div v-if="cartTotalAmount < shipping.threshold">
           <p
-            class="text-light-green small text-center text-uppercase py-3 mb-0"
+            class="text-light-primary small text-center text-uppercase py-3 mb-0"
           >
             <i class="fal fa-truck mr-2"></i>
             {{ shipping.threshold_not_reached }}
@@ -12,7 +12,7 @@
         </div>
         <div v-else>
           <p
-            class="text-light-green small text-center text-uppercase py-3 mb-0"
+            class="text-light-primary small text-center text-uppercase py-3 mb-0"
           >
             <i class="fal fa-check-circle mr-2"></i>
             {{ shipping.threshold_reached }}
@@ -37,7 +37,9 @@
         </div>
       </div>
       <div v-else class="text-center text-dark p-2" style="width: 440px">
-        <p class="text-light-green small text-center text-uppercase py-3 mb-0">
+        <p
+          class="text-light-primary small text-center text-uppercase py-3 mb-0"
+        >
           <i class="fal fa-truck mr-2"></i>
           {{ shipping.threshold_not_reached }}
         </p>
@@ -194,16 +196,16 @@ export default {
 
 <style scoped>
 .btn-detail {
-  border: 2px solid var(--light-red);
+  border: 2px solid var(--light-secondary);
   border-radius: 12px;
-  color: var(--light-red);
+  color: var(--light-secondary);
   text-transform: uppercase;
   font-weight: bold;
 }
 
 .btn-checkout {
-  border: 2px solid var(--light-red);
-  background: var(--light-red);
+  border: 2px solid var(--light-secondary);
+  background: var(--light-secondary);
   border-radius: 12px;
   color: #fff;
   text-transform: uppercase;
@@ -214,8 +216,8 @@ export default {
   display: none;
 }
 :deep(.btn-secondary) {
-  background-color: var(--dark-red) !important;
-  border-color: var(--dark-red) !important;
+  background-color: var(--dark-secondary) !important;
+  border-color: var(--dark-secondary) !important;
 }
 .content {
   position: absolute;
@@ -223,7 +225,7 @@ export default {
   width: 320px;
   transform: translate(-240px, 20px);
   z-index: 99;
-  border-top: 4px solid var(--dark-red);
+  border-top: 4px solid var(--dark-secondary);
   padding-bottom: 0px;
   background: white;
 }

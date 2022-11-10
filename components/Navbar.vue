@@ -301,7 +301,7 @@
                     {{ $t("navbar.user.notRegisteredYet") }}
                     <nuxt-link
                       to="/login"
-                      class="text-uppercase text-light-red"
+                      class="text-uppercase text-light-secondary"
                       >{{ $t("navbar.user.register") }}</nuxt-link
                     >
                   </div>
@@ -461,14 +461,14 @@
           class="p-3 d-flex justify-content-between align-items-center shadow"
           @click="toggleMobileLogin"
         >
-          <i class="fal fa-chevron-left fa-2x text-light-red"></i>
+          <i class="fal fa-chevron-left fa-2x text-light-secondary"></i>
           <p class="mb-0">
             {{ user ? user.customer.firstName.split(" ") : "Account" }}
           </p>
-          <i class="fal fa-times fa-2x text-light-red"></i>
+          <i class="fal fa-times fa-2x text-light-secondary"></i>
         </div>
         <div v-if="!user">
-          <h3 class="px-3 text-center text-dark-green mt-5 font-weight-bold">
+          <h3 class="px-3 text-center text-dark-primary mt-5 font-weight-bold">
             {{ $t("navbar.user.signIn") }}
           </h3>
           <div class="px-3">
@@ -476,9 +476,11 @@
           </div>
           <div class="bg-light p-3 text-center">
             {{ $t("navbar.user.notRegisteredYet") }}
-            <nuxt-link to="/login" class="text-uppercase text-light-red">{{
-              $t("navbar.user.register")
-            }}</nuxt-link>
+            <nuxt-link
+              to="/login"
+              class="text-uppercase text-light-secondary"
+              >{{ $t("navbar.user.register") }}</nuxt-link
+            >
           </div>
         </div>
         <div v-else class="mt-5">
@@ -657,7 +659,7 @@ export default {
   right: 0px;
   transform: translateY(-3px);
   z-index: 999;
-  border-top: 4px solid var(--dark-red);
+  border-top: 4px solid var(--dark-secondary);
   padding-bottom: 0px;
   background: white;
 }
@@ -674,12 +676,12 @@ export default {
   display: none;
 }
 /* :deep(.btn-secondary) {
-  background-color: var(--dark-red) !important;
-  border-color: var(--dark-red) !important;
+  background-color: var(--dark-secondary) !important;
+  border-color: var(--dark-secondary) !important;
 } */
 :deep(.dropdown-menu) {
   left: -60px;
-  border-top: 4px solid var(--dark-red);
+  border-top: 4px solid var(--dark-secondary);
   padding-bottom: 0px;
 }
 
@@ -706,7 +708,7 @@ export default {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: var(--light-red);
+    background: var(--light-secondary);
     color: white;
     position: absolute;
     top: 2px;
@@ -729,7 +731,7 @@ export default {
   box-sizing: content-box;
 }
 .user-box:hover {
-  background: var(--darker-red);
+  background: var(--darker-secondary);
   border-radius: 10px 10px 0px 0px;
 }
 .user-box:hover * {
@@ -741,7 +743,7 @@ export default {
 }
 
 .cart-box:hover {
-  background: var(--darker-red);
+  background: var(--darker-secondary);
   border-radius: 10px 10px 0px 0px;
 }
 .cart-box:hover * {
@@ -761,7 +763,7 @@ export default {
 
 .suggest-voice:hover {
   background: #fae4e8;
-  color: var(--dark-red);
+  color: var(--dark-secondary);
 }
 
 .suggest-title {

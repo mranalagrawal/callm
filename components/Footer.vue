@@ -48,7 +48,7 @@
 
     <div
       v-if="data && info"
-      class="container-fluid bg-dark-green text-light-footer px-md-5 py-5 mt-5"
+      class="container-fluid bg-dark-primary text-light-footer px-md-5 py-5 mt-5"
     >
       <div class="row justify-content-end">
         <nuxt-link
@@ -314,7 +314,7 @@
   text-decoration: none;
 }
 .menu-link:hover {
-  color: var(--dark-red);
+  color: var(--dark-secondary);
   text-decoration: none;
 }
 
@@ -337,7 +337,7 @@
   padding: 8px 0px !important;
 }
 .secondary-title:hover {
-  color: var(--dark-red);
+  color: var(--dark-secondary);
 }
 
 .custom-control-label:before {

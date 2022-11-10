@@ -4,9 +4,9 @@
       class="btn d-flex w-100 justify-content-between px-0"
       @click="visible = !visible"
     >
-      <span class="small text-dark-red text-uppercase">{{ label }}</span>
+      <span class="small text-dark-secondary text-uppercase">{{ label }}</span>
       <i
-        class="fal fa-chevron-down text-light-red mr-3"
+        class="fal fa-chevron-down text-light-secondary mr-3"
         :class="visible ? 'fa-rotate-180' : ''"
       ></i>
     </button>
@@ -135,9 +135,9 @@ export default {
 
 <style scoped>
 .apply {
-  border: 2px solid var(--light-red);
+  border: 2px solid var(--light-secondary);
   border-radius: 12px;
-  color: var(--light-red);
+  color: var(--light-secondary);
 }
 .input-box {
   position: relative;
@@ -152,7 +152,7 @@ export default {
   height: 66%;
   width: 20px;
   background: white;
-  color: var(--light-red);
+  color: var(--light-secondary);
 }
 
 .track {
@@ -161,12 +161,12 @@ export default {
   z-index: 0;
   width: 100%;
   height: 1px;
-  background: var(--light-red);
+  background: var(--light-secondary);
 }
 .middle {
   height: 2px;
   width: 200px;
-  background: var(--light-red);
+  background: var(--light-secondary);
   position: relative;
   z-index: 1;
 }
@@ -180,7 +180,7 @@ input[type="range"]::-webkit-slider-thumb {
   pointer-events: all;
   width: 24px;
   height: 24px;
-  background-color: var(--dark-red);
+  background-color: var(--dark-secondary);
   border-radius: 50%;
   /* box-shadow: 0 0 0 1px #0f0; */
   /* box-shadow: 0px 0px 14px 0px rgba(218, 72, 101, 1); */
@@ -203,12 +203,14 @@ input[type="range"]::-moz-range-thumb {
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
-  background: var(--light-red);
+  background: var(--light-secondary);
 }
 
 input[type="range"]::-webkit-slider-thumb:active {
-  box-shadow: inset 0 0 3px var(--light-red), 0 0 9px var(--light-red);
-  -webkit-box-shadow: inset 0 0 3px var(--light-red), 0 0 9px var(--light-red);
+  box-shadow: inset 0 0 3px var(--light-secondary),
+    0 0 9px var(--light-secondary);
+  -webkit-box-shadow: inset 0 0 3px var(--light-secondary),
+    0 0 9px var(--light-secondary);
 }
 
 input[type="range"] {

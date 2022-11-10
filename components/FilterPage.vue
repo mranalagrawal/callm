@@ -2,7 +2,9 @@
   <div class="container-fluid px-md-5">
     <div class="row">
       <div class="col-12">
-        <button v-if="winelist" class="btn btn-dark-red">{{ winelist }}</button>
+        <button v-if="winelist" class="btn btn-dark-secondary">
+          {{ winelist }}
+        </button>
       </div>
     </div>
     <div class="row">

@@ -4,9 +4,9 @@
       class="btn d-flex w-100 justify-content-between px-0"
       @click="visible = !visible"
     >
-      <span class="small text-dark-red text-uppercase">{{ label }}</span>
+      <span class="small text-dark-secondary text-uppercase">{{ label }}</span>
       <i
-        class="fal fa-chevron-down text-light-red mr-3"
+        class="fal fa-chevron-down text-light-secondary mr-3"
         :class="visible ? 'fa-rotate-180' : ''"
       ></i>
     </div>
@@ -142,10 +142,10 @@ export default {
 
 .content-item:hover {
   background: #fae4e8;
-  color: var(--dark-red);
+  color: var(--dark-secondary);
 }
 .active {
   background: #fae4e8;
-  color: var(--dark-red);
+  color: var(--dark-secondary);
 }
 </style>

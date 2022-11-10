@@ -9,7 +9,7 @@
         <div class="bg-light py-3 d-lg-none">
           <p class="text-center mb-0" @click="registerIsVisible = true">
             {{ $t("navbar.user.notRegisteredYet") }}
-            <strong class="text-light-red text-uppercase">{{
+            <strong class="text-light-secondary text-uppercase">{{
               $t("navbar.user.register")
             }}</strong>
           </p>
@@ -29,7 +29,7 @@
         <div class="bg-light py-3 d-lg-none">
           <p class="text-center mb-0">
             {{ $t("navbar.user.notRegisteredYet") }}
-            <strong class="text-light-red text-uppercase">{{
+            <strong class="text-light-secondary text-uppercase">{{
               $t("navbar.user.register")
             }}</strong>
           </p>

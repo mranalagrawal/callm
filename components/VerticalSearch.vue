@@ -80,7 +80,7 @@
         </div>
         <div :class="horizontal ? 'heart-horizontal' : 'heart-vertical'">
           <i
-            class="text-light-red"
+            class="text-light-secondary"
             :class="isInWishList ? 'fas fa-heart fa-2x' : 'fal fa-heart fa-2x '"
             @click="toggleWishlist"
           ></i>
@@ -228,13 +228,13 @@
             </div>
             <div class="col-6">
               <p
-                class="text-light-green text-center text-uppercase mt-5"
+                class="text-light-primary text-center text-uppercase mt-5"
                 v-if="product._source.quantity > 0"
               >
                 {{ $t("product.available") }}
               </p>
               <p
-                class="text-light-green text-center text-uppercase mt-5"
+                class="text-light-primary text-center text-uppercase mt-5"
                 v-else
               >
                 {{ $t("product.notAvailable") }}
@@ -254,7 +254,7 @@
                 v-if="product._source.quantity > 0"
               >
                 <button
-                  class="btn bg-light-red text-white text-uppercase w-100 br-10 mt-3"
+                  class="btn bg-light-secondary text-white text-uppercase w-100 br-10 mt-3"
                   @click.stop="isOpen = true"
                   v-show="!isOpen"
                 >
@@ -269,14 +269,14 @@
                     class="d-flex justify-content-between align-items-center"
                   >
                     <button
-                      class="btn bg-light-red text-white px-5"
+                      class="btn bg-light-secondary text-white px-5"
                       @click.stop="removeFromUserCart()"
                     >
                       -
                     </button>
                     {{ userCartQuantity }}
                     <button
-                      class="btn bg-light-red text-white px-5"
+                      class="btn bg-light-secondary text-white px-5"
                       @click.stop="addToUserCart()"
                     >
                       +

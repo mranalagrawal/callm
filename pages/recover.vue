@@ -26,7 +26,7 @@
             ></b-form-input>
           </b-form-group>
 
-          <button class="btn btn-light-red w-100 mt-5">INVIA</button>
+          <button class="btn btn-light-secondary w-100 mt-5">INVIA</button>
         </form>
       </div>
     </div>
@@ -35,10 +35,10 @@
       <p class="text-center my-5 lead">Cancellare carrello?</p>
       <template #modal-footer class="border-0">
         <div class="w-100 d-flex justify-content-between">
-          <button class="btn btn-outline-dark-red" @click="hideModal">
+          <button class="btn btn-outline-dark-secondary" @click="hideModal">
             Annulla
           </button>
-          <button class="btn btn-dark-red" @click="removeCart">
+          <button class="btn btn-dark-secondary" @click="removeCart">
             Si, cancella
           </button>
         </div>

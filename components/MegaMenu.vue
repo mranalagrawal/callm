@@ -138,7 +138,7 @@ export default {
   padding-bottom: 0.5rem;
 }
 .menu-link:hover {
-  color: var(--dark-red);
+  color: var(--dark-secondary);
   text-decoration: none;
 }
 </style>

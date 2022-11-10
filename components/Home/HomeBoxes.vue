@@ -16,7 +16,7 @@
           />
           <div class="card-body text-center">
             <h5
-              class="card-title mt-4 text-dark-green mb-0"
+              class="card-title mt-4 text-dark-primary mb-0"
               style="font-size: 16px; font-weight: 600"
             >
               {{ box.title }}
@@ -42,7 +42,7 @@
             />
             <div class="card-body text-center">
               <h5
-                class="card-title mt-4 text-dark-green mb-0"
+                class="card-title mt-4 text-dark-primary mb-0"
                 style="font-size: 16px; font-weight: 600"
               >
                 {{ box.title }}
@@ -190,13 +190,13 @@ export default {
 :deep(.slick-dots li button:before) {
   font-size: 10px;
   opacity: 0.6;
-  color: var(--light-red);
+  color: var(--light-secondary);
 }
 
 :deep(.slick-dots li.slick-active button:before) {
   opacity: 1;
   font-size: 16px;
-  color: var(--dark-red);
+  color: var(--dark-secondary);
 }
 :deep(.slick-dots) {
   bottom: 8px;

@@ -109,7 +109,10 @@
           </div> -->
 
           <div class="col-12 mt-5 text-right">
-            <button type="submit" class="btn btn-light-red text-uppercase">
+            <button
+              type="submit"
+              class="btn btn-light-secondary text-uppercase"
+            >
               {{ $t("profile.addAddress") }}
             </button>
           </div>
@@ -128,7 +131,7 @@
             <span
               v-if="address.node.id.split('?model_name')[0] === defaultAddress"
             >
-              <span class="badge badge-pill badge-light-green mx-1 p-2"
+              <span class="badge badge-pill badge-light-primary mx-1 p-2"
                 >Predefinito</span
               >
             </span>
@@ -157,7 +160,7 @@
                       style="
                         width: 30px;
                         height: 30px;
-                        background: var(--light-red);
+                        background: var(--light-secondary);
                         display: flex;
                         justify-content: center;
                         align-items: center;
@@ -207,7 +210,7 @@
           style="border: 2px dotted red; height: 200px"
           @click="showNewAddressModal"
         >
-          <p class="mb-0 text-light-red">
+          <p class="mb-0 text-light-secondary">
             <i class="fas fa-plus mr-2"></i>{{ $t("profile.addNewAddress") }}
           </p>
         </div>
@@ -222,7 +225,9 @@
       centered
       title=""
     >
-      <p class="text-center mt-5 mb-2 lead text-light-green">Nuovo indirizzo</p>
+      <p class="text-center mt-5 mb-2 lead text-light-primary">
+        Nuovo indirizzo
+      </p>
 
       <form @submit="onSubmit" class="px-4 pt-3 py-2 row">
         <div class="col-12 col-md-6 mb-3">
@@ -326,7 +331,7 @@
         </div>
 
         <div class="col-12 mt-5 text-right">
-          <button type="submit" class="btn btn-light-red text-uppercase">
+          <button type="submit" class="btn btn-light-secondary text-uppercase">
             Aggiungi indirizzo
           </button>
         </div>
@@ -341,7 +346,7 @@
       centered
       title=""
     >
-      <p class="text-center mt-5 mb-2 lead text-light-green">
+      <p class="text-center mt-5 mb-2 lead text-light-primary">
         Modifica indirizzo
       </p>
 
@@ -447,7 +452,7 @@
         </div>
 
         <div class="col-12 mt-5 text-right">
-          <button type="submit" class="btn btn-light-red text-uppercase">
+          <button type="submit" class="btn btn-light-secondary text-uppercase">
             Aggiungi indirizzo
           </button>
         </div>
