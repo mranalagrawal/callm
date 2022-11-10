@@ -48,7 +48,7 @@
               <p class="text-center">
                 {{ brand.subtitle }}
               </p>
-              <p class="text-center text-light-green pb-2 mt-auto">
+              <p class="text-center text-light-primary pb-2 mt-auto">
                 {{ brand.country }} {{ brand.region }}
               </p>
             </nuxt-link>
@@ -86,7 +86,7 @@
                   <p class="text-center">
                     {{ brand.subtitle }}
                   </p>
-                  <p class="text-center text-light-green pb-2 mt-auto">
+                  <p class="text-center text-light-primary pb-2 mt-auto">
                     {{ brand.country }} {{ brand.region }}
                   </p>
                 </nuxt-link>
@@ -97,14 +97,14 @@
 
         <div v-if="data" class="row justify-content-between">
           <button
-            class="btn text-light-red"
+            class="btn text-light-secondary"
             v-if="links.prev"
             @click="fetchPrev"
           >
             Pagina Precedente
           </button>
           <button
-            class="btn text-light-red"
+            class="btn text-light-secondary"
             v-if="links.next"
             @click="fetchNext"
           >

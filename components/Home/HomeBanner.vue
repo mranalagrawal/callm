@@ -53,7 +53,7 @@
         <div>
           <nuxt-link
             :to="slide.link"
-            class="btn text-uppercase bg-white text-light-red mb-5"
+            class="btn text-uppercase bg-white text-light-secondary mb-5"
             style="text-shadow: none"
           >
             {{ slide.cta }}
@@ -147,7 +147,7 @@ export default {
   margin: 0px 6px;
 }
 .home-carousel :deep(.carousel-indicators li.active) {
-  background-color: var(--dark-red);
+  background-color: var(--dark-secondary);
   width: 16px;
   height: 16px;
 }
@@ -238,11 +238,11 @@ export default {
 .btn-more {
   text-transform: uppercase;
   background-color: white;
-  color: var(--light-red);
+  color: var(--light-secondary);
   font-weight: 700;
 }
 .btn-more:hover {
-  background-color: var(--dark-red);
+  background-color: var(--dark-secondary);
   color: white;
 }
 </style>

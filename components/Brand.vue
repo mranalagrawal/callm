@@ -214,7 +214,7 @@ export default {
 }
 
 .ribbon {
-  background: var(--dark-green);
+  background: var(--dark-primary);
   color: white;
   position: relative;
   display: inline-block;
@@ -231,7 +231,7 @@ export default {
   left: 0px;
   border-top: 12px solid transparent;
   border-bottom: 12px solid transparent;
-  border-left: 12px solid var(--dark-red);
+  border-left: 12px solid var(--dark-secondary);
 }
 
 .ribbon::after {
@@ -243,7 +243,7 @@ export default {
   right: 0px;
   border-top: 12px solid transparent;
   border-bottom: 12px solid transparent;
-  border-right: 12px solid var(--dark-red);
+  border-right: 12px solid var(--dark-secondary);
 }
 
 .svg-favourite {

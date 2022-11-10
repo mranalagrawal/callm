@@ -8,19 +8,19 @@
       </div>
       <div class="col-12 col-md-6 mb-3">
         <div class="card p-3">
-          <p class="font-weight-bold text-light-green">Email</p>
+          <p class="font-weight-bold text-light-primary">Email</p>
           <p>{{ currentMail }}</p>
           <p class="text-right mb-0 pointer" @click="showEditMailModal">
-            <i class="fal fa-edit text-light-red"></i>
+            <i class="fal fa-edit text-light-secondary"></i>
           </p>
         </div>
       </div>
       <div class="col-12 col-md-6 mb-3">
         <div class="card p-3">
-          <p class="font-weight-bold text-light-green">Password</p>
+          <p class="font-weight-bold text-light-primary">Password</p>
           <p>*********</p>
           <p class="text-right mb-0 pointer" @click="showEditPasswordModal">
-            <i class="fal fa-edit text-light-red"></i>
+            <i class="fal fa-edit text-light-secondary"></i>
           </p>
         </div>
       </div>
@@ -33,26 +33,26 @@
         <div class="card p-3">
           <div class="row">
             <div class="col-12 col-md-4">
-              <p class="font-weight-bold text-light-green">
+              <p class="font-weight-bold text-light-primary">
                 {{ $t("firstName") }}
               </p>
               <p>{{ currentFirstName }}</p>
             </div>
             <div class="col-12 col-md-4">
-              <p class="font-weight-bold text-light-green">
+              <p class="font-weight-bold text-light-primary">
                 {{ $t("lastName") }}
               </p>
               <p>{{ currentLastName }}</p>
             </div>
             <div class="col-12 col-md-4">
-              <p class="font-weight-bold text-light-green">
+              <p class="font-weight-bold text-light-primary">
                 {{ $t("phone") }}
               </p>
               <p>{{ currentPhone }}</p>
             </div>
             <div class="col-12">
               <p class="text-right mb-0 pointer" @click="showEditPersonalModal">
-                <i class="fal fa-edit text-light-red"></i>
+                <i class="fal fa-edit text-light-secondary"></i>
               </p>
             </div>
           </div>
@@ -61,7 +61,7 @@
     </div>
 
     <b-modal ref="editMailModal" size="lg" hide-header hide-footer centered>
-      <p class="text-center mt-5 mb-2 lead text-light-green">
+      <p class="text-center mt-5 mb-2 lead text-light-primary">
         {{ $t("profile.setNewEmailAddress") }}
       </p>
 
@@ -80,7 +80,7 @@
           ></b-form-input>
           <button
             type="submit"
-            class="btn btn-light-red text-uppercase w-100 mt-5"
+            class="btn btn-light-secondary text-uppercase w-100 mt-5"
           >
             {{ $t("save") }}
           </button>
@@ -89,7 +89,7 @@
     </b-modal>
 
     <b-modal ref="editPasswordModal" size="lg" hide-header hide-footer centered>
-      <p class="text-center mt-5 mb-2 lead text-light-green">
+      <p class="text-center mt-5 mb-2 lead text-light-primary">
         {{ $t("profile.setNewPassword") }}
       </p>
 
@@ -121,7 +121,7 @@
           ></b-form-input>
           <button
             type="submit"
-            class="btn btn-light-red text-uppercase w-100 mt-5"
+            class="btn btn-light-secondary text-uppercase w-100 mt-5"
             :class="passwordMatch ? '' : 'disabled'"
           >
             {{ $t("save") }}
@@ -131,7 +131,7 @@
     </b-modal>
 
     <b-modal ref="editPersonalModal" size="lg" hide-header hide-footer centered>
-      <p class="text-center mt-5 mb-2 lead text-light-green">
+      <p class="text-center mt-5 mb-2 lead text-light-primary">
         {{ $t("profile.setNewPersonalData") }}
       </p>
 
@@ -173,7 +173,7 @@
 
           <button
             type="submit"
-            class="btn btn-light-red text-uppercase w-100 mt-5"
+            class="btn btn-light-secondary text-uppercase w-100 mt-5"
             :class="passwordMatch ? '' : 'disabled'"
           >
             {{ $t("save") }}

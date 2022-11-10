@@ -70,7 +70,7 @@ export default {
   height: 0;
   border-left: 45px solid transparent;
   border-right: 45px solid transparent;
-  border-top: 10px solid var(--dark-green);
+  border-top: 10px solid var(--dark-primary);
 }
 .ribbon1 span {
   position: relative;

@@ -3,7 +3,7 @@
     <div v-if="data" class="row px-3">
       <div class="col-12">
         <div class="col-12 text-center mt-5 mb-5">
-          <h2 class="text-center font-weight-bold text-dark-green">
+          <h2 class="text-center font-weight-bold text-dark-primary">
             {{ label }}
           </h2>
         </div>

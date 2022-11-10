@@ -1,9 +1,9 @@
 $theme-colors: (
-  "dark-green": #11312b,
-  "light-green": #155b53,
-  "darker-red": #751f3d,
-  "dark-red": #8e2440,
-  "light-red": #da4865,
+  "dark-primary": #11312b,
+  "light-primary": #155b53,
+  "darker-secondary": #751f3d,
+  "dark-secondary": #8e2440,
+  "light-secondary": #da4865,
 );
 
 @import "~bootstrap/scss/bootstrap";
@@ -99,9 +99,9 @@ body {
 }
 
 .view-more {
-  border: 2px solid var(--light-red);
+  border: 2px solid var(--light-secondary);
   border-radius: 12px;
-  color: var(--light-red) !important;
+  color: var(--light-secondary) !important;
 }
 /* .view.more:hover {
 
@@ -174,7 +174,7 @@ body {
   height: 48px;
   border-radius: 12px;
   color: white;
-  background: url("../images/cart.svg"), var(--light-red);
+  background: url("../images/cart.svg"), var(--light-secondary);
   background-repeat: no-repeat;
   background-position: center;
   position: relative;
@@ -184,7 +184,7 @@ body {
   position: absolute;
   top: 18px;
   right: 24px;
-  background: var(--light-red) !important;
+  background: var(--light-secondary) !important;
   border-radius: 8px;
 }
 
@@ -199,7 +199,7 @@ body {
   height: 20px;
   border-radius: 50%;
   font-size: 10px;
-  background-color: var(--dark-red);
+  background-color: var(--dark-secondary);
   color: white;
   border: 1px solid white;
 }
@@ -207,7 +207,7 @@ body {
 .cart-dropup {
   width: 48px;
   border-radius: 10px;
-  background: var(--light-red);
+  background: var(--light-secondary);
   position: absolute;
   bottom: 2px;
   right: 0px;
@@ -216,8 +216,8 @@ body {
   justify-content: space-between;
 }
 
-.bg-light-red {
-  background-color: var(--light-red);
+.bg-light-secondary {
+  background-color: var(--light-secondary);
 }
 
 .br-10 {

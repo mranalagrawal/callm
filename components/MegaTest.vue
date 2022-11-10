@@ -16,7 +16,7 @@
         }}</nuxt-link>
       </div>
       <div class="col text-center" @mouseenter="onTab(promotions)">
-        <span class="text-light-red"
+        <span class="text-light-secondary"
           ><i class="fas fa-tags me-3"></i> {{ $t("navbar.promotions") }}</span
         >
       </div>
@@ -34,7 +34,7 @@
           style="border-right: 1px solid #ddd"
         >
           <div v-if="item.title !== 'Marketing'">
-            <p class="text-dark-green">{{ item.title }}</p>
+            <p class="text-dark-primary">{{ item.title }}</p>
             <p v-for="el in item.items" :key="el.id">
               <nuxt-link
                 class="menu-link small"
@@ -67,7 +67,7 @@
                   style="object-fit: cover; border-radius: 10px 0px 0px 10px"
                 />
 
-                <p class="text-light-red mb-0 pl-2">{{ mkt.text }}</p>
+                <p class="text-light-secondary mb-0 pl-2">{{ mkt.text }}</p>
               </div>
             </div>
           </div>
@@ -100,11 +100,11 @@
               <div class="col-8">
                 <nuxt-link
                   :to="promotion.items[0].link"
-                  class="font-weight-bold text-dark-red mb-0"
+                  class="font-weight-bold text-dark-secondary mb-0"
                 >
                   {{ promotion.items[0].text }}
                 </nuxt-link>
-                <!-- <p class="font-weight-bold text-dark-red mb-0">
+                <!-- <p class="font-weight-bold text-dark-secondary mb-0">
                   {{ promotion.items[0].text }}
                 </p> -->
               </div>
@@ -127,7 +127,7 @@
   text-decoration: none;
 }
 .menu-link:hover {
-  color: var(--dark-red);
+  color: var(--dark-secondary);
   text-decoration: none;
 }
 </style>

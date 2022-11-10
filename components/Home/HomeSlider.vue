@@ -1,6 +1,6 @@
 <template>
   <div class="my-5">
-    <h2 class="text-center font-weight-bold text-dark-green">{{ label }}</h2>
+    <h2 class="text-center font-weight-bold text-dark-primary">{{ label }}</h2>
 
     <client-only placeholder="Loading..." v-if="data">
       <carousel-3d

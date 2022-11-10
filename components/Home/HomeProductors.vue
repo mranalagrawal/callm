@@ -208,7 +208,7 @@ export default {
   font-size: 16px;
 
   opacity: 0.25;
-  color: var(--dark-red);
+  color: var(--dark-secondary);
 }
 
 :deep(.slick-dots li.slick-active button:before) {

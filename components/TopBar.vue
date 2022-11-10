@@ -1,6 +1,6 @@
 <template>
   <div
-    class="container-fluid bg-dark-green py-2 text-white text-center fixed-top"
+    class="container-fluid bg-dark-primary py-2 text-white text-center fixed-top"
     style="z-index: 1050"
   >
     <span class="small" v-if="data" v-html="data.data.text[0].text"></span>

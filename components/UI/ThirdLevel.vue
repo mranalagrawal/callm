@@ -17,8 +17,7 @@
           alt=""
           width="20px"
           class="img-selection"
-        />
-        {{ thirdLevel.third_level_name }}</nuxt-link
+        />{{ thirdLevel.third_level_name }}</nuxt-link
       >
     </p>
     <div
@@ -55,13 +54,13 @@
         <nuxt-link
           v-if="thirdLevel.marketing_cta.length < 40"
           :to="thirdLevel.third_level_link || '/'"
-          class="mb-0 text-decoration-none text-light-red small"
+          class="mb-0 text-decoration-none text-light-secondary small"
           >{{ thirdLevel.marketing_cta }}</nuxt-link
         >
         <nuxt-link
           v-else
           :to="thirdLevel.third_level_link || '/'"
-          class="mb-0 text-decoration-none text-light-red small"
+          class="mb-0 text-decoration-none text-light-secondary small"
           >{{ thirdLevel.marketing_cta.substring(0, 40) }}...</nuxt-link
         >
       </div>
@@ -94,7 +93,7 @@ export default {
   padding-bottom: 0.5rem;
 }
 .menu-link:hover {
-  color: var(--dark-red);
+  color: var(--dark-secondary);
   text-decoration: none;
 }
 </style>

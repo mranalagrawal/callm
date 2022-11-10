@@ -91,7 +91,7 @@
         </div>
         <div style="position: absolute; bottom: 0px; right: 2px">
           <i
-            class="text-light-red"
+            class="text-light-secondary"
             style="font-size: 26px"
             :class="isInWishList ? 'fas fa-heart ' : 'fal fa-heart  '"
             @click.stop="toggleWishlist"
@@ -103,7 +103,7 @@
         <div class="col-12">
           <div class="text-right">
             <i
-              class="text-light-red mr-2"
+              class="text-light-secondary mr-2"
               :class="
                 isInWishList ? 'fas fa-heart fa-2x' : 'fal fa-heart fa-2x '
               "
@@ -250,9 +250,6 @@ export default {
 
       const elastic_url = this.$config.ELASTIC_URL;
 
-      console.log(
-        elastic_url + `customers/${userId}/wishlist/${this.product.tags[0]}`
-      );
       const response = await fetch(
         elastic_url + `customers/${userId}/wishlist/${this.product.tags[0]}`,
         { async: true, crossDomain: true, method: "POST" }
@@ -363,7 +360,7 @@ export default {
   /* display: none; */
   position: absolute;
   bottom: 36px;
-  background-color: var(--light-red);
+  background-color: var(--light-secondary);
   width: 100%;
   border-radius: 12px 12px 0 0;
   z-index: 1;

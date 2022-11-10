@@ -42,7 +42,7 @@
               <span
                 v-for="item in activeSelections"
                 :key="item"
-                class="badge badge-pill badge-light-red mx-1"
+                class="badge badge-pill badge-light-secondary mx-1"
                 @click="removeSelectionFromQuery(item)"
               >
                 {{ $t(`selections.${item}`) }}
@@ -50,7 +50,7 @@
               </span>
               <!-- other filters -->
               <span
-                class="badge badge-pill badge-light-red mx-1"
+                class="badge badge-pill badge-light-secondary mx-1"
                 v-for="(item, ind) in Object.entries(view).filter(
                   (el) => el[1] !== null
                 )"
@@ -170,14 +170,14 @@
             >
             <div>
               <div
-                class="btn text-dark-red br-10 btn-sort mr-1"
+                class="btn text-dark-secondary br-10 btn-sort mr-1"
                 :class="column ? 'bg-gray' : 'shadow'"
                 @click="column = true"
               >
                 <i class="fas fa-th-large"></i>
               </div>
               <div
-                class="btn text-dark-red br-10 btn-sort"
+                class="btn text-dark-secondary br-10 btn-sort"
                 @click="column = false"
                 :class="!column ? 'bg-light' : 'shadow'"
               >
@@ -192,7 +192,7 @@
               <b-dropdown id="sorting" variant="null" right class="" no-caret>
                 <template #button-content>
                   {{ $t("search.sortBy") }}
-                  <i class="fal fa-chevron-down text-light-red ml-3"></i>
+                  <i class="fal fa-chevron-down text-light-secondary ml-3"></i>
                 </template>
                 <div class="shadow br-10" style="width: 300px">
                   <button
@@ -266,7 +266,7 @@
       <div class="col-4 text-right">
         <span class="d-inline-flex" v-if="+currentPage > 4">
           <button
-            class="btn btn-outline-dark-red btn-small"
+            class="btn btn-outline-dark-secondary btn-small"
             @click="changePage(1)"
           >
             Prima
@@ -276,7 +276,7 @@
       <div class="col-4 text-center">
         <span class="d-inline-flex" v-for="i in 3" :key="i + 'prev'">
           <button
-            class="btn btn-outline-dark-red btn-small"
+            class="btn btn-outline-dark-secondary btn-small"
             v-if="+currentPage - 4 + i > 0 && +currentPage - 4 + i < totalPages"
             @click="changePage(+currentPage - 4 + i)"
           >
@@ -284,13 +284,13 @@
           </button>
         </span>
         <span class="d-inline-flex">
-          <button class="btn btn-dark-red btn-small disabled">
+          <button class="btn btn-dark-secondary btn-small disabled">
             {{ currentPage }}
           </button>
         </span>
         <span class="d-inline-flex" v-for="i in 3" :key="i + 'next'">
           <button
-            class="btn btn-outline-dark-red btn-small"
+            class="btn btn-outline-dark-secondary btn-small"
             v-if="+currentPage + i > 0 && +currentPage + i < totalPages"
             @click="changePage(+currentPage + i)"
           >
@@ -301,7 +301,7 @@
       <div class="col-4 text-left">
         <span class="d-inline-flex" v-if="+currentPage < totalPages">
           <button
-            class="btn btn-outline-dark-red btn-small"
+            class="btn btn-outline-dark-secondary btn-small"
             @click="changePage(totalPages)"
           >
             Ultima
@@ -349,7 +349,7 @@
     >
       <div class="mt-4">
         <div class="text-right" @click="hideModal">
-          <i class="fal fa-times fa-2x text-light-red"></i>
+          <i class="fal fa-times fa-2x text-light-secondary"></i>
         </div>
 
         <div
@@ -364,7 +364,7 @@
             <span
               v-for="item in activeSelections"
               :key="item"
-              class="badge badge-pill badge-light-red mx-1"
+              class="badge badge-pill badge-light-secondary mx-1"
               @click="removeSelectionFromQuery(item)"
             >
               {{ $t(`selections.${item}`) }}
@@ -372,7 +372,7 @@
             </span>
             <!-- other filters -->
             <span
-              class="badge badge-pill badge-light-red mx-1"
+              class="badge badge-pill badge-light-secondary mx-1"
               v-for="(item, ind) in Object.entries(view).filter(
                 (el) => el[1] !== null
               )"

@@ -2,7 +2,9 @@
   <div class="container-fluid container-large px-md-3 my-5">
     <div class="row">
       <div class="col-12 text-center" v-if="data">
-        <h3 class="font-weight-bold text-dark-green">{{ data.description }}</h3>
+        <h3 class="font-weight-bold text-dark-primary">
+          {{ data.description }}
+        </h3>
       </div>
 
       <div class="col-12 py-4" v-if="data">
@@ -117,9 +119,9 @@ export default {
   visibility: visible;
 } */
 .view-more {
-  border: 2px solid var(--light-red);
+  border: 2px solid var(--light-secondary);
   border-radius: 12px;
-  color: var(--light-red);
+  color: var(--light-secondary);
 }
 
 :deep(.slick-arrow.slick-prev) {
@@ -173,7 +175,7 @@ export default {
   font-size: 16px;
 
   opacity: 0.25;
-  color: var(--dark-red);
+  color: var(--dark-secondary);
 }
 
 :deep(.slick-dots li.slick-active button:before) {

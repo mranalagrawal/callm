@@ -124,10 +124,10 @@ export default {
 
 .content-item:hover {
   background: #fae4e8;
-  color: var(--dark-red);
+  color: var(--dark-secondary);
 }
 .active {
   background: #fae4e8;
-  color: var(--dark-red);
+  color: var(--dark-secondary);
 }
 </style>

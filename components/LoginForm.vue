@@ -20,13 +20,13 @@
         <label class="custom-label" for="input-2">Password</label>
         <i
           v-if="passwordIsVisible"
-          class="fal fa-eye-slash position-absolute text-light-red pointer"
+          class="fal fa-eye-slash position-absolute text-light-secondary pointer"
           style="right: 10px; bottom: 10px"
           @click="passwordIsVisible = !passwordIsVisible"
         ></i>
         <i
           v-else
-          class="fal fa-eye position-absolute text-light-red pointer"
+          class="fal fa-eye position-absolute text-light-secondary pointer"
           style="right: 10px; bottom: 10px"
           @click="passwordIsVisible = !passwordIsVisible"
         ></i>
@@ -50,12 +50,12 @@
       >
         Ricordami
       </b-form-checkbox> -->
-      <button type="submit" class="w-100 btn bg-light-red text-white">
+      <button type="submit" class="w-100 btn bg-light-secondary text-white">
         {{ $t("navbar.user.signIn") }}
       </button>
 
       <div class="text-center my-3">
-        <nuxt-link to="/recover" class="btn text-light-red">
+        <nuxt-link to="/recover" class="btn text-light-secondary">
           {{ $t("navbar.user.forgotPassword") }}
         </nuxt-link>
       </div>

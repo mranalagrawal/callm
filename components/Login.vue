@@ -13,9 +13,11 @@
           <login-form />
           <div class="bg-light p-3 text-center">
             {{ $t("navbar.user.notRegisteredYet") }}
-            <nuxt-link to="/login" class="text-uppercase text-light-red">{{
-              $t("navbar.user.register")
-            }}</nuxt-link>
+            <nuxt-link
+              to="/login"
+              class="text-uppercase text-light-secondary"
+              >{{ $t("navbar.user.register") }}</nuxt-link
+            >
           </div>
         </div>
         <div v-else>
@@ -68,7 +70,7 @@ export default {
   /* left: -275px; */
   transform: translate(-80px, 20px);
   z-index: 99;
-  border-top: 4px solid var(--dark-red);
+  border-top: 4px solid var(--dart-secondary);
   padding-bottom: 0px;
   background: white;
 }
@@ -76,12 +78,12 @@ export default {
   display: none;
 }
 :deep(.btn-secondary) {
-  background-color: var(--dark-red) !important;
-  border-color: var(--dark-red) !important;
+  background-color: var(--dart-secondary) !important;
+  border-color: var(--dart-secondary) !important;
 }
 :deep(.dropdown-menu) {
   left: -60px;
-  border-top: 4px solid var(--dark-red);
+  border-top: 4px solid var(--dart-secondary);
   padding-bottom: 0px;
 }
 </style>

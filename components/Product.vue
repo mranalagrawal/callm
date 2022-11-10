@@ -3,12 +3,14 @@
     <div class="container-fluid px-md-5" v-if="data && brandMetafields">
       <div class="row mb-3" v-if="breadcrumb">
         <div class="col-12">
-          <nuxt-link class="text-light-red" :to="localePath(`/catalog`)">{{
-            breadcrumb.parent_category_name
-          }}</nuxt-link>
+          <nuxt-link
+            class="text-light-secondary"
+            :to="localePath(`/catalog`)"
+            >{{ breadcrumb.parent_category_name }}</nuxt-link
+          >
           <i class="fal fa-chevron-right small px-1"></i>
           <nuxt-link
-            class="text-light-red"
+            class="text-light-secondary"
             :to="
               localePath(
                 `/${breadcrumb.category_handle}-${breadcrumb.category_id}`
@@ -18,7 +20,7 @@
           >
           <i class="fal fa-chevron-right small px-1"></i>
           <nuxt-link
-            class="text-light-red"
+            class="text-light-secondary"
             :to="
               localePath(
                 `/${breadcrumb.category_handle}-${breadcrumb.region_handle}-${breadcrumb.category_id}${breadcrumb.region_id}`
@@ -28,7 +30,7 @@
           >
           <i class="fal fa-chevron-right small px-1"></i>
           <nuxt-link
-            class="text-light-red"
+            class="text-light-secondary"
             :to="
               localePath(
                 `/${breadcrumb.winelist_handle}-${breadcrumb.winelist_id}`
@@ -115,10 +117,10 @@
             <div class="col-12 col-md-6 offset-md-2 text-center">
               <div class="d-flex align-items-end justify-content-center">
                 <div>
-                  <p v-if="data.totalInventory > 0" class="text-light-green">
+                  <p v-if="data.totalInventory > 0" class="text-light-primary">
                     {{ $t("product.available") }} ({{ data.totalInventory }})
                   </p>
-                  <p v-else class="text-light-red">
+                  <p v-else class="text-light-secondary">
                     {{ $t("product.notAvailable") }}
                   </p>
                   <button
@@ -140,7 +142,7 @@
                 </div>
                 <button class="btn ml-2">
                   <i
-                    class="text-light-red"
+                    class="text-light-secondary"
                     :class="
                       isInWishList
                         ? 'fas fa-heart fa-2x'
@@ -194,7 +196,7 @@
                   v-if="metafield.awards.length > 0"
                 >
                   <thead>
-                    <tr class="bg-dark-green text-white">
+                    <tr class="bg-dark-primary text-white">
                       <th style="border-radius: 15px 0px 0px 0px" scope="col">
                         {{ $t("product.guide") }}
                       </th>
@@ -246,7 +248,7 @@
                       $t("product.recommendedByCallmewine")
                     }}</span>
                   </div>
-                  <h3 class="text-light-red">{{ brand.title }}</h3>
+                  <h3 class="text-light-secondary">{{ brand.title }}</h3>
                   <div class="row">
                     <div class="col-12 col-md-8">
                       <div class="row py-3 bg-light">
@@ -542,8 +544,9 @@ export default {
       const variantId =
         this.data.variants.edges[0].node.id.split("ProductVariant/")[1];
 
+      const elastic_url = this.$config.ELASTIC_URL;
       const response = await fetch(
-        `https://callmewine-api.dojo.sh/api/customers/${userId}/wishlist/${this.data.tags[0]}`,
+        elastic_url + `customers/${userId}/wishlist/${this.data.tags[0]}`,
         { async: true, crossDomain: true, method: "POST" }
       );
       const updatedWishlist = await response.text();
@@ -594,10 +597,10 @@ export default {
 }
 
 :deep(.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link) {
-  color: var(--dark-red);
+  color: var(--dark-secondary);
   /* font-weight: bold; */
   background-color: #fff;
-  border-bottom: 4px solid var(--dark-red);
+  border-bottom: 4px solid var(--dark-secondary);
 }
 :deep(ul.nav.nav-tabs.nav-justified) {
   flex-wrap: nowrap;

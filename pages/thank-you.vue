@@ -18,7 +18,7 @@
       <div class="col-12 mt-5">
         <nuxt-link
           :to="localePath('/profile')"
-          class="btn btn-light-red px-3 text-uppercase"
+          class="btn btn-light-secondary px-3 text-uppercase"
           style="border-radius: 10px"
           >vai al tuo profilo</nuxt-link
         >

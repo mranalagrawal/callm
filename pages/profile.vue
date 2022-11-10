@@ -3,7 +3,7 @@
     <div class="container-fluid px-md-5">
       <div class="row">
         <div class="col-12 mb-4">
-          <nuxt-link class="text-dark-red" to="/">Home</nuxt-link>
+          <nuxt-link class="text-dark-secondary" to="/">Home</nuxt-link>
           <i class="fal fa-chevron-right mx-2"></i>
           {{ $t("profile.myAccount") }}
         </div>
@@ -11,7 +11,10 @@
           <h1 v-if="user">Ciao {{ user.customer.firstName }}</h1>
         </div>
         <div class="col-4 text-right">
-          <button class="btn text-uppercase text-light-red" @click="logout">
+          <button
+            class="btn text-uppercase text-light-secondary"
+            @click="logout"
+          >
             {{ $t("profile.logout") }}
             <i class="fal fa-long-arrow-right"></i>
           </button>
@@ -109,10 +112,10 @@ export default {
 }
 
 :deep(.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link) {
-  color: var(--dark-red);
+  color: var(--dark-secondary);
   /* font-weight: bold; */
   background-color: #fff;
-  border-bottom: 4px solid var(--dark-red);
+  border-bottom: 4px solid var(--dark-secondary);
 }
 
 :deep(ul.nav.nav-tabs.nav-justified) {

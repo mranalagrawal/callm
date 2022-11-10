@@ -3,28 +3,28 @@
     <p class="voice">
       <nuxt-link
         :to="localePath('/profile#orders')"
-        class="text-decoration-none text-dark-red"
+        class="text-decoration-none text-dark-secondary"
         >{{ $t("navbar.user.myOrders") }}</nuxt-link
       >
     </p>
     <p class="voice">
       <nuxt-link
         :to="localePath('/profile#buyagain')"
-        class="text-decoration-none text-dark-red"
+        class="text-decoration-none text-dark-secondary"
         >{{ $t("navbar.user.buyAgain") }}</nuxt-link
       >
     </p>
     <p class="voice">
       <nuxt-link
         :to="localePath('/profile#wishlist')"
-        class="text-decoration-none text-dark-red"
+        class="text-decoration-none text-dark-secondary"
         >{{ $t("navbar.user.favorites") }}</nuxt-link
       >
     </p>
     <p class="voice">
       <nuxt-link
         :to="localePath('/profile#addresses')"
-        class="text-decoration-none text-dark-red"
+        class="text-decoration-none text-dark-secondary"
         >{{ $t("navbar.user.addresses") }}</nuxt-link
       >
     </p>
@@ -32,13 +32,16 @@
     <p class="voice">
       <nuxt-link
         :to="localePath('/profile#accessData')"
-        class="text-decoration-none text-dark-red"
+        class="text-decoration-none text-dark-secondary"
         >{{ $t("navbar.user.accessData") }}</nuxt-link
       >
     </p>
 
     <div class="mt-5">
-      <button @click="logout" class="btn btn-outline-light-red br-10 w-100">
+      <button
+        @click="logout"
+        class="btn btn-outline-light-secondary br-10 w-100"
+      >
         {{ $t("navbar.user.logout") }}
       </button>
     </div>
@@ -71,7 +74,7 @@ export default {
   width: 340px;
 }
 .menu-link:hover {
-  color: var(--dark-red);
+  color: var(--dark-secondary);
   font-weight: bold;
 }
 
