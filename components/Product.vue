@@ -468,8 +468,9 @@ export default {
   },
   async fetch() {
     // breadcrumb
+    const elastic_url = this.$config.ELASTIC_URL;
     const urls = await fetch(
-      `https://callmewine-api.dojo.sh/api/product/${this.product.substring(1)}`
+      elastic_url + `product/${this.product.substring(1)}`
     ).then((r) => r.json());
 
     this.breadcrumb = urls.data;
