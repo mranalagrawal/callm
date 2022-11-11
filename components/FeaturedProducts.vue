@@ -31,6 +31,7 @@
 import { queryByCollection } from "../utilities/productQueries";
 
 import VueSlickCarousel from "vue-slick-carousel";
+import "vue-slick-carousel/dist/vue-slick-carousel.css";
 import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
 import ProductCardVertical from "./ProductCardVertical.vue";
 

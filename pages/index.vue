@@ -96,13 +96,6 @@ export default {
           hreflang: el[0],
         };
       }),
-      /* link: [
-        {
-          hid: "alternate",
-          rel: "alternate",
-          href: this.canonical,
-        },
-      ], */
     };
   },
 };
