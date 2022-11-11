@@ -1,6 +1,10 @@
 <template>
   <div>
-    <home-banner />
+    <!-- <HomeBanner v-if="$config.THEME == 'default'" />
+    <HomeBannerWV v-if="$config.THEME == 'wildvigneron'" /> -->
+
+    <component :is="homebanner" />
+
     <client-only>
       <home-boxes />
     </client-only>
@@ -35,7 +39,6 @@
 </template>
 
 <script>
-import CarTest from "../components/CarTest.vue";
 import FeaturedProducts from "../components/FeaturedProducts.vue";
 import HomeBanner from "../components/Home/HomeBanner.vue";
 import HomeBoxes from "../components/Home/HomeBoxes.vue";
@@ -47,10 +50,14 @@ import ProductCardVertical from "../components/ProductCardVertical.vue";
 import HomeSelection from "../components/Home/HomeSelections.vue";
 import HomePartners from "../components/Home/HomePartners.vue";
 import HomeProductors from "../components/Home/HomeProductors.vue";
+import HomeBannerWV from "../components/Home/HomeBannerWV.vue";
+
+import components from "./../components-mapper";
 
 export default {
   components: {
     HomeBanner,
+    HomeBannerWV,
     HomeBoxes,
     ProductCardVertical,
     HomeLast,
@@ -63,8 +70,12 @@ export default {
     HomeProductors,
   },
   name: "IndexPage",
+  layout(context) {
+    return context.$config.STORE;
+  },
   data() {
     return {
+      homebanner: components[this.$config.STORE]["HomeBanner"],
       links: {
         "en-gb": "https://www.callmewine.co.uk",
         it: "https://www.callmewine.com",

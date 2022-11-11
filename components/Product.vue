@@ -124,8 +124,7 @@
                     {{ $t("product.notAvailable") }}
                   </p>
                   <button
-                    class="btn p-2 px-3 text-uppercase text-white d-inline-flex align-items-center br-10"
-                    style="background: #da4865"
+                    class="btn p-2 px-3 bg-light-secondary text-uppercase text-white d-inline-flex align-items-center br-10"
                     :class="data.totalInventory > 0 ? '' : 'disabled'"
                     @click="addToUserCart()"
                   >

@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import documents from "../prismic-mapper";
 export default {
   watch: {
     "$i18n.locale": "$fetch",
@@ -25,7 +26,11 @@ export default {
     } else {
       lang = "it-it";
     }
-    this.data = await this.$prismic.api.getSingle("topbar", { lang: lang });
+
+    this.data = await this.$prismic.api.getSingle(
+      documents[this.$config.STORE].topbar,
+      { lang: lang }
+    );
   },
 };
 </script>
