@@ -1,5 +1,22 @@
 /* import { apiEndpoint } from "./sm.json"; */
 
+const THEME_COLORS = {
+  CMW_UK: `
+  "dark-primary": #11312b,
+  "light-primary": #155b53,
+  "darker-secondary": #751f3d,
+  "dark-secondary": #8e2440,
+  "light-secondary": #da4865,
+  `,
+  WILDVIGNERON: `
+    "dark-primary": #0B4C3C,
+    "light-primary": #0B4C3C,
+    "darker-secondary": #0B4C3C,
+    "dark-secondary": #0B4C3C,
+    "light-secondary": #0B4C3C,
+  `,
+};
+
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -54,7 +71,7 @@ export default {
       { code: "en", iso: "en-GB", file: "en.js", dir: "ltr" },
       { code: "it", iso: "it-IT", file: "it.js", dir: "ltr" },
     ],
-    defaultLocale: "en",
+    defaultLocale: process.env.STORE === "WILDVIGNERON" ? "it" : "en",
     langDir: "locales/",
     vueI18n: {
       fallbackLocale: "en",
@@ -70,11 +87,13 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     transpile: ["@prismicio/vue", "swiper"],
-    /* loaders: {
+    loaders: {
       scss: {
-        additionalData: `$MAIN_COLOR: ${process.env.MAIN_COLOR};`,
+        additionalData: `
+          $theme-colors: (${THEME_COLORS[process.env.STORE]});
+        `,
       },
-    }, */
+    },
   },
 
   babel: { compact: true },
@@ -83,7 +102,7 @@ export default {
 
   generate: {
     exclude: [
-      /^\//, // rotte da escludere dalla generazione, che poi sono tutte
+      /^\//, // rotte da escludere dalla generazione
     ],
   },
 
@@ -92,5 +111,6 @@ export default {
     STOREFRONT_ACCESS_TOKEN: process.env.STOREFRONT_ACCESS_TOKEN,
     ELASTIC_URL: process.env.ELASTIC_URL,
     MAIN_COLOR: process.env.MAIN_COLOR,
+    STORE: process.env.STORE,
   },
 };

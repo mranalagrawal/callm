@@ -62,6 +62,9 @@
 <script>
 import VueSlickCarousel from "vue-slick-carousel";
 import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
+
+import documents from "../../prismic-mapper";
+
 export default {
   watch: {
     "$i18n.locale": "$fetch",
@@ -109,7 +112,10 @@ export default {
       lang = "it-it";
     }
 
-    this.data = await this.$prismic.api.getSingle("home-boxes", { lang: lang });
+    this.data = await this.$prismic.api.getSingle(
+      documents[this.$config.STORE].homeBoxes,
+      { lang: lang }
+    );
   },
   methods: {
     onSlideStart(slide) {

@@ -4,7 +4,7 @@ export default {
   country: "Choose Country",
   recentlySeen: "Recently seen",
   sameProducer: "From the same producer",
-  viewMore: "View more",
+  viewMore: "vedi di più",
   cart: "Cart",
   createYourAccount: "Create your account",
   firstName: "First name",
