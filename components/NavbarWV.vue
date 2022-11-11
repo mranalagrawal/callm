@@ -511,7 +511,7 @@ export default {
       this.search = null;
       this.isSidebarOpen = false;
     },
-    cartTotalAmount(total) {
+    /* cartTotalAmount(total) {
       if (Number(total) > 50) {
         setTimeout(() => {
           this.flashMessage.show({
@@ -522,7 +522,7 @@ export default {
           });
         }, 3000);
       }
-    },
+    }, */
   },
   computed: {
     cart() {

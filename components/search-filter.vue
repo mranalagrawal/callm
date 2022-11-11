@@ -669,7 +669,19 @@ export default {
         .join("&");
     }
 
-    const elastic_url = this.$config.ELASTIC_URL + "products/search?";
+    const stores = {
+      CMW: 1,
+      CMW_UK: 2,
+      WILDVIGNERON: 3,
+    };
+
+    const activeStoreID = stores[this.$config.STORE];
+
+    const elastic_url =
+      this.$config.ELASTIC_URL +
+      "products/search?stores=" +
+      activeStoreID +
+      "&";
     const searchResult = await fetch(elastic_url + query + sel);
 
     const allFields = await fetch(elastic_url);

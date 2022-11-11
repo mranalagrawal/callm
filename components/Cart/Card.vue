@@ -57,6 +57,7 @@
 <script>
 import CardLine from "./CardLine.vue";
 import { createCart, addProductToCart } from "../../utilities/cart";
+import documents from "../../prismic-mapper";
 
 export default {
   data() {
@@ -121,9 +122,12 @@ export default {
     } else {
       lang = "it-it";
     }
-    const response = await this.$prismic.api.getSingle("shipping", {
-      lang: lang,
-    });
+    const response = await this.$prismic.api.getSingle(
+      documents[this.$config.STORE].shipping,
+      {
+        lang: lang,
+      }
+    );
     const shipping = response.data;
     this.shipping = shipping;
 

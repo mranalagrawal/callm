@@ -3,6 +3,7 @@
     class="card mx-auto"
     :class="horizontal ? 'product-card-horizontal' : 'product-card-vertical'"
   >
+    <!-- {{ product }} -->
     <div class="row h-100">
       <div v-if="product._source.inpromotion" class="ribbon">
         <span><i class="fal fa-tag"></i> PROMO</span>
@@ -90,7 +91,7 @@
           class="row mx-0 mt-2 text-decoration-none text-dark d-none d-lg-block"
         >
           <img
-            v-if="!product._source.shopifyImageUrl"
+            v-if="!product._source.shopifyImageUrl[STORE]"
             :src="require(`~/assets/images/img-test.jpeg`)"
             :style="{ width: horizontal ? '180px' : '140px' }"
             class="d-block mx-auto"
@@ -99,7 +100,7 @@
           />
           <img
             v-else
-            :src="product._source.shopifyImageUrl"
+            :src="product._source.shopifyImageUrl[STORE]"
             :style="{ width: horizontal ? '180px' : '140px' }"
             class="d-block mx-auto"
             loading="lazy"
@@ -111,7 +112,7 @@
           class="row mx-0 mt-2 text-decoration-none text-dark d-lg-none"
         >
           <img
-            v-if="!product._source.shopifyImageUrl"
+            v-if="!product._source.shopifyImageUrl[STORE]"
             :src="require(`~/assets/images/img-test.jpeg`)"
             :style="{ width: horizontal ? '180px' : '100px' }"
             class="d-block mx-auto"
@@ -120,7 +121,7 @@
           />
           <img
             v-else
-            :src="product._source.shopifyImageUrl"
+            :src="product._source.shopifyImageUrl[STORE]"
             :style="{ width: horizontal ? '180px' : '100px' }"
             class="d-block mx-auto"
             loading="lazy"
@@ -144,10 +145,10 @@
               <span
                 style="text-decoration: line-through"
                 v-if="
-                  product._source.saleprice.toFixed(2) !==
-                  product._source.price.toFixed(2)
+                  product._source.saleprice[STORE].toFixed(2) !==
+                  product._source.price[STORE].toFixed(2)
                 "
-                >{{ product._source.price.toFixed(2) }} GBP</span
+                >{{ product._source.price[STORE].toFixed(2) }} GBP</span
               >
               <span v-else>&nbsp;</span>
             </p>
@@ -157,10 +158,10 @@
               <div>
                 <p class="mb-0">
                   <span class="integer">{{
-                    product._source.saleprice.toFixed(2).split(".")[0]
+                    product._source.saleprice[STORE].toFixed(2).split(".")[0]
                   }}</span
                   >,<span>{{
-                    product._source.saleprice.toFixed(2).split(".")[1]
+                    product._source.saleprice[STORE].toFixed(2).split(".")[1]
                   }}</span>
                   GBP
                 </p>
@@ -309,6 +310,13 @@ export default {
     return { quantity: 0, isOpen: false };
   },
   computed: {
+    STORE() {
+      console.log(this.$config.STORE);
+      return this.$config.STORE;
+    },
+    salePrice() {
+      return this.product._source.saleprice[this.$config.STORE];
+    },
     filteredAwards() {
       return this.product._source.awards.filter((el) => el.title);
     },
@@ -326,7 +334,7 @@ export default {
       return null;
     },
     userCartQuantity() {
-      const productVariantId = this.product._source.variantId;
+      const productVariantId = this.product._source.variantId[this.STORE];
       let isInCart = this.$store.state.userCart.userCart.find((el) =>
         el.productVariantId.includes(productVariantId)
       );
@@ -343,15 +351,10 @@ export default {
         quantity: el.node.quantity,
       }));
 
-      /*
-        this.product._source.shortName,
-        " >>> ",
-        this.product._source.variantId
-      ); */
       let isInCart = cartList.find(
         (el) =>
           el.merchandise.split("/ProductVariant/")[1] ==
-          this.product._source.variantId
+          this.product._source.variantId[this.STORE]
       );
 
       if (isInCart) {
@@ -368,11 +371,12 @@ export default {
 
       console.log(this.product);
       const productVariantId =
-        "gid://shopify/ProductVariant/" + this.product._source.variantId;
-      const amount = Number(this.product._source.saleprice);
-      const amountFullPrice = Number(this.product._source.price);
+        "gid://shopify/ProductVariant/" +
+        this.product._source.variantId[this.STORE];
+      const amount = Number(this.product._source.saleprice[this.STORE]);
+      const amountFullPrice = Number(this.product._source.price[this.STORE]);
       const tag = "P" + this.product._source.id;
-      const image = this.product._source.shopifyImageUrl;
+      const image = this.product._source.shopifyImageUrl[this.STORE];
       const title = this.product._source.shortName;
       this.$store.commit("userCart/addProduct", {
         productVariantId: productVariantId,
@@ -386,7 +390,7 @@ export default {
       this.flashMessage.show({
         status: "",
         message: this.product._source.shortName + " aggiunto!",
-        icon: this.product._source.shopifyImageUrl,
+        icon: this.product._source.shopifyImageUrl[this.STORE],
         iconClass: "bg-transparent ",
         time: 1000,
         blockClass: "add-product-notification",
@@ -394,7 +398,8 @@ export default {
     },
     async removeFromUserCart() {
       const productVariantId =
-        "gid://shopify/ProductVariant/" + this.product._source.variantId;
+        "gid://shopify/ProductVariant/" +
+        this.product._source.variantId[this.STORE];
       this.$store.commit("userCart/removeProduct", productVariantId);
     },
     async toggleWishlist() {
@@ -406,7 +411,7 @@ export default {
       const userId =
         this.$store.state.user.user.customer.id.split("Customer/")[1];
 
-      const variantId = this.product._source.variantId;
+      const variantId = this.product._source.variantId[this.STORE];
 
       const tag = "P" + this.product._source.id;
 
