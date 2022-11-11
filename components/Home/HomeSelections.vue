@@ -1,6 +1,5 @@
 <template>
-  <div class="container-fluid my-5 bg-light py-5">
-    <!-- <div v-for="product in products" :key="product.id">{{ product.title }}</div> -->
+  <div class="container-fluid my-5 bg-light py-5" v-if="data">
     <div class="row py-5 px-0">
       <div class="col-12 text-center">
         <h2 class="font-weight-bold text-dark-primary">{{ label }}</h2>
@@ -23,7 +22,6 @@
               >
                 {{ item.label }}
               </nuxt-link>
-              <!-- <img :src="item." alt=""> {{ item.label }} -->
             </div>
           </div>
         </VueSlickCarousel>
@@ -53,26 +51,6 @@ export default {
       speed: 8000,
       autoplaySpeed: 0,
       cssEase: "linear",
-      /* arrows: false,
-      dots: true,
-      infinite: true,
-      slidesToShow: 6,
-      slidesToScroll: 1,
-      autoplay: false,
-      speed: 2000,
-      autoplaySpeed: 2000,
-      cssEase: "linear", */
-      /* arrows: false,
-      dots: true,
-      infinite: true,
-      slidesToShow: 5.5,
-      slidesToScroll: 4,
-      autoplay: true,
-      speed: 20000,
-      autoplaySpeed: 0,
-      cssEase: "linear",
-      pauseOnFocus: true,
-      pauseOnHover: true, */
       responsive: [
         {
           breakpoint: 1025,
