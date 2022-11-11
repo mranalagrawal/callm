@@ -388,7 +388,7 @@ export default {
       lang: lang,
     });
     const info = responseInfo.data;
-    console.log(responseInfo, "responseInfos");
+
     this.info = info;
   },
 };

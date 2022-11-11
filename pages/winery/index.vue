@@ -123,6 +123,9 @@ import Loader from "../../components/UI/Loader.vue";
 
 export default {
   components: { DropdownWinery, Loader },
+  layout(context) {
+    return context.$config.STORE;
+  },
   data() {
     return {
       data: null,

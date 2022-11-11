@@ -7,5 +7,8 @@
 <script>
 export default {
   scrollToTop: true,
+  layout(context) {
+    return context.$config.STORE;
+  },
 };
 </script>

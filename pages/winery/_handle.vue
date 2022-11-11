@@ -8,6 +8,9 @@
 import Brand from "../../components/Brand.vue";
 export default {
   components: { Brand },
+  layout(context) {
+    return context.$config.STORE;
+  },
   data() {
     return {
       brandId: null,

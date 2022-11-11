@@ -51,6 +51,9 @@ export default {
     RegisterBox,
     LoginForm,
   },
+  layout(context) {
+    return context.$config.STORE;
+  },
   data() {
     return {
       registerIsVisible: false,

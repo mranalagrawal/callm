@@ -11,6 +11,9 @@
 
 <script>
 export default {
+  layout(context) {
+    return context.$config.STORE;
+  },
   data() {
     return {
       product: null,
