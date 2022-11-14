@@ -85,7 +85,11 @@ export default {
 
 <style scoped>
 .selection-card {
-  background: linear-gradient(76deg, #751f3d 1%, #ad2b48 95%);
+  background: linear-gradient(
+    76deg,
+    var(--dark-secondary) 1%,
+    var(--light-secondary) 95%
+  );
   border-radius: 12px;
   height: 88px;
   display: flex;

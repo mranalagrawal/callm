@@ -7,6 +7,7 @@ const THEME_COLORS = {
   "darker-secondary": #751f3d,
   "dark-secondary": #8e2440,
   "light-secondary": #da4865,
+
   `,
   WILDVIGNERON: `
     "dark-primary": #0B4C3C,
@@ -15,6 +16,11 @@ const THEME_COLORS = {
     "dark-secondary": #0B4C3C,
     "light-secondary": #0B4C3C,
   `,
+};
+
+const FONTS = {
+  CMW_UK: `"main": "Open Sans", "header": "Open Sans"`,
+  WILDVIGNERON: `"main": "Readex Pro", "header": "Inknut Antiqua"`,
 };
 
 export default {
@@ -91,6 +97,7 @@ export default {
       scss: {
         additionalData: `
           $theme-colors: (${THEME_COLORS[process.env.STORE]});
+          $font: (${FONTS[process.env.STORE]});
         `,
       },
     },

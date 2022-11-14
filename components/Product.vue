@@ -160,7 +160,10 @@
         <div class="col-12 col-md-8 pt-5">
           <div class="pt-2">
             <b-tabs content-class="mt-4" justified>
-              <b-tab :title="$t('product.description')">
+              <b-tab
+                v-if="$config['STORE'] != 'WILDVIGNERON'"
+                :title="$t('product.description')"
+              >
                 <div v-html="data.descriptionHtml"></div>
               </b-tab>
               <b-tab :title="$t('product.toEnjoyBetter')">
@@ -189,7 +192,10 @@
                   </div>
                 </div>
               </b-tab>
-              <b-tab :title="$t('product.awardsAndAcknowledgments')">
+              <b-tab
+                v-if="$config['STORE'] != 'WILDVIGNERON'"
+                :title="$t('product.awardsAndAcknowledgments')"
+              >
                 <table
                   class="table table-striped"
                   v-if="metafield.awards.length > 0"

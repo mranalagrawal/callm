@@ -4,13 +4,13 @@
       <div class="container-fluid partner-bg px-md-5">
         <div class="row text-white">
           <div class="col-12">
-            <div class="ribbon mt-5">
+            <div class="ribbon-partner mt-5">
               <img
                 :src="require(`@/assets/images/selections/favourite.svg`)"
                 class="svg-favourite"
                 style="width: 20px"
               />
-              <span class="small">
+              <span class="small" style="padding-bottom: 10px">
                 {{ $t("product.recommendedByCallmewine") }}
               </span>
             </div>
@@ -24,6 +24,18 @@
                   v-if="images && images.length > 0"
                   :images="images"
                 />
+                <div
+                  style="
+                    height: 350px;
+                    background-position: center, center;
+                    background-size: contain, contain;
+                    background-repeat: no-repeat, no-repeat;
+                  "
+                  :style="{
+                    background: `url('${data.image.url}'), white`,
+                  }"
+                ></div>
+                <!-- <BrandCarouselVue v-else :images="[data.image.url]" /> -->
               </div>
             </div>
           </div>
@@ -213,16 +225,18 @@ export default {
   background-repeat: no-repeat;
 }
 
-.ribbon {
+.ribbon-partner {
   background: var(--dark-primary);
   color: white;
   position: relative;
   display: inline-block;
   padding: 0px 32px 0px 32px;
   height: 24px;
+  width: auto;
+  clip-path: polygon(0 0, 100% 0, 94% 50%, 100% 100%, 0 100%, 6% 50%);
 }
 
-.ribbon::before {
+/* .ribbon-partner::before {
   position: absolute;
   content: "";
   width: 0;
@@ -234,7 +248,7 @@ export default {
   border-left: 12px solid var(--dark-secondary);
 }
 
-.ribbon::after {
+.ribbon-partner::after {
   position: absolute;
   content: "";
   width: 0;
@@ -244,7 +258,7 @@ export default {
   border-top: 12px solid transparent;
   border-bottom: 12px solid transparent;
   border-right: 12px solid var(--dark-secondary);
-}
+} */
 
 .svg-favourite {
   filter: brightness(100);

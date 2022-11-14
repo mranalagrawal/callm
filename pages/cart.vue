@@ -94,6 +94,9 @@ import CardLine from "../components/Cart/CardLine.vue";
 
 export default {
   /* middleware: "auth", */
+  layout(context) {
+    return context.$config.STORE;
+  },
   components: { CardLine },
   computed: {
     cart() {
@@ -173,6 +176,10 @@ export default {
         cartId,
         lines
       );
+
+      console.clear();
+      console.log(cartFilled);
+
       // crea checkoutUrl
       let checkoutUrl = cartFilled.checkoutUrl + "/?";
       this.$store.state.user.user.customer.email &&
@@ -202,6 +209,9 @@ export default {
       this.$store.state.user.user.customer.defaultAddress?.zip &&
         (checkoutUrl += `&checkout[shipping_address][zip]=${this.$store.state.user.user.customer.defaultAddress.zip}`);
       // redirect al checkoutUrl
+
+      console.log(checkoutUrl);
+      return;
 
       if (process.client) window.location = checkoutUrl;
     },

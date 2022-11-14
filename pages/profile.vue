@@ -77,6 +77,9 @@
 export default {
   middleware: "auth",
   components: {},
+  layout(context) {
+    return context.$config.STORE;
+  },
   data() {
     return {
       active: null,

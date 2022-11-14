@@ -249,9 +249,10 @@ export default {
         this.$store.state.user.user.customer.id.split("Customer/")[1];
 
       const elastic_url = this.$config.ELASTIC_URL;
-
+      const STORE = this.$config.STORE;
       const response = await fetch(
-        elastic_url + `customers/${userId}/wishlist/${this.product.tags[0]}`,
+        elastic_url +
+          `customers/${STORE}/${userId}/wishlist/${this.product.tags[0]}`,
         { async: true, crossDomain: true, method: "POST" }
       );
 

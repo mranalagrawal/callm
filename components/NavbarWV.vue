@@ -240,7 +240,10 @@
                     </g>
                   </g>
                 </svg>
-                <p class="mb-0 fs-14" style="position: relative; top: 4px">
+                <p
+                  class="mb-0 fs-14 text-white"
+                  style="position: relative; top: 4px"
+                >
                   {{ $t("navbar.favorites") }}
                 </p>
               </nuxt-link>
@@ -738,6 +741,11 @@ export default {
 .cart-box p {
   color: white;
 }
+
+.cart-box {
+  color: white !important;
+}
+
 .user-box:hover {
   background: white;
   border-radius: 10px 10px 0px 0px;

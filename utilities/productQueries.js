@@ -24,7 +24,7 @@ const queryByCollection = (
         collectionByHandle(handle: "${collection}") {
             title
             description
-            products(first: 10) {
+            products(first: 30) {
                 nodes {
                     id
                     title
@@ -161,9 +161,28 @@ const queryProductsByVendor = (vendor) => `query {
         }
     }`;
 
+const queryAllCollections = (
+  language
+) => `query @inContext(language: ${language}){
+                collections(first: 20) {
+                  edges {
+                    node {
+                      id
+                      title
+                      handle
+                      description
+                      image {
+                          url
+                      }
+                    }
+                  }
+              }
+        }`;
+
 export {
   queryByCollection,
   queryProductByIdAsTag,
   productRecommendations,
   queryProductsByVendor,
+  queryAllCollections,
 };

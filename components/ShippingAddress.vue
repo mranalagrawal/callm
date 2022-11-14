@@ -93,10 +93,10 @@
             ></b-form-input>
           </div>
           <div class="col-12 col-md-6 mb-3">
-            <p class="mb-0 small">
+            <!-- <p class="mb-0 small">
               Il numero di telefono sarà utilizzato per contattarti durante la
               spedizione
-            </p>
+            </p> -->
           </div>
           <!-- <div class="col-12 mb-3">
             <b-form-input
@@ -522,11 +522,12 @@ export default {
   },
   async mounted() {
     this.addresses = this.$store.state.user.user.customer.addresses.edges;
-
+    const STORE = this.$config.STORE;
     const elastic_url = this.$config.ELASTIC_URL;
-    const countries = await fetch(elastic_url + "countries").then((r) =>
-      r.json()
+    const countries = await fetch(elastic_url + "countries/" + STORE).then(
+      (r) => r.json()
     );
+    console.log(countries, "countries");
 
     const mappedCountries = countries.countries
       .map((el) => el.name)

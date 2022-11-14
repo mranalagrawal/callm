@@ -16,13 +16,20 @@
     <client-only>
       <home-selections />
     </client-only>
-    <div class="d-none d-md-block">
-      <home-slider />
+
+    <div v-if="$config.STORE !== 'WILDVIGNERON'">
+      <div class="d-none d-md-block">
+        <home-slider />
+      </div>
+
+      <client-only>
+        <home-partners />
+      </client-only>
     </div>
 
-    <client-only>
-      <home-partners />
-    </client-only>
+    <div v-if="$config.STORE === 'WILDVIGNERON'">
+      <home-collections />
+    </div>
 
     <client-only>
       <home-last />
@@ -53,6 +60,7 @@ import HomeProductors from "../components/Home/HomeProductors.vue";
 import HomeBannerWV from "../components/Home/HomeBannerWV.vue";
 
 import components from "./../components-mapper";
+import HomeCollections from "../components/Home/HomeCollections.vue";
 
 export default {
   components: {
@@ -68,6 +76,7 @@ export default {
     HomeSelection,
     HomePartners,
     HomeProductors,
+    HomeCollections,
   },
   name: "IndexPage",
   layout(context) {
