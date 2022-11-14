@@ -551,8 +551,10 @@ export default {
         this.data.variants.edges[0].node.id.split("ProductVariant/")[1];
 
       const elastic_url = this.$config.ELASTIC_URL;
+      const STORE = this.$config.STORE;
       const response = await fetch(
-        elastic_url + `customers/${userId}/wishlist/${this.data.tags[0]}`,
+        elastic_url +
+          `customers/${STORE}/${userId}/wishlist/${this.data.tags[0]}`,
         { async: true, crossDomain: true, method: "POST" }
       );
       const updatedWishlist = await response.text();

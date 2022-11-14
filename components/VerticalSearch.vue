@@ -4,7 +4,7 @@
     :class="horizontal ? 'product-card-horizontal' : 'product-card-vertical'"
   >
     <!-- {{ product }} -->
-    <div class="row h-100">
+    <div class="row h-100" v-if="STORE">
       <div v-if="product._source.inpromotion" class="ribbon">
         <span><i class="fal fa-tag"></i> PROMO</span>
       </div>
@@ -242,10 +242,10 @@
               </p>
               <p class="mb-0 text-center">
                 <span class="integer">{{
-                  product._source.saleprice.toFixed(2).split(".")[0]
+                  product._source.saleprice[STORE].toFixed(2).split(".")[0]
                 }}</span
                 >,<span>{{
-                  product._source.saleprice.toFixed(2).split(".")[1]
+                  product._source.saleprice[STORE].toFixed(2).split(".")[1]
                 }}</span>
                 GBP
               </p>
@@ -416,9 +416,9 @@ export default {
       const tag = "P" + this.product._source.id;
 
       const elastic_url = this.$config.ELASTIC_URL;
-
+      const STORE = this.$config.STORE;
       const response = await fetch(
-        elastic_url + `customers/${userId}/wishlist/${tag}`,
+        elastic_url + `customers/${STORE}/${userId}/wishlist/${tag}`,
         { async: true, crossDomain: true, method: "POST" }
       );
       const updatedWishlist = await response.text();
