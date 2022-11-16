@@ -69,10 +69,8 @@ export default {
     { src: "~/plugins/vue-slick-carousel.js", mode: "client" },
   ],
 
-  // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
-  // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: ["@nuxtjs/prismic"],
   prismic: {
     endpoint: process.env.PRISMIC,
@@ -105,7 +103,6 @@ export default {
     icons: false,
   },
 
-  // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     transpile: ["@prismicio/vue", "swiper"],
     loaders: {
@@ -135,7 +132,6 @@ export default {
     MAIN_COLOR: process.env.MAIN_COLOR,
     STORE: process.env.STORE,
     gtm: {
-      debug: true,
       id: process.env.GOOGLE_TAG_MANAGER_ID,
     },
   },
