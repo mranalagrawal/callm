@@ -1,13 +1,19 @@
 /* import { apiEndpoint } from "./sm.json"; */
 
 const THEME_COLORS = {
+  CMW: `
+  "dark-primary": #11312b,
+  "light-primary": #155b53,
+  "darker-secondary": #751f3d,
+  "dark-secondary": #8e2440,
+  "light-secondary": #da4865,
+  `,
   CMW_UK: `
   "dark-primary": #11312b,
   "light-primary": #155b53,
   "darker-secondary": #751f3d,
   "dark-secondary": #8e2440,
   "light-secondary": #da4865,
-
   `,
   WILDVIGNERON: `
     "dark-primary": #0B4C3C,
@@ -19,11 +25,13 @@ const THEME_COLORS = {
 };
 
 const FONTS = {
+  CMW: `"main": "Open Sans", "header": "Open Sans"`,
   CMW_UK: `"main": "Open Sans", "header": "Open Sans"`,
   WILDVIGNERON: `"main": "Readex Pro", "header": "Inknut Antiqua"`,
 };
 
 const TITLE = {
+  CMW: "CallMeWine",
   CMW_UK: "CallMeWine UK",
   WILDVIGNERON: "Wild Vigneron",
 };
@@ -70,10 +78,8 @@ export default {
     endpoint: process.env.PRISMIC,
     modern: true,
     preview: false,
-    /* see configuration for more */
   },
 
-  // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     "bootstrap-vue/nuxt",
     "@nuxtjs/style-resources",
@@ -90,12 +96,6 @@ export default {
     langDir: "locales/",
     vueI18n: {
       fallbackLocale: "en",
-    },
-  },
-
-  publicRuntimeConfig: {
-    gtm: {
-      id: process.env.GOOGLE_TAG_MANAGER_ID,
     },
   },
 
@@ -134,5 +134,9 @@ export default {
     ELASTIC_URL: process.env.ELASTIC_URL,
     MAIN_COLOR: process.env.MAIN_COLOR,
     STORE: process.env.STORE,
+    gtm: {
+      debug: true,
+      id: process.env.GOOGLE_TAG_MANAGER_ID,
+    },
   },
 };
