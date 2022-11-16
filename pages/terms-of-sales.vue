@@ -17,6 +17,8 @@
 </template>
 
 <script>
+import documents from "../prismic-mapper";
+
 export default {
   layout(context) {
     return context.$config.STORE;
@@ -33,9 +35,12 @@ export default {
     } else {
       lang = "it-it";
     }
-    const response = await this.$prismic.api.getSingle("conditions", {
-      lang: lang,
-    });
+    const response = await this.$prismic.api.getSingle(
+      documents[this.$config.STORE].conditionsPage,
+      {
+        lang: lang,
+      }
+    );
     console.log(response, "data");
     const data = response.data;
     this.data = data;

@@ -32,11 +32,13 @@
           class="mb-0 small text-right text-muted"
           style="text-decoration: line-through"
         >
-          {{ (item.quantity * item.singleAmountFullPrice).toFixed(2) }} GBP
+          {{ (item.quantity * item.singleAmountFullPrice).toFixed(2) }}
+          {{ $config.STORE == "CMW_UK" ? "GBP" : "€" }}
         </p>
 
         <p class="mb-0 font-weight-bold text-right">
-          {{ (item.quantity * item.singleAmount).toFixed(2) }} GBP
+          {{ (item.quantity * item.singleAmount).toFixed(2) }}
+          {{ $config.STORE == "CMW_UK" ? "GBP" : "€" }}
         </p>
       </div>
       <div class="d-none d-md-block col-md-1 text-right">

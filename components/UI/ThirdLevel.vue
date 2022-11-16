@@ -3,11 +3,11 @@
     <p v-if="!thirdLevel.marketing_cta" class="mb-2">
       <nuxt-link
         class="menu-link px-2"
-        :class="styled && 'd-block'"
         :to="thirdLevel.third_level_link || '/'"
         :style="styled"
       >
         <!-- {{ thirdLevel }} -->
+        <!-- {{ $config.STORE }} -->
 
         <img
           v-if="thirdLevel.selection"

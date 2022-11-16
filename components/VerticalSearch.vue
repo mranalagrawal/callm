@@ -148,7 +148,8 @@
                   product._source.saleprice[STORE].toFixed(2) !==
                   product._source.price[STORE].toFixed(2)
                 "
-                >{{ product._source.price[STORE].toFixed(2) }} GBP</span
+                >{{ product._source.price[STORE].toFixed(2) }}
+                {{ $config.STORE == "CMW_UK" ? "GBP" : "€" }}</span
               >
               <span v-else>&nbsp;</span>
             </p>
@@ -163,7 +164,7 @@
                   >,<span>{{
                     product._source.saleprice[STORE].toFixed(2).split(".")[1]
                   }}</span>
-                  GBP
+                  {{ $config.STORE == "CMW_UK" ? "GBP" : "€" }}
                 </p>
               </div>
 
@@ -247,7 +248,7 @@
                 >,<span>{{
                   product._source.saleprice[STORE].toFixed(2).split(".")[1]
                 }}</span>
-                GBP
+                {{ $config.STORE == "CMW_UK" ? "GBP" : "€" }}
               </p>
 
               <div

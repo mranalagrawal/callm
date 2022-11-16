@@ -436,7 +436,7 @@
       </div>
     </div>
     <div class="d-none d-lg-block">
-      <!-- <MegaMenu /> -->
+      <MegaMenuWV />
     </div>
 
     <b-sidebar
@@ -502,11 +502,12 @@ import Card from "./Cart/Card.vue";
 /* import Cart from "./Cart/Cart.vue"; */
 
 import LoginForm from "./LoginForm.vue";
+import MegaMenuWV from "./MegaMenuWV.vue";
 import DropdownMobileMenu from "./UI/DropdownMobileMenu.vue";
 import UserMenu from "./UserMenu.vue";
 
 export default {
-  components: { LoginForm, UserMenu, DropdownMobileMenu, Card },
+  components: { LoginForm, UserMenu, DropdownMobileMenu, Card, MegaMenuWV },
   watch: {
     $route() {
       this.showUser = false;

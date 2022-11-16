@@ -22,10 +22,13 @@
               >
                 SELEZIONE
               </span>
-              <div class="text-center">
+              <nuxt-link
+                :to="`selections/${collection.node.handle}`"
+                class="text-center text-decoration-none"
+              >
                 <p class="text-white h4">{{ collection.node.title }}</p>
                 <p class="text-white">{{ collection.node.description }}</p>
-              </div>
+              </nuxt-link>
             </div>
           </div>
         </VueSlickCarousel>

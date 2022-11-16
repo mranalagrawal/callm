@@ -9,7 +9,7 @@
 
     <nuxt class="pt-5" style="position: relative; top: 120px"></nuxt>
 
-    <Footer style="position: relative; top: 120px" />
+    <FooterWV style="position: relative; top: 120px" />
     <client-only>
       <FlashMessage :position="'right top'"></FlashMessage>
     </client-only>
@@ -23,7 +23,7 @@ import NavbarWV from "../components/NavbarWV.vue";
 
 import MegaTest from "../components/MegaTest.vue";
 import MegaMenu from "../components/MegaMenu.vue";
-import Footer from "../components/Footer.vue";
+import FooterWV from "../components/FooterWV.vue";
 
 export default {
   components: {
@@ -31,7 +31,7 @@ export default {
     NavbarWV,
     MegaTest,
     MegaMenu,
-    Footer,
+    FooterWV,
   },
   name: "IndexPage",
 };
