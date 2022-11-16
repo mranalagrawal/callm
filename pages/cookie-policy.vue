@@ -41,7 +41,7 @@ export default {
       lang = "it-it";
     }
     const response = await this.$prismic.api.getSingle(
-      documents[this.$config.STORE].privacyPage,
+      documents[this.$config.STORE].cookiePage,
       {
         lang: lang,
       }

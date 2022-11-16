@@ -80,6 +80,8 @@
         id="marketing"
         v-model="form.marketing"
         name="marketing"
+        value="accepted"
+        unchecked-value="not_accepted"
         class="mt-3"
       >
         {{ $t("acceptMarketing") }}
@@ -89,8 +91,7 @@
         type="submit"
         class="w-100 btn bg-light-secondary text-white mt-5 btn-lg"
         :class="
-          new Date(now) - new Date(form.age) > 568036800000 &&
-          Object.values(form).every((e) => Boolean(e) == true)
+          new Date(now) - new Date(form.age) > 568036800000 && form.privacy
             ? ''
             : 'disabled'
         "

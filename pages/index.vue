@@ -13,9 +13,11 @@
       <featured-products />
     </client-only>
 
-    <client-only>
-      <home-selections />
-    </client-only>
+    <div v-if="$config.STORE !== 'WILDVIGNERON'">
+      <client-only>
+        <home-selections />
+      </client-only>
+    </div>
 
     <div v-if="$config.STORE !== 'WILDVIGNERON'">
       <div class="d-none d-md-block">
@@ -39,9 +41,10 @@
       <home-productors />
     </client-only>
 
-    <home-cta />
-
-    <home-description />
+    <div v-if="$config.STORE !== 'WILDVIGNERON'">
+      <home-cta />
+      <home-description />
+    </div>
   </div>
 </template>
 

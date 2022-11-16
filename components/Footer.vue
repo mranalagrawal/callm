@@ -201,6 +201,16 @@
                 >{{ $t("footer.termsOfSales") }}</nuxt-link
               >
               <nuxt-link
+                :to="localePath('/privacy-policy')"
+                class="text-decoration-none text-white d-block mb-2"
+                >Privacy policy</nuxt-link
+              >
+              <nuxt-link
+                :to="localePath('/cookie-policy')"
+                class="text-decoration-none text-white d-block mb-2"
+                >Cookie policy</nuxt-link
+              >
+              <nuxt-link
                 :to="localePath('/contact')"
                 class="text-decoration-none text-white d-block mb-2"
                 >{{ $t("footer.contacts") }}</nuxt-link

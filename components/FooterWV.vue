@@ -1,6 +1,9 @@
 <template>
   <div class="container-fluid pt-5 mt-5 px-0" style="background: #f8f8f8">
-    <div class="container-fluid px-md-5">
+    <div
+      class="container-fluid px-md-5"
+      v-if="$config.STORE !== 'WILDVIGNERON'"
+    >
       <div class="row">
         <div class="col-12">
           <p class="font-weight-bold h2 text-center mb-5">
@@ -50,7 +53,10 @@
       v-if="data && info"
       class="container-fluid bg-dark-primary text-light-footer px-md-5 py-5 mt-5"
     >
-      <div class="row justify-content-end">
+      <div
+        class="row justify-content-end"
+        v-if="$config.STORE != 'WILDVIGNERON'"
+      >
         <nuxt-link
           class="text-decoration-none text-white fs-0875 mr-3"
           :to="switchLocalePath('it')"
@@ -179,6 +185,16 @@
                 :to="localePath('/terms-of-sales')"
                 class="text-decoration-none text-white d-block mb-2"
                 >{{ $t("footer.termsOfSales") }}</nuxt-link
+              >
+              <nuxt-link
+                :to="localePath('/privacy-policy')"
+                class="text-decoration-none text-white d-block mb-2"
+                >Privacy policy</nuxt-link
+              >
+              <nuxt-link
+                :to="localePath('/cookie-policy')"
+                class="text-decoration-none text-white d-block mb-2"
+                >Cookie policy</nuxt-link
               >
               <nuxt-link
                 :to="localePath('/contact')"

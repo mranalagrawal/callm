@@ -4,8 +4,8 @@
       id="carousel-1"
       v-model="slide"
       :interval="4000"
-      controls
-      indicators
+      :controls="data.length > 1"
+      :indicators="data.length > 1"
       background="#ababab"
       style="text-shadow: 1px 1px 2px #333"
       @sliding-start="onSlideStart"
@@ -63,7 +63,7 @@
         </div>
       </b-carousel-slide>
     </b-carousel>
-    <div class="onda">
+    <!--     <div class="onda">
       <svg
         width="3840px"
         height="148px"
@@ -87,7 +87,7 @@
           ></path>
         </g>
       </svg>
-    </div>
+    </div> -->
   </div>
 </template>
 

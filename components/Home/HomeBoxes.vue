@@ -8,6 +8,7 @@
       >
         <div class="box-card p-2 h-100">
           <img
+            v-if="box.image.url"
             :src="box.image.url"
             class="d-block mx-auto rounded-circle icon-img"
             alt=""
@@ -16,8 +17,9 @@
           />
           <div class="card-body text-center">
             <h5
-              class="card-title mt-4 text-dark-primary mb-0"
+              class="card-title text-dark-primary mb-0"
               style="font-size: 16px; font-weight: 600"
+              :class="$config.store == 'WILDVIGNERON' ? 'mt-4' : ''"
             >
               {{ box.title }}
             </h5>

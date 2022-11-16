@@ -8,6 +8,8 @@ const documents = {
     paymentsPage: "payments",
     conditionsPage: "conditions",
     contactPage: "contact_us",
+    privacyPage: "privacy-policy",
+    cookiePage: "cookie-policy",
   },
   WILDVIGNERON: {
     topbar: "wv_topbar",
@@ -18,6 +20,8 @@ const documents = {
     paymentsPage: "wv_payments",
     conditionsPage: "wv_conditions",
     contactPage: "wv_contact_us",
+    privacyPage: "wv_privacy-policy",
+    cookiePage: "wv_cookie-policy",
   },
 };
 
