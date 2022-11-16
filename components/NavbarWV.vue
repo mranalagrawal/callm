@@ -673,6 +673,7 @@ export default {
 
 :deep(.b-sidebar-body) {
   background: white;
+  border-top: 20px solid var(--dark-secondary);
 }
 
 :deep(.b-sidebar.shadow.bg-light) {

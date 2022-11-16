@@ -17,7 +17,7 @@
     <div
       v-if="selectedItem"
       @mouseleave="onTab(null)"
-      class="row bg-white shadow-menu pt-0"
+      class="row bg-white shadow-menu pt-3 pt-md-0"
       style="
         min-height: 300px;
         z-index: 100;

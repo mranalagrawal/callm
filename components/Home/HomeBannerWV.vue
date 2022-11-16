@@ -36,8 +36,8 @@
       id="carousel-2"
       v-model="slide"
       :interval="4000"
-      controls
-      indicators
+      :controls="data.length > 1"
+      :indicators="data.length > 1"
       fade
       background="#ababab"
       style="text-shadow: 1px 1px 2px #333"

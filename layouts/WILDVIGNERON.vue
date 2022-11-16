@@ -7,9 +7,9 @@
       </div>
     </client-only>
 
-    <nuxt class="pt-5" style="position: relative; top: 120px"></nuxt>
+    <nuxt class="pt-5" style="position: relative; top: 110px"></nuxt>
 
-    <FooterWV style="position: relative; top: 120px" />
+    <FooterWV style="position: relative; top: 110px" />
     <client-only>
       <FlashMessage :position="'right top'"></FlashMessage>
     </client-only>
