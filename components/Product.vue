@@ -425,7 +425,7 @@ export default {
   components: { ProductCardVertical, VueSlickCarousel },
   head() {
     return {
-      title: this.title,
+      title: this.title + " - " + this.$config.STORE,
       link: [
         {
           hid: "canonical",

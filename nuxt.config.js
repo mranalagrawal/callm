@@ -23,9 +23,14 @@ const FONTS = {
   WILDVIGNERON: `"main": "Readex Pro", "header": "Inknut Antiqua"`,
 };
 
+const TITLE = {
+  CMW_UK: "CallMeWine UK",
+  WILDVIGNERON: "Wild Vigneron",
+};
+
 export default {
   head: {
-    title: "CallMeWine",
+    title: TITLE[process.env.STORE],
     htmlAttrs: {
       lang: "en",
     },
@@ -69,7 +74,12 @@ export default {
   },
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ["bootstrap-vue/nuxt", "@nuxtjs/style-resources", ["@nuxtjs/i18n"]],
+  modules: [
+    "bootstrap-vue/nuxt",
+    "@nuxtjs/style-resources",
+    ["@nuxtjs/i18n"],
+    "@nuxtjs/gtm",
+  ],
 
   i18n: {
     locales: [
@@ -80,6 +90,12 @@ export default {
     langDir: "locales/",
     vueI18n: {
       fallbackLocale: "en",
+    },
+  },
+
+  publicRuntimeConfig: {
+    gtm: {
+      id: process.env.GOOGLE_TAG_MANAGER_ID,
     },
   },
 

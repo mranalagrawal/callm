@@ -10,6 +10,7 @@
     "slicemachine": "start-slicemachine"
   },
   "dependencies": {
+    "@nuxtjs/gtm": "^2.4.0",
     "@nuxtjs/i18n": "^7.3.0",
     "@nuxtjs/prismic": "^1.4.2",
     "@nuxtjs/style-resources": "^1.2.1",

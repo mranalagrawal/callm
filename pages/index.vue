@@ -96,7 +96,7 @@ export default {
   },
   head() {
     return {
-      title: "CallMeWine",
+      /* title: "CallMeWine", */
       link: Object.entries(this.links).map((el) => {
         return {
           hid: "alternate-" + el[0],
