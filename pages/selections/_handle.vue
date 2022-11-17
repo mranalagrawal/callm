@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <selection :selection="handle" />
+    <Selection :selection="handle" />
   </div>
 </template>
 
@@ -10,6 +10,7 @@ export default {
   layout(context) {
     return context.$config.STORE;
   },
+  components: { Selection },
   data() {
     return {
       selection: null,

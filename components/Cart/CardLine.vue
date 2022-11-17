@@ -38,7 +38,7 @@
 
         <p class="mb-0 font-weight-bold text-right">
           {{ (item.quantity * item.singleAmount).toFixed(2) }}
-          {{ $config.STORE == "CMW_UK" ? "GBP" : "€" }}
+          {{ $config.STORE == "CMW_UK" ? "£" : "€" }}
         </p>
       </div>
       <div class="d-none d-md-block col-md-1 text-right">

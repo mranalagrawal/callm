@@ -6,16 +6,25 @@
     <div class="row pb-3 shadow-menu">
       <div
         class="col text-center text-uppercase menu-link"
-        v-for="(item, i) in data"
-        @mouseenter="onTab(item)"
+        v-for="(firstLevel, i) in data"
+        @mouseenter="onTab(firstLevel)"
         :key="i"
+        :style="{
+          color: firstLevel.isPromotionTab ? 'var(--light-secondary)' : '',
+        }"
       >
-        {{ item.name }}
+        <img
+          v-if="firstLevel.isPromotionTab"
+          :src="require(`@/assets/images/selections/inpromotion.svg`)"
+          width="20px"
+          class="d-inline"
+        />
+        {{ firstLevel.name }}
       </div>
     </div>
 
     <div
-      v-if="selectedItem"
+      v-if="selectedItem && !selectedItem.isPromotionTab"
       @mouseleave="onTab(null)"
       class="row bg-white shadow-menu pt-3 px-2"
       style="
@@ -35,7 +44,32 @@
           {{ secondLevel.name }}
         </p>
         <div v-for="(thirdLevel, j) in secondLevel.items" :key="j">
-          <!-- {{ thirdLevel }} -->
+          <ThirdLevel :thirdLevel="thirdLevel" />
+        </div>
+      </div>
+    </div>
+    <div
+      v-if="selectedItem && selectedItem.isPromotionTab"
+      @mouseleave="onTab(null)"
+      class="row bg-white shadow-menu pt-3 px-4"
+      style="
+        min-height: 300px;
+        z-index: 100;
+        max-height: 400px;
+        overflow-y: scroll;
+      "
+    >
+      <div v-for="(secondLevel, i) in selectedItem.items" :key="i" class="row">
+        <div class="col-12">
+          <p class="fs-14 px-2" style="color: #155b53; font-weight: 600">
+            {{ secondLevel.name }}
+          </p>
+        </div>
+        <div
+          v-for="(thirdLevel, j) in secondLevel.items"
+          :key="j"
+          class="col-12 col-md-6 col-lg-4 col-xl-3"
+        >
           <ThirdLevel :thirdLevel="thirdLevel" />
         </div>
       </div>
@@ -108,11 +142,13 @@ export default {
           name: firstLevel.primary.group_label,
           link: firstLevel.primary.first_level_link,
           position: firstLevel.primary.first_level_position,
+          isPromotionTab: firstLevel.primary.is_promotion_tab,
           items,
         };
       })
       .sort((a, b) => a.position - b.position);
 
+    console.log(data, "data");
     /* console.log(mapped, "mapped"); */
     this.data = mapped;
     /* this.selectedItem = mapped[3]; */
@@ -133,7 +169,7 @@ export default {
   color: black;
   text-decoration: none;
   font-size: 0.875rem;
-  font-weight: 300;
+  font-weight: 600;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
 }

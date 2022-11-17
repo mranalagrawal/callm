@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mt-5">
     <div class="container-fluid px-md-5" v-if="data && brandMetafields">
       <div class="row mb-3" v-if="breadcrumb">
         <div class="col-12">
@@ -508,7 +508,8 @@ export default {
 
     const dataBrand = await getBrand(domain, access_token, "B" + brandId);
     this.brand = dataBrand;
-
+    console.log(dataBrand);
+    /* return; */
     this.brandMetafields = JSON.parse(dataBrand.details.value);
   },
   methods: {

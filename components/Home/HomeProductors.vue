@@ -47,10 +47,10 @@
 </template>
 
 <script>
-import { queryByCollection } from "../../utilities/productQueries";
+import documents from "../../prismic-mapper";
 
 import VueSlickCarousel from "vue-slick-carousel";
-// optional style for arrows & dots
+
 import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
 
 export default {
@@ -129,12 +129,14 @@ export default {
     },
   }),
   async fetch() {
-    const response = await this.$prismic.api.getSingle("productors");
+    const response = await this.$prismic.api.getSingle(
+      documents[this.$config.STORE]["productors"]
+    );
     const data = response.data.productor;
 
     this.data = data.concat(data);
     this.label = response.data.label;
-    console.log(response.data, "Prod");
+    console.log(response.data, "Prodasd");
   },
 };
 </script>

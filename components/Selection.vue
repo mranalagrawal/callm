@@ -14,15 +14,15 @@
       </div>
     </div>
     <div class="row" v-if="data && data.products.length > 0">
-      <div class="col-12 text-center">
-        <h1 class="font-weight-bold text-dark-primary">
+      <div class="col-12">
+        <h1 class="font-weight-bold text-dark-primary mt-3">
           {{ data.title }}
         </h1>
       </div>
-      <div class="col-12 text-center" v-if="data">
-        <h2 class="font-weight-bold text-dark-primary">
+      <div class="col-12" v-if="data">
+        <p class="">
           {{ data.description }}
-        </h2>
+        </p>
       </div>
 
       <div class="col-12 py-4" v-if="data">

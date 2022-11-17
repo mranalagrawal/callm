@@ -19,7 +19,7 @@
             <h5
               class="card-title text-dark-primary mb-0"
               style="font-size: 16px; font-weight: 600"
-              :class="$config.store == 'WILDVIGNERON' ? 'mt-4' : ''"
+              :class="$config.store !== 'WILDVIGNERON' ? 'mt-4' : ''"
             >
               {{ box.title }}
             </h5>

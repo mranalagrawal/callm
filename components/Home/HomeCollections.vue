@@ -9,6 +9,7 @@
         <VueSlickCarousel v-bind="settings">
           <div v-for="(collection, i) in data" :key="i">
             <div
+              v-if="collection.node.image"
               class="card collection d-flex justify-content-center align-items-center"
               :style="{
                 backgroundImage:
@@ -27,7 +28,22 @@
                 class="text-center text-decoration-none"
               >
                 <p class="text-white h4">{{ collection.node.title }}</p>
-                <p class="text-white">{{ collection.node.description }}</p>
+              </nuxt-link>
+            </div>
+            <div
+              v-else
+              class="card collection d-flex justify-content-center align-items-center bg-dark"
+            >
+              <span
+                class="badge badge-pill badge-light-secondary mx-1 collection-badge px-3 py-1 font-weight-normal"
+              >
+                SELEZIONE
+              </span>
+              <nuxt-link
+                :to="`selections/${collection.node.handle}`"
+                class="text-center text-decoration-none"
+              >
+                <p class="text-white h4">{{ collection.node.title }}</p>
               </nuxt-link>
             </div>
           </div>

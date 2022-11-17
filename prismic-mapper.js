@@ -2,6 +2,7 @@ const documents = {
   CMW_UK: {
     topbar: "topbar",
     homeBoxes: "home-boxes",
+    productors: "productors",
     shipping: "shipping",
     aboutUs: "about_us",
     shippingPage: "shipping-page",
@@ -14,6 +15,7 @@ const documents = {
   WILDVIGNERON: {
     topbar: "wv_topbar",
     homeBoxes: "wv_home-boxes",
+    productors: "wv_productors",
     shipping: "wv_shipping",
     aboutUs: "wv_about_us",
     shippingPage: "wv_shipping-page",

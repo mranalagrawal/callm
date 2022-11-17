@@ -584,10 +584,21 @@ export default {
       this.$refs["sidebar"].hide();
     },
     async suggest() {
+      const stores = {
+        CMW: 1,
+        CMW_UK: 2,
+        WILDVIGNERON: 3,
+      };
+      const activeStoreID = stores[this.$config.STORE];
+
       const elastic_url = this.$config.ELASTIC_URL;
       if (this.search && this.search.length > 3) {
         const result = await fetch(
-          elastic_url + "autocomplete/search/?search=" + this.search
+          elastic_url +
+            "autocomplete/search/?stores=" +
+            activeStoreID +
+            "&search=" +
+            this.search
         );
         const resultJSON = await result.json();
         this.data = resultJSON;
