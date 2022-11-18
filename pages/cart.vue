@@ -39,7 +39,7 @@
               </div>
             </div>
             <div v-for="item in userCart" :key="item.id">
-              <CardLine :item="item" />
+              <CartLine :item="item" />
             </div>
           </div>
           <div class="col-12 col-md-5 px-0 px-md-5">
@@ -47,7 +47,10 @@
               <div class="card-body">
                 <h5 class="card-title font-weight-bold">
                   Totale carrello
-                  <span class="float-right">{{ cartTotalAmount }} GBP</span>
+                  <span class="float-right"
+                    >{{ cartTotalAmount }}
+                    {{ $config.STORE == "CMW_UK" ? "£" : "€" }}</span
+                  >
                 </h5>
                 <hr />
                 <p>
@@ -90,14 +93,14 @@ import {
   addProductToCart,
   removeProductFromCart,
 } from "../utilities/cart";
-import CardLine from "../components/Cart/CardLine.vue";
+import CartLine from "../components/Cart/CartLine.vue";
 
 export default {
   /* middleware: "auth", */
   layout(context) {
     return context.$config.STORE;
   },
-  components: { CardLine },
+  components: { CartLine },
   computed: {
     cart() {
       return this.$store.state.cart.cart;

@@ -20,7 +20,7 @@
         </div>
         <div>
           <div v-for="item in data" :key="item.id">
-            <CardLine :item="item" />
+            <CartLine :item="item" />
           </div>
         </div>
         <div class="row py-4 px-md-5">
@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import CardLine from "./CardLine.vue";
+import CartLine from "./CartLine.vue";
 import { createCart, addProductToCart } from "../../utilities/cart";
 import documents from "../../prismic-mapper";
 
@@ -66,7 +66,7 @@ export default {
       shipping: null,
     };
   },
-  components: { CardLine },
+  components: { CartLine },
   computed: {
     cart() {
       return this.$store.state.cart.cart;

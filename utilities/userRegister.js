@@ -32,6 +32,8 @@ const userRegister = async (
   const response = await fetch(domain, GRAPHQL_BODY_TOKEN);
   const res = await response.json();
 
+  console.log(res, "res");
+
   /* console.log(res, "E' qui che si rompe..."); */
   // costruisco la query createTokenQuery, che mi ritorna un token necessario per loggare l'utente
   const createToken = createTokenQuery(email, password);
@@ -54,8 +56,6 @@ const userRegister = async (
 
   return customerAccessToken.data.customerAccessTokenCreate.customerAccessToken
     .accessToken;
-
-  const user = await userLogin(email, password, domain, access_token);
 };
 
 export default userRegister;

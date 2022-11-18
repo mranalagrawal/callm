@@ -31,6 +31,7 @@ const queryByCollection = (
                     description
                     handle
                     tags
+                    totalInventory
                     createdAt
                     availableForSale
                     variants(first: 10) {

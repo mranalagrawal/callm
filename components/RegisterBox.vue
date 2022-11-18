@@ -69,8 +69,6 @@
         id="privacy"
         v-model="form.privacy"
         name="privacy"
-        value="accepted"
-        unchecked-value="not_accepted"
         class="mt-3"
       >
         {{ $t("privacyPolicy") }}
@@ -80,8 +78,6 @@
         id="marketing"
         v-model="form.marketing"
         name="marketing"
-        value="accepted"
-        unchecked-value="not_accepted"
         class="mt-3"
       >
         {{ $t("acceptMarketing") }}

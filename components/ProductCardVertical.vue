@@ -180,11 +180,6 @@
 </template>
 
 <script>
-import {
-  createCart,
-  addProductToCart,
-  updateItemInCart,
-} from "../utilities/cart";
 import AwardTooltip from "./UI/AwardTooltip.vue";
 export default {
   props: ["product"],
@@ -192,7 +187,6 @@ export default {
   components: { AwardTooltip },
   data() {
     return {
-      quantity: 0,
       details: JSON.parse(this.product.metafield1.value),
       isOpen: false,
       awards: JSON.parse(this.product.metafield1.value).awards.slice(0, 5),
@@ -278,6 +272,7 @@ export default {
     },
     async addToUserCart() {
       if (!this.isOpen) this.isOpen = true;
+
       const productVariantId = this.product.variants.nodes[0].id;
       const amount = Number(this.product.variants.nodes[0].price);
       const amountFullPrice = Number(

@@ -32,23 +32,27 @@
       <div class="col-12 mb-3">
         <div class="card p-3">
           <div class="row">
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-3">
               <p class="font-weight-bold text-light-primary">
                 {{ $t("firstName") }}
               </p>
               <p>{{ currentFirstName }}</p>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-3">
               <p class="font-weight-bold text-light-primary">
                 {{ $t("lastName") }}
               </p>
               <p>{{ currentLastName }}</p>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-3">
               <p class="font-weight-bold text-light-primary">
                 {{ $t("phone") }}
               </p>
               <p>{{ currentPhone }}</p>
+            </div>
+            <div class="col-12 col-md-3">
+              <p class="font-weight-bold text-light-primary">Newsletter</p>
+              <p>{{ acceptsMarketing }}</p>
             </div>
             <div class="col-12">
               <p class="text-right mb-0 pointer" @click="showEditPersonalModal">
@@ -171,6 +175,12 @@
             :placeholder="currentPhone"
           ></b-form-input>
 
+          <label class="custom-label">Newsletter</label>
+          <b-form-checkbox
+            class="custom-input mb-3"
+            v-model="acceptsMarketing"
+          ></b-form-checkbox>
+
           <button
             type="submit"
             class="btn btn-light-secondary text-uppercase w-100 mt-5"
@@ -194,6 +204,7 @@ export default {
       newFirstName: "",
       newLastName: "",
       newPhone: "",
+      acceptsMarketing: this.$store.state.user.user.customer.acceptsMarketing,
       /* currentMail: this.$store.state.user.user.customer.email, */
     };
   },
@@ -385,6 +396,7 @@ export default {
               firstName: this.newFirstName,
               lastName: this.newLastName,
               phone: this.newPhone,
+              acceptsMarketing: this.acceptsMarketing,
             },
             customerAccessToken: customerAccessToken,
           },
@@ -409,6 +421,8 @@ export default {
 
       const responseJSON = await response.json();
 
+      console.log(responseJSON);
+
       if (responseJSON.data.customerUpdate.customerUserErrors.length > 0) {
         let error =
           responseJSON.data.customerUpdate.customerUserErrors[0].message;
@@ -421,6 +435,8 @@ export default {
       const updatedLastName =
         responseJSON.data.customerUpdate.customer.lastName;
       const updatedPhone = responseJSON.data.customerUpdate.customer.phone;
+      const updatedNewsletter =
+        responseJSON.data.customerUpdate.customer.acceptsMarketing;
 
       this.$store.commit("user/updateGenericField", {
         field: "firstName",
@@ -433,6 +449,10 @@ export default {
       this.$store.commit("user/updateGenericField", {
         field: "phone",
         value: updatedPhone,
+      });
+      this.$store.commit("user/updateGenericField", {
+        field: "acceptsMarketing",
+        value: updatedNewsletter,
       });
 
       this.hideEditPersonalModal();

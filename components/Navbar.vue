@@ -422,7 +422,7 @@
                 class="content card shadow"
               >
                 <!-- <Cart /> -->
-                <Card />
+                <Cart />
               </div>
             </div>
           </div>
@@ -492,7 +492,7 @@
 </template>
 
 <script>
-import Card from "./Cart/Card.vue";
+import Cart from "./Cart/Cart.vue";
 /* import Cart from "./Cart/Cart.vue"; */
 
 import LoginForm from "./LoginForm.vue";
@@ -500,7 +500,7 @@ import DropdownMobileMenu from "./UI/DropdownMobileMenu.vue";
 import UserMenu from "./UserMenu.vue";
 
 export default {
-  components: { LoginForm, UserMenu, DropdownMobileMenu, Card },
+  components: { LoginForm, UserMenu, DropdownMobileMenu, Cart },
   watch: {
     $route() {
       this.showUser = false;
