@@ -24,7 +24,7 @@
     </div>
 
     <div
-      v-if="selectedItem && !selectedItem.isPromotionTab"
+      v-if="selectedItem && !selectedItem.display_as_cards"
       @mouseleave="onTab(null)"
       class="row bg-white shadow-menu pt-3 px-2"
       style="
@@ -49,7 +49,7 @@
       </div>
     </div>
     <div
-      v-if="selectedItem && selectedItem.isPromotionTab"
+      v-if="selectedItem && selectedItem.display_as_cards"
       @mouseleave="onTab(null)"
       class="row bg-white shadow-menu pt-3 px-4"
       style="
@@ -143,6 +143,7 @@ export default {
           link: firstLevel.primary.first_level_link,
           position: firstLevel.primary.first_level_position,
           isPromotionTab: firstLevel.primary.is_promotion_tab,
+          display_as_cards: firstLevel.primary.display_as_cards,
           items,
         };
       })
