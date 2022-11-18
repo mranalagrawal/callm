@@ -137,7 +137,7 @@ export default {
 
           return { ...el, items: temp };
         });
-        /* console.log(items, "ITEMS"); */
+
         return {
           name: firstLevel.primary.group_label,
           link: firstLevel.primary.first_level_link,
@@ -148,8 +148,6 @@ export default {
       })
       .sort((a, b) => a.position - b.position);
 
-    console.log(data, "data");
-    /* console.log(mapped, "mapped"); */
     this.data = mapped;
     /* this.selectedItem = mapped[3]; */
   },

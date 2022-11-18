@@ -76,7 +76,7 @@ export default {
     const GRAPHQL_URL = this.$config.DOMAIN;
 
     const productQuery = queryByCollection(
-      "last",
+      "home-shelf-2",
       this.$i18n.locale.toUpperCase()
     );
 
@@ -102,8 +102,6 @@ export default {
           title: res.data.collectionByHandle.title,
         };
       });
-
-    console.log(this.data, "DDDD");
   },
 };
 </script>

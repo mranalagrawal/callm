@@ -43,7 +43,6 @@ export default {
         this.$prismic.predicates.at("document.type", "call-to-action")
       )
     ).results;
-    console.log(this.contents, "contents");
   },
 };
 </script>

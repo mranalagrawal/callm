@@ -41,7 +41,6 @@ export default {
     );
     const data = response.data;
     this.data = data;
-    console.log(data, "data ");
   },
 };
 </script>

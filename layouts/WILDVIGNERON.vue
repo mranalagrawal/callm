@@ -18,19 +18,16 @@
 
 <script>
 import TopBar from "../components/TopBar.vue";
-import Navbar from "../components/Navbar.vue";
+
 import NavbarWV from "../components/NavbarWV.vue";
 
-import MegaTest from "../components/MegaTest.vue";
-import MegaMenu from "../components/MegaMenu.vue";
 import FooterWV from "../components/FooterWV.vue";
 
 export default {
   components: {
     TopBar,
     NavbarWV,
-    MegaTest,
-    MegaMenu,
+
     FooterWV,
   },
   name: "IndexPage",

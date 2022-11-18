@@ -48,7 +48,6 @@ export default {
       { lang: lang }
     );
     this.data = data.data;
-    console.log(data.data);
   },
 };
 </script>

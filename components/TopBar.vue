@@ -3,7 +3,17 @@
     class="container-fluid bg-dark-primary py-2 text-white text-center fixed-top"
     style="z-index: 1050"
   >
-    <span class="small" v-if="data" v-html="data.data.text[0].text"></span>
+    <span
+      class="d-md-none"
+      v-if="data"
+      v-html="data.data.text[0].text"
+      style="font-size: 9px"
+    ></span>
+    <span
+      class="small d-none d-md-block"
+      v-if="data"
+      v-html="data.data.text[0].text"
+    ></span>
   </div>
 </template>
 

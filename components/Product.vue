@@ -498,7 +498,7 @@ export default {
       body: productQuery,
     };
     const data = await fetch(domain, GRAPHQL_BODY).then((res) => res.json());
-    console.log(data, "dA");
+
     this.data = data.data.products.edges[0].node;
 
     this.price = this.data.variants.nodes[0].price;
@@ -508,8 +508,7 @@ export default {
 
     const dataBrand = await getBrand(domain, access_token, "B" + brandId);
     this.brand = dataBrand;
-    console.log(dataBrand);
-    /* return; */
+
     this.brandMetafields = JSON.parse(dataBrand.details.value);
   },
   methods: {

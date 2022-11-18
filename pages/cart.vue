@@ -177,9 +177,6 @@ export default {
         lines
       );
 
-      console.clear();
-      console.log(cartFilled);
-
       // crea checkoutUrl
       let checkoutUrl = cartFilled.checkoutUrl + "/?";
       this.$store.state.user.user.customer.email &&
@@ -208,11 +205,8 @@ export default {
 
       this.$store.state.user.user.customer.defaultAddress?.zip &&
         (checkoutUrl += `&checkout[shipping_address][zip]=${this.$store.state.user.user.customer.defaultAddress.zip}`);
+
       // redirect al checkoutUrl
-
-      console.log(checkoutUrl);
-      return;
-
       if (process.client) window.location = checkoutUrl;
     },
   },

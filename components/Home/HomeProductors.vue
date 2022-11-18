@@ -136,7 +136,6 @@ export default {
 
     this.data = data.concat(data);
     this.label = response.data.label;
-    console.log(response.data, "Prodasd");
   },
 };
 </script>

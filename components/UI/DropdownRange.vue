@@ -82,11 +82,6 @@ export default {
     };
   },
   watch: {
-    /* "$route.query": function () {
-      this.choosenMin = this.$route.query.price_from || +this.min;
-      this.choosenMax = this.$route.query.price_to || +this.max;
-      console.log("qui");
-    }, */
     min(value) {
       this.choosenMin = +value;
     },
@@ -97,7 +92,6 @@ export default {
 
   computed: {
     marginLeft() {
-      console.log(this.min, this.max, "delta");
       let value = (100 * (this.choosenMin - this.min)) / (this.max - this.min);
       return value + "%";
     },
@@ -117,12 +111,9 @@ export default {
     goto() {
       const query = Object.assign({}, this.$route.query);
 
-      /* query[this.keyword] = id; */
-
       query["price_from"] = this.choosenMin;
       query["price_to"] = this.choosenMax;
       query["page"] = 1;
-      /* if (id !== this.active) query["page"] = 1; */
 
       this.$router.push({
         path: "catalog",

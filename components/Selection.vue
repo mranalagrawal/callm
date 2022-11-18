@@ -110,8 +110,6 @@ export default {
           title: res.data.collectionByHandle.title,
         };
       });
-    console.clear();
-    console.log(this.data);
   },
 };
 </script>

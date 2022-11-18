@@ -11,10 +11,8 @@ export const mutations = {
 
     // se c'è già
     if (product) {
-      console.log("if");
       product.quantity = product.quantity + 1;
     } else {
-      console.log("else");
       state.userCart.push({
         productVariantId: entry.productVariantId,
         quantity: 1,

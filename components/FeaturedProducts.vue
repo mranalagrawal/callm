@@ -75,7 +75,7 @@ export default {
     const GRAPHQL_URL = this.$config.DOMAIN;
 
     const productQuery = queryByCollection(
-      "featured",
+      "home-shelf-1",
       this.$i18n.locale.toUpperCase()
     );
 

@@ -74,7 +74,6 @@ export default {
   computed: {
     styled() {
       if (this.thirdLevel.third_level_style) {
-        console.log(JSON.parse(this.thirdLevel.third_level_style));
         return JSON.parse(this.thirdLevel.third_level_style);
       }
       return null;

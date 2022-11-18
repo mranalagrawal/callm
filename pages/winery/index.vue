@@ -188,8 +188,6 @@ export default {
     const data = await fetch(this.baseURL);
     const dataJSON = await data.json();
 
-    console.log(dataJSON.brands.data);
-
     this.data = dataJSON.brands.data.sort((a, b) => b.isPartner - a.isPartner);
     this.links = dataJSON.links;
     this.filters = dataJSON.brands.filters;
@@ -198,13 +196,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-/* .partner {
-  background-image: url("../../assets/images/isPartner.svg") !important;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  border: 2px solid darkred;
-} */
-</style>

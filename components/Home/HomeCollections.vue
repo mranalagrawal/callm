@@ -130,11 +130,10 @@ export default {
     );
 
     const responseFiltered = response.data.collections.edges.filter(
-      (el) => el.node.title != "last" && el.node.title != "featured"
+      (el) => el.node.title != "home shelf 1" && el.node.title != "home shelf 2"
     );
 
     this.data = responseFiltered;
-    console.log(responseFiltered, "All Collections");
   },
 };
 </script>

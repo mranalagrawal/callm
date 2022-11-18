@@ -527,7 +527,6 @@ export default {
     const countries = await fetch(elastic_url + "countries/" + STORE).then(
       (r) => r.json()
     );
-    console.log(countries, "countries");
 
     const mappedCountries = countries.countries
       .map((el) => el.name)
@@ -537,12 +536,12 @@ export default {
           text: el,
         };
       });
-    console.log(mappedCountries);
+
     this.countries = [
       { value: null, text: this.$t("country"), disabled: true, selected: true },
       ...mappedCountries,
     ];
-    console.log(this.countries, "this.countries");
+
     this.allCountries = countries.countries;
   },
   methods: {
@@ -745,8 +744,6 @@ export default {
         });
       };
 
-      console.clear();
-      console.log(e.split("&customer_access_token")[0]);
       const setAddressMutation = setAddress(
         customerAccessToken,
         e.split("&customer_access_token")[0]
@@ -764,7 +761,6 @@ export default {
 
       const response = await fetch(domain, GRAPHQL_BODY);
       const responseJSON = await response.json();
-      console.log(responseJSON, "responseJSON");
 
       const newDefaultAddress =
         responseJSON.data.customerDefaultAddressUpdate.customer.defaultAddress;

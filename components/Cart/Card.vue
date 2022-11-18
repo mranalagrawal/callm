@@ -130,8 +130,6 @@ export default {
     );
     const shipping = response.data;
     this.shipping = shipping;
-
-    console.log(shipping, "datas");
   },
   methods: {
     async checkout() {

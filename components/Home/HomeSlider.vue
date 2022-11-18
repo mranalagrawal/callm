@@ -59,7 +59,7 @@ export default {
     const data = await this.$prismic.api.getSingle("home-featured", {
       lang: lang,
     });
-    console.log(data.data, "dataa");
+
     this.label = data.data.label;
     this.data = data.data.featured;
   },

@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid container-large px-md-3 my-5">
-    <div class="row">
+    <div class="row mt-5 mb-3">
       <div class="col-12">
         <h1>Tutte le Collections</h1>
       </div>
@@ -74,7 +74,7 @@ export default {
     );
 
     const responseFiltered = response.data.collections.edges.filter(
-      (el) => el.node.title != "last" && el.node.title != "featured"
+      (el) => el.node.title != "home shelf 1" && el.node.title != "home shelf 2"
     );
 
     this.data = responseFiltered;

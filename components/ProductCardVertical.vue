@@ -256,9 +256,6 @@ export default {
         { async: true, crossDomain: true, method: "POST" }
       );
 
-      /* const js = await response.text();
-      console.log(js);
-      return; */
       const updatedWishlist = await response.text();
 
       this.$store.commit("user/updateWishlist", updatedWishlist);

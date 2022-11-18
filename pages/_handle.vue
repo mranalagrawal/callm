@@ -59,10 +59,6 @@ export default {
       }
     });
 
-    /* console.clear(); */
-
-    /* this.$router.push("/search"); */
-
     const noFilterInURL = filters
       .filter((el) => el.rule !== null)
       .every((el) => !el.rule.test(path));
@@ -72,15 +68,6 @@ export default {
     const noSelection = !this.$route.fullPath.split("?sel=")[1];
 
     if (noFilterInURL && noSelection) this.$router.push("/catalog");
-    // if no filter AND no selection, redirect to search
-    /* if (
-      filters
-        .filter((el) => el.rule !== null)
-        .every((el) => !el.rule.test(path)) &&
-      this.$route.fullPath.split("?sel=")[1]
-    ) {
-      this.$router.push("/search");
-    } */
   },
 };
 </script>

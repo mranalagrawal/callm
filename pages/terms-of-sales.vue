@@ -41,7 +41,7 @@ export default {
         lang: lang,
       }
     );
-    console.log(response, "data");
+
     const data = response.data;
     this.data = data;
   },

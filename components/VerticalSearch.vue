@@ -312,7 +312,6 @@ export default {
   },
   computed: {
     STORE() {
-      console.log(this.$config.STORE);
       return this.$config.STORE;
     },
     salePrice() {
@@ -370,7 +369,6 @@ export default {
     async addToUserCart() {
       if (!this.isOpen) this.isOpen = true;
 
-      console.log(this.product);
       const productVariantId =
         "gid://shopify/ProductVariant/" +
         this.product._source.variantId[this.STORE];

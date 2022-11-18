@@ -273,7 +273,6 @@ export default {
       this.$refs["modal"].hide();
     },
     async orderAgain() {
-      console.log(this.order.lineItems.edges);
       const items = [];
       this.order.lineItems.edges
         .map((el) => el.node)

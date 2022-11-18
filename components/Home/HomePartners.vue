@@ -87,7 +87,7 @@ export default {
       };
     });
     this.data = data;
-    console.log(data);
+
     this.label = response.data.body[0].primary.label;
   },
 };
