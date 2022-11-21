@@ -30,6 +30,9 @@
 <script>
 import { getUserOrders } from "../utilities/orders";
 export default {
+  layout(context) {
+    return context.$config.STORE;
+  },
   data() {
     return {
       order: null,
