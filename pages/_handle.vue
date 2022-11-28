@@ -12,6 +12,7 @@
 <script>
 export default {
   layout(context) {
+    console.log(context.$config.STORE);
     return context.$config.STORE;
   },
   data() {
@@ -38,6 +39,7 @@ export default {
       { name: "dosagecontents", rule: /[D][0-9]+/ },
       { name: "brands", rule: /[B][0-9]+/ },
       { name: "countries", rule: /[N][0-9]+/ },
+      { name: "macrocategories", rule: /[M][0-9]+/ },
       { name: "selections", rule: null },
     ];
 

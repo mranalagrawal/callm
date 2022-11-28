@@ -111,7 +111,7 @@
               }}</span
               >,<span style="font-size: 16px"
                 >{{ price.split(".")[1] }}
-                {{ data.variants.nodes[0].compareAtPriceV2.currencyCode }}
+                <!-- {{ data.variants.nodes[0].compareAtPriceV2.currencyCode }} -->
               </span>
             </div>
             <div class="col-12 col-md-6 offset-md-2 text-center">
@@ -401,11 +401,11 @@
         </div>
       </div>
 
-      <RecentProducts />
+      <!--     <RecentProducts />
 
       <VendorProducts :vendor="brand.title" />
 
-      <RecommendedProducts :product="data.id" />
+      <RecommendedProducts :product="data.id" /> -->
     </div>
   </div>
 </template>
@@ -499,6 +499,9 @@ export default {
     };
     const data = await fetch(domain, GRAPHQL_BODY).then((res) => res.json());
 
+    console.log(data, "DAasd");
+    /* return; */
+
     this.data = data.data.products.edges[0].node;
 
     this.price = this.data.variants.nodes[0].price;
@@ -578,6 +581,33 @@ export default {
       }
     },
   },
+  /* async fetch() {
+    console.log("ok");
+    const domain = this.$config.DOMAIN;
+    const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
+
+    const countriesQuery = `query {
+      localization {
+        availableCountries {
+          name
+          isoCode
+        }
+      }
+    }`;
+
+    const GRAPHQL_BODY = {
+      async: true,
+      crossDomain: true,
+      method: "POST",
+      headers: {
+        "X-Shopify-Storefront-Access-Token": access_token,
+        "Content-Type": "application/graphql",
+      },
+      body: countriesQuery,
+    };
+    const data = await fetch(domain, GRAPHQL_BODY).then((res) => res.json());
+    console.log(data.data.localization, "countries");
+  }, */
 };
 </script>
 

@@ -79,7 +79,7 @@
 
 <script>
 import ThirdLevel from "./UI/ThirdLevel.vue";
-
+import locales from "../locales-mapper";
 export default {
   components: { ThirdLevel },
   watch: {
@@ -102,12 +102,15 @@ export default {
     },
   },
   async fetch() {
-    let lang = "";
+    /*     let lang = "";
     if (this.$i18n.locale == "en") {
       lang = "en-gb";
     } else {
       lang = "it-it";
-    }
+    } */
+
+    let lang = locales[this.$i18n.locale];
+
     let response = await this.$prismic.api.getSingle("mega-menu-test", {
       lang: lang,
     });

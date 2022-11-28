@@ -145,10 +145,10 @@
               <span
                 style="text-decoration: line-through"
                 v-if="
-                  product._source.saleprice[STORE].toFixed(2) !==
-                  product._source.price[STORE].toFixed(2)
+                  product._source.saleprice[SALECHANNEL].toFixed(2) !==
+                  product._source.price[SALECHANNEL].toFixed(2)
                 "
-                >{{ product._source.price[STORE].toFixed(2) }}
+                >{{ product._source.price[SALECHANNEL].toFixed(2) }}
                 {{ $config.STORE == "CMW_UK" ? "£" : "€" }}</span
               >
               <span v-else>&nbsp;</span>
@@ -159,10 +159,14 @@
               <div>
                 <p class="mb-0">
                   <span class="integer">{{
-                    product._source.saleprice[STORE].toFixed(2).split(".")[0]
+                    product._source.saleprice[SALECHANNEL].toFixed(2).split(
+                      "."
+                    )[0]
                   }}</span
                   >,<span>{{
-                    product._source.saleprice[STORE].toFixed(2).split(".")[1]
+                    product._source.saleprice[SALECHANNEL].toFixed(2).split(
+                      "."
+                    )[1]
                   }}</span>
                   {{ $config.STORE == "CMW_UK" ? "£" : "€" }}
                 </p>
@@ -243,10 +247,14 @@
               </p>
               <p class="mb-0 text-center">
                 <span class="integer">{{
-                  product._source.saleprice[STORE].toFixed(2).split(".")[0]
+                  product._source.saleprice[SALECHANNEL].toFixed(2).split(
+                    "."
+                  )[0]
                 }}</span
                 >,<span>{{
-                  product._source.saleprice[STORE].toFixed(2).split(".")[1]
+                  product._source.saleprice[SALECHANNEL].toFixed(2).split(
+                    "."
+                  )[1]
                 }}</span>
                 {{ $config.STORE == "CMW_UK" ? "£" : "€" }}
               </p>
@@ -313,6 +321,9 @@ export default {
   computed: {
     STORE() {
       return this.$config.STORE;
+    },
+    SALECHANNEL() {
+      return this.$config.SALECHANNEL;
     },
     salePrice() {
       return this.product._source.saleprice[this.$config.STORE];
@@ -406,6 +417,8 @@ export default {
         this.$router.push("/login");
         return;
       }
+
+      console.log(this.product);
 
       const userId =
         this.$store.state.user.user.customer.id.split("Customer/")[1];

@@ -52,13 +52,15 @@
     >
       <div class="row justify-content-end">
         <nuxt-link
-          class="text-decoration-none text-white fs-0875 mr-3"
-          :to="switchLocalePath('it')"
-          :class="$i18n.locale == 'it' ? 'font-weight-bold' : ''"
-          >IT</nuxt-link
+          class="text-decoration-none text-uppercase text-white fs-0875 mr-3"
+          :to="switchLocalePath($config.DEFAULT_LOCALE)"
+          :class="
+            $i18n.locale == $config.DEFAULT_LOCALE ? 'font-weight-bold' : ''
+          "
+          >{{ $config.DEFAULT_LOCALE }}</nuxt-link
         >
         <nuxt-link
-          class="text-decoration-none text-white fs-0875 mr-3"
+          class="text-decoration-none text-uppercase text-white fs-0875 mr-3"
           :to="switchLocalePath('en')"
           :class="$i18n.locale == 'en' ? 'font-weight-bold' : ''"
           >EN</nuxt-link

@@ -1,4 +1,17 @@
 const documents = {
+  CMW: {
+    topbar: "topbar",
+    homeBoxes: "home-boxes",
+    productors: "productors",
+    shipping: "shipping",
+    aboutUs: "about_us",
+    shippingPage: "shipping-page",
+    paymentsPage: "payments",
+    conditionsPage: "conditions",
+    contactPage: "contact_us",
+    privacyPage: "privacy-policy",
+    cookiePage: "cookie-policy",
+  },
   CMW_UK: {
     topbar: "topbar",
     homeBoxes: "home-boxes",

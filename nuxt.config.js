@@ -87,11 +87,13 @@ export default {
     locales: [
       { code: "en", iso: "en-GB", file: "en.js", dir: "ltr" },
       { code: "it", iso: "it-IT", file: "it.js", dir: "ltr" },
+      { code: "de", iso: "de-DE", file: "de.js", dir: "ltr" },
+      { code: "fr", iso: "fr-FR", file: "fr.js", dir: "ltr" },
     ],
-    defaultLocale: process.env.STORE === "WILDVIGNERON" ? "it" : "en",
+    defaultLocale: process.env.DEFAULT_LOCALE,
     langDir: "locales/",
     vueI18n: {
-      fallbackLocale: "en",
+      fallbackLocale: process.env.DEFAULT_LOCALE,
     },
   },
 
@@ -128,7 +130,9 @@ export default {
     STOREFRONT_ACCESS_TOKEN: process.env.STOREFRONT_ACCESS_TOKEN,
     ELASTIC_URL: process.env.ELASTIC_URL,
     MAIN_COLOR: process.env.MAIN_COLOR,
-    STORE: process.env.STORE,
+    STORE: process.env.STORE == "CMW" ? "CMW_UK" : process.env.STORE,
+    SALECHANNEL: process.env.SALECHANNEL,
+    DEFAULT_LOCALE: process.env.DEFAULT_LOCALE,
     gtm: {
       id: process.env.GOOGLE_TAG_MANAGER_ID,
     },

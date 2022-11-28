@@ -1,5 +1,6 @@
 <template>
   <div class="w-100 d-block">
+    <!-- {{ items }} -->
     <button
       class="btn d-flex w-100 justify-content-between px-0"
       @click="visible = !visible"
@@ -32,6 +33,10 @@
         >
           <div>
             <span>{{ item.key[1] }}</span>
+            <!-- <span
+              >trad:
+              {{ $t(`elastic.${label.toLowerCase()}.${item.key[0]}`) }}</span
+            > -->
             <span class="text-muted">({{ item.doc_count }})</span>
           </div>
           <i class="fal fa-check float-right" v-if="item.key[0] == active"></i>
@@ -84,6 +89,27 @@ export default {
         return this.items;
       }
     },
+    /* filteredItems: function () {
+      if (this.search.length > 2) {
+        // campo del json del dropdown corrispondente, kv
+        const entries = Object.entries(
+          this.$t(`elastic.${this.label.toLowerCase()}`)
+        );
+
+        // filtro questi kv per presenza, nel valore, del searched, ritorno l'id (numero)
+        const xc = entries
+          .filter((el) =>
+            el[1].toLowerCase().includes(this.search.toLowerCase())
+          )
+          .map((el) => +el[0]);
+
+        // filtro gli items in base al fatto che l'id (la key) sia presente nella lista di sopra
+        const filtered = this.items.filter((el) => xc.includes(el.key[0]));
+        return filtered;
+      } else {
+        return this.items;
+      }
+    }, */
   },
   methods: {
     goto(id) {

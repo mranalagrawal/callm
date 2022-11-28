@@ -27,6 +27,16 @@
       </div>
     </div>
 
+    <div class="row" v-if="macrocategories">
+      <div class="col-12">
+        <MacroCategories
+          :macrocategories="macrocategories"
+          keyword="macros"
+          :activeMacroCategories="activeMacroCategories"
+        />
+      </div>
+    </div>
+
     <div class="row mt-5" v-if="results">
       <div class="d-none d-md-block col-md-3">
         <div>
@@ -37,7 +47,7 @@
             "
           >
             <p class="lead">{{ $t("search.activeFilters") }}</p>
-            <div v-if="activeSelections">
+            <div>
               <!-- selections -->
               <span
                 v-for="item in activeSelections"
@@ -49,6 +59,7 @@
                 <i class="fal fa-times ml-1"></i>
               </span>
               <!-- other filters -->
+
               <span
                 class="badge badge-pill badge-light-secondary mx-1"
                 v-for="(item, ind) in Object.entries(view).filter(
@@ -486,6 +497,7 @@
 </template>
 
 <script>
+import MacroCategories from "./UI/MacroCategories.vue";
 import Dropdown from "./UI/Dropdown.vue";
 import DropdownRange from "./UI/DropdownRange.vue";
 import DropdownSelections from "./UI/DropdownSelections.vue";
@@ -497,9 +509,11 @@ export default {
   scrollToTop: true,
   watch: {
     "$route.query": "$fetch",
+    "$i18n.locale": "$fetch",
   },
   props: ["inputParameters"],
   components: {
+    MacroCategories,
     Dropdown,
     DropdownSelections,
     DropdownRange,
@@ -509,6 +523,7 @@ export default {
   },
   data() {
     return {
+      macrocategories: null,
       minPrice: null,
       maxPrice: null,
       searchedTerm: "",
@@ -533,6 +548,7 @@ export default {
       vintages: null,
       results: null,
       activeSelections: null,
+      activeMacroCategories: null,
       total: null,
       totalPages: null,
       currentPage: 1,
@@ -681,10 +697,17 @@ export default {
       this.$config.ELASTIC_URL +
       "products/search?stores=" +
       activeStoreID +
+      "&locale=" +
+      this.$i18n.locale +
       "&";
+
+    /* alert(this.$i18n.locale); */
+
+    console.log(elastic_url);
     const searchResult = await fetch(elastic_url + query + sel);
 
     const allFields = await fetch(elastic_url);
+
     const allFieldsJSON = await allFields.json();
 
     const search = await searchResult.json();
@@ -768,6 +791,18 @@ export default {
         : null;
     });
 
+    // macro categories
+    /* console.clear(); */
+    let macro = search.aggregations["agg-macros"].inner.result.buckets.map(
+      (el) => {
+        return {
+          name: el.name.buckets[0].key,
+          id: el.key,
+        };
+      }
+    );
+    this.macrocategories = macro;
+
     const priceFrom = this.inputParameters.price_from;
     const priceTo = this.inputParameters.price_to;
 
@@ -787,8 +822,11 @@ export default {
     const activeSelections = Object.keys(this.inputParameters).filter((el) =>
       allSelections.includes(el)
     );
-
     this.activeSelections = activeSelections;
+
+    const activeMacroCategories = this.inputParameters.macrocategories;
+    this.activeMacroCategories = activeMacroCategories;
+    console.log(activeMacroCategories, "activeMacroCategories");
 
     this.view.priceFrom = priceFrom
       ? {

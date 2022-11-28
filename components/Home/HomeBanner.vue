@@ -90,6 +90,8 @@
 </template>
 
 <script>
+import locales from "../../locales-mapper";
+
 export default {
   data() {
     return {
@@ -99,18 +101,8 @@ export default {
     };
   },
   async fetch() {
-    /* this.contents = (
-      await this.$prismic.api.query(
-        this.$prismic.predicates.at("document.type", "banner")
-      )
-    ).results; */
+    let lang = locales[this.$i18n.locale];
 
-    let lang = "";
-    if (this.$i18n.locale == "en") {
-      lang = "en-gb";
-    } else {
-      lang = "it-it";
-    }
     const response = await this.$prismic.api.getSingle("home-carousel", {
       lang: lang,
     });

@@ -19,6 +19,7 @@
 
 <script>
 import documents from "../prismic-mapper";
+import locales from "../locales-mapper";
 export default {
   watch: {
     "$i18n.locale": "$fetch",
@@ -30,12 +31,16 @@ export default {
     document: null,
   }),
   async fetch() {
-    let lang = "";
+    /* let lang = "";
     if (this.$i18n.locale == "en") {
       lang = "en-gb";
+    } else if (this.$i18n.locale == "de") {
+      lang = "de-de";
     } else {
       lang = "it-it";
-    }
+    } */
+
+    let lang = locales[this.$i18n.locale];
 
     this.data = await this.$prismic.api.getSingle(
       documents[this.$config.STORE].topbar,

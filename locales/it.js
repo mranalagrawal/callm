@@ -93,7 +93,7 @@ export default {
     showFilters: "Show filters",
     showResults: "Show Results",
     products: "Products",
-    selections: "Our Selections",
+    selections: "Nostre selezioni",
     categories: "Categories",
     winelists: "Wine lists",
     pairings: "Pairings",

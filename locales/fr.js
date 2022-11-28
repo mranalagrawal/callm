@@ -113,13 +113,13 @@ export default {
     results: "results",
     noResultsAlert: "There are no results for your search",
     noResultsMessage: `
-      <p class="lead">Suggestions for your search:</p>
-      <ul>
-        <li>Check possible typing mistakes</li>
-        <li>Try to search a similar word or to use less words</li>
-        <li>Try to use a more generic word, you can then refine your search using the filters</li>
-        <li>Use the main menus and filter your search using the filters that appear on the left</li>
-      </ul>`,
+        <p class="lead">Suggestions for your search:</p>
+        <ul>
+          <li>Check possible typing mistakes</li>
+          <li>Try to search a similar word or to use less words</li>
+          <li>Try to use a more generic word, you can then refine your search using the filters</li>
+          <li>Use the main menus and filter your search using the filters that appear on the left</li>
+        </ul>`,
     activeFilters: "Active filters",
     removeAll: "Remove all",
     sortBy: "Sort by",

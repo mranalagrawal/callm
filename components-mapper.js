@@ -1,4 +1,7 @@
 const components = {
+  CMW: {
+    HomeBanner: "HomeBanner",
+  },
   CMW_UK: {
     HomeBanner: "HomeBanner",
   },
