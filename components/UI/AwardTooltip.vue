@@ -30,15 +30,11 @@ export default {
   },
   computed: {
     preview() {
-      return this.award.title
-        ? this.award.title
-            .split(" ")
-            .map((el) => el[0])
-            .join("")
-        : this.award.name
-            .split(" ")
-            .map((el) => el[0])
-            .join("");
+      const locale = this.$i18n.locale;
+      return this.award[`name_${locale}`]
+        .split(" ")
+        .map((el) => el[0])
+        .join("");
     },
   },
 };

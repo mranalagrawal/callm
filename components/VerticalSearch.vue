@@ -145,10 +145,10 @@
               <span
                 style="text-decoration: line-through"
                 v-if="
-                  product._source.saleprice[SALECHANNEL].toFixed(2) !==
-                  product._source.price[SALECHANNEL].toFixed(2)
+                  product._source.saleprice[$config.SALECHANNEL].toFixed(2) !==
+                  product._source.price[$config.SALECHANNEL].toFixed(2)
                 "
-                >{{ product._source.price[SALECHANNEL].toFixed(2) }}
+                >{{ product._source.price[$config.SALECHANNEL].toFixed(2) }}
                 {{ $config.STORE == "CMW_UK" ? "£" : "€" }}</span
               >
               <span v-else>&nbsp;</span>
@@ -159,14 +159,14 @@
               <div>
                 <p class="mb-0">
                   <span class="integer">{{
-                    product._source.saleprice[SALECHANNEL].toFixed(2).split(
-                      "."
-                    )[0]
+                    product._source.saleprice[$config.SALECHANNEL]
+                      .toFixed(2)
+                      .split(".")[0]
                   }}</span
                   >,<span>{{
-                    product._source.saleprice[SALECHANNEL].toFixed(2).split(
-                      "."
-                    )[1]
+                    product._source.saleprice[$config.SALECHANNEL]
+                      .toFixed(2)
+                      .split(".")[1]
                   }}</span>
                   {{ $config.STORE == "CMW_UK" ? "£" : "€" }}
                 </p>

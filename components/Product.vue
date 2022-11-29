@@ -499,10 +499,10 @@ export default {
     };
     const data = await fetch(domain, GRAPHQL_BODY).then((res) => res.json());
 
-    console.log(data, "DAasd");
     /* return; */
-
     this.data = data.data.products.edges[0].node;
+    console.clear();
+    console.log(this.data);
 
     this.price = this.data.variants.nodes[0].price;
     this.metafield = JSON.parse(this.data.metafield1.value);
@@ -511,7 +511,7 @@ export default {
 
     const dataBrand = await getBrand(domain, access_token, "B" + brandId);
     this.brand = dataBrand;
-
+    console.log(this.metafield, "meta");
     this.brandMetafields = JSON.parse(dataBrand.details.value);
   },
   methods: {
