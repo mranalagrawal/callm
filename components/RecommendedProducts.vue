@@ -111,7 +111,7 @@ export default {
   height: 48px;
   background: white;
   box-shadow: 0 0.5rem 1rem rgba(102, 101, 101, 0.5) !important;
-  background-image: url("../assets/images/chevron-left.svg") !important;
+  background-image: url("assets/svg/chevron-left.svg") !important;
   background-size: 24px;
   background-position: center;
   background-repeat: no-repeat;
@@ -127,7 +127,7 @@ export default {
   height: 48px;
   background: white;
   box-shadow: 0 0.5rem 1rem rgba(102, 101, 101, 0.5) !important;
-  background-image: url("../assets/images/chevron-right.svg") !important;
+  background-image: url("assets/svg/chevron-right.svg") !important;
   background-size: 24px;
   background-position: center;
   background-repeat: no-repeat;

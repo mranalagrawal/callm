@@ -152,7 +152,7 @@ h4,
   top: 0px;
   height: 30.6px;
   width: 50px;
-  background: url("../images/selections/promo-left.svg");
+  background: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMjhweCIgaGVpZ2h0PSIzMnB4IiB2aWV3Qm94PSIwIDAgMjggMzIiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+CiAgICA8dGl0bGU+R3JvdXAgNUAxPC90aXRsZT4KICAgIDxnIGlkPSJDT01QT05FTlRTIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4KICAgICAgICA8ZyBpZD0iR3JvdXAtNSI+CiAgICAgICAgICAgIDxwb2x5Z29uIGlkPSJGaWxsLTEiIGZpbGw9IiMxMDMxMkIiIHBvaW50cz0iNyAwIDAgNiAxMS4xMzM0OTE1IDYiPjwvcG9seWdvbj4KICAgICAgICAgICAgPHBhdGggZD0iTTI3LjEwNzk3NTcsMzIgQzIyLjkzMzEwODEsMzIgMTkuMTc1NzI3MiwyOS41MTY0MDU0IDE3LjYxMDg0MSwyNS43MjIyNTgyIEw3LDAgTDI3LjEwNzk3NTcsMCBMMjcuMTA3OTc1NywzMiBaIiBpZD0iRmlsbC0zIiBmaWxsPSIjMTM0QzQ1Ij48L3BhdGg+CiAgICAgICAgPC9nPgogICAgPC9nPgo8L3N2Zz4=");
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
@@ -165,7 +165,7 @@ h4,
   top: 0px;
   height: 30.6px;
   width: 50px;
-  background: url("../images/selections/promo-left.svg");
+  background: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMjhweCIgaGVpZ2h0PSIzMnB4IiB2aWV3Qm94PSIwIDAgMjggMzIiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+CiAgICA8dGl0bGU+R3JvdXAgNUAxPC90aXRsZT4KICAgIDxnIGlkPSJDT01QT05FTlRTIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4KICAgICAgICA8ZyBpZD0iR3JvdXAtNSI+CiAgICAgICAgICAgIDxwb2x5Z29uIGlkPSJGaWxsLTEiIGZpbGw9IiMxMDMxMkIiIHBvaW50cz0iNyAwIDAgNiAxMS4xMzM0OTE1IDYiPjwvcG9seWdvbj4KICAgICAgICAgICAgPHBhdGggZD0iTTI3LjEwNzk3NTcsMzIgQzIyLjkzMzEwODEsMzIgMTkuMTc1NzI3MiwyOS41MTY0MDU0IDE3LjYxMDg0MSwyNS43MjIyNTgyIEw3LDAgTDI3LjEwNzk3NTcsMCBMMjcuMTA3OTc1NywzMiBaIiBpZD0iRmlsbC0zIiBmaWxsPSIjMTM0QzQ1Ij48L3BhdGg+CiAgICAgICAgPC9nPgogICAgPC9nPgo8L3N2Zz4=");
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
@@ -189,7 +189,7 @@ h4,
   height: 48px;
   border-radius: 12px;
   color: white;
-  background: url("../images/cart.svg"), var(--light-secondary);
+  background: url("../svg/cart.svg"), var(--light-secondary);
   background-repeat: no-repeat;
   background-position: center;
   position: relative;
@@ -197,8 +197,9 @@ h4,
 
 .btn-search {
   position: absolute;
-  top: 18px;
-  right: 24px;
+  top: 50%;
+  right: 6px;
+  transform: translate(-50%, -50%);
   background: var(--light-secondary) !important;
   border-radius: 8px;
 }

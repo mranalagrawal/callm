@@ -12,8 +12,8 @@
           style="height: 120px"
         >
           <div class="text-center">
-            <img
-              :src="require(`@/assets/images/selections/${item.key[1]}.svg`)"
+            <VueSvgIcon
+              :src="require(`@/assets/svg/selections/${item.key[1]}.svg`)"
               class="selection-svg mx-auto d-block"
             />
             <div>
@@ -65,7 +65,7 @@ export default {
     });
 
     this.selections = selectionsListMapped;
-    
+
   },
  */
   computed: {

@@ -13,59 +13,77 @@
           class="position-absolute"
           style="left: 20px; top: 10px; z-index: 10"
         >
-          <img
-            title="Organic"
+          <VueSvgIcon
             v-if="product._source.organic"
-            :src="require(`@/assets/images/selections/organic.svg`)"
-            class="selection-svg d-block"
+            title="Organic"
+            color="#a3a3a3"
+            :data="require(`@/assets/svg/selections/organic.svg`)"
+            class="d-block mb-3"
+            width="36" height="auto"
           />
-          <img
-            title="Favoriti"
+          <VueSvgIcon
             v-if="product._source.favourite"
-            :src="require(`@/assets/images/selections/favourite.svg`)"
-            class="selection-svg d-block"
+            title="Favoriti"
+            color="#a3a3a3"
+            :data="require(`@/assets/svg/selections/favourite.svg`)"
+            class="d-block mb-3"
+            width="36" height="auto"
           />
-          <img
-            title="Every day"
+          <VueSvgIcon
             v-if="product._source.foreveryday"
-            :src="require(`@/assets/images/selections/foreveryday.svg`)"
-            class="selection-svg d-block"
+            title="Every day"
+            color="#a3a3a3"
+            :data="require(`@/assets/svg/selections/foreveryday.svg`)"
+            class="d-block mb-3"
+            width="36" height="auto"
           />
-          <img
-            title="Novità"
+          <VueSvgIcon
             v-if="product._source.isnew"
-            :src="require(`@/assets/images/selections/isnew.svg`)"
-            class="selection-svg d-block"
-          />
-          <img
             title="Novità"
+            color="#a3a3a3"
+            :data="require(`@/assets/svg/selections/isnew.svg`)"
+            class="d-block mb-3"
+            width="36" height="auto"
+          />
+          <VueSvgIcon
             v-if="product._source.artisanal"
-            :src="require(`@/assets/images/selections/artisanal.svg`)"
-            class="selection-svg d-block"
+            title="Artisanal"
+            color="#a3a3a3"
+            :data="require(`@/assets/svg/selections/artisanal.svg`)"
+            class="d-block mb-3"
+            width="36" height="auto"
           />
-          <img
-            title="To gift"
+          <VueSvgIcon
             v-if="product._source.togift"
-            :src="require(`@/assets/images/selections/togift.svg`)"
-            class="selection-svg d-block"
+            title="To gift"
+            color="#a3a3a3"
+            :data="require(`@/assets/svg/selections/togift.svg`)"
+            class="d-block mb-3"
+            width="36" height="auto"
           />
-          <img
-            title="Rare"
+          <VueSvgIcon
             v-if="product._source.rarewine"
-            :src="require(`@/assets/images/selections/rarewine.svg`)"
-            class="selection-svg d-block"
-          />
-          <img
             title="Rare"
+            color="#a3a3a3"
+            :data="require(`@/assets/svg/selections/rarewine.svg`)"
+            class="d-block mb-3"
+            width="36" height="auto"
+          />
+          <VueSvgIcon
             v-if="product._source.unusualvariety"
-            :src="require(`@/assets/images/selections/unusualvariety.svg`)"
-            class="selection-svg d-block"
-          />
-          <img
             title="Rare"
+            color="#a3a3a3"
+            :data="require(`@/assets/svg/selections/unusualvariety.svg`)"
+            class="d-block mb-3"
+            width="36" height="auto"
+          />
+          <VueSvgIcon
             v-if="product._source.topsale"
-            :src="require(`@/assets/images/selections/topsale.svg`)"
-            class="selection-svg d-block"
+            title="Rare"
+            color="#a3a3a3"
+            :data="require(`@/assets/svg/selections/topsale.svg`)"
+            class="d-block mb-3"
+            width="36" height="auto"
           />
         </div>
         <div
@@ -543,10 +561,6 @@ export default {
   /* border: 1px solid red; */
 }
 
-.selection-svg {
-  filter: brightness(0) opacity(0.4);
-  width: 36px;
-}
 .integer {
   font-size: 2.5rem;
   font-weight: bold;

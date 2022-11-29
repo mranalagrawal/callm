@@ -1,4 +1,5 @@
 /* import { apiEndpoint } from "./sm.json"; */
+import { join } from 'path'
 
 const THEME_COLORS = {
   CMW: `
@@ -58,12 +59,13 @@ export default {
     ],
   },
 
-  css: ["@/assets/scss/main.scss"],
+  css: ["@/assets/scss/main.scss", '@yzfe/svgicon/lib/svgicon.css'],
 
   plugins: [
     { src: "~plugins/vue-carousel-3d", ssr: false },
     { src: "~/plugins/vuex-persist", ssr: false },
     { src: "~/plugins/vue-flash-message.js", mode: "client" },
+    { src: "~/plugins/vue-svg-icon.js", ssr: false },
     { src: "~/plugins/vue-slick-carousel.js", mode: "client" },
   ],
 
@@ -104,7 +106,7 @@ export default {
   },
 
   build: {
-    transpile: ["@prismicio/vue", "swiper"],
+    transpile: ["@prismicio/vue", "swiper", "vue-svg-icon"],
     loaders: {
       scss: {
         additionalData: `
@@ -112,6 +114,25 @@ export default {
           $font: (${FONTS[process.env.STORE]});
         `,
       },
+    },
+    extend (config, ctx) {
+      const svgFilePath = join(__dirname, 'assets')
+      const imageLoaderRule = config.module.rules.find(rule => rule.test && rule.test.test('.svg'))
+      imageLoaderRule.test = /\.(png|jpe?g|gif|webp)$/
+
+      config.module.rules.push({
+        test: /\.svg$/,
+        include: [svgFilePath],
+        use: [
+          {
+            loader: '@yzfe/svgicon-loader',
+            options: {
+              svgFilePath: [svgFilePath],
+              svgoConfig: null // Custom svgo configuration
+            }
+          }
+        ]
+      })
     },
   },
 

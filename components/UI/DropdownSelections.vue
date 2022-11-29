@@ -27,9 +27,10 @@
               :src="`../../assets/images/selections/favourite.svg`"
               class="selection-svg"
             /> -->
-            <img
-              :src="require(`@/assets/images/selections/${item.key[1]}.svg`)"
-              class="selection-svg"
+            <VueSvgIcon
+              :data="require(`@/assets/svg/selections/${item.key[1]}.svg`)"
+              color="#a3a3a3"
+              width="36" height="auto"
             />
             <span>{{ $t(`selections.${item.key[1]}`) }}</span>
             <span class="text-muted">({{ item.doc_count }})</span>
@@ -79,7 +80,7 @@ export default {
     });
 
     this.selections = selectionsListMapped;
-    
+
   },
  */
   computed: {
@@ -131,10 +132,6 @@ export default {
 </script>
 
 <style scoped>
-.selection-svg {
-  filter: brightness(0) opacity(0.4);
-  width: 36px;
-}
 
 .content-item {
   font-size: 14px;
