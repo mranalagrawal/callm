@@ -174,7 +174,7 @@
 
               <div
                 class="position-relative"
-                v-if="product._source.quantity > 0"
+                v-if="product._source.quantity[$config.STORE] > 0"
               >
                 <button
                   class="btn btn-cart"
