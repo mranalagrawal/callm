@@ -139,7 +139,7 @@ export default {
     notAvailable: "Not available",
     available: "Available now",
     description: "Description",
-    toEnjoyBetter: "To wnjoy it better",
+    toEnjoyBetter: "To enjoy it better",
     awardsAndAcknowledgments: "Awards",
     producer: "Producer",
     pairings: "Pairings",
