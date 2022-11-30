@@ -182,14 +182,20 @@
                     <h4 class="font-weight-bold">
                       {{ $t("product.whenDrink") }}
                     </h4>
-                    <p>{{ metafield.drinkNotesDrinkingTitle }}</p>
-                    <p>{{ metafield.drinkNotesServingDescription }}</p>
-                    <p>{{ metafield.drinkNotesDrinkingLongevity }}</p>
+                    <p>{{ metafield.drinkNotesDrinkingTitle[$i18n.locale] }}</p>
+                    <p>
+                      {{ metafield.drinkNotesServingDescription[$i18n.locale] }}
+                    </p>
+                    <p>
+                      {{ metafield.drinkNotesDrinkingLongevity[$i18n.locale] }}
+                    </p>
                   </div>
 
                   <div class="mb-5">
-                    <h4 class="font-weight-bold">{{ metafield.glassTitle }}</h4>
-                    <p>{{ metafield.glassDescription }}</p>
+                    <h4 class="font-weight-bold">
+                      {{ metafield.glassTitle[$i18n.locale] }}
+                    </h4>
+                    <p>{{ metafield.glassDescription[$i18n.locale] }}</p>
                   </div>
                 </div>
               </b-tab>
@@ -235,7 +241,7 @@
                       </td>
                       <td>
                         <em>
-                          {{ award.quote }}
+                          {{ award.quote[$i18n.locale] }}
                         </em>
                       </td>
                     </tr>
@@ -280,7 +286,7 @@
                           {{ $t("product.ownGrapes") }}
                         </div>
                         <div class="col-6">
-                          {{ brandMetafields.ownedGrapes }}
+                          {{ brandMetafields.ownedGrapes }} %
                         </div>
                       </div>
                       <div class="row py-3 bg-light">
@@ -338,25 +344,31 @@
           <div style="width: 80%" class="bg-light p-3 mx-auto">
             <h3 class="mb-5">{{ $t("product.features") }}</h3>
 
-            <div v-if="metafield.denomination">
+            <div v-if="metafield.denomination[$i18n.locale]">
               <p class="font-weight-bold mb-0">
                 {{ $t("product.denomination") }}
               </p>
-              <p class="mb-4">{{ metafield.denomination }}</p>
+              <p class="mb-4">{{ metafield.denomination[$i18n.locale] }}</p>
               <hr />
             </div>
-            <div v-if="metafield.grapes">
+            <div v-if="metafield.grapes[$i18n.locale]">
               <p class="font-weight-bold mb-0">
                 {{ $t("product.vines") }}
               </p>
-              <p class="mb-4">{{ metafield.grapes }}</p>
+              <p class="mb-4">{{ metafield.grapes[$i18n.locale] }}</p>
               <hr />
             </div>
 
-            <div v-if="metafield.countryName || metafield.countryRegionName">
+            <div
+              v-if="
+                metafield.countryName[$i18n.locale] ||
+                metafield.countryRegionName
+              "
+            >
               <p class="font-weight-bold mb-0">{{ $t("product.region") }}</p>
               <p class="mb-4">
-                {{ metafield.countryRegionName }} ({{ metafield.countryName }})
+                {{ metafield.countryRegionName }}
+                {{ metafield.countryName[$i18n.locale] }}
               </p>
               <hr />
             </div>
@@ -367,36 +379,38 @@
               <p class="mb-4">{{ metafield.alcoholContent }}%</p>
               <hr />
             </div>
-            <div v-if="metafield.size">
+            <div v-if="metafield.size[$i18n.locale]">
               <p class="font-weight-bold mb-0">
                 {{ $t("product.format") }}
               </p>
-              <p class="mb-4">{{ metafield.size }}</p>
+              <p class="mb-4">{{ metafield.size[$i18n.locale] }}</p>
               <hr />
             </div>
-            <div v-if="metafield.winemaking">
+            <div v-if="metafield.winemaking[$i18n.locale]">
               <p class="font-weight-bold mb-0">
                 {{ $t("product.vinification") }}
               </p>
               <p class="mb-4">
-                {{ metafield.winemaking }}
+                {{ metafield.winemaking[$i18n.locale] }}
               </p>
               <hr />
             </div>
-            <div v-if="metafield.agingDescription">
+            <div v-if="metafield.agingDescription[$i18n.locale]">
               <p class="font-weight-bold mb-0">
                 {{ $t("product.refinement") }}
               </p>
               <p class="mb-4">
-                {{ metafield.agingDescription }}
+                {{ metafield.agingDescription[$i18n.locale] }}
               </p>
               <hr />
             </div>
-            <div v-if="metafield.productInformations">
+            <div v-if="metafield.productInformations[$i18n.locale]">
               <p class="font-weight-bold mb-0">
                 {{ $t("product.additionalNotes") }}
               </p>
-              <p class="mb-4">{{ metafield.productInformations }}</p>
+              <p class="mb-4">
+                {{ metafield.productInformations[$i18n.locale] }}
+              </p>
             </div>
           </div>
         </div>
@@ -448,10 +462,8 @@ export default {
   },
   computed: {
     strippedContent() {
-      /* let regex = /(<([^>]+)>)/gi;
-      return this.metafield.shortDescription.replace(regex, ""); */
-
-      if (this.metafield.shortDescription) {
+      console.log(this.metafield.shortDescription);
+      if (this.metafield.shortDescription[this.$i18n.locale]) {
         return this.metafield.shortDescription[this.$i18n.locale]
           .replace("href", "")
           .replace("style", "");
