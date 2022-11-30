@@ -156,11 +156,15 @@
         </div>
       </div>
 
+      <!-- tt -->
       <div class="row mt-5">
         <div class="col-12 col-md-8 pt-5">
           <div class="pt-2">
             <b-tabs content-class="mt-4" justified>
-              <b-tab :title="$t('product.description')">
+              <b-tab
+                v-if="data.descriptionHtml != ''"
+                :title="$t('product.description')"
+              >
                 <div v-html="data.descriptionHtml"></div>
               </b-tab>
               <b-tab :title="$t('product.toEnjoyBetter')">
