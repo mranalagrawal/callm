@@ -161,7 +161,7 @@
           <div class="pt-2">
             <b-tabs content-class="mt-4" justified>
               <b-tab
-                v-if="$config['STORE'] != 'WILDVIGNERON'"
+                v-if="data.descriptionHtml != ''"
                 :title="$t('product.description')"
               >
                 <div v-html="data.descriptionHtml"></div>
@@ -450,9 +450,13 @@ export default {
       /* let regex = /(<([^>]+)>)/gi;
       return this.metafield.shortDescription.replace(regex, ""); */
 
-      return this.metafield.shortDescription[this.$i18n.locale]
-        .replace("href", "")
-        .replace("style", "");
+      if (this.metafield.shortDescription) {
+        return this.metafield.shortDescription[this.$i18n.locale]
+          .replace("href", "")
+          .replace("style", "");
+      }
+
+      return "No description available.";
     },
     title() {
       return this.data ? this.data.title : "CallMeWine";
