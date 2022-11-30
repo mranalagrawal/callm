@@ -326,7 +326,7 @@
                       class="img-fluid"
                       style="border-radius: 10px"
                     />
-                    <p>{{ pairing.name }}</p>
+                    <p>{{ pairing.name[$i18n.locale] }}</p>
                   </div>
                 </div>
               </b-tab>
@@ -450,7 +450,7 @@ export default {
       /* let regex = /(<([^>]+)>)/gi;
       return this.metafield.shortDescription.replace(regex, ""); */
 
-      return this.metafield.shortDescription
+      return this.metafield.shortDescription[this.$i18n.locale]
         .replace("href", "")
         .replace("style", "");
     },
@@ -513,6 +513,7 @@ export default {
     this.brand = dataBrand;
     console.log(this.metafield, "meta");
     this.brandMetafields = JSON.parse(dataBrand.details.value);
+    console.log(this.metafield, "met");
   },
   methods: {
     async addToUserCart() {
