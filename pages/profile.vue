@@ -51,20 +51,12 @@
               >
                 <ShippingAddress />
               </b-tab>
-              <!-- <b-tab
-                title="Dati di fatturazione"
-                :active="active == 'billing' ? true : false"
-              ></b-tab> -->
               <b-tab
                 :title="$t('profile.accessData')"
                 :active="active == 'accessData' ? true : false"
               >
                 <AccessData />
               </b-tab>
-              <!-- <b-tab
-                :title="$t('profile.cards')"
-                :active="active == 'cards' ? true : false"
-              ></b-tab> -->
             </b-tabs>
           </div>
         </div>

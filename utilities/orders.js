@@ -58,7 +58,10 @@ export const getUserOrdersQuery = (token) => `query {
                                         variants(first: 10) {
                                             nodes {
                                                 id
-                                                compareAtPrice
+                                                compareAtPriceV2 {
+                                                    amount
+                                                    currencyCode
+                                                }
                                                 price
                                             }
                                         }

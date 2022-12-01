@@ -592,11 +592,13 @@ export default {
       const activeStoreID = stores[this.$config.STORE];
 
       const elastic_url = this.$config.ELASTIC_URL;
-      if (this.search && this.search.length > 3) {
+      if (this.search && this.search.length >= 3) {
         const result = await fetch(
           elastic_url +
             "autocomplete/search/?stores=" +
             activeStoreID +
+            "&locale=" +
+            this.$i18n.locale +
             "&search=" +
             this.search
         );

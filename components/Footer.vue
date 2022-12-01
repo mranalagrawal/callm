@@ -380,6 +380,7 @@
 </style>
 
 <script>
+import locales from "../locales-mapper";
 export default {
   data() {
     return {
@@ -393,12 +394,12 @@ export default {
     "$i18n.locale": "$fetch",
   },
   async fetch() {
-    let lang = "";
-    if (this.$i18n.locale == "en") {
-      lang = "en-gb";
-    } else {
-      lang = "it-it";
+    let lang = locales[this.$i18n.locale];
+
+    if (lang == "en-gb" && this.$config.STORE == "CMW") {
+      lang = "en-eu";
     }
+
     const response = await this.$prismic.api.getSingle("footer", {
       lang: lang,
     });

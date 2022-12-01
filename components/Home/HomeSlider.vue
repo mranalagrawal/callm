@@ -40,6 +40,7 @@
 
 <script>
 import mask from "assets/images/mask_left.svg";
+import locales from "../../locales-mapper";
 export default {
   data() {
     return {
@@ -49,11 +50,9 @@ export default {
     };
   },
   async fetch() {
-    let lang = "";
-    if (this.$i18n.locale == "en") {
-      lang = "en-gb";
-    } else {
-      lang = "it-it";
+    let lang = locales[this.$i18n.locale];
+    if (lang == "en-gb" && this.$config.STORE == "CMW") {
+      lang = "en-eu";
     }
 
     const data = await this.$prismic.api.getSingle("home-featured", {

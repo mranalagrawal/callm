@@ -102,14 +102,11 @@ export default {
     },
   },
   async fetch() {
-    /*     let lang = "";
-    if (this.$i18n.locale == "en") {
-      lang = "en-gb";
-    } else {
-      lang = "it-it";
-    } */
-
     let lang = locales[this.$i18n.locale];
+
+    if (lang == "en-gb" && this.$config.STORE == "CMW") {
+      lang = "en-eu";
+    }
 
     let response = await this.$prismic.api.getSingle("mega-menu-test", {
       lang: lang,

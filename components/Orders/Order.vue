@@ -151,8 +151,8 @@
             <p class="text-barred mb-0 text-muted small text-">
               {{
                 Number(
-                  item.node.variant.product.variants.nodes[0].compareAtPrice *
-                    item.node.quantity
+                  item.node.variant.product.variants.nodes[0].compareAtPriceV2
+                    .amount * item.node.quantity
                 ).toFixed(2)
               }}
             </p>
@@ -280,7 +280,7 @@ export default {
           const productVariantId = el.variant.id;
           const amount = Number(el.variant.product.variants.nodes[0].price);
           const amountFullPrice = Number(
-            el.variant.product.variants.nodes[0].compareAtPrice
+            el.variant.product.variants.nodes[0].compareAtPriceV2.amount
           );
           const tag = el.variant.product.tags[0];
           const image = el.variant.product.images.nodes[0].url;

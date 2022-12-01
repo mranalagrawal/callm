@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import locales from "../../locales-mapper";
 export default {
   data() {
     return {
@@ -38,11 +39,19 @@ export default {
     };
   },
   async fetch() {
+    let lang = locales[this.$i18n.locale];
+
+    if (lang == "en-gb" && this.$config.STORE == "CMW") {
+      lang = "en-eu";
+    }
+
     this.contents = (
       await this.$prismic.api.query(
-        this.$prismic.predicates.at("document.type", "call-to-action")
+        this.$prismic.predicates.at("document.type", "call-to-action"),
+        { lang: lang }
       )
     ).results;
+    console.log(this.contents);
   },
 };
 </script>

@@ -106,13 +106,12 @@
               </div> -->
             </div>
             <div class="col-12 col-md-4">
+              <!-- PRICE : {{ price }} price :
+              {{ data.variants.nodes[0].compareAtPriceV2 }} -->
               <span style="font-size: 2.5rem; font-weight: 900">{{
                 price.split(".")[0]
               }}</span
-              >,<span style="font-size: 16px"
-                >{{ price.split(".")[1] }}
-                <!-- {{ data.variants.nodes[0].compareAtPriceV2.currencyCode }} -->
-              </span>
+              >,<span style="font-size: 16px">{{ price.split(".")[1] }} </span>
             </div>
             <div class="col-12 col-md-6 offset-md-2 text-center">
               <div class="d-flex align-items-end justify-content-center">
@@ -537,8 +536,11 @@ export default {
       const productVariantId = this.data.variants.nodes[0].id;
       const amount = Number(this.data.variants.nodes[0].price);
       const amountFullPrice = Number(
-        this.data.variants.nodes[0].compareAtPrice
+        this.data.variants.nodes[0].compareAtPriceV2.amount
       );
+      console.log(amountFullPrice);
+
+      /* data.variants.nodes[0].compareAtPriceV2 */
       const tag = this.data.tags[0];
       const image = this.data.images.nodes[0].url;
       const title = this.data.title;

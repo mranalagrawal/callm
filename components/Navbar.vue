@@ -587,11 +587,16 @@ export default {
 
       const elastic_url = this.$config.ELASTIC_URL;
 
-      if (this.search && this.search.length > 3) {
+      console.clear();
+      console.log(activeStoreID, this.$i18n.locale, this.search);
+
+      if (this.search && this.search.length >= 3) {
         const result = await fetch(
           elastic_url +
             "autocomplete/search/?stores=" +
             activeStoreID +
+            "&locale=" +
+            this.$i18n.locale +
             "&search=" +
             this.search
         );
@@ -623,6 +628,7 @@ export default {
     } else {
       lang = "it-it";
     }
+    // TODO component access!
     let response = await this.$prismic.api.getSingle("mega-menu-test", {
       lang: lang,
     });

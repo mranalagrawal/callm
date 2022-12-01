@@ -14,7 +14,7 @@
       <div
         class="container-fluid px-md-5"
         style="min-height: 600px"
-        v-show="userCart && userCart.length > 0"
+        v-if="userCart && userCart.length > 0"
       >
         <div class="row my-5">
           <div class="col-12 mb-3">
@@ -65,6 +65,15 @@
                   Vai alla cassa
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-else>
+        <div class="container">
+          <div class="row mt-5">
+            <div class="col-12">
+              <p>{{ $t("navbar.cart.empty") }}</p>
             </div>
           </div>
         </div>

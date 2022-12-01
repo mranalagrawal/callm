@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import locales from "../../locales-mapper";
 export default {
   watch: {
     "$i18n.locale": "$fetch",
@@ -46,12 +47,12 @@ export default {
     readMore: false,
   }),
   async fetch() {
-    let lang = "";
-    if (this.$i18n.locale == "en") {
-      lang = "en-gb";
-    } else {
-      lang = "it-it";
+    let lang = locales[this.$i18n.locale];
+
+    if (lang == "en-gb" && this.$config.STORE == "CMW") {
+      lang = "en-eu";
     }
+
     const data = await this.$prismic.api.getSingle("home-description", {
       lang: lang,
     });

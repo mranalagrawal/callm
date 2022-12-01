@@ -52,6 +52,7 @@ import documents from "../../prismic-mapper";
 import VueSlickCarousel from "vue-slick-carousel";
 
 import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
+import locales from "../../locales-mapper";
 
 export default {
   components: { VueSlickCarousel },
@@ -129,8 +130,17 @@ export default {
     },
   }),
   async fetch() {
+    let lang = locales[this.$i18n.locale];
+
+    if (lang == "en-gb" && this.$config.STORE == "CMW") {
+      lang = "en-eu";
+    }
+
     const response = await this.$prismic.api.getSingle(
-      documents[this.$config.STORE]["productors"]
+      documents[this.$config.STORE]["productors"],
+      {
+        lang: lang,
+      }
     );
     const data = response.data.productor;
 

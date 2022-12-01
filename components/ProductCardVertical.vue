@@ -252,6 +252,8 @@ export default {
 
       const updatedWishlist = await response.text();
 
+      console.log(updatedWishlist);
+
       this.$store.commit("user/updateWishlist", updatedWishlist);
 
       if (this.isInWishList) {
@@ -276,7 +278,7 @@ export default {
       const productVariantId = this.product.variants.nodes[0].id;
       const amount = Number(this.product.variants.nodes[0].price);
       const amountFullPrice = Number(
-        this.product.variants.nodes[0].compareAtPrice
+        this.product.variants.nodes[0].compareAtPriceV2.amount
       );
       const tag = this.product.tags[0];
       const image = this.product.images.nodes[0].url;

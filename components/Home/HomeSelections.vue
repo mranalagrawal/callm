@@ -35,6 +35,7 @@ import VueSlickCarousel from "vue-slick-carousel";
 import "vue-slick-carousel/dist/vue-slick-carousel.css";
 // optional style for arrows & dots
 import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
+import locales from "../../locales-mapper";
 
 export default {
   components: { VueSlickCarousel },
@@ -75,7 +76,16 @@ export default {
     },
   }),
   async fetch() {
-    const response = await this.$prismic.api.getSingle("selections");
+    let lang = locales[this.$i18n.locale];
+
+    if (lang == "en-gb" && this.$config.STORE == "CMW") {
+      lang = "en-eu";
+    }
+
+    const response = await this.$prismic.api.getSingle("selections", {
+      lang: lang,
+    });
+
     const items = response.data.body[0].items;
     this.data = items.concat(items).concat(items);
     this.label = response.data.body[0].primary.label;

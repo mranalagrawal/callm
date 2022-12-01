@@ -103,6 +103,10 @@ export default {
   async fetch() {
     let lang = locales[this.$i18n.locale];
 
+    if (lang == "en-gb" && this.$config.STORE == "CMW") {
+      lang = "en-eu";
+    }
+
     const response = await this.$prismic.api.getSingle("home-carousel", {
       lang: lang,
     });

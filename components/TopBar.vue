@@ -41,6 +41,9 @@ export default {
     } */
 
     let lang = locales[this.$i18n.locale];
+    if (lang == "en-gb" && this.$config.STORE == "CMW") {
+      lang = "en-eu";
+    }
 
     this.data = await this.$prismic.api.getSingle(
       documents[this.$config.STORE].topbar,
