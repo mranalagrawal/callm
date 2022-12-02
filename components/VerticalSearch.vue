@@ -141,10 +141,7 @@
             </p>
           </div>
           <div v-if="!horizontal">
-            SALEPRICE{{
-              product._source.saleprice[$config.SALECHANNEL]
-            }}
-            PRICE{{ product._source.price[$config.SALECHANNEL] }}
+            
             <p class="mb-0 text-muted">
               <span
                 style="text-decoration: line-through"
