@@ -252,7 +252,6 @@ export default {
 
       const updatedWishlist = await response.text();
 
-      console.log(updatedWishlist);
 
       this.$store.commit("user/updateWishlist", updatedWishlist);
 

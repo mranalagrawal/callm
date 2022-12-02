@@ -701,9 +701,7 @@ export default {
       this.$i18n.locale +
       "&";
 
-    /* alert(this.$i18n.locale); */
-
-    console.log(elastic_url);
+    
     const searchResult = await fetch(elastic_url + query + sel);
 
     const allFields = await fetch(elastic_url);

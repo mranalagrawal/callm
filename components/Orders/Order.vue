@@ -225,6 +225,7 @@ export default {
           this.$store.state.user.user.customer.firstName +
           this.$store.state.user.user.customer.lastName,
         email: this.$store.state.user.user.customer.email,
+        store: this.$config.STORE,
       },
     };
   },
@@ -245,6 +246,7 @@ export default {
       e.preventDefault();
 
       const elastic_url = this.$config.ELASTIC_URL;
+
       const response = await fetch(elastic_url + "send-email", {
         method: "POST",
         headers: {

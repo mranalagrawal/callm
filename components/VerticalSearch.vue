@@ -422,8 +422,6 @@ export default {
         return;
       }
 
-      console.log(this.product);
-
       const userId =
         this.$store.state.user.user.customer.id.split("Customer/")[1];
 

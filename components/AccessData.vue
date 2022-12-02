@@ -421,7 +421,7 @@ export default {
 
       const responseJSON = await response.json();
 
-      console.log(responseJSON);
+      
 
       if (responseJSON.data.customerUpdate.customerUserErrors.length > 0) {
         let error =

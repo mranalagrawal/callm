@@ -51,7 +51,7 @@ export default {
         { lang: lang }
       )
     ).results;
-    console.log(this.contents);
+
   },
 };
 </script>

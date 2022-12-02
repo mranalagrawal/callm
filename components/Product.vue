@@ -461,7 +461,7 @@ export default {
   },
   computed: {
     strippedContent() {
-      console.log(this.metafield.shortDescription);
+      
       if (this.metafield.shortDescription[this.$i18n.locale]) {
         return this.metafield.shortDescription[this.$i18n.locale]
           .replace("href", "")
@@ -517,9 +517,7 @@ export default {
 
     /* return; */
     this.data = data.data.products.edges[0].node;
-    console.clear();
-    console.log(this.data);
-
+    
     this.price = this.data.variants.nodes[0].price;
     this.metafield = JSON.parse(this.data.metafield1.value);
 
@@ -527,9 +525,9 @@ export default {
 
     const dataBrand = await getBrand(domain, access_token, "B" + brandId);
     this.brand = dataBrand;
-    console.log(this.metafield, "meta");
+    
     this.brandMetafields = JSON.parse(dataBrand.details.value);
-    console.log(this.metafield, "met");
+    
   },
   methods: {
     async addToUserCart() {
@@ -538,7 +536,7 @@ export default {
       const amountFullPrice = Number(
         this.data.variants.nodes[0].compareAtPriceV2.amount
       );
-      console.log(amountFullPrice);
+      
 
       /* data.variants.nodes[0].compareAtPriceV2 */
       const tag = this.data.tags[0];
@@ -601,33 +599,7 @@ export default {
       }
     },
   },
-  /* async fetch() {
-    console.log("ok");
-    const domain = this.$config.DOMAIN;
-    const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
 
-    const countriesQuery = `query {
-      localization {
-        availableCountries {
-          name
-          isoCode
-        }
-      }
-    }`;
-
-    const GRAPHQL_BODY = {
-      async: true,
-      crossDomain: true,
-      method: "POST",
-      headers: {
-        "X-Shopify-Storefront-Access-Token": access_token,
-        "Content-Type": "application/graphql",
-      },
-      body: countriesQuery,
-    };
-    const data = await fetch(domain, GRAPHQL_BODY).then((res) => res.json());
-    console.log(data.data.localization, "countries");
-  }, */
 };
 </script>
 

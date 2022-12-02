@@ -58,6 +58,7 @@
 import CartLine from "./CartLine.vue";
 import { createCart, addProductToCart } from "../../utilities/cart";
 import documents from "../../prismic-mapper";
+import locales from "../../locales-mapper";
 
 export default {
   data() {
@@ -116,12 +117,12 @@ export default {
     const userCart = this.$store.state.userCart.userCart;
     this.data = userCart;
 
-    let lang = "";
-    if (this.$i18n.locale == "en") {
-      lang = "en-gb";
-    } else {
-      lang = "it-it";
-    }
+    
+     let lang = locales[this.$i18n.locale];
+     if (lang == "en-gb" && this.$config.STORE == "CMW") {
+        lang = "en-eu";
+        }
+
     const response = await this.$prismic.api.getSingle(
       documents[this.$config.STORE].shipping,
       {

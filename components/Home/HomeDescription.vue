@@ -27,7 +27,7 @@
             style="font-weight: 700"
             @click="readMore = true"
           >
-            Leggi di più
+            {{button_text}}
           </button>
         </div>
       </div>
@@ -44,6 +44,7 @@ export default {
   data: () => ({
     shown: "",
     hidden: "",
+    button_text: "",
     readMore: false,
   }),
   async fetch() {
@@ -58,6 +59,7 @@ export default {
     });
     this.shown = data.data.shown;
     this.hidden = data.data.hidden;
+    this.button_text = data.data.button_text;
   },
 };
 </script>

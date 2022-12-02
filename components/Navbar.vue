@@ -587,8 +587,6 @@ export default {
 
       const elastic_url = this.$config.ELASTIC_URL;
 
-      console.clear();
-      console.log(activeStoreID, this.$i18n.locale, this.search);
 
       if (this.search && this.search.length >= 3) {
         const result = await fetch(

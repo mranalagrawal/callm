@@ -78,7 +78,7 @@ export default {
     );
 
     this.data = responseFiltered;
-    console.log(responseFiltered, "All Collections");
+    
   },
 };
 </script>
