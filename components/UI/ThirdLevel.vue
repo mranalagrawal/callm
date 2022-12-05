@@ -9,16 +9,12 @@
         <!-- {{ thirdLevel }} -->
         <!-- {{ $config.STORE }} -->
 
-        <img
+        <VueSvgIcon
           v-if="thirdLevel.selection"
-          :src="
-            require(`@/assets/images/selections/${thirdLevel.selection}.svg`)
-          "
-          alt=""
+          :data="require(`@/assets/svg/selections/${thirdLevel.selection}.svg`)"
           width="20px"
           class="img-selection"
-        />{{ thirdLevel.third_level_name }}</nuxt-link
-      >
+        />{{ thirdLevel.third_level_name }}</nuxt-link>
     </p>
     <div
       v-else

@@ -13,9 +13,9 @@
           color: firstLevel.isPromotionTab ? 'var(--light-secondary)' : '',
         }"
       >
-        <img
+        <VueSvgIcon
           v-if="firstLevel.isPromotionTab"
-          :src="require(`@/assets/images/selections/inpromotion.svg`)"
+          :data="inPromotion"
           width="20px"
           class="d-inline"
         />
@@ -79,6 +79,7 @@
 
 <script>
 import ThirdLevel from "./UI/ThirdLevel.vue";
+import inPromotion from 'assets/svg/selections/inpromotion.svg'
 import locales from "../locales-mapper";
 export default {
   components: { ThirdLevel },
@@ -86,6 +87,7 @@ export default {
     "$i18n.locale": "$fetch",
   },
   data: () => ({
+    inPromotion,
     selectedItem: null,
     selectedContent: null,
     data: null,

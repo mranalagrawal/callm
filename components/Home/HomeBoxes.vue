@@ -171,11 +171,11 @@ export default {
 }
 
 .home-carousel :deep(.carousel-control-prev-icon) {
-  background-image: url("../../assets/images/chevron-left.svg") !important;
+  background-image: url("assets/svg/chevron-left.svg") !important;
 }
 
 .home-carousel :deep(.carousel-control-next-icon) {
-  background-image: url("../../assets/images/chevron-right.svg") !important;
+  background-image: url("assets/svg/chevron-right.svg") !important;
 }
 
 .home-carousel :deep(.carousel-item img) {

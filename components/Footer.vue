@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid pt-5 mt-5 px-0" style="background: #f8f8f8">
+  <footer class="container-fluid pt-5 mt-5 px-0" style="background: #f8f8f8">
     <div class="container-fluid px-md-5">
       <div class="row">
         <div class="col-12">
@@ -77,15 +77,8 @@
       </div>
       <div class="row">
         <div class="col-12">
-          <img
-            src="../assets/images/logo-white.svg"
-            class="img-fluid"
-            width="180px"
-            alt=""
-          />
-          <p class="mt-2 fs-14">
-            {{ info.description }}
-          </p>
+          <VueSvgIcon :data="logo" color="white" width="180" height="auto" />
+          <p class="mt-2 fs-14" v-text="info.description" />
         </div>
       </div>
       <div class="row">
@@ -288,7 +281,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </footer>
 </template>
 
 <style scoped>
@@ -380,10 +373,12 @@
 </style>
 
 <script>
+import logo from 'assets/svg/logo-call-me-wine.svg'
 import locales from "../locales-mapper";
 export default {
   data() {
     return {
+      logo,
       data: null,
       info: null,
       newsletter: false,

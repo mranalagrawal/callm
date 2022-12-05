@@ -16,6 +16,8 @@
     "@nuxtjs/style-resources": "^1.2.1",
     "@prismicio/slice-simulator-vue": "^0.2.1",
     "@smartweb/vue-flash-message": "^0.6.10",
+    "@yzfe/svgicon": "^1.1.0",
+    "@yzfe/vue-svgicon": "^4.0.3",
     "bootstrap": "^4.6.1",
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.19.3",
@@ -34,6 +36,7 @@
     "webpack": "^4.46.0"
   },
   "devDependencies": {
+    "@yzfe/svgicon-loader": "^1.2.0",
     "slice-machine-ui": "^0.4.0"
   }
 }

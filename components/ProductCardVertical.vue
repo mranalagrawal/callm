@@ -2,11 +2,9 @@
   <div class="product-card mx-auto mt-4" style="width: 94%">
     <div>
       <div v-if="details.inpromotion" class="ribbon">
+        <VueSvgIcon :data="inPromotion" color="white" class="d-inline"/>
         <span style="letter-spacing: 3px">
-          <img
-            :src="require(`@/assets/images/selections/inpromotion.svg`)"
-            class="text-white d-inline icon-promo"
-          />PROMO</span
+          PROMO</span
         >
       </div>
 
@@ -34,59 +32,69 @@
           </div>
         </div>
         <div class="position-absolute" style="left: 0px; top: 0px; z-index: 10">
-          <img
-            title="Organic"
+<!-- Todo: Find a better way to handle this data, agreed with BE to have some Arrays or use some _pick function -->
+          <VueSvgIcon
             v-if="details.organic"
-            :src="require(`@/assets/images/selections/organic.svg`)"
-            class="selection-svg d-block"
+            color="#a3a3a3"
+            :data="require(`@/assets/svg/selections/organic.svg`)"
+            class="d-block mb-3"
+            width="36" height="auto"
           />
-          <img
-            title="Favoriti"
+          <VueSvgIcon
             v-if="details.favourite"
-            :src="require(`@/assets/images/selections/favourite.svg`)"
-            class="selection-svg d-block"
+            color="#a3a3a3"
+            :data="require(`@/assets/svg/selections/favourite.svg`)"
+            class="d-block mb-3"
+            width="36" height="auto"
           />
-          <img
-            title="Every day"
+          <VueSvgIcon
             v-if="details.foreveryday"
-            :src="require(`@/assets/images/selections/foreveryday.svg`)"
-            class="selection-svg d-block"
+            color="#a3a3a3"
+            :data="require(`@/assets/svg/selections/foreveryday.svg`)"
+            class="d-block mb-3"
+            width="36" height="auto"
           />
-          <img
-            title="Novità"
+          <VueSvgIcon
             v-if="details.isnew"
-            :src="require(`@/assets/images/selections/isnew.svg`)"
-            class="selection-svg d-block"
+            color="#a3a3a3"
+            :data="require(`@/assets/svg/selections/isnew.svg`)"
+            class="d-block mb-3"
+            width="36" height="auto"
           />
-          <img
-            title="Novità"
+          <VueSvgIcon
             v-if="details.artisanal"
-            :src="require(`@/assets/images/selections/artisanal.svg`)"
-            class="selection-svg d-block"
+            color="#a3a3a3"
+            :data="require(`@/assets/svg/selections/artisanal.svg`)"
+            class="d-block mb-3"
+            width="36" height="auto"
           />
-          <img
-            title="To gift"
+          <VueSvgIcon
             v-if="details.togift"
-            :src="require(`@/assets/images/selections/togift.svg`)"
-            class="selection-svg d-block"
+            color="#a3a3a3"
+            :data="require(`@/assets/svg/selections/togift.svg`)"
+            class="d-block mb-3"
+            width="36" height="auto"
           />
-          <img
-            title="Rare"
+          <VueSvgIcon
             v-if="details.rarewine"
-            :src="require(`@/assets/images/selections/rarewine.svg`)"
-            class="selection-svg d-block"
+            color="#a3a3a3"
+            :data="require(`@/assets/svg/selections/rarewine.svg`)"
+            class="d-block mb-3"
+            width="36" height="auto"
           />
-          <img
-            title="Rare"
+          <VueSvgIcon
             v-if="details.unusualvariety"
-            :src="require(`@/assets/images/selections/unusualvariety.svg`)"
-            class="selection-svg d-block"
+            color="#a3a3a3"
+            :data="require(`@/assets/svg/selections/unusualvariety.svg`)"
+            class="d-block mb-3"
+            width="36" height="auto"
           />
-          <img
-            title="Rare"
+          <VueSvgIcon
             v-if="details.topsale"
-            :src="require(`@/assets/images/selections/topsale.svg`)"
-            class="selection-svg d-block"
+            color="#a3a3a3"
+            :data="require(`@/assets/svg/selections/topsale.svg`)"
+            class="d-block mb-3"
+            width="36" height="auto"
           />
         </div>
         <div style="position: absolute; bottom: 0px; right: 2px">
@@ -181,12 +189,15 @@
 
 <script>
 import AwardTooltip from "./UI/AwardTooltip.vue";
+import inPromotion from 'assets/svg/selections/inpromotion.svg'
+
 export default {
   props: ["product"],
   name: "ProductCardVertical",
   components: { AwardTooltip },
   data() {
     return {
+      inPromotion,
       details: JSON.parse(this.product.metafield1.value),
       isOpen: false,
       awards: JSON.parse(this.product.metafield1.value).awards.slice(0, 5),
