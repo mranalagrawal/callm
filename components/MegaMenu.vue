@@ -44,7 +44,7 @@
             {{ secondLevel.name }}
           </p>
           <div v-for="(thirdLevel, j) in secondLevel.items" :key="j">
-            <ThirdLevel :thirdLevel="thirdLevel"/>
+            <ThirdLevel :thirdLevel="thirdLevel" @close-banner="onTab(null)"/>
           </div>
         </div>
       </div>
@@ -70,7 +70,7 @@
             :key="j"
             class="col-12 col-md-6 col-lg-4 col-xl-3"
           >
-            <ThirdLevel :thirdLevel="thirdLevel"/>
+            <ThirdLevel :thirdLevel="thirdLevel" @close-banner="onTab(null)"/>
           </div>
         </div>
       </div>

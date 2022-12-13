@@ -1,20 +1,13 @@
 <template>
   <div>
     <p v-if="!thirdLevel.marketing_cta" class="mb-2">
-      <nuxt-link
-        class="menu-link px-2"
-        :to="thirdLevel.third_level_link || '/'"
-        :style="styled"
-      >
-        <!-- {{ thirdLevel }} -->
-        <!-- {{ $config.STORE }} -->
-
-        <VueSvgIcon
-          v-if="thirdLevel.selection"
-          :data="require(`@/assets/svg/selections/${thirdLevel.selection}.svg`)"
-          width="20px"
-          class="img-selection"
-        />{{ thirdLevel.third_level_name }}</nuxt-link>
+      <!-- Note: on Nuxt 3 this will be handle by the navigation instead so we can properly use <NuxtLink /> -->
+      <button class="menu-link px-2" :style="styled" @click="handleClick(thirdLevel.third_level_link)"><VueSvgIcon
+        v-if="thirdLevel.selection"
+        :data="require(`@/assets/svg/selections/${thirdLevel.selection}.svg`)"
+        width="20px"
+        class="img-selection"
+      />{{ thirdLevel.third_level_name }}</button>
     </p>
     <div
       v-else
@@ -31,7 +24,7 @@
       <div
         class="col-3"
         style="
-                height: 100%
+                height: 100%;
                 background-position: center;
                 background-size: cover;
                 border-radius: 10px 0px 0px 10px;
@@ -42,22 +35,22 @@
       ></div>
 
       <div class="col-9">
-        <nuxt-link
-          :to="thirdLevel.third_level_link || '/'"
+        <button
+          @click="handleClick(thirdLevel.third_level_link)"
           class="mb-0 text-decoration-none text-dark d-block"
-          >{{ thirdLevel.third_level_name }}</nuxt-link
+          >{{ thirdLevel.third_level_name }}</button
         >
-        <nuxt-link
+        <button
           v-if="thirdLevel.marketing_cta.length < 40"
-          :to="thirdLevel.third_level_link || '/'"
+          @click="handleClick(thirdLevel.third_level_link)"
           class="mb-0 text-decoration-none text-light-secondary small"
-          >{{ thirdLevel.marketing_cta }}</nuxt-link
+          >{{ thirdLevel.marketing_cta }}</button
         >
-        <nuxt-link
+        <button
           v-else
-          :to="thirdLevel.third_level_link || '/'"
+          @click="handleClick(thirdLevel.third_level_link)"
           class="mb-0 text-decoration-none text-light-secondary small"
-          >{{ thirdLevel.marketing_cta.substring(0, 40) }}...</nuxt-link
+          >{{ thirdLevel.marketing_cta.substring(0, 40) }}...</button
         >
       </div>
     </div>
@@ -67,6 +60,7 @@
 <script>
 export default {
   props: ["thirdLevel"],
+  emits: ['close-banner'],
   computed: {
     styled() {
       if (this.thirdLevel.third_level_style) {
@@ -75,6 +69,18 @@ export default {
       return null;
     },
   },
+  methods: {
+    handleClick(to) {
+      if (!to) {
+        // FixMe: Shall we throw an error here? why is it navigation to home when no link provide?
+        // throw new Error('No link provided')
+        this.$router.push('/')
+        return
+      }
+      this.$emit('close-banner')
+      this.$router.push(to)
+    }
+  }
 };
 </script>
 
