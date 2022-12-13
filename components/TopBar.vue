@@ -1,23 +1,19 @@
 <template>
   <div
-    class="container-fluid bg-dark-primary py-2 text-white text-center fixed-top"
-    style="z-index: 1050"
+    ref="topBar"
+    class="container-fluid text-center
+     cmw-bg-secondary cmw-fixed cmw-top-0 cmw-left-0 cmw-z-1050 cmw-text-white cmw-uppercase cmw-py-1
+     cmw-overline-1 md:cmw-overline-2"
   >
     <span
-      class="d-md-none"
       v-if="data"
       v-html="data.data.text[0].text"
-      style="font-size: 9px"
-    ></span>
-    <span
-      class="small d-none d-md-block"
-      v-if="data"
-      v-html="data.data.text[0].text"
-    ></span>
+    />
   </div>
 </template>
 
 <script>
+import debounce from "lodash.debounce";
 import documents from "../prismic-mapper";
 import locales from "../locales-mapper";
 export default {
@@ -50,5 +46,17 @@ export default {
       { lang: lang }
     );
   },
+  methods: {
+    resizeListener: debounce( function () {
+      this.$store.commit('headerSize/setTopBarHeight', this.$refs.topBar.getBoundingClientRect().height)
+    }, 400)
+  },
+  mounted() {
+    window.addEventListener('resize', this.resizeListener)
+    this.$nextTick(() => this.resizeListener())
+  },
+  destroyed() {
+    window.removeEventListener('resize', this.resizeListener)
+  }
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
-  <div class="container-fluid min-vh-100 mt-5">
-    <div class="row h-100 mt-4 d-lg-none">
+  <div class="container-fluid min-vh-100">
+    <div class="row h-100 d-lg-none">
       <div class="col-12 col-lg-6 px-0 px-lg-3" v-if="!registerIsVisible">
         <h3 class="text-center">
           {{ $t("navbar.user.alreadyRegistered") }}
@@ -20,8 +20,8 @@
         <RegisterBox />
       </div>
     </div>
-    <div class="row h-100 mt-4 d-none d-lg-flex">
-      <div class="col-12 col-lg-6 px-0 px-lg-3">
+    <div class="row h-100 d-none d-lg-flex">
+      <div class="col-12 col-lg-6 px-0 px-lg-3 cmw-pt-20">
         <h3 class="text-center">
           {{ $t("navbar.user.alreadyRegistered") }}
         </h3>
@@ -35,7 +35,7 @@
           </p>
         </div>
       </div>
-      <div class="col-12 col-lg-6">
+      <div class="col-12 col-lg-6 bg-light cmw-py-20">
         <h3 class="text-center">{{ $t("createYourAccount") }}</h3>
         <RegisterBox />
       </div>

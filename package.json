@@ -21,6 +21,8 @@
     "bootstrap": "^4.6.1",
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.19.3",
+    "lodash.debounce": "^4.0.8",
+    "lodash.throttle": "^4.1.1",
     "multi-range-slider-vue": "^1.1.4",
     "nuxt": "^2.15.8",
     "sass": "^1.53.0",
@@ -36,7 +38,10 @@
     "webpack": "^4.46.0"
   },
   "devDependencies": {
+    "@nuxtjs/google-fonts": "^2.0.0",
     "@yzfe/svgicon-loader": "^1.2.0",
-    "slice-machine-ui": "^0.4.0"
+    "nuxt-windicss": "^2.6.0",
+    "slice-machine-ui": "^0.4.0",
+    "vee-validate": "^3.4.14"
   }
 }

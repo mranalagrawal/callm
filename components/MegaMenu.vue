@@ -22,55 +22,56 @@
         {{ firstLevel.name }}
       </div>
     </div>
-
-    <div
-      v-if="selectedItem && !selectedItem.display_as_cards"
-      @mouseleave="onTab(null)"
-      class="row bg-white shadow-menu pt-3 px-2"
-      style="
-        min-height: 300px;
-        z-index: 100;
-        max-height: 400px;
-        overflow-y: scroll;
-      "
-    >
+    <div ref="megaMenu">
       <div
-        v-for="(secondLevel, i) in selectedItem.items"
-        :key="i"
-        class="col"
-        style="border-right: 1px solid #ddd"
-      >
-        <p class="fs-14 px-2" style="color: #155b53; font-weight: 600">
-          {{ secondLevel.name }}
-        </p>
-        <div v-for="(thirdLevel, j) in secondLevel.items" :key="j">
-          <ThirdLevel :thirdLevel="thirdLevel" />
-        </div>
-      </div>
-    </div>
-    <div
-      v-if="selectedItem && selectedItem.display_as_cards"
-      @mouseleave="onTab(null)"
-      class="row bg-white shadow-menu pt-3 px-4"
-      style="
+        v-if="selectedItem && !selectedItem.display_as_cards"
+        @mouseleave="onTab(null)"
+        class="row bg-white shadow-menu pt-3 px-2"
+        style="
         min-height: 300px;
         z-index: 100;
         max-height: 400px;
         overflow-y: scroll;
       "
-    >
-      <div v-for="(secondLevel, i) in selectedItem.items" :key="i" class="row">
-        <div class="col-12">
+      >
+        <div
+          v-for="(secondLevel, i) in selectedItem.items"
+          :key="i"
+          class="col"
+          style="border-right: 1px solid #ddd"
+        >
           <p class="fs-14 px-2" style="color: #155b53; font-weight: 600">
             {{ secondLevel.name }}
           </p>
+          <div v-for="(thirdLevel, j) in secondLevel.items" :key="j">
+            <ThirdLevel :thirdLevel="thirdLevel"/>
+          </div>
         </div>
-        <div
-          v-for="(thirdLevel, j) in secondLevel.items"
-          :key="j"
-          class="col-12 col-md-6 col-lg-4 col-xl-3"
-        >
-          <ThirdLevel :thirdLevel="thirdLevel" />
+      </div>
+      <div
+        v-if="selectedItem && selectedItem.display_as_cards"
+        @mouseleave="onTab(null)"
+        class="row bg-white shadow-menu pt-3 px-4"
+        style="
+        min-height: 300px;
+        z-index: 100;
+        max-height: 400px;
+        overflow-y: scroll;
+      "
+      >
+        <div v-for="(secondLevel, i) in selectedItem.items" :key="i" class="row">
+          <div class="col-12">
+            <p class="fs-14 px-2" style="color: #155b53; font-weight: 600">
+              {{ secondLevel.name }}
+            </p>
+          </div>
+          <div
+            v-for="(thirdLevel, j) in secondLevel.items"
+            :key="j"
+            class="col-12 col-md-6 col-lg-4 col-xl-3"
+          >
+            <ThirdLevel :thirdLevel="thirdLevel"/>
+          </div>
         </div>
       </div>
     </div>
@@ -81,6 +82,7 @@
 import ThirdLevel from "./UI/ThirdLevel.vue";
 import inPromotion from 'assets/svg/selections/inpromotion.svg'
 import locales from "../locales-mapper";
+import debounce from "lodash.debounce";
 export default {
   components: { ThirdLevel },
   watch: {
@@ -95,6 +97,9 @@ export default {
     marketing: null,
   }),
   methods: {
+    resizeListener: debounce( function () {
+      this.$store.commit('headerSize/setMegaMenuHeight', this.$refs.megaMenu.getBoundingClientRect().height)
+    }, 400),
     onTab(item) {
       if (item) {
         this.selectedItem = item;
@@ -154,6 +159,15 @@ export default {
     this.data = mapped;
     /* this.selectedItem = mapped[3]; */
   },
+  mounted() {
+    window.addEventListener('resize', this.resizeListener)
+    this.$nextTick(() => {
+      this.resizeListener()
+    })
+  },
+  destroyed() {
+    window.removeEventListener('resize', this.resizeListener)
+  }
 };
 </script>
 
