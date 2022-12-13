@@ -37,19 +37,19 @@
       <div class="col-9">
         <button
           @click="handleClick(thirdLevel.third_level_link)"
-          class="mb-0 text-decoration-none text-dark d-block"
+          class="mb-0 text-decoration-none text-dark d-block cmw-text-left"
           >{{ thirdLevel.third_level_name }}</button
         >
         <button
           v-if="thirdLevel.marketing_cta.length < 40"
           @click="handleClick(thirdLevel.third_level_link)"
-          class="mb-0 text-decoration-none text-light-secondary small"
+          class="mb-0 text-decoration-none text-light-secondary small cmw-text-left"
           >{{ thirdLevel.marketing_cta }}</button
         >
         <button
           v-else
           @click="handleClick(thirdLevel.third_level_link)"
-          class="mb-0 text-decoration-none text-light-secondary small"
+          class="mb-0 text-decoration-none text-light-secondary small cmw-text-left"
           >{{ thirdLevel.marketing_cta.substring(0, 40) }}...</button
         >
       </div>
