@@ -2,12 +2,10 @@
   <div>
     <TopBar />
     <client-only>
-      <div class="">
-        <navbar />
-      </div>
+      <navbar class="cmw-navbar" />
     </client-only>
 
-    <nuxt class="pt-5" style="position: relative; top: 120px"></nuxt>
+    <nuxt class="cmw-main" />
 
     <Footer style="position: relative; top: 120px" />
     <client-only>
@@ -32,3 +30,13 @@ export default {
   name: "IndexPage",
 };
 </script>
+
+<style scoped>
+.cmw-main {
+  padding-top: var(--cmw-header-height);
+}
+
+.cmw-navbar {
+  padding-top: var(--cmw-top-banner-height);
+}
+</style>

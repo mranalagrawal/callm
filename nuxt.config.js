@@ -62,6 +62,7 @@ export default {
   css: ["@/assets/scss/main.scss", '@yzfe/svgicon/lib/svgicon.css'],
 
   plugins: [
+    { src: "~plugins/vee-validate", ssr: false },
     { src: "~plugins/vue-carousel-3d", ssr: false },
     { src: "~/plugins/vuex-persist", ssr: false },
     { src: "~/plugins/vue-flash-message.js", mode: "client" },
@@ -69,9 +70,16 @@ export default {
     { src: "~/plugins/vue-slick-carousel.js", mode: "client" },
   ],
 
-  components: true,
+  components: [
+    '~/components',
+    { path: '~/components/Base', extensions: ['vue'] }
+  ],
 
-  buildModules: ["@nuxtjs/prismic"],
+  buildModules: [
+    '@nuxtjs/google-fonts',
+    "@nuxtjs/prismic",
+    'nuxt-windicss',
+  ],
   prismic: {
     endpoint: process.env.PRISMIC,
     modern: true,
@@ -144,6 +152,22 @@ export default {
     exclude: [
       /^\//, // rotte da escludere dalla generazione
     ],
+  },
+
+  // https://google-fonts.nuxtjs.org/
+  googleFonts: {
+    download: true,
+    base64: process.env.NODE_ENV === 'production',
+    display: 'swap',
+    prefetch: false,
+    preconnect: false,
+    stylePath: 'css/fonts.css',
+    fontsDir: process.env.NODE_ENV === 'production' ? 'fonts' : undefined,
+    fontsPath: process.env.NODE_ENV === 'production' ? '~assets/fonts' : undefined,
+    families: {
+      'Open Sans': [400, 600, 700],
+      'Roboto': [400, 700],
+    },
   },
 
   publicRuntimeConfig: {

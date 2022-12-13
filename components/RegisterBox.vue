@@ -1,69 +1,44 @@
 <template>
   <div class="">
     <form @submit="onSubmit" class="px-4 pt-3 py-2 w-75 mx-auto">
-      <b-form-group class="my-4">
-        <b-form-input
-          id="name"
-          class="custom-input"
-          v-model="form.firstname"
-          type="text"
-          required
-          :placeholder="$t('firstName')"
-        ></b-form-input>
-      </b-form-group>
+      <InputField
+        v-model="form.firstname"
+        name="register-user-firstname" :label="$t('firstName').toString()"
+        :placeholder="$t('firstName').toString()" rules="required" theme="gray"/>
 
-      <b-form-group class="my-4">
-        <b-form-input
-          id="name"
-          class="custom-input"
-          v-model="form.lastname"
-          type="text"
-          required
-          :placeholder="$t('lastName')"
-        ></b-form-input>
-      </b-form-group>
+      <InputField
+        v-model="form.lastname"
+        name="register-user-lastname" :label="$t('lastName').toString()"
+        :placeholder="$t('lastName').toString()" rules="required" theme="gray"/>
 
-      <b-form-group class="my-4">
-        <b-form-input
-          id="input-1"
-          class="custom-input"
-          v-model="form.email"
-          type="email"
-          required
-          :placeholder="$t('email')"
-        ></b-form-input>
-      </b-form-group>
+      <InputField
+        v-model="form.email"
+        type="email"
+        name="register-user-email" :label="$t('email').toString()"
+        :placeholder="$t('email').toString()" rules="required|email" theme="gray"/>
 
-      <b-form-group class="my-4 position-relative">
-        <b-form-input
-          class="custom-input"
-          id="input-2"
-          v-model="form.password"
-          required
-          :type="passwordIsVisible ? 'text' : 'password'"
-          :placeholder="$t('password')"
-        ></b-form-input>
-      </b-form-group>
+      <InputField v-model="form.password"
+                  :type="!passwordIsVisible ? 'password' : 'text'"
+                  name="register-user-password" label="Password"
+                  placeholder="User Password" rules="required|min:8"
+                  :icon="passwordIsVisible ? eyeHideIcon : eyeShowIcon"
+                  :click-icon="() => passwordIsVisible = !passwordIsVisible"
+                  theme="gray"
+      />
 
-      <b-form-group class="my-4 position-relative">
-        <p class="mb-0 text-muted">
-          {{ $t("birthday") }}
-        </p>
-        <b-form-input
-          class="custom-input"
-          id="input-2"
-          v-model="form.age"
-          required
-          placeholder="Age"
-          type="date"
-        ></b-form-input>
-        <p
-          v-if="new Date(now) - new Date(form.age) < 568036800000"
-          class="text-danger font-weight-bold small mt-2"
-        >
-          Devi essere maggiorenne per poterti registrare al sito.
-        </p>
-      </b-form-group>
+      <InputField v-model="form.age"
+                  type="date"
+                  name="register-user-age" :label="$t('birthday').toString()"
+                  placeholder="dd/mm/yyyy" rules="required"
+                  theme="gray"
+      />
+
+      <p
+        v-if="new Date(now) - new Date(form.age) < 568036800000"
+        class="text-danger font-weight-bold small mt-2"
+      >
+        Devi essere maggiorenne per poterti registrare al sito.
+      </p>
 
       <b-form-checkbox
         id="privacy"
@@ -101,10 +76,16 @@
 <script>
 import userRegister from "../utilities/userRegister";
 import userLogin from "../utilities/userLogin";
+import eyeShowIcon from '~/assets/svg/eye-show.svg'
+import eyeHideIcon from '~/assets/svg/eye-hide.svg'
+import calendarIcon from '~/assets/svg/calendar.svg'
 
 export default {
   data() {
     return {
+      eyeShowIcon,
+      eyeHideIcon,
+      calendarIcon,
       passwordIsVisible: false,
       form: {
         firstname: "",
@@ -113,7 +94,7 @@ export default {
         password: "",
         privacy: false,
         marketing: false,
-        age: null,
+        age: '',
       },
       now: new Date(),
     };
