@@ -66,7 +66,7 @@ export default {
     { src: "~plugins/vue-carousel-3d", ssr: false },
     { src: "~/plugins/vuex-persist", ssr: false },
     { src: "~/plugins/vue-flash-message.js", mode: "client" },
-    { src: "~/plugins/vue-svg-icon.js", ssr: false },
+    { src: "~/plugins/vue-svg-icon.js" },
     { src: "~/plugins/vue-slick-carousel.js", mode: "client" },
   ],
 

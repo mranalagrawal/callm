@@ -234,38 +234,33 @@
         <div class="cmw-grid cmw-grid-cols-3 md:cmw-grid-cols-6 cmw-justify-items-center cmw-content-center cmw-px-8 cmw-py-4">
           <img
             src="../assets/images/american-express.png"
-            width="65px"
-            height="65px"
+            width="65"
+            height="64"
           />
           <img
             src="../assets/images/mastercard.png"
-            width="65px"
-            height="65px"
-            style="margin: 0px 2px"
+            width="65"
+            height="64"
           />
           <img
             src="../assets/images/visa.png"
-            width="65px"
-            height="65px"
-            style="margin: 0px 2px"
+            width="65"
+            height="64"
           />
           <img
             src="../assets/images/paypal.png"
-            width="65px"
-            height="65px"
-            style="margin: 0px 2px"
+            width="65"
+            height="64"
           />
           <img
             src="../assets/images/bonifico.png"
-            width="65px"
-            height="65px"
-            style="margin: 0px 2px"
+            width="65"
+            height="64"
           />
           <img
             src="../assets/images/comodo.png"
-            width="65px"
-            height="65px"
-            style="margin: 0px 2px"
+            width="65"
+            height="64"
           />
         </div>
       </div>

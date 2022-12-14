@@ -701,7 +701,7 @@ export default {
       this.$i18n.locale +
       "&";
 
-    
+
     const searchResult = await fetch(elastic_url + query + sel);
 
     const allFields = await fetch(elastic_url);
@@ -823,7 +823,7 @@ export default {
     this.activeSelections = activeSelections;
 
     const activeMacroCategories = this.inputParameters.macrocategories;
-    this.activeMacroCategories = activeMacroCategories;
+    if (activeMacroCategories) this.activeMacroCategories = activeMacroCategories;
     console.log(activeMacroCategories, "activeMacroCategories");
 
     this.view.priceFrom = priceFrom
