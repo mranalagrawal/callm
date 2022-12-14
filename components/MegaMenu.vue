@@ -16,7 +16,8 @@
         <VueSvgIcon
           v-if="firstLevel.isPromotionTab"
           :data="inPromotion"
-          width="20px"
+          width="30"
+          height="30"
           class="d-inline"
         />
         {{ firstLevel.name }}
