@@ -2,11 +2,11 @@
   <div class="award-tooltip">
     {{ award.value }}
 
-    <img
+    <VueSvgIcon
       v-if="this.awards.includes(award.id)"
-      :src="require(`@/assets/images/awards/${award.id}.svg`)"
-      alt=""
-      class="award-img"
+      :data="require(`@/assets/images/awards/${award.id}.svg`)"
+      width="20"
+      height="20"
     />
     <strong v-else>{{ preview }}</strong>
 
