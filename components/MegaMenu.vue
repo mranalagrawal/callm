@@ -3,7 +3,7 @@
     class="container-fluid position-relative px-md-0"
     @mouseleave="onTab(null)"
   >
-    <div class="row pb-3 shadow-menu">
+    <div class="row shadow-menu">
       <div
         class="col text-center text-uppercase menu-link"
         v-for="(firstLevel, i) in data"
@@ -15,7 +15,7 @@
       >
         <VueSvgIcon
           v-if="firstLevel.isPromotionTab"
-          :data="inPromotion"
+          :data="promoTagIcon"
           width="30"
           height="30"
           class="d-inline"
@@ -81,7 +81,7 @@
 
 <script>
 import ThirdLevel from "./UI/ThirdLevel.vue";
-import inPromotion from 'assets/svg/selections/inpromotion.svg'
+import promoTagIcon from 'assets/svg/promo-tag.svg'
 import locales from "../locales-mapper";
 import debounce from "lodash.debounce";
 export default {
@@ -90,7 +90,7 @@ export default {
     "$i18n.locale": "$fetch",
   },
   data: () => ({
-    inPromotion,
+    promoTagIcon,
     selectedItem: null,
     selectedContent: null,
     data: null,
@@ -173,9 +173,6 @@ export default {
 </script>
 
 <style scoped>
-.img-height {
-  height: 150px;
-}
 
 .shadow-menu {
   box-shadow: 0 0.5rem 0.75rem rgb(0 0 0 / 15%) !important;
