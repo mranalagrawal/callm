@@ -1,6 +1,6 @@
 <template>
   <button
-    class="cmw-w-full cmw-grid cmw-grid-cols-[25%_auto_40px] cmw-items-center cmw-rounded cmw-border cmw-border-gray cmw-min-h-[98px] cmw-text-left cmw-mb-4"
+    class="cmw-w-full cmw-max-w-450px cmw-grid cmw-grid-cols-[25%_auto_40px] cmw-items-center cmw-rounded cmw-border cmw-border-gray cmw-min-h-[98px] cmw-text-left cmw-mb-4"
     :class="[getBgColor()]"
   >
     <span class="cmw-h-full cmw-bg-cover cmw-bg-center cmw-rounded-tl cmw-rounded-bl cmw-overflow-hidden" :style="`backgroundImage: url('${bgUrl}')`"/>
