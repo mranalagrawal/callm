@@ -265,3 +265,18 @@ input[type=date]::-webkit-calendar-picker-indicator {
   width: 26px;
   padding: 0;
 }
+
+/* ScrollBar styles */
+::-webkit-scrollbar {
+  width: 3px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: theme("colors.gray.DEFAULT");
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: theme("colors.primary.DEFAULT");
+  border-radius: 2px;
+}

@@ -126,6 +126,7 @@ export default defineConfig({
     'center-the-unknown': 'absolute transform top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
   },
   plugins: [
+    require('windicss/plugin/line-clamp'),
     plugin(({ addBase, theme }) => {
       addBase({
         // @ts-expect-error: Might be an issue with windi types

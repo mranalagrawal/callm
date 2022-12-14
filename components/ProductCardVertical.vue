@@ -1,8 +1,8 @@
 <template>
   <div class="product-card mx-auto mt-4" style="width: 94%">
     <div>
-      <div v-if="details.inpromotion" class="ribbon">
-        <VueSvgIcon :data="inPromotion" color="white" class="d-inline"/>
+      <div v-if="details.promoTagIcon" class="ribbon">
+        <VueSvgIcon :data="promoTagIcon" color="white" class="d-inline"/>
         <span style="letter-spacing: 3px">
           PROMO</span
         >
@@ -189,7 +189,7 @@
 
 <script>
 import AwardTooltip from "./UI/AwardTooltip.vue";
-import inPromotion from 'assets/svg/selections/inpromotion.svg'
+import promoTagIcon from 'assets/svg/promo-tag.svg'
 
 export default {
   props: ["product"],
@@ -197,7 +197,7 @@ export default {
   components: { AwardTooltip },
   data() {
     return {
-      inPromotion,
+      promoTagIcon,
       details: JSON.parse(this.product.metafield1.value),
       isOpen: false,
       awards: JSON.parse(this.product.metafield1.value).awards.slice(0, 5),

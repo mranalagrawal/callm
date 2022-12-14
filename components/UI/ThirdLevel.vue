@@ -9,51 +9,8 @@
         class="img-selection"
       />{{ thirdLevel.third_level_name }}</button>
     </p>
-    <div
-      v-else
-      class="row align-items-center mb-4 mx-1"
-      style="
-        width: 100%;
-        max-width: 450px;
-        border-radius: 10px;
-        height: 100px;
-        background: #f8f8f8;
-        border: 1px solid #ddd;
-      "
-    >
-      <div
-        class="col-3"
-        style="
-                height: 100%;
-                background-position: center;
-                background-size: cover;
-                border-radius: 10px 0px 0px 10px;
-              "
-        :style="{
-          backgroundImage: 'url(' + thirdLevel.marketing_image.url + ')',
-        }"
-      ></div>
-
-      <div class="col-9">
-        <button
-          @click="handleClick(thirdLevel.third_level_link)"
-          class="mb-0 text-decoration-none text-dark d-block cmw-text-left"
-          >{{ thirdLevel.third_level_name }}</button
-        >
-        <button
-          v-if="thirdLevel.marketing_cta.length < 40"
-          @click="handleClick(thirdLevel.third_level_link)"
-          class="mb-0 text-decoration-none text-light-secondary small cmw-text-left"
-          >{{ thirdLevel.marketing_cta }}</button
-        >
-        <button
-          v-else
-          @click="handleClick(thirdLevel.third_level_link)"
-          class="mb-0 text-decoration-none text-light-secondary small cmw-text-left"
-          >{{ thirdLevel.marketing_cta.substring(0, 40) }}...</button
-        >
-      </div>
-    </div>
+    <Card v-else :bg-url="thirdLevel.marketing_image.url" :title="thirdLevel.third_level_name" :subtitle="thirdLevel.marketing_cta"
+          @click.native="handleClick(thirdLevel.third_level_link)"/>
   </div>
 </template>
 
