@@ -19,7 +19,8 @@
             color="#a3a3a3"
             :data="require(`@/assets/svg/selections/organic.svg`)"
             class="d-block mb-3"
-            width="36" height="auto"
+            width="36"
+            height="auto"
           />
           <VueSvgIcon
             v-if="product._source.favourite"
@@ -27,7 +28,8 @@
             color="#a3a3a3"
             :data="require(`@/assets/svg/selections/favourite.svg`)"
             class="d-block mb-3"
-            width="36" height="auto"
+            width="36"
+            height="auto"
           />
           <VueSvgIcon
             v-if="product._source.foreveryday"
@@ -35,7 +37,8 @@
             color="#a3a3a3"
             :data="require(`@/assets/svg/selections/foreveryday.svg`)"
             class="d-block mb-3"
-            width="36" height="auto"
+            width="36"
+            height="auto"
           />
           <VueSvgIcon
             v-if="product._source.isnew"
@@ -43,7 +46,8 @@
             color="#a3a3a3"
             :data="require(`@/assets/svg/selections/isnew.svg`)"
             class="d-block mb-3"
-            width="36" height="auto"
+            width="36"
+            height="auto"
           />
           <VueSvgIcon
             v-if="product._source.artisanal"
@@ -51,7 +55,8 @@
             color="#a3a3a3"
             :data="require(`@/assets/svg/selections/artisanal.svg`)"
             class="d-block mb-3"
-            width="36" height="auto"
+            width="36"
+            height="auto"
           />
           <VueSvgIcon
             v-if="product._source.togift"
@@ -59,7 +64,8 @@
             color="#a3a3a3"
             :data="require(`@/assets/svg/selections/togift.svg`)"
             class="d-block mb-3"
-            width="36" height="auto"
+            width="36"
+            height="auto"
           />
           <VueSvgIcon
             v-if="product._source.rarewine"
@@ -67,7 +73,8 @@
             color="#a3a3a3"
             :data="require(`@/assets/svg/selections/rarewine.svg`)"
             class="d-block mb-3"
-            width="36" height="auto"
+            width="36"
+            height="auto"
           />
           <VueSvgIcon
             v-if="product._source.unusualvariety"
@@ -75,7 +82,8 @@
             color="#a3a3a3"
             :data="require(`@/assets/svg/selections/unusualvariety.svg`)"
             class="d-block mb-3"
-            width="36" height="auto"
+            width="36"
+            height="auto"
           />
           <VueSvgIcon
             v-if="product._source.topsale"
@@ -83,7 +91,8 @@
             color="#a3a3a3"
             :data="require(`@/assets/svg/selections/topsale.svg`)"
             class="d-block mb-3"
-            width="36" height="auto"
+            width="36"
+            height="auto"
           />
         </div>
         <div
@@ -159,7 +168,6 @@
             </p>
           </div>
           <div v-if="!horizontal">
-            
             <p class="mb-0 text-muted">
               <span
                 style="text-decoration: line-through"
@@ -402,8 +410,11 @@ export default {
       const productVariantId =
         "gid://shopify/ProductVariant/" +
         this.product._source.variantId[this.STORE];
-      const amount = Number(this.product._source.saleprice[this.STORE]);
-      const amountFullPrice = Number(this.product._source.price[this.STORE]);
+      const amount = Number(this.product._source.saleprice[this.SALECHANNEL]);
+      const amountFullPrice = Number(
+        this.product._source.price[this.SALECHANNEL]
+      );
+
       const tag = "P" + this.product._source.id;
       const image = this.product._source.shopifyImageUrl[this.STORE];
       const title = this.product._source.shortName;
