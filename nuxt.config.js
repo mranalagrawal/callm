@@ -76,6 +76,7 @@ export default {
   ],
 
   buildModules: [
+    '@nuxtjs/composition-api/module',
     '@nuxtjs/google-fonts',
     "@nuxtjs/prismic",
     'nuxt-windicss',
