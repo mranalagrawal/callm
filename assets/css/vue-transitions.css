@@ -1,0 +1,5 @@
+.slideFade-enter-active,
+.slideFade-leave-active { transition: opacity 400ms ease-in-out, transform 400ms ease-in-out; }
+
+.slideFade-enter,
+.slideFade-leave-to { opacity: 0; transform: translate(0, 103%); }

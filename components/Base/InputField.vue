@@ -3,7 +3,7 @@
     v-slot="{ classes, errors, ariaInput }"
     :vid="name"
     :rules="rules"
-    :name="label"
+    :name="name"
     slim
   >
     <div class="cmw-mt-8">
@@ -29,6 +29,7 @@
           @input="$emit('input', $event.target.value)"
           @keydown="$emit('keydown', $event)"
           @blur="$emit('blur', $event.target)"
+          @focus="$emit('focus', $event.target)"
           @paste="$emit('paste', $event.target)"
         >
         <label

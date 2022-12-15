@@ -167,4 +167,15 @@ export default {
     refinement: "Refinement",
     additionalNotes: "Additional Notes",
   },
+  validations: {
+    password: {
+      title: 'Password must contain:',
+      effectiveness: 'Password Effectiveness',
+      min: 'at least 8 characters',
+      oneNumber: 'one number',
+      oneUpperCase: 'one uppercase letter',
+      oneLowerCase: 'one lowercase letter',
+      oneSpecialChar: 'one special character',
+    }
+  }
 };

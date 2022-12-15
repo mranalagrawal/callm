@@ -162,4 +162,15 @@ export default {
     refinement: "Raffinamento",
     additionalNotes: "Note addizionali",
   },
+  validations: {
+    password: {
+      title: 'La password deve contenere:',
+      effectiveness: 'Efficacia Password',
+      min: 'almeno 8 caratteri',
+      oneNumber: 'un numero',
+      oneUpperCase: 'una lettera maiuscola',
+      oneLowerCase: 'una lettera minuscola',
+      oneSpecialChar: 'un carattere speciale',
+    }
+  }
 };
