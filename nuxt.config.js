@@ -77,6 +77,7 @@ export default {
 
   buildModules: [
     '@nuxtjs/composition-api/module',
+    ['@pinia/nuxt', { disableVuex: false }],
     '@nuxtjs/google-fonts',
     "@nuxtjs/prismic",
     'nuxt-windicss',
