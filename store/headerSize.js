@@ -1,25 +1,11 @@
-export const state = () => ({
-  topBarHeight: 0,
-  navbarHeight: 0,
-  megaMenuHeight: 0,
-});
+import {defineStore} from "pinia";
+import {computed, ref} from "@nuxtjs/composition-api";
 
-export const getters = {
-  getTopBarHeight(state) {
-    return `${state.topBarHeight}px`
-  },
-}
+export const useHeaderSize = defineStore('headerSize', () => {
+  const topBarHeight = ref(0)
+  const navbarHeight = ref(0)
+  const megaMenuHeight = ref(0)
+  const getTopBarHeight = computed(() => `${topBarHeight.value}px`)
 
-export const mutations = {
-  setTopBarHeight(state, height) {
-    state.topBarHeight = height;
-  },
-
-  setNavbarHeight(state, height) {
-    state.navbarHeight = height;
-  },
-
-  setMegaMenuHeight(state, height) {
-    state.megaMenuHeight = height;
-  },
-};
+  return { topBarHeight, navbarHeight, megaMenuHeight, getTopBarHeight }
+})

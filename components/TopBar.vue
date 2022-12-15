@@ -13,7 +13,6 @@
 </template>
 
 <script>
-import debounce from "lodash.debounce";
 import documents from "../prismic-mapper";
 import locales from "../locales-mapper";
 export default {
@@ -46,17 +45,23 @@ export default {
       { lang: lang }
     );
   },
-  methods: {
-    resizeListener: debounce( function () {
-      this.$store.commit('headerSize/setTopBarHeight', this.$refs.topBar.getBoundingClientRect().height)
-    }, 400)
-  },
-  mounted() {
-    window.addEventListener('resize', this.resizeListener)
-    this.$nextTick(() => this.resizeListener())
-  },
-  destroyed() {
-    window.removeEventListener('resize', this.resizeListener)
-  }
 };
+</script>
+
+<script setup>
+import {useHeaderSize} from "~/store/headerSize";
+import {nextTick, onMounted, ref} from "@nuxtjs/composition-api";
+import debounce from "lodash.debounce";
+
+const headerSize = useHeaderSize()
+const topBar = ref(null)
+const resizeListener = debounce( function () {
+  headerSize.$patch({
+    topBarHeight: topBar.value ? topBar.value.getBoundingClientRect().height : 0,
+  })
+}, 400)
+onMounted(() => {
+  window.addEventListener('resize', resizeListener)
+  nextTick(() => resizeListener())
+})
 </script>

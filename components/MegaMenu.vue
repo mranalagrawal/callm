@@ -83,7 +83,6 @@
 import ThirdLevel from "./UI/ThirdLevel.vue";
 import promoTagIcon from 'assets/svg/promo-tag.svg'
 import locales from "../locales-mapper";
-import debounce from "lodash.debounce";
 export default {
   components: { ThirdLevel },
   watch: {
@@ -98,9 +97,6 @@ export default {
     marketing: null,
   }),
   methods: {
-    resizeListener: debounce( function () {
-      this.$store.commit('headerSize/setMegaMenuHeight', this.$refs.megaMenu.getBoundingClientRect().height)
-    }, 400),
     onTab(item) {
       if (item) {
         this.selectedItem = item;
@@ -160,16 +156,26 @@ export default {
     this.data = mapped;
     /* this.selectedItem = mapped[3]; */
   },
-  mounted() {
-    window.addEventListener('resize', this.resizeListener)
-    this.$nextTick(() => {
-      this.resizeListener()
-    })
-  },
-  destroyed() {
-    window.removeEventListener('resize', this.resizeListener)
-  }
 };
+</script>
+
+<script setup>
+import {useHeaderSize} from "~/store/headerSize";
+import {nextTick, onMounted, ref} from "@nuxtjs/composition-api";
+import debounce from "lodash.debounce";
+
+const headerSize = useHeaderSize()
+const megaMenu = ref(null)
+const resizeListener = debounce( function () {
+  headerSize.$patch({
+    navbarHeight: megaMenu.value ? megaMenu.value.getBoundingClientRect().height : 0,
+  })
+}, 400)
+onMounted(() => {
+  window.addEventListener('resize', resizeListener)
+  nextTick(() => resizeListener())
+})
+
 </script>
 
 <style scoped>
