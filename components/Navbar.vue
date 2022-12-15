@@ -204,8 +204,7 @@ import heartIcon from '~/assets/svg/heart.svg'
 import LoginForm from "./LoginForm.vue";
 import DropdownMobileMenu from "./UI/DropdownMobileMenu.vue";
 import UserMenu from "./UserMenu.vue";
-import {mapGetters, mapState} from "vuex";
-import debounce from "lodash.debounce";
+import {mapGetters} from "vuex";
 
 export default {
   components: {LoginForm, UserMenu, DropdownMobileMenu, Cart},
@@ -228,28 +227,12 @@ export default {
         }, 3000);
       }
     },
-    navbarHeight() {
-      this.setHeaderSize()
-    }
   },
   computed: {
-    // Todo: for some reason this is not updating... investigate
-    /*...mapState({
-      megaMenuHeight: 'headerSize/megaMenuHeight',
-      navbarHeight: 'headerSize/navbarHeight',
-    }),*/
     ...mapGetters({
-      getTopBarHeight: 'headerSize/getTopBarHeight',
       cartTotalAmount: 'userCart/getCartTotalAmount',
       cartTotalQuantity: 'userCart/cartTotalQuantity',
     }),
-    megaMenuHeight(state) {
-      return this.$store.state.headerSize.megaMenuHeight;
-    },
-    navbarHeight(state) {
-      // return state["headerSize/navbarHeight"]
-      return this.$store.state.headerSize.navbarHeight;
-    },
     user() {
       return this.$store.state.user.user;
     },
@@ -274,16 +257,6 @@ export default {
     };
   },
   methods: {
-    resizeListener: debounce(function () {
-      this.$nextTick(() =>
-        this.$store.commit('headerSize/setNavbarHeight', this.$refs.navbar.getBoundingClientRect().height)
-      )
-    }, 400),
-    setHeaderSize() {
-      const doc = document.querySelector(':root');
-      doc && doc.style.setProperty('--cmw-header-height', `${this.navbarHeight - this.megaMenuHeight}px`)
-      doc && doc.style.setProperty('--cmw-top-banner-height', this.getTopBarHeight)
-    },
     bolder(text) {
       let regexValue = new RegExp(`(${this.search})`, "ig");
       let newStr = text.replace(
@@ -395,17 +368,40 @@ export default {
 
     this.data = mapped;
   },
-  mounted() {
-    window.addEventListener('resize', this.resizeListener)
-    this.$nextTick(() => {
-      this.resizeListener()
-      this.setHeaderSize()
-    })
-  },
-  destroyed() {
-    window.removeEventListener('resize', this.resizeListener)
-  }
 };
+</script>
+
+<script setup>
+import {useHeaderSize} from "~/store/headerSize";
+import {nextTick, onMounted, ref, watch} from "@nuxtjs/composition-api";
+import debounce from "lodash.debounce";
+
+const headerSize = useHeaderSize()
+const navbar = ref(null)
+
+const resizeListener = debounce( function () {
+  headerSize.$patch({
+    navbarHeight: navbar.value ? navbar.value.getBoundingClientRect().height : 0,
+  })
+}, 400)
+
+const setHeaderSize = () => {
+  const doc = document.querySelector(':root');
+  doc && doc.style.setProperty('--cmw-header-height', `${headerSize.navbarHeight - headerSize.megaMenuHeight}px`)
+  doc && doc.style.setProperty('--cmw-top-banner-height', headerSize.getTopBarHeight)
+};
+onMounted(() => {
+  window.addEventListener('resize', resizeListener)
+  nextTick(() => {
+    resizeListener()
+    setHeaderSize()
+  })
+})
+
+watch(() => headerSize.navbarHeight, (val) => {
+  setHeaderSize()
+})
+
 </script>
 
 <style scoped>
