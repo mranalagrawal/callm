@@ -3,7 +3,7 @@
     class="container-fluid position-relative px-md-0"
     @mouseleave="onTab(null)"
   >
-    <div class="row shadow-menu">
+    <div class="row align-items-center shadow-menu">
       <div
         class="col text-center text-uppercase menu-link"
         v-for="(firstLevel, i) in data"

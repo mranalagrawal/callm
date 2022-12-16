@@ -59,7 +59,11 @@ export default {
     ],
   },
 
-  css: ["@/assets/scss/main.scss", '@yzfe/svgicon/lib/svgicon.css'],
+  css: [
+    "@/assets/scss/main.scss",
+    '@yzfe/svgicon/lib/svgicon.css',
+    '@assets/css/vue-transitions.css',
+  ],
 
   plugins: [
     { src: "~plugins/vee-validate", ssr: false },
@@ -68,6 +72,7 @@ export default {
     { src: "~/plugins/vue-flash-message.js", mode: "client" },
     { src: "~/plugins/vue-svg-icon.js" },
     { src: "~/plugins/vue-slick-carousel.js", mode: "client" },
+    { src: '~/plugins/i18n.js' },
   ],
 
   components: [
@@ -116,7 +121,7 @@ export default {
   },
 
   build: {
-    transpile: ["@prismicio/vue", "swiper", "vue-svg-icon"],
+    transpile: ["@prismicio/vue", "swiper", "vue-svg-icon", "vee-validate/dist/rules"],
     loaders: {
       scss: {
         additionalData: `

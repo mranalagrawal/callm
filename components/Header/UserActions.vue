@@ -140,12 +140,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.slideFade-enter,
-.slideFade-leave-to {
-  opacity: 0;
-  transform: translate(0, 103%);
-}
-
-</style>

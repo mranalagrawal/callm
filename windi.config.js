@@ -89,6 +89,7 @@ export default defineConfig({
         '@hover': { raw: '(hover: hover)' },
       },
       boxShadow: {
+        popover: '0 1px 8px 0 rgb(51 51 51 / 20%), 0 3px 3px -2px rgb(51 51 51 / 12%), 0 3px 4px 0 rgb(51 51 51 / 14%)',
         input: '0 0 0 30px #ffe300 inset',
         'input-focus': '0 0 0 2px #fff, 0 0 0 4px rgb(50 100 150 / 40%)',
         btn: '2px 2px 10px rgba(0, 0, 0, 0.3)',
@@ -103,6 +104,7 @@ export default defineConfig({
         'transform-opacity': 'transform, opacity',
         'floating-label': 'transform, font-size, opacity',
         'lazy-image': 'opacity, filter',
+        'progress-bar': 'width, colors',
       },
       transitionDuration: {
         DEFAULT: '300ms',
