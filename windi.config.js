@@ -131,14 +131,10 @@ export default defineConfig({
     require('windicss/plugin/line-clamp'),
     plugin(({ addBase, theme }) => {
       addBase({
-        // @ts-expect-error: Might be an issue with windi types
         h1: { fontSize: theme('fontSize.h1') },
-        // @ts-expect-error: Might be an issue with windi types
         h2: { fontSize: theme('fontSize.h2') },
-        // @ts-expect-error: Might be an issue with windi types
         h3: { fontSize: theme('fontSize.h3') },
         a: { textDecoration: 'underline', transition: 'color 300ms' },
-        // @ts-expect-error: Might be an issue with windi types
         'a:hover': { color: theme('colors.primary') },
       })
     }),
