@@ -47,6 +47,7 @@ export default defineConfig({
         DEFAULT:'#10312b',
         800:'#154c44',
         700:'#175b53',
+        400:'#2c8982',
       },
       body: colors.zinc[700],
       success: '#299100',
@@ -65,7 +66,8 @@ export default defineConfig({
     },
     borderRadius: {
       none: '0',
-      DEFAULT: '0.8em',
+      sm: '8px',
+      DEFAULT: '12px',
       lg: '1.5em',
       full: '50%',
       pill: '40px',
@@ -86,6 +88,8 @@ export default defineConfig({
         icon: ['"Material Symbols Outlined"', 'san-serif'],
       },
       screens: {
+        lg: '992px',
+        xl: '1332px',
         '@hover': { raw: '(hover: hover)' },
       },
       boxShadow: {
@@ -118,6 +122,7 @@ export default defineConfig({
     // Note: This compiles classes, instead, Alias uses single utilities
     'nuxt-link-exact-active': 'underline',
     'center-the-unknown': 'absolute transform top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
+    'body-1': 'cmw-font-normal cmw-text-sm cmw-text-black hover:cmw-text-black',
     'overline-1': 'cmw-font-thin cwm-tracking-wider tracking-wider cmw-text-xs',
     'overline-2': 'cmw-font-thin cwm-tracking-widest tracking-widest cmw-text-sm',
     'floating-label': 'cmw-text-[0.775rem]',

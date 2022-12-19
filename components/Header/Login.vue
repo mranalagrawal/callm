@@ -6,13 +6,12 @@
           <form @submit.prevent="handleSubmit(onSubmit)" autocomplete="off">
 
             <InputField v-model="form.email"
-                        type="email"
-                        name="user-email-navbar" label="Email" autocomplete="off"
+                        name="user-email-navbar" :label="$t('email')" autocomplete="off"
                         placeholder="User email" rules="required|email"/>
 
             <InputField v-model="form.password"
                         :type="!passwordIsVisible ? 'password' : 'text'"
-                        name="user-password-navbar" label="Password" autocomplete="off"
+                        name="user-password-navbar" :label="$t('password')" autocomplete="off"
                         placeholder="User Password" rules="required|min:4"
                         :icon="passwordIsVisible ? eyeHideIcon : eyeShowIcon"
                         :click-icon="() => passwordIsVisible = !passwordIsVisible"

@@ -1,12 +1,12 @@
 <template>
-  <div class="cmw-flex justify-content-end">
+  <div class="cmw-relative">
     <div class="position-relative d-flex">
       <NuxtLink
         v-if="user.user"
         :to="localePath('/profile#wishlist')"
         @mouseenter.native="hoveringColor = 'white'"
         @mouseleave.native="hoveringColor = 'primary-400'"
-        class="peer cmw-transition-colors cmw-rounded-t cmw-py-4 cmw-px-8 cmw-bg-white cmw-text-center cmw-text-body hover:(cmw-bg-primary-900 cmw-text-white cmw-no-underline)"
+        class="peer cmw-transition-colors cmw-rounded cmw-py-4 cmw-px-8 cmw-bg-white cmw-text-center cmw-text-body hover:(cmw-bg-primary-900 cmw-text-white cmw-no-underline)"
       >
         <span class="cmw-relative">
           <VueSvgIcon class="cmw-block" :data="heartIcon" width="32px" height="32px"/>
@@ -68,7 +68,9 @@
         cmw-overflow-hidden cmw-z-1 cmw-shadow"
         :class="currentComponent === 'cart' ? 'cmw-rounded-tl' : 'cmw-rounded-t'">
         <div @mouseleave="handleMouseAction(false)" @mouseenter="handleMouseAction(true)">
-          <component :is="lookUpComponent(currentComponent)"/>
+          <keep-alive>
+            <component :is="lookUpComponent(currentComponent)"/>
+          </keep-alive>
         </div>
       </div>
     </transition>

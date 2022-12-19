@@ -1,22 +1,21 @@
 <template>
   <div ref="navbar" class="container-fluid bg-white fixed-top">
-    <div class="row align-items-center py-md-3 px-lg-5">
+    <div class="
+    cmw-max-w-screen-xl cmw-mx-auto cmw-grid cmw-grid-cols-1 cmw-gap-3 cmw-py-3 cmw-items-center
+    lg:cmw-grid-cols-[25%_40%_35%] 2xl:cmw-grid-cols-[25%_48%_32%]">
       <div
-        class="col-12 col-lg-3 px-lg-2 bg-white"
-        style="position: relative; z-index: 1040"
+        class="bg-white"
       >
-        <div class="row align-items-center">
+        <div class="cmw-flex cmw-items-center">
           <button class="btn d-lg-none" @click="toggleSidebar">
             <VueSvgIcon :data="isMobileMenuOpen ? closeIcon : menuIcon" width="32" height="32"/>
           </button>
 
-          <div class="col-4 col-lg-10 p-0">
-            <nuxt-link class="d-flex cmw-max-w-250px" :to="localePath('/')">
-              <VueSvgIcon :data="logo" width="100%" height="auto" original/>
-            </nuxt-link>
-          </div>
+          <nuxt-link class="cmw-flex cmw-max-w-150px md:cmw-max-w-250px" :to="localePath('/')">
+            <VueSvgIcon :data="logo" width="100%" height="auto" original/>
+          </nuxt-link>
 
-          <div class="ml-auto d-lg-none">
+          <div class="cmw-flex cmw-items-center ml-auto d-lg-none">
             <button class="btn" @click="toggleMobileLogin">
               <VueSvgIcon :data="userIcon" width="36" height="36"/>
             </button>
@@ -29,103 +28,90 @@
 
       </div>
 
-      <div class="col-12 col-lg-6 py-2" style="position: relative">
-        <b-button
-          size="sm"
-          class="border-0 text-white btn-search"
-          type="button"
-          style=""
-          @click="startSearch"
-        >
-          <VueSvgIcon :data="searchIcon" color="white" width="22" height="28"/>
-        </b-button>
-        <div
-          @mouseleave="search = ''"
-          v-if="search && data"
-          class="bg-white px-2 shadowed"
-          style="
-            position: absolute;
-            top: 70px;
-            left: 0px;
-            z-index: 999;
-            width: 100%;
-            height: 70vh;
-            overflow-y: scroll;
-            border-radius: 10px;
-          "
-        >
-          <!-- {{ data }} -->
+      <div class="cmw-relative cmw-z-1">
+        <input type="search" id="search-term"
+               class="
+               cmw-px-4 cmw-text-gray-dark cmw-py-3 cmw-w-full cmw-bg-transparent cmw-border cmw-border-gray-light cmw-rounded
+               hover:(cmw-border-gray)
+               focus:(cmw-outline-none cmw-border-gray-dark)"
+               :placeholder="$t('navbar.search')" v-model="search" @input="suggest" @blur="handleBlur"/>
+        <ButtonIcon :icon="searchIcon"
+                    @click="startSearch"
+                    size="sm"
+                    class="cmw-transform cmw-absolute cmw-top-1/2 cmw-right-0 cmw-translate-y-[-50%] cmw-translate-x-[-30%]"/>
+        <transition keep-alive name="slideFade" mode="out-in">
+          <div
+            v-if="search && data && showSearchSuggestions"
+            class="cmw-absolute cmw-w-full cmw-z-100 cmw-transform
+            cmw-transition-transform-opacity cmw-translate-x-0 cmw-translate-y-full cmw-bottom-0 cmw-left-0
+            "
+          >
+            <!-- {{ data }} -->
 
-          <div v-if="data.winelists && data.winelists.length > 0">
-            <p class="text-uppercase suggest-title px-2 mt-3 mb-0 pb-0">
-              {{ $t("search.winelists") }}
-            </p>
-            <nuxt-link
-              v-for="item in data.winelists"
-              :key="item.id"
-              class="suggest-voice p-2 mb-0"
-              :to="`/${item.handle}-V${item.id}`"
-            >
-              <span v-html="bolder(item.name)"></span>
-            </nuxt-link>
-          </div>
+            <div class="cmw-bg-white cmw-max-h-[70vh] cmw-rounded-lg cmw-shadow-popover cmw-overflow-hidden cmw-mt-2">
+              <div v-if="data.winelists && data.winelists.length > 0" class="cmw-max-h-[70vh] cmw-overflow-y-auto">
+                <p class="cmw-overline-2 cmw-uppercase cmw-text-secondary-400 cmw-py-2 cmw-px-3 cmw-mb-0 cmw-mt-2">
+                  {{ $t("search.winelists") }}
+                </p>
+                <nuxt-link
+                  v-for="item in data.winelists"
+                  :key="item.id"
+                  class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-no-underline cmw-bg-primary-50) cmw-text-body"
+                  :to="`/${item.handle}-V${item.id}`"
+                >
+                  <span v-html="bolder(item.name)"></span>
+                </nuxt-link>
+              </div>
 
-          <div v-if="data" class="pt-3">
-            <div v-if="data.categories && data.categories.length > 0">
-              <p class="text-uppercase suggest-title px-2 mt-3 mb-0 pb-0">
-                {{ $t("search.categories") }}
-              </p>
-              <nuxt-link
-                v-for="item in data.categories"
-                :key="item.id"
-                class="suggest-voice p-2 mb-0"
-                :to="`/catalog?&categories=${item.id}`"
-              >
-                <span v-html="bolder(item.name)"></span>
-              </nuxt-link>
-            </div>
+              <div v-if="data" class="pt-3">
+                <div v-if="data.categories && data.categories.length > 0">
+                  <p class="cmw-overline-2 cmw-uppercase cmw-text-secondary-400 cmw-py-2 cmw-px-3 cmw-m-0">
+                    {{ $t("search.categories") }}
+                  </p>
+                  <nuxt-link
+                    v-for="item in data.categories"
+                    :key="item.id"
+                    class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-no-underline cmw-bg-primary-50) cmw-text-body"
+                    :to="`/catalog?&categories=${item.id}`"
+                  >
+                    <span v-html="bolder(item.name)"></span>
+                  </nuxt-link>
+                </div>
 
-            <div v-if="data.brands && data.brands.length > 0">
-              <p class="text-uppercase suggest-title px-2 mt-3 mb-0 pb-0">
-                {{ $t("search.brands") }}
-              </p>
-              <nuxt-link
-                v-for="item in data.brands"
-                :key="item.id"
-                class="suggest-voice p-2 mb-0"
-                :to="`/winery/${item.handle}-B${item.id}`"
-              >
-                <span v-html="bolder(item.name)"></span>
-              </nuxt-link>
-            </div>
+                <div v-if="data.brands && data.brands.length > 0">
+                  <p class="cmw-overline-2 cmw-uppercase cmw-text-secondary-400 cmw-py-2 cmw-px-3 cmw-m-0">
+                    {{ $t("search.brands") }}
+                  </p>
+                  <nuxt-link
+                    v-for="item in data.brands"
+                    :key="item.id"
+                    class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-no-underline cmw-bg-primary-50) cmw-text-body"
+                    :to="`/winery/${item.handle}-B${item.id}`"
+                  >
+                    <span v-html="bolder(item.name)"></span>
+                  </nuxt-link>
+                </div>
 
-            <div v-if="data.products && data.products.length > 0">
-              <p class="text-uppercase suggest-title px-2 mt-3 mb-0 pb-0">
-                {{ $t("search.products") }}
-              </p>
-              <nuxt-link
-                v-for="item in data.products"
-                :key="item.id"
-                class="suggest-voice p-2 mb-0"
-                :to="`/${item.handle}-P${item.id}`"
-              >
-                <span v-html="bolder(item.name)"></span>
-              </nuxt-link>
+                <div v-if="data.products && data.products.length > 0">
+                  <p class="cmw-overline-2 cmw-uppercase cmw-text-secondary-400 cmw-py-2 cmw-px-3 cmw-m-0">
+                    {{ $t("search.products") }}
+                  </p>
+                  <nuxt-link
+                    v-for="item in data.products"
+                    :key="item.id"
+                    class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-no-underline cmw-bg-primary-50) cmw-text-body"
+                    :to="`/${item.handle}-P${item.id}`"
+                  >
+                    <span v-html="bolder(item.name)"></span>
+                  </nuxt-link>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <b-form-input
-          type="search"
-          size="sm"
-          class="p-4"
-          style="border-radius: 12px; border: 1px solid #8c8d8e"
-          :placeholder="$t('navbar.search')"
-          v-model="search"
-          @input="suggest"
-        ></b-form-input>
+        </transition>
       </div>
 
-      <div class="d-none d-lg-block col-lg-3 p-0">
+      <div class="d-none d-lg-block md:cmw-place-self-end">
         <HeaderUserActions/>
       </div>
     </div>
@@ -248,6 +234,7 @@ export default {
       heartIcon,
       showUser: false,
       showCart: false,
+      showSearchSuggestions: false,
       search: "",
       visible: false,
       data: null,
@@ -278,6 +265,7 @@ export default {
       this.$refs["sidebar"].hide();
     },
     async suggest() {
+      this.showSearchSuggestions = true
       const stores = {
         CMW: 1,
         CMW_UK: 2,
@@ -318,6 +306,9 @@ export default {
         query: query,
       });
       this.search = "";
+    },
+    handleBlur() {
+      this.showSearchSuggestions = false
     },
   },
   async fetch() {
@@ -379,7 +370,7 @@ import debounce from "lodash.debounce";
 const headerSize = useHeaderSize()
 const navbar = ref(null)
 
-const resizeListener = debounce( function () {
+const resizeListener = debounce(function () {
   headerSize.$patch({
     navbarHeight: navbar.value ? navbar.value.getBoundingClientRect().height : 0,
   })
@@ -510,25 +501,18 @@ watch(() => headerSize.navbarHeight, (val) => {
   fill: white;
 }
 
-.suggest-voice {
-  color: black;
-  display: block;
-  font-size: 14px;
-  text-decoration: none;
-}
-
-.suggest-voice:hover {
-  background: #fae4e8;
-  color: var(--dark-secondary);
-}
-
-.suggest-title {
-  font-size: 14px;
-  color: #2c8982;
-}
-
 .shadowed {
   box-shadow: 0 1px 8px 0 rgb(51 51 51 / 20%),
   0 3px 3px -2px rgb(51 51 51 / 12%), 0 3px 4px 0 rgb(51 51 51 / 14%);
+}
+
+#search-term::-webkit-search-cancel-button {
+  position: relative;
+  right: 30px;
+  -webkit-appearance: none;
+  height: 20px;
+  width: 20px;
+  background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIGlkPSJhIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PHBhdGggZD0ibTEyLjQ1LDM3LjY1bC0yLjEtMi4xLDExLjU1LTExLjU1LTExLjU1LTExLjU1LDIuMS0yLjEsMTEuNTUsMTEuNTUsMTEuNTUtMTEuNTUsMi4xLDIuMS0xMS41NSwxMS41NSwxMS41NSwxMS41NS0yLjEsMi4xLTExLjU1LTExLjU1LTExLjU1LDExLjU1WiIgc3R5bGU9ImZpbGw6I2Q5NDk2NTsiLz48L3N2Zz4=");
+  background-size: contain;
 }
 </style>
