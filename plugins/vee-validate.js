@@ -33,10 +33,10 @@ localize({
     },
     fields: {
       'new-password': {
-        oneNumber: 'un numero',
-        oneUpperCase: 'una lettera maiuscola',
-        oneLowerCase: 'una lettera minuscola',
-        oneSpecialChar: 'un carattere speciale',
+        oneNumber: 'a number',
+        oneUpperCase: 'an uppercase letter',
+        oneLowerCase: 'a lowercase letter',
+        oneSpecialChar: 'a special character',
       },
     }
   },
@@ -93,50 +93,6 @@ extend('oneLowerCase', {
 
 extend('oneSpecialChar', {
   validate: (val) => new RegExp(regexRules('oneSpecialChar')).test(val),
-})
-
-extend('strongPassword', {
-  validate: (val) => {
-    let errors = []
-    if (val.length <= 8) {
-      errors = [
-        ...errors,
-        'short'//t('validations.password.min') //'almeno 8 caratteri'
-      ]
-    }
-
-    if (!new RegExp('.*[0-9].*', '').test(val)) {
-      errors = [
-        ...errors,
-        'un numero'
-      ]
-    }
-
-    if (!new RegExp('.*[A-Z].*', '').test(val)) {
-      errors = [
-        ...errors,
-        'una lettera maiuscola'
-      ]
-    }
-
-    if (!new RegExp('.*[a-z].*', '').test(val)) {
-      errors = [
-        ...errors,
-        'una lettera minuscola'
-      ]
-    }
-
-    if (!new RegExp('.*[@#$%^&+=].*', '').test(val)) {
-      errors = [
-        ...errors,
-        'un carattere speciale'
-      ]
-    }
-
-    console.log(new RegExp('.*[0-9].*', '').test(val))
-    console.log(errors)
-    return errors.length ? errors[0] : true
-  },
 })
 
 Vue.component('ValidationProvider', ValidationProvider)
