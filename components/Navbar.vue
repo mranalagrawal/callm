@@ -29,14 +29,20 @@
       </div>
 
       <div class="cmw-relative cmw-z-1">
+        <!-- Note: Since we are handling submit with Vue methods we don' need the name attribute in the search field -->
         <input type="search" id="search-term"
+               v-model="search"
                class="
                cmw-px-4 cmw-text-gray-dark cmw-py-3 cmw-w-full cmw-bg-transparent cmw-border cmw-border-gray-light cmw-rounded
                hover:(cmw-border-gray)
                focus:(cmw-outline-none cmw-border-gray-dark)"
-               :placeholder="$t('navbar.search')" v-model="search" @input="suggest" @blur="handleBlur"/>
+               :placeholder="$t('navbar.search')"
+               @input="suggest"
+               @blur="handleBlur"
+               @keyup.enter="startSearch"
+        />
         <ButtonIcon :icon="searchIcon"
-                    @click="startSearch"
+                    @click.native="startSearch"
                     size="sm"
                     class="cmw-transform cmw-absolute cmw-top-1/2 cmw-right-0 cmw-translate-y-[-50%] cmw-translate-x-[-30%]"/>
         <transition keep-alive name="slideFade" mode="out-in">
@@ -300,12 +306,12 @@ export default {
       this.showUser = true;
     },
     startSearch() {
-      const query = {search: this.search || ""};
+      if (!this.search) return
+
       this.$router.push({
         path: "/catalog",
-        query: query,
+        query: { search: this.search },
       });
-      this.search = "";
     },
     handleBlur() {
       this.showSearchSuggestions = false
