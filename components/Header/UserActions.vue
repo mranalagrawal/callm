@@ -39,7 +39,7 @@
       >
           <span class="cmw-flex cmw-gap-1 cmw-items-center">
             <span v-if="cartItems">
-              <span class="cmw-block cmw-text-xs cmw-text-left cmw-mb-1">{{ $t('cartTotal') }}</span>
+              <span class="cmw-block cmw-text-xxs cmw-text-left cmw-mb-1">{{ $t('cartTotal') }}</span>
               <span class="cmw-flex cmw-items-end cmw-leading-none">
                 <span class="cmw-text-2xl">{{ cartTotalAmountObj.integer }}</span>
                 <span>{{ cartTotalAmountObj.separator }}</span>

@@ -4,6 +4,7 @@
       <!-- Note: on Nuxt 3 this will be handle by the navigation instead so we can properly use <NuxtLink /> -->
       <button class="menu-link px-2" :style="styled" @click="handleClick(thirdLevel.third_level_link)"><VueSvgIcon
         v-if="thirdLevel.selection"
+        color="#E6362E"
         :data="require(`@/assets/svg/selections/${thirdLevel.selection}.svg`)"
         width="20px"
         class="img-selection"
@@ -47,8 +48,6 @@ export default {
   text-decoration: none;
   font-size: 0.875rem;
   font-weight: 300;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
 }
 .menu-link:hover {
   color: var(--dark-secondary);

@@ -1,6 +1,6 @@
 <template>
   <span
-    class="cmw-flex cmw-w-20px cmw-h-20px cmw-text-xs cmw-rounded-full cmw-transition-colors"
+    class="cmw-flex cmw-w-20px cmw-h-20px cmw-text-xxs cmw-rounded-full cmw-transition-colors"
     :class="[getBgColor(), getNumberColor]"
   >
     <span class="cmw-m-auto">{{ $props.qty }}</span>

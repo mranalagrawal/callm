@@ -5,8 +5,8 @@
   >
     <span class="cmw-h-full cmw-bg-cover cmw-bg-center cmw-rounded-tl cmw-rounded-bl cmw-overflow-hidden" :style="`backgroundImage: url('${bgUrl}')`"/>
     <span class="cmw-block cmw-p-2 cmw-overflow-hidden" :class="{'cmw-col-start-2 cmw-col-end-[-1]': !icon}">
-      <span v-if="title" class="cmw-block cmw-overline-2 cmw-truncate" v-text="title" />
-      <span v-if="subtitle" class="cmw-block cmw-line-clamp-2 cmw-leading-tight cmw-text-primary-400 cmw-font-secondary cmw-text-sm" v-text="subtitle" />
+      <span v-if="title" class="cmw-block cmw-overline-2 cmw-font-medium cmw-truncate cmw-mb-1" v-text="title" />
+      <span v-if="subtitle" class="cmw-block cmw-line-clamp-2 cmw-leading-snug cmw-text-primary-400 cmw-text-sm" v-text="subtitle" />
     </span>
     <span v-if="icon" class="cmw-w-full"><!-- Todo: Add icon when backend finish --></span>
   </button>

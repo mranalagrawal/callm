@@ -15,9 +15,33 @@
 <script>
 import documents from "../prismic-mapper";
 import locales from "../locales-mapper";
+import {useHeaderSize} from "~/store/headerSize";
+import {nextTick, onMounted, onUnmounted, ref} from "@nuxtjs/composition-api";
+import debounce from "lodash.debounce";
 export default {
   watch: {
     "$i18n.locale": "$fetch",
+  },
+  setup() {
+    const headerSize = useHeaderSize()
+    const topBar = ref(null)
+
+    const resizeListener = debounce( function () {
+      headerSize.$patch({
+        topBarHeight: topBar.value ? topBar.value.getBoundingClientRect().height : 0,
+      })
+    }, 400)
+
+    onMounted(() => {
+        window.addEventListener('resize', resizeListener)
+        nextTick(() => resizeListener())
+    })
+
+    onUnmounted(() => {
+      window.removeEventListener('resize', resizeListener)
+    })
+
+    return { headerSize, topBar }
   },
   data: () => ({
     selectedItem: "",
@@ -46,22 +70,4 @@ export default {
     );
   },
 };
-</script>
-
-<script setup>
-import {useHeaderSize} from "~/store/headerSize";
-import {nextTick, onMounted, ref} from "@nuxtjs/composition-api";
-import debounce from "lodash.debounce";
-
-const headerSize = useHeaderSize()
-const topBar = ref(null)
-const resizeListener = debounce( function () {
-  headerSize.$patch({
-    topBarHeight: topBar.value ? topBar.value.getBoundingClientRect().height : 0,
-  })
-}, 400)
-onMounted(() => {
-  window.addEventListener('resize', resizeListener)
-  nextTick(() => resizeListener())
-})
 </script>

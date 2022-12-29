@@ -185,6 +185,9 @@
 </template>
 
 <script>
+import {useHeaderSize} from "~/store/headerSize";
+import {nextTick, onMounted, onUnmounted, ref, watch} from "@nuxtjs/composition-api";
+import debounce from "lodash.debounce";
 import Cart from "./Cart/Cart.vue";
 import logo from '~/assets/svg/logo-call-me-wine.svg'
 import cartIcon from '~/assets/svg/cart.svg'
@@ -229,8 +232,41 @@ export default {
       return this.$store.state.user.user;
     },
   },
-  data() {
+  setup() {
+    const headerSize = useHeaderSize()
+    const navbar = ref(null)
+
+    const resizeListener = debounce(function () {
+      headerSize.$patch({
+        navbarHeight: navbar.value ? navbar.value.getBoundingClientRect().height : 0,
+      })
+    }, 400)
+
+    const setHeaderSize = () => {
+      const doc = document.querySelector(':root');
+      doc && doc.style.setProperty('--cmw-header-height', `${headerSize.navbarHeight - headerSize.megaMenuHeight}px`)
+      doc && doc.style.setProperty('--cmw-top-banner-height', headerSize.getTopBarHeight)
+    };
+
+    onMounted(() => {
+      window.addEventListener('resize', resizeListener)
+      nextTick(() => {
+        resizeListener()
+        setHeaderSize()
+      })
+    })
+
+    onUnmounted(() => {
+      window.removeEventListener('resize', resizeListener)
+    })
+
+    watch(() => headerSize.navbarHeight, (val) => {
+      setHeaderSize()
+    })
+
     return {
+      headerSize,
+      navbar,
       logo,
       cartIcon,
       closeIcon,
@@ -238,6 +274,10 @@ export default {
       userIcon,
       searchIcon,
       heartIcon,
+    }
+  },
+  data() {
+    return {
       showUser: false,
       showCart: false,
       showSearchSuggestions: false,
@@ -366,39 +406,6 @@ export default {
     this.data = mapped;
   },
 };
-</script>
-
-<script setup>
-import {useHeaderSize} from "~/store/headerSize";
-import {nextTick, onMounted, ref, watch} from "@nuxtjs/composition-api";
-import debounce from "lodash.debounce";
-
-const headerSize = useHeaderSize()
-const navbar = ref(null)
-
-const resizeListener = debounce(function () {
-  headerSize.$patch({
-    navbarHeight: navbar.value ? navbar.value.getBoundingClientRect().height : 0,
-  })
-}, 400)
-
-const setHeaderSize = () => {
-  const doc = document.querySelector(':root');
-  doc && doc.style.setProperty('--cmw-header-height', `${headerSize.navbarHeight - headerSize.megaMenuHeight}px`)
-  doc && doc.style.setProperty('--cmw-top-banner-height', headerSize.getTopBarHeight)
-};
-onMounted(() => {
-  window.addEventListener('resize', resizeListener)
-  nextTick(() => {
-    resizeListener()
-    setHeaderSize()
-  })
-})
-
-watch(() => headerSize.navbarHeight, (val) => {
-  setHeaderSize()
-})
-
 </script>
 
 <style scoped>

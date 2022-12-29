@@ -5,7 +5,7 @@
   >
     <div class="row align-items-center shadow-menu">
       <div
-        class="col text-center text-uppercase menu-link"
+        class="col text-center text-uppercase menu-link cmw-py-2"
         v-for="(firstLevel, i) in data"
         @mouseenter="onTab(firstLevel)"
         :key="i"
@@ -41,7 +41,7 @@
           class="col"
           style="border-right: 1px solid #ddd"
         >
-          <p class="fs-14 px-2" style="color: #155b53; font-weight: 600">
+          <p class="cmw-overline-2 cmw-uppercase cmw-text-secondary-700 cmw-font-semibold" >
             {{ secondLevel.name }}
           </p>
           <div v-for="(thirdLevel, j) in secondLevel.items" :key="j">
@@ -62,7 +62,7 @@
       >
         <div v-for="(secondLevel, i) in selectedItem.items" :key="i" class="row">
           <div class="col-12">
-            <p class="fs-14 px-2" style="color: #155b53; font-weight: 600">
+            <p class="cmw-overline-2 cmw-uppercase cmw-text-secondary-700 cmw-font-semibold cmw-p-8" >
               {{ secondLevel.name }}
             </p>
           </div>
@@ -80,6 +80,9 @@
 </template>
 
 <script>
+import {useHeaderSize} from "~/store/headerSize";
+import {nextTick, onMounted, onUnmounted, ref} from "@nuxtjs/composition-api";
+import debounce from "lodash.debounce";
 import ThirdLevel from "./UI/ThirdLevel.vue";
 import promoTagIcon from 'assets/svg/promo-tag.svg'
 import locales from "../locales-mapper";
@@ -87,6 +90,27 @@ export default {
   components: { ThirdLevel },
   watch: {
     "$i18n.locale": "$fetch",
+  },
+  setup() {
+    const headerSize = useHeaderSize()
+    const megaMenu = ref(null)
+
+    const resizeListener = debounce( function () {
+      headerSize.$patch({
+        navbarHeight: megaMenu.value ? megaMenu.value.getBoundingClientRect().height : 0,
+      })
+    }, 400)
+
+    onMounted(() => {
+      window.addEventListener('resize', resizeListener)
+      nextTick(() => resizeListener())
+    })
+
+    onUnmounted(() => {
+      window.removeEventListener('resize', resizeListener)
+    })
+
+    return { headerSize, megaMenu }
   },
   data: () => ({
     promoTagIcon,
@@ -159,25 +183,6 @@ export default {
 };
 </script>
 
-<script setup>
-import {useHeaderSize} from "~/store/headerSize";
-import {nextTick, onMounted, ref} from "@nuxtjs/composition-api";
-import debounce from "lodash.debounce";
-
-const headerSize = useHeaderSize()
-const megaMenu = ref(null)
-const resizeListener = debounce( function () {
-  headerSize.$patch({
-    navbarHeight: megaMenu.value ? megaMenu.value.getBoundingClientRect().height : 0,
-  })
-}, 400)
-onMounted(() => {
-  window.addEventListener('resize', resizeListener)
-  nextTick(() => resizeListener())
-})
-
-</script>
-
 <style scoped>
 
 .shadow-menu {
@@ -189,8 +194,6 @@ onMounted(() => {
   text-decoration: none;
   font-size: 0.875rem;
   font-weight: 600;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
 }
 .menu-link:hover {
   color: var(--dark-secondary);

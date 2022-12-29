@@ -126,6 +126,7 @@
 </template>
 
 <script>
+import {ref} from "@nuxtjs/composition-api";
 import userRegister from "../utilities/userRegister";
 import userLogin from "../utilities/userLogin";
 import eyeShowIcon from '~/assets/svg/eye-show.svg'
@@ -134,6 +135,14 @@ import calendarIcon from '~/assets/svg/calendar.svg'
 import {regexRules} from "@/utilities/validators";
 
 export default {
+  setup() {
+    const showPasswordToast = ref(false)
+
+    const handleFocus = () => showPasswordToast.value = true
+    const handleBlur = () => showPasswordToast.value = false
+
+    return { showPasswordToast, handleFocus, handleBlur }
+  },
   data() {
     return {
       eyeShowIcon,
@@ -208,15 +217,5 @@ export default {
     }
   }
 };
-</script>
-
-<script setup>
-import {ref} from "@nuxtjs/composition-api";
-
-const showPasswordToast = ref(false)
-
-const handleFocus = () => showPasswordToast.value = true
-const handleBlur = () => showPasswordToast.value = false
-
 </script>
 

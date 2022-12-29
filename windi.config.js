@@ -18,7 +18,8 @@ export default defineConfig({
     },
     fontSize: {
       base: '1rem',
-      xs: '0.5625rem',
+      xxs: '0.5625rem',
+      xs: '0.75rem',
       sm: '.875rem',
       lg: '1.125rem',
       xl: '1.25rem',
@@ -83,7 +84,7 @@ export default defineConfig({
       // https://windicss.org/utilities/general/typography.html#font-family
       fontFamily: {
         sans: ['"Open Sans"', 'Helvetica', 'Arial', 'sans-serif'],
-        secondary: ['"Roboto"', 'Helvetica', 'Arial', 'sans-serif'],
+        secondary: ['"Open Sans"', 'Helvetica', 'Arial', 'sans-serif'],
         inherit: 'inherit',
         icon: ['"Material Symbols Outlined"', 'san-serif'],
       },
@@ -123,8 +124,8 @@ export default defineConfig({
     'nuxt-link-exact-active': 'underline',
     'center-the-unknown': 'absolute transform top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
     'body-1': 'cmw-font-normal cmw-text-sm cmw-text-black hover:cmw-text-black',
-    'overline-1': 'cmw-font-thin cwm-tracking-wider tracking-wider cmw-text-xs',
-    'overline-2': 'cmw-font-thin cwm-tracking-widest tracking-widest cmw-text-sm',
+    'overline-1': 'cmw-font-thin cwm-tracking-wider tracking-wider cmw-text-xxs',
+    'overline-2': 'cmw-font-thin cwm-tracking-widest tracking-widest cmw-text-xs',
     'floating-label': 'cmw-text-[0.775rem]',
   },
   alias: {

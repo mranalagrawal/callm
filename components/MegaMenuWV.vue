@@ -131,8 +131,6 @@ export default {
   text-decoration: none;
   font-size: 0.875rem;
   font-weight: 300;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
 }
 .menu-link:hover {
   /* color: var(--dark-secondary); */
