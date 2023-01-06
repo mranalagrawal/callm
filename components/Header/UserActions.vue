@@ -84,7 +84,7 @@ import cartIcon from '~/assets/svg/cart.svg'
 import {mapGetters, mapState} from "vuex";
 
 export default {
-  name: 'HeaderUserActions',
+  name: 'UserActions',
   data() {
     return {
       heartIcon,

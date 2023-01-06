@@ -11,7 +11,10 @@ export default {
   firstName: "Nome",
   lastName: "Cognome",
   email: "Email",
+  emailPlaceholder: "User email",
   password: "Password",
+  passwordPlaceholder: "User Password",
+  loginFailed: 'Ops! Sembra che il nome utente o la password non siano corretti!',
   birthday: "Data di nascita",
   privacyPolicy: "Dichiaro di aver letto la Privacy Policy di Callmewine",
   acceptMarketing:
@@ -123,6 +126,10 @@ export default {
     activeFilters: "Filtri attivi",
     removeAll: "Rimuovi tutti",
     sortBy: "Ordina per",
+    sort: {
+      name: "Nome",
+      price: "Prezzo",
+    },
     highestPrice: "Prezzo più alto",
     lowestPrice: "Prezzo più basso",
     mostAwarded: "Più premitati",
@@ -130,6 +137,7 @@ export default {
     popularity: "Popolarità",
   },
   product: {
+    promo: "promo",
     addToCart: "Aggiungi",
     notAvailable: "Non disponibile",
     available: "Disponibile",

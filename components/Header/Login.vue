@@ -126,7 +126,7 @@ export default {
       );
 
       if (!user) {
-        this.message = "Ops! Sembra che username o password siano errate!";
+        this.message = this.$i18n.t('loginFailed');
         this.isSubmitting = false;
         return;
       }

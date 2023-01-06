@@ -4,13 +4,13 @@
 
       <InputField v-model="form.email"
                   type="email"
-                  name="user-email" label="Email"
-                  placeholder="User email" rules="required|email"/>
+                  name="user-email" :label="$t('email').toString()"
+                  :placeholder="$t('email').toString()" rules="required|email"/>
 
       <InputField v-model="form.password"
                   :type="!passwordIsVisible ? 'password' : 'text'"
-                  name="user-password" label="Password"
-                  placeholder="User Password" rules="required|min:4"
+                  name="user-password" :label="$t('email').toString()" label="Password"
+                  :placeholder="$t('passwordPlaceholder').toString()" rules="required|min:4"
                   :icon="passwordIsVisible ? eyeHideIcon : eyeShowIcon"
                   :click-icon="() => passwordIsVisible = !passwordIsVisible"
       />
@@ -71,7 +71,7 @@ export default {
       );
 
       if (!user) {
-        this.message = "Ops! Sembra che username o password siano errate!";
+        this.message = this.$i18n.t('loginFailed');
         this.isSubmitting = false;
         return;
       }

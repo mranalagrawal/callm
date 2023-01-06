@@ -36,7 +36,7 @@ export default {
         return
       }
       this.$emit('close-banner')
-      this.$router.push(to)
+      this.$router.push(this.localeLocation((to)))
     }
   }
 };
