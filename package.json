@@ -1,6 +1,6 @@
 {
-  "name": "wine",
-  "version": "1.0.0",
+  "name": "callmewine-frontend",
+  "version": "1.1.0",
   "private": true,
   "scripts": {
     "dev": "nuxt",
