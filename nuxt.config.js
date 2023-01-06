@@ -153,6 +153,8 @@ export default {
 
   babel: { compact: true },
 
+  /* FixMe: We are using nuxt generate for builds, from docs you can read: For server hosting, target: 'server' is used,
+       which is the default value. You will use the build command to build your application. */
   /* target: "static", */
 
   generate: {
