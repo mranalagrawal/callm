@@ -5,7 +5,7 @@
         <div class="row text-white">
           <div class="col-12">
             <div class="ribbon-partner mt-5">
-              <VueSvgIcon :data="favouriteIcon" width="20" class="svg-favourite" />
+              <VueSvgIcon :data="favouriteIcon" width="20" />
               <span class="small" style="padding-bottom: 10px">
                 {{ $t("product.recommendedByCallmewine") }}
               </span>
@@ -232,32 +232,4 @@ export default {
   width: auto;
   clip-path: polygon(0 0, 100% 0, 94% 50%, 100% 100%, 0 100%, 6% 50%);
 }
-
-/* .ribbon-partner::before {
-  position: absolute;
-  content: "";
-  width: 0;
-  height: 0;
-  top: 0px;
-  left: 0px;
-  border-top: 12px solid transparent;
-  border-bottom: 12px solid transparent;
-  border-left: 12px solid var(--dark-secondary);
-}
-
-.ribbon-partner::after {
-  position: absolute;
-  content: "";
-  width: 0;
-  height: 0;
-  top: 0px;
-  right: 0px;
-  border-top: 12px solid transparent;
-  border-bottom: 12px solid transparent;
-  border-right: 12px solid var(--dark-secondary);
-} */
-
-/*.svg-favourite {
-  filter: brightness(100);
-}*/
 </style>

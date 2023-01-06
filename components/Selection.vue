@@ -28,13 +28,14 @@
 
     <div v-if="data" class="row">
       <div class="col-12">
-        <span>Sort by</span>
+        <span v-text="$t('search.sortBy')" />
+        <!-- FixMe: change these icon for the proper sortBy component from DS -->
         <button
           class="btn"
           :class="currentSort == 'title' ? 'button-active' : 'button'"
           @click="sort('title')"
         >
-          Name
+          {{ $t('search.sort.name') }}
           <i
             v-if="currentSortDir == 'desc' && currentSort == 'title'"
             class="fal fa-sort-alpha-down"
@@ -49,7 +50,7 @@
           :class="currentSort == 'price' ? 'button-active' : 'button'"
           @click="sort('price')"
         >
-          Price
+          {{ $t('search.sort.price') }}
           <i
             v-if="currentSortDir == 'desc' && currentSort == 'price'"
             class="fal fa-sort-numeric-down"
@@ -86,7 +87,11 @@ export default {
     "$i18n.locale": "$fetch",
   },
   components: { ProductCardVertical, VueSlickCarousel },
-  props: ["selection"],
+  props: {
+    selection: {
+      type: String
+    }
+  },
   data: () => ({
     data: null,
     currentSort: "title",

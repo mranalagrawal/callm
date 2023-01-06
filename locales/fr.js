@@ -10,8 +10,11 @@ export default {
   createYourAccount: "Create your account",
   firstName: "First name",
   lastName: "Last name",
-  email: "Email",
-  password: "Password",
+  email: "E-mail",
+  emailPlaceholder: "Courriel de l'utilisateur",
+  password: "Mot de passe",
+  passwordPlaceholder: "Mot de passe de l'utilisateur",
+  loginFailed: 'Oops! Il semble que le nom d\'utilisateur ou le mot de passe soient incorrects!',
   birthday: "Birthday",
   privacyPolicy: "I declare that I have read the Callmewine Privacy Policy",
   acceptMarketing:
@@ -123,6 +126,10 @@ export default {
     activeFilters: "Active filters",
     removeAll: "Remove all",
     sortBy: "Sort by",
+    sort: {
+      name: "Nom",
+      price: "Prix",
+    },
     highestPrice: "Highest price",
     lowestPrice: "Lowest price",
     mostAwarded: "Most awarded",
@@ -135,6 +142,7 @@ export default {
     },
   },
   product: {
+    promo: "promotion",
     addToCart: "Add to Cart",
     notAvailable: "Not available",
     available: "Available now",
@@ -167,4 +175,15 @@ export default {
     refinement: "Refinement",
     additionalNotes: "Additional Notes",
   },
+  validations: {
+    password: {
+      title: 'Le mot de passe doit contenir:',
+      effectiveness: 'Efficacité du mot de passe',
+      min: 'au moins 8 caractères',
+      oneNumber: 'un nombre',
+      oneUpperCase: 'une lettre majuscule',
+      oneLowerCase: 'une lettre minuscule',
+      oneSpecialChar: 'un caractère spécial',
+    }
+  }
 };

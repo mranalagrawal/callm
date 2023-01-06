@@ -3,9 +3,7 @@
     <div>
       <div v-if="details.promoTagIcon" class="ribbon">
         <VueSvgIcon :data="promoTagIcon" color="white" class="d-inline"/>
-        <span style="letter-spacing: 3px">
-          PROMO</span
-        >
+        <span class="text-uppercase" style="letter-spacing: 3px" v-text="$t('product.promo')" />
       </div>
 
       <div

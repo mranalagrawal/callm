@@ -63,7 +63,7 @@
                   v-for="item in data.winelists"
                   :key="item.id"
                   class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-no-underline cmw-bg-primary-50) cmw-text-body"
-                  :to="`/${item.handle}-V${item.id}`"
+                  :to="localePath(`/${item.handle}-V${item.id}`)"
                 >
                   <span v-html="bolder(item.name)"></span>
                 </nuxt-link>
@@ -78,7 +78,7 @@
                     v-for="item in data.categories"
                     :key="item.id"
                     class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-no-underline cmw-bg-primary-50) cmw-text-body"
-                    :to="`/catalog?&categories=${item.id}`"
+                    :to="localePath(`/catalog?&categories=${item.id}`)"
                   >
                     <span v-html="bolder(item.name)"></span>
                   </nuxt-link>
@@ -92,7 +92,7 @@
                     v-for="item in data.brands"
                     :key="item.id"
                     class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-no-underline cmw-bg-primary-50) cmw-text-body"
-                    :to="`/winery/${item.handle}-B${item.id}`"
+                    :to="localePath(`/winery/${item.handle}-B${item.id}`)"
                   >
                     <span v-html="bolder(item.name)"></span>
                   </nuxt-link>
@@ -106,7 +106,7 @@
                     v-for="item in data.products"
                     :key="item.id"
                     class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-no-underline cmw-bg-primary-50) cmw-text-body"
-                    :to="`/${item.handle}-P${item.id}`"
+                    :to="localePath(`/${item.handle}-P${item.id}`)"
                   >
                     <span v-html="bolder(item.name)"></span>
                   </nuxt-link>
@@ -118,7 +118,7 @@
       </div>
 
       <div class="d-none d-lg-block md:cmw-place-self-end">
-        <HeaderUserActions/>
+        <UserActions/>
       </div>
     </div>
     <div class="d-none d-lg-block">
@@ -200,9 +200,10 @@ import LoginForm from "./LoginForm.vue";
 import DropdownMobileMenu from "./UI/DropdownMobileMenu.vue";
 import UserMenu from "./UserMenu.vue";
 import {mapGetters} from "vuex";
+import UserActions from "~/components/Header/UserActions.vue";
 
 export default {
-  components: {LoginForm, UserMenu, DropdownMobileMenu, Cart},
+  components: {UserActions, LoginForm, UserMenu, DropdownMobileMenu, Cart},
   watch: {
     $route() {
       this.showUser = false;

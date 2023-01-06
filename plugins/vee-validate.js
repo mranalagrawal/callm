@@ -59,7 +59,47 @@ localize({
         oneSpecialChar: 'un carattere speciale',
       },
     }
-  }
+  },
+  fr: {
+    names: {
+      'user-email': 'E-mail',
+      'user-password': 'Mot de passe',
+      'user-email-navbar': 'E-mail',
+      'user-password-navbar': 'Mot de passe',
+      'register-user-firstname': 'Nom',
+      'register-user-lastname': 'Nom de famille',
+      'register-user-email': 'E-E-mail',
+      'new-password': 'Mot de passed'
+    },
+    fields: {
+      'new-password': {
+        oneNumber: 'un numéro',
+        oneUpperCase: 'une lettre majuscule',
+        oneLowerCase: 'une lettre minuscule',
+        oneSpecialChar: 'un caractère spécial',
+      },
+    }
+  },
+  de: {
+    names: {
+      'user-email': 'Email',
+      'user-password': 'Passwort',
+      'user-email-navbar': 'Email',
+      'user-password-navbar': 'Passwort',
+      'register-user-firstname': 'Name',
+      'register-user-lastname': 'Familienname, Nachname',
+      'register-user-email': 'EEmail',
+      'new-password': 'Passwortd'
+    },
+    fields: {
+      'new-password': {
+        oneNumber: 'eine Zahl',
+        oneUpperCase: 'ein Großbuchstabe',
+        oneLowerCase: 'ein Kleinbuchstabe',
+        oneSpecialChar: 'ein besonderer Charakter',
+      },
+    }
+  },
 });
 
 configure({

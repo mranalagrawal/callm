@@ -50,28 +50,24 @@
           >
             <VueSvgIcon
               v-if="metafield.favourite"
-              title="Favoriti"
               :data="favouriteIcon"
               class="d-block mb-3"
               width="36" height="auto"
             />
             <VueSvgIcon
               v-if="metafield.foreveryday"
-              title="Every Day"
               :data="forEveryDayIcon"
               class="d-block mb-3"
               width="36" height="auto"
             />
             <VueSvgIcon
               v-if="metafield.isnew"
-              title="Novità"
               :data="isNewIcon"
               class="d-block mb-3"
               width="36" height="auto"
             />
             <VueSvgIcon
               v-if="metafield.artisanal"
-              title="Artisanal"
               :data="artisanalIcon"
               class="d-block mb-3"
               width="36" height="auto"
@@ -253,15 +249,16 @@
               </b-tab>
               <b-tab :title="$t('product.producer')">
                 <div v-if="brand">
-                  <div v-if="brandMetafields.isPartner" class="ribbon">
-<!--                    <img
-                      :src="require(`@/assets/images/selections/favourite.svg`)"
+                  <div v-if="brandMetafields.isPartner" class="ribbon cmw-flex cmw-items-center">
+                    <!-- TODO: This will use the new lapel component -->
+                    <VueSvgIcon
+                      :data="favouriteIcon"
                       class="svg-favourite"
-                      style="width: 20px"
-                    />-->
-                    <span class="small">{{
-                      $t("product.recommendedByCallmewine")
-                    }}</span>
+                      width="20" height="auto"
+                    />
+                    <span class="small !cmw-top-0">{{
+                        $t("product.recommendedByCallmewine")
+                      }}</span>
                   </div>
                   <h3 class="text-light-secondary">{{ brand.title }}</h3>
                   <div class="row">
@@ -473,7 +470,7 @@ export default {
   },
   computed: {
     strippedContent() {
-      
+
       if (this.metafield.shortDescription[this.$i18n.locale]) {
         return this.metafield.shortDescription[this.$i18n.locale]
           .replace("href", "")
@@ -529,7 +526,7 @@ export default {
 
     /* return; */
     this.data = data.data.products.edges[0].node;
-    
+
     this.price = this.data.variants.nodes[0].price;
     this.metafield = JSON.parse(this.data.metafield1.value);
 
@@ -537,9 +534,9 @@ export default {
 
     const dataBrand = await getBrand(domain, access_token, "B" + brandId);
     this.brand = dataBrand;
-    
+
     this.brandMetafields = JSON.parse(dataBrand.details.value);
-    
+
   },
   methods: {
     async addToUserCart() {
@@ -548,7 +545,7 @@ export default {
       const amountFullPrice = Number(
         this.data.variants.nodes[0].compareAtPriceV2.amount
       );
-      
+
 
       /* data.variants.nodes[0].compareAtPriceV2 */
       const tag = this.data.tags[0];
@@ -616,9 +613,9 @@ export default {
 </script>
 
 <style scoped>
-/*.svg-favourite {
+.svg-favourite {
   filter: brightness(100);
-}*/
+}
 
 .selection-svg {
   filter: brightness(0.7);

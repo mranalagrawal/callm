@@ -15,7 +15,6 @@
         >
           <VueSvgIcon
             v-if="product._source.organic"
-            title="Organic"
             color="#a3a3a3"
             :data="require(`@/assets/svg/selections/organic.svg`)"
             class="d-block mb-3"
@@ -24,7 +23,6 @@
           />
           <VueSvgIcon
             v-if="product._source.favourite"
-            title="Favoriti"
             color="#a3a3a3"
             :data="require(`@/assets/svg/selections/favourite.svg`)"
             class="d-block mb-3"
@@ -33,7 +31,6 @@
           />
           <VueSvgIcon
             v-if="product._source.foreveryday"
-            title="Every day"
             color="#a3a3a3"
             :data="require(`@/assets/svg/selections/foreveryday.svg`)"
             class="d-block mb-3"
@@ -42,7 +39,6 @@
           />
           <VueSvgIcon
             v-if="product._source.isnew"
-            title="Novità"
             color="#a3a3a3"
             :data="require(`@/assets/svg/selections/isnew.svg`)"
             class="d-block mb-3"
@@ -51,7 +47,6 @@
           />
           <VueSvgIcon
             v-if="product._source.artisanal"
-            title="Artisanal"
             color="#a3a3a3"
             :data="require(`@/assets/svg/selections/artisanal.svg`)"
             class="d-block mb-3"
@@ -60,7 +55,6 @@
           />
           <VueSvgIcon
             v-if="product._source.togift"
-            title="To gift"
             color="#a3a3a3"
             :data="require(`@/assets/svg/selections/togift.svg`)"
             class="d-block mb-3"
@@ -69,7 +63,6 @@
           />
           <VueSvgIcon
             v-if="product._source.rarewine"
-            title="Rare"
             color="#a3a3a3"
             :data="require(`@/assets/svg/selections/rarewine.svg`)"
             class="d-block mb-3"
@@ -78,7 +71,6 @@
           />
           <VueSvgIcon
             v-if="product._source.unusualvariety"
-            title="Rare"
             color="#a3a3a3"
             :data="require(`@/assets/svg/selections/unusualvariety.svg`)"
             class="d-block mb-3"
@@ -87,7 +79,6 @@
           />
           <VueSvgIcon
             v-if="product._source.topsale"
-            title="Rare"
             color="#a3a3a3"
             :data="require(`@/assets/svg/selections/topsale.svg`)"
             class="d-block mb-3"
