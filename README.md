@@ -1,69 +1,74 @@
-# wine
+# CallMeWine Frontend
 
-## Build Setup
+## Setup
+
+> Make sure you are using node v16.17.1 or greater, if you need help switching node versions install [NVM](https://github.com/nvm-sh/nvm)
+
+### install dependencies
 
 ```bash
-# install dependencies
-$ npm install
-
-# serve with hot reload at localhost:3000
-$ npm run dev
-
-# build for production and launch server
-$ npm run build
-$ npm run start
-
-# generate static project
-$ npm run generate
+npm install
 ```
 
-For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
+### Development Server
 
-## Special Directories
+Start the development server on http://localhost:3000
 
-You can create the following extra directories, some of which have special behaviors. Only `pages` is required; you can delete them if you don't want to use their functionality.
+> Make sure you have a .env file with the proper environments, if you are unsure which environments you need, contact [developers@callmewine.com](mailto:developers@callmewine.com) for further advice.
 
-### `assets`
+```bash
+npm run dev
+```
+### Production, Stage and Features Builds
 
-The assets directory contains your uncompiled assets such as Stylus or Sass files, images, or fonts.
+This is all handle on [Vercel](https://vercel.com/), everytime you push a feature or a Merge Request is approved and merged a new build starts happening on Vercel environments
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/assets).
+## Gitflow
 
-### `components`
+To ensure a standard development process we are adopting the [gitflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) process. All the documentation needed is on their site, feel free to read their documents for further implementations. In short, we have 3 types of branches:
 
-The components directory contains your Vue.js components. Components make up the different parts of your page and can be reused and imported into your pages, layouts and even other components.
+- Feature: Each new feature should reside in its own branch, which can be pushed to the central repository for backup/collaboration.
+- Release: Must be created by team leads after new features have been approved and merged.
+- Hotfix: Maintenance or “hotfix” branches are used to quickly patch production releases. Hotfix branches are a lot like release branches and feature branches except they're based on main instead of develop.
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/components).
+## Releases
 
-### `layouts`
+ChangeLog is handle on [gitlab](https://docs.gitlab.com/), whenever you finish a feature you should update the upcoming release to clarify the progress of what have been done.
 
-Layouts are a great help when you want to change the look and feel of your Nuxt app, whether you want to include a sidebar or have distinct layouts for mobile and desktop.
+Basically, we follow a standard pattern to track our progress, on top of that, GitHub [Releases Page](https://docs.gitlab.com/ee/user/project/releases/#create-a-release-in-the-releases-page) offers a friendly UI to make this process less painful.
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/layouts).
+### Release Names
 
+From a galaxy far away... we are taking an inspiration from [Star Wars creatures](https://www.starwars.com/creatures) to create the upcoming releases names.
 
-### `pages`
+#### Naming Convention Pattern
+```
+${creature-name}-v${MAJOR}.${MINOR}.${REVISION}
+```
 
-This directory contains your application views and routes. Nuxt will read all the `*.vue` files inside this directory and setup Vue Router automatically.
+#### Rules
+- The creature name uses kebab-case.
+- The "-v" should be placed right after the creature name followed by the version number
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/get-started/routing).
+#### Examples
 
-### `plugins`
+> 👏🏻 `acklay-v1.0.1` | `colo-claw-fish-v2.2.3`
 
-The plugins directory contains JavaScript plugins that you want to run before instantiating the root Vue.js Application. This is the place to add Vue plugins and to inject functions or constants. Every time you need to use `Vue.use()`, you should create a file in `plugins/` and add its path to plugins in `nuxt.config.js`.
+> 🙈 `v1.0.1__acklay` | `ColoClawFish__v223`
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/plugins).
+For entertainment purposes I encourage to start the release by placing a creature's little description from [Star Wars Website](https://www.starwars.com/databank). 
 
-### `static`
+#### Example 
+### Acklay
+#### *acklay-v1.0.1*
+A surprisingly agile fury of sharp claws and pointed fangs, the vicious acklay was one of the three arena creatures unleashed in the Geonosian execution arena, dispatched to kill Anakin Skywalker, Padme Amidala, and Obi-Wan Kenobi.
 
-This directory contains your static files. Each file inside this directory is mapped to `/`.
+### Types of changes
+- Improvements: for new features. 
+- Changed: for changes in existing functionality.
+- Deprecated: for soon-to-be removed features.
+- Removed for now removed features.
+- Fixed for any bug fixes.
+- Security: in case of vulnerabilities.
 
-Example: `/static/robots.txt` is mapped as `/robots.txt`.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/static).
-
-### `store`
-
-This directory contains your Vuex store files. Creating a file in this directory automatically activates Vuex.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/store).
+Feel free to read [these documents](https://keepachangelog.com/en/1.0.0/) to lear more.
