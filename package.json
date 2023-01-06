@@ -1,6 +1,6 @@
 {
-  "name": "wine",
-  "version": "1.0.0",
+  "name": "callmewine-frontend",
+  "version": "1.1.0",
   "private": true,
   "scripts": {
     "dev": "nuxt",
@@ -10,30 +10,42 @@
     "slicemachine": "start-slicemachine"
   },
   "dependencies": {
+    "@nuxtjs/composition-api": "^0.33.1",
     "@nuxtjs/gtm": "^2.4.0",
     "@nuxtjs/i18n": "^7.3.0",
     "@nuxtjs/prismic": "^1.4.2",
     "@nuxtjs/style-resources": "^1.2.1",
+    "@pinia/nuxt": "^0.2.1",
     "@prismicio/slice-simulator-vue": "^0.2.1",
     "@smartweb/vue-flash-message": "^0.6.10",
+    "@yzfe/svgicon": "^1.1.0",
+    "@yzfe/vue-svgicon": "^4.0.3",
     "bootstrap": "^4.6.1",
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.19.3",
+    "lodash.debounce": "^4.0.8",
+    "lodash.throttle": "^4.1.1",
     "multi-range-slider-vue": "^1.1.4",
     "nuxt": "^2.15.8",
+    "pinia": "^2.0.28",
     "sass": "^1.53.0",
     "sass-loader": "^10.1.1",
     "swiper": "^6.8.4",
-    "vue": "^2.6.14",
+    "vue": "^2.7.14",
     "vue-carousel-3d": "^1.0.1",
-    "vue-server-renderer": "^2.6.14",
+    "vue-demi": "^0.13.11",
+    "vue-server-renderer": "^2.7.14",
     "vue-slick-carousel": "^1.0.6",
-    "vue-template-compiler": "^2.6.14",
+    "vue-template-compiler": "^2.7.14",
     "vuex": "^3.4.0",
     "vuex-persist": "^3.1.3",
     "webpack": "^4.46.0"
   },
   "devDependencies": {
-    "slice-machine-ui": "^0.4.0"
+    "@nuxtjs/google-fonts": "^2.0.0",
+    "@yzfe/svgicon-loader": "^1.2.0",
+    "nuxt-windicss": "^2.6.0",
+    "slice-machine-ui": "^0.4.0",
+    "vee-validate": "^3.4.14"
   }
 }

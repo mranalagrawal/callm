@@ -1,45 +1,20 @@
 <template>
-  <div class="">
-    <form
-      @submit="onSubmit"
-      class="px-4 pt-3 py-2 mx-auto"
-      :style="{ width: width }"
-    >
-      <b-form-group id="input-group-1">
-        <label class="custom-label" for="input-1">Email</label>
-        <b-form-input
-          id="input-1"
-          class="custom-input"
-          v-model="form.email"
-          type="email"
-          required
-        ></b-form-input>
-      </b-form-group>
+  <ValidationObserver ref="formEl" v-slot="{ handleSubmit }" slim>
+    <form @submit.prevent="handleSubmit(onSubmit)" class="px-4 pt-3 pb-2 mx-auto">
 
-      <b-form-group id="input-group-2" class="position-relative">
-        <label class="custom-label" for="input-2">Password</label>
-        <i
-          v-if="passwordIsVisible"
-          class="fal fa-eye-slash position-absolute text-light-secondary pointer"
-          style="right: 10px; bottom: 10px"
-          @click="passwordIsVisible = !passwordIsVisible"
-        ></i>
-        <i
-          v-else
-          class="fal fa-eye position-absolute text-light-secondary pointer"
-          style="right: 10px; bottom: 10px"
-          @click="passwordIsVisible = !passwordIsVisible"
-        ></i>
-        <b-form-input
-          class="custom-input"
-          id="input-2"
-          v-model="form.password"
-          :type="passwordIsVisible ? 'text' : 'password'"
-          required
-        ></b-form-input>
-      </b-form-group>
+      <InputField v-model="form.email"
+                  type="email"
+                  name="user-email" :label="$t('email').toString()"
+                  :placeholder="$t('email').toString()" rules="required|email"/>
 
-      <p v-if="message" class="small text-danger">{{ message }}</p>
+      <InputField v-model="form.password"
+                  :type="!passwordIsVisible ? 'password' : 'text'"
+                  name="user-password" :label="$t('email').toString()" label="Password"
+                  :placeholder="$t('passwordPlaceholder').toString()" rules="required|min:4"
+                  :icon="passwordIsVisible ? eyeHideIcon : eyeShowIcon"
+                  :click-icon="() => passwordIsVisible = !passwordIsVisible"
+      />
+
       <!-- <b-form-checkbox
         id="remember"
         v-model="form.remember"
@@ -50,38 +25,42 @@
       >
         Ricordami
       </b-form-checkbox> -->
-      <button type="submit" class="w-100 btn bg-light-secondary text-white">
-        {{ $t("navbar.user.signIn") }}
-      </button>
+      <p v-if="message" class="cmw-text-sm cmw-text-error mt-3">{{ message }}</p>
 
-      <div class="text-center my-3">
-        <nuxt-link to="/recover" class="btn text-light-secondary">
-          {{ $t("navbar.user.forgotPassword") }}
-        </nuxt-link>
-      </div>
+      <Button class="sm:cmw-max-w-330px cmw-mt-8" type="submit" :disabled="isSubmitting" :label="$t('navbar.user.signIn').toString()"/>
+
+      <NuxtLink to="/recover" class="cmw-block cmw-w-max cmw-my-3 cmw-text-primary-400 hover:(cmw-text-primary-400 cmw-no-underline)">
+        {{ $t("navbar.user.forgotPassword") }}
+      </NuxtLink>
     </form>
-  </div>
+  </ValidationObserver>
 </template>
 
 <script>
 import userLogin from "../utilities/userLogin";
+import eyeShowIcon from '~/assets/svg/eye-show.svg'
+import eyeHideIcon from '~/assets/svg/eye-hide.svg'
 
 export default {
   props: ["width"],
   data() {
     return {
+      eyeShowIcon,
+      eyeHideIcon,
       passwordIsVisible: false,
       form: {
         email: "",
         password: "",
+        test: "",
         remember: false,
       },
       message: "",
+      isSubmitting: false,
     };
   },
   methods: {
-    async onSubmit(event) {
-      event.preventDefault();
+    async onSubmit() {
+      this.isSubmitting = true;
       const domain = this.$config.DOMAIN;
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
       const user = await userLogin(
@@ -92,32 +71,13 @@ export default {
       );
 
       if (!user) {
-        this.message = "Ops! Sembra che username o password siano errate!";
+        this.message = this.$i18n.t('loginFailed');
+        this.isSubmitting = false;
         return;
       }
       this.$store.commit("user/setUser", user);
-      this.$router.push("/profile");
+      await this.$router.push("/profile");
     },
   },
 };
 </script>
-
-<style scoped>
-/* :deep(form) {
-  width: 340px;
-} */
-
-.custom-label {
-  position: relative;
-  bottom: -11px;
-  left: 12px;
-  padding: 0px 4px;
-  background: white;
-  color: #11312b;
-}
-.custom-input {
-  border-radius: 10px;
-  border-color: #11312b;
-  border-width: 2px;
-}
-</style>

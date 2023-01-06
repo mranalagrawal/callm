@@ -5,11 +5,7 @@
         <div class="row text-white">
           <div class="col-12">
             <div class="ribbon-partner mt-5">
-              <img
-                :src="require(`@/assets/images/selections/favourite.svg`)"
-                class="svg-favourite"
-                style="width: 20px"
-              />
+              <VueSvgIcon :data="favouriteIcon" width="20" />
               <span class="small" style="padding-bottom: 10px">
                 {{ $t("product.recommendedByCallmewine") }}
               </span>
@@ -186,12 +182,13 @@
 
 import { getBrand } from "../utilities/brandForProduct";
 import BrandCarouselVue from "./UI/BrandCarousel.vue";
-
+import favouriteIcon from '~/assets/svg/selections/favourite.svg'
 export default {
   props: ["brandId"],
   components: { BrandCarouselVue },
   data() {
     return {
+      favouriteIcon,
       data: null,
       metafields: null,
       images: null,
@@ -213,14 +210,14 @@ export default {
 <style scoped>
 .partner-bg {
   background: linear-gradient(transparent, transparent 70%, white),
-    url("assets/images/selections/red.svg");
+    url("assets/svg/selections/red.svg");
   background-size: cover;
   background-repeat: no-repeat;
 }
 
 .partner-bg {
   background: url("assets/images/onda.svg"),
-    url("assets/images/selections/red.svg");
+    url("assets/svg/selections/red.svg");
   background-size: cover;
   background-repeat: no-repeat;
 }
@@ -234,33 +231,5 @@ export default {
   height: 24px;
   width: auto;
   clip-path: polygon(0 0, 100% 0, 94% 50%, 100% 100%, 0 100%, 6% 50%);
-}
-
-/* .ribbon-partner::before {
-  position: absolute;
-  content: "";
-  width: 0;
-  height: 0;
-  top: 0px;
-  left: 0px;
-  border-top: 12px solid transparent;
-  border-bottom: 12px solid transparent;
-  border-left: 12px solid var(--dark-secondary);
-}
-
-.ribbon-partner::after {
-  position: absolute;
-  content: "";
-  width: 0;
-  height: 0;
-  top: 0px;
-  right: 0px;
-  border-top: 12px solid transparent;
-  border-bottom: 12px solid transparent;
-  border-right: 12px solid var(--dark-secondary);
-} */
-
-.svg-favourite {
-  filter: brightness(100);
 }
 </style>

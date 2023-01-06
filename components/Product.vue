@@ -48,29 +48,29 @@
             class="position-absolute"
             style="left: 20px; top: 10px; z-index: 10"
           >
-            <img
-              title="Favoriti"
+            <VueSvgIcon
               v-if="metafield.favourite"
-              :src="require(`@/assets/images/selections/favourite.svg`)"
-              class="selection-svg d-block mb-3"
+              :data="favouriteIcon"
+              class="d-block mb-3"
+              width="36" height="auto"
             />
-            <img
-              title="Every day"
+            <VueSvgIcon
               v-if="metafield.foreveryday"
-              :src="require(`@/assets/images/selections/foreveryday.svg`)"
-              class="selection-svg d-block mb-3"
+              :data="forEveryDayIcon"
+              class="d-block mb-3"
+              width="36" height="auto"
             />
-            <img
-              title="Novità"
+            <VueSvgIcon
               v-if="metafield.isnew"
-              :src="require(`@/assets/images/selections/isnew.svg`)"
-              class="selection-svg d-block mb-3 ml-1"
+              :data="isNewIcon"
+              class="d-block mb-3"
+              width="36" height="auto"
             />
-            <img
-              title="Novità"
+            <VueSvgIcon
               v-if="metafield.artisanal"
-              :src="require(`@/assets/images/selections/artisanal.svg`)"
-              class="selection-svg d-block mb-3"
+              :data="artisanalIcon"
+              class="d-block mb-3"
+              width="36" height="auto"
             />
           </div>
           <img
@@ -129,7 +129,7 @@
                   >
                     <!-- <i class="fal fa-shopping-cart fa-2x mr-2"></i> -->
                     <img
-                      :src="require(`~/assets/images/cart.svg`)"
+                      :src="require(`~/assets/svg/cart.svg`)"
                       class="mr-2"
                       alt=""
                     />
@@ -249,15 +249,16 @@
               </b-tab>
               <b-tab :title="$t('product.producer')">
                 <div v-if="brand">
-                  <div v-if="brandMetafields.isPartner" class="ribbon">
-                    <img
-                      :src="require(`@/assets/images/selections/favourite.svg`)"
+                  <div v-if="brandMetafields.isPartner" class="ribbon cmw-flex cmw-items-center">
+                    <!-- TODO: This will use the new lapel component -->
+                    <VueSvgIcon
+                      :data="favouriteIcon"
                       class="svg-favourite"
-                      style="width: 20px"
+                      width="20" height="auto"
                     />
-                    <span class="small">{{
-                      $t("product.recommendedByCallmewine")
-                    }}</span>
+                    <span class="small !cmw-top-0">{{
+                        $t("product.recommendedByCallmewine")
+                      }}</span>
                   </div>
                   <h3 class="text-light-secondary">{{ brand.title }}</h3>
                   <div class="row">
@@ -429,6 +430,10 @@ import {
   queryProductByIdAsTag,
   productRecommendations,
 } from "../utilities/productQueries";
+import favouriteIcon from '~/assets/svg/selections/favourite.svg'
+import forEveryDayIcon from '~/assets/svg/selections/foreveryday.svg'
+import isNewIcon from '~/assets/svg/selections/isnew.svg'
+import artisanalIcon from '~/assets/svg/selections/artisanal.svg'
 import { getBrand } from "../utilities/brandForProduct";
 import VueSlickCarousel from "vue-slick-carousel";
 import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
@@ -451,6 +456,10 @@ export default {
   },
   data() {
     return {
+      favouriteIcon,
+      forEveryDayIcon,
+      isNewIcon,
+      artisanalIcon,
       data: null,
       price: null,
       metafield: null,
@@ -461,7 +470,7 @@ export default {
   },
   computed: {
     strippedContent() {
-      
+
       if (this.metafield.shortDescription[this.$i18n.locale]) {
         return this.metafield.shortDescription[this.$i18n.locale]
           .replace("href", "")
@@ -517,7 +526,7 @@ export default {
 
     /* return; */
     this.data = data.data.products.edges[0].node;
-    
+
     this.price = this.data.variants.nodes[0].price;
     this.metafield = JSON.parse(this.data.metafield1.value);
 
@@ -525,9 +534,9 @@ export default {
 
     const dataBrand = await getBrand(domain, access_token, "B" + brandId);
     this.brand = dataBrand;
-    
+
     this.brandMetafields = JSON.parse(dataBrand.details.value);
-    
+
   },
   methods: {
     async addToUserCart() {
@@ -536,7 +545,7 @@ export default {
       const amountFullPrice = Number(
         this.data.variants.nodes[0].compareAtPriceV2.amount
       );
-      
+
 
       /* data.variants.nodes[0].compareAtPriceV2 */
       const tag = this.data.tags[0];

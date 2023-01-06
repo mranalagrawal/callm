@@ -69,7 +69,7 @@ export default {
 
     const noSelection = !this.$route.fullPath.split("?sel=")[1];
 
-    if (noFilterInURL && noSelection) this.$router.push("/catalog");
+    if (noFilterInURL && noSelection) this.$router.push(this.localeLocation("/catalog"));
   },
 };
 </script>

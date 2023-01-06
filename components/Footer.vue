@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid pt-5 mt-5 px-0" style="background: #f8f8f8">
+  <footer class="container-fluid pt-5 mt-5 px-0" style="background: #f8f8f8">
     <div class="container-fluid px-md-5">
       <div class="row">
         <div class="col-12">
@@ -77,15 +77,8 @@
       </div>
       <div class="row">
         <div class="col-12">
-          <img
-            src="../assets/images/logo-white.svg"
-            class="img-fluid"
-            width="180px"
-            alt=""
-          />
-          <p class="mt-2 fs-14">
-            {{ info.description }}
-          </p>
+          <VueSvgIcon :data="logo" color="white" width="180" height="auto" />
+          <p class="mt-2 fs-14" v-text="info.description" />
         </div>
       </div>
       <div class="row">
@@ -233,50 +226,41 @@
 
       <hr class="separator" />
 
-      <div class="row">
-        <div class="col-12 text-center">
-          <span class="payment"
-            ><i
-              class="fal fa-wallet text-white mr-2"
-              style="font-size: 24px"
-            ></i
-            >{{ $t("footer.paymentMethods") }}</span
-          >
+      <div class="md:cmw-flex cmw-text-center cmw-justify-center">
+        <div class="cmw-flex cmw-gap-2 cmw-items-center cmw-justify-center">
+          <VueSvgIcon :data="walletIcon" color="white" width="30" height="30" />
+          <span>{{ $t("footer.paymentMethods") }}</span>
+        </div>
+        <div class="cmw-grid cmw-grid-cols-3 md:cmw-grid-cols-6 cmw-justify-items-center cmw-content-center cmw-px-8 cmw-py-4">
           <img
             src="../assets/images/american-express.png"
-            width="65px"
-            height="65px"
-            style="margin: 0px 2px"
+            width="65"
+            height="64"
           />
           <img
             src="../assets/images/mastercard.png"
-            width="65px"
-            height="65px"
-            style="margin: 0px 2px"
+            width="65"
+            height="64"
           />
           <img
             src="../assets/images/visa.png"
-            width="65px"
-            height="65px"
-            style="margin: 0px 2px"
+            width="65"
+            height="64"
           />
           <img
             src="../assets/images/paypal.png"
-            width="65px"
-            height="65px"
-            style="margin: 0px 2px"
+            width="65"
+            height="64"
           />
           <img
             src="../assets/images/bonifico.png"
-            width="65px"
-            height="65px"
-            style="margin: 0px 2px"
+            width="65"
+            height="64"
           />
           <img
             src="../assets/images/comodo.png"
-            width="65px"
-            height="65px"
-            style="margin: 0px 2px"
+            width="65"
+            height="64"
           />
         </div>
       </div>
@@ -288,7 +272,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </footer>
 </template>
 
 <style scoped>
@@ -297,10 +281,6 @@
 }
 .separator {
   background: #134c45;
-}
-.payment {
-  font-size: 1.25rem;
-  font-weight: 400;
 }
 .btn-newsletter {
   border-radius: 10px;
@@ -380,10 +360,14 @@
 </style>
 
 <script>
+import logo from 'assets/svg/logo-call-me-wine.svg'
+import walletIcon from 'assets/svg/wallet.svg'
 import locales from "../locales-mapper";
 export default {
   data() {
     return {
+      logo,
+      walletIcon,
       data: null,
       info: null,
       newsletter: false,

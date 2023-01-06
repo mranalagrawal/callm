@@ -6,11 +6,15 @@ export default {
   sameProducer: "Vom selben Hersteller",
   viewMore: "Mehr sehen",
   cart: "Wagen",
+  cartTotal: "Winkelwagen totaal\n",
   createYourAccount: "Erstelle deinen Account",
   firstName: "Vorname",
   lastName: "Nachname",
   email: "Email",
-  password: "Password",
+  emailPlaceholder: "Benutzer Email",
+  password: "Passwort",
+  passwordPlaceholder: "Benutzer-Passwort",
+  loginFailed: 'Ops! Sembra che il nome utente o la password non siano corretti!',
   birthday: "Geburtstag",
   privacyPolicy:
     "Ich erkläre, dass ich die Datenschutzrichtlinie von Callmewine gelesen habe",
@@ -70,7 +74,6 @@ export default {
     addAddress: "Adresse hinzufügen",
     addNewAddress: "Neue Adresse hinzufügen",
     personalData: "Persönliche Daten",
-    accessData: "Zugangsdaten",
     setNewEmailAddress: "Neue E-Mail-Adresse festlegen",
     setNewPassword: "Neues Passwort festlegen",
     setNewPersonalData: "Legen Sie neue persönliche Daten fest",
@@ -124,6 +127,10 @@ export default {
     activeFilters: "Aktive Filter",
     removeAll: "Alles entfernen",
     sortBy: "Sortieren nach",
+    sort: {
+      name: "Name",
+      price: "Preis",
+    },
     highestPrice: "Höchster Preis",
     lowestPrice: "Niedrigste price",
     mostAwarded: "Meist ausgezeichnet",
@@ -131,6 +138,7 @@ export default {
     popularity: "Popularität",
   },
   product: {
+    promo: "Werbeaktion",
     addToCart: "Hinzufügen",
     notAvailable: "Nicht verfügbar",
     available: "Jetzt verfügbar",
@@ -163,4 +171,15 @@ export default {
     refinement: "Raffinesse",
     additionalNotes: "Zusätzliche Bemerkungen",
   },
+  validations: {
+    password: {
+      title: 'Passwort muss enthalten:',
+      effectiveness: 'Kennwortwirksamkeit',
+      min: 'mindestens 8 Zeichen',
+      oneNumber: 'eine Nummer',
+      oneUpperCase: 'ein Großbuchstabe',
+      oneLowerCase: 'ein kleiner Buchstabe',
+      oneSpecialChar: 'ein Sonderzeichen',
+    }
+  }
 };

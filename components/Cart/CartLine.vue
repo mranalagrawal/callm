@@ -50,7 +50,7 @@
         </button>
       </div>
       <div class="col-12">
-        <hr class="w-75" />
+        <hr class="cmw-w-11/12 ml-auto" />
       </div>
     </div>
   </div>
@@ -58,6 +58,7 @@
 
 <script>
 export default {
+  name: 'CartLine',
   props: ["item"],
   data() {
     return {

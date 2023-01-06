@@ -51,6 +51,14 @@ export const mutations = {
       state.cart.lines.edges.findIndex((el) => el.node.id == lineId),
       1
     );
-    
+
   }, */
 };
+
+export const getters = {
+  favoritesCount(state) {
+    return state.user.customer &&
+      !!state.user.customer.wishlist &&
+      state.user.customer.wishlist.value && JSON.parse(state.user.customer.wishlist.value).length;
+  },
+}

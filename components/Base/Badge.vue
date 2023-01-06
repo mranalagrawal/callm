@@ -1,0 +1,40 @@
+<template>
+  <span
+    class="cmw-flex cmw-w-20px cmw-h-20px cmw-text-xxs cmw-rounded-full cmw-transition-colors"
+    :class="[getBgColor(), getNumberColor]"
+  >
+    <span class="cmw-m-auto">{{ $props.qty }}</span>
+  </span>
+</template>
+
+<script>
+
+export default {
+  name: "Badge",
+  props: {
+    qty: {
+      type: [String, Number],
+    },
+    bgColor: {
+      type: String,
+      validator: (prop) => ['primary', 'primary-400', 'white'].includes(prop),
+      default: 'primary'
+    },
+  },
+  computed: {
+    getNumberColor() {
+      return this.$props.bgColor === 'white' ? 'cmw-text-primary' : 'cmw-text-white'
+    }
+  },
+  methods: {
+    getBgColor() {
+      return ({
+        primary: 'cmw-bg-primary-400',
+        'primary-400': 'cmw-bg-primary',
+        'white': 'cmw-bg-white',
+      })[this.$props.bgColor]
+    }
+  }
+}
+</script>
+

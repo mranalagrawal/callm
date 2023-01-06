@@ -6,11 +6,15 @@ export default {
   sameProducer: "Dallo stesso produttore",
   viewMore: "Vedi di più",
   cart: "Carrello",
+  cartTotal: 'Totale Ordine',
   createYourAccount: "Crea account",
   firstName: "Nome",
   lastName: "Cognome",
   email: "Email",
+  emailPlaceholder: "User email",
   password: "Password",
+  passwordPlaceholder: "User Password",
+  loginFailed: 'Ops! Sembra che il nome utente o la password non siano corretti!',
   birthday: "Data di nascita",
   privacyPolicy: "Dichiaro di aver letto la Privacy Policy di Callmewine",
   acceptMarketing:
@@ -36,9 +40,9 @@ export default {
       total: "Totale",
       detail: "Dettaglio carrello",
       checkout: "Checkout",
-      empty: "Carrello vuoto!",
-      startFromMessage: "Non sai da dove iniziare?",
-      cta: "Scopri le promozioni",
+      empty: "Il tuo carrello è vuoto",
+      startFromMessage: "Non sai da dove cominciare?",
+      cta: "Scopri le nostre promozioni",
     },
     user: {
       myOrders: "Ordini",
@@ -69,7 +73,6 @@ export default {
     addAddress: "Nuovo indirizzo",
     addNewAddress: "Aggiungi nuovo indirizzo",
     personalData: "Dati personali",
-    accessData: "Dati di accesso",
     setNewEmailAddress: "Imposta nuova mail",
     setNewPassword: "Imposta nuova password",
     setNewPersonalData: "Imposta dati personali",
@@ -123,6 +126,10 @@ export default {
     activeFilters: "Filtri attivi",
     removeAll: "Rimuovi tutti",
     sortBy: "Ordina per",
+    sort: {
+      name: "Nome",
+      price: "Prezzo",
+    },
     highestPrice: "Prezzo più alto",
     lowestPrice: "Prezzo più basso",
     mostAwarded: "Più premitati",
@@ -130,6 +137,7 @@ export default {
     popularity: "Popolarità",
   },
   product: {
+    promo: "promo",
     addToCart: "Aggiungi",
     notAvailable: "Non disponibile",
     available: "Disponibile",
@@ -162,4 +170,15 @@ export default {
     refinement: "Raffinamento",
     additionalNotes: "Note addizionali",
   },
+  validations: {
+    password: {
+      title: 'La password deve contenere:',
+      effectiveness: 'Efficacia Password',
+      min: 'almeno 8 caratteri',
+      oneNumber: 'un numero',
+      oneUpperCase: 'una lettera maiuscola',
+      oneLowerCase: 'una lettera minuscola',
+      oneSpecialChar: 'un carattere speciale',
+    }
+  }
 };

@@ -3,7 +3,7 @@
     class="container-fluid position-relative px-md-0"
     @mouseleave="onTab(null)"
   >
-    <div class="row pb-3 shadow-menu">
+    <div class="row shadow-menu">
       <div
         class="col text-center text-uppercase menu-link"
         v-for="(item, i) in data"
@@ -45,10 +45,7 @@
 </template>
 
 <script>
-import ThirdLevel from "./UI/ThirdLevel.vue";
-
 export default {
-  components: { ThirdLevel },
   watch: {
     "$i18n.locale": "$fetch",
   },
@@ -134,8 +131,6 @@ export default {
   text-decoration: none;
   font-size: 0.875rem;
   font-weight: 300;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
 }
 .menu-link:hover {
   /* color: var(--dark-secondary); */

@@ -1,6 +1,6 @@
 <template>
-  <div class="container-fluid mt-5 pt-5">
-    <div class="container-fluid px-md-5">
+  <div class="container-fluid">
+    <div class="container-fluid cmw-py-20">
       <div class="row">
         <div class="col-12 mb-4">
           <nuxt-link class="text-dark-secondary" to="/">Home</nuxt-link>

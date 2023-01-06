@@ -2,7 +2,7 @@
 @import "~bootstrap-vue/src/index.scss";
 
 /* cmw */
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap");
+//@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap");
 /* wv */
 @import url("https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@400;500;600;700;800;900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&display=swap");
@@ -13,6 +13,11 @@
 
 @mixin mainFont($font) {
   font-family: map-get($font, main);
+}
+
+:root {
+  --cmw-top-banner-height: 0px;
+  --cmw-header-height: 0px;
 }
 
 body {
@@ -152,7 +157,7 @@ h4,
   top: 0px;
   height: 30.6px;
   width: 50px;
-  background: url("../images/selections/promo-left.svg");
+  background: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMjhweCIgaGVpZ2h0PSIzMnB4IiB2aWV3Qm94PSIwIDAgMjggMzIiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+CiAgICA8dGl0bGU+R3JvdXAgNUAxPC90aXRsZT4KICAgIDxnIGlkPSJDT01QT05FTlRTIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4KICAgICAgICA8ZyBpZD0iR3JvdXAtNSI+CiAgICAgICAgICAgIDxwb2x5Z29uIGlkPSJGaWxsLTEiIGZpbGw9IiMxMDMxMkIiIHBvaW50cz0iNyAwIDAgNiAxMS4xMzM0OTE1IDYiPjwvcG9seWdvbj4KICAgICAgICAgICAgPHBhdGggZD0iTTI3LjEwNzk3NTcsMzIgQzIyLjkzMzEwODEsMzIgMTkuMTc1NzI3MiwyOS41MTY0MDU0IDE3LjYxMDg0MSwyNS43MjIyNTgyIEw3LDAgTDI3LjEwNzk3NTcsMCBMMjcuMTA3OTc1NywzMiBaIiBpZD0iRmlsbC0zIiBmaWxsPSIjMTM0QzQ1Ij48L3BhdGg+CiAgICAgICAgPC9nPgogICAgPC9nPgo8L3N2Zz4=");
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
@@ -165,7 +170,7 @@ h4,
   top: 0px;
   height: 30.6px;
   width: 50px;
-  background: url("../images/selections/promo-left.svg");
+  background: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMjhweCIgaGVpZ2h0PSIzMnB4IiB2aWV3Qm94PSIwIDAgMjggMzIiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+CiAgICA8dGl0bGU+R3JvdXAgNUAxPC90aXRsZT4KICAgIDxnIGlkPSJDT01QT05FTlRTIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4KICAgICAgICA8ZyBpZD0iR3JvdXAtNSI+CiAgICAgICAgICAgIDxwb2x5Z29uIGlkPSJGaWxsLTEiIGZpbGw9IiMxMDMxMkIiIHBvaW50cz0iNyAwIDAgNiAxMS4xMzM0OTE1IDYiPjwvcG9seWdvbj4KICAgICAgICAgICAgPHBhdGggZD0iTTI3LjEwNzk3NTcsMzIgQzIyLjkzMzEwODEsMzIgMTkuMTc1NzI3MiwyOS41MTY0MDU0IDE3LjYxMDg0MSwyNS43MjIyNTgyIEw3LDAgTDI3LjEwNzk3NTcsMCBMMjcuMTA3OTc1NywzMiBaIiBpZD0iRmlsbC0zIiBmaWxsPSIjMTM0QzQ1Ij48L3BhdGg+CiAgICAgICAgPC9nPgogICAgPC9nPgo8L3N2Zz4=");
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
@@ -189,7 +194,9 @@ h4,
   height: 48px;
   border-radius: 12px;
   color: white;
-  background: url("../images/cart.svg"), var(--light-secondary);
+  background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIGlkPSJrIiBmaWxsPSIjRkZGRkZGIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHBhdGggZD0iTTE1LjcsNTEuNTJjMCwzLjU5LDIuOTEsNi41MSw2LjUxLDYuNTFzNi41MS0yLjkxLDYuNTEtNi41MS0yLjkxLTYuNTEtNi41MS02LjUxLTYuNTEsMi45MS02LjUxLDYuNTFabTYuNTEtMy4yNWMxLjgsMCwzLjI1LDEuNDYsMy4yNSwzLjI1cy0xLjQ2LDMuMjUtMy4yNSwzLjI1LTMuMjUtMS40Ni0zLjI1LTMuMjUsMS40Ni0zLjI1LDMuMjUtMy4yNVptMTMuMDEsMy4yNWMwLDMuNTksMi45MSw2LjUxLDYuNTEsNi41MXM2LjUxLTIuOTEsNi41MS02LjUxLTIuOTEtNi41MS02LjUxLTYuNTEtNi41MSwyLjkxLTYuNTEsNi41MVptNi41MS0zLjI1YzEuOCwwLDMuMjUsMS40NiwzLjI1LDMuMjVzLTEuNDYsMy4yNS0zLjI1LDMuMjUtMy4yNS0xLjQ2LTMuMjUtMy4yNSwxLjQ2LTMuMjUsMy4yNS0zLjI1Wm0tMjIuNzctNi41MWMtMS44LDAtMy4yNS0xLjQ2LTMuMjUtMy4yNWwzNy40Mi0zLjI1czQuODgtMTkuNzIsNC44OC0yMS4xNWMwLS45LS43My0xLjYzLTEuNjMtMS42M0gxNS43di0zLjI1aDEuNjNjLjg3LS4wMywxLjU3LS43NSwxLjU3LTEuNjNzLS43LTEuNi0xLjU3LTEuNjNINy41N2MtLjg3LC4wMy0xLjU3LC43NS0xLjU3LDEuNjNzLjcsMS42LDEuNTcsMS42M2g0Ljg4djI5LjI4YzAsMy41OSwyLjkxLDYuNTEsNi41MSw2LjUxSDU2LjM3Yy4wNSwwLDAtMS42MSwwLTMuMjVIMTguOTZabS0zLjI1LTI2LjAzSDU0Ljc0bC00LjE2LDE2LjY0LTM0Ljg4LDIuODhWMTUuNzNaIi8+PC9zdmc+Cg==");
+  background-color: var(--light-secondary);
+  background-size: 32px;
   background-repeat: no-repeat;
   background-position: center;
   position: relative;
@@ -197,8 +204,9 @@ h4,
 
 .btn-search {
   position: absolute;
-  top: 18px;
-  right: 24px;
+  top: 50%;
+  right: 0;
+  transform: translate(-25px, -50%);
   background: var(--light-secondary) !important;
   border-radius: 8px;
 }
@@ -248,4 +256,27 @@ input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px white inset !important;
+  &.is-gray { -webkit-box-shadow: 0 0 0 30px #F8F8F8 inset !important; }
+}
+
+input[type=date]::-webkit-calendar-picker-indicator {
+  background-image: url("data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20id%3D%22g%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Cpath%20d%3D%22M51.07%2C6H12.93c-3.83%2C0-6.93%2C2.91-6.93%2C6.5V51.5c0%2C3.59%2C3.1%2C6.5%2C6.93%2C6.5H51.07c3.83%2C0%2C6.93-2.91%2C6.93-6.5V12.5c0-3.59-3.1-6.5-6.93-6.5Zm3.47%2C45.5c0%2C1.8-1.55%2C3.25-3.47%2C3.25H12.93c-1.91%2C0-3.47-1.45-3.47-3.25V19H54.53s0%2C32.5%2C0%2C32.5Zm0-35.75H9.47v-3.25c0-1.8%2C1.55-3.25%2C3.47-3.25H51.07c1.91%2C0%2C3.47%2C1.46%2C3.47%2C3.25%2C0%2C0%2C0%2C3.25%2C0%2C3.25Zm-8.67%2C19.5c2.87%2C0%2C5.2-2.18%2C5.2-4.88s-2.33-4.88-5.2-4.88-5.2%2C2.18-5.2%2C4.88%2C2.33%2C4.88%2C5.2%2C4.88Zm-1.73-6.5h3.47v3.25h-3.47v-3.25Zm1.73%2C19.5c2.87%2C0%2C5.2-2.18%2C5.2-4.88s-2.33-4.88-5.2-4.88-5.2%2C2.18-5.2%2C4.88%2C2.33%2C4.88%2C5.2%2C4.88Zm-1.73-6.5h3.47v3.25h-3.47v-3.25Zm-26-6.5c2.87%2C0%2C5.2-2.18%2C5.2-4.88s-2.33-4.88-5.2-4.88-5.2%2C2.18-5.2%2C4.88%2C2.33%2C4.88%2C5.2%2C4.88Zm-1.73-6.5h3.47v3.25h-3.47v-3.25Zm15.6%2C6.5c2.87%2C0%2C5.2-2.18%2C5.2-4.88s-2.33-4.88-5.2-4.88-5.2%2C2.18-5.2%2C4.88%2C2.33%2C4.88%2C5.2%2C4.88Zm-1.73-6.5h3.47v3.25h-3.47s0-3.25%2C0-3.25Zm-12.13%2C19.5c2.87%2C0%2C5.2-2.18%2C5.2-4.88s-2.33-4.88-5.2-4.88-5.2%2C2.18-5.2%2C4.88%2C2.33%2C4.88%2C5.2%2C4.88Zm-1.73-6.5h3.47v3.25h-3.47v-3.25Zm15.6%2C6.5c2.87%2C0%2C5.2-2.18%2C5.2-4.88s-2.33-4.88-5.2-4.88-5.2%2C2.18-5.2%2C4.88%2C2.33%2C4.88%2C5.2%2C4.88Zm-1.73-6.5h3.47v3.25h-3.47s0-3.25%2C0-3.25Z%22%20style%3D%22fill%3A%23e6362e%3B%22%2F%3E%3C%2Fsvg%3E");
+  height: 26px;
+  width: 26px;
+  padding: 0;
+}
+
+/* ScrollBar styles */
+::-webkit-scrollbar {
+  width: 3px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: theme("colors.gray.DEFAULT");
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: theme("colors.primary.DEFAULT");
+  border-radius: 2px;
 }

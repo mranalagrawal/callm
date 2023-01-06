@@ -1,4 +1,4 @@
-<template>
+<template class="mt-5 pt-5">
   <div class="container-fluid container-large px-md-3 my-5">
     <div class="row mb-3" v-if="data">
       <div class="col-12">
@@ -24,13 +24,52 @@
           {{ data.description }}
         </p>
       </div>
+    </div>
 
-      <div class="col-12 py-4" v-if="data">
-        <VueSlickCarousel v-bind="settings">
-          <div v-for="product in data.products" :key="product.id">
-            <ProductCardVertical :product="product" />
-          </div>
-        </VueSlickCarousel>
+    <div v-if="data" class="row">
+      <div class="col-12">
+        <span v-text="$t('search.sortBy')" />
+        <!-- FixMe: change these icon for the proper sortBy component from DS -->
+        <button
+          class="btn"
+          :class="currentSort == 'title' ? 'button-active' : 'button'"
+          @click="sort('title')"
+        >
+          {{ $t('search.sort.name') }}
+          <i
+            v-if="currentSortDir == 'desc' && currentSort == 'title'"
+            class="fal fa-sort-alpha-down"
+          ></i>
+          <i
+            v-if="currentSortDir == 'asc' && currentSort == 'title'"
+            class="fal fa-sort-alpha-down-alt"
+          ></i>
+        </button>
+        <button
+          class="btn"
+          :class="currentSort == 'price' ? 'button-active' : 'button'"
+          @click="sort('price')"
+        >
+          {{ $t('search.sort.price') }}
+          <i
+            v-if="currentSortDir == 'desc' && currentSort == 'price'"
+            class="fal fa-sort-numeric-down"
+          ></i>
+          <i
+            v-if="currentSortDir == 'asc' && currentSort == 'price'"
+            class="fal fa-sort-numeric-down-alt"
+          ></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div
+        v-for="product in sorted"
+        :key="product.id"
+        class="col-12 col-md-6 col-lg-4 col-xl-3"
+      >
+        <ProductCardVertical :product="product" />
       </div>
     </div>
   </div>
@@ -48,38 +87,49 @@ export default {
     "$i18n.locale": "$fetch",
   },
   components: { ProductCardVertical, VueSlickCarousel },
-  props: ["selection"],
+  props: {
+    selection: {
+      type: String
+    }
+  },
   data: () => ({
     data: null,
-    settings: {
-      dots: true,
-      focusOnSelect: true,
-      infinite: true,
-      speed: 500,
-      slidesToShow: 4,
-      slidesToScroll: 4,
-      touchThreshold: 5,
-      responsive: [
-        {
-          breakpoint: 1024,
-          settings: {
-            slidesToShow: 3,
-            slidesToScroll: 3,
-            arrows: false,
-          },
-        },
-        {
-          breakpoint: 600,
-          settings: {
-            slidesToShow: 1,
-            slidesToScroll: 1,
-            dots: true,
-            arrows: false,
-          },
-        },
-      ],
-    },
+    currentSort: "title",
+    currentSortDir: "asc",
   }),
+  methods: {
+    sort: function (s) {
+      //if s == current sort, reverse
+      if (s === this.currentSort) {
+        this.currentSortDir = this.currentSortDir === "asc" ? "desc" : "asc";
+      }
+      this.currentSort = s;
+    },
+  },
+  computed: {
+    sorted: function () {
+      if (!this.data) return;
+      if (this.currentSort == "title") {
+        return this.data.products.sort((a, b) => {
+          let modifier = 1;
+          if (this.currentSortDir === "desc") modifier = -1;
+          if (a[this.currentSort] < b[this.currentSort]) return -1 * modifier;
+          if (a[this.currentSort] > b[this.currentSort]) return 1 * modifier;
+          return 0;
+        });
+      } else {
+        return this.data.products.sort((a, b) => {
+          let modifier = 1;
+          if (this.currentSortDir === "desc") modifier = -1;
+          if (+a.variants.nodes[0].price < +b.variants.nodes[0].price)
+            return -1 * modifier;
+          if (+a.variants.nodes[0].price > +b.variants.nodes[0].price)
+            return 1 * modifier;
+          return 0;
+        });
+      }
+    },
+  },
   async fetch() {
     const GRAPHQL_URL = this.$config.DOMAIN;
 
@@ -115,83 +165,16 @@ export default {
 </script>
 
 <style scoped>
-/* :deep(.slick-list) {
-  overflow: visible !important;
-} */
-/* :deep(.slick-slide) {
-  opacity: 0;
-  visibility: hidden;
-}
-
-:deep(.slick-slide.slick-active) {
-  opacity: 1;
-  visibility: visible;
-} */
-
-.view-more {
+.button {
   border: 2px solid var(--light-secondary);
   border-radius: 12px;
   color: var(--light-secondary);
 }
-:deep(.slick-arrow.slick-prev) {
-  width: 48px;
-  height: 48px;
-  background: white;
-  box-shadow: 0 0.5rem 1rem rgba(102, 101, 101, 0.5) !important;
-  background-image: url("../assets/images/chevron-left.svg") !important;
-  background-size: 24px;
-  background-position: center;
-  background-repeat: no-repeat;
-  border-radius: 12px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 99;
-  left: -14px;
-}
-:deep(.slick-arrow.slick-next) {
-  width: 48px;
-  height: 48px;
-  background: white;
-  box-shadow: 0 0.5rem 1rem rgba(102, 101, 101, 0.5) !important;
-  background-image: url("../assets/images/chevron-right.svg") !important;
-  background-size: 24px;
-  background-position: center;
-  background-repeat: no-repeat;
-  border-radius: 12px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  right: -14px;
-  z-index: 99;
-}
-:deep(.slick-prev::before) {
-  color: red;
-  /* content: "\2039"; */
-  content: "";
-  font-size: 60px;
-  line-height: unset;
-}
-:deep(.slick-next::before) {
-  color: red;
-  /* content: "\203A"; */
-  content: "";
-  font-size: 60px;
-  line-height: unset;
-}
 
-:deep(.slick-dots li button:before) {
-  font-size: 10px;
-  opacity: 0.6;
-  color: var(--light-secondary);
-}
-
-:deep(.slick-dots li.slick-active button:before) {
-  opacity: 1;
-  font-size: 16px;
-  color: var(--dark-secondary);
-}
-:deep(.slick-dots) {
-  bottom: -48px;
+.button-active {
+  border: 2px solid var(--light-secondary);
+  border-radius: 12px;
+  background-color: var(--light-secondary);
+  color: white;
 }
 </style>

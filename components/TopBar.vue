@@ -1,28 +1,47 @@
 <template>
   <div
-    class="container-fluid bg-dark-primary py-2 text-white text-center fixed-top"
-    style="z-index: 1050"
+    ref="topBar"
+    class="container-fluid text-center
+     cmw-bg-secondary cmw-fixed cmw-top-0 cmw-left-0 cmw-z-1050 cmw-text-white cmw-uppercase cmw-py-1
+     cmw-overline-1 md:cmw-overline-2"
   >
     <span
-      class="d-md-none"
       v-if="data"
       v-html="data.data.text[0].text"
-      style="font-size: 9px"
-    ></span>
-    <span
-      class="small d-none d-md-block"
-      v-if="data"
-      v-html="data.data.text[0].text"
-    ></span>
+    />
   </div>
 </template>
 
 <script>
 import documents from "../prismic-mapper";
 import locales from "../locales-mapper";
+import {useHeaderSize} from "~/store/headerSize";
+import {nextTick, onMounted, onUnmounted, ref} from "@nuxtjs/composition-api";
+import debounce from "lodash.debounce";
 export default {
   watch: {
     "$i18n.locale": "$fetch",
+  },
+  setup() {
+    const headerSize = useHeaderSize()
+    const topBar = ref(null)
+
+    const resizeListener = debounce( function () {
+      headerSize.$patch({
+        topBarHeight: topBar.value ? topBar.value.getBoundingClientRect().height : 0,
+      })
+    }, 400)
+
+    onMounted(() => {
+        window.addEventListener('resize', resizeListener)
+        nextTick(() => resizeListener())
+    })
+
+    onUnmounted(() => {
+      window.removeEventListener('resize', resizeListener)
+    })
+
+    return { headerSize, topBar }
   },
   data: () => ({
     selectedItem: "",

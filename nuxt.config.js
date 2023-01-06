@@ -1,4 +1,5 @@
 /* import { apiEndpoint } from "./sm.json"; */
+import { join } from 'path'
 
 const THEME_COLORS = {
   CMW: `
@@ -58,18 +59,34 @@ export default {
     ],
   },
 
-  css: ["@/assets/scss/main.scss"],
+  css: [
+    "@/assets/scss/main.scss",
+    '@yzfe/svgicon/lib/svgicon.css',
+    '@assets/css/vue-transitions.css',
+  ],
 
   plugins: [
+    { src: "~plugins/vee-validate", ssr: false },
     { src: "~plugins/vue-carousel-3d", ssr: false },
     { src: "~/plugins/vuex-persist", ssr: false },
     { src: "~/plugins/vue-flash-message.js", mode: "client" },
+    { src: "~/plugins/vue-svg-icon.js" },
     { src: "~/plugins/vue-slick-carousel.js", mode: "client" },
+    { src: '~/plugins/i18n.js' },
   ],
 
-  components: true,
+  components: [
+    '~/components',
+    { path: '~/components/Base', extensions: ['vue'] }
+  ],
 
-  buildModules: ["@nuxtjs/prismic"],
+  buildModules: [
+    '@nuxtjs/composition-api/module',
+    ['@pinia/nuxt', { disableVuex: false }],
+    '@nuxtjs/google-fonts',
+    "@nuxtjs/prismic",
+    'nuxt-windicss',
+  ],
   prismic: {
     endpoint: process.env.PRISMIC,
     modern: true,
@@ -104,7 +121,7 @@ export default {
   },
 
   build: {
-    transpile: ["@prismicio/vue", "swiper"],
+    transpile: ["@prismicio/vue", "swiper", "vue-svg-icon", "vee-validate/dist/rules"],
     loaders: {
       scss: {
         additionalData: `
@@ -113,16 +130,52 @@ export default {
         `,
       },
     },
+    extend (config, ctx) {
+      const svgFilePath = join(__dirname, 'assets')
+      const imageLoaderRule = config.module.rules.find(rule => rule.test && rule.test.test('.svg'))
+      imageLoaderRule.test = /\.(png|jpe?g|gif|webp)$/
+
+      config.module.rules.push({
+        test: /\.svg$/,
+        include: [svgFilePath],
+        use: [
+          {
+            loader: '@yzfe/svgicon-loader',
+            options: {
+              svgFilePath: [svgFilePath],
+              svgoConfig: null // Custom svgo configuration
+            }
+          }
+        ]
+      })
+    },
   },
 
   babel: { compact: true },
 
+  /* FixMe: We are using nuxt generate for builds, from docs you can read: For server hosting, target: 'server' is used,
+       which is the default value. You will use the build command to build your application. */
   /* target: "static", */
 
   generate: {
     exclude: [
       /^\//, // rotte da escludere dalla generazione
     ],
+  },
+
+  // https://google-fonts.nuxtjs.org/
+  googleFonts: {
+    download: true,
+    base64: process.env.NODE_ENV === 'production',
+    display: 'swap',
+    prefetch: false,
+    preconnect: false,
+    stylePath: 'css/fonts.css',
+    fontsDir: process.env.NODE_ENV === 'production' ? 'fonts' : undefined,
+    fontsPath: process.env.NODE_ENV === 'production' ? '~assets/fonts' : undefined,
+    families: {
+      'Open Sans': [300, 400, 500, 600, 700],
+    },
   },
 
   publicRuntimeConfig: {

@@ -6,11 +6,15 @@ export default {
   sameProducer: "From the same producer",
   viewMore: "View more",
   cart: "Cart",
+  cartTotal: 'Cart Total',
   createYourAccount: "Create your account",
   firstName: "First name",
   lastName: "Last name",
   email: "Email",
+  emailPlaceholder: "E-mail dell'utente",
   password: "Password",
+  passwordPlaceholder: "Password utente",
+  loginFailed: 'Oops! It seems that username or password are incorrect!',
   birthday: "Birthday",
   privacyPolicy: "I declare that I have read the Callmewine Privacy Policy",
   acceptMarketing:
@@ -69,7 +73,6 @@ export default {
     addAddress: "Add address",
     addNewAddress: "Add new address",
     personalData: "Personal data",
-    accessData: "Access data",
     setNewEmailAddress: "Set new email address",
     setNewPassword: "Set new password",
     setNewPersonalData: "Set new personal data",
@@ -123,6 +126,10 @@ export default {
     activeFilters: "Active filters",
     removeAll: "Remove all",
     sortBy: "Sort by",
+    sort: {
+      name: "Name",
+      price: "Price",
+    },
     highestPrice: "Highest price",
     lowestPrice: "Lowest price",
     mostAwarded: "Most awarded",
@@ -135,6 +142,7 @@ export default {
     },
   },
   product: {
+    promo: "promo",
     addToCart: "Add to Cart",
     notAvailable: "Not available",
     available: "Available now",
@@ -167,4 +175,15 @@ export default {
     refinement: "Refinement",
     additionalNotes: "Additional Notes",
   },
+  validations: {
+    password: {
+      title: 'Password must contain:',
+      effectiveness: 'Password Effectiveness',
+      min: 'at least 8 characters',
+      oneNumber: 'one number',
+      oneUpperCase: 'one uppercase letter',
+      oneLowerCase: 'one lowercase letter',
+      oneSpecialChar: 'one special character',
+    }
+  }
 };
