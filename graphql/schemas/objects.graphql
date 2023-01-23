@@ -1,0 +1,5 @@
+type CustomerUserError {
+  code: CustomerErrorCode
+  code: [String!]
+  code: String!
+}

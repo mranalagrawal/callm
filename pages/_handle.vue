@@ -1,77 +1,80 @@
+<script>
+export default {
+  layout(context) {
+    return context.$config.STORE
+  },
+  data() {
+    return {
+      product: null,
+      inputParameters: {},
+    }
+  },
+  created() {
+    if (['profile'].includes(this.$route.name))
+      return
+
+    /* const path = this.$route.path; */
+    const path = this.$route.params.handle
+    // check if product page
+    const isProduct = /[P][0-9]+/
+    if (isProduct.test(path)) {
+      this.product = `P${this.$route.path.split('-P')[1]}`
+      return
+    }
+
+    // rules
+    const filters = [
+      { name: 'winelists', rule: /[V][0-9]+/ },
+      { name: 'categories', rule: /[C][0-9]+/ },
+      { name: 'regions', rule: /[R][0-9]+/ },
+      { name: 'dosagecontents', rule: /[D][0-9]+/ },
+      { name: 'brands', rule: /[B][0-9]+/ },
+      { name: 'countries', rule: /[N][0-9]+/ },
+      { name: 'macrocategories', rule: /[M][0-9]+/ },
+      { name: 'selections', rule: null },
+    ]
+
+    // loop and assign, MUST BE this way
+    filters.forEach((el) => {
+      if (el.name != 'selections' && path.match(el.rule)) {
+        console.log('MATCHED >>> ', el.rule, path)
+        this.inputParameters[el.name] = path.match(el.rule)[0].substring(1)
+      }
+      if (el.name == 'selections') {
+        if (this.$route.fullPath.split('?sel=')[1]) {
+          const selectionsInQuery = this.$route.fullPath
+            .split('?sel=')[1]
+            .split(',')
+          selectionsInQuery.forEach(
+            selection => (this.inputParameters[selection] = true),
+          )
+        }
+      }
+    })
+
+    const noFilterInURL = filters
+      .filter(el => el.rule !== null)
+      .every(el => !el.rule.test(path))
+
+    console.log(noFilterInURL, '>> noFilterInUrl')
+
+    const noSelection = !this.$route.fullPath.split('?sel=')[1]
+
+    if (noFilterInURL && noSelection)
+      this.$router.push(this.localeLocation('/catalog'))
+  },
+}
+</script>
+
 <template>
   <div class="mt-5">
     <div v-if="product">
       <product :product="product" />
     </div>
     <div v-else>
-      <search-filter :inputParameters="inputParameters" />
+      <search-filter :input-parameters="inputParameters" />
     </div>
   </div>
 </template>
-
-<script>
-export default {
-  layout(context) {
-    console.log(context.$config.STORE);
-    return context.$config.STORE;
-  },
-  data() {
-    return {
-      product: null,
-      inputParameters: {},
-    };
-  },
-  created() {
-    /* const path = this.$route.path; */
-    const path = this.$route.params.handle;
-    // check if product page
-    const isProduct = /[P][0-9]+/;
-    if (isProduct.test(path)) {
-      this.product = "P" + this.$route.path.split("-P")[1];
-      return;
-    }
-
-    // rules
-    const filters = [
-      { name: "winelists", rule: /[V][0-9]+/ },
-      { name: "categories", rule: /[C][0-9]+/ },
-      { name: "regions", rule: /[R][0-9]+/ },
-      { name: "dosagecontents", rule: /[D][0-9]+/ },
-      { name: "brands", rule: /[B][0-9]+/ },
-      { name: "countries", rule: /[N][0-9]+/ },
-      { name: "macrocategories", rule: /[M][0-9]+/ },
-      { name: "selections", rule: null },
-    ];
-
-    // loop and assign, MUST BE this way
-    filters.forEach((el) => {
-      if (el.name != "selections" && path.match(el.rule)) {
-        console.log("MATCHED >>> ", el.rule, path);
-        this.inputParameters[el.name] = path.match(el.rule)[0].substring(1);
-      }
-      if (el.name == "selections") {
-        if (this.$route.fullPath.split("?sel=")[1]) {
-          let selectionsInQuery = this.$route.fullPath
-            .split("?sel=")[1]
-            .split(",");
-          selectionsInQuery.forEach(
-            (selection) => (this.inputParameters[selection] = true)
-          );
-        }
-      }
-    });
-
-    const noFilterInURL = filters
-      .filter((el) => el.rule !== null)
-      .every((el) => !el.rule.test(path));
-
-    console.log(noFilterInURL, ">> noFilterInUrl");
-
-    const noSelection = !this.$route.fullPath.split("?sel=")[1];
-
-    if (noFilterInURL && noSelection) this.$router.push(this.localeLocation("/catalog"));
-  },
-};
-</script>
 
 <style scoped></style>

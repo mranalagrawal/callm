@@ -1,41 +1,43 @@
-<template>
-  <component
-    :is="$props.to ? 'NuxtLink' : 'button'"
-    :to="$props.to"
-    v-bind="$attrs"
-    class="cmw-font-secondary cmw-flex cmw-items-center cmw-justify-center cmw-font-bold
-     cmw-transition-colors cmw-rounded cmw-px-8 cmw-py-[0.8rem] cmw-border-2 cmw-w-full text-uppercase"
-    :class="getVariant()"
-  >
-    <slot>{{ $props.label }}</slot>
-  </component>
-</template>
-
 <script>
-
+// noinspection JSUnusedGlobalSymbols
 export default {
-  name: "Button",
+  // Note: temp ignore till migrate to Nuxt 3, then we will name this BaseButton
+  // eslint-disable-next-line vue/multi-word-component-names,vue/no-reserved-component-names
+  name: 'Button',
   props: {
     to: {
       type: [String],
+      default: '',
     },
     label: {
       type: String,
+      default: '',
     },
     variant: {
-      type: String,
-      validator: (prop) => ['default', 'ghost'].includes(prop),
-      default: 'default'
+      validator: prop => ['default', 'ghost', 'text'].includes(prop),
+      default: 'default',
     },
   },
   methods: {
     getVariant() {
       return ({
-        default: 'cmw-border-transparent cmw-bg-primary-400 cmw-text-white hover:(cmw-text-white cmw-no-underline)',
-        ghost: 'cmw-border-primary-400 cmw-text-primary-400 hover:(cmw-bg-primary-50 cmw-text-primary-400 cmw-no-underline)',
+        default: 'cmw-btn-default',
+        ghost: 'cmw-border-primary-400 cmw-text-primary-400 cmw-font-bold cmw-uppercase hover:(cmw-bg-primary-50 cmw-text-primary-400 cmw-no-underline)',
+        text: 'cmw-btn-text',
       })[this.$props.variant]
-    }
-  }
+    },
+  },
 }
 </script>
 
+<template>
+  <component
+    :is="$props.to ? 'NuxtLink' : 'button'"
+    :to="$props.to"
+    v-bind="$attrs"
+    class="cmw-btn-base disabled:(cmw-bg-gray-light cmw-text-gray cmw-cursor-not-allowed)"
+    :class="getVariant()"
+  >
+    <slot>{{ $props.label }}</slot>
+  </component>
+</template>

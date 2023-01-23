@@ -1,0 +1,97 @@
+type ProductPriceRange {
+  maxVariantPrice: MoneyV2!
+  minVariantPrice: MoneyV2!
+}
+
+type Image {
+  altText: String
+  height: Int
+  id: ID
+  url: URL!
+  width: Int
+}
+
+type Product {
+  availableForSale: Boolean!
+  compareAtPriceRange: String # Todo: ProductPriceRange!
+  createdAt: DateTime!
+  description: String!
+  descriptionHtml: HTML!
+  featuredImage: Image
+  handle: String!
+  id: ID!
+  metafield(namespace:String!,key:String!): Metafield
+  metafields: [Metafield]!
+  onlineStoreUrl:   URL
+  options: String # Todo: [ProductOption!]!
+  priceRange: ProductPriceRange!
+  productType:  String!
+  publishedAt:  DateTime!
+  requiresSellingPlan:  Boolean!
+  seo: SEO!
+  tags: [String!]!
+  title: String!
+  totalInventory: Int
+  updatedAt: DateTime!
+  variantBySelectedOptions: ProductVariant
+  vendor: String!
+  # Connections
+  variants(first: Int, reverse: Boolean, query: String): ProductVariantConnection
+}
+
+type ProductConnection {
+  edges: [ProductConnectionEdge]
+  filters: [Filter!]!
+  nodes: [Product!]!
+  pageInfo: PageInfo!
+}
+
+type ProductConnectionEdge {
+  cursor: String
+  node: Product!
+}
+
+type ProductConnectionNode {
+  node: [Product!]!
+}
+
+type ProductConnectionNodes {
+  nodes: [Product!]!
+}
+
+type ProductVariant {
+  availableForSale: Boolean!
+  barcode: String
+  compareAtPriceV2: MoneyV2
+  currentlyNotInStock: Boolean!
+  id: ID!
+  image: Image
+  metafield: Metafield
+  metafields: String # Todo: [Metafield]!
+  priceV2: MoneyV2!
+  product: Product
+  quantityAvailable: Int
+  requiresShipping: Boolean!
+  selectedOptions: String # Todo: [selectedOptions!]!
+  sku: String # Todo: [selectedOptions!]!
+  title: String! # Todo: [selectedOptions!]!
+  unitPrice: MoneyV2
+  unitPriceMeasurement: String # Todo: UnitPriceMeasurement
+  weight: Float
+  weightUnit: WeightUnit
+}
+
+type ProductVariantConnection {
+  edges: [ProductVariantConnectionEdge]
+  nodes: [ProductVariant!]!
+  pageInfo: PageInfo!
+}
+
+type ProductVariantConnectionEdge {
+  cursor: String
+  node: ProductVariant!
+}
+
+type ProductVariantConnectionNodes {
+  node: [ProductVariant!]!
+}

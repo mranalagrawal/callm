@@ -1,0 +1,33 @@
+interface Metafield {
+  createdAt:DateTime!
+  description:String
+  id:ID!
+  key:String!
+  namespace:String!
+  parentResource:String # Todo: MetafieldParentResource!
+  reference:String # Todo: MetafieldReference
+  type:String!
+  updatedAt:DateTime!
+  value:String!
+}
+
+interface PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
+
+interface Filter {
+  id:String!
+  label:String!
+  type:FilterType!
+  values:[FilterValue!]!
+}
+
+interface FilterValue {
+  count:Int!
+  id:String!
+  input:JSON!
+  label:String!
+}

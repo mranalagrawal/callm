@@ -1,5 +1,5 @@
-import {localeChanged, localize} from "vee-validate";
-import {lookUpLocale} from "~/plugins/vee-validate";
+import { localeChanged, localize } from 'vee-validate'
+import { lookUpLocale } from '~/plugins/vee-validate'
 
 export default function ({ app }) {
   app.i18n.onLanguageSwitched = (_, newLocale) => {

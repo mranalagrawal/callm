@@ -1,0 +1,17 @@
+mutation customerDefaultAddressUpdate(
+  $addressId: ID!,
+  $customerAccessToken: String!,
+  $lang: LanguageCode!) @inContext(language: $lang) {
+  customerDefaultAddressUpdate(addressId: $addressId, customerAccessToken: $customerAccessToken) {
+    customer {
+      id
+      defaultAddress {
+        id
+      }
+    }
+    customerUserErrors {
+      field
+      message
+    }
+  }
+}

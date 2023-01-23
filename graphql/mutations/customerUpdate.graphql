@@ -1,0 +1,22 @@
+mutation customerUpdate(
+  $customer: CustomerUpdateInput!,
+  $customerAccessToken: String!
+  $lang: LanguageCode!) @inContext(language: $lang) {
+  customerUpdate(customer: $customer, customerAccessToken: $customerAccessToken) {
+    customer {
+      acceptsMarketing
+      id
+      email
+      firstName
+      lastName
+      phone
+    }
+    customerAccessToken {
+      accessToken
+    }
+    customerUserErrors {
+      field
+      message
+    }
+  }
+}

@@ -81,5 +81,5 @@ export const getters = {
   cartTotalQuantity(state) {
     return state.userCart
       .reduce((t, n) => t + n.quantity, 0);
-  }
+  },
 }

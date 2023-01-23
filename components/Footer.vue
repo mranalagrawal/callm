@@ -1,3 +1,43 @@
+<script>
+import logo from 'assets/svg/logo-call-me-wine.svg'
+import walletIcon from 'assets/svg/wallet.svg'
+import locales from '../locales-mapper'
+export default {
+  data() {
+    return {
+      logo,
+      walletIcon,
+      data: null,
+      info: null,
+      newsletter: false,
+      marketing: false,
+    }
+  },
+  async fetch() {
+    let lang = locales[this.$i18n.locale]
+
+    if (lang == 'en-gb' && this.$config.STORE == 'CMW')
+      lang = 'en-eu'
+
+    const response = await this.$prismic.api.getSingle('footer', {
+      lang,
+    })
+    const data = response.data.body
+    this.data = data
+
+    const responseInfo = await this.$prismic.api.getSingle('footer-info', {
+      lang,
+    })
+    const info = responseInfo.data
+
+    this.info = info
+  },
+  watch: {
+    '$i18n.locale': '$fetch',
+  },
+}
+</script>
+
 <template>
   <footer class="container-fluid pt-5 mt-5 px-0" style="background: #f8f8f8">
     <div class="container-fluid px-md-5">
@@ -8,8 +48,8 @@
           </p>
         </div>
       </div>
-      <div class="row d-md-none" v-if="data">
-        <div class="col-12" v-for="item in data" :key="item.id">
+      <div v-if="data" class="row d-md-none">
+        <div v-for="item in data" :key="item.id" class="col-12">
           <nuxt-link
             :to="item.primary.link"
             class="text-uppercase primary-title"
@@ -17,11 +57,11 @@
             {{ item.primary.title }}
           </nuxt-link>
 
-          <hr />
+          <hr>
         </div>
       </div>
-      <div class="row d-none d-md-flex" v-if="data">
-        <div class="col" v-for="item in data" :key="item.id">
+      <div v-if="data" class="row d-none d-md-flex">
+        <div v-for="item in data" :key="item.id" class="col">
           <p class="" style="margin-bottom: 36px">
             <nuxt-link
               :to="item.primary.link"
@@ -32,14 +72,15 @@
             </nuxt-link>
           </p>
           <p
-            class="pb-0"
             v-for="link in item.items"
             :key="`inner_${link.name}`"
+            class="pb-0"
           >
             <nuxt-link
               :to="link.link"
               class="text-decoration-none secondary-title"
-              >{{ link.name }}
+            >
+              {{ link.name }}
             </nuxt-link>
           </p>
         </div>
@@ -57,40 +98,43 @@
           :class="
             $i18n.locale == $config.DEFAULT_LOCALE ? 'font-weight-bold' : ''
           "
-          >{{ $config.DEFAULT_LOCALE }}</nuxt-link
         >
+          {{ $config.DEFAULT_LOCALE }}
+        </nuxt-link>
 
         <nuxt-link
           v-if="$config.DEFAULT_LOCALE !== 'en'"
           class="text-decoration-none text-uppercase text-white fs-0875 mr-3"
           :to="switchLocalePath('en')"
           :class="$i18n.locale == 'en' ? 'font-weight-bold' : ''"
-          >EN</nuxt-link
         >
+          EN
+        </nuxt-link>
         <nuxt-link
           v-else
           class="text-decoration-none text-uppercase text-white fs-0875 mr-3"
           :to="switchLocalePath('it')"
           :class="$i18n.locale == 'it' ? 'font-weight-bold' : ''"
-          >IT</nuxt-link
         >
+          IT
+        </nuxt-link>
       </div>
       <div class="row">
         <div class="col-12">
           <VueSvgIcon :data="logo" color="white" width="180" height="auto" />
-          <p class="mt-2 fs-14" v-text="info.description" />
+          <p class="mt-2 fs-14 cmw-text-secondary-100" v-text="info.description" />
         </div>
       </div>
       <div class="row">
         <div class="col-12 col-lg-6 pr-md-5">
           <p class="fs-14">
-            <i
+            <span
               class="fal fa-envelope mr-2 text-white"
               style="font-size: 18px"
-            ></i>
-            Newsletter
+            />
+            <span class="cmw-text-secondary-100">Newsletter</span>
           </p>
-          <p class="">
+          <p class=" cmw-text-secondary-100">
             {{ info.newsletter_cta }}
           </p>
           <form class="mb-5 pr-md-4">
@@ -100,10 +144,10 @@
             >
               <div class="col-7 col-md-10">
                 <input
+                  id=""
                   type="email"
                   class="form-control bg-transparent border-0"
-                  id=""
-                />
+                >
               </div>
               <div class="col-5 col-md-2 px-md-1 text-right">
                 <button
@@ -117,37 +161,31 @@
               <div class="col-12">
                 <div class="custom-control form-control-lg custom-checkbox">
                   <input
-                    type="checkbox"
-                    class="custom-control-input"
                     id="customCheck1"
                     v-model="newsletter"
-                  />
+                    type="checkbox"
+                    class="custom-control-input"
+                  >
                   <label
                     class="custom-control-label fs-0875 pl-3"
                     for="customCheck1"
-                    >{{ info.first_check }}
-                    <a href="#" class="text-decoration-none text-white"
-                      >Privacy Policy</a
-                    ></label
-                  >
+                  >{{ info.first_check }}
+                    <a href="#" class="text-decoration-none text-white">Privacy Policy</a></label>
                 </div>
               </div>
               <div v-show="newsletter" class="col-12 mt-3">
                 <div class="custom-control form-control-lg custom-checkbox">
                   <input
-                    type="checkbox"
-                    class="custom-control-input"
                     id="customCheck2"
                     v-model="marketing"
-                  />
+                    type="checkbox"
+                    class="custom-control-input"
+                  >
                   <label
                     class="custom-control-label fs-0875 pl-3"
                     for="customCheck2"
-                    >{{ info.second_check }}
-                    <a href="#" class="text-decoration-none text-white"
-                      >Privacy Policy</a
-                    ></label
-                  >
+                  >{{ info.second_check }}
+                    <a href="#" class="text-decoration-none text-white">Privacy Policy</a></label>
                 </div>
               </div>
             </div>
@@ -156,24 +194,26 @@
         <div class="col-12 col-lg-6" style="font-size: 0.875rem">
           <div class="row">
             <div class="col-12 col-lg-4 mb-5">
-              <p class="h5 mb-4" style="font-weight: 400">
+              <p class="h5 mb-4 cmw-text-secondary-100" style="font-weight: 400">
                 {{ $t("footer.company") }}
               </p>
               <nuxt-link
                 :to="localePath('/about-us')"
                 class="text-decoration-none text-white"
-                >{{ $t("footer.who") }}</nuxt-link
               >
+                {{ $t("footer.who") }}
+              </nuxt-link>
             </div>
             <div class="col-12 col-lg-4 mb-5">
-              <p class="h5 mb-4" style="font-weight: 400">
+              <p class="h5 mb-4 cmw-text-secondary-100" style="font-weight: 400">
                 {{ $t("footer.services") }}
               </p>
               <nuxt-link
                 :to="localePath('/restaurants-wineshops')"
                 class="text-decoration-none text-white d-block mb-2"
-                >{{ $t("footer.restaurantsAndWineshops") }}</nuxt-link
               >
+                {{ $t("footer.restaurantsAndWineshops") }}
+              </nuxt-link>
               <!-- <nuxt-link
                 :to="localePath('/business-gifts')"
                 class="text-decoration-none text-white d-block mb-2"
@@ -186,45 +226,51 @@
               > -->
             </div>
             <div class="col-12 col-lg-4 mb-5">
-              <p class="h5 mb-4" style="font-weight: 400">
+              <p class="h5 mb-4 cmw-text-secondary-100" style="font-weight: 400">
                 {{ $t("footer.support") }}
               </p>
               <nuxt-link
                 :to="localePath('/shipping')"
                 class="text-decoration-none text-white d-block mb-2"
-                >{{ $t("footer.shipping") }}</nuxt-link
               >
+                {{ $t("footer.shipping") }}
+              </nuxt-link>
               <nuxt-link
                 :to="localePath('/payments')"
                 class="text-decoration-none text-white d-block mb-2"
-                >{{ $t("footer.payments") }}</nuxt-link
               >
+                {{ $t("footer.payments") }}
+              </nuxt-link>
               <nuxt-link
                 :to="localePath('/terms-of-sales')"
                 class="text-decoration-none text-white d-block mb-2"
-                >{{ $t("footer.termsOfSales") }}</nuxt-link
               >
+                {{ $t("footer.termsOfSales") }}
+              </nuxt-link>
               <nuxt-link
                 :to="localePath('/privacy-policy')"
                 class="text-decoration-none text-white d-block mb-2"
-                >Privacy policy</nuxt-link
               >
+                Privacy policy
+              </nuxt-link>
               <nuxt-link
                 :to="localePath('/cookie-policy')"
                 class="text-decoration-none text-white d-block mb-2"
-                >Cookie policy</nuxt-link
               >
+                Cookie policy
+              </nuxt-link>
               <nuxt-link
                 :to="localePath('/contact')"
                 class="text-decoration-none text-white d-block mb-2"
-                >{{ $t("footer.contacts") }}</nuxt-link
               >
+                {{ $t("footer.contacts") }}
+              </nuxt-link>
             </div>
           </div>
         </div>
       </div>
 
-      <hr class="separator" />
+      <hr class="separator">
 
       <div class="md:cmw-flex cmw-text-center cmw-justify-center">
         <div class="cmw-flex cmw-gap-2 cmw-items-center cmw-justify-center">
@@ -236,39 +282,41 @@
             src="../assets/images/american-express.png"
             width="65"
             height="64"
-          />
+          >
           <img
             src="../assets/images/mastercard.png"
             width="65"
             height="64"
-          />
+          >
           <img
             src="../assets/images/visa.png"
             width="65"
             height="64"
-          />
+          >
           <img
             src="../assets/images/paypal.png"
             width="65"
             height="64"
-          />
+          >
           <img
             src="../assets/images/bonifico.png"
             width="65"
             height="64"
-          />
+          >
           <img
             src="../assets/images/comodo.png"
             width="65"
             height="64"
-          />
+          >
         </div>
       </div>
 
-      <hr class="separator" />
+      <hr class="separator">
       <div class="row justify-content-center mt-4">
         <div class="col-12 col-md-10 text-center px-4">
-          <p class="credit">{{ info.info }}</p>
+          <p class="credit cmw-text-secondary-100">
+            {{ info.info }}
+          </p>
         </div>
       </div>
     </div>
@@ -358,44 +406,3 @@
   border-color: #add3d1;
 }
 </style>
-
-<script>
-import logo from 'assets/svg/logo-call-me-wine.svg'
-import walletIcon from 'assets/svg/wallet.svg'
-import locales from "../locales-mapper";
-export default {
-  data() {
-    return {
-      logo,
-      walletIcon,
-      data: null,
-      info: null,
-      newsletter: false,
-      marketing: false,
-    };
-  },
-  watch: {
-    "$i18n.locale": "$fetch",
-  },
-  async fetch() {
-    let lang = locales[this.$i18n.locale];
-
-    if (lang == "en-gb" && this.$config.STORE == "CMW") {
-      lang = "en-eu";
-    }
-
-    const response = await this.$prismic.api.getSingle("footer", {
-      lang: lang,
-    });
-    const data = response.data.body;
-    this.data = data;
-
-    const responseInfo = await this.$prismic.api.getSingle("footer-info", {
-      lang: lang,
-    });
-    const info = responseInfo.data;
-
-    this.info = info;
-  },
-};
-</script>

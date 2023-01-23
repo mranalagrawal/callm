@@ -1,5 +1,5 @@
-import createTokenQuery from "./createUserToken";
-import { getUserQuery } from "./getUser";
+import createTokenQuery from './createUserToken';
+import { getUserQuery } from './getUser';
 
 async function userLogin(email, password, domain, access_token) {
   const createToken = createTokenQuery(email, password);
@@ -7,10 +7,10 @@ async function userLogin(email, password, domain, access_token) {
   const GRAPHQL_BODY_TOKEN = {
     async: true,
     crossDomain: true,
-    method: "POST",
+    method: 'POST',
     headers: {
-      "X-Shopify-Storefront-Access-Token": access_token,
-      "Content-Type": "application/json",
+      'X-Shopify-Storefront-Access-Token': access_token,
+      'Content-Type': 'application/json',
     },
     body: createToken,
   };
@@ -31,10 +31,10 @@ async function userLogin(email, password, domain, access_token) {
   const GRAPHQL_BODY_USER = {
     async: true,
     crossDomain: true,
-    method: "POST",
+    method: 'POST',
     headers: {
-      "X-Shopify-Storefront-Access-Token": access_token,
-      "Content-Type": "application/graphql",
+      'X-Shopify-Storefront-Access-Token': access_token,
+      'Content-Type': 'application/graphql',
     },
     body: user,
   };
