@@ -22,7 +22,8 @@ export default {
     const query = computed(() => wishlistArr.value.join(' OR '))
 
     const { fetch } = useFetch(async () => {
-      await customerWishlist.getWishlistProducts(`tag:${query.value}`)
+      if (query.value)
+        await customerWishlist.getWishlistProducts(`tag:${query.value}`)
     })
 
     watch(() => query.value, () => fetch())
@@ -124,7 +125,7 @@ export default {
         </template>
       </div>
       <div v-else>
-        <p class="lead">
+        <p class="lead cmw-px-4">
           {{ $t("profile.noFavourite") }}
         </p>
       </div>
