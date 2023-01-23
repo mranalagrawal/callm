@@ -302,7 +302,10 @@ export default {
             <div class="col-12 col-md-6 offset-md-2 text-center">
               <div class="d-flex align-items-end justify-content-center">
                 <div>
-                  <p v-if="data.totalInventory > 0" class="text-light-primary">
+                  <p
+                    v-if="data.totalInventory > 0" class="text-light-primary"
+                    :class="{ 'cmw-hidden': data.totalInventory > 6 }"
+                  >
                     {{ $t("product.available", { quantity: data.totalInventory }) }}
                   </p>
                   <p v-else class="text-light-secondary">
