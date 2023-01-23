@@ -2,28 +2,28 @@
   <div class="px-4 pt-3 py-2 width">
     <p class="voice">
       <nuxt-link
-        :to="localePath('/profile#orders')"
+        :to="localePath('/profile/my-orders')"
         class="text-decoration-none text-dark-secondary"
         >{{ $t("navbar.user.myOrders") }}</nuxt-link
       >
     </p>
     <p class="voice">
       <nuxt-link
-        :to="localePath('/profile#buyagain')"
+        :to="localePath('/profile/buy-again')"
         class="text-decoration-none text-dark-secondary"
         >{{ $t("navbar.user.buyAgain") }}</nuxt-link
       >
     </p>
     <p class="voice">
       <nuxt-link
-        :to="localePath('/profile#wishlist')"
+        :to="localePath('/profile/wishlist')"
         class="text-decoration-none text-dark-secondary"
         >{{ $t("navbar.user.favorites") }}</nuxt-link
       >
     </p>
     <p class="voice">
       <nuxt-link
-        :to="localePath('/profile#addresses')"
+        :to="localePath('/profile/addresses')"
         class="text-decoration-none text-dark-secondary"
         >{{ $t("navbar.user.addresses") }}</nuxt-link
       >
@@ -31,7 +31,7 @@
 
     <p class="voice">
       <nuxt-link
-        :to="localePath('/profile#accessData')"
+        :to="localePath('/profile/access-data')"
         class="text-decoration-none text-dark-secondary"
         >{{ $t("navbar.user.accessData") }}</nuxt-link
       >
@@ -49,6 +49,8 @@
 </template>
 
 <script>
+import {mapActions} from "vuex";
+
 export default {
   data() {
     return {
@@ -60,11 +62,7 @@ export default {
     };
   },
   methods: {
-    logout() {
-      this.$store.commit("user/setUser", null);
-      this.$store.commit("cart/setCart", null);
-      this.$router.push("/");
-    },
+    ...mapActions({logout: 'user/logout'}),
   },
 };
 </script>

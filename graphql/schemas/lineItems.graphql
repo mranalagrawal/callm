@@ -1,0 +1,18 @@
+type OrderLineItem {
+  currentQuantity: Int
+  customAttributes: [String!]! # Todo: [Attribute!]!
+  discountAllocations: String # Todo: [DiscountAllocation!]!
+  discountedTotalPrice: MoneyV2
+  originalTotalPrice: MoneyV2
+  quantity: Int!
+  title: String!
+  variant: ProductVariant
+}
+
+type OrderLineItemConnection {
+  edges: [CustomerOrderLineItemEdge]
+}
+
+type CustomerOrderLineItemEdge {
+  node: OrderLineItem
+}

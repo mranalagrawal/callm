@@ -1,83 +1,97 @@
+<script>
+import { storeToRefs } from 'pinia'
+import { ref, useContext, useRouter } from '@nuxtjs/composition-api'
+import eyeShowIcon from '~/assets/svg/eye-show.svg'
+import eyeHideIcon from '~/assets/svg/eye-hide.svg'
+import { useCustomer } from '~/store/customer'
+import Alert from '~/components/FeedBack/Alert.vue'
+
+export default {
+  components: { Alert },
+  props: {
+    width: { type: String, default: '' },
+  },
+  setup() {
+    const { i18n, localeLocation } = useContext()
+    const router = useRouter()
+    const customerStore = useCustomer()
+    const { customer } = storeToRefs(customerStore)
+    const isSubmitting = ref(false)
+    const passwordIsVisible = ref(false)
+    const message = ref('')
+    const form = ref({
+      email: '',
+      password: '',
+    })
+    const onSubmit = async () => {
+      isSubmitting.value = true
+
+      const valid = await customerStore.login(form.value.email, form.value.password)
+
+      if (valid) {
+        await customerStore.getCustomer()
+          .then(() => router.push(localeLocation('/profile/my-orders')))
+      } else {
+        message.value = i18n.t('common.feedback.KO.login')
+      }
+      isSubmitting.value = false
+    }
+
+    return { customerStore, customer, form, passwordIsVisible, isSubmitting, eyeShowIcon, eyeHideIcon, message, onSubmit }
+  },
+}
+</script>
+
 <template>
-  <ValidationObserver ref="formEl" v-slot="{ handleSubmit }" slim>
-    <form @submit.prevent="handleSubmit(onSubmit)" class="px-4 pt-3 pb-2 mx-auto">
-
-      <InputField v-model="form.email"
-                  type="email"
-                  name="user-email" :label="$t('email').toString()"
-                  :placeholder="$t('email').toString()" rules="required|email"/>
-
-      <InputField v-model="form.password"
-                  :type="!passwordIsVisible ? 'password' : 'text'"
-                  name="user-password" :label="$t('email').toString()" label="Password"
-                  :placeholder="$t('passwordPlaceholder').toString()" rules="required|min:4"
-                  :icon="passwordIsVisible ? eyeHideIcon : eyeShowIcon"
-                  :click-icon="() => passwordIsVisible = !passwordIsVisible"
+  <ValidationObserver
+    ref="formEl"
+    v-slot="{ handleSubmit }"
+    slim
+  >
+    <form
+      class="px-4 pt-3 pb-2 mx-auto"
+      @submit.prevent="handleSubmit(onSubmit)"
+    >
+      <InputField
+        v-model="form.email"
+        type="email"
+        name="user-email"
+        label="Email"
+        placeholder="User email"
+        rules="required|email"
       />
 
-      <!-- <b-form-checkbox
-        id="remember"
-        v-model="form.remember"
-        name="remember"
-        value="accepted"
-        unchecked-value="not_accepted"
-        class="mt-3 mb-5"
+      <InputField
+        v-model="form.password"
+        :type="!passwordIsVisible ? 'password' : 'text'"
+        name="user-password"
+        label="Password"
+        :placeholder="$t('passwordPlaceholder').toString()"
+        rules="required|min:4"
+        :icon="passwordIsVisible ? eyeHideIcon : eyeShowIcon"
+        :click-icon="() => passwordIsVisible = !passwordIsVisible"
+      />
+
+      <Alert
+        v-if="message"
+        severity="error"
       >
-        Ricordami
-      </b-form-checkbox> -->
-      <p v-if="message" class="cmw-text-sm cmw-text-error mt-3">{{ message }}</p>
+        {{ message }}
+      </Alert>
 
-      <Button class="sm:cmw-max-w-330px cmw-mt-8" type="submit" :disabled="isSubmitting" :label="$t('navbar.user.signIn').toString()"/>
+      <Button
+        class="sm:cmw-max-w-330px cmw-mt-8"
+        type="submit"
+        :disabled="isSubmitting"
+        :label="$t('navbar.user.signIn').toString()"
+      />
 
-      <NuxtLink to="/recover" class="cmw-block cmw-w-max cmw-my-3 cmw-text-primary-400 hover:(cmw-text-primary-400 cmw-no-underline)">
+      <NuxtLink
+        to="/recover"
+        class="cmw-block cmw-w-max cmw-my-3 cmw-text-primary-400 hover:(cmw-text-primary-400 cmw-no-underline)"
+      >
         {{ $t("navbar.user.forgotPassword") }}
       </NuxtLink>
     </form>
   </ValidationObserver>
 </template>
-
-<script>
-import userLogin from "../utilities/userLogin";
-import eyeShowIcon from '~/assets/svg/eye-show.svg'
-import eyeHideIcon from '~/assets/svg/eye-hide.svg'
-
-export default {
-  props: ["width"],
-  data() {
-    return {
-      eyeShowIcon,
-      eyeHideIcon,
-      passwordIsVisible: false,
-      form: {
-        email: "",
-        password: "",
-        test: "",
-        remember: false,
-      },
-      message: "",
-      isSubmitting: false,
-    };
-  },
-  methods: {
-    async onSubmit() {
-      this.isSubmitting = true;
-      const domain = this.$config.DOMAIN;
-      const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
-      const user = await userLogin(
-        this.form.email,
-        this.form.password,
-        domain,
-        access_token
-      );
-
-      if (!user) {
-        this.message = this.$i18n.t('loginFailed');
-        this.isSubmitting = false;
-        return;
-      }
-      this.$store.commit("user/setUser", user);
-      await this.$router.push("/profile");
-    },
-  },
-};
-</script>

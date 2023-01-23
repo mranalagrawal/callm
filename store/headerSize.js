@@ -1,5 +1,5 @@
-import {defineStore} from "pinia";
-import {computed, ref} from "@nuxtjs/composition-api";
+import { defineStore } from 'pinia';
+import { computed, ref } from '@nuxtjs/composition-api';
 
 export const useHeaderSize = defineStore('headerSize', () => {
   const topBarHeight = ref(0)

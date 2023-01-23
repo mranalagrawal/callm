@@ -1,0 +1,30 @@
+type CustomerDefaultAddressUpdatePayload {
+  customer: Customer
+  customerUserErrors: DisplayableError # [CustomerUserError!]!
+}
+
+type CustomerAddressDeletePayload {
+  deletedCustomerAddressId: String
+  customerUserErrors: DisplayableError # [CustomerUserError!]!
+}
+
+type CustomerAddressUpdatePayload {
+  customerAddress: MailingAddress
+  customerUserErrors: DisplayableError # [CustomerUserError!]!
+}
+
+type CustomerAddressCreatePayload {
+  customerAddress: MailingAddress
+  customerUserErrors: DisplayableError # [CustomerUserError!]!
+}
+
+type CustomerAccessTokenCreatePayload {
+  customerAccessToken: CustomerAccessToken
+  customerUserErrors: DisplayableError # [CustomerUserError!]!
+}
+
+type CustomerUpdatePayload {
+  customer: Customer
+  customerAccessToken: CustomerAccessToken
+  customerUserErrors: DisplayableError
+}

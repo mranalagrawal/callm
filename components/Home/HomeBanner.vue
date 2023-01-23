@@ -18,7 +18,7 @@
         :key="i"
         :img-src="slide.image.url"
       >
-        <h1 class="mb-5">{{ slide.text }}</h1>
+        <div class="h1 cmw-text-white">{{ slide.text }}</div>
         <div>
           <nuxt-link
             :to="slide.link"
@@ -49,7 +49,7 @@
         :key="i"
         :img-src="slide.image.mobile.url"
       >
-        <h1 class="mb-md-5">{{ slide.text }}</h1>
+        <div class="h1 cmw-text-white">{{ slide.text }}</div>
         <div>
           <nuxt-link
             :to="slide.link"

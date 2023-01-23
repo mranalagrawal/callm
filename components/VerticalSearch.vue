@@ -1,12 +1,164 @@
+<script>
+import { storeToRefs } from 'pinia'
+import AwardTooltip from '../components/UI/AwardTooltip.vue'
+import { useCustomer } from '~/store/customer'
+
+export default {
+  name: 'ProductCardVertical',
+  components: { AwardTooltip },
+  props: ['product', 'horizontal'],
+  setup() {
+    const customerStore = useCustomer()
+    const { wishlistArr } = storeToRefs(customerStore)
+    const { handleWishlist } = customerStore
+
+    return { wishlistArr, handleWishlist }
+  },
+  data() {
+    return { quantity: 0, isOpen: false }
+  },
+  computed: {
+    STORE() {
+      return this.$config.STORE
+    },
+    SALECHANNEL() {
+      return this.$config.SALECHANNEL
+    },
+    salePrice() {
+      return this.product._source.saleprice[this.$config.STORE]
+    },
+    filteredAwards() {
+      return this.product._source.awards.filter(el => el.title)
+    },
+    backofficeId() {
+      // Get the proper tag 🤦🏻
+      return `${this.product._source.id}`
+    },
+    isOnFavourite() {
+      return this.wishlistArr.includes(this.backofficeId)
+    },
+    userCartQuantity() {
+      const productVariantId = this.product._source.variantId[this.STORE]
+      const isInCart = this.$store.state.userCart.userCart.find(el =>
+        el.productVariantId.includes(productVariantId),
+      )
+
+      return isInCart ? isInCart.quantity : 0
+    },
+    cartQuantity() {
+      if (!this.$store.state.cart.cart)
+        return 0
+
+      const cartList = this.$store.state.cart.cart.lines.edges.map(el => ({
+        merchandise: el.node.merchandise.id,
+        quantity: el.node.quantity,
+      }))
+
+      const isInCart = cartList.find(
+        el =>
+          el.merchandise.split('/ProductVariant/')[1]
+          == this.product._source.variantId[this.STORE],
+      )
+
+      if (isInCart)
+        return isInCart.quantity
+      else
+        return 0
+    },
+  },
+
+  methods: {
+    async addToUserCart() {
+      if (!this.isOpen)
+        this.isOpen = true
+
+      const productVariantId
+        = `gid://shopify/ProductVariant/${
+         this.product._source.variantId[this.STORE]}`
+      const amount = Number(this.product._source.saleprice[this.SALECHANNEL])
+      const amountFullPrice = Number(
+        this.product._source.price[this.SALECHANNEL],
+      )
+
+      const tag = `P${this.product._source.id}`
+      const image = this.product._source.shopifyImageUrl[this.STORE]
+      const title = this.product._source.shortName
+      this.$store.commit('userCart/addProduct', {
+        productVariantId,
+        singleAmount: amount,
+        singleAmountFullPrice: amountFullPrice,
+        tag,
+        image,
+        title,
+      })
+
+      this.flashMessage.show({
+        status: '',
+        message: `${this.product._source.shortName} aggiunto!`,
+        icon: this.product._source.shopifyImageUrl[this.STORE],
+        iconClass: 'bg-transparent ',
+        time: 1000,
+        blockClass: 'add-product-notification',
+      })
+    },
+    async removeFromUserCart() {
+      const productVariantId
+        = `gid://shopify/ProductVariant/${
+         this.product._source.variantId[this.STORE]}`
+      this.$store.commit('userCart/removeProduct', productVariantId)
+    },
+    async toggleWishlist() {
+      if (!this.$store.state.user.user) {
+        this.$router.push('/login')
+        return
+      }
+
+      const userId
+        = this.$store.state.user.user.customer.id.split('Customer/')[1]
+
+      const variantId = this.product._source.variantId[this.STORE]
+
+      const tag = `P${this.product._source.id}`
+
+      const elastic_url = this.$config.ELASTIC_URL
+      const STORE = this.$config.STORE
+      const response = await fetch(
+        `${elastic_url}customers/${STORE}/${userId}/wishlist/${tag}`,
+        { async: true, crossDomain: true, method: 'POST' },
+      )
+      const updatedWishlist = await response.text()
+
+      this.$store.commit('user/updateWishlist', updatedWishlist)
+
+      if (this.isOnFavourite) {
+        this.flashMessage.show({
+          status: '',
+          message: 'Aggiunto ai preferiti!',
+          time: 1000,
+          blockClass: 'add-product-notification',
+        })
+      } else {
+        this.flashMessage.show({
+          status: '',
+          message: 'Rimosso preferiti!',
+          time: 1000,
+          blockClass: 'add-product-notification',
+        })
+      }
+    },
+  },
+}
+</script>
+
 <template>
   <div
     class="card mx-auto"
     :class="horizontal ? 'product-card-horizontal' : 'product-card-vertical'"
   >
     <!-- {{ product }} -->
-    <div class="row h-100" v-if="STORE">
+    <div v-if="STORE" class="row h-100">
       <div v-if="product._source.inpromotion" class="ribbon">
-        <span><i class="fal fa-tag"></i> PROMO</span>
+        <span><i class="fal fa-tag" /> PROMO</span>
       </div>
       <div class="position-relative" :class="horizontal ? 'col-4' : 'col-12'">
         <div
@@ -92,7 +244,7 @@
         >
           <div
             v-for="(award, i) in product._source.awards.slice(0, 5)"
-            :key="'award_' + i"
+            :key="`award_${i}`"
           >
             <AwardTooltip :award="award" />
           </div>
@@ -100,9 +252,9 @@
         <div :class="horizontal ? 'heart-horizontal' : 'heart-vertical'">
           <i
             class="text-light-secondary"
-            :class="isInWishList ? 'fas fa-heart fa-2x' : 'fal fa-heart fa-2x '"
-            @click="toggleWishlist"
-          ></i>
+            :class="isOnFavourite ? 'fas fa-heart fa-2x' : 'fal fa-heart fa-2x '"
+            @click="handleWishlist({ id: backofficeId, isOnFavourite })"
+          />
         </div>
         <nuxt-link
           :to="`/${product._source.handle}-P${product._source.id}`"
@@ -115,7 +267,7 @@
             class="d-block mx-auto"
             loading="lazy"
             alt=""
-          />
+          >
           <img
             v-else
             :src="product._source.shopifyImageUrl[STORE]"
@@ -123,7 +275,7 @@
             class="d-block mx-auto"
             loading="lazy"
             alt=""
-          />
+          >
         </nuxt-link>
         <nuxt-link
           :to="`/${product._source.handle}-P${product._source.id}`"
@@ -136,7 +288,7 @@
             class="d-block mx-auto"
             loading="lazy"
             alt=""
-          />
+          >
           <img
             v-else
             :src="product._source.shopifyImageUrl[STORE]"
@@ -144,7 +296,7 @@
             class="d-block mx-auto"
             loading="lazy"
             alt=""
-          />
+          >
         </nuxt-link>
       </div>
       <div :class="horizontal ? 'col-8' : 'col-12'">
@@ -161,14 +313,13 @@
           <div v-if="!horizontal">
             <p class="mb-0 text-muted">
               <span
-                style="text-decoration: line-through"
                 v-if="
-                  product._source.saleprice[$config.SALECHANNEL].toFixed(2) !==
-                  product._source.price[$config.SALECHANNEL].toFixed(2)
+                  product._source.saleprice[$config.SALECHANNEL].toFixed(2)
+                    !== product._source.price[$config.SALECHANNEL].toFixed(2)
                 "
-                >{{ product._source.price[$config.SALECHANNEL].toFixed(2) }}
-                {{ $config.STORE == "CMW_UK" ? "£" : "€" }}</span
-              >
+                style="text-decoration: line-through"
+              >{{ product._source.price[$config.SALECHANNEL].toFixed(2) }}
+                {{ $config.STORE == "CMW_UK" ? "£" : "€" }}</span>
               <span v-else>&nbsp;</span>
             </p>
             <div
@@ -180,8 +331,7 @@
                     product._source.saleprice[$config.SALECHANNEL]
                       .toFixed(2)
                       .split(".")[0]
-                  }}</span
-                  >,<span>{{
+                  }}</span>,<span>{{
                     product._source.saleprice[$config.SALECHANNEL]
                       .toFixed(2)
                       .split(".")[1]
@@ -191,13 +341,13 @@
               </div>
 
               <div
-                class="position-relative"
                 v-if="product._source.quantity[$config.STORE] > 0"
+                class="position-relative"
               >
                 <button
                   class="btn btn-cart"
                   @click.stop="addToUserCart()"
-                ></button>
+                />
                 <span v-show="userCartQuantity > 0" class="cart-quantity">
                   {{ userCartQuantity }}
                 </span>
@@ -207,9 +357,7 @@
                   @mouseleave="isOpen = false"
                 >
                   <div class="btn text-white">
-                    <span style="font-size: 24px" @click.stop="addToUserCart()"
-                      >+</span
-                    >
+                    <span style="font-size: 24px" @click.stop="addToUserCart()">+</span>
                   </div>
                   <p class="mb-0 text-white text-center py-2">
                     {{ userCartQuantity }}
@@ -218,75 +366,67 @@
                     <span
                       style="font-size: 24px"
                       @click.stop="removeFromUserCart()"
-                      >-</span
-                    >
+                    >-</span>
                   </div>
                 </div>
               </div>
               <div v-else class="position-relative">
-                <button class="btn btn-cart disabled" disabled></button>
+                <button class="btn btn-cart disabled" disabled />
               </div>
             </div>
           </div>
           <div v-else class="row">
             <div class="col-6">
               <p class="mb-0">
-                <strong>{{ $t("product.producer") }}</strong
-                >: {{ product._source.brandname }}
+                <strong>{{ $t("product.producer") }}</strong>: {{ product._source.brandname }}
               </p>
               <p class="mb-0">
-                <strong>{{ $t("product.region") }}</strong
-                >: {{ product._source.regionname }}
-                <span v-if="product._source.areas.name"
-                  >({{ product._source.areas.name }})</span
-                >
+                <strong>{{ $t("product.region") }}</strong>: {{ product._source.regionname }}
+                <span v-if="product._source.areas.name">({{ product._source.areas.name }})</span>
               </p>
               <p class="mb-0">
-                <strong>{{ $t("product.format") }}</strong
-                >: {{ product._source.sizes.name }}
+                <strong>{{ $t("product.format") }}</strong>: {{ product._source.sizes.name }}
               </p>
               <p class="mb-0">
-                <strong>{{ $t("product.mainWines") }}</strong
-                >: {{ product._source.grapes }}
+                <strong>{{ $t("product.mainWines") }}</strong>: {{ product._source.grapes }}
               </p>
             </div>
             <div class="col-6">
               <p
-                class="text-light-primary text-center text-uppercase mt-5"
                 v-if="product._source.quantity > 0"
+                class="text-light-primary text-center text-uppercase mt-5"
               >
                 {{ $t("product.available") }}
               </p>
               <p
-                class="text-light-primary text-center text-uppercase mt-5"
                 v-else
+                class="text-light-primary text-center text-uppercase mt-5"
               >
                 {{ $t("product.notAvailable") }}
               </p>
               <p class="mb-0 text-center">
                 <span class="integer">{{
                   product._source.saleprice[SALECHANNEL].toFixed(2).split(
-                    "."
+                    ".",
                   )[0]
-                }}</span
-                >,<span>{{
+                }}</span>,<span>{{
                   product._source.saleprice[SALECHANNEL].toFixed(2).split(
-                    "."
+                    ".",
                   )[1]
                 }}</span>
                 {{ $config.STORE == "CMW_UK" ? "£" : "€" }}
               </p>
 
               <div
-                class="position-relative"
                 v-if="product._source.quantity > 0"
+                class="position-relative"
               >
                 <button
+                  v-show="!isOpen"
                   class="btn bg-light-secondary text-white text-uppercase w-100 br-10 mt-3"
                   @click.stop="isOpen = true"
-                  v-show="!isOpen"
                 >
-                  <i class="fal fa-shopping-cart"></i>
+                  <i class="fal fa-shopping-cart" />
                   {{ $t("product.addToCart") }}
                 </button>
                 <span v-show="userCartQuantity > 0" class="cart-quantity">
@@ -320,161 +460,6 @@
   </div>
 </template>
 
-<script>
-import {
-  createCart,
-  addProductToCart,
-  updateItemInCart,
-} from "../utilities/cart";
-import { queryProductByIdAsTag } from "../utilities/productQueries";
-import AwardTooltip from "../components/UI/AwardTooltip.vue";
-
-export default {
-  props: ["product", "horizontal"],
-  name: "ProductCardVertical",
-  components: { AwardTooltip },
-  data() {
-    return { quantity: 0, isOpen: false };
-  },
-  computed: {
-    STORE() {
-      return this.$config.STORE;
-    },
-    SALECHANNEL() {
-      return this.$config.SALECHANNEL;
-    },
-    salePrice() {
-      return this.product._source.saleprice[this.$config.STORE];
-    },
-    filteredAwards() {
-      return this.product._source.awards.filter((el) => el.title);
-    },
-    isInWishList() {
-      if (!this.$store.state.user.user) return null;
-      let wishlist = this.$store.state.user.user.customer.wishlist;
-
-      // wishlist is null by default
-      if (wishlist) {
-        return JSON.parse(wishlist.value).includes(
-          "P" + this.product._source.id
-        );
-      }
-
-      return null;
-    },
-    userCartQuantity() {
-      const productVariantId = this.product._source.variantId[this.STORE];
-      let isInCart = this.$store.state.userCart.userCart.find((el) =>
-        el.productVariantId.includes(productVariantId)
-      );
-
-      return isInCart ? isInCart.quantity : 0;
-    },
-    cartQuantity() {
-      if (!this.$store.state.cart.cart) {
-        return 0;
-      }
-
-      let cartList = this.$store.state.cart.cart.lines.edges.map((el) => ({
-        merchandise: el.node.merchandise.id,
-        quantity: el.node.quantity,
-      }));
-
-      let isInCart = cartList.find(
-        (el) =>
-          el.merchandise.split("/ProductVariant/")[1] ==
-          this.product._source.variantId[this.STORE]
-      );
-
-      if (isInCart) {
-        return isInCart.quantity;
-      } else {
-        return 0;
-      }
-    },
-  },
-
-  methods: {
-    async addToUserCart() {
-      if (!this.isOpen) this.isOpen = true;
-
-      const productVariantId =
-        "gid://shopify/ProductVariant/" +
-        this.product._source.variantId[this.STORE];
-      const amount = Number(this.product._source.saleprice[this.SALECHANNEL]);
-      const amountFullPrice = Number(
-        this.product._source.price[this.SALECHANNEL]
-      );
-
-      const tag = "P" + this.product._source.id;
-      const image = this.product._source.shopifyImageUrl[this.STORE];
-      const title = this.product._source.shortName;
-      this.$store.commit("userCart/addProduct", {
-        productVariantId: productVariantId,
-        singleAmount: amount,
-        singleAmountFullPrice: amountFullPrice,
-        tag: tag,
-        image: image,
-        title: title,
-      });
-
-      this.flashMessage.show({
-        status: "",
-        message: this.product._source.shortName + " aggiunto!",
-        icon: this.product._source.shopifyImageUrl[this.STORE],
-        iconClass: "bg-transparent ",
-        time: 1000,
-        blockClass: "add-product-notification",
-      });
-    },
-    async removeFromUserCart() {
-      const productVariantId =
-        "gid://shopify/ProductVariant/" +
-        this.product._source.variantId[this.STORE];
-      this.$store.commit("userCart/removeProduct", productVariantId);
-    },
-    async toggleWishlist() {
-      if (!this.$store.state.user.user) {
-        this.$router.push("/login");
-        return;
-      }
-
-      const userId =
-        this.$store.state.user.user.customer.id.split("Customer/")[1];
-
-      const variantId = this.product._source.variantId[this.STORE];
-
-      const tag = "P" + this.product._source.id;
-
-      const elastic_url = this.$config.ELASTIC_URL;
-      const STORE = this.$config.STORE;
-      const response = await fetch(
-        elastic_url + `customers/${STORE}/${userId}/wishlist/${tag}`,
-        { async: true, crossDomain: true, method: "POST" }
-      );
-      const updatedWishlist = await response.text();
-
-      this.$store.commit("user/updateWishlist", updatedWishlist);
-
-      if (this.isInWishList) {
-        this.flashMessage.show({
-          status: "",
-          message: "Aggiunto ai preferiti!",
-          time: 1000,
-          blockClass: "add-product-notification",
-        });
-      } else {
-        this.flashMessage.show({
-          status: "",
-          message: "Rimosso preferiti!",
-          time: 1000,
-          blockClass: "add-product-notification",
-        });
-      }
-    },
-  },
-};
-</script>
 <style scoped>
 .horizontal-awards {
   left: 30px;

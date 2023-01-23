@@ -7,34 +7,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@400;500;600;700;800;900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&display=swap");
 
-@mixin headerFont($font) {
-  font-family: map-get($font, header);
-}
-
-@mixin mainFont($font) {
-  font-family: map-get($font, main);
-}
-
-:root {
-  --cmw-top-banner-height: 0px;
-  --cmw-header-height: 0px;
-}
-
-body {
-  @include mainFont($font);
-}
-
-h1,
-h2,
-h3,
-h4,
-.h1,
-.h2,
-.h3,
-.h4 {
-  @include headerFont($font);
-}
-
 .add-product-notification {
   width: 424px !important;
   background: rgba(0, 0, 0, 0.85) !important;
@@ -264,19 +236,4 @@ input[type=date]::-webkit-calendar-picker-indicator {
   height: 26px;
   width: 26px;
   padding: 0;
-}
-
-/* ScrollBar styles */
-::-webkit-scrollbar {
-  width: 3px;
-}
-
-::-webkit-scrollbar-track {
-  background-color: theme("colors.gray.DEFAULT");
-  border-radius: 0;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: theme("colors.primary.DEFAULT");
-  border-radius: 2px;
 }
