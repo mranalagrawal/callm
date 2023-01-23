@@ -1,0 +1,13 @@
+mutation customerAddressDelete(
+  $customerAccessToken: String!,
+  $id: ID!,
+  $lang: LanguageCode!)
+@inContext(language: $lang) {
+  customerAddressDelete(id: $id, customerAccessToken: $customerAccessToken) {
+    deletedCustomerAddressId
+    customerUserErrors {
+      field
+      message
+    }
+  }
+}

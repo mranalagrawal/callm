@@ -1,0 +1,26 @@
+input MailingAddressInput  {
+  address1: String
+  address2: String
+  city: String
+  company: String
+  country: String
+  firstName: String
+  lastName: String
+  phone: String
+  province: String
+  zip: String
+}
+
+input CustomerUpdateInput  {
+  acceptsMarketing: Boolean
+  email: String
+  firstName: String
+  lastName: String
+  password: String
+  phone: String
+}
+
+input CustomerAccessTokenCreateInput {
+  email: String!
+  password: String!
+}

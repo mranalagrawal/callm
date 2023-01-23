@@ -1,0 +1,13 @@
+mutation customerAccessTokenCreate($input: CustomerAccessTokenCreateInput!, $lang: LanguageCode!) @inContext(language: $lang) {
+  customerAccessTokenCreate(input: $input) {
+    customerAccessToken {
+      # CustomerAccessToken fields
+      accessToken
+      expiresAt
+    }
+    customerUserErrors {
+      field
+      message
+    }
+  }
+}

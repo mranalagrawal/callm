@@ -1,4 +1,6 @@
-export const getUserOrdersQuery = (token) => `query {
+// TODO: We need to change the language here dynamically language: ${i18n.something}, for now we are just passing it as a parameter
+// TODO: Implement filter by period orders(last: 100, query:"processedAt:>2022-08-22") {
+export const getUserOrdersQuery = (token, locale) => `query @inContext(language: ${locale}) {
     customer(customerAccessToken: "${token}") {
         id
         firstName
@@ -6,11 +8,18 @@ export const getUserOrdersQuery = (token) => `query {
         acceptsMarketing
         email
         phone
-        orders(first: 100) {
+        orders(first: 10, reverse:true,query:"processed_at:>2022-12-01") {
             edges {
                 node {
                     id
                     name
+                    currencyCode
+                    currentSubtotalPrice { amount, currencyCode }
+                    currentTotalDuties { amount, currencyCode }
+                    currentTotalPrice { amount, currencyCode }
+                    currentTotalTax { amount, currencyCode }
+                    subtotalPrice
+                    totalShippingPrice
                     totalPrice
                     fulfillmentStatus
                     orderNumber
@@ -27,10 +36,11 @@ export const getUserOrdersQuery = (token) => `query {
                         phone
                         formattedArea
                     }
-                    successfulFulfillments(first: 10) {
+                    successfulFulfillments(first: 1) {
                         trackingCompany
                         trackingInfo {
-                            number
+                            number,
+                            url
                         }
                     }
                     lineItems(first: 10) {
@@ -38,7 +48,7 @@ export const getUserOrdersQuery = (token) => `query {
                             node {
                                 quantity
                                 title
-                                
+
                                 originalTotalPrice {
                                     amount
                                 }
@@ -47,6 +57,11 @@ export const getUserOrdersQuery = (token) => `query {
                                 }
                                 variant {
                                     id
+                                    price
+                                    unitPrice { amount, currencyCode }
+                                    compareAtPrice
+                                    image { altText, height, url, width }
+                                    sku
                                     product {
                                         id
                                         title
@@ -84,15 +99,15 @@ export const getUserOrdersQuery = (token) => `query {
     }
 }`;
 
-export async function getUserOrders(domain, access_token, customerAccessToken) {
-  const ordersQuery = getUserOrdersQuery(customerAccessToken);
+export async function getUserOrders(domain, access_token, customerAccessToken, locale) {
+  const ordersQuery = getUserOrdersQuery(customerAccessToken, locale);
   const GRAPHQL_BODY = {
     async: true,
     crossDomain: true,
-    method: "POST",
+    method: 'POST',
     headers: {
-      "X-Shopify-Storefront-Access-Token": access_token,
-      "Content-Type": "application/graphql",
+      'X-Shopify-Storefront-Access-Token': access_token,
+      'Content-Type': 'application/graphql',
     },
     body: ordersQuery,
   };

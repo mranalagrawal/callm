@@ -1,0 +1,19 @@
+type MoneyV2 {
+  amount: Decimal!
+  currencyCode: CurrencyCode!
+}
+
+type FulfillmentTrackingInfo {
+  number: String
+  url: URL
+}
+
+type Fulfillment {
+  trackingCompany: String
+  trackingInfo: [FulfillmentTrackingInfo!]!
+}
+
+type SEO {
+  description: String
+  title: String
+}

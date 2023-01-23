@@ -1,0 +1,25 @@
+type CustomerAccessToken {
+  accessToken: String
+  expiresAt: DateTime!
+}
+
+type Customer {
+  acceptsMarketing: Boolean!
+  createdAt: DateTime!
+  defaultAddress: MailingAddress
+  displayName: String!
+  email: String
+  firstName: String
+  id: ID!
+  lastIncompleteCheckout: String # Todo: Checkout
+  lastName: String
+  metafield: String # Todo: Metafield
+  metafields: String # Todo: Metafield[]
+  numberOfOrders: String # Todo: UnsignedInt64!
+  phone: String
+  tags: [String!]!
+  updatedAt: DateTime!
+  # Connections
+  orders(first: Int, reverse: Boolean, query: String):OrderConnection
+  addresses(first: Int, reverse: Boolean):MailingAddressConnection
+}

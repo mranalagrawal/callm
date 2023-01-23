@@ -1,0 +1,44 @@
+type Order {
+  cancelReason: String # Todo: OrderCancelReason
+  canceledAt: DateTime
+  currencyCode: CurrencyCode
+  currentSubtotalPrice: MoneyV2!
+  currentTotalDuties: MoneyV2!
+  currentTotalPrice: MoneyV2!
+  currentTotalTax: MoneyV2!
+  customerLocale: String
+  customerUrl: URL
+  edited: Boolean!
+  email: String
+  financialStatus: OrderFinancialStatus
+  fulfillmentStatus: OrderFulfillmentStatus!
+  id: ID!
+  metafield: String # Todo: Metafield
+  metafields: String # Todo: [Metafield]!
+  name: String!
+  orderNumber: Int!
+  originalTotalDuties: MoneyV2!
+  originalTotalPrice: MoneyV2!
+  phone: String
+  processedAt: DateTime!
+  shippingAddress: MailingAddress
+  shippingDiscountAllocations: String # Todo: [DiscountAllocation!]!
+  statusUrl: URL!
+  subtotalPriceV2: MoneyV2!
+  successfulFulfillments(first: Int): [Fulfillment!]
+  totalPriceV2: MoneyV2!
+  totalRefundedV2: MoneyV2!
+  totalShippingPriceV2: MoneyV2!
+  totalTaxV2: MoneyV2!
+  # Connections
+  lineItems(first: Int, reverse: Boolean, query: String):OrderLineItemConnection
+}
+
+type OrderConnection {
+  edges: [CustomerOrdersEdge]
+  nodes: [Order!]!
+}
+
+type CustomerOrdersEdge {
+  node: Order
+}

@@ -1,0 +1,29 @@
+interface MailingAddress {
+  address1: String
+  address2: String
+  city: String
+  company: String
+  country: String
+  countryCodeV2: CountryCode
+  firstName: String
+  formatted: [String!]!
+  formattedArea: String
+  id: ID!
+  lastName: String
+  latitude: Float
+  longitude: Float
+  name: String
+  phone: String
+  province: String
+  provinceCode: String
+  zip: String
+}
+
+type MailingAddressConnection {
+  edges: [CustomerMailingAddressEdge]
+  nodes: [MailingAddress!]!
+}
+
+type CustomerMailingAddressEdge {
+  node: MailingAddress
+}

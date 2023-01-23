@@ -1,0 +1,195 @@
+query getCustomerOrders(
+  $customerAccessToken: String!,
+  $lang: LanguageCode!,
+  $query: String = "processed_at:>2020-01-01"
+) @inContext(language: $lang) {
+  customer(customerAccessToken: $customerAccessToken) {
+    id
+    firstName
+    orders(first: 10, reverse: true, query: $query) {
+      nodes {
+        id
+        name
+        currencyCode
+        currentSubtotalPrice { amount, currencyCode }
+        currentTotalDuties { amount, currencyCode }
+        currentTotalPrice { amount, currencyCode }
+        currentTotalTax { amount, currencyCode }
+        subtotalPriceV2 { amount, currencyCode }
+        totalShippingPriceV2 { amount, currencyCode }
+        totalPriceV2 { amount, currencyCode }
+        fulfillmentStatus
+        orderNumber
+        processedAt
+        statusUrl
+        financialStatus
+        shippingAddress {
+          city
+          country
+          address1
+          address2
+          zip
+          name
+          phone
+          formattedArea
+        }
+        successfulFulfillments(first: 1) {
+          trackingCompany
+          trackingInfo {
+            number,
+            url
+          }
+        }
+        lineItems(first: 10) {
+          edges {
+            node {
+              quantity
+              title
+              originalTotalPrice {
+                amount
+              }
+              discountedTotalPrice {
+                amount
+              }
+              variant {
+                availableForSale
+                compareAtPriceV2 { amount, currencyCode }
+                id
+                priceV2 { amount, currencyCode }
+                unitPrice { amount, currencyCode }
+                compareAtPriceV2 { amount, currencyCode }
+                image { altText, height, url, width }
+                sku
+                quantityAvailable
+                metafield: metafield(namespace: "custom", key: "details") {
+                  value
+                }
+                product {
+                  id
+                  title
+                  description
+                  descriptionHtml
+                  handle
+                  tags
+                  createdAt
+                  availableForSale
+                  variants(first: 10) {
+                    nodes {
+                      id
+                      compareAtPriceV2 {
+                        amount
+                        currencyCode
+                      }
+                      price
+                    }
+                  }
+                  images(first: 10) {
+                    nodes {
+                      url
+                    }
+                  }
+                  metafield: metafield(namespace: "custom", key: "details") {
+                    value
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      edges {
+        node {
+          id
+          name
+          currencyCode
+          currentSubtotalPrice { amount, currencyCode }
+          currentTotalDuties { amount, currencyCode }
+          currentTotalPrice { amount, currencyCode }
+          currentTotalTax { amount, currencyCode }
+          subtotalPriceV2 { amount, currencyCode }
+          totalShippingPriceV2 { amount, currencyCode }
+          totalPriceV2 { amount, currencyCode }
+          fulfillmentStatus
+          orderNumber
+          processedAt
+          statusUrl
+          financialStatus
+          shippingAddress {
+            city
+            country
+            address1
+            address2
+            zip
+            name
+            phone
+            formattedArea
+          }
+          successfulFulfillments(first: 1) {
+            trackingCompany
+            trackingInfo {
+              number,
+              url
+            }
+          }
+          lineItems(first: 10) {
+            edges {
+              node {
+                quantity
+                title
+                originalTotalPrice {
+                  amount
+                }
+                discountedTotalPrice {
+                  amount
+                }
+                variant {
+                  availableForSale
+                  compareAtPriceV2 { amount, currencyCode }
+                  id
+                  priceV2 { amount, currencyCode }
+                  unitPrice { amount, currencyCode }
+                  compareAtPriceV2 { amount, currencyCode }
+                  image { altText, height, url, width }
+                  sku
+                  quantityAvailable
+                  metafield: metafield(namespace: "custom", key: "details") {
+                    value
+                  }
+                  product {
+                    id
+                    title
+                    description
+                    descriptionHtml
+                    handle
+                    tags
+                    createdAt
+                    availableForSale
+                    variants(first: 10) {
+                      nodes {
+                        id
+                        compareAtPriceV2 {
+                          amount
+                          currencyCode
+                        }
+                        price
+                      }
+                    }
+                    images(first: 10) {
+                      nodes {
+                        url
+                      }
+                    }
+                    metafield: metafield(namespace: "custom", key: "details") {
+                      value
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

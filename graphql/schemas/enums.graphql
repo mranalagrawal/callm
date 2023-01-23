@@ -1,0 +1,72 @@
+# Note: I can't find a way to import Shopify Schema types... Need help here
+enum LanguageCode {
+  EN
+  IT
+  DE
+  FR
+}
+
+enum CurrencyCode {
+  EUR
+  GBP
+}
+
+enum CountryCode {
+  IT
+  GB
+  FR
+  DE
+}
+
+enum WeightUnit {
+  GRAMS
+  KILOGRAMS
+  OUNCES
+  POUNDS
+}
+
+enum OrderFulfillmentStatus {
+  FULFILLED
+  IN_PROGRESS
+  ON_HOLD
+  OPEN
+  PARTIALLY_FULFILLED
+  PENDING_FULFILLMENT
+  RESTOCKED
+  SCHEDULED
+  UNFULFILLED
+}
+
+enum OrderFinancialStatus {
+  AUTHORIZED
+  PAID
+  PARTIALLY_PAID
+  PARTIALLY_REFUNDED
+  PENDING
+  REFUNDED
+  VOIDED
+}
+
+enum CustomerErrorCode {
+  ALREADY_ENABLED
+  BAD_DOMAIN
+  BLANK
+  CONTAINS_HTML_TAGS
+  CONTAINS_URL
+  CUSTOMER_DISABLED
+  INVALID
+  INVALID_MULTIPASS_REQUEST
+  NOT_FOUND
+  PASSWORD_STARTS_OR_ENDS_WITH_WHITESPACE
+  TAKEN
+  TOKEN_INVALID
+  TOO_LONG
+  TOO_SHORT
+  UNIDENTIFIED_CUSTOMER
+}
+
+enum FilterType {
+  BOOLEAN
+  LIST
+  PRICE_RANGE
+}

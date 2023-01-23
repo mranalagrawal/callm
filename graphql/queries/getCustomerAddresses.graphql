@@ -1,0 +1,32 @@
+query getCustomerAddresses(
+  $customerAccessToken: String!,
+  $lang: LanguageCode!,
+) @inContext(language: $lang) {
+  customer(customerAccessToken: $customerAccessToken) {
+    id
+    defaultAddress {
+      id
+    }
+    addresses(first: 10, reverse: true) {
+      nodes {
+        address1
+        address2
+        city
+        company
+        country
+        countryCodeV2
+        firstName
+        formatted
+        formattedArea
+        id
+        lastName
+        name
+        phone
+        province
+        provinceCode
+        zip
+      }
+    }
+  }
+}
+

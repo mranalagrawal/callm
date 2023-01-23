@@ -1,3 +1,27 @@
+<script>
+import locales from '../../locales-mapper'
+export default {
+  data() {
+    return {
+      contents: null,
+    }
+  },
+  async fetch() {
+    let lang = locales[this.$i18n.locale]
+
+    if (lang == 'en-gb' && this.$config.STORE == 'CMW')
+      lang = 'en-eu'
+
+    this.contents = (
+      await this.$prismic.api.query(
+        this.$prismic.predicates.at('document.type', 'call-to-action'),
+        { lang },
+      )
+    ).results
+  },
+}
+</script>
+
 <template>
   <div v-if="contents" class="container-fluid px-md-5 my-5">
     <div class="row">
@@ -9,13 +33,15 @@
       class="row cta-banner py-5"
       :style="{
         backgroundImage:
-          'linear-gradient(90deg,rgba(0,0,0,0) 10%,rgba(0,0,0,1), rgba(0,0,0,1)),url(' +
-          contents[0].data.image.url +
-          ')',
+          `linear-gradient(90deg,rgba(0,0,0,0) 10%,rgba(0,0,0,1), rgba(0,0,0,1)),url(${
+            contents[0].data.image.url
+          })`,
       }"
     >
       <div class="col-12 col-md-7 offset-md-5 py-3">
-        <h2>{{ contents[0].data["title"][0].text }}</h2>
+        <h2 class="cmw-text-white">
+          {{ contents[0].data.title[0].text }}
+        </h2>
         <p class="lead">
           {{ contents[0].data.subtitle[0].text }}
         </p>
@@ -29,32 +55,6 @@
     </div>
   </div>
 </template>
-
-<script>
-import locales from "../../locales-mapper";
-export default {
-  data() {
-    return {
-      contents: null,
-    };
-  },
-  async fetch() {
-    let lang = locales[this.$i18n.locale];
-
-    if (lang == "en-gb" && this.$config.STORE == "CMW") {
-      lang = "en-eu";
-    }
-
-    this.contents = (
-      await this.$prismic.api.query(
-        this.$prismic.predicates.at("document.type", "call-to-action"),
-        { lang: lang }
-      )
-    ).results;
-
-  },
-};
-</script>
 
 <style scoped>
 .cta-banner {
