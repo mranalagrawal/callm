@@ -9,8 +9,8 @@ export default {
     }
   },
   async fetch() {
-    let lang = locales[this.$i18n.locale]
-    if (lang == 'en-gb' && this.$config.STORE == 'CMW')
+    let lang = this.$i18n.localeProperties.iso.toLowerCase()
+    if (lang === 'en-gb' && this.$config.STORE === 'CMW')
       lang = 'en-eu'
 
     const data = await this.$prismic.api.getSingle('home-featured', {
@@ -50,7 +50,7 @@ export default {
               background: `url(${mask}),url('${content.image.url}')`,
             }"
           >
-            <p class="h3 font-weight-bold mt-4 cmw-text-white">
+            <p class="h3 font-weight-bold mt-4 cmw-text-white cmw-max-w-[30%]">
               {{ content.title }}
             </p>
 
