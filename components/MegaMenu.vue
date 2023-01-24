@@ -1,15 +1,23 @@
 <script>
-import { nextTick, onMounted, onUnmounted, ref } from '@nuxtjs/composition-api'
+import { nextTick, onMounted, onUnmounted, ref, useContext, useRouter } from '@nuxtjs/composition-api'
 import debounce from 'lodash.debounce'
 import promoTagIcon from 'assets/svg/promo-tag.svg'
-import locales from '../locales-mapper'
 import ThirdLevel from './UI/ThirdLevel.vue'
 import { useHeaderSize } from '~/store/headerSize'
 export default {
   components: { ThirdLevel },
   setup() {
+    const { localeLocation } = useContext()
+    const router = useRouter()
     const headerSize = useHeaderSize()
     const megaMenu = ref(null)
+    const selectedItem = ref(null)
+    const handleClick = (to) => {
+      router.push(localeLocation(to))
+      selectedItem.value = null
+    }
+
+    const onTab = item => selectedItem.value = item
 
     const resizeListener = debounce(() => {
       headerSize.$patch({
@@ -26,11 +34,10 @@ export default {
       window.removeEventListener('resize', resizeListener)
     })
 
-    return { headerSize, megaMenu }
+    return { headerSize, megaMenu, selectedItem, handleClick, onTab }
   },
   data: () => ({
     promoTagIcon,
-    selectedItem: null,
     selectedContent: null,
     data: null,
     promotions: null,
@@ -89,14 +96,6 @@ export default {
   watch: {
     '$i18n.locale': '$fetch',
   },
-  methods: {
-    onTab(item) {
-      if (item)
-        this.selectedItem = item
-      else
-        this.selectedItem = null
-    },
-  },
 }
 </script>
 
@@ -110,14 +109,12 @@ export default {
         v-for="(firstLevel, i) in data"
         :key="i"
         class="col text-center text-uppercase menu-link cmw-py-2"
-        :style="{
-          color: firstLevel.isPromotionTab ? 'var(--light-secondary)' : '',
-        }"
         @mouseenter="onTab(firstLevel)"
       >
-        <NuxtLink
-          :to="localePath(`/${firstLevel.link}`)"
-          class="!cmw-text-body cmw-no-underline hover:(!cmw-text-primary cmw-no-underline)"
+        <button
+          class="cmw-uppercase cmw-no-underline hover:(!cmw-text-primary cmw-font-bold cmw-no-underline)"
+          :class="firstLevel.isPromotionTab ? '!cmw-text-primary-400' : '!cmw-text-body'"
+          @click="handleClick(`/${firstLevel.link}`)"
         >
           <VueSvgIcon
             v-if="firstLevel.isPromotionTab"
@@ -127,7 +124,7 @@ export default {
             class="d-inline"
           />
           {{ firstLevel.name }}
-        </NuxtLink>
+        </button>
       </div>
     </div>
     <div ref="megaMenu">
