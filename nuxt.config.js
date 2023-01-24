@@ -117,7 +117,7 @@ export default {
   prismic: {
     endpoint: process.env.PRISMIC,
     modern: true,
-    preview: false,
+    preview: true,
   },
 
   modules: [

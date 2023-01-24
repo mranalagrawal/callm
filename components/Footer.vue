@@ -14,9 +14,9 @@ export default {
     }
   },
   async fetch() {
-    let lang = locales[this.$i18n.locale]
+    let lang = this.$i18n.localeProperties.iso.toLowerCase()
 
-    if (lang == 'en-gb' && this.$config.STORE == 'CMW')
+    if (lang === 'en-gb' && this.$config.STORE === 'CMW')
       lang = 'en-eu'
 
     const response = await this.$prismic.api.getSingle('footer', {
@@ -91,7 +91,7 @@ export default {
       v-if="data && info"
       class="container-fluid bg-dark-primary text-light-footer px-md-5 py-5 mt-5"
     >
-      <div class="row justify-content-end">
+      <div v-if="$config.STORE === 'CMW'" class="row justify-content-end">
         <nuxt-link
           class="text-decoration-none text-uppercase text-white fs-0875 mr-3"
           :to="switchLocalePath($config.DEFAULT_LOCALE)"
