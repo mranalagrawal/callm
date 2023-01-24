@@ -32,7 +32,7 @@ export default {
     },
     backofficeId() {
       // Get the proper tag 🤦🏻
-      return `${this.product._source.id}`
+      return `P${this.product._source.id}`
     },
     isOnFavourite() {
       return this.wishlistArr.includes(this.backofficeId)
@@ -393,10 +393,11 @@ export default {
             </div>
             <div class="col-6">
               <p
-                v-if="product._source.quantity > 0"
+                v-if="product._source.quantity[$config.STORE] > 0"
                 class="text-light-primary text-center text-uppercase mt-5"
+                :class="{ 'cmw-hidden': product._source.quantity[$config.STORE] > 6 }"
               >
-                {{ $t("product.available") }}
+                {{ $t("product.available", { quantity: product._source.quantity[$config.STORE] }) }}
               </p>
               <p
                 v-else
@@ -404,7 +405,7 @@ export default {
               >
                 {{ $t("product.notAvailable") }}
               </p>
-              <p class="mb-0 text-center">
+              <p class="mb-0 text-center" :class="{ 'pt-5': product._source.quantity[$config.STORE] > 6 }">
                 <span class="integer">{{
                   product._source.saleprice[SALECHANNEL].toFixed(2).split(
                     ".",
