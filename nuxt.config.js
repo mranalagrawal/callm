@@ -128,6 +128,7 @@ export default {
     ['@nuxtjs/i18n'],
     '@nuxtjs/gtm',
     'cookie-universal-nuxt',
+    '@nuxtjs/sentry',
   ],
 
   http: {
@@ -245,6 +246,19 @@ export default {
           },
         },
       },
+    },
+  },
+
+  sentry: {
+    dsn: 'https://8976f88cc7254b248b330a78ba72a074@o1240128.ingest.sentry.io/4504560369008640',
+    config: {
+      browserTracing: {
+        tracePropagationTargets: ['callmewine.co.uk', /^\//],
+      },
+      vueOptions: {
+        trackComponents: true,
+      },
+      tracesSampleRate: 1.0,
     },
   },
 
