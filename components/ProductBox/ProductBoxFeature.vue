@@ -65,7 +65,7 @@ export default {
         cmw-top-1/2 cmw-left-[110%] cmw-z-tooltip"
       >
         <div
-          class="cmw-relative cmw-bg-gray-lightest cmw-rounded-sm cmw-py-3 cmw-px-3 cmw-pr-8 cmw-shadow-lg cmw-text-xs
+          class="cmw-relative cmw-bg-gray-lightest cmw-border cmw-border-gray-lightest cmw-rounded-sm cmw-py-3 cmw-px-3 cmw-pr-8 cmw-shadow-lg cmw-text-xs
           before:(cmw-content-DEFAULT cmw-transform cmw-absolute cmw-w-0 cmw-h-0 cmw-top-1/2 cmw-left-0 cmw-translate-x-[-100%] cmw-translate-y-[-50%])
           before:(cmw-border-[0.75rem_0.5rem_0.75rem_0] cmw-border-transparent cmw-border-r-gray-lightest)"
         >
