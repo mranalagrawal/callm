@@ -8,7 +8,6 @@ import Dropdown from './UI/Dropdown.vue'
 import DropdownRange from './UI/DropdownRange.vue'
 import DropdownSelections from './UI/DropdownSelections.vue'
 import SelectionsBoxMobile from './UI/SelectionsBoxMobile.vue'
-import VerticalSearch from './VerticalSearch.vue'
 import { useFilters } from '~/store/filters'
 
 export default {
@@ -18,7 +17,6 @@ export default {
     DropdownSelections,
     DropdownRange,
     SelectionsBoxMobile,
-    VerticalSearch,
     Loader,
   },
   scrollToTop: true,

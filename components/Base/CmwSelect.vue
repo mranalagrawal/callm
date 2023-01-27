@@ -1,10 +1,9 @@
 <script>
+import { ref } from '@nuxtjs/composition-api'
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
-import { ref, toRef, toRefs } from '@nuxtjs/composition-api';
 import searchIcon from '~/assets/svg/search.svg'
 
 export default {
-  // eslint-disable-next-line vue/multi-word-component-names,vue/no-reserved-component-names
   name: 'CmwSelect',
   inheritAttrs: false,
   props: {
@@ -87,7 +86,7 @@ export default {
         <!-- List Items -->
         <div class="cmw-pt-1">
           <button
-            v-for="({label, value}) in options"
+            v-for="({ label, value }) in options"
             :key="value"
             class="cmw-font-sans cmw-block cmw-w-full cmw-text-left cmw-text-sm cmw-py-3 cmw-pl-4 hover:cmw-bg-primary-50"
             @click="handleClick(value)"
@@ -99,7 +98,6 @@ export default {
     </transition>
   </div>
 </template>
-
 
 <!--
 Todo: Implement the search field
