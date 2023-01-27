@@ -10,7 +10,7 @@ export default {
     }
   },
   created() {
-    if (['profile'].includes(this.$route.name))
+    if (['profile', 'blog'].includes(this.$route.name))
       return
 
     /* const path = this.$route.path; */
