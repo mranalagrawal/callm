@@ -1,5 +1,13 @@
 <script>
 import { storeToRefs } from 'pinia'
+import { markRaw, ref } from '@nuxtjs/composition-api'
+import { mapState } from 'vuex'
+import cartIcon from 'assets/svg/cart.svg'
+import addIcon from 'assets/svg/add.svg'
+import subtractIcon from 'assets/svg/subtract.svg'
+import heartIcon from 'assets/svg/heart.svg'
+import heartFullIcon from 'assets/svg/heart-full.svg'
+import { getLocaleFromCurrencyCode, getPercent } from '../utilities/currency'
 import { queryProductByIdAsTag } from '~/utilities/productQueries'
 import { getBrand } from '~/utilities/brandForProduct'
 import favouriteIcon from '~/assets/svg/selections/favourite.svg'
@@ -8,6 +16,7 @@ import isNewIcon from '~/assets/svg/selections/isnew.svg'
 import artisanalIcon from '~/assets/svg/selections/artisanal.svg'
 import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
 import { useCustomer } from '~/store/customer'
+import { pick } from '~/utilities/arrays'
 
 export default {
   props: ['product'],
@@ -15,8 +24,10 @@ export default {
     const customerStore = useCustomer()
     const { wishlistArr } = storeToRefs(customerStore)
     const { handleWishlist } = customerStore
+    const features = markRaw(['favourite', 'isnew', 'inpromotion', 'foreveryday', 'togift', 'unusualvariety', 'rarewine', 'artisanal', 'organic', 'topsale'])
+    const isOpen = ref(false)
 
-    return { wishlistArr, handleWishlist }
+    return { wishlistArr, features, isOpen, cartIcon, addIcon, subtractIcon, heartIcon, heartFullIcon, handleWishlist }
   },
   data() {
     return {
@@ -26,7 +37,7 @@ export default {
       artisanalIcon,
       data: null,
       price: null,
-      metafield: null,
+      metaField: null,
       brand: null,
       brandMetafields: null,
       breadcrumb: null,
@@ -64,9 +75,9 @@ export default {
     this.data = data.data.products.edges[0].node
 
     this.price = this.data.variants.nodes[0].price
-    this.metafield = JSON.parse(this.data.metafield1.value)
+    this.metaField = JSON.parse(this.data.metafield1.value)
 
-    const brandId = this.metafield.brandId
+    const brandId = this.metaField.brandId
 
     const dataBrand = await getBrand(domain, access_token, `B${brandId}`)
     this.brand = dataBrand
@@ -86,9 +97,12 @@ export default {
     }
   },
   computed: {
+    ...mapState('userCart', {
+      userCart: 'userCart',
+    }),
     strippedContent() {
-      if (this.metafield.shortDescription[this.$i18n.locale]) {
-        return this.metafield.shortDescription[this.$i18n.locale]
+      if (this.metaField.shortDescription[this.$i18n.locale]) {
+        return this.metaField.shortDescription[this.$i18n.locale]
           .replace('href', '')
           .replace('style', '')
       }
@@ -99,14 +113,38 @@ export default {
       return this.data ? this.data.title : 'CallMeWine'
     },
     canonical() {
-      return this.metafield ? this.metafield.canonical : 'CallMeWine'
+      return this.metaField ? this.metaField.canonical : 'CallMeWine'
+    },
+    isOnCart() {
+      return this.userCart.find(lineItem => lineItem.productVariantId === this.data.variants.nodes[0].id)
+    },
+    cartQuantity() {
+      return this.isOnCart ? this.isOnCart.quantity : 0
     },
     isOnFavourite() {
       return this.wishlistArr.includes(this.product)
     },
+    availableFeatures() {
+      let features = pick(this.metaField, this.features)
+
+      features = Object.keys(features)
+        .reduce((o, key) => {
+          features[key] === true && (o[key] = features[key])
+
+          return o
+        }, {})
+
+      return Object.keys(features).slice(0, 4)
+    },
+    isOnSale() {
+      return Number(this.data.variants.nodes[0].compareAtPriceV2.amount) > Number(this.data.variants.nodes[0].priceV2.amount) || this.availableFeatures.includes('inpromotion')
+    },
   },
   methods: {
+    getPercent,
+    getLocaleFromCurrencyCode,
     async addToUserCart() {
+      this.isOpen = true
       const productVariantId = this.data.variants.nodes[0].id
       const amount = Number(this.data.variants.nodes[0].price)
       const amountFullPrice = Number(
@@ -134,44 +172,9 @@ export default {
         blockClass: 'add-product-notification',
       })
     },
-    async toggleWishlist() {
-      if (!this.$store.state.user.user) {
-        this.$router.push('/login')
-        return
-      }
-
-      const userId
-        = this.$store.state.user.user.customer.id.split('Customer/')[1]
-
-      const variantId
-        = this.data.variants.edges[0].node.id.split('ProductVariant/')[1]
-
-      const elastic_url = this.$config.ELASTIC_URL
-      const STORE = this.$config.STORE
-      const response = await fetch(
-        `${elastic_url
-          }customers/${STORE}/${userId}/wishlist/${this.data.tags[0]}`,
-        { async: true, crossDomain: true, method: 'POST' },
-      )
-      const updatedWishlist = await response.text()
-
-      this.$store.commit('user/updateWishlist', updatedWishlist)
-
-      if (this.isOnFavourite) {
-        this.flashMessage.show({
-          status: '',
-          message: 'Aggiunto ai preferiti!',
-          time: 5000,
-          blockClass: 'add-product-notification',
-        })
-      } else {
-        this.flashMessage.show({
-          status: '',
-          message: 'Rimosso preferiti!',
-          time: 5000,
-          blockClass: 'add-product-notification',
-        })
-      }
+    async removeFromUserCart() {
+      const productVariantId = this.data.variants.nodes[0].id
+      this.$store.commit('userCart/removeProduct', productVariantId)
     },
   },
 
@@ -179,167 +182,167 @@ export default {
 </script>
 
 <template>
-  <div class="mt-5">
-    <div v-if="data && brandMetafields" class="container-fluid px-md-5">
-      <div v-if="breadcrumb" class="row mb-3">
-        <div class="col-12">
-          <nuxt-link
-            class="text-light-secondary"
-            :to="localePath(`/catalog`)"
-          >
-            {{ breadcrumb.parent_category_name }}
-          </nuxt-link>
-          <i class="fal fa-chevron-right small px-1" />
-          <nuxt-link
-            class="text-light-secondary"
-            :to="
-              localePath(
-                `/${breadcrumb.category_handle}-${breadcrumb.category_id}`,
-              )
-            "
-          >
-            {{ breadcrumb.category_name }}
-          </nuxt-link>
-          <i class="fal fa-chevron-right small px-1" />
-          <nuxt-link
-            class="text-light-secondary"
-            :to="
-              localePath(
-                `/${breadcrumb.category_handle}-${breadcrumb.region_handle}-${breadcrumb.category_id}${breadcrumb.region_id}`,
-              )
-            "
-          >
-            {{ breadcrumb.region_name }}
-          </nuxt-link>
-          <i class="fal fa-chevron-right small px-1" />
-          <nuxt-link
-            class="text-light-secondary"
-            :to="
-              localePath(
-                `/${breadcrumb.winelist_handle}-${breadcrumb.winelist_id}`,
-              )
-            "
-          >
-            {{ breadcrumb.winelist_name }}
-          </nuxt-link>
-          <i class="fal fa-chevron-right small px-1" />
-          <span class="text-dark">{{ breadcrumb.name }}</span>
-        </div>
+  <div class="cmw-mt-4 cmw-max-w-screen-xl cmw-mx-auto <md:cmw-px-4">
+    <div v-if="data && brandMetafields">
+      <div v-if="breadcrumb" class="<md:cmw-hidden md:(cmw-flex cmw-items-center) cmw-my-2 cmw-font-sans cmw-text-sm">
+        <NuxtLink class="cmw-text-primary-400" :to="localePath(`/catalog`)">
+          {{ breadcrumb.parent_category_name }}
+        </NuxtLink>
+        <VueSvgIcon class="cmw-mx-1" width="12" height="12" :data="require(`@/assets/svg/chevron-right.svg`)" />
+        <NuxtLink class="cmw-text-primary-400" :to="localePath(`/${breadcrumb.category_handle}-${breadcrumb.category_id}`)">
+          {{ breadcrumb.category_name }}
+        </NuxtLink>
+        <VueSvgIcon class="cmw-mx-1" width="12" height="12" :data="require(`@/assets/svg/chevron-right.svg`)" />
+        <NuxtLink
+          class="cmw-text-primary-400" :to=" localePath(`/${breadcrumb.category_handle}-${breadcrumb.region_handle}-${breadcrumb.category_id}${breadcrumb.region_id}`)"
+        >
+          {{ breadcrumb.region_name }}
+        </NuxtLink>
+        <VueSvgIcon class="cmw-mx-1" width="12" height="12" :data="require(`@/assets/svg/chevron-right.svg`)" />
+        <NuxtLink class="cmw-text-primary-400" :to=" localePath(`/${breadcrumb.winelist_handle}-${breadcrumb.winelist_id}`)">
+          {{ breadcrumb.winelist_name }}
+        </NuxtLink>
+        <VueSvgIcon class="cmw-mx-1" width="12" height="12" :data="require(`@/assets/svg/chevron-right.svg`)" />
+        <span class="cmw-text-body">{{ breadcrumb.name }}</span>
       </div>
-      <div class="row px-3">
-        <div class="col-12 col-md-4 position-relative">
-          <div
-            class="position-absolute"
-            style="left: 20px; top: 10px; z-index: 10"
-          >
-            <VueSvgIcon
-              v-if="metafield.favourite"
-              :data="favouriteIcon"
-              class="d-block mb-3"
-              width="36" height="auto"
-            />
-            <VueSvgIcon
-              v-if="metafield.foreveryday"
-              :data="forEveryDayIcon"
-              class="d-block mb-3"
-              width="36" height="auto"
-            />
-            <VueSvgIcon
-              v-if="metafield.isnew"
-              :data="isNewIcon"
-              class="d-block mb-3"
-              width="36" height="auto"
-            />
-            <VueSvgIcon
-              v-if="metafield.artisanal"
-              :data="artisanalIcon"
-              class="d-block mb-3"
-              width="36" height="auto"
-            />
-          </div>
+      <div class="md:(cmw-grid cmw-grid-cols-[40%_60%] cmw-max-h-[550px] cmw-my-4)">
+        <!-- Image Section -->
+        <div class="cmw-relative">
           <img
-            v-if="!data.images.nodes[0].url"
-            :src="require(`~/assets/images/img-test.jpeg`)"
-            class="d-block mx-auto"
-            alt=""
-            style="height: 500px"
-          >
-          <img
-            v-else
             :src="data.images.nodes[0].url"
-            class="d-block mx-auto"
-            alt=""
-            style="height: 500px"
+            class="cmw-max-h-[350px] md:cmw-max-h-[550px] cmw-mx-auto cmw-object-contain"
+            :alt="data.title"
           >
+          <div class="cmw-absolute cmw-top-4 cmw-left-2">
+            <ProductBoxFeature v-for="feature in availableFeatures" :key="feature" :feature="feature" />
+          </div>
+          <div class="cmw-absolute cmw-bottom-0 cmw-left-2">
+            <div
+              v-for="(award) in metaField.awards.slice(0, 4)"
+              :key="award.id"
+              class="cmw-flex cmw-gap-1 cmw-items-center cmw-pr-1.5"
+            >
+              <ProductBoxAward :award="award" />
+            </div>
+          </div>
+          <div class="cmw-absolute cmw-transform cmw-top-4 cmw-right-8">
+            <CardLapel v-if="isOnSale" variant="simple" />
+          </div>
         </div>
-        <div class="col-12 col-md-8">
-          <div class="row">
-            <div class="col-12 mb-5">
-              <h1 class="font-weight-bold">
-                {{ data.title }}
-              </h1>
-
-              <div class="mb-5">
-                <nuxt-link
-                  class="h3 font-weight-bold text-dark"
-                  :to="`winery/${data.vendor}-B${brandMetafields.brandId}`"
+        <!-- Content Section -->
+        <div class="cmw-flex cmw-flex-col">
+          <h1 class="cmw-text-secondary <md:cmw-pt-8">
+            {{ data.title }}
+          </h1>
+          <NuxtLink
+            class="h3 cmw-w-max font-weight-bold cmw-text-primary-400 hover:cmw-text-primary-400"
+            :to="`winery/${data.vendor}-B${brandMetafields.brandId}`"
+          >
+            {{ data.vendor }}
+          </NuxtLink>
+          <div v-html="strippedContent" />
+          <div
+            class="
+            <md:(cmw-fixed cmw-bottom-0 cmw-left-0 cmw-w-full cmw-bg-white cmw-z-content cmw-shadow-elevation cmw-px-3 cmw-py-4)
+            cmw-mt-auto cmw-flex cmw-items-end
+            md:cmw-mb-8
+"
+          >
+            <div>
+              <div
+                v-if="isOnSale"
+                class="cmw-flex cmw-items-center cmw-gap-2"
+              >
+                <span class="cmw-line-through cmw-text-gray cmw-text-sm">
+                  {{
+                    $n(Number(data.variants.nodes[0].compareAtPriceV2.amount), 'currency', getLocaleFromCurrencyCode(data.variants.nodes[0].compareAtPriceV2.currencyCode))
+                  }}
+                </span>
+                <CmwChip
+                  color="secondary"
+                  shape="rounded"
+                  :label="`-${getPercent(data.variants.nodes[0].priceV2.amount, data.variants.nodes[0].compareAtPriceV2.amount)}%`"
+                />
+              </div>
+              <i18n-n
+                class="cmw-inline-block" :value="Number(data.variants.nodes[0].priceV2.amount)"
+                :format="{ key: 'currency' }"
+                :locale="getLocaleFromCurrencyCode(data.variants.nodes[0].priceV2.currencyCode)"
+              >
+                <template #currency="slotProps">
+                  <span class="cmw-text-sm md:cmw-text-base">{{ slotProps.currency }}</span>
+                </template>
+                <template #integer="slotProps">
+                  <span class="cmw-h1 cmw-font-bold !cmw-leading-none">{{ slotProps.integer }}</span>
+                </template>
+                <template #group="slotProps">
+                  <span class="cmw-h1 cmw-font-bold !cmw-leading-none">{{ slotProps.group }}</span>
+                </template>
+                <template #fraction="slotProps">
+                  <span class="cmw-text-sm md:cmw-text-base">{{ slotProps.fraction }}</span>
+                </template>
+              </i18n-n>
+            </div>
+            <div class="cmw-ml-auto cmw-mr-4">
+              <div class="">
+                <p
+                  v-if="data.totalInventory > 0" class="cmw-text-success cmw-text-center"
+                  :class="{ 'cmw-hidden': data.totalInventory > 6 }"
                 >
-                  {{ data.vendor }}
-                </nuxt-link>
-              </div>
-              <div v-html="strippedContent" />
-              <!-- <div>
-                {{ metafield.shortDescription }}
-              </div> -->
-            </div>
-            <div class="col-12 col-md-4">
-              <!-- PRICE : {{ price }} price :
-              {{ data.variants.nodes[0].compareAtPriceV2 }} -->
-              <span style="font-size: 2.5rem; font-weight: 900">{{
-                price.split(".")[0]
-              }}</span>,<span style="font-size: 16px">{{ price.split(".")[1] }} </span>
-            </div>
-            <div class="col-12 col-md-6 offset-md-2 text-center">
-              <div class="d-flex align-items-end justify-content-center">
-                <div>
-                  <p
-                    v-if="data.totalInventory > 0" class="text-light-primary"
-                    :class="{ 'cmw-hidden': data.totalInventory > 6 }"
+                  {{ $t("product.available", { quantity: data.totalInventory }) }}
+                </p>
+                <p v-else class="text-light-secondary">
+                  {{ $t("product.notAvailable") }}
+                </p>
+                <div v-if="data.availableForSale" class="cmw-relative">
+                  <Button
+                    class="cmw-gap-2 cmw-pl-2 cmw-pr-3 cmw-py-2"
+                    @click.native="addToUserCart"
                   >
-                    {{ $t("product.available", { quantity: data.totalInventory }) }}
-                  </p>
-                  <p v-else class="text-light-secondary">
-                    {{ $t("product.notAvailable") }}
-                  </p>
-                  <button
-                    class="btn p-2 px-3 bg-light-secondary text-uppercase text-white d-inline-flex align-items-center br-10"
-                    :class="data.totalInventory > 0 ? '' : 'disabled'"
-                    @click="addToUserCart()"
-                  >
-                    <!-- <i class="fal fa-shopping-cart fa-2x mr-2"></i> -->
-                    <img
-                      :src="require(`~/assets/svg/cart.svg`)"
-                      class="mr-2"
-                      alt=""
-                    >
-                    <span class="font-weight-bold">{{
-                      $t("product.addToCart")
-                    }}</span>
-                  </button>
-                </div>
-                <button class="btn ml-2">
-                  <i
-                    class="text-light-secondary"
-                    :class="
-                      isOnFavourite
-                        ? 'fas fa-heart fa-2x'
-                        : 'fal fa-heart fa-2x '
-                    "
-                    @click="handleWishlist({ id: product, isOnFavourite })"
+                    <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
+                    <span class="cmw-text-sm" v-text="$t('product.addToCart')" />
+                  </Button>
+                  <Badge
+                    v-show="cartQuantity && !isOpen"
+                    class="cmw-absolute cmw-top-0 cmw-left-full cmw-transform cmw-translate-x-[-50%] cmw-translate-y-[-50%]"
+                    bg-color="primary-400" :qty="cartQuantity"
                   />
-                </button>
+                  <div
+                    v-show="isOpen"
+                    class="cmw-absolute cmw-grid cmw-grid-cols-[50px_auto_50px] cmw-items-center cmw-w-full cmw-h-[50px] cmw-top-0 cmw-left-0"
+                    @mouseleave="isOpen = false"
+                  >
+                    <button
+                      class="cmw-flex cmw-transition-colors cmw-w-[50px] cmw-h-[50px] cmw-bg-primary-400 cmw-rounded-l hover:(cmw-bg-primary)"
+                      @click="removeFromUserCart"
+                    >
+                      <VueSvgIcon class="cmw-m-auto" :data="subtractIcon" width="14" height="14" color="white" />
+                    </button>
+                    <div class="cmw-flex cmw-h-[40px] cmw-bg-primary-400 cmw-text-white text-center">
+                      <span class="cmw-m-auto cmw-text-sm">{{ cartQuantity }}</span>
+                    </div>
+                    <button
+                      class="cmw-flex cmw-transition-colors cmw-w-[50px] cmw-h-[50px] cmw-bg-primary-400 cmw-rounded-r hover:(cmw-bg-primary)"
+                      @click="addToUserCart"
+                    >
+                      <VueSvgIcon class="cmw-m-auto" :data="addIcon" width="14" height="14" color="white" />
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
+            <button
+              type="button"
+              class="cmw-mb-2"
+              @click="handleWishlist({ id: product, isOnFavourite })"
+            >
+              <VueSvgIcon
+                color="#d94965"
+                width="32"
+                height="32"
+                :data="isOnFavourite ? heartFullIcon : heartIcon"
+              />
+            </button>
           </div>
         </div>
       </div>
@@ -365,27 +368,27 @@ export default {
                     <h4 class="font-weight-bold">
                       {{ $t("product.temperature") }}
                     </h4>
-                    <p>{{ metafield.servingTemperature }}</p>
+                    <p>{{ metaField.servingTemperature }}</p>
                   </div>
 
                   <div class="mb-5">
                     <h4 class="font-weight-bold">
                       {{ $t("product.whenDrink") }}
                     </h4>
-                    <p>{{ metafield.drinkNotesDrinkingTitle[$i18n.locale] }}</p>
+                    <p>{{ metaField.drinkNotesDrinkingTitle[$i18n.locale] }}</p>
                     <p>
-                      {{ metafield.drinkNotesServingDescription[$i18n.locale] }}
+                      {{ metaField.drinkNotesServingDescription[$i18n.locale] }}
                     </p>
                     <p>
-                      {{ metafield.drinkNotesDrinkingLongevity[$i18n.locale] }}
+                      {{ metaField.drinkNotesDrinkingLongevity[$i18n.locale] }}
                     </p>
                   </div>
 
                   <div class="mb-5">
                     <h4 class="font-weight-bold">
-                      {{ metafield.glassTitle[$i18n.locale] }}
+                      {{ metaField.glassTitle[$i18n.locale] }}
                     </h4>
-                    <p>{{ metafield.glassDescription[$i18n.locale] }}</p>
+                    <p>{{ metaField.glassDescription[$i18n.locale] }}</p>
                   </div>
                 </div>
               </b-tab>
@@ -394,7 +397,7 @@ export default {
                 :title="$t('product.awardsAndAcknowledgments')"
               >
                 <table
-                  v-if="metafield.awards.length > 0"
+                  v-if="metaField.awards.length > 0"
                   class="table table-striped"
                 >
                   <thead>
@@ -416,7 +419,7 @@ export default {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(award, i) in metafield.awards" :key="i">
+                    <tr v-for="(award, i) in metaField.awards" :key="i">
                       <td scope="row">
                         <!-- <img
                           :src="
@@ -522,14 +525,14 @@ export default {
                 </div>
               </b-tab>
               <b-tab :title="$t('product.pairings')">
-                <!-- {{ metafield.foodPairings }} -->
+                <!-- {{ metaField.foodPairings }} -->
                 <h3 class="mb-5">
                   {{ $t("product.pairings") }}
                 </h3>
 
                 <div class="row">
                   <div
-                    v-for="pairing in metafield.foodPairings"
+                    v-for="pairing in metaField.foodPairings"
                     :key="pairing.id"
                     class="col-6 col-md-4 col-lg-3"
                   >
@@ -546,94 +549,94 @@ export default {
           </div>
         </div>
         <div class="col-12 col-md-4">
-          <div style="width: 80%" class="bg-light p-3 mx-auto">
+          <div style="width: 80%" class="bg-light p-3 mx-auto cmw-rounded">
             <h3 class="mb-5">
               {{ $t("product.features") }}
             </h3>
 
-            <div v-if="metafield.denomination[$i18n.locale]">
+            <div v-if="metaField.denomination[$i18n.locale]">
               <p class="font-weight-bold mb-0">
                 {{ $t("product.denomination") }}
               </p>
               <p class="mb-4">
-                {{ metafield.denomination[$i18n.locale] }}
+                {{ metaField.denomination[$i18n.locale] }}
               </p>
               <hr>
             </div>
-            <div v-if="metafield.grapes[$i18n.locale]">
+            <div v-if="metaField.grapes[$i18n.locale]">
               <p class="font-weight-bold mb-0">
                 {{ $t("product.vines") }}
               </p>
               <p class="mb-4">
-                {{ metafield.grapes[$i18n.locale] }}
+                {{ metaField.grapes[$i18n.locale] }}
               </p>
               <hr>
             </div>
 
             <div
               v-if="
-                metafield.countryName[$i18n.locale]
-                  || metafield.countryRegionName
+                metaField.countryName[$i18n.locale]
+                  || metaField.countryRegionName
               "
             >
               <p class="font-weight-bold mb-0">
                 {{ $t("product.region") }}
               </p>
               <p class="mb-4">
-                {{ metafield.countryRegionName }}
-                {{ metafield.countryName[$i18n.locale] }}
+                {{ metaField.countryRegionName }}
+                {{ metaField.countryName[$i18n.locale] }}
               </p>
               <hr>
             </div>
-            <div v-if="metafield.alcoholContent">
+            <div v-if="metaField.alcoholContent">
               <p class="font-weight-bold mb-0">
                 {{ $t("product.alcoholContent") }}
               </p>
               <p class="mb-4">
-                {{ metafield.alcoholContent }}%
+                {{ metaField.alcoholContent }}%
               </p>
               <hr>
             </div>
-            <div v-if="metafield.size[$i18n.locale]">
+            <div v-if="metaField.size[$i18n.locale]">
               <p class="font-weight-bold mb-0">
                 {{ $t("product.format") }}
               </p>
               <p class="mb-4">
-                {{ metafield.size[$i18n.locale] }}
+                {{ metaField.size[$i18n.locale] }}
               </p>
               <hr>
             </div>
-            <div v-if="metafield.winemaking[$i18n.locale]">
+            <div v-if="metaField.winemaking[$i18n.locale]">
               <p class="font-weight-bold mb-0">
                 {{ $t("product.vinification") }}
               </p>
               <p class="mb-4">
-                {{ metafield.winemaking[$i18n.locale] }}
+                {{ metaField.winemaking[$i18n.locale] }}
               </p>
               <hr>
             </div>
-            <div v-if="metafield.agingDescription[$i18n.locale]">
+            <div v-if="metaField.agingDescription[$i18n.locale]">
               <p class="font-weight-bold mb-0">
                 {{ $t("product.refinement") }}
               </p>
               <p class="mb-4">
-                {{ metafield.agingDescription[$i18n.locale] }}
+                {{ metaField.agingDescription[$i18n.locale] }}
               </p>
               <hr>
             </div>
-            <div v-if="metafield.productInformations[$i18n.locale]">
+            <div v-if="metaField.productInformations[$i18n.locale]">
               <p class="font-weight-bold mb-0">
                 {{ $t("product.additionalNotes") }}
               </p>
               <p class="mb-4">
-                {{ metafield.productInformations[$i18n.locale] }}
+                {{ metaField.productInformations[$i18n.locale] }}
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      <!--     <RecentProducts />
+      <!--      <RecentProducts />
 
       <VendorProducts :vendor="brand.title" />
 
@@ -651,6 +654,7 @@ export default {
   filter: brightness(0.7);
   width: 36px;
 }
+
 :deep(.nav-tabs .nav-link) {
   margin-bottom: -1px;
   border: none;
@@ -659,6 +663,11 @@ export default {
   padding-left: 0px;
   padding-right: 0px;
   font-size: 14px;
+}
+
+:deep(.nav-link:hover) {
+  color: var(--dark-secondary);
+  border-bottom: 4px solid var(--dark-secondary);
 }
 
 :deep(.nav-tabs) {
@@ -671,6 +680,7 @@ export default {
   background-color: #fff;
   border-bottom: 4px solid var(--dark-secondary);
 }
+
 :deep(ul.nav.nav-tabs.nav-justified) {
   flex-wrap: nowrap;
 }
@@ -680,6 +690,7 @@ export default {
     flex-wrap: nowrap;
     overflow-x: scroll;
   }
+
   :deep(.nav-tabs .nav-link) {
     width: 160px;
   }

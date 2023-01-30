@@ -3,7 +3,7 @@ import bookmarkIcon from 'assets/svg/bookmark.svg'
 import editIcon from 'assets/svg/edit.svg'
 import deleteIcon from 'assets/svg/delete.svg'
 import moreVerticalIcon from 'assets/svg/more-vertical.svg'
-import { isRef, ref, useContext } from '@nuxtjs/composition-api'
+import { ref, useContext } from '@nuxtjs/composition-api'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { MailingAddressType } from '@/types/mailingAddress'
 import { SweetAlertConfirm, SweetAlertToast } from '@/utilities/Swal'
@@ -102,7 +102,7 @@ export default {
   <div class="c-address cmw-h-full cmw-relative cmw-font-sans cmw-p-3 cmw-rounded-sm cmw-border cmw-border-gray-light hover:cmw-shadow-elevation">
     <div class="cmw-flex cmw-items-baseline cmw-justify-between cmw-gap-4">
       <strong>{{ address.name }}</strong>
-      <CmwChip v-if="isDefaultAddress" :icon="bookmarkIcon" color="secondary" :label="$t('profile.defaultAddress')" />
+      <CmwChip v-if="isDefaultAddress" :icon="bookmarkIcon" color="secondary-400" :label="$t('profile.defaultAddress')" />
     </div>
     <div class="cmw-text-sm">
       <div>{{ address.address1 }}</div>

@@ -2,7 +2,6 @@
 import { nextTick, onMounted, onUnmounted, ref, watch } from '@nuxtjs/composition-api'
 import debounce from 'lodash.debounce'
 import { mapGetters } from 'vuex'
-import Cart from './Cart/Cart.vue'
 import LoginForm from './LoginForm.vue'
 import DropdownMobileMenu from './UI/DropdownMobileMenu.vue'
 import UserMenu from './UserMenu.vue'
@@ -18,7 +17,7 @@ import UserActions from '@/components/Header/UserActions.vue'
 import { useCustomer } from '~/store/customer'
 
 export default {
-  components: { UserActions, LoginForm, UserMenu, DropdownMobileMenu, Cart },
+  components: { UserActions, LoginForm, UserMenu, DropdownMobileMenu },
   setup() {
     const headerSize = useHeaderSize()
     const customer = useCustomer()
@@ -48,9 +47,9 @@ export default {
       window.removeEventListener('resize', resizeListener)
     })
 
-    watch(() => headerSize.navbarHeight, (val) => {
+    watch(() => headerSize, () => {
       setHeaderSize()
-    })
+    }, { deep: true })
 
     return {
       customer,

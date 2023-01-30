@@ -10,7 +10,7 @@ export default {
     }
   },
   created() {
-    if (['profile'].includes(this.$route.name))
+    if (['profile', 'blog'].includes(this.$route.name))
       return
 
     /* const path = this.$route.path; */
@@ -56,7 +56,7 @@ export default {
       .filter(el => el.rule !== null)
       .every(el => !el.rule.test(path))
 
-    console.log(noFilterInURL, '>> noFilterInUrl')
+    // console.log(noFilterInURL, '>> noFilterInUrl')
 
     const noSelection = !this.$route.fullPath.split('?sel=')[1]
 
@@ -67,14 +67,12 @@ export default {
 </script>
 
 <template>
-  <div class="mt-5">
+  <div>
     <div v-if="product">
-      <product :product="product" />
+      <ProductDetails :product="product" />
     </div>
     <div v-else>
       <search-filter :input-parameters="inputParameters" />
     </div>
   </div>
 </template>
-
-<style scoped></style>
