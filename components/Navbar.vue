@@ -27,7 +27,7 @@ export default {
       headerSize.$patch({
         navbarHeight: navbar.value ? navbar.value.getBoundingClientRect().height : 0,
       })
-    }, 400)
+    }, 500)
 
     const setHeaderSize = () => {
       const doc = document.querySelector(':root')
@@ -62,6 +62,7 @@ export default {
       userIcon,
       searchIcon,
       heartIcon,
+      resizeListener,
     }
   },
   data() {
@@ -221,6 +222,7 @@ export default {
       .sort((a, b) => a.position - b.position)
 
     this.data = mapped
+    this.resizeListener()
   },
 }
 </script>
