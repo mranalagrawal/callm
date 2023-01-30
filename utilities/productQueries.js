@@ -1,26 +1,8 @@
-const featuredQuery = `query {
-    
-    products(first: 10) {
-        nodes {
-            title
-            id
-            images(first: 1) {
-                edges {
-                    node {
-                        id
-                    }
-                }
-            }
-        }
-    }
-    
-}`;
-
 const queryByCollection = (
   collection,
-  language
+  language,
 ) => `query @inContext(language: ${language}){
-        
+
         collectionByHandle(handle: "${collection}") {
             title
             description
@@ -55,10 +37,10 @@ const queryByCollection = (
                 }
             }
         }
-        
-    }`;
 
-const queryProductByIdAsTag = (tag) => `query @inContext(country: IT){
+    }`
+
+const queryProductByIdAsTag = tag => `query @inContext(country: IT){
         products(first: 1, query:"tag:${tag}") {
             edges {
                 node {
@@ -73,6 +55,10 @@ const queryProductByIdAsTag = (tag) => `query @inContext(country: IT){
                     variants(first: 1) {
                         nodes {
                             compareAtPriceV2 {
+                                amount
+                                currencyCode
+                            }
+                            priceV2 {
                                 amount
                                 currencyCode
                             }
@@ -98,9 +84,9 @@ const queryProductByIdAsTag = (tag) => `query @inContext(country: IT){
                 }
             }
         }
-    }`;
+    }`
 
-const productRecommendations = (id) => `query {
+const productRecommendations = id => `query {
         productRecommendations(productId: "${id}") {
             id
             title
@@ -128,9 +114,9 @@ const productRecommendations = (id) => `query {
                 value
             }
         }
-    }`;
+    }`
 
-const queryProductsByVendor = (vendor) => `query {
+const queryProductsByVendor = vendor => `query {
         products(first: 10, query:"vendor:${vendor}") {
             nodes {
                 id
@@ -160,11 +146,9 @@ const queryProductsByVendor = (vendor) => `query {
                 }
             }
         }
-    }`;
+    }`
 
-const queryAllCollections = (
-  language
-) => `query @inContext(language: ${language}){
+const queryAllCollections = language => `query @inContext(language: ${language}){
                 collections(first: 20) {
                   edges {
                     node {
@@ -178,7 +162,7 @@ const queryAllCollections = (
                     }
                   }
               }
-        }`;
+        }`
 
 export {
   queryByCollection,
@@ -186,4 +170,4 @@ export {
   productRecommendations,
   queryProductsByVendor,
   queryAllCollections,
-};
+}

@@ -21,7 +21,7 @@ export default {
 
     const resizeListener = debounce(() => {
       headerSize.$patch({
-        navbarHeight: megaMenu.value ? megaMenu.value.getBoundingClientRect().height : 0,
+        megaMenuHeight: megaMenu.value ? megaMenu.value.getBoundingClientRect().height : 0,
       })
     }, 400)
 
