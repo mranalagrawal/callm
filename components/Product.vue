@@ -1,22 +1,22 @@
 <script>
-import { storeToRefs } from 'pinia'
-import { queryProductByIdAsTag } from '~/utilities/productQueries'
-import { getBrand } from '~/utilities/brandForProduct'
-import favouriteIcon from '~/assets/svg/selections/favourite.svg'
-import forEveryDayIcon from '~/assets/svg/selections/foreveryday.svg'
-import isNewIcon from '~/assets/svg/selections/isnew.svg'
-import artisanalIcon from '~/assets/svg/selections/artisanal.svg'
-import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
-import { useCustomer } from '~/store/customer'
+import { storeToRefs } from "pinia";
+import { queryProductByIdAsTag } from "~/utilities/productQueries";
+import { getBrand } from "~/utilities/brandForProduct";
+import favouriteIcon from "~/assets/svg/selections/favourite.svg";
+import forEveryDayIcon from "~/assets/svg/selections/foreveryday.svg";
+import isNewIcon from "~/assets/svg/selections/isnew.svg";
+import artisanalIcon from "~/assets/svg/selections/artisanal.svg";
+import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
+import { useCustomer } from "~/store/customer";
 
 export default {
-  props: ['product'],
+  props: ["product"],
   setup() {
-    const customerStore = useCustomer()
-    const { wishlistArr } = storeToRefs(customerStore)
-    const { handleWishlist } = customerStore
+    const customerStore = useCustomer();
+    const { wishlistArr } = storeToRefs(customerStore);
+    const { handleWishlist } = customerStore;
 
-    return { wishlistArr, handleWishlist }
+    return { wishlistArr, handleWishlist };
   },
   data() {
     return {
@@ -30,152 +30,150 @@ export default {
       brand: null,
       brandMetafields: null,
       breadcrumb: null,
-    }
+    };
   },
   async fetch() {
     // breadcrumb
-    const elastic_url = this.$config.ELASTIC_URL
+    const elastic_url = this.$config.ELASTIC_URL;
     const urls = await fetch(
-      `${elastic_url}product/${this.product.substring(1)}`,
-    ).then(r => r.json())
+      `${elastic_url}product/${this.product.substring(1)}`
+    ).then((r) => r.json());
 
-    this.breadcrumb = urls.data
+    this.breadcrumb = urls.data;
 
-    this.$store.commit('recent/addRecent', this.product)
+    this.$store.commit("recent/addRecent", this.product);
 
-    const domain = this.$config.DOMAIN
-    const access_token = this.$config.STOREFRONT_ACCESS_TOKEN
+    const domain = this.$config.DOMAIN;
+    const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
 
-    const productQuery = queryProductByIdAsTag(this.product)
+    const productQuery = queryProductByIdAsTag(this.product);
 
     const GRAPHQL_BODY = {
       async: true,
       crossDomain: true,
-      method: 'POST',
+      method: "POST",
       headers: {
-        'X-Shopify-Storefront-Access-Token': access_token,
-        'Content-Type': 'application/graphql',
+        "X-Shopify-Storefront-Access-Token": access_token,
+        "Content-Type": "application/graphql",
       },
       body: productQuery,
-    }
-    const data = await fetch(domain, GRAPHQL_BODY).then(res => res.json())
+    };
+    const data = await fetch(domain, GRAPHQL_BODY).then((res) => res.json());
 
     /* return; */
-    this.data = data.data.products.edges[0].node
+    this.data = data.data.products.edges[0].node;
 
-    this.price = this.data.variants.nodes[0].price
-    this.metafield = JSON.parse(this.data.metafield1.value)
+    this.price = this.data.variants.nodes[0].price;
+    this.metafield = JSON.parse(this.data.metafield1.value);
 
-    const brandId = this.metafield.brandId
+    const brandId = this.metafield.brandId;
 
-    const dataBrand = await getBrand(domain, access_token, `B${brandId}`)
-    this.brand = dataBrand
+    const dataBrand = await getBrand(domain, access_token, `B${brandId}`);
+    this.brand = dataBrand;
 
-    this.brandMetafields = JSON.parse(dataBrand.details.value)
+    this.brandMetafields = JSON.parse(dataBrand.details.value);
   },
   head() {
     return {
       title: `${this.title} - ${this.$config.STORE}`,
       link: [
         {
-          hid: 'canonical',
-          rel: 'canonical',
+          hid: "canonical",
+          rel: "canonical",
           href: this.canonical,
         },
       ],
-    }
+    };
   },
   computed: {
     strippedContent() {
       if (this.metafield.shortDescription[this.$i18n.locale]) {
         return this.metafield.shortDescription[this.$i18n.locale]
-          .replace('href', '')
-          .replace('style', '')
+          .replace("href", "")
+          .replace("style", "");
       }
 
-      return 'No description available.'
+      return "No description available.";
     },
     title() {
-      return this.data ? this.data.title : 'CallMeWine'
+      return this.data ? this.data.title : "CallMeWine";
     },
     canonical() {
-      return this.metafield ? this.metafield.canonical : 'CallMeWine'
+      return this.metafield ? this.metafield.canonical : "CallMeWine";
     },
     isOnFavourite() {
-      return this.wishlistArr.includes(this.product)
+      return this.wishlistArr.includes(this.product);
     },
   },
   methods: {
     async addToUserCart() {
-      const productVariantId = this.data.variants.nodes[0].id
-      const amount = Number(this.data.variants.nodes[0].price)
+      const productVariantId = this.data.variants.nodes[0].id;
+      const amount = Number(this.data.variants.nodes[0].price);
       const amountFullPrice = Number(
-        this.data.variants.nodes[0].compareAtPriceV2.amount,
-      )
+        this.data.variants.nodes[0].compareAtPriceV2.amount
+      );
 
       /* data.variants.nodes[0].compareAtPriceV2 */
-      const tag = this.data.tags[0]
-      const image = this.data.images.nodes[0].url
-      const title = this.data.title
-      this.$store.commit('userCart/addProduct', {
+      const tag = this.data.tags[0];
+      const image = this.data.images.nodes[0].url;
+      const title = this.data.title;
+      this.$store.commit("userCart/addProduct", {
         productVariantId,
         singleAmount: amount,
         singleAmountFullPrice: amountFullPrice,
         tag,
         image,
         title,
-      })
+      });
       this.flashMessage.show({
-        status: '',
+        status: "",
         message: `${this.data.title} è stato aggiunto al carrello!`,
         icon: this.data.images.nodes[0].url,
-        iconClass: 'bg-transparent ',
+        iconClass: "bg-transparent ",
         time: 8000,
-        blockClass: 'add-product-notification',
-      })
+        blockClass: "add-product-notification",
+      });
     },
     async toggleWishlist() {
       if (!this.$store.state.user.user) {
-        this.$router.push('/login')
-        return
+        this.$router.push("/login");
+        return;
       }
 
-      const userId
-        = this.$store.state.user.user.customer.id.split('Customer/')[1]
+      const userId =
+        this.$store.state.user.user.customer.id.split("Customer/")[1];
 
-      const variantId
-        = this.data.variants.edges[0].node.id.split('ProductVariant/')[1]
+      const variantId =
+        this.data.variants.edges[0].node.id.split("ProductVariant/")[1];
 
-      const elastic_url = this.$config.ELASTIC_URL
-      const STORE = this.$config.STORE
+      const elastic_url = this.$config.ELASTIC_URL;
+      const STORE = this.$config.STORE;
       const response = await fetch(
-        `${elastic_url
-          }customers/${STORE}/${userId}/wishlist/${this.data.tags[0]}`,
-        { async: true, crossDomain: true, method: 'POST' },
-      )
-      const updatedWishlist = await response.text()
+        `${elastic_url}customers/${STORE}/${userId}/wishlist/${this.data.tags[0]}`,
+        { async: true, crossDomain: true, method: "POST" }
+      );
+      const updatedWishlist = await response.text();
 
-      this.$store.commit('user/updateWishlist', updatedWishlist)
+      this.$store.commit("user/updateWishlist", updatedWishlist);
 
       if (this.isOnFavourite) {
         this.flashMessage.show({
-          status: '',
-          message: 'Aggiunto ai preferiti!',
+          status: "",
+          message: "Aggiunto ai preferiti!",
           time: 5000,
-          blockClass: 'add-product-notification',
-        })
+          blockClass: "add-product-notification",
+        });
       } else {
         this.flashMessage.show({
-          status: '',
-          message: 'Rimosso preferiti!',
+          status: "",
+          message: "Rimosso preferiti!",
           time: 5000,
-          blockClass: 'add-product-notification',
-        })
+          blockClass: "add-product-notification",
+        });
       }
     },
   },
-
-}
+};
 </script>
 
 <template>
@@ -183,10 +181,7 @@ export default {
     <div v-if="data && brandMetafields" class="container-fluid px-md-5">
       <div v-if="breadcrumb" class="row mb-3">
         <div class="col-12">
-          <nuxt-link
-            class="text-light-secondary"
-            :to="localePath(`/catalog`)"
-          >
+          <nuxt-link class="text-light-secondary" :to="localePath(`/catalog`)">
             {{ breadcrumb.parent_category_name }}
           </nuxt-link>
           <i class="fal fa-chevron-right small px-1" />
@@ -194,7 +189,7 @@ export default {
             class="text-light-secondary"
             :to="
               localePath(
-                `/${breadcrumb.category_handle}-${breadcrumb.category_id}`,
+                `/${breadcrumb.category_handle}-${breadcrumb.category_id}`
               )
             "
           >
@@ -205,7 +200,7 @@ export default {
             class="text-light-secondary"
             :to="
               localePath(
-                `/${breadcrumb.category_handle}-${breadcrumb.region_handle}-${breadcrumb.category_id}${breadcrumb.region_id}`,
+                `/${breadcrumb.category_handle}-${breadcrumb.region_handle}-${breadcrumb.category_id}${breadcrumb.region_id}`
               )
             "
           >
@@ -216,7 +211,7 @@ export default {
             class="text-light-secondary"
             :to="
               localePath(
-                `/${breadcrumb.winelist_handle}-${breadcrumb.winelist_id}`,
+                `/${breadcrumb.winelist_handle}-${breadcrumb.winelist_id}`
               )
             "
           >
@@ -236,25 +231,29 @@ export default {
               v-if="metafield.favourite"
               :data="favouriteIcon"
               class="d-block mb-3"
-              width="36" height="auto"
+              width="36"
+              height="auto"
             />
             <VueSvgIcon
               v-if="metafield.foreveryday"
               :data="forEveryDayIcon"
               class="d-block mb-3"
-              width="36" height="auto"
+              width="36"
+              height="auto"
             />
             <VueSvgIcon
               v-if="metafield.isnew"
               :data="isNewIcon"
               class="d-block mb-3"
-              width="36" height="auto"
+              width="36"
+              height="auto"
             />
             <VueSvgIcon
               v-if="metafield.artisanal"
               :data="artisanalIcon"
               class="d-block mb-3"
-              width="36" height="auto"
+              width="36"
+              height="auto"
             />
           </div>
           <img
@@ -263,14 +262,14 @@ export default {
             class="d-block mx-auto"
             alt=""
             style="height: 500px"
-          >
+          />
           <img
             v-else
             :src="data.images.nodes[0].url"
             class="d-block mx-auto"
             alt=""
             style="height: 500px"
-          >
+          />
         </div>
         <div class="col-12 col-md-8">
           <div class="row">
@@ -297,16 +296,20 @@ export default {
               {{ data.variants.nodes[0].compareAtPriceV2 }} -->
               <span style="font-size: 2.5rem; font-weight: 900">{{
                 price.split(".")[0]
-              }}</span>,<span style="font-size: 16px">{{ price.split(".")[1] }} </span>
+              }}</span
+              >,<span style="font-size: 16px">{{ price.split(".")[1] }} </span>
             </div>
             <div class="col-12 col-md-6 offset-md-2 text-center">
               <div class="d-flex align-items-end justify-content-center">
                 <div>
                   <p
-                    v-if="data.totalInventory > 0" class="text-light-primary"
+                    v-if="data.totalInventory > 0"
+                    class="text-light-primary"
                     :class="{ 'cmw-hidden': data.totalInventory > 6 }"
                   >
-                    {{ $t("product.available", { quantity: data.totalInventory }) }}
+                    {{
+                      $t("product.available", { quantity: data.totalInventory })
+                    }}
                   </p>
                   <p v-else class="text-light-secondary">
                     {{ $t("product.notAvailable") }}
@@ -321,7 +324,7 @@ export default {
                       :src="require(`~/assets/svg/cart.svg`)"
                       class="mr-2"
                       alt=""
-                    >
+                    />
                     <span class="font-weight-bold">{{
                       $t("product.addToCart")
                     }}</span>
@@ -444,12 +447,16 @@ export default {
               </b-tab>
               <b-tab :title="$t('product.producer')">
                 <div v-if="brand">
-                  <div v-if="brandMetafields.isPartner" class="ribbon cmw-flex cmw-items-center">
+                  <div
+                    v-if="brandMetafields.isPartner"
+                    class="ribbon cmw-flex cmw-items-center"
+                  >
                     <!-- TODO: This will use the new lapel component -->
                     <VueSvgIcon
                       :data="favouriteIcon"
                       class="svg-favourite"
-                      width="20" height="auto"
+                      width="20"
+                      height="auto"
                     />
                     <span class="small !cmw-top-0">{{
                       $t("product.recommendedByCallmewine")
@@ -514,7 +521,7 @@ export default {
                       </div>
                     </div>
                     <div class="col-12 col-md-4">
-                      <img :src="brand.image.url" alt="">
+                      <img :src="brand.image.url" alt="" />
                     </div>
                   </div>
                   <!-- <img :src="brand.image.url" alt="" />
@@ -537,7 +544,7 @@ export default {
                       :src="pairing.image"
                       class="img-fluid"
                       style="border-radius: 10px"
-                    >
+                    />
                     <p>{{ pairing.name[$i18n.locale] }}</p>
                   </div>
                 </div>
@@ -558,7 +565,7 @@ export default {
               <p class="mb-4">
                 {{ metafield.denomination[$i18n.locale] }}
               </p>
-              <hr>
+              <hr />
             </div>
             <div v-if="metafield.grapes[$i18n.locale]">
               <p class="font-weight-bold mb-0">
@@ -567,13 +574,13 @@ export default {
               <p class="mb-4">
                 {{ metafield.grapes[$i18n.locale] }}
               </p>
-              <hr>
+              <hr />
             </div>
 
             <div
               v-if="
-                metafield.countryName[$i18n.locale]
-                  || metafield.countryRegionName
+                metafield.countryName[$i18n.locale] ||
+                metafield.countryRegionName
               "
             >
               <p class="font-weight-bold mb-0">
@@ -583,16 +590,14 @@ export default {
                 {{ metafield.countryRegionName }}
                 {{ metafield.countryName[$i18n.locale] }}
               </p>
-              <hr>
+              <hr />
             </div>
             <div v-if="metafield.alcoholContent">
               <p class="font-weight-bold mb-0">
                 {{ $t("product.alcoholContent") }}
               </p>
-              <p class="mb-4">
-                {{ metafield.alcoholContent }}%
-              </p>
-              <hr>
+              <p class="mb-4">{{ metafield.alcoholContent }}%</p>
+              <hr />
             </div>
             <div v-if="metafield.size[$i18n.locale]">
               <p class="font-weight-bold mb-0">
@@ -601,7 +606,7 @@ export default {
               <p class="mb-4">
                 {{ metafield.size[$i18n.locale] }}
               </p>
-              <hr>
+              <hr />
             </div>
             <div v-if="metafield.winemaking[$i18n.locale]">
               <p class="font-weight-bold mb-0">
@@ -610,7 +615,7 @@ export default {
               <p class="mb-4">
                 {{ metafield.winemaking[$i18n.locale] }}
               </p>
-              <hr>
+              <hr />
             </div>
             <div v-if="metafield.agingDescription[$i18n.locale]">
               <p class="font-weight-bold mb-0">
@@ -619,7 +624,7 @@ export default {
               <p class="mb-4">
                 {{ metafield.agingDescription[$i18n.locale] }}
               </p>
-              <hr>
+              <hr />
             </div>
             <div v-if="metafield.productInformations[$i18n.locale]">
               <p class="font-weight-bold mb-0">
@@ -633,11 +638,11 @@ export default {
         </div>
       </div>
 
-      <!--     <RecentProducts />
+      <RecentProducts />
 
       <VendorProducts :vendor="brand.title" />
 
-      <RecommendedProducts :product="data.id" /> -->
+      <RecommendedProducts :product="data.id" />
     </div>
   </div>
 </template>
