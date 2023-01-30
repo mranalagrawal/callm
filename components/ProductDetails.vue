@@ -27,7 +27,7 @@ export default {
     const features = markRaw(['favourite', 'isnew', 'inpromotion', 'foreveryday', 'togift', 'unusualvariety', 'rarewine', 'artisanal', 'organic', 'topsale'])
     const isOpen = ref(false)
 
-    return { wishlistArr, features, isOpen, cartIcon, addIcon, subtractIcon, heartIcon, heartFullIcon, handleWishlist };
+    return { wishlistArr, features, isOpen, cartIcon, addIcon, subtractIcon, heartIcon, heartFullIcon, handleWishlist }
   },
   data() {
     return {
@@ -75,7 +75,7 @@ export default {
     this.data = data.data.products.edges[0].node
 
     this.price = this.data.variants.nodes[0].price
-    this.metaField = JSON.parse(this.data.metafield1.value);
+    this.metaField = JSON.parse(this.data.metafield1.value)
 
     const brandId = this.metaField.brandId
 
@@ -636,11 +636,11 @@ export default {
         </div>
       </div>
 
-      <RecentProducts />
+      <!--      <RecentProducts />
 
       <VendorProducts :vendor="brand.title" />
 
-      <RecommendedProducts :product="data.id" />
+      <RecommendedProducts :product="data.id" /> -->
     </div>
   </div>
 </template>
