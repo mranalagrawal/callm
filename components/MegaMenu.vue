@@ -1,5 +1,5 @@
 <script>
-import { nextTick, onMounted, onUnmounted, ref, useContext, useRouter } from '@nuxtjs/composition-api'
+import { nextTick, onMounted, onUnmounted, ref, useContext, useRouter, watch } from '@nuxtjs/composition-api'
 import debounce from 'lodash.debounce'
 import promoTagIcon from 'assets/svg/promo-tag.svg'
 import ThirdLevel from './UI/ThirdLevel.vue'
@@ -33,6 +33,10 @@ export default {
     onUnmounted(() => {
       window.removeEventListener('resize', resizeListener)
     })
+
+    watch(() => headerSize, () => {
+      resizeListener()
+    }, { deep: true })
 
     return { headerSize, megaMenu, selectedItem, handleClick, onTab }
   },
