@@ -6,7 +6,7 @@ export default {
     severity: {
       type: String,
       required: true,
-      validator: (prop) => ['error', 'success', 'info', 'warning'].includes(prop),
+      validator: prop => ['error', 'success', 'info', 'warning'].includes(prop),
     },
     useIcon: {
       type: Boolean,

@@ -3,7 +3,7 @@ import bookmarkIcon from 'assets/svg/bookmark.svg'
 import editIcon from 'assets/svg/edit.svg'
 import deleteIcon from 'assets/svg/delete.svg'
 import moreVerticalIcon from 'assets/svg/more-vertical.svg'
-import { isRef, ref, useContext } from '@nuxtjs/composition-api'
+import { ref, useContext } from '@nuxtjs/composition-api'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { MailingAddressType } from '@/types/mailingAddress'
 import { SweetAlertConfirm, SweetAlertToast } from '@/utilities/Swal'
