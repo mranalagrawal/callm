@@ -151,7 +151,7 @@ export default {
       <div class="c-productBox__awards cmw-place-self-end">
         <div
           v-for="(award) in awardsMapped"
-          :key="award.id"
+          :key="`${award.id}-${award.year}`"
           class="cmw-flex cmw-gap-1 cmw-items-center cmw-pr-1.5"
         >
           <ProductBoxAward :award="award" />
