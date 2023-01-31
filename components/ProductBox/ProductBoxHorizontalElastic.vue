@@ -171,7 +171,12 @@ hover:cmw-shadow-elevation"
     <!-- Content Section -->
     <div class="cmw-p-2">
       <div class="h4 cmw-mt-4">
-        {{ product._source.shortName }}
+        <NuxtLink
+          :to="localePath(`/${product._source.handle}-P${product._source.id}`)"
+          class="cmw-text-body hover:(cmw-text-primary-400 cmw-no-underline)"
+        >
+          {{ product._source.shortName }}
+        </NuxtLink>
       </div>
       <!-- <div>TODO: RATING STARS </div> -->
       <div class="cmw-flex cmw-gap-3 cmw-my-8">

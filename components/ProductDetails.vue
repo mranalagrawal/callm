@@ -636,11 +636,11 @@ export default {
         </div>
       </div>
 
-      <!--      <RecentProducts />
+      <RecentProducts />
 
       <VendorProducts :vendor="brand.title" />
 
-      <RecommendedProducts :product="data.id" /> -->
+      <RecommendedProducts :product="data.id" />
     </div>
   </div>
 </template>

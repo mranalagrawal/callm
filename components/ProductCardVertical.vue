@@ -117,7 +117,7 @@ export default {
         class="position-relative mx-0 mt-2 img-wrapper text-decoration-none text-dark"
       >
         <nuxt-link
-          :to="`/${product.handle}-${product.tags[0]}`"
+          :to="`/${product.handle}-${backofficeId}`"
           draggable="false"
         >
           <img
@@ -224,7 +224,13 @@ export default {
       </div> -->
       <div class="">
         <div class="prodotto-box__nome">
-          {{ product.title }}
+          <nuxt-link
+            draggable="false"
+            :to="localePath(`/${product.handle}-${backofficeId}`)"
+            class="cmw-text-body hover:(cmw-text-primary-400 cmw-no-underline)"
+          >
+            {{ product.title }}
+          </nuxt-link>
         </div>
 
         <div
