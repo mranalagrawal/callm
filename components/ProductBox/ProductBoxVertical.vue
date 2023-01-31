@@ -34,8 +34,9 @@ export default {
 
     const features = markRaw(['favourite', 'isnew', 'inpromotion', 'foreveryday', 'togift', 'unusualvariety', 'rarewine', 'artisanal', 'organic', 'topsale'])
     const isOpen = ref(false)
+    const isHovering = ref(false)
 
-    return { wishlistArr, heartIcon, heartFullIcon, cartIcon, emailIcon, addIcon, subtractIcon, features, isOpen, handleWishlist }
+    return { wishlistArr, heartIcon, heartFullIcon, cartIcon, emailIcon, addIcon, subtractIcon, features, isOpen, isHovering, handleWishlist }
   },
   computed: {
     ...mapState('userCart', {
@@ -117,6 +118,8 @@ export default {
     class="
     c-productBox cmw-relative cmw-bg-white cmw-rounded-sm cmw-border cmw-border-gray-light
     hover:cmw-shadow-elevation"
+    @mouseenter="isHovering = true"
+    @mouseleave="isHovering = false"
   >
     <div class="c-productBox__grid cmw-grid cmw-h-full">
       <div class="c-productBox__features cmw-py-2 cmw-pl-2">
@@ -134,7 +137,7 @@ export default {
         </div>
       </div>
       <div class="c-productBox__image">
-        <NuxtLink :to="localePath(`/${product.product.handle}-${product.product.tags[0]}`)">
+        <NuxtLink :to="localePath(`/${product.product.handle}-${backofficeId}`)">
           <img
             class="cmw-transition-lazy-image cmw-filter hover:cmw-contrast-150 cmw-max-h-[150px] cmw-mx-auto cmw-mt-8 lg:cmw-max-h-[270px]"
             :class="{ 'cmw-opacity-50': !product.availableForSale }"
@@ -152,7 +155,12 @@ export default {
       </div>
       <div class="c-productBox__title">
         <div class="cmw-mx-4 cmw-mt-4">
-          {{ product.title || product.product.title }}
+          <NuxtLink
+            :to="localePath(`/${product.product.handle}-${backofficeId}`)"
+            class="cmw-text-body hover:(cmw-text-primary-400 cmw-no-underline)"
+          >
+            {{ product.title || product.product.title }}
+          </NuxtLink>
         </div>
       </div>
       <div class="c-productBox__price cmw-justify-self-start cmw-self-end">
@@ -223,7 +231,7 @@ export default {
       <CardLapel v-if="isOnSale" />
     </div>
     <div
-      v-if="!product.availableForSale"
+      v-if="!product.availableForSale && isHovering"
       class="cmw-absolute cmw-transform cmw-bg-black/70 cmw-rounded cmw-top-1/3 cmw-left-1/2 cmw-translate-y-[-50%] cmw-translate-x-[-50%]
        cmw-py-4 cmw-px-4 cmw-overline-2 cmw-uppercase cmw-text-white"
       v-text="$t('product.notAvailable2')"
