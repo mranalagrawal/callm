@@ -245,7 +245,7 @@ export default {
     quote: 'Quote',
     recommendedByCallmewine: 'Recommended by Callmewine',
     mainWines: 'Main wines',
-    foundation: 'Year of Foundation',
+    foundation: 'Année de Fondation',
     vineyardHectares: 'Vineyard hectares',
     ownGrapes: 'Own grapes',
     annualProduction: 'Annual production',
@@ -260,6 +260,7 @@ export default {
     vinification: 'Vinification',
     refinement: 'Refinement',
     additionalNotes: 'Additional Notes',
+    proprietaryGrapes: 'raisins propriétaires',
   },
   validations: {
     password: {

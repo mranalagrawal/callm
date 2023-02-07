@@ -241,7 +241,7 @@ export default {
     quote: 'Citazione',
     recommendedByCallmewine: 'Consigliato da Callmewine',
     mainWines: 'Vini principali',
-    foundation: 'Anno di produzione',
+    foundation: 'Anno Fondazione',
     vineyardHectares: 'Ettari vitati',
     ownGrapes: 'Proprietà',
     annualProduction: 'Produzione annuale',
@@ -256,6 +256,7 @@ export default {
     vinification: 'Vinificazione',
     refinement: 'Raffinamento',
     additionalNotes: 'Note addizionali',
+    proprietaryGrapes: 'uve di proprietà',
   },
   validations: {
     password: {

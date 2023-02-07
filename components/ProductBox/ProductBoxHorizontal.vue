@@ -18,6 +18,7 @@ import * as MetaFieldTypeType from '~/types/metaField'
 import { isObject, regexRules } from '~/utilities/validators'
 import { pick } from '~/utilities/arrays'
 import { useCustomer } from '~/store/customer'
+import { stripHtml } from '~/utilities/strings'
 
 // noinspection JSUnusedGlobalSymbols
 export default {
@@ -39,7 +40,7 @@ export default {
     const features = markRaw(['favourite', 'isnew', 'inpromotion', 'foreveryday', 'togift', 'unusualvariety', 'rarewine', 'artisanal', 'organic', 'topsale'])
     const isOpen = ref(false)
 
-    return { wishlistArr, heartIcon, heartFullIcon, cartIcon, emailIcon, addIcon, subtractIcon, features, isOpen, handleWishlist }
+    return { wishlistArr, heartIcon, heartFullIcon, cartIcon, emailIcon, addIcon, subtractIcon, features, isOpen, handleWishlist, stripHtml }
   },
   computed: {
     ...mapState('userCart', {
@@ -83,9 +84,6 @@ export default {
   },
   methods: {
     getLocaleFromCurrencyCode,
-    stripHtml(str) {
-      return str.replace(/<\/?[^>]+(>|$)/g, '')
-    },
     async addToUserCart() {
       this.isOpen = true
       const productVariantId = this.product.product.variants.nodes[0].id
