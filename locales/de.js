@@ -256,6 +256,7 @@ export default {
     vinification: 'Weinbereitung',
     refinement: 'Raffinesse',
     additionalNotes: 'Zusätzliche Bemerkungen',
+    proprietaryGrapes: 'eigene Trauben',
   },
   validations: {
     password: {

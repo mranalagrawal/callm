@@ -1,36 +1,9 @@
-<template>
-  <div class="container-fluid container-large px-md-0 my-5">
-    <div class="row">
-      <div class="col-12 text-center" v-if="data && data.length > 0">
-        <h2 class="font-weight-bold text-dark-primary">
-          {{ $t("sameProducer") }}
-        </h2>
-      </div>
-
-      <div class="col-12 py-4" v-if="data && data.length > 0">
-        <VueSlickCarousel v-bind="settings">
-          <div v-for="product in data" :key="product.id" class="mb-5">
-            <ProductCardVertical :product="product" />
-          </div>
-        </VueSlickCarousel>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script>
-import { queryProductsByVendor } from "../utilities/productQueries";
-
-import VueSlickCarousel from "vue-slick-carousel";
-import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
-import ProductCardVertical from "./ProductCardVertical.vue";
+import { queryProductsByVendor } from '../utilities/productQueries'
+import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
 
 export default {
-  watch: {
-    "$i18n.locale": "$fetch",
-  },
-  props: ["vendor"],
-  components: { ProductCardVertical, VueSlickCarousel },
+  props: ['vendor'],
   data: () => ({
     data: null,
     settings: {
@@ -62,30 +35,53 @@ export default {
     },
   }),
   async fetch() {
-    const GRAPHQL_URL = this.$config.DOMAIN;
-    const access_token = this.$config.STOREFRONT_ACCESS_TOKEN;
+    const GRAPHQL_URL = this.$config.DOMAIN
+    const access_token = this.$config.STOREFRONT_ACCESS_TOKEN
 
-    const recommendationsQuery = queryProductsByVendor(this.vendor);
+    const recommendationsQuery = queryProductsByVendor(this.vendor)
 
     const GRAPHQL_BODY_RECCOMENDATIONS = {
       async: true,
       crossDomain: true,
-      method: "POST",
+      method: 'POST',
       headers: {
-        "X-Shopify-Storefront-Access-Token": access_token,
-        "Content-Type": "application/graphql",
+        'X-Shopify-Storefront-Access-Token': access_token,
+        'Content-Type': 'application/graphql',
       },
       body: recommendationsQuery,
-    };
+    }
     const dataVendor = await fetch(
       GRAPHQL_URL,
-      GRAPHQL_BODY_RECCOMENDATIONS
-    ).then((res) => res.json());
+      GRAPHQL_BODY_RECCOMENDATIONS,
+    ).then(res => res.json())
 
-    this.data = dataVendor.data.products.nodes;
+    this.data = dataVendor.data.products.nodes
   },
-};
+  watch: {
+    '$i18n.locale': '$fetch',
+  },
+}
 </script>
+
+<template>
+  <div class="container-fluid container-large px-0 my-5">
+    <div class="row">
+      <div v-if="data && data.length > 0" class="col-12 text-center">
+        <h2 class="font-weight-bold text-dark-primary">
+          {{ $t("sameProducer") }}
+        </h2>
+      </div>
+
+      <div v-if="data && data.length > 0" class="col-12 py-4">
+        <VueSlickCarousel v-bind="settings">
+          <div v-for="product in data" :key="product.id" class="mb-5">
+            <ProductCardVertical :product="product" />
+          </div>
+        </VueSlickCarousel>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 /* :deep(.slick-list) {
