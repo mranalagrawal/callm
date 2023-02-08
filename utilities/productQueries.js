@@ -40,8 +40,8 @@ const queryByCollection = (
 
     }`
 
-const queryProductByIdAsTag = tag => `query @inContext(country: IT){
-        products(first: 1, query:"tag:${tag}") {
+const queryProductByIdAsTag = tag => `query {
+        products(first: 12, query:"tag:${tag}") {
             edges {
                 node {
                     id
