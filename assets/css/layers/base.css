@@ -20,6 +20,10 @@
     border-radius: 2px;
   }
 
+  html {
+    overflow-x: hidden;
+  }
+
   body.lock-scroll {
     position: fixed;
     overflow-x: hidden;

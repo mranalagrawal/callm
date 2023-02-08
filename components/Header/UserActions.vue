@@ -5,6 +5,7 @@ import heartIcon from '~/assets/svg/heart.svg'
 import userIcon from '~/assets/svg/user.svg'
 import cartIcon from '~/assets/svg/cart.svg'
 import { useCustomer } from '~/store/customer'
+import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 
 export default {
   name: 'UserActions',
@@ -12,7 +13,7 @@ export default {
     const customerStore = useCustomer()
     const { customer, favoritesCount } = storeToRefs(customerStore)
 
-    return { customerStore, customer, favoritesCount }
+    return { customerStore, customer, favoritesCount, getLocaleFromCurrencyCode }
   },
   data() {
     return {
@@ -128,11 +129,23 @@ export default {
         <span class="cmw-flex cmw-gap-1 cmw-items-center">
           <span v-if="cartItems">
             <span class="cmw-block cmw-text-xxs cmw-text-left cmw-mb-1">{{ $t('cartTotal') }}</span>
-            <span class="cmw-flex cmw-items-end cmw-leading-none">
-              <span class="cmw-text-2xl">{{ cartTotalAmountObj.integer }}</span>
-              <span>{{ cartTotalAmountObj.separator }}</span>
-              <span>{{ cartTotalAmountObj.decimal }}€</span>
-            </span>
+            <i18n-n
+              class="cmw-flex cmw-items-end cmw-leading-none" :value="Number(cartTotalAmountObj.value)" :format="{ key: 'currency' }"
+              :locale="getLocaleFromCurrencyCode($config.STORE === 'CMW_UK' ? 'GBP' : 'EUR')"
+            >
+              <template #currency="slotProps">
+                <span class="cmw-text-sm md:cmw-text-base">{{ slotProps.currency }}</span>
+              </template>
+              <template #integer="slotProps">
+                <span class="cmw-text-2xl">{{ slotProps.integer }}</span>
+              </template>
+              <template #group="slotProps">
+                <span>{{ slotProps.group }}</span>
+              </template>
+              <template #fraction="slotProps">
+                <span>{{ slotProps.fraction }}</span>
+              </template>
+            </i18n-n>
           </span>
           <span class="cmw-relative">
             <VueSvgIcon

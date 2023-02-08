@@ -63,9 +63,9 @@ export default {
     <nav class="cmw-flex cmw-items-center cmw-gap-2 cmw-text-sm cmw-pt-1.875rem cmw-mt-2 cmw-mb-6 cmw-px-4">
       <NuxtLink
         class="cmw-text-primary-400"
-        to="/"
+        :to="localePath('/')"
       >
-        Home
+        {{ $t('home') }}
       </NuxtLink>
       <VueSvgIcon
         :data="require(`@/assets/svg/chevron-right.svg`)"
