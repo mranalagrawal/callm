@@ -1,110 +1,85 @@
 <script>
-import { ref } from '@nuxtjs/composition-api'
-import userRegister from '../utilities/userRegister'
-import userLogin from '../utilities/userLogin'
-import eyeShowIcon from '~/assets/svg/eye-show.svg'
-import eyeHideIcon from '~/assets/svg/eye-hide.svg'
+import { ref, useContext, useRouter } from '@nuxtjs/composition-api'
 import calendarIcon from '~/assets/svg/calendar.svg'
-import { regexRules } from '@/utilities/validators'
+import GqlCustomerCreate from '~/graphql/mutations/customerCreate'
+import { SweetAlertToast } from '~/utilities/Swal'
+import { useCustomer } from '~/store/customer'
 
 export default {
   setup() {
+    const { $graphql, i18n, localeLocation } = useContext()
+    const router = useRouter()
+    const customerStore = useCustomer()
+    const isSubmitting = ref(false)
     const showPasswordToast = ref(false)
+    const now = new Date()
 
     const handleFocus = () => showPasswordToast.value = true
     const handleBlur = () => showPasswordToast.value = false
 
-    return { showPasswordToast, handleFocus, handleBlur }
-  },
-  data() {
-    return {
-      eyeShowIcon,
-      eyeHideIcon,
-      calendarIcon,
-      passwordIsVisible: false,
-      barProgressStyle: 'none repeat scroll 0 0 red; width: 0',
-      passwordValidation: {
-        min: false,
-        oneNumber: false,
-        oneUpperCase: false,
-        oneLowerCase: false,
-        oneSpecialChar: false,
-      },
-      form: {
-        firstname: '',
-        lastname: '',
-        email: '',
-        password: '',
-        privacy: false,
-        marketing: false,
-        age: '',
-      },
-      now: new Date(),
-      progressStyles: Object.freeze([
-        'background: none repeat scroll 0 0 #e6362e; width: 0',
-        'background: none repeat scroll 0 0 #e6362e; width: 25%',
-        'background: none repeat scroll 0 0 #ffb800; width: 50%',
-        'background: none repeat scroll 0 0 #93b7db; width: 75%',
-        'background: none repeat scroll 0 0 #517aa3; width: 85%',
-        'background: none repeat scroll 0 0 #299100; width: 100%',
-      ]),
-    }
-  },
-  watch: {
-    'form.password': function (val) {
-      this.passwordValidation = {
-        min: (val.length >= 8),
-        oneNumber: new RegExp(regexRules('oneNumber')).test(val),
-        oneUpperCase: new RegExp(regexRules('oneUpperCase')).test(val),
-        oneLowerCase: new RegExp(regexRules('oneLowerCase')).test(val),
-        oneSpecialChar: new RegExp(regexRules('oneSpecialChar')).test(val),
-      }
+    const form = ref({
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      privacy: false,
+      acceptsMarketing: false,
+      age: '',
+    })
 
-      const nValidRules = Object.values(this.passwordValidation).filter(v => v === true).length
-      this.barProgressStyle = this.progressStyles[nValidRules]
-    },
-  },
-  methods: {
-    async onSubmit(event) {
-      event.preventDefault()
-      const domain = this.$config.DOMAIN
-      const access_token = this.$config.STOREFRONT_ACCESS_TOKEN
-      const token = await userRegister(
-        this.form.firstname,
-        this.form.lastname,
-        this.form.email,
-        this.form.password,
-        this.form.marketing,
-        this.form.age,
-        domain,
-        access_token,
-      )
-      const user = await userLogin(
-        this.form.email,
-        this.form.password,
-        domain,
-        access_token,
-      )
-      this.$store.commit('user/setUser', user)
-      this.$store.commit('user/setWishlist', JSON.parse(user.customer.wishlist.value))
-      this.$router.push('/profile')
-    },
+    const onSubmit = async () => {
+      isSubmitting.value = true
+
+      const { age, privacy, ...input } = form.value
+      const { customerCreate: { customerUserErrors } } = await $graphql.default.request(GqlCustomerCreate, {
+        lang: i18n.locale.toUpperCase(),
+        input,
+      })
+
+      if (!customerUserErrors.length) {
+        // Handle success
+        // Todo: Call API to save customer birthday
+        const valid = await customerStore.login(form.value.email, form.value.password)
+
+        if (valid) {
+          await customerStore.getCustomer()
+            .then(() => router.push(localeLocation('/profile/my-orders')))
+        }
+      } else {
+        await SweetAlertToast.fire({
+          icon: 'error',
+          text: customerUserErrors[0].message,
+        })
+      }
+      isSubmitting.value = false
+    }
+
+    return {
+      now,
+      isSubmitting,
+      form,
+      showPasswordToast,
+      calendarIcon,
+      handleFocus,
+      handleBlur,
+      onSubmit,
+    }
   },
 }
 </script>
 
 <template>
-  <div class="">
-    <ValidationObserver ref="formEl" v-slot="{ errors }" slim>
-      <form class="px-4 pt-3 py-2 w-75 mx-auto" @submit="onSubmit">
+  <div>
+    <ValidationObserver ref="registerFormEl" v-slot="{ handleSubmit }" slim>
+      <form class="px-4 pt-3 py-2 w-75 mx-auto" @submit.prevent="handleSubmit(onSubmit)">
         <InputField
-          v-model="form.firstname"
+          v-model="form.firstName"
           name="register-user-firstname" :label="$t('firstName').toString()"
           :placeholder="$t('firstName').toString()" rules="required" theme="gray"
         />
 
         <InputField
-          v-model="form.lastname"
+          v-model="form.lastName"
           name="register-user-lastname" :label="$t('lastName').toString()"
           :placeholder="$t('lastName').toString()" rules="required" theme="gray"
         />
@@ -133,35 +108,30 @@ export default {
           Devi essere maggiorenne per poterti registrare al sito.
         </p>
 
-        <b-form-checkbox
-          id="privacy"
-          v-model="form.privacy"
-          name="privacy"
-          class="mt-3"
+        <CmwCheckbox
+          id="privacy" v-model="form.privacy"
+          :checked="form.privacy" is-required @change="form.privacy = !form.privacy"
         >
-          {{ $t("privacyPolicy") }}
-        </b-form-checkbox>
+          <template #label>
+            {{ $t('privacyPolicy') }}
+          </template>
+        </CmwCheckbox>
 
-        <b-form-checkbox
-          id="marketing"
-          v-model="form.marketing"
-          name="marketing"
-          class="mt-3"
+        <CmwCheckbox
+          id="acceptsMarketing" v-model="form.acceptsMarketing"
+          :checked="form.acceptsMarketing" @change="form.acceptsMarketing = !form.acceptsMarketing"
         >
-          {{ $t("acceptMarketing") }}
-        </b-form-checkbox>
+          <template #label>
+            {{ $t('acceptMarketing') }}
+          </template>
+        </CmwCheckbox>
 
-        <button
+        <Button
+          class="sm:cmw-max-w-330px cmw-mt-8"
           type="submit"
-          class="w-100 btn bg-light-secondary text-white mt-5 btn-lg"
-          :class="
-            new Date(now) - new Date(form.age) > 568036800000 && form.privacy
-              ? ''
-              : 'disabled'
-          "
-        >
-          {{ $t("navbar.user.register") }}
-        </button>
+          :disabled="isSubmitting || (new Date(now) - new Date(form.age) > 568036800000 && form.privacy)"
+          :label="$t('navbar.user.register').toString()"
+        />
       </form>
     </ValidationObserver>
   </div>
