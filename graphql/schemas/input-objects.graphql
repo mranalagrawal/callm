@@ -24,3 +24,12 @@ input CustomerAccessTokenCreateInput {
   email: String!
   password: String!
 }
+
+input CustomerCreateInput {
+  acceptsMarketing: Boolean
+  email: String!
+  firstName: String
+  lastName: String
+  password: String!
+  phone: String
+}
