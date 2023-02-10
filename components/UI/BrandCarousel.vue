@@ -1,53 +1,8 @@
-<template>
-  <div class="">
-    <VueSlickCarousel
-      ref="slider-big"
-      :focusOnSelect="true"
-      v-bind="settingsMain"
-      @beforeChange="syncSliders"
-    >
-      <div v-for="(image, i) in images" :key="i">
-        <div>
-          <div class="inner">
-            <div
-              :style="{
-                backgroundImage: 'url(' + image + ')',
-                backgroundSize: 'cover',
-              }"
-              class="h-100"
-            ></div>
-          </div>
-        </div>
-        <!-- <img
-          :src="image"
-          alt=""
-          class="mx-auto d-block img-fluid w-100"
-          height="500"
-        /> -->
-      </div>
-    </VueSlickCarousel>
-
-    <div class="mt-3 mt-2 d-none d-md-block">
-      <VueSlickCarousel
-        v-bind="settingsNav"
-        :class="'slider-thumb'"
-        ref="slider-thumb"
-        :focusOnSelect="true"
-        @beforeChange="syncSliders"
-      >
-        <div v-for="(image, j) in images" :key="j">
-          <img :src="image" alt="" class="rounded-sm" width="120" />
-        </div>
-      </VueSlickCarousel>
-    </div>
-  </div>
-</template>
-
 <script>
-import VueSlickCarousel from "vue-slick-carousel";
+import VueSlickCarousel from 'vue-slick-carousel'
 export default {
   components: { VueSlickCarousel },
-  props: ["images"],
+  props: ['images'],
   data() {
     return {
       data: null,
@@ -87,16 +42,61 @@ export default {
           },
         ],
       },
-    };
+    }
   },
   methods: {
     syncSliders(currentPosition, nextPosition) {
-      this.$refs["slider-big"].goTo(nextPosition);
-      this.$refs["slider-thumb"].goTo(nextPosition);
+      this.$refs['slider-big'].goTo(nextPosition)
+      this.$refs['slider-thumb'].goTo(nextPosition)
     },
   },
-};
+}
 </script>
+
+<template>
+  <div class="">
+    <VueSlickCarousel
+      ref="slider-big"
+      :focus-on-select="true"
+      v-bind="settingsMain"
+      @beforeChange="syncSliders"
+    >
+      <div v-for="(image, i) in images" :key="i">
+        <div>
+          <div class="inner">
+            <div
+              :style="{
+                backgroundImage: `url(${image})`,
+                backgroundSize: 'cover',
+              }"
+              class="h-100"
+            />
+          </div>
+        </div>
+        <!-- <img
+          :src="image"
+          alt=""
+          class="mx-auto d-block img-fluid w-100"
+          height="500"
+        /> -->
+      </div>
+    </VueSlickCarousel>
+
+    <div class="mt-3 mt-2 d-none d-md-block">
+      <VueSlickCarousel
+        v-bind="settingsNav"
+        ref="slider-thumb"
+        class="slider-thumb"
+        :focus-on-select="true"
+        @beforeChange="syncSliders"
+      >
+        <div v-for="(image, j) in images" :key="j">
+          <img :src="image" alt="" class="rounded-sm" width="120">
+        </div>
+      </VueSlickCarousel>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 :deep(.slick-arrow.slick-prev) {

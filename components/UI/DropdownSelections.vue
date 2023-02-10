@@ -1,3 +1,93 @@
+<script>
+export default {
+  props: ['label', 'items', 'keyword', 'search'],
+  data() {
+    return {
+      visible: false,
+
+      allSelections: [
+        'favourite',
+        'artisanal',
+        'isnew',
+        'inpromotion',
+        'topsale',
+        'foreveryday',
+        'organic',
+        'togift',
+        'unusualvariety',
+        'rarewine',
+      ],
+    }
+  },
+  /* mounted() {
+    const aggregations = this.search.aggregations;
+
+    const selectionsListMapped = [];
+    this.allSelections.forEach((el) => {
+      let tmp = aggregations[`agg-${el}`][`agg-${el}`].buckets.find(
+        (el) => el.key == 1
+      );
+
+      if (tmp) {
+        tmp.key = [Boolean(tmp.key), el];
+        tmp.key_as_string = el;
+        selectionsListMapped.push(tmp);
+      }
+    });
+
+    this.selections = selectionsListMapped;
+
+  },
+ */
+  computed: {
+    active() {
+      return this.$route.query[this.keyword]
+    },
+    selections() {
+      const aggregations = JSON.parse(JSON.stringify(this.search.aggregations))
+
+      const selectionsListMapped = []
+      this.allSelections.forEach((el) => {
+        const tmp = aggregations[`agg-${el}`][`agg-${el}`].buckets.find(
+          el => el.key == 1,
+        )
+
+        if (tmp) {
+          tmp.key = [Boolean(tmp.key), el]
+          tmp.key_as_string = el
+          selectionsListMapped.push(tmp)
+        }
+      })
+
+      return selectionsListMapped
+    },
+  },
+  methods: {
+    goto(id) {
+      const query = Object.assign({}, this.$route.query)
+
+      const activeFilter = Object.keys(query).filter(el =>
+        this.allSelections.includes(el),
+      )[0]
+
+      // switch active filter
+      /* if (activeFilter) {
+        delete query[activeFilter];
+      } */
+      query[id.key_as_string] = true
+
+      if (id !== this.active)
+        query.page = 1
+
+      this.$router.push({
+        path: 'catalog',
+        query,
+      })
+    },
+  },
+}
+</script>
+
 <template>
   <div class="w-100 d-block">
     <div
@@ -8,7 +98,7 @@
       <i
         class="fal fa-chevron-down text-light-secondary mr-3"
         :class="visible ? 'fa-rotate-180' : ''"
-      ></i>
+      />
     </div>
     <div v-if="visible" class="content mb-5">
       <div
@@ -42,97 +132,7 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: ["label", "items", "keyword", "search"],
-  data() {
-    return {
-      visible: false,
-
-      allSelections: [
-        "favourite",
-        "artisanal",
-        "isnew",
-        "inpromotion",
-        "topsale",
-        "foreveryday",
-        "organic",
-        "togift",
-        "unusualvariety",
-        "rarewine",
-      ],
-    };
-  },
-  /* mounted() {
-    const aggregations = this.search.aggregations;
-
-    const selectionsListMapped = [];
-    this.allSelections.forEach((el) => {
-      let tmp = aggregations[`agg-${el}`][`agg-${el}`].buckets.find(
-        (el) => el.key == 1
-      );
-
-      if (tmp) {
-        tmp.key = [Boolean(tmp.key), el];
-        tmp.key_as_string = el;
-        selectionsListMapped.push(tmp);
-      }
-    });
-
-    this.selections = selectionsListMapped;
-
-  },
- */
-  computed: {
-    active() {
-      return this.$route.query[this.keyword];
-    },
-    selections() {
-      const aggregations = JSON.parse(JSON.stringify(this.search.aggregations));
-
-      const selectionsListMapped = [];
-      this.allSelections.forEach((el) => {
-        let tmp = aggregations[`agg-${el}`][`agg-${el}`].buckets.find(
-          (el) => el.key == 1
-        );
-
-        if (tmp) {
-          tmp.key = [Boolean(tmp.key), el];
-          tmp.key_as_string = el;
-          selectionsListMapped.push(tmp);
-        }
-      });
-
-      return selectionsListMapped;
-    },
-  },
-  methods: {
-    goto(id) {
-      const query = Object.assign({}, this.$route.query);
-
-      let activeFilter = Object.keys(query).filter((el) =>
-        this.allSelections.includes(el)
-      )[0];
-
-      // switch active filter
-      /* if (activeFilter) {
-        delete query[activeFilter];
-      } */
-      query[id.key_as_string] = true;
-
-      if (id !== this.active) query["page"] = 1;
-
-      this.$router.push({
-        path: "catalog",
-        query: query,
-      });
-    },
-  },
-};
-</script>
-
 <style scoped>
-
 .content-item {
   font-size: 14px;
 }

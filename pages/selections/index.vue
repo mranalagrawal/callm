@@ -1,3 +1,47 @@
+<script>
+import { queryAllCollections } from '../../utilities/productQueries'
+
+export default {
+  layout(context) {
+    return context.$config.STORE
+  },
+  data: () => ({
+    data: null,
+  }),
+  async fetch() {
+    const GRAPHQL_URL = this.$config.DOMAIN
+
+    const productQuery = queryAllCollections(this.$i18n.locale.toUpperCase())
+
+    const GRAPHQL_BODY = () => {
+      return {
+        async: true,
+        crossDomain: true,
+        method: 'POST',
+        headers: {
+          'X-Shopify-Storefront-Access-Token':
+            this.$config.STOREFRONT_ACCESS_TOKEN,
+          'Content-Type': 'application/graphql',
+        },
+        body: productQuery,
+      }
+    }
+    const response = await fetch(GRAPHQL_URL, GRAPHQL_BODY()).then(res =>
+      res.json(),
+    )
+
+    const responseFiltered = response.data.collections.edges.filter(
+      el => el.node.title != 'home shelf 1' && el.node.title != 'home shelf 2',
+    )
+
+    this.data = responseFiltered
+  },
+  watch: {
+    '$i18n.locale': '$fetch',
+  },
+}
+</script>
+
 <template>
   <div class="container-fluid container-large px-md-3 my-5">
     <div class="row mt-5 mb-3">
@@ -15,9 +59,9 @@
           class="card collection d-flex justify-content-center align-items-center"
           :style="{
             backgroundImage:
-              'linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)),url(' +
-              collection.node.image.url +
-              ')',
+              `linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)),url(${
+                collection.node.image.url
+              })`,
           }"
         >
           <span
@@ -29,59 +73,18 @@
             :to="`selections/${collection.node.handle}`"
             class="text-center text-decoration-none"
           >
-            <p class="text-white h4">{{ collection.node.title }}</p>
-            <p class="text-white">{{ collection.node.description }}</p>
+            <p class="text-white h4">
+              {{ collection.node.title }}
+            </p>
+            <p class="text-white">
+              {{ collection.node.description }}
+            </p>
           </nuxt-link>
         </div>
       </div>
     </div>
   </div>
 </template>
-
-<script>
-import { queryAllCollections } from "../../utilities/productQueries";
-
-export default {
-  watch: {
-    "$i18n.locale": "$fetch",
-  },
-  layout(context) {
-    return context.$config.STORE;
-  },
-  data: () => ({
-    data: null,
-  }),
-  async fetch() {
-    const GRAPHQL_URL = this.$config.DOMAIN;
-
-    const productQuery = queryAllCollections(this.$i18n.locale.toUpperCase());
-
-    const GRAPHQL_BODY = () => {
-      return {
-        async: true,
-        crossDomain: true,
-        method: "POST",
-        headers: {
-          "X-Shopify-Storefront-Access-Token":
-            this.$config.STOREFRONT_ACCESS_TOKEN,
-          "Content-Type": "application/graphql",
-        },
-        body: productQuery,
-      };
-    };
-    const response = await fetch(GRAPHQL_URL, GRAPHQL_BODY()).then((res) =>
-      res.json()
-    );
-
-    const responseFiltered = response.data.collections.edges.filter(
-      (el) => el.node.title != "home shelf 1" && el.node.title != "home shelf 2"
-    );
-
-    this.data = responseFiltered;
-    
-  },
-};
-</script>
 
 <style scoped>
 .collection {

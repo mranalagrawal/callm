@@ -18,6 +18,7 @@ export default {
       customerUpdateEmail: 'Ihre E-Mail konnte nicht aktualisiert werden, bitte versuchen Sie es später erneut',
       customerUpdatePassword: 'Ihr Passwort konnte nicht aktualisiert werden, bitte versuchen Sie es später erneut',
       customerUpdateData: 'Ihre persönlichen Daten konnten nicht aktualisiert werden, bitte versuchen Sie es später erneut',
+      addToCartReachLimit: 'Es sind keine Produkte mehr verfügbar',
     },
   },
 }

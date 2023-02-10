@@ -19,6 +19,7 @@ import { isObject, regexRules } from '~/utilities/validators'
 import { pick } from '~/utilities/arrays'
 import { useCustomer } from '~/store/customer'
 import { stripHtml } from '~/utilities/strings'
+import { SweetAlertToast } from '~/utilities/Swal'
 
 // noinspection JSUnusedGlobalSymbols
 export default {
@@ -81,11 +82,23 @@ export default {
     isOnSale() {
       return Number(this.product.compareAtPriceV2.amount) > Number(this.product.priceV2.amount) || this.availableFeatures.includes('inpromotion')
     },
+    canAddMore() {
+      return this.product.quantityAvailable - this.cartQuantity > 0
+    },
   },
   methods: {
     getLocaleFromCurrencyCode,
     async addToUserCart() {
       this.isOpen = true
+
+      if (!this.canAddMore) {
+        await SweetAlertToast.fire({
+          icon: 'warning',
+          text: this.$i18n.t('common.feedback.KO.addToCartReachLimit'),
+        })
+        return
+      }
+
       const productVariantId = this.product.product.variants.nodes[0].id
       const amount = Number(this.product.product.variants.nodes[0].price)
       const amountFullPrice = Number(
@@ -270,7 +283,10 @@ hover:cmw-shadow-elevation"
               <span class="cmw-m-auto cmw-text-sm">{{ cartQuantity }}</span>
             </div>
             <button
-              class="cmw-flex cmw-transition-colors cmw-w-[50px] cmw-h-[50px] cmw-bg-primary-400 cmw-rounded-r hover:(cmw-bg-primary)"
+              class="cmw-flex cmw-transition-colors cmw-w-[50px] cmw-h-[50px] cmw-bg-primary-400 cmw-rounded-r
+               hover:(cmw-bg-primary)
+               disabled:(cmw-bg-primary-100 cmw-cursor-not-allowed)"
+              :disabled="!canAddMore"
               @click="addToUserCart"
             >
               <VueSvgIcon class="cmw-m-auto" :data="addIcon" width="14" height="14" color="white" />

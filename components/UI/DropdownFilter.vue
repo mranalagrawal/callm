@@ -1,3 +1,49 @@
+<script>
+export default {
+  props: ['label', 'items', 'keyword'],
+  data() {
+    return {
+      search: '',
+      visible: true,
+      /* active: this.$route.query[this.keyword], */
+    }
+  },
+  computed: {
+    /* active() {
+      return this.$route.query[this.keyword];
+    }, */
+    filteredItems() {
+      if (this.search.length > 2)
+        return this.items.filter(el => el.name.includes(this.search))
+      else
+        return this.items
+    },
+  },
+  methods: {
+    goto(item) {
+      const path = this.$route.path
+      return
+      // se filtro non attivo, crealo e appendilo
+      const rule = new RegExp(`[${this.keyword}][0-9]+`)
+
+      /* return; */
+      if (!path.match(rule)) {
+        const newPath = path + this.keyword + item.key
+        this.$router.push({
+          path: newPath,
+        })
+      } else {
+        const newPath = path.replace(rule, this.keyword + item.key)
+        /* newPath = path.replace() */
+        this.$router.push({
+          path: newPath,
+        })
+      }
+    },
+  },
+}
+</script>
+
 <template>
   <div class="w-100 d-block">
     <button
@@ -5,16 +51,14 @@
       @click="visible = !visible"
     >
       <span class="small text-dark-secondary text-uppercase">{{ label }}</span>
-      <span
-        ><i
-          class="fal fa-chevron-down text-light-secondary mr-3"
-          :class="visible ? 'fa-rotate-180' : ''"
-        ></i
-      ></span>
+      <span><i
+        class="fal fa-chevron-down text-light-secondary mr-3"
+        :class="visible ? 'fa-rotate-180' : ''"
+      /></span>
     </button>
     <div v-if="visible" class="content mb-5">
       <div class="px-1 my-3">
-        <b-form-input v-model="search" placeholder="Cerca"></b-form-input>
+        <b-form-input v-model="search" placeholder="Cerca" />
       </div>
 
       <div v-for="item in filteredItems" :key="item.key" class="text-left">
@@ -48,50 +92,3 @@
   color: var(--dark-secondary);
 }
 </style>
-
-<script>
-export default {
-  props: ["label", "items", "keyword"],
-  data() {
-    return {
-      search: "",
-      visible: true,
-      /* active: this.$route.query[this.keyword], */
-    };
-  },
-  computed: {
-    /* active() {
-      return this.$route.query[this.keyword];
-    }, */
-    filteredItems: function () {
-      if (this.search.length > 2) {
-        return this.items.filter((el) => el.name.includes(this.search));
-      } else {
-        return this.items;
-      }
-    },
-  },
-  methods: {
-    goto(item) {
-      const path = this.$route.path;
-      return;
-      // se filtro non attivo, crealo e appendilo
-      const rule = new RegExp(`[${this.keyword}][0-9]+`);
-
-      /* return; */
-      if (!path.match(rule)) {
-        let newPath = path + this.keyword + item.key;
-        this.$router.push({
-          path: newPath,
-        });
-      } else {
-        let newPath = path.replace(rule, this.keyword + item.key);
-        /* newPath = path.replace() */
-        this.$router.push({
-          path: newPath,
-        });
-      }
-    },
-  },
-};
-</script>

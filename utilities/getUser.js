@@ -1,4 +1,4 @@
-export const getUserQuery = (token) => `query {
+export const getUserQuery = token => `query {
     customer(customerAccessToken: "${token}") {
         id
         firstName
@@ -88,7 +88,7 @@ export const getUserQuery = (token) => `query {
             }
         }
     }
-}`;
+}`
 
 export const customerRecoverMutation = (email) => {
   return JSON.stringify({
@@ -98,30 +98,28 @@ export const customerRecoverMutation = (email) => {
             }
         }`,
     variables: {
-      email: email,
+      email,
     },
-  });
-};
+  })
+}
 
 export async function customerRecover(domain, access_token, email) {
-  const recoverMutation = customerRecoverMutation(email);
+  const recoverMutation = customerRecoverMutation(email)
 
   const GRAPHQL_BODY = {
     async: true,
     crossDomain: true,
-    method: "POST",
+    method: 'POST',
     headers: {
-      "X-Shopify-Storefront-Access-Token": access_token,
-      "Content-Type": "application/json",
+      'X-Shopify-Storefront-Access-Token': access_token,
+      'Content-Type': 'application/json',
     },
     body: recoverMutation,
-  };
+  }
 
-  const response = await fetch(domain, GRAPHQL_BODY);
+  const response = await fetch(domain, GRAPHQL_BODY)
 
-  const responseJSON = await response.json();
-
-  return;
+  const responseJSON = await response.json()
 }
 
 export const customerResetMutation = (id, password, resetToken) => {
@@ -139,38 +137,38 @@ export const customerResetMutation = (id, password, resetToken) => {
             }
         }`,
     variables: {
-      id: id,
+      id,
       input: {
-        password: password,
-        resetToken: resetToken,
+        password,
+        resetToken,
       },
     },
-  });
-};
+  })
+}
 
 export async function customerReset(
   domain,
   access_token,
   id,
   password,
-  resetToken
+  resetToken,
 ) {
-  const resetMutation = customerResetMutation(id, password, resetToken);
+  const resetMutation = customerResetMutation(id, password, resetToken)
 
   const GRAPHQL_BODY = {
     async: true,
     crossDomain: true,
-    method: "POST",
+    method: 'POST',
     headers: {
-      "X-Shopify-Storefront-Access-Token": access_token,
-      "Content-Type": "application/json",
+      'X-Shopify-Storefront-Access-Token': access_token,
+      'Content-Type': 'application/json',
     },
     body: resetMutation,
-  };
+  }
 
-  const response = await fetch(domain, GRAPHQL_BODY);
+  const response = await fetch(domain, GRAPHQL_BODY)
 
-  const responseJSON = await response.json();
+  const responseJSON = await response.json()
 
-  return responseJSON;
+  return responseJSON
 }

@@ -18,6 +18,7 @@ export default {
       customerUpdateEmail: 'Non è stato possibile aggiornare la tua email, riprova piu tardi',
       customerUpdatePassword: 'Non è stato possibile aggiornare la tua password, riprova piu tardi',
       customerUpdateData: 'Non è stato possibile aggiornare i tuoi dati personali, riprova piu tardi',
+      addToCartReachLimit: 'Non ci sono più prodotti disponibili',
     },
   },
 }

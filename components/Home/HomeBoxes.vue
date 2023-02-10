@@ -1,77 +1,11 @@
-<template>
-  <div class="container-fluid px-md-5 mt-5">
-    <div class="row pt-md-5 d-none d-md-flex" v-if="data">
-      <div
-        v-for="(box, ind) in data.data.box"
-        :key="ind"
-        class="col-12 col-md-4 mb-5"
-      >
-        <div class="box-card p-2 h-100">
-          <img
-            v-if="box.image.url"
-            :src="box.image.url"
-            class="d-block mx-auto rounded-circle icon-img"
-            alt=""
-            width="80px"
-            height="80px"
-          />
-          <div class="card-body text-center">
-            <h5
-              class="card-title text-dark-primary mb-0"
-              style="font-size: 16px; font-weight: 600"
-              :class="$config.store !== 'WILDVIGNERON' ? 'mt-4' : ''"
-            >
-              {{ box.title }}
-            </h5>
-
-            <p class="card-text" style="font-size: 16px">
-              {{ box.description }}
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="pt-md-5 d-md-none" v-if="data">
-      <VueSlickCarousel v-bind="settings">
-        <div v-for="(box, ind) in data.data.box" :key="ind" class="mb-5">
-          <div class="box-card p-2 h-100">
-            <img
-              :src="box.image.url"
-              class="d-block mx-auto rounded-circle icon-img"
-              alt=""
-              width="80px"
-              height="80px"
-            />
-            <div class="card-body text-center">
-              <h5
-                class="card-title mt-4 text-dark-primary mb-0"
-                style="font-size: 16px; font-weight: 600"
-              >
-                {{ box.title }}
-              </h5>
-
-              <p class="card-text" style="font-size: 16px">
-                {{ box.description }}
-              </p>
-            </div>
-          </div>
-        </div>
-      </VueSlickCarousel>
-    </div>
-  </div>
-</template>
-
 <script>
-import VueSlickCarousel from "vue-slick-carousel";
-import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
+import VueSlickCarousel from 'vue-slick-carousel'
+import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
 
-import documents from "../../prismic-mapper";
-import locales from "../../locales-mapper";
+import documents from '../../prismic-mapper'
+import locales from '../../locales-mapper'
 
 export default {
-  watch: {
-    "$i18n.locale": "$fetch",
-  },
   components: { VueSlickCarousel },
   data() {
     return {
@@ -105,30 +39,95 @@ export default {
           },
         ],
       },
-    };
+    }
   },
   async fetch() {
-    let lang = locales[this.$i18n.locale];
+    let lang = locales[this.$i18n.locale]
 
-    if (lang == "en-gb" && this.$config.STORE == "CMW") {
-      lang = "en-eu";
-    }
+    if (lang == 'en-gb' && this.$config.STORE == 'CMW')
+      lang = 'en-eu'
 
     this.data = await this.$prismic.api.getSingle(
       documents[this.$config.STORE].homeBoxes,
-      { lang: lang }
-    );
+      { lang },
+    )
+  },
+  watch: {
+    '$i18n.locale': '$fetch',
   },
   methods: {
     onSlideStart(slide) {
-      this.sliding = true;
+      this.sliding = true
     },
     onSlideEnd(slide) {
-      this.sliding = false;
+      this.sliding = false
     },
   },
-};
+}
 </script>
+
+<template>
+  <div class="container-fluid px-md-5 mt-5">
+    <div v-if="data" class="row pt-md-5 d-none d-md-flex">
+      <div
+        v-for="(box, ind) in data.data.box"
+        :key="ind"
+        class="col-12 col-md-4 mb-5"
+      >
+        <div class="box-card p-2 h-100">
+          <img
+            v-if="box.image.url"
+            :src="box.image.url"
+            class="d-block mx-auto rounded-circle icon-img"
+            alt=""
+            width="80px"
+            height="80px"
+          >
+          <div class="card-body text-center">
+            <h5
+              class="card-title text-dark-primary mb-0"
+              style="font-size: 16px; font-weight: 600"
+              :class="$config.store !== 'WILDVIGNERON' ? 'mt-4' : ''"
+            >
+              {{ box.title }}
+            </h5>
+
+            <p class="card-text" style="font-size: 16px">
+              {{ box.description }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="data" class="pt-md-5 d-md-none">
+      <VueSlickCarousel v-bind="settings">
+        <div v-for="(box, ind) in data.data.box" :key="ind" class="mb-5">
+          <div class="box-card p-2 h-100">
+            <img
+              :src="box.image.url"
+              class="d-block mx-auto rounded-circle icon-img"
+              alt=""
+              width="80px"
+              height="80px"
+            >
+            <div class="card-body text-center">
+              <h5
+                class="card-title mt-4 text-dark-primary mb-0"
+                style="font-size: 16px; font-weight: 600"
+              >
+                {{ box.title }}
+              </h5>
+
+              <p class="card-text" style="font-size: 16px">
+                {{ box.description }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </VueSlickCarousel>
+    </div>
+  </div>
+</template>
 
 <style lang="css" scoped>
 .box-card {

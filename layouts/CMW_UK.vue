@@ -46,7 +46,6 @@ export default {
 .cmw-main {
   width: 100vw;
   padding-top: var(--cmw-header-height);
-  overflow-x: hidden;
 }
 
 .cmw-navbar {

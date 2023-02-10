@@ -1,3 +1,9 @@
+<script>
+export default {
+  props: ['product'],
+}
+</script>
+
 <template>
   <div class="product-card shadow">
     <!-- {{ product.images.nodes[0].url }} -->
@@ -6,7 +12,7 @@
       :to="`/product/${product.handle}`"
     >
       <div class="ribbon">
-        <span><i class="fal fa-tag"></i> PROMO</span>
+        <span><i class="fal fa-tag" /> PROMO</span>
       </div>
 
       <div class="row px-0 mx-0 h-100">
@@ -14,24 +20,23 @@
           <div
             class="img-wrapper"
             :style="{
-              backgroundImage: 'url(' + product.images.nodes[0].url + ')',
+              backgroundImage: `url(${product.images.nodes[0].url})`,
             }"
-          ></div>
+          />
         </div>
         <div class="col-12 col-md-6">
-          <h3 class="font-weight-bold mt-5">{{ product.title }}</h3>
-          <p class="lead">{{ product.description }}</p>
+          <h3 class="font-weight-bold mt-5">
+            {{ product.title }}
+          </h3>
+          <p class="lead">
+            {{ product.description }}
+          </p>
         </div>
       </div>
     </nuxt-link>
   </div>
 </template>
 
-<script>
-export default {
-  props: ["product"],
-};
-</script>
 <style scoped>
 .product-card {
   /* height: 500px; */

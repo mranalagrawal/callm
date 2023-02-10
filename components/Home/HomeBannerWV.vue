@@ -1,17 +1,50 @@
+<script>
+export default {
+  data() {
+    return {
+      data: null,
+      slide: 0,
+      sliding: null,
+    }
+  },
+  async fetch() {
+    let lang = ''
+    if (this.$i18n.locale == 'en')
+      lang = 'en-gb'
+    else
+      lang = 'it-it'
+
+    const response = await this.$prismic.api.getSingle('wv_home-carousel', {
+      lang,
+    })
+    const data = response.data.body[0].items
+    this.data = data
+  },
+  methods: {
+    onSlideStart(slide) {
+      this.sliding = true
+    },
+    onSlideEnd(slide) {
+      this.sliding = false
+    },
+  },
+}
+</script>
+
 <template>
   <div class="position-relative" style="overflow: hidden">
     <b-carousel
       id="carousel-1"
       v-model="slide"
+      v-if="data"
       :interval="4000"
       :controls="data.length > 1"
       :indicators="data.length > 1"
       background="#ababab"
       style="text-shadow: 1px 1px 2px #333"
+      class="home-carousel d-none d-md-block"
       @sliding-start="onSlideStart"
       @sliding-end="onSlideEnd"
-      class="home-carousel d-none d-md-block"
-      v-if="data"
     >
       <b-carousel-slide
         v-for="(slide, i) in data"
@@ -36,22 +69,24 @@
       id="carousel-2"
       v-model="slide"
       :interval="4000"
+      v-if="data"
       :controls="data.length > 1"
       :indicators="data.length > 1"
       fade
       background="#ababab"
       style="text-shadow: 1px 1px 2px #333"
+      class="home-carousel d-md-none"
       @sliding-start="onSlideStart"
       @sliding-end="onSlideEnd"
-      class="home-carousel d-md-none"
-      v-if="data"
     >
       <b-carousel-slide
         v-for="(slide, i) in data"
         :key="i"
         :img-src="slide.image.mobile.url"
       >
-        <h1 class="mb-md-5">{{ slide.text }}</h1>
+        <h1 class="mb-md-5">
+          {{ slide.text }}
+        </h1>
         <div>
           <nuxt-link
             :to="slide.link"
@@ -90,39 +125,6 @@
     </div> -->
   </div>
 </template>
-
-<script>
-export default {
-  data() {
-    return {
-      data: null,
-      slide: 0,
-      sliding: null,
-    };
-  },
-  async fetch() {
-    let lang = "";
-    if (this.$i18n.locale == "en") {
-      lang = "en-gb";
-    } else {
-      lang = "it-it";
-    }
-    const response = await this.$prismic.api.getSingle("wv_home-carousel", {
-      lang: lang,
-    });
-    const data = response.data.body[0].items;
-    this.data = data;
-  },
-  methods: {
-    onSlideStart(slide) {
-      this.sliding = true;
-    },
-    onSlideEnd(slide) {
-      this.sliding = false;
-    },
-  },
-};
-</script>
 
 <style lang="css" scoped>
 .home-carousel :deep(.carousel-indicators) {

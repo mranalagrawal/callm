@@ -14,26 +14,26 @@ const getBrandById = (brandId) => {
                 }
             }
         }
-      }`;
-};
+      }`
+}
 
 export async function getBrand(domain, access_token, brandId) {
-  const brandQuery = getBrandById(brandId);
+  const brandQuery = getBrandById(brandId)
 
   const GRAPHQL_BODY = {
     async: true,
     crossDomain: true,
-    method: "POST",
+    method: 'POST',
     headers: {
-      "X-Shopify-Storefront-Access-Token": access_token,
-      "Content-Type": "application/graphql",
+      'X-Shopify-Storefront-Access-Token': access_token,
+      'Content-Type': 'application/graphql',
     },
     body: brandQuery,
-  };
+  }
 
-  const brandData = await fetch(domain, GRAPHQL_BODY).then((res) => res.json());
+  const brandData = await fetch(domain, GRAPHQL_BODY).then(res => res.json())
 
-  const data = brandData.data.articles.nodes[0];
+  const data = brandData.data.articles.nodes[0]
 
-  return data;
+  return data
 }

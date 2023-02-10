@@ -32,6 +32,7 @@ export const useCustomerWishlist = defineStore({
 
     async getWishlistProducts(query) {
       await this.$nuxt.$cmwRepo.products.getAll({
+        first: 30,
         query,
       })
         .then(({ products }) => {

@@ -1,3 +1,377 @@
+<script>
+import Dropdown from '../components/UI/Dropdown.vue'
+import DropdownRange from '../components/UI/DropdownRange.vue'
+import DropdownSelections from '../components/UI/DropdownSelections.vue'
+import SelectionsBoxMobile from '../components/UI/SelectionsBoxMobile.vue'
+import VerticalSearch from '../components/VerticalSearch.vue'
+
+export default {
+  components: {
+    Dropdown,
+    DropdownSelections,
+    DropdownRange,
+    SelectionsBoxMobile,
+    VerticalSearch,
+  },
+  data() {
+    return {
+      loading: null,
+      column: true,
+      brands: null,
+      search: null,
+      regions: null,
+      selections: null,
+      pairings: null,
+      agings: null,
+      philosophies: null,
+      sizes: null,
+      dosagecontents: null,
+      categories: null,
+      winelists: null,
+      awards: null,
+      vintages: null,
+      results: null,
+      activeSelections: null,
+      total: null,
+      totalPages: null,
+      currentPage: 1,
+      view: {
+        brand: null,
+        region: null,
+        pairing: null,
+        aging: null,
+        philosophy: null,
+        size: null,
+        dosagecontent: null,
+        category: null,
+        winelists: null,
+        award: null,
+        priceFrom: null,
+        priceTo: null,
+      },
+    }
+  },
+  /* computed: {
+    currentPage(){
+      return
+    }
+  }, */
+  async fetch() {
+    this.loading = true
+    const route = this.$route
+
+    this.currentPage = this.$route.query.page
+      ? this.$route.query.page
+      : 1
+
+    const query = route.fullPath.split('search?')[1]
+    const searchResult = await fetch(
+      `https://callmewine-api.dojo.sh/api/products/search?${query}`,
+    )
+
+    const search = await searchResult.json()
+    this.search = search
+    this.results = search.hits.hits
+
+    const total = search.hits.total.value
+    this.total = total
+
+    this.totalPages = Math.ceil(total / 50)
+
+    const regions = search.aggregations['agg-regions']['agg-regions'].buckets
+    this.regions = regions
+
+    const brands = search.aggregations['agg-brands']['agg-brands'].buckets
+    this.brands = brands
+
+    const vintages
+      = search.aggregations['agg-vintages']['agg-vintages'].buckets
+    this.vintages = vintages
+
+    const sizes = search.aggregations['agg-sizes']['agg-sizes'].buckets
+    this.sizes = sizes
+
+    const awards = search.aggregations['agg-awards'].inner.result.buckets.map((el) => {
+      return {
+        key: [el.key, el.name.buckets[0].key],
+        key_as_string: `${el.key}|${el.name.buckets[0].key}`,
+        doc_count: el.doc_count,
+      }
+    })
+    this.awards = awards
+
+    const agings = search.aggregations['agg-agings'].inner.result.buckets.map((el) => {
+      return {
+        key: [el.key, el.name.buckets[0].key],
+        key_as_string: `${el.key}|${el.name.buckets[0].key}`,
+        doc_count: el.doc_count,
+      }
+    })
+    this.agings = agings
+
+    const categories = search.aggregations['agg-categories'].inner.result.buckets.map((el) => {
+      return {
+        key: [el.key, el.name.buckets[0].key],
+        key_as_string: `${el.key}|${el.name.buckets[0].key}`,
+        doc_count: el.doc_count,
+      }
+    })
+    this.categories = categories
+
+    const philosophies = search.aggregations['agg-philosophies'].inner.result.buckets.map((el) => {
+      return {
+        key: [el.key, el.name.buckets[0].key],
+        key_as_string: `${el.key}|${el.name.buckets[0].key}`,
+        doc_count: el.doc_count,
+      }
+    })
+    this.philosophies = philosophies
+
+    const dosagecontents = search.aggregations['agg-dosagecontents'][
+      'agg-dosagecontents'
+    ].buckets.map((el) => {
+      return {
+        key: [el.key, el.key],
+        key_as_string: `${el.key}|${el.key}`,
+        doc_count: el.doc_count,
+      }
+    })
+    this.dosagecontents = dosagecontents
+
+    const winelists = search.aggregations['agg-winelists'].inner.result.buckets.map((el) => {
+      return {
+        key: [el.key, el.name.buckets[0].key],
+        key_as_string: `${el.key}|${el.name.buckets[0].key}`,
+        doc_count: el.doc_count,
+      }
+    })
+    this.winelists = winelists
+
+    const pairings = search.aggregations['agg-pairings'].inner.result.buckets.map((el) => {
+      return {
+        key: [el.key, el.name.buckets[0].key],
+        key_as_string: `${el.key}|${el.name.buckets[0].key}`,
+        doc_count: el.doc_count,
+      }
+    })
+    this.pairings = pairings
+
+    const brandId = this.$route.query.brands
+    const regionId = this.$route.query.regions
+    const pairingId = this.$route.query.pairings
+    const agingId = this.$route.query.agings
+    const philosophyId = this.$route.query.philosophies
+    const sizeId = this.$route.query.sizes
+    const dosagecontentId = this.$route.query.dosagecontent
+    const categoryId = this.$route.query.categories
+    const winelistsId = this.$route.query.winelists
+    const awardId = this.$route.query.awards
+    const vintageId = this.$route.query.vintages
+    const priceFrom = this.$route.query.price_from
+    const priceTo = this.$route.query.price_to
+
+    const allSelections = [
+      'favourite',
+      'rarewine',
+      'foreveryday',
+      'artisanal',
+      'unusualvariety',
+      'isnew',
+      'togift',
+      'inpromotion',
+      'topsale',
+    ]
+    const activeSelections = Object.keys(this.$route.query).filter(el =>
+      allSelections.includes(el),
+    )
+
+    this.activeSelections = activeSelections
+
+    this.view.brand = brandId
+      ? {
+          key: brandId,
+          name: brands.find(x => x.key[0] == brandId).key[1],
+          field: 'brands',
+        }
+      : null
+    this.view.region = regionId
+      ? {
+          key: regionId,
+          name: regions.find(x => x.key[0] == regionId).key[1],
+          field: 'regions',
+        }
+      : null
+
+    this.view.pairing = pairingId
+      ? {
+          key: pairingId,
+          name: pairings.find(x => x.key[0] == pairingId).key[1],
+          field: 'pairings',
+        }
+      : null
+    this.view.aging = agingId
+      ? {
+          key: agingId,
+          name: agings.find(x => x.key[0] == agingId).key[1],
+          field: 'agings',
+        }
+      : null
+
+    this.view.philosophy = philosophyId
+      ? {
+          key: philosophyId,
+          name: philosophies.find(x => x.key[0] == philosophyId).key[1],
+          field: 'philosophies',
+        }
+      : null
+    this.view.size = sizeId
+      ? {
+          key: sizeId,
+          name: sizes.find(x => x.key[0] == sizeId).key[1],
+          field: 'sizes',
+        }
+      : null
+
+    this.view.dosagecontent = dosagecontentId
+      ? {
+          key: dosagecontentId,
+          name: dosagecontents.find(x => x.key[0] == dosagecontentId).key[1],
+          field: 'dosagecontents',
+        }
+      : null
+
+    this.view.category = categoryId
+      ? {
+          key: categoryId,
+          name: categories.find(x => x.key[0] == categoryId).key[1],
+          field: 'categories',
+        }
+      : null
+
+    this.view.winelists = winelistsId
+      ? {
+          key: winelistsId,
+          name: winelists.find(x => x.key[0] == winelistsId).key[1],
+          field: 'winelists',
+        }
+      : null
+
+    this.view.award = awardId
+      ? {
+          key: awardId,
+          name: awards.find(x => x.key[0] == awardId).key[1],
+          field: 'awards',
+        }
+      : null
+    this.view.vintage = vintageId
+      ? {
+          key: vintageId,
+          name: vintages.find(x => x.key[0] == vintageId).key[1],
+          field: 'vintages',
+        }
+      : null
+    this.view.priceFrom = priceFrom
+      ? {
+          key: 'priceFrom',
+          name: `From ${priceFrom}`,
+          field: 'price_from',
+        }
+      : null
+    this.view.priceTo = priceTo
+      ? {
+          key: 'priceTo',
+          name: `To ${priceTo}`,
+          field: 'price_to',
+        }
+      : null
+
+    this.loading = false
+  },
+  computed: {},
+  watch: {
+    '$route.query': '$fetch',
+  },
+
+  methods: {
+    changePage(page) {
+      const query = Object.assign({}, this.$route.query)
+      query.page = page
+
+      this.$router.push({
+        path: 'search',
+        query,
+      })
+    },
+    showModal() {
+      this.$refs.modalFilter.show()
+    },
+    hideModal() {
+      this.$refs.modalFilter.hide()
+    },
+    resetFilter() {
+      this.$router.push({
+        path: 'search',
+        query: null,
+      })
+    },
+    removeSelectionFromQuery(selection) {
+      const query = Object.assign({}, this.$route.query)
+
+      delete query[selection]
+
+      this.$router.push({
+        path: 'search',
+        query,
+      })
+    },
+    removeFromQuery(obj) {
+      const query = Object.assign({}, this.$route.query)
+
+      delete query[obj.field]
+
+      this.$router.push({
+        path: 'search',
+        query,
+      })
+    },
+    sortBy(field, direction) {
+      const query = Object.assign({}, this.$route.query)
+      query.sort = field
+      query.direction = direction
+      this.$router.push({
+        path: 'search',
+        query,
+      })
+    },
+    forward() {
+      const query = Object.assign({}, this.$route.query)
+
+      this.currentPage++
+      query.page = this.currentPage
+
+      this.$router.push({
+        path: 'search',
+        query,
+      })
+    },
+    backward() {
+      const query = Object.assign({}, this.$route.query)
+
+      if (this.currentPage == 1)
+        return
+
+      this.currentPage--
+      query.page = this.currentPage
+
+      this.$router.push({
+        path: 'search',
+        query,
+      })
+    },
+  },
+}
+</script>
+
 <template>
   <div class="container-fluid px-md-5 mt-5">
     <div class="row pt-5">
@@ -22,16 +396,18 @@
       </div>
     </div>
 
-    <div class="row mt-5" v-if="results">
+    <div v-if="results" class="row mt-5">
       <div class="d-none d-md-block col-md-3">
         <div>
           <div
             v-if="
-              activeSelections.length > 0 ||
-              Object.values(view).filter((el) => el != null).length > 0
+              activeSelections.length > 0
+                || Object.values(view).filter((el) => el != null).length > 0
             "
           >
-            <p class="lead">{{ $t("search.activeFilters") }}</p>
+            <p class="lead">
+              {{ $t("search.activeFilters") }}
+            </p>
             <div v-if="activeSelections">
               <!-- selections -->
               <span
@@ -41,19 +417,19 @@
                 @click="removeSelectionFromQuery(item)"
               >
                 {{ $t(`selections.${item}`) }}
-                <i class="fal fa-times ml-1"></i>
+                <i class="fal fa-times ml-1" />
               </span>
               <!-- other filters -->
               <span
-                class="badge badge-pill badge-light-secondary mx-1"
                 v-for="(item, ind) in Object.entries(view).filter(
-                  (el) => el[1] !== null
+                  (el) => el[1] !== null,
                 )"
                 :key="ind"
+                class="badge badge-pill badge-light-secondary mx-1"
                 @click="removeFromQuery(item[1])"
               >
                 {{ item[1].name }}
-                <i class="fal fa-times ml-1"></i>
+                <i class="fal fa-times ml-1" />
               </span>
             </div>
 
@@ -62,56 +438,54 @@
               style="font-size: 12px"
               @click="resetFilter"
             >
-              <i class="fal fa-times"></i> {{ $t("search.removeAll") }}
+              <i class="fal fa-times" /> {{ $t("search.removeAll") }}
             </button>
           </div>
 
-          <dropdown-range label="Prezzo" />
-          <dropdown-selections
+          <DropdownRange label="Prezzo" />
+          <DropdownSelections
             label="selections"
             :items="null"
             keyword="selections"
             :search="search"
           />
-          <dropdown
+          <Dropdown
             label="categories"
             :items="categories"
             keyword="categories"
           />
-          <dropdown label="winelists" :items="winelists" keyword="winelists" />
-          <dropdown label="pairings" :items="pairings" keyword="pairings" />
-          <dropdown
+          <Dropdown label="winelists" :items="winelists" keyword="winelists" />
+          <Dropdown label="pairings" :items="pairings" keyword="pairings" />
+          <Dropdown
             label="dosagecontents"
             :items="dosagecontents"
             keyword="dosagecontent"
           />
-          <dropdown label="Provenienza" :items="regions" keyword="regions" />
-          <dropdown label="Brands" :items="brands" keyword="brands" />
-          <dropdown label="sizes" :items="sizes" keyword="sizes" />
-          <dropdown label="vintages" :items="vintages" keyword="vintages" />
-          <dropdown label="awards" :items="awards" keyword="awards" />
-          <dropdown label="agings" :items="agings" keyword="agings" />
-          <dropdown
+          <Dropdown label="Provenienza" :items="regions" keyword="regions" />
+          <Dropdown label="Brands" :items="brands" keyword="brands" />
+          <Dropdown label="sizes" :items="sizes" keyword="sizes" />
+          <Dropdown label="vintages" :items="vintages" keyword="vintages" />
+          <Dropdown label="awards" :items="awards" keyword="awards" />
+          <Dropdown label="agings" :items="agings" keyword="agings" />
+          <Dropdown
             label="philosophies"
             :items="philosophies"
             keyword="philosophies"
           />
         </div>
       </div>
-      <div class="col-12 col-md-9 px-0" v-if="results.length > 0">
+      <div v-if="results.length > 0" class="col-12 col-md-9 px-0">
         <div class="row aling-items-center mb-5">
           <div class="col-4">
-            <span
-              ><strong>{{ total }}</strong> {{ $t("search.results") }}</span
-            >
+            <span><strong>{{ total }}</strong> {{ $t("search.results") }}</span>
             <div
               class="btn shadow text-light-secondary"
               @click="column = !column"
             >
-              <i :class="column ? 'fal fa-bars' : 'fal fa-th-large'"></i>
+              <i :class="column ? 'fal fa-bars' : 'fal fa-th-large'" />
             </div>
           </div>
-          <div class="col-4"></div>
+          <div class="col-4" />
           <div class="col-4 text-right">
             <div>
               <!-- {{ this.$router }} -->
@@ -146,41 +520,43 @@
             </div>
           </div>
         </div>
-        <div class="row" v-if="column">
+        <div v-if="column" class="row">
           <div
-            class="col-12 col-md-6 col-lg-4 col-xl-3 mb-3"
             v-for="result in results"
             :key="result._id"
+            class="col-12 col-md-6 col-lg-4 col-xl-3 mb-3"
           >
-            <vertical-search :product="result" :horizontal="false" />
+            <VerticalSearch :product="result" :horizontal="false" />
           </div>
         </div>
-        <div class="row" v-else>
+        <div v-else class="row">
           <div
-            class="d-none d-lg-block col-12 mb-1"
             v-for="result in results"
-            :key="'desktop' + result._id"
+            :key="`desktop${result._id}`"
+            class="d-none d-lg-block col-12 mb-1"
           >
-            <vertical-search :product="result" :horizontal="true" />
+            <VerticalSearch :product="result" :horizontal="true" />
           </div>
           <div
-            class="d-lg-none col-12 mb-1"
             v-for="result in results"
-            :key="'mobile' + result._id"
+            :key="`mobile${result._id}`"
+            class="d-lg-none col-12 mb-1"
           >
-            <vertical-search :product="result" :horizontal="false" />
+            <VerticalSearch :product="result" :horizontal="false" />
           </div>
         </div>
       </div>
-      <div class="col-12 col-md-9" v-else>
-        <p class="lead mt-5">{{ $t("search.noResultsAlert") }}</p>
-        <div v-html="$t('search.noResultsMessage')"></div>
+      <div v-else class="col-12 col-md-9">
+        <p class="lead mt-5">
+          {{ $t("search.noResultsAlert") }}
+        </p>
+        <div v-html="$t('search.noResultsMessage')" />
       </div>
     </div>
 
     <div class="row">
       <div class="col-4 text-right">
-        <span class="d-inline-flex" v-if="+currentPage > 4">
+        <span v-if="+currentPage > 4" class="d-inline-flex">
           <button
             class="btn btn-outline-dark-secondary btn-small"
             @click="changePage(1)"
@@ -190,10 +566,10 @@
         </span>
       </div>
       <div class="col-4 text-center">
-        <span class="d-inline-flex" v-for="i in 3" :key="i + 'prev'">
+        <span v-for="i in 3" :key="`${i}prev`" class="d-inline-flex">
           <button
-            class="btn btn-outline-dark-secondary btn-small"
             v-if="+currentPage - 4 + i > 0 && +currentPage - 4 + i < totalPages"
+            class="btn btn-outline-dark-secondary btn-small"
             @click="changePage(+currentPage - 4 + i)"
           >
             {{ +currentPage - 4 + i }}
@@ -204,10 +580,10 @@
             {{ currentPage }}
           </button>
         </span>
-        <span class="d-inline-flex" v-for="i in 3" :key="i + 'next'">
+        <span v-for="i in 3" :key="`${i}next`" class="d-inline-flex">
           <button
-            class="btn btn-outline-dark-secondary btn-small"
             v-if="+currentPage + i > 0 && +currentPage + i < totalPages"
+            class="btn btn-outline-dark-secondary btn-small"
             @click="changePage(+currentPage + i)"
           >
             {{ +currentPage + i }}
@@ -215,7 +591,7 @@
         </span>
       </div>
       <div class="col-4 text-left">
-        <span class="d-inline-flex" v-if="+currentPage < totalPages">
+        <span v-if="+currentPage < totalPages" class="d-inline-flex">
           <button
             class="btn btn-outline-dark-secondary btn-small"
             @click="changePage(totalPages)"
@@ -226,7 +602,7 @@
       </div>
     </div>
 
-    <div class="loader" v-if="loading">
+    <div v-if="loading" class="loader">
       <div class="wrapper shadow">
         <!-- <i class="fas fa-spinner fa-spin fa-3x text-muted"></i> -->
 
@@ -299,17 +675,17 @@
     <div class="row w-100 d-lg-none" style="position: fixed; bottom: 10px">
       <div class="col-12 text-center">
         <button class="btn btn-light-secondary text-center" @click="showModal">
-          <i class="fal fa-bars mr-2"></i> Mostra filtri
+          <i class="fal fa-bars mr-2" /> Mostra filtri
           <span
             v-if="
-              activeSelections &&
-              (activeSelections.length > 0 ||
-                Object.values(view).filter((el) => el != null).length > 0)
+              activeSelections
+                && (activeSelections.length > 0
+                  || Object.values(view).filter((el) => el != null).length > 0)
             "
           >
             ({{
-              activeSelections.length +
-              Object.values(view).filter((el) => el != null).length
+              activeSelections.length
+                + Object.values(view).filter((el) => el != null).length
             }})
           </span>
         </button>
@@ -326,9 +702,9 @@
     >
       <div
         v-if="
-          activeSelections &&
-          (activeSelections.length > 0 ||
-            Object.values(view).filter((el) => el != null).length > 0)
+          activeSelections
+            && (activeSelections.length > 0
+              || Object.values(view).filter((el) => el != null).length > 0)
         "
       >
         <span
@@ -338,43 +714,43 @@
           @click="removeSelectionFromQuery(item)"
         >
           {{ $t(`selections.${item}`) }}
-          <i class="fal fa-times ml-1"></i>
+          <i class="fal fa-times ml-1" />
         </span>
         <span
-          class="badge badge-pill badge-light-secondary mx-1"
           v-for="(item, ind) in Object.entries(view).filter(
-            (el) => el[1] !== null
+            (el) => el[1] !== null,
           )"
           :key="ind"
+          class="badge badge-pill badge-light-secondary mx-1"
           @click="removeFromQuery(item[1])"
         >
           {{ item[1].name }}
-          <i class="fal fa-times ml-1"></i>
+          <i class="fal fa-times ml-1" />
         </span>
       </div>
 
-      <dropdown label="categories" :items="categories" keyword="categories" />
-      <dropdown label="winelists" :items="winelists" keyword="winelists" />
-      <dropdown label="pairings" :items="pairings" keyword="pairings" />
-      <dropdown
+      <Dropdown label="categories" :items="categories" keyword="categories" />
+      <Dropdown label="winelists" :items="winelists" keyword="winelists" />
+      <Dropdown label="pairings" :items="pairings" keyword="pairings" />
+      <Dropdown
         label="dosagecontents"
         :items="dosagecontents"
         keyword="dosagecontent"
       />
-      <dropdown label="Provenienza" :items="regions" keyword="regions" />
-      <dropdown label="Brands" :items="brands" keyword="brands" />
-      <dropdown label="sizes" :items="sizes" keyword="sizes" />
-      <dropdown label="vintages" :items="vintages" keyword="vintages" />
-      <dropdown label="awards" :items="awards" keyword="awards" />
-      <dropdown label="agings" :items="agings" keyword="agings" />
-      <dropdown
+      <Dropdown label="Provenienza" :items="regions" keyword="regions" />
+      <Dropdown label="Brands" :items="brands" keyword="brands" />
+      <Dropdown label="sizes" :items="sizes" keyword="sizes" />
+      <Dropdown label="vintages" :items="vintages" keyword="vintages" />
+      <Dropdown label="awards" :items="awards" keyword="awards" />
+      <Dropdown label="agings" :items="agings" keyword="agings" />
+      <Dropdown
         label="philosophies"
         :items="philosophies"
         keyword="philosophies"
       />
-      <dropdown-range label="Prezzo" />
+      <DropdownRange label="Prezzo" />
 
-      <selections-box-mobile
+      <SelectionsBoxMobile
         label="selections"
         :items="null"
         keyword="selections"
@@ -383,397 +759,14 @@
 
       <template #modal-footer class="border-0">
         <div class="w-100 text-center">
-          <button class="btn btn-light-secondary btn-lg px-5">INVIA</button>
+          <button class="btn btn-light-secondary btn-lg px-5">
+            INVIA
+          </button>
         </div>
       </template>
     </b-modal>
   </div>
 </template>
-
-<script>
-import Dropdown from "../components/UI/Dropdown.vue";
-import DropdownRange from "../components/UI/DropdownRange.vue";
-import DropdownSelections from "../components/UI/DropdownSelections.vue";
-import SelectionsBoxMobile from "../components/UI/SelectionsBoxMobile.vue";
-import VerticalSearch from "../components/VerticalSearch.vue";
-
-export default {
-  watch: {
-    "$route.query": "$fetch",
-  },
-  components: {
-    Dropdown,
-    DropdownSelections,
-    DropdownRange,
-    SelectionsBoxMobile,
-    VerticalSearch,
-  },
-  data() {
-    return {
-      loading: null,
-      column: true,
-      brands: null,
-      search: null,
-      regions: null,
-      selections: null,
-      pairings: null,
-      agings: null,
-      philosophies: null,
-      sizes: null,
-      dosagecontents: null,
-      categories: null,
-      winelists: null,
-      awards: null,
-      vintages: null,
-      results: null,
-      activeSelections: null,
-      total: null,
-      totalPages: null,
-      currentPage: 1,
-      view: {
-        brand: null,
-        region: null,
-        pairing: null,
-        aging: null,
-        philosophy: null,
-        size: null,
-        dosagecontent: null,
-        category: null,
-        winelists: null,
-        award: null,
-        priceFrom: null,
-        priceTo: null,
-      },
-    };
-  },
-  computed: {},
-
-  methods: {
-    changePage(page) {
-      const query = Object.assign({}, this.$route.query);
-      query["page"] = page;
-
-      this.$router.push({
-        path: "search",
-        query: query,
-      });
-    },
-    showModal() {
-      this.$refs["modalFilter"].show();
-    },
-    hideModal() {
-      this.$refs["modalFilter"].hide();
-    },
-    resetFilter() {
-      this.$router.push({
-        path: "search",
-        query: null,
-      });
-    },
-    removeSelectionFromQuery(selection) {
-      const query = Object.assign({}, this.$route.query);
-
-      delete query[selection];
-
-      this.$router.push({
-        path: "search",
-        query: query,
-      });
-    },
-    removeFromQuery(obj) {
-      const query = Object.assign({}, this.$route.query);
-
-      delete query[obj.field];
-
-      this.$router.push({
-        path: "search",
-        query: query,
-      });
-    },
-    sortBy(field, direction) {
-      const query = Object.assign({}, this.$route.query);
-      query["sort"] = field;
-      query["direction"] = direction;
-      this.$router.push({
-        path: "search",
-        query: query,
-      });
-    },
-    forward() {
-      const query = Object.assign({}, this.$route.query);
-
-      this.currentPage++;
-      query["page"] = this.currentPage;
-
-      this.$router.push({
-        path: "search",
-        query: query,
-      });
-    },
-    backward() {
-      const query = Object.assign({}, this.$route.query);
-
-      if (this.currentPage == 1) return;
-
-      this.currentPage--;
-      query["page"] = this.currentPage;
-
-      this.$router.push({
-        path: "search",
-        query: query,
-      });
-    },
-  },
-  /* computed: {
-    currentPage(){
-      return
-    }
-  }, */
-  async fetch() {
-    this.loading = true;
-    let route = this.$route;
-
-    this.currentPage = this.$route.query["page"]
-      ? this.$route.query["page"]
-      : 1;
-
-    let query = route.fullPath.split("search?")[1];
-    const searchResult = await fetch(
-      "https://callmewine-api.dojo.sh/api/products/search?" + query
-    );
-
-    const search = await searchResult.json();
-    this.search = search;
-    this.results = search.hits.hits;
-
-    const total = search.hits.total.value;
-    this.total = total;
-
-    this.totalPages = Math.ceil(total / 50);
-
-    const regions = search.aggregations["agg-regions"]["agg-regions"].buckets;
-    this.regions = regions;
-
-    const brands = search.aggregations["agg-brands"]["agg-brands"].buckets;
-    this.brands = brands;
-
-    const vintages =
-      search.aggregations["agg-vintages"]["agg-vintages"].buckets;
-    this.vintages = vintages;
-
-    const sizes = search.aggregations["agg-sizes"]["agg-sizes"].buckets;
-    this.sizes = sizes;
-
-    const awards = search.aggregations["agg-awards"]["inner"]["result"][
-      "buckets"
-    ].map((el) => {
-      return {
-        key: [el.key, el.name.buckets[0].key],
-        key_as_string: `${el.key}|${el.name.buckets[0].key}`,
-        doc_count: el.doc_count,
-      };
-    });
-    this.awards = awards;
-
-    const agings = search.aggregations["agg-agings"]["inner"]["result"][
-      "buckets"
-    ].map((el) => {
-      return {
-        key: [el.key, el.name.buckets[0].key],
-        key_as_string: `${el.key}|${el.name.buckets[0].key}`,
-        doc_count: el.doc_count,
-      };
-    });
-    this.agings = agings;
-
-    const categories = search.aggregations["agg-categories"]["inner"]["result"][
-      "buckets"
-    ].map((el) => {
-      return {
-        key: [el.key, el.name.buckets[0].key],
-        key_as_string: `${el.key}|${el.name.buckets[0].key}`,
-        doc_count: el.doc_count,
-      };
-    });
-    this.categories = categories;
-
-    const philosophies = search.aggregations["agg-philosophies"]["inner"][
-      "result"
-    ]["buckets"].map((el) => {
-      return {
-        key: [el.key, el.name.buckets[0].key],
-        key_as_string: `${el.key}|${el.name.buckets[0].key}`,
-        doc_count: el.doc_count,
-      };
-    });
-    this.philosophies = philosophies;
-
-    const dosagecontents = search.aggregations["agg-dosagecontents"][
-      "agg-dosagecontents"
-    ]["buckets"].map((el) => {
-      return {
-        key: [el.key, el.key],
-        key_as_string: `${el.key}|${el.key}`,
-        doc_count: el.doc_count,
-      };
-    });
-    this.dosagecontents = dosagecontents;
-
-    const winelists = search.aggregations["agg-winelists"]["inner"]["result"][
-      "buckets"
-    ].map((el) => {
-      return {
-        key: [el.key, el.name.buckets[0].key],
-        key_as_string: `${el.key}|${el.name.buckets[0].key}`,
-        doc_count: el.doc_count,
-      };
-    });
-    this.winelists = winelists;
-
-    const pairings = search.aggregations["agg-pairings"]["inner"]["result"][
-      "buckets"
-    ].map((el) => {
-      return {
-        key: [el.key, el.name.buckets[0].key],
-        key_as_string: `${el.key}|${el.name.buckets[0].key}`,
-        doc_count: el.doc_count,
-      };
-    });
-    this.pairings = pairings;
-
-    const brandId = this.$route.query.brands;
-    const regionId = this.$route.query.regions;
-    const pairingId = this.$route.query.pairings;
-    const agingId = this.$route.query.agings;
-    const philosophyId = this.$route.query.philosophies;
-    const sizeId = this.$route.query.sizes;
-    const dosagecontentId = this.$route.query.dosagecontent;
-    const categoryId = this.$route.query.categories;
-    const winelistsId = this.$route.query.winelists;
-    const awardId = this.$route.query.awards;
-    const vintageId = this.$route.query.vintages;
-    const priceFrom = this.$route.query.price_from;
-    const priceTo = this.$route.query.price_to;
-
-    const allSelections = [
-      "favourite",
-      "rarewine",
-      "foreveryday",
-      "artisanal",
-      "unusualvariety",
-      "isnew",
-      "togift",
-      "inpromotion",
-      "topsale",
-    ];
-    const activeSelections = Object.keys(this.$route.query).filter((el) =>
-      allSelections.includes(el)
-    );
-
-    this.activeSelections = activeSelections;
-
-    this.view.brand = brandId
-      ? {
-          key: brandId,
-          name: brands.find((x) => x.key[0] == brandId).key[1],
-          field: "brands",
-        }
-      : null;
-    this.view.region = regionId
-      ? {
-          key: regionId,
-          name: regions.find((x) => x.key[0] == regionId).key[1],
-          field: "regions",
-        }
-      : null;
-
-    this.view.pairing = pairingId
-      ? {
-          key: pairingId,
-          name: pairings.find((x) => x.key[0] == pairingId).key[1],
-          field: "pairings",
-        }
-      : null;
-    this.view.aging = agingId
-      ? {
-          key: agingId,
-          name: agings.find((x) => x.key[0] == agingId).key[1],
-          field: "agings",
-        }
-      : null;
-
-    this.view.philosophy = philosophyId
-      ? {
-          key: philosophyId,
-          name: philosophies.find((x) => x.key[0] == philosophyId).key[1],
-          field: "philosophies",
-        }
-      : null;
-    this.view.size = sizeId
-      ? {
-          key: sizeId,
-          name: sizes.find((x) => x.key[0] == sizeId).key[1],
-          field: "sizes",
-        }
-      : null;
-
-    this.view.dosagecontent = dosagecontentId
-      ? {
-          key: dosagecontentId,
-          name: dosagecontents.find((x) => x.key[0] == dosagecontentId).key[1],
-          field: "dosagecontents",
-        }
-      : null;
-
-    this.view.category = categoryId
-      ? {
-          key: categoryId,
-          name: categories.find((x) => x.key[0] == categoryId).key[1],
-          field: "categories",
-        }
-      : null;
-
-    this.view.winelists = winelistsId
-      ? {
-          key: winelistsId,
-          name: winelists.find((x) => x.key[0] == winelistsId).key[1],
-          field: "winelists",
-        }
-      : null;
-
-    this.view.award = awardId
-      ? {
-          key: awardId,
-          name: awards.find((x) => x.key[0] == awardId).key[1],
-          field: "awards",
-        }
-      : null;
-    this.view.vintage = vintageId
-      ? {
-          key: vintageId,
-          name: vintages.find((x) => x.key[0] == vintageId).key[1],
-          field: "vintages",
-        }
-      : null;
-    this.view.priceFrom = priceFrom
-      ? {
-          key: "priceFrom",
-          name: "From " + priceFrom,
-          field: "price_from",
-        }
-      : null;
-    this.view.priceTo = priceTo
-      ? {
-          key: "priceTo",
-          name: "To " + priceTo,
-          field: "price_to",
-        }
-      : null;
-
-    this.loading = false;
-  },
-};
-</script>
 
 <style scoped>
 :deep(.dropdown-menu.dropdown-menu-right.show) {

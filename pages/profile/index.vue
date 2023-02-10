@@ -1,9 +1,9 @@
-<template>
-<div>Profile Index page</div>
-</template>
-
 <script>
 </script>
+
+<template>
+  <div>Profile Index page</div>
+</template>
 
 <style scoped>
 

@@ -17,6 +17,7 @@ import artisanalIcon from '~/assets/svg/selections/artisanal.svg'
 import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
 import { useCustomer } from '~/store/customer'
 import { pick } from '~/utilities/arrays'
+import { SweetAlertToast } from '~/utilities/Swal'
 
 export default {
   props: ['product'],
@@ -73,7 +74,6 @@ export default {
 
     /* return; */
     this.data = data.data.products.edges[0].node
-
     this.price = this.data.variants.nodes[0].price
     this.metaField = JSON.parse(this.data.metafield1.value)
 
@@ -139,12 +139,25 @@ export default {
     isOnSale() {
       return Number(this.data.variants.nodes[0].compareAtPriceV2.amount) > Number(this.data.variants.nodes[0].priceV2.amount) || this.availableFeatures.includes('inpromotion')
     },
+    canAddMore() {
+      return this.data.totalInventory - this.cartQuantity > 0
+    },
   },
   methods: {
     getPercent,
     getLocaleFromCurrencyCode,
     async addToUserCart() {
       this.isOpen = true
+
+      if (!this.canAddMore) {
+        await SweetAlertToast.fire({
+          icon: 'warning',
+          text: this.$i18n.t('common.feedback.KO.addToCartReachLimit'),
+        })
+        return
+      }
+
+      const totalInventory = this.data.totalInventory
       const productVariantId = this.data.variants.nodes[0].id
       const amount = Number(this.data.variants.nodes[0].price)
       const amountFullPrice = Number(
@@ -162,6 +175,7 @@ export default {
         tag,
         image,
         title,
+        totalInventory,
       })
       this.flashMessage.show({
         status: '',
@@ -322,7 +336,10 @@ export default {
                       <span class="cmw-m-auto cmw-text-sm">{{ cartQuantity }}</span>
                     </div>
                     <button
-                      class="cmw-flex cmw-transition-colors cmw-w-[50px] cmw-h-[50px] cmw-bg-primary-400 cmw-rounded-r hover:(cmw-bg-primary)"
+                      class="cmw-flex cmw-transition-colors cmw-w-[50px] cmw-h-[50px] cmw-bg-primary-400 cmw-rounded-r
+                        hover:(cmw-bg-primary)
+                        disabled:(cmw-bg-primary-100 cmw-cursor-not-allowed)"
+                      :disabled="!canAddMore"
                       @click="addToUserCart"
                     >
                       <VueSvgIcon class="cmw-m-auto" :data="addIcon" width="14" height="14" color="white" />
@@ -353,7 +370,7 @@ export default {
           <div class="pt-2">
             <b-tabs content-class="mt-4" justified>
               <b-tab
-                v-if="data.descriptionHtml != ''"
+                v-if="data.descriptionHtml !== ''"
                 :title="$t('product.description')"
               >
                 <div v-html="data.descriptionHtml" />
@@ -393,7 +410,7 @@ export default {
                 </div>
               </b-tab>
               <b-tab
-                v-if="$config.STORE != 'WILDVIGNERON'"
+                v-if="$config.STORE !== 'WILDVIGNERON'"
                 :title="$t('product.awardsAndAcknowledgments')"
               >
                 <table
