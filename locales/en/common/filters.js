@@ -9,6 +9,7 @@ export default {
       },
     },
     sort: {
+      prefix: 'Sorted by: ',
       mostRecent: 'Most recent',
       lessRecent: 'Less recent',
       lowestPrice: 'Lowest price',

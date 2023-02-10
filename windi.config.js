@@ -85,6 +85,8 @@ export default defineConfig({
         'phone-small': '320px',
         'phone-md': '375px',
         'phone': '412px',
+        'sm': '640px',
+        'md': '768px',
         'lg': '992px',
         'desktop': '1024px',
         'desktop-wide': '1280px',

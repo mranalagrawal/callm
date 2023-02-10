@@ -1,0 +1,21 @@
+query getArticles(
+  $lang: LanguageCode!
+  $first: Int = 10,
+  $query: String = "tag:undefined"
+) @inContext(language: $lang) {
+  articles(first: $first, query: $query) {
+    nodes {
+      title
+      handle
+      id
+      contentHtml
+      image {
+        url
+      }
+      details: metafield(namespace: "custom", key: "details") {
+        value
+      }
+    }
+  }
+}
+

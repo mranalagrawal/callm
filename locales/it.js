@@ -18,6 +18,8 @@ export default {
       requestAssistance: 'Richiesta di assistenza',
       reorderProducts: 'Riordina Prodotti',
       addAddress: 'Aggiungi indirizzo',
+      emptyCart: 'Svuota Carrello',
+      continueShopping: 'Continua gli acquisti',
     },
   },
   loading: 'Recuperando i dati...',
@@ -32,7 +34,12 @@ export default {
   recentlySeen: 'Visti di ricente',
   sameProducer: 'Dallo stesso produttore',
   viewMore: 'Vedi di più',
+  home: 'Home',
   cart: 'Carrello',
+  cartDetails: 'Dettaglio carrello',
+  continueShopping: 'Vuoi aggiungere altri prodotti alla tua spesa?',
+  discountCode: 'Se hai un <strong>codice sconto</strong> potrai inserirlo in seguito, prima del pagamento.',
+  shippingCost: 'Le <strong>spese di spedizione</strong> verranno aggiunte alla cassa, dopo aver scelto la modalità.',
   cartTotal: 'Totale Ordine',
   createYourAccount: 'Crea account',
   city: 'Città',
@@ -158,6 +165,9 @@ export default {
     newPassword: 'Nuova password',
     confirmPassword: 'Conferma password',
   },
+  collections: {
+    breadcrumb: 'Tutte le Selezioni',
+  },
   selections: {
     favourite: 'Favoriti da Callmewine',
     rarewine: 'Vini rari',
@@ -241,7 +251,7 @@ export default {
     quote: 'Citazione',
     recommendedByCallmewine: 'Consigliato da Callmewine',
     mainWines: 'Vini principali',
-    foundation: 'Anno di produzione',
+    foundation: 'Anno Fondazione',
     vineyardHectares: 'Ettari vitati',
     ownGrapes: 'Proprietà',
     annualProduction: 'Produzione annuale',
@@ -256,6 +266,7 @@ export default {
     vinification: 'Vinificazione',
     refinement: 'Raffinamento',
     additionalNotes: 'Note addizionali',
+    proprietaryGrapes: 'uve di proprietà',
   },
   validations: {
     password: {

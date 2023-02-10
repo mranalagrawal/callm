@@ -15,6 +15,8 @@ import * as ProductVariantType from '~/types/productVariant'
 import { isObject } from '~/utilities/validators'
 import { pick } from '~/utilities/arrays'
 import { useCustomer } from '~/store/customer'
+import { stripHtml } from '~/utilities/strings'
+import { SweetAlertToast } from '~/utilities/Swal'
 
 // noinspection JSUnusedGlobalSymbols
 export default {
@@ -36,7 +38,7 @@ export default {
     const features = markRaw(['favourite', 'isnew', 'inpromotion', 'foreveryday', 'togift', 'unusualvariety', 'rarewine', 'artisanal', 'organic', 'topsale'])
     const isOpen = ref(false)
 
-    return { wishlistArr, heartIcon, heartFullIcon, cartIcon, emailIcon, addIcon, subtractIcon, features, isOpen, handleWishlist }
+    return { wishlistArr, heartIcon, heartFullIcon, cartIcon, emailIcon, addIcon, subtractIcon, features, isOpen, handleWishlist, stripHtml }
   },
   computed: {
     ...mapState('userCart', {
@@ -48,6 +50,9 @@ export default {
     },
     isAvailableForSale() {
       return this.product._source.quantity[this.$config.STORE] > 0
+    },
+    canAddMore() {
+      return this.product._source.quantity[this.$config.STORE] - this.cartQuantity > 0
     },
     isOnCart() {
       return this.userCart.find(lineItem => lineItem.productVariantId === `gid://shopify/ProductVariant/${this.product._source.variantId[this.$config.STORE]}`)
@@ -94,11 +99,17 @@ export default {
   },
   methods: {
     getLocaleFromCurrencyCode,
-    stripHtml(str) {
-      return str.replace(/<\/?[^>]+(>|$)/g, '')
-    },
     async addToUserCart() {
       this.isOpen = true
+
+      if (!this.canAddMore) {
+        await SweetAlertToast.fire({
+          icon: 'warning',
+          text: this.$i18n.t('common.feedback.KO.addToCartReachLimit'),
+        })
+        return
+      }
+
       const productVariantId
         = `gid://shopify/ProductVariant/${
         this.product._source.variantId[this.$config.STORE]}`
@@ -278,7 +289,10 @@ hover:cmw-shadow-elevation"
               <span class="cmw-m-auto cmw-text-sm">{{ cartQuantity }}</span>
             </div>
             <button
-              class="cmw-flex cmw-transition-colors cmw-w-[50px] cmw-h-[50px] cmw-bg-primary-400 cmw-rounded-r hover:(cmw-bg-primary)"
+              class="cmw-flex cmw-transition-colors cmw-w-[50px] cmw-h-[50px] cmw-bg-primary-400 cmw-rounded-r
+              hover:(cmw-bg-primary)
+              disabled:(cmw-bg-primary-100 cmw-cursor-not-allowed)"
+              :disabled="!canAddMore"
               @click="addToUserCart"
             >
               <VueSvgIcon class="cmw-m-auto" :data="addIcon" width="14" height="14" color="white" />

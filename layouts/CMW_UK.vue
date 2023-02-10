@@ -44,6 +44,7 @@ export default {
 
 <style scoped>
 .cmw-main {
+  width: 100vw;
   padding-top: var(--cmw-header-height);
 }
 

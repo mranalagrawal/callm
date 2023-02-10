@@ -13,11 +13,11 @@ const createTokenQuery = (email, password) => {
         }`,
     variables: {
       input: {
-        email: email,
-        password: password,
+        email,
+        password,
       },
     },
-  });
-};
+  })
+}
 
-export default createTokenQuery;
+export default createTokenQuery

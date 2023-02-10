@@ -1,0 +1,51 @@
+query getCollection(
+  $lang: LanguageCode!
+  $handle: String,
+  $id: ID,
+) @inContext(language: $lang) {
+  collection(handle: $handle, id: $id) {
+    descriptionHtml
+    handle
+    image {
+      altText
+      height
+      id
+      url
+      width
+    }
+    title
+    products(first: 12) {
+      # How can we reuse the objects on graphql?
+      nodes {
+        id
+        title
+        description
+        handle
+        tags
+        totalInventory
+        createdAt
+        availableForSale
+        variants(first: 10) {
+          nodes {
+            id
+            compareAtPriceV2 {
+              amount
+              currencyCode
+            }
+            price
+          }
+        }
+        images(first: 10) {
+          nodes {
+            url
+          }
+        }
+        metafield1: metafield(namespace: "custom", key: "details") {
+          value
+        }
+      }
+
+    }
+  }
+}
+

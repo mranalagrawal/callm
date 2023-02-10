@@ -1,14 +1,14 @@
-<template>
-  <div>
-    <search-filter :inputParameters="$route.query" />
-  </div>
-</template>
-
 <script>
 export default {
-  scrollToTop: true,
   layout(context) {
-    return context.$config.STORE;
+    return context.$config.STORE
   },
-};
+  scrollToTop: true,
+}
 </script>
+
+<template>
+  <div>
+    <search-filter :input-parameters="$route.query" />
+  </div>
+</template>

@@ -1,16 +1,16 @@
 export const state = () => ({
   cart: null,
-});
+})
 
 export const mutations = {
   setCart(state, cart) {
-    state.cart = cart;
+    state.cart = cart
   },
   removeLineFromCart(state, lineId) {
     state.cart.lines.edges.splice(
-      state.cart.lines.edges.findIndex((el) => el.node.id == lineId),
-      1
-    );
+      state.cart.lines.edges.findIndex(el => el.node.id == lineId),
+      1,
+    )
     /* state.list.splice(state.list.indexOf(todo), 1); */
   },
   /*   add(state, text) {
@@ -25,4 +25,4 @@ export const mutations = {
   toggle(state, todo) {
     todo.done = !todo.done;
   }, */
-};
+}

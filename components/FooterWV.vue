@@ -1,8 +1,44 @@
+<script>
+export default {
+  data() {
+    return {
+      data: null,
+      info: null,
+      newsletter: false,
+      marketing: false,
+    }
+  },
+  async fetch() {
+    let lang = ''
+    if (this.$i18n.locale == 'en')
+      lang = 'en-gb'
+    else
+      lang = 'it-it'
+
+    const response = await this.$prismic.api.getSingle('wv_footer', {
+      lang,
+    })
+    const data = response.data.body
+    this.data = data
+
+    const responseInfo = await this.$prismic.api.getSingle('wv_footer-info', {
+      lang,
+    })
+    const info = responseInfo.data
+
+    this.info = info
+  },
+  watch: {
+    '$i18n.locale': '$fetch',
+  },
+}
+</script>
+
 <template>
   <div class="container-fluid pt-5 mt-5 px-0" style="background: #f8f8f8">
     <div
-      class="container-fluid px-md-5"
       v-if="$config.STORE !== 'WILDVIGNERON'"
+      class="container-fluid px-md-5"
     >
       <div class="row">
         <div class="col-12">
@@ -11,8 +47,8 @@
           </p>
         </div>
       </div>
-      <div class="row d-md-none" v-if="data">
-        <div class="col-12" v-for="item in data" :key="item.id">
+      <div v-if="data" class="row d-md-none">
+        <div v-for="item in data" :key="item.id" class="col-12">
           <nuxt-link
             :to="item.primary.link"
             class="text-uppercase primary-title"
@@ -20,11 +56,11 @@
             {{ item.primary.title }}
           </nuxt-link>
 
-          <hr />
+          <hr>
         </div>
       </div>
-      <div class="row d-none d-md-flex" v-if="data">
-        <div class="col" v-for="item in data" :key="item.id">
+      <div v-if="data" class="row d-none d-md-flex">
+        <div v-for="item in data" :key="item.id" class="col">
           <p class="" style="margin-bottom: 36px">
             <nuxt-link
               :to="item.primary.link"
@@ -35,14 +71,15 @@
             </nuxt-link>
           </p>
           <p
-            class="pb-0"
             v-for="link in item.items"
             :key="`inner_${link.name}`"
+            class="pb-0"
           >
             <nuxt-link
               :to="link.link"
               class="text-decoration-none secondary-title"
-              >{{ link.name }}
+            >
+              {{ link.name }}
             </nuxt-link>
           </p>
         </div>
@@ -54,21 +91,23 @@
       class="container-fluid bg-dark-primary text-light-footer px-md-5 py-5 mt-5"
     >
       <div
-        class="row justify-content-end"
         v-if="$config.STORE != 'WILDVIGNERON'"
+        class="row justify-content-end"
       >
         <nuxt-link
           class="text-decoration-none text-white fs-0875 mr-3"
           :to="switchLocalePath('it')"
           :class="$i18n.locale == 'it' ? 'font-weight-bold' : ''"
-          >IT</nuxt-link
         >
+          IT
+        </nuxt-link>
         <nuxt-link
           class="text-decoration-none text-white fs-0875 mr-3"
           :to="switchLocalePath('en')"
           :class="$i18n.locale == 'en' ? 'font-weight-bold' : ''"
-          >EN</nuxt-link
         >
+          EN
+        </nuxt-link>
       </div>
       <div class="row">
         <div class="col-12">
@@ -77,7 +116,7 @@
             class="img-fluid"
             width="180px"
             alt=""
-          />
+          >
           <p class="mt-2 fs-14">
             {{ info.description }}
           </p>
@@ -89,7 +128,7 @@
             <i
               class="fal fa-envelope mr-2 text-white"
               style="font-size: 18px"
-            ></i>
+            />
             Newsletter
           </p>
           <p class="">
@@ -102,10 +141,10 @@
             >
               <div class="col-7 col-md-10">
                 <input
+                  id=""
                   type="email"
                   class="form-control bg-transparent border-0"
-                  id=""
-                />
+                >
               </div>
               <div class="col-5 col-md-2 px-md-1 text-right">
                 <button
@@ -119,37 +158,31 @@
               <div class="col-12">
                 <div class="custom-control form-control-lg custom-checkbox">
                   <input
-                    type="checkbox"
-                    class="custom-control-input"
                     id="customCheck1"
                     v-model="newsletter"
-                  />
+                    type="checkbox"
+                    class="custom-control-input"
+                  >
                   <label
                     class="custom-control-label fs-0875 pl-3"
                     for="customCheck1"
-                    >{{ info.first_check }}
-                    <a href="#" class="text-decoration-none text-white"
-                      >Privacy Policy</a
-                    ></label
-                  >
+                  >{{ info.first_check }}
+                    <a href="#" class="text-decoration-none text-white">Privacy Policy</a></label>
                 </div>
               </div>
               <div v-show="newsletter" class="col-12 mt-3">
                 <div class="custom-control form-control-lg custom-checkbox">
                   <input
-                    type="checkbox"
-                    class="custom-control-input"
                     id="customCheck2"
                     v-model="marketing"
-                  />
+                    type="checkbox"
+                    class="custom-control-input"
+                  >
                   <label
                     class="custom-control-label fs-0875 pl-3"
                     for="customCheck2"
-                    >{{ info.second_check }}
-                    <a href="#" class="text-decoration-none text-white"
-                      >Privacy Policy</a
-                    ></label
-                  >
+                  >{{ info.second_check }}
+                    <a href="#" class="text-decoration-none text-white">Privacy Policy</a></label>
                 </div>
               </div>
             </div>
@@ -164,8 +197,9 @@
               <nuxt-link
                 :to="localePath('/about-us')"
                 class="text-decoration-none text-white"
-                >{{ $t("footer.who") }}</nuxt-link
               >
+                {{ $t("footer.who") }}
+              </nuxt-link>
             </div>
             <div class="col-12 col-lg-6 mb-5">
               <p class="h5 mb-4" style="font-weight: 400">
@@ -174,92 +208,97 @@
               <nuxt-link
                 :to="localePath('/shipping')"
                 class="text-decoration-none text-white d-block mb-2"
-                >{{ $t("footer.shipping") }}</nuxt-link
               >
+                {{ $t("footer.shipping") }}
+              </nuxt-link>
               <nuxt-link
                 :to="localePath('/payments')"
                 class="text-decoration-none text-white d-block mb-2"
-                >{{ $t("footer.payments") }}</nuxt-link
               >
+                {{ $t("footer.payments") }}
+              </nuxt-link>
               <nuxt-link
                 :to="localePath('/terms-of-sales')"
                 class="text-decoration-none text-white d-block mb-2"
-                >{{ $t("footer.termsOfSales") }}</nuxt-link
               >
+                {{ $t("footer.termsOfSales") }}
+              </nuxt-link>
               <nuxt-link
                 :to="localePath('/privacy-policy')"
                 class="text-decoration-none text-white d-block mb-2"
-                >Privacy policy</nuxt-link
               >
+                Privacy policy
+              </nuxt-link>
               <nuxt-link
                 :to="localePath('/cookie-policy')"
                 class="text-decoration-none text-white d-block mb-2"
-                >Cookie policy</nuxt-link
               >
+                Cookie policy
+              </nuxt-link>
               <nuxt-link
                 :to="localePath('/contact')"
                 class="text-decoration-none text-white d-block mb-2"
-                >{{ $t("footer.contacts") }}</nuxt-link
               >
+                {{ $t("footer.contacts") }}
+              </nuxt-link>
             </div>
           </div>
         </div>
       </div>
 
-      <hr class="separator" />
+      <hr class="separator">
 
       <div class="row">
         <div class="col-12 text-center">
-          <span class="payment"
-            ><i
-              class="fal fa-wallet text-white mr-2"
-              style="font-size: 24px"
-            ></i
-            >{{ $t("footer.paymentMethods") }}</span
-          >
+          <span class="payment"><i
+            class="fal fa-wallet text-white mr-2"
+            style="font-size: 24px"
+          />{{ $t("footer.paymentMethods") }}</span>
           <img
             src="../assets/images/american-express.png"
             width="65px"
             height="65px"
             style="margin: 0px 2px"
-          />
+          >
           <img
             src="../assets/images/mastercard.png"
             width="65px"
             height="65px"
             style="margin: 0px 2px"
-          />
+          >
           <img
             src="../assets/images/visa.png"
             width="65px"
             height="65px"
             style="margin: 0px 2px"
-          />
+          >
           <img
             src="../assets/images/paypal.png"
             width="65px"
             height="65px"
             style="margin: 0px 2px"
-          />
+          >
           <img
             src="../assets/images/bonifico.png"
             width="65px"
             height="65px"
             style="margin: 0px 2px"
-          />
+          >
           <img
             src="../assets/images/comodo.png"
             width="65px"
             height="65px"
             style="margin: 0px 2px"
-          />
+          >
         </div>
       </div>
 
-      <hr class="separator" />
+      <hr class="separator">
       <div class="row justify-content-center mt-4">
         <div class="col-12 col-md-10 text-center px-4">
-          <p class="credit">{{ info.info }}</p>
+          <p class="credit">
+            {{ info.info }}
+          </p>
         </div>
       </div>
     </div>
@@ -353,39 +392,3 @@
   border-color: #add3d1;
 }
 </style>
-
-<script>
-export default {
-  data() {
-    return {
-      data: null,
-      info: null,
-      newsletter: false,
-      marketing: false,
-    };
-  },
-  watch: {
-    "$i18n.locale": "$fetch",
-  },
-  async fetch() {
-    let lang = "";
-    if (this.$i18n.locale == "en") {
-      lang = "en-gb";
-    } else {
-      lang = "it-it";
-    }
-    const response = await this.$prismic.api.getSingle("wv_footer", {
-      lang: lang,
-    });
-    const data = response.data.body;
-    this.data = data;
-
-    const responseInfo = await this.$prismic.api.getSingle("wv_footer-info", {
-      lang: lang,
-    });
-    const info = responseInfo.data;
-
-    this.info = info;
-  },
-};
-</script>

@@ -1,80 +1,13 @@
-<template>
-  <div class="container-fluid container-large px-md-3 my-5">
-    <div class="row">
-      <!-- <div class="col-12 text-center" v-if="data">
-        <h3 class="font-weight-bold text-dark-primary">Collections</h3>
-      </div> -->
-
-      <div class="col-12 py-4" v-if="data">
-        <VueSlickCarousel v-bind="settings">
-          <div v-for="(collection, i) in data" :key="i">
-            <div
-              v-if="collection.node.image"
-              class="card collection d-flex justify-content-center align-items-center"
-              :style="{
-                backgroundImage:
-                  'linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)),url(' +
-                  collection.node.image.url +
-                  ')',
-              }"
-            >
-              <span
-                class="badge badge-pill badge-light-secondary mx-1 collection-badge px-3 py-1 font-weight-normal"
-              >
-                SELEZIONE
-              </span>
-              <nuxt-link
-                :to="`selections/${collection.node.handle}`"
-                class="text-center text-decoration-none"
-              >
-                <p class="text-white h4">{{ collection.node.title }}</p>
-              </nuxt-link>
-            </div>
-            <div
-              v-else
-              class="card collection d-flex justify-content-center align-items-center bg-dark"
-            >
-              <span
-                class="badge badge-pill badge-light-secondary mx-1 collection-badge px-3 py-1 font-weight-normal"
-              >
-                SELEZIONE
-              </span>
-              <nuxt-link
-                :to="`selections/${collection.node.handle}`"
-                class="text-center text-decoration-none"
-              >
-                <p class="text-white h4">{{ collection.node.title }}</p>
-              </nuxt-link>
-            </div>
-          </div>
-        </VueSlickCarousel>
-      </div>
-    </div>
-    <div class="row mt-5">
-      <div class="col-12 text-center">
-        <nuxt-link
-          :to="localePath('/selections')"
-          class="btn px-5 py-2 text-uppercase view-more font-weight-bold"
-          >{{ $t("viewMore") }}</nuxt-link
-        >
-      </div>
-    </div>
-  </div>
-</template>
-
 <script>
-import { queryAllCollections } from "../../utilities/productQueries";
+import VueSlickCarousel from 'vue-slick-carousel'
+import { queryAllCollections } from '../../utilities/productQueries'
 
-import VueSlickCarousel from "vue-slick-carousel";
 // optional style for arrows & dots
-import "vue-slick-carousel/dist/vue-slick-carousel.css";
-import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
-import ProductCardVertical from "../ProductCardVertical.vue";
+import 'vue-slick-carousel/dist/vue-slick-carousel.css'
+import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
+import ProductCardVertical from '../ProductCardVertical.vue'
 
 export default {
-  watch: {
-    "$i18n.locale": "$fetch",
-  },
   components: { ProductCardVertical, VueSlickCarousel },
   data: () => ({
     data: null,
@@ -108,35 +41,107 @@ export default {
     },
   }),
   async fetch() {
-    const GRAPHQL_URL = this.$config.DOMAIN;
+    const GRAPHQL_URL = this.$config.DOMAIN
 
-    const productQuery = queryAllCollections(this.$i18n.locale.toUpperCase());
+    const productQuery = queryAllCollections(this.$i18n.locale.toUpperCase())
 
     const GRAPHQL_BODY = () => {
       return {
         async: true,
         crossDomain: true,
-        method: "POST",
+        method: 'POST',
         headers: {
-          "X-Shopify-Storefront-Access-Token":
+          'X-Shopify-Storefront-Access-Token':
             this.$config.STOREFRONT_ACCESS_TOKEN,
-          "Content-Type": "application/graphql",
+          'Content-Type': 'application/graphql',
         },
         body: productQuery,
-      };
-    };
-    const response = await fetch(GRAPHQL_URL, GRAPHQL_BODY()).then((res) =>
-      res.json()
-    );
+      }
+    }
+    const response = await fetch(GRAPHQL_URL, GRAPHQL_BODY()).then(res =>
+      res.json(),
+    )
 
     const responseFiltered = response.data.collections.edges.filter(
-      (el) => el.node.title != "home shelf 1" && el.node.title != "home shelf 2"
-    );
+      el => el.node.title != 'home shelf 1' && el.node.title != 'home shelf 2',
+    )
 
-    this.data = responseFiltered;
+    this.data = responseFiltered
   },
-};
+  watch: {
+    '$i18n.locale': '$fetch',
+  },
+}
 </script>
+
+<template>
+  <div class="container-fluid container-large px-md-3 my-5">
+    <div class="row">
+      <!-- <div class="col-12 text-center" v-if="data">
+        <h3 class="font-weight-bold text-dark-primary">Collections</h3>
+      </div> -->
+
+      <div v-if="data" class="col-12 py-4">
+        <VueSlickCarousel v-bind="settings">
+          <div v-for="(collection, i) in data" :key="i">
+            <div
+              v-if="collection.node.image"
+              class="card collection d-flex justify-content-center align-items-center"
+              :style="{
+                backgroundImage:
+                  `linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)),url(${
+                    collection.node.image.url
+                  })`,
+              }"
+            >
+              <span
+                class="badge badge-pill badge-light-secondary mx-1 collection-badge px-3 py-1 font-weight-normal"
+              >
+                SELEZIONE
+              </span>
+              <nuxt-link
+                :to="`selections/${collection.node.handle}`"
+                class="text-center text-decoration-none"
+              >
+                <p class="text-white h4">
+                  {{ collection.node.title }}
+                </p>
+              </nuxt-link>
+            </div>
+            <div
+              v-else
+              class="card collection d-flex justify-content-center align-items-center bg-dark"
+            >
+              <span
+                class="badge badge-pill badge-light-secondary mx-1 collection-badge px-3 py-1 font-weight-normal"
+              >
+                SELEZIONE
+              </span>
+              <nuxt-link
+                :to="`selections/${collection.node.handle}`"
+                class="text-center text-decoration-none"
+              >
+                <p class="text-white h4">
+                  {{ collection.node.title }}
+                </p>
+              </nuxt-link>
+            </div>
+          </div>
+        </VueSlickCarousel>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-12 text-center">
+        <nuxt-link
+          :to="localePath('/selections')"
+          class="btn px-5 py-2 text-uppercase view-more font-weight-bold"
+        >
+          {{ $t("viewMore") }}
+        </nuxt-link>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .collection {

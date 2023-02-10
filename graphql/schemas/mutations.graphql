@@ -1,4 +1,5 @@
 type Mutation {
+  customerCreate(input: CustomerCreateInput!): CustomerCreatePayload
   customerDefaultAddressUpdate(addressId: ID!, customerAccessToken: String!): CustomerDefaultAddressUpdatePayload
   customerAddressUpdate(address: MailingAddressInput, id: ID!, customerAccessToken: String!): CustomerAddressUpdatePayload
   customerAddressDelete(id: ID!, customerAccessToken: String!): CustomerAddressDeletePayload

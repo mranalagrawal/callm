@@ -1,30 +1,13 @@
-<template>
-  <div>
-    <p v-if="!thirdLevel.marketing_cta" class="mb-2">
-      <!-- Note: on Nuxt 3 this will be handle by the navigation instead so we can properly use <NuxtLink /> -->
-      <button class="menu-link px-2" :style="styled" @click="handleClick(thirdLevel.third_level_link)"><VueSvgIcon
-        v-if="thirdLevel.selection"
-        color="#E6362E"
-        :data="require(`@/assets/svg/selections/${thirdLevel.selection}.svg`)"
-        width="20px"
-        class="img-selection"
-      />{{ thirdLevel.third_level_name }}</button>
-    </p>
-    <Card v-else :bg-url="thirdLevel.marketing_image.url" :title="thirdLevel.third_level_name" :subtitle="thirdLevel.marketing_cta"
-          @click.native="handleClick(thirdLevel.third_level_link)"/>
-  </div>
-</template>
-
 <script>
 export default {
-  props: ["thirdLevel"],
+  props: ['thirdLevel'],
   emits: ['close-banner'],
   computed: {
     styled() {
-      if (this.thirdLevel.third_level_style) {
-        return JSON.parse(this.thirdLevel.third_level_style);
-      }
-      return null;
+      if (this.thirdLevel.third_level_style)
+        return JSON.parse(this.thirdLevel.third_level_style)
+
+      return null
     },
   },
   methods: {
@@ -37,10 +20,31 @@ export default {
       }
       this.$emit('close-banner')
       this.$router.push(this.localeLocation((to)))
-    }
-  }
-};
+    },
+  },
+}
 </script>
+
+<template>
+  <div>
+    <p v-if="!thirdLevel.marketing_cta" class="mb-2">
+      <!-- Note: on Nuxt 3 this will be handle by the navigation instead so we can properly use <NuxtLink /> -->
+      <button class="menu-link px-2" :style="styled" @click="handleClick(thirdLevel.third_level_link)">
+        <VueSvgIcon
+          v-if="thirdLevel.selection"
+          color="#E6362E"
+          :data="require(`@/assets/svg/selections/${thirdLevel.selection}.svg`)"
+          width="20px"
+          class="img-selection"
+        />{{ thirdLevel.third_level_name }}
+      </button>
+    </p>
+    <Card
+      v-else :bg-url="thirdLevel.marketing_image.url" :title="thirdLevel.third_level_name" :subtitle="thirdLevel.marketing_cta"
+      @click.native="handleClick(thirdLevel.third_level_link)"
+    />
+  </div>
+</template>
 
 <style scoped>
 .menu-link {

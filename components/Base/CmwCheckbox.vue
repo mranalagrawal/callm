@@ -15,7 +15,6 @@ export default {
       required: true,
     },
     checked: Boolean,
-    errorMsg: { type: String },
     isRequired: { type: Boolean },
   },
   emits: ['change'],
@@ -38,7 +37,7 @@ export default {
   >
     <div class="cmw-flex cmw-gap-6 cmw-my-6 cmw-text-left">
       <div class="cmw-relative cmw-flex cmw-items-start cmw-gap-2">
-        <span class="cmw-w-[22px] cmw-h-[22px]" />
+        <span class="cmw-w-[22px] cmw-h-[22px] cmw-flex-shrink-0" />
         <input
           v-bind="$attrs"
           :id="`${id}-checkbox`"
@@ -59,7 +58,7 @@ export default {
         </label>
       </div>
     </div>
-    <span v-if="!!errors.length" class="text-error" v-text="errorMsg" />
+    <span v-if="!!errors.length" class="cmw-block cmw-relative cmw-top-[-1rem] cmw-text-sm cmw-text-error cmw-pl-[30px]" v-text="errors[0]" />
   </ValidationProvider>
 </template>
 

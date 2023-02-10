@@ -97,10 +97,10 @@ export const getUserOrdersQuery = (token, locale) => `query @inContext(language:
             }
         }
     }
-}`;
+}`
 
 export async function getUserOrders(domain, access_token, customerAccessToken, locale) {
-  const ordersQuery = getUserOrdersQuery(customerAccessToken, locale);
+  const ordersQuery = getUserOrdersQuery(customerAccessToken, locale)
   const GRAPHQL_BODY = {
     async: true,
     crossDomain: true,
@@ -110,11 +110,11 @@ export async function getUserOrders(domain, access_token, customerAccessToken, l
       'Content-Type': 'application/graphql',
     },
     body: ordersQuery,
-  };
+  }
 
-  const customer = await fetch(domain, GRAPHQL_BODY);
-  const customerJSON = await customer.json();
-  const orders = await customerJSON.data.customer.orders;
+  const customer = await fetch(domain, GRAPHQL_BODY)
+  const customerJSON = await customer.json()
+  const orders = await customerJSON.data.customer.orders
 
-  return orders;
+  return orders
 }

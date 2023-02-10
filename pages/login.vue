@@ -1,20 +1,20 @@
 <script>
-import LoginForm from '../components/LoginForm.vue';
-import RegisterBox from '../components/RegisterBox.vue';
+import LoginForm from '../components/LoginForm.vue'
+import RegisterBox from '../components/RegisterBox.vue'
 export default {
   components: {
     RegisterBox,
     LoginForm,
   },
   layout(context) {
-    return context.$config.STORE;
+    return context.$config.STORE
   },
   data() {
     return {
       registerIsVisible: false,
-    };
+    }
   },
-};
+}
 </script>
 
 <template>
@@ -27,7 +27,7 @@ export default {
         <h3 class="text-center">
           {{ $t("navbar.user.alreadyRegistered") }}
         </h3>
-        <login-form width="90%" />
+        <LoginForm width="90%" />
         <div class="bg-light py-3 d-lg-none">
           <p
             class="text-center mb-0"
@@ -55,7 +55,7 @@ export default {
         <h3 class="text-center">
           {{ $t("navbar.user.alreadyRegistered") }}
         </h3>
-        <login-form width="90%" />
+        <LoginForm width="90%" />
         <div class="bg-light py-3 d-lg-none">
           <p class="text-center mb-0">
             {{ $t("navbar.user.notRegisteredYet") }}

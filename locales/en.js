@@ -18,6 +18,8 @@ export default {
       requestAssistance: 'Request for assistance',
       reorderProducts: 'Reorder Products',
       addAddress: 'add address',
+      emptyCart: 'Empty Cart',
+      continueShopping: 'Continue shopping',
     },
   },
   loading: 'Fetching data...',
@@ -33,6 +35,11 @@ export default {
   sameProducer: 'From the same producer',
   viewMore: 'View more',
   cart: 'Cart',
+  cartDetails: 'Shopping cart detail',
+  continueShopping: 'Do you want to add other products to your shopping?',
+  discountCode: 'If you have a <strong>discount code</strong> you can enter it later, before paying',
+  shippingCost: 'The <strong>shipping costs</strong> will be added to the checkout, after choosing the method.',
+  home: 'Home',
   cartTotal: 'Cart Total',
   createYourAccount: 'Create your account',
   city: 'City',
@@ -158,6 +165,9 @@ export default {
     newPassword: 'New password',
     confirmPassword: 'Confirm password',
   },
+  collections: {
+    breadcrumb: 'All Selections',
+  },
   selections: {
     favourite: 'Callmewine\'s Favourites',
     rarewine: 'Rare Wines',
@@ -245,7 +255,7 @@ export default {
     quote: 'Quote',
     recommendedByCallmewine: 'Recommended by Callmewine',
     mainWines: 'Main wines',
-    foundation: 'Year of Foundation',
+    foundation: 'Foundation Year',
     vineyardHectares: 'Vineyard hectares',
     ownGrapes: 'Own grapes',
     annualProduction: 'Annual production',
@@ -260,6 +270,7 @@ export default {
     vinification: 'Vinification',
     refinement: 'Refinement',
     additionalNotes: 'Additional Notes',
+    proprietaryGrapes: 'proprietary grapes',
   },
   validations: {
     password: {
