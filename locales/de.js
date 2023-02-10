@@ -165,6 +165,9 @@ export default {
     newPassword: 'Neues Passwort',
     confirmPassword: 'Passwort bestätigen',
   },
+  collections: {
+    breadcrumb: 'Alle Auswahlen',
+  },
   selections: {
     favourite: 'Callmewine-Favoriten',
     rarewine: 'Seltene Weine',

@@ -1,0 +1,20 @@
+query getCollections(
+  $lang: LanguageCode!
+  $first: Int = 10,
+) @inContext(language: $lang) {
+  collections(first: $first) {
+    nodes {
+      descriptionHtml
+      handle
+      image {
+        altText
+        height
+        id
+        url
+        width
+      }
+      title
+    }
+  }
+}
+
