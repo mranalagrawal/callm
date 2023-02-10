@@ -1,3 +1,75 @@
+<script>
+export default {
+  data: () => ({
+    selectedItem: null,
+    selectedContent: null,
+    data: null,
+    promotions: null,
+    marketing: null,
+  }),
+  async fetch() {
+    let lang = ''
+    if (this.$i18n.locale == 'en')
+      lang = 'en-gb'
+    else
+      lang = 'it-it'
+
+    const response = await this.$prismic.api.getSingle('wv_mega-menu', {
+      lang,
+    })
+    const data = response.data.body
+
+    const mapped = data
+      .map((firstLevel) => {
+        const secondLevelNames = [
+          ...new Set(firstLevel.items.map(el => el.secondlevelname)),
+        ]
+        const secondLevels = firstLevel.items.map((el) => {
+          return {
+            name: el.secondlevelname,
+            position: el.second_level_position,
+          }
+        })
+        const secondLevelsSet = [
+          ...new Set(secondLevels.map(el => JSON.stringify(el))),
+        ]
+          .map(el => JSON.parse(el))
+          .sort((a, b) => a.position - b.position)
+
+        const items = secondLevelsSet.map((el) => {
+          const temp = firstLevel.items
+            .filter(x => x.secondlevelname === el.name)
+            .sort((a, b) => a.third_level_position - b.third_level_position)
+
+          return { ...el, items: temp }
+        })
+
+        return {
+          name: firstLevel.primary.group_label,
+          link: firstLevel.primary.first_level_link,
+          position: firstLevel.primary.first_level_position,
+          items,
+        }
+      })
+      .sort((a, b) => a.position - b.position)
+
+    this.data = mapped
+    /* this.selectedItem = mapped[3]; */
+  },
+  watch: {
+    '$i18n.locale': '$fetch',
+  },
+  methods: {
+    onTab(item) {
+      if (item)
+        this.selectedItem = item
+      else
+        this.selectedItem = null
+    },
+  },
+}
+</script>
+
 <template>
   <div
     class="container-fluid position-relative px-md-0"
@@ -5,10 +77,10 @@
   >
     <div class="row shadow-menu">
       <div
-        class="col text-center text-uppercase menu-link"
         v-for="(item, i) in data"
-        @mouseenter="onTab(item)"
         :key="i"
+        class="col text-center text-uppercase menu-link"
+        @mouseenter="onTab(item)"
       >
         {{ item.name }}
       </div>
@@ -16,7 +88,6 @@
 
     <div
       v-if="selectedItem"
-      @mouseleave="onTab(null)"
       class="row bg-white shadow-menu pt-3 pt-md-0"
       style="
         min-height: 300px;
@@ -24,6 +95,7 @@
         max-height: 400px;
         overflow-y: scroll;
       "
+      @mouseleave="onTab(null)"
     >
       <div
         v-for="(secondLevel, i) in selectedItem.items"
@@ -37,85 +109,12 @@
         </p>
         <div v-for="(thirdLevel, j) in secondLevel.items" :key="j">
           <!-- {{ thirdLevel }} -->
-          <ThirdLevel :thirdLevel="thirdLevel" />
+          <ThirdLevel :third-level="thirdLevel" />
         </div>
       </div>
     </div>
   </div>
 </template>
-
-<script>
-export default {
-  watch: {
-    "$i18n.locale": "$fetch",
-  },
-  data: () => ({
-    selectedItem: null,
-    selectedContent: null,
-    data: null,
-    promotions: null,
-    marketing: null,
-  }),
-  methods: {
-    onTab(item) {
-      if (item) {
-        this.selectedItem = item;
-      } else {
-        this.selectedItem = null;
-      }
-    },
-  },
-  async fetch() {
-    let lang = "";
-    if (this.$i18n.locale == "en") {
-      lang = "en-gb";
-    } else {
-      lang = "it-it";
-    }
-    let response = await this.$prismic.api.getSingle("wv_mega-menu", {
-      lang: lang,
-    });
-    let data = response.data.body;
-
-    let mapped = data
-      .map((firstLevel) => {
-        const secondLevelNames = [
-          ...new Set(firstLevel.items.map((el) => el.secondlevelname)),
-        ];
-        const secondLevels = firstLevel.items.map((el) => {
-          return {
-            name: el.secondlevelname,
-            position: el.second_level_position,
-          };
-        });
-        const secondLevelsSet = [
-          ...new Set(secondLevels.map((el) => JSON.stringify(el))),
-        ]
-          .map((el) => JSON.parse(el))
-          .sort((a, b) => a.position - b.position);
-
-        const items = secondLevelsSet.map((el) => {
-          let temp = firstLevel.items
-            .filter((x) => x.secondlevelname === el.name)
-            .sort((a, b) => a.third_level_position - b.third_level_position);
-
-          return { ...el, items: temp };
-        });
-
-        return {
-          name: firstLevel.primary.group_label,
-          link: firstLevel.primary.first_level_link,
-          position: firstLevel.primary.first_level_position,
-          items,
-        };
-      })
-      .sort((a, b) => a.position - b.position);
-
-    this.data = mapped;
-    /* this.selectedItem = mapped[3]; */
-  },
-};
-</script>
 
 <style scoped>
 .img-height {

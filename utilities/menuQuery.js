@@ -10,7 +10,7 @@ const collectionsQuery = `query {
     }
     
     
-}`;
+}`
 
 const menuQuery = `query MyQuery {
     menu(handle: "menu") {
@@ -27,6 +27,6 @@ const menuQuery = `query MyQuery {
     }
 }
 
-`;
+`
 
-export default menuQuery;
+export default menuQuery

@@ -1,17 +1,17 @@
 export const state = () => ({
   userCart: [],
-});
+})
 
 export const mutations = {
   addProduct(state, entry) {
     // find product
     const product = state.userCart.find(
-      (el) => el.productVariantId == entry.productVariantId
-    );
+      el => el.productVariantId === entry.productVariantId,
+    )
 
     // se c'è già
     if (product) {
-      product.quantity = product.quantity + 1;
+      product.quantity = product.quantity + 1
     } else {
       state.userCart.push({
         productVariantId: entry.productVariantId,
@@ -21,49 +21,50 @@ export const mutations = {
         tag: entry.tag,
         image: entry.image,
         title: entry.title,
-      });
+        totalInventory: entry.totalInventory,
+      })
     }
   },
   removeProduct(state, productVariantId) {
     // find product
     const product = state.userCart.find(
-      (el) => el.productVariantId == productVariantId
-    );
+      el => el.productVariantId === productVariantId,
+    )
 
     if (product) {
+      // eslint-disable-next-line curly
       if (product.quantity > 1) {
-        product.quantity = product.quantity - 1;
+        product.quantity = product.quantity - 1
+      // eslint-disable-next-line curly
       } else {
-        state.userCart.splice(state.userCart.indexOf(product), 1);
+        state.userCart.splice(state.userCart.indexOf(product), 1)
       }
-    } else {
-      return;
     }
   },
 
   removeLine(state, productVariantId) {
     const product = state.userCart.find(
-      (el) => el.productVariantId == productVariantId
-    );
-    state.userCart.splice(state.userCart.indexOf(product), 1);
+      el => el.productVariantId === productVariantId,
+    )
+    state.userCart.splice(state.userCart.indexOf(product), 1)
   },
 
   resetCart(state) {
-    state.userCart = [];
+    state.userCart = []
   },
-};
+}
 
 export const getters = {
   cartItems(state) {
     return state.userCart && state.userCart
-      .reduce((t, n) => t + n.quantity, 0);
+      .reduce((t, n) => t + n.quantity, 0)
   },
 
   getCartTotalAmount(state) {
     // FixMe: Frontend should never calculate prices, backend should send the cart amount within an object
     return state.userCart
       .reduce((t, n) => t + n.quantity * n.singleAmount, 0)
-      .toFixed(2);
+      .toFixed(2)
   },
 
   cartTotalAmountObj(state, getters) {
@@ -80,6 +81,6 @@ export const getters = {
 
   cartTotalQuantity(state) {
     return state.userCart
-      .reduce((t, n) => t + n.quantity, 0);
+      .reduce((t, n) => t + n.quantity, 0)
   },
 }

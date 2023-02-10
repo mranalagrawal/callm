@@ -21,6 +21,8 @@ export default {
   },
   methods: {
     async increaseQuantity() {
+      if (this.item.totalInventory === this.userCartQuantity)
+        return
       this.$store.commit('userCart/addProduct', {
         productVariantId: this.item.productVariantId,
       })

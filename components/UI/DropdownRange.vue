@@ -1,3 +1,55 @@
+<script>
+export default {
+  props: ['label', 'min', 'max'],
+  data() {
+    return {
+      visible: false,
+      choosenMin: +this.min,
+      choosenMax: +this.max,
+    }
+  },
+
+  computed: {
+    marginLeft() {
+      const value = (100 * (this.choosenMin - this.min)) / (this.max - this.min)
+      return `${value}%`
+    },
+    width() {
+      const value
+        = (100 * (this.choosenMax - this.choosenMin)) / (this.max - this.min)
+      return `${value}%`
+    },
+  },
+  watch: {
+    min(value) {
+      this.choosenMin = +value
+    },
+    max(value) {
+      this.choosenMax = +value
+    },
+  },
+  methods: {
+    checkIfSwap() {
+      if (+this.choosenMin > +this.choosenMax)
+        [this.choosenMin, this.choosenMax] = [this.choosenMax, this.choosenMin]
+    },
+
+    goto() {
+      const query = Object.assign({}, this.$route.query)
+
+      query.price_from = this.choosenMin
+      query.price_to = this.choosenMax
+      query.page = 1
+
+      this.$router.push({
+        path: 'catalog',
+        query,
+      })
+    },
+  },
+}
+</script>
+
 <template>
   <div class="w-100 d-block">
     <button
@@ -8,7 +60,7 @@
       <i
         class="fal fa-chevron-down text-light-secondary mr-3"
         :class="visible ? 'fa-rotate-180' : ''"
-      ></i>
+      />
     </button>
     <div v-if="visible" class="content mb-5">
       <div class="mt-5 px-2">
@@ -17,112 +69,61 @@
           <span>{{ choosenMax }}</span> -->
           <div class="input-box">
             <input
+              v-model="choosenMin"
               type="number"
               class="form-control bg-white"
               disabled
-              v-model="choosenMin"
               :max="choosenMax"
-              @input="checkIfSwap"
               :min="min"
-            />
+              @input="checkIfSwap"
+            >
           </div>
 
-          <div></div>
+          <div />
           <div class="input-box">
             <input
+              v-model="choosenMax"
               type="number"
               class="form-control bg-white"
               disabled
-              v-model="choosenMax"
               :min="choosenMin"
-              @input="checkIfSwap"
               :max="max"
-            />
+              @input="checkIfSwap"
+            >
           </div>
         </div>
         <div class="py-4">
           <div class="sliders_control my-4">
             <input
               id="start"
+              v-model="choosenMin"
               type="range"
               :min="min"
               :max="max"
-              v-model="choosenMin"
               @change="checkIfSwap"
-            />
+            >
             <input
               id="end"
+              v-model="choosenMax"
               type="range"
               :min="min"
               :max="max"
-              v-model="choosenMax"
               @change="checkIfSwap"
-            />
+            >
             <div
               class="middle"
-              :style="{ marginLeft: marginLeft, width: width }"
-            ></div>
-            <div class="track"></div>
+              :style="{ marginLeft, width }"
+            />
+            <div class="track" />
           </div>
         </div>
       </div>
-      <button class="btn apply px-5" @click="goto">Applica</button>
+      <button class="btn apply px-5" @click="goto">
+        Applica
+      </button>
     </div>
   </div>
 </template>
-
-<script>
-export default {
-  props: ["label", "min", "max"],
-  data() {
-    return {
-      visible: false,
-      choosenMin: +this.min,
-      choosenMax: +this.max,
-    };
-  },
-  watch: {
-    min(value) {
-      this.choosenMin = +value;
-    },
-    max(value) {
-      this.choosenMax = +value;
-    },
-  },
-
-  computed: {
-    marginLeft() {
-      let value = (100 * (this.choosenMin - this.min)) / (this.max - this.min);
-      return value + "%";
-    },
-    width() {
-      let value =
-        (100 * (this.choosenMax - this.choosenMin)) / (this.max - this.min);
-      return value + "%";
-    },
-  },
-  methods: {
-    checkIfSwap() {
-      if (+this.choosenMin > +this.choosenMax) {
-        [this.choosenMin, this.choosenMax] = [this.choosenMax, this.choosenMin];
-      }
-    },
-
-    goto() {
-      const query = Object.assign({}, this.$route.query);
-
-      query["price_from"] = this.choosenMin;
-      query["price_to"] = this.choosenMax;
-      query["page"] = 1;
-
-      this.$router.push({
-        path: "catalog",
-        query: query,
-      });
-    },
-  },
-};
-</script>
 
 <style scoped>
 .apply {

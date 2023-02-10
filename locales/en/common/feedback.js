@@ -18,6 +18,7 @@ export default {
       customerUpdateEmail: 'Your email could not be updated, please try again later',
       customerUpdatePassword: 'Your password could not be updated, please try again later',
       customerUpdateData: 'It was not possible to update your personal data, please try again later',
+      addToCartReachLimit: 'There\'s no more products available',
     },
   },
 }

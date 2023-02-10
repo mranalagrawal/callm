@@ -12,6 +12,7 @@ import { useCustomer } from '~/store/customer'
 import { pick } from '@/utilities/arrays'
 import { isObject } from '~/utilities/validators'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
+import { SweetAlertToast } from '~/utilities/Swal'
 // noinspection JSUnusedGlobalSymbols
 export default {
   name: 'ProductBoxVerticalElastic',
@@ -58,6 +59,9 @@ export default {
     isAvailableForSale() {
       return this.product._source.quantity[this.$config.STORE] > 0
     },
+    canAddMore() {
+      return this.product._source.quantity[this.$config.STORE] - this.cartQuantity > 0
+    },
     isOnCart() {
       return this.userCart.find(lineItem => lineItem.productVariantId === `gid://shopify/ProductVariant/${this.product._source.variantId[this.$config.STORE]}`)
     },
@@ -101,6 +105,16 @@ export default {
     getLocaleFromCurrencyCode,
     async addToUserCart() {
       this.isOpen = true
+
+      if (!this.canAddMore) {
+        await SweetAlertToast.fire({
+          icon: 'warning',
+          text: this.$i18n.t('common.feedback.KO.addToCartReachLimit'),
+        })
+        return
+      }
+
+      const totalInventory = this.product._source.quantity[this.$config.STORE]
       const productVariantId
          = `gid://shopify/ProductVariant/${
          this.product._source.variantId[this.$config.STORE]}`
@@ -119,6 +133,7 @@ export default {
         tag,
         image,
         title,
+        totalInventory,
       })
 
       this.flashMessage.show({
@@ -233,7 +248,10 @@ export default {
             @mouseleave="isOpen = false"
           >
             <button
-              class="cmw-flex cmw-transition-colors cmw-w-[40px] cmw-h-[40px] cmw-bg-primary-400 cmw-rounded-t-sm hover:(cmw-bg-primary)"
+              class="cmw-flex cmw-transition-colors cmw-w-[40px] cmw-h-[40px] cmw-bg-primary-400 cmw-rounded-t-sm
+              hover:(cmw-bg-primary)
+              disabled:(cmw-bg-primary-100 cmw-cursor-not-allowed)"
+              :disabled="!canAddMore"
               @click="addToUserCart"
             >
               <VueSvgIcon class="cmw-m-auto" :data="addIcon" width="14" height="14" color="white" />

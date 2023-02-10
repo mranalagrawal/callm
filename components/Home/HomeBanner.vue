@@ -1,24 +1,60 @@
+<script>
+import locales from '../../locales-mapper'
+
+export default {
+  data() {
+    return {
+      data: null,
+      slide: 0,
+      sliding: null,
+    }
+  },
+  async fetch() {
+    let lang = locales[this.$i18n.locale]
+
+    if (lang == 'en-gb' && this.$config.STORE == 'CMW')
+      lang = 'en-eu'
+
+    const response = await this.$prismic.api.getSingle('home-carousel', {
+      lang,
+    })
+    const data = response.data.body[0].items
+    this.data = data
+  },
+  methods: {
+    onSlideStart(slide) {
+      this.sliding = true
+    },
+    onSlideEnd(slide) {
+      this.sliding = false
+    },
+  },
+}
+</script>
+
 <template>
   <div class="position-relative" style="overflow: hidden">
     <b-carousel
       id="carousel-1"
       v-model="slide"
+      v-if="data"
       :interval="4000"
       :controls="data.length > 1"
       :indicators="data.length > 1"
       background="#ababab"
       style="text-shadow: 1px 1px 2px #333"
+      class="home-carousel d-none d-md-block"
       @sliding-start="onSlideStart"
       @sliding-end="onSlideEnd"
-      class="home-carousel d-none d-md-block"
-      v-if="data"
     >
       <b-carousel-slide
         v-for="(slide, i) in data"
         :key="i"
         :img-src="slide.image.url"
       >
-        <div class="h1 cmw-text-white">{{ slide.text }}</div>
+        <div class="h1 cmw-text-white">
+          {{ slide.text }}
+        </div>
         <div>
           <nuxt-link
             :to="slide.link"
@@ -34,22 +70,24 @@
       id="carousel-2"
       v-model="slide"
       :interval="4000"
+      v-if="data"
       :controls="data.length > 1"
       :indicators="data.length > 1"
       fade
       background="#ababab"
       style="text-shadow: 1px 1px 2px #333"
+      class="home-carousel d-md-none"
       @sliding-start="onSlideStart"
       @sliding-end="onSlideEnd"
-      class="home-carousel d-md-none"
-      v-if="data"
     >
       <b-carousel-slide
         v-for="(slide, i) in data"
         :key="i"
         :img-src="slide.image.mobile.url"
       >
-        <div class="h1 cmw-text-white">{{ slide.text }}</div>
+        <div class="h1 cmw-text-white">
+          {{ slide.text }}
+        </div>
         <div>
           <nuxt-link
             :to="slide.link"
@@ -79,50 +117,15 @@
           fill-rule="evenodd"
         >
           <path
-            d="M-569,148 L-569,20.3662102 C-405.287174,40.8088863 -322.507397,51.1344162 -320.660668,51.3427998 C-138.928633,71.8493163 1.12492311,78.6312979 99.5,71.6887445 C280.371464,58.9242331 494.524628,0 646.701493,0 C762.943373,0 878.040299,7.21186649 989.039971,23.9905006 C1133.50589,42.0303423 1206.6052,51.147121 1208.33933,51.3427998 C1390.07137,71.8493163 1530.12492,78.6312979 1628.5,71.6887445 C1809.37146,58.9242331 2023.52463,0 2175.70149,0 C2294.98992,0 2413.07259,7.59484721 2526.75894,25.3294944 C2664.12368,42.4815314 2733.64864,51.1520231 2735.33933,51.3427998 C2917.07137,71.8493163 3057.12492,78.6312979 3155.5,71.6887445 C3336.37146,58.9242331 3550.52463,0 3702.70149,0 C3861.0824,0 4017.33777,13.3883812 4164,46.1216729 C4165.02494,46.3504264 4246.02494,62.8585339 4407,95.6459954 L4407,95.6459954 L4407,148 L-569,148 Z"
             id="Combined-Shape"
+            d="M-569,148 L-569,20.3662102 C-405.287174,40.8088863 -322.507397,51.1344162 -320.660668,51.3427998 C-138.928633,71.8493163 1.12492311,78.6312979 99.5,71.6887445 C280.371464,58.9242331 494.524628,0 646.701493,0 C762.943373,0 878.040299,7.21186649 989.039971,23.9905006 C1133.50589,42.0303423 1206.6052,51.147121 1208.33933,51.3427998 C1390.07137,71.8493163 1530.12492,78.6312979 1628.5,71.6887445 C1809.37146,58.9242331 2023.52463,0 2175.70149,0 C2294.98992,0 2413.07259,7.59484721 2526.75894,25.3294944 C2664.12368,42.4815314 2733.64864,51.1520231 2735.33933,51.3427998 C2917.07137,71.8493163 3057.12492,78.6312979 3155.5,71.6887445 C3336.37146,58.9242331 3550.52463,0 3702.70149,0 C3861.0824,0 4017.33777,13.3883812 4164,46.1216729 C4165.02494,46.3504264 4246.02494,62.8585339 4407,95.6459954 L4407,95.6459954 L4407,148 L-569,148 Z"
             fill="#fff"
-          ></path>
+          />
         </g>
       </svg>
     </div>
   </div>
 </template>
-
-<script>
-import locales from "../../locales-mapper";
-
-export default {
-  data() {
-    return {
-      data: null,
-      slide: 0,
-      sliding: null,
-    };
-  },
-  async fetch() {
-    let lang = locales[this.$i18n.locale];
-
-    if (lang == "en-gb" && this.$config.STORE == "CMW") {
-      lang = "en-eu";
-    }
-
-    const response = await this.$prismic.api.getSingle("home-carousel", {
-      lang: lang,
-    });
-    const data = response.data.body[0].items;
-    this.data = data;
-  },
-  methods: {
-    onSlideStart(slide) {
-      this.sliding = true;
-    },
-    onSlideEnd(slide) {
-      this.sliding = false;
-    },
-  },
-};
-</script>
 
 <style lang="css" scoped>
 .home-carousel :deep(.carousel-indicators) {

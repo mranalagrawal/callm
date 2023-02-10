@@ -1,18 +1,27 @@
+<script>
+export default {
+  props: ['data'],
+  data() {
+    return {
+      visible: false,
+    }
+  },
+}
+</script>
+
 <template>
   <div class="w-100 d-block">
     <button
-      class="btn d-flex w-100 justify-content-between px-0"
       v-b-toggle="`sidebar_${data.position}`"
+      class="btn d-flex w-100 justify-content-between px-0"
     >
       <span class="small text-dark-secondary text-uppercase">{{
         data.name
       }}</span>
-      <span
-        ><i
-          class="fal fa-chevron-down text-light-secondary mr-3"
-          :class="visible ? 'fa-rotate-180' : ''"
-        ></i
-      ></span>
+      <span><i
+        class="fal fa-chevron-down text-light-secondary mr-3"
+        :class="visible ? 'fa-rotate-180' : ''"
+      /></span>
     </button>
     <b-sidebar
       :id="`sidebar_${data.position}`"
@@ -25,9 +34,9 @@
       <div class="px-3 py-2 mt-5">
         <div>
           <i
-            class="fas fa-chevron-left"
             v-b-toggle="`sidebar_${data.position}`"
-          ></i>
+            class="fas fa-chevron-left"
+          />
         </div>
         <div
           v-for="(secondLevel, i) in data.items"
@@ -43,7 +52,7 @@
             class="py-2"
           >
             <div v-if="!thirdLevel.marketing_cta">
-              <hr class="m-0 mb-3" />
+              <hr class="m-0 mb-3">
               <!-- {{ thirdLevel.third_level_link }} -->
               <nuxt-link
                 :to="`${thirdLevel.third_level_link}`"
@@ -67,12 +76,14 @@
                 "
                 :style="{
                   backgroundImage:
-                    'url(' + thirdLevel.marketing_image.url + ')',
+                    `url(${thirdLevel.marketing_image.url})`,
                 }"
-              ></div>
+              />
 
               <div class="col-9">
-                <p class="mb-0">{{ thirdLevel.third_level_name }}</p>
+                <p class="mb-0">
+                  {{ thirdLevel.third_level_name }}
+                </p>
                 <p class="mb-0 small text-light-secondary">
                   {{ thirdLevel.marketing_cta }}
                 </p>
@@ -87,21 +98,10 @@
         <p>{{ secondLevel.name }}</p>
         {{ secondLevel.items }}
       </div>
-      
+
     </div> -->
   </div>
 </template>
-
-<script>
-export default {
-  props: ["data"],
-  data() {
-    return {
-      visible: false,
-    };
-  },
-};
-</script>
 
 <style scoped>
 :deep(.b-sidebar) {

@@ -1,41 +1,9 @@
-<template>
-  <div class="container-fluid my-5 bg-light py-5" v-if="data">
-    <div class="row py-5 px-0">
-      <div class="col-12 text-center">
-        <h2 class="font-weight-bold text-dark-primary">{{ label }}</h2>
-      </div>
-      <div class="col-12 px-0 py-4" v-if="data">
-        <VueSlickCarousel v-bind="settings" ref="carousel">
-          <div v-for="(item, i) in data" :key="i" class="px-2">
-            <div class="selection-card px-3 text-decoration-none">
-              <img
-                :src="item.icon.url"
-                width="24px"
-                height="24px"
-                class="mr-2"
-                style=""
-                :style="{ filter: 'contrast(0) brightness(5) !important' }"
-              />
-              <nuxt-link
-                :to="item.link"
-                class="text-decoration-none text-white"
-              >
-                {{ item.label }}
-              </nuxt-link>
-            </div>
-          </div>
-        </VueSlickCarousel>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script>
-import VueSlickCarousel from "vue-slick-carousel";
-import "vue-slick-carousel/dist/vue-slick-carousel.css";
+import VueSlickCarousel from 'vue-slick-carousel'
+import 'vue-slick-carousel/dist/vue-slick-carousel.css'
 // optional style for arrows & dots
-import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
-import locales from "../../locales-mapper";
+import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
+import locales from '../../locales-mapper'
 
 export default {
   components: { VueSlickCarousel },
@@ -52,7 +20,7 @@ export default {
       autoplay: true,
       speed: 8000,
       autoplaySpeed: 0,
-      cssEase: "linear",
+      cssEase: 'linear',
       responsive: [
         {
           breakpoint: 1025,
@@ -76,22 +44,55 @@ export default {
     },
   }),
   async fetch() {
-    let lang = locales[this.$i18n.locale];
+    let lang = locales[this.$i18n.locale]
 
-    if (lang == "en-gb" && this.$config.STORE == "CMW") {
-      lang = "en-eu";
-    }
+    if (lang == 'en-gb' && this.$config.STORE == 'CMW')
+      lang = 'en-eu'
 
-    const response = await this.$prismic.api.getSingle("selections", {
-      lang: lang,
-    });
+    const response = await this.$prismic.api.getSingle('selections', {
+      lang,
+    })
 
-    const items = response.data.body[0].items;
-    this.data = items.concat(items).concat(items);
-    this.label = response.data.body[0].primary.label;
+    const items = response.data.body[0].items
+    this.data = items.concat(items).concat(items)
+    this.label = response.data.body[0].primary.label
   },
-};
+}
 </script>
+
+<template>
+  <div v-if="data" class="container-fluid my-5 bg-light py-5">
+    <div class="row py-5 px-0">
+      <div class="col-12 text-center">
+        <h2 class="font-weight-bold text-dark-primary">
+          {{ label }}
+        </h2>
+      </div>
+      <div v-if="data" class="col-12 px-0 py-4">
+        <VueSlickCarousel v-bind="settings" ref="carousel">
+          <div v-for="(item, i) in data" :key="i" class="px-2">
+            <div class="selection-card px-3 text-decoration-none">
+              <img
+                :src="item.icon.url"
+                width="24px"
+                height="24px"
+                class="mr-2"
+                style=""
+                :style="{ filter: 'contrast(0) brightness(5) !important' }"
+              >
+              <nuxt-link
+                :to="item.link"
+                class="text-decoration-none text-white"
+              >
+                {{ item.label }}
+              </nuxt-link>
+            </div>
+          </div>
+        </VueSlickCarousel>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .selection-card {

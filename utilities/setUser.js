@@ -30,7 +30,7 @@ const setUser = (firstName, lastName, email, password, acceptsMarketing) => {
         acceptsMarketing,
       },
     },
-  });
-};
+  })
+}
 
-export default setUser;
+export default setUser

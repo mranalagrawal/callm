@@ -1,3 +1,9 @@
+<script>
+export default {
+  async mounted() {},
+}
+</script>
+
 <template>
   <div class="container mt-5">
     <div class="row">
@@ -7,9 +13,3 @@
     </div>
   </div>
 </template>
-
-<script>
-export default {
-  async mounted() {},
-};
-</script>

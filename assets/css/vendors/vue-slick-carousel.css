@@ -1,0 +1,35 @@
+.custom-arrow {
+  @apply cmw-shadow-md cmw-bg-white cmw-rounded-sm cmw-text-primary-400 cmw-flex;
+}
+
+.custom-arrow.slick-prev:before, .custom-arrow.slick-next:before {
+  content: '';
+}
+
+.custom-arrow.slick-prev, .custom-arrow.slick-next {
+  display: flex;
+  width: 48px;
+  height: 48px;
+  background-color: white;
+  color: theme('colors.primary.400');
+  z-index: 1;
+  box-shadow: 0 0.5rem 1rem rgb(102 101 101 / 50%);
+}
+
+.custom-arrow.slick-prev:hover, .custom-arrow.slick-prev:focus,
+.custom-arrow.slick-next:hover, .custom-arrow.slick-next:focus {
+  background-color: white;
+  color: theme('colors.primary.400');
+}
+
+.custom-arrow.slick-prev {
+  left: -14px;
+}
+
+.custom-arrow.slick-next {
+  right: -14px;
+}
+
+.custom-arrow svg {
+  margin: auto;
+}

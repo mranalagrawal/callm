@@ -73,16 +73,16 @@ export const createCartMutation = (customerAccessToken) => {
     variables: {
       input: {
         buyerIdentity: {
-          countryCode: "UK",
-          customerAccessToken: customerAccessToken,
+          countryCode: 'UK',
+          customerAccessToken,
         },
-        discountCodes: [""],
+        discountCodes: [''],
         lines: [],
-        note: "",
+        note: '',
       },
     },
-  });
-};
+  })
+}
 
 export const addItemMutation = (cartId, lines) => {
   return JSON.stringify({
@@ -92,56 +92,56 @@ export const addItemMutation = (cartId, lines) => {
       }
     }`,
     variables: {
-      cartId: cartId,
-      lines: lines,
+      cartId,
+      lines,
     },
-  });
-};
+  })
+}
 
 export const createCart = async (domain, access_token, user) => {
-  const cartQuery = createCartMutation(user.token);
+  const cartQuery = createCartMutation(user.token)
 
   const GRAPHQL_BODY_USER = {
     async: true,
     crossDomain: true,
-    method: "POST",
+    method: 'POST',
     headers: {
-      "X-Shopify-Storefront-Access-Token": access_token,
-      "Content-Type": "application/json",
+      'X-Shopify-Storefront-Access-Token': access_token,
+      'Content-Type': 'application/json',
     },
     body: cartQuery,
-  };
+  }
 
   const cart = await fetch(domain, GRAPHQL_BODY_USER)
-    .then((res) => res.json())
+    .then(res => res.json())
     .then((res) => {
-      const cartId = res.data.cartCreate.cart.id;
+      const cartId = res.data.cartCreate.cart.id
       if (process.client) {
         /* console.log(res.data.cartCreate.cart, "cartId from create"); */
       }
-      return res.data.cartCreate.cart;
-    });
-  return cart;
-};
+      return res.data.cartCreate.cart
+    })
+  return cart
+}
 
 export const addProductToCart = async (domain, access_token, cartId, lines) => {
-  const cartMutation = addItemMutation(cartId, lines);
+  const cartMutation = addItemMutation(cartId, lines)
 
   const GRAPHQL_BODY_CART = {
     async: true,
     crossDomain: true,
-    method: "POST",
+    method: 'POST',
     headers: {
-      "X-Shopify-Storefront-Access-Token": access_token,
-      "Content-Type": "application/json",
+      'X-Shopify-Storefront-Access-Token': access_token,
+      'Content-Type': 'application/json',
     },
     body: cartMutation,
-  };
+  }
 
-  const res = await fetch(domain, GRAPHQL_BODY_CART).then((res) => res.json());
+  const res = await fetch(domain, GRAPHQL_BODY_CART).then(res => res.json())
 
-  return res.data.cartLinesAdd.cart;
-};
+  return res.data.cartLinesAdd.cart
+}
 
 export const removeItemMutation = (cartId, lineId) => {
   return JSON.stringify({
@@ -216,37 +216,37 @@ export const removeItemMutation = (cartId, lineId) => {
           }
         }`,
     variables: {
-      cartId: cartId,
+      cartId,
       lineIds: lineId,
     },
-  });
-};
+  })
+}
 
 export const removeProductFromCart = async (
   domain,
   access_token,
   cartId,
-  lineId
+  lineId,
 ) => {
-  const cartMutation = removeItemMutation(cartId, lineId);
+  const cartMutation = removeItemMutation(cartId, lineId)
 
   const GRAPHQL_BODY_CART = {
     async: true,
     crossDomain: true,
-    method: "POST",
+    method: 'POST',
     headers: {
-      "X-Shopify-Storefront-Access-Token": access_token,
-      "Content-Type": "application/json",
+      'X-Shopify-Storefront-Access-Token': access_token,
+      'Content-Type': 'application/json',
     },
     body: cartMutation,
-  };
+  }
 
-  const res = await fetch(domain, GRAPHQL_BODY_CART).then((res) => res.json());
+  const res = await fetch(domain, GRAPHQL_BODY_CART).then(res => res.json())
 
-  const cart = res.data.cartLinesRemove.cart;
+  const cart = res.data.cartLinesRemove.cart
 
-  return cart;
-};
+  return cart
+}
 
 export const updateItemMutation = (cartId, lineId, quantity) => {
   return JSON.stringify({
@@ -321,41 +321,41 @@ export const updateItemMutation = (cartId, lineId, quantity) => {
             }
           }`,
     variables: {
-      cartId: cartId,
+      cartId,
       lines: [
         {
           id: lineId,
-          quantity: quantity,
+          quantity,
         },
       ],
     },
-  });
-};
+  })
+}
 
 export const updateItemInCart = async (
   domain,
   access_token,
   lineId,
   cartId,
-  quantity
+  quantity,
 ) => {
-  const cartMutation = updateItemMutation(cartId, lineId, quantity);
+  const cartMutation = updateItemMutation(cartId, lineId, quantity)
 
   const GRAPHQL_BODY_CART = {
     async: true,
     crossDomain: true,
-    method: "POST",
+    method: 'POST',
     headers: {
-      "X-Shopify-Storefront-Access-Token": access_token,
-      "Content-Type": "application/json",
+      'X-Shopify-Storefront-Access-Token': access_token,
+      'Content-Type': 'application/json',
     },
     body: cartMutation,
-  };
+  }
 
-  const res = await fetch(domain, GRAPHQL_BODY_CART).then((res) => res.json());
+  const res = await fetch(domain, GRAPHQL_BODY_CART).then(res => res.json())
 
-  return res.data.cartLinesUpdate.cart;
-};
+  return res.data.cartLinesUpdate.cart
+}
 
 const generalQuery = `
         cart {
@@ -424,4 +424,4 @@ const generalQuery = `
           field
           message
         }
-        `;
+        `

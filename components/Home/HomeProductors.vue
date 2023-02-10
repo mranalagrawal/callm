@@ -1,58 +1,9 @@
-<template>
-  <div class="container-fluid my-5 bg-light py-5">
-    <!-- <div v-for="product in products" :key="product.id">{{ product.title }}</div> -->
-    <div class="row py-5 px-0">
-      <div class="col-12 text-center">
-        <h2>{{ label }}</h2>
-      </div>
-
-      <div class="col-12 px-0 py-4">
-        <VueSlickCarousel v-bind="settingsTop" ref="carousel-top" v-if="data">
-          <div v-for="productor in data" :key="productor.name" class="">
-            <div class="bg-white mx-2 p-1 product-card">
-              <nuxt-link :to="productor.link">
-                <img
-                  :src="productor.logo.url"
-                  alt=""
-                  height="120px"
-                  class="mx-auto d-block"
-                />
-              </nuxt-link>
-            </div>
-          </div>
-        </VueSlickCarousel>
-      </div>
-      <div class="col-12 px-0 py-4">
-        <VueSlickCarousel
-          v-bind="settingsBottom"
-          ref="carousel-bottom"
-          v-if="data"
-        >
-          <div v-for="productor in data" :key="productor.name" class="">
-            <div class="bg-white mx-2 p-1 product-card">
-              <nuxt-link :to="productor.link">
-                <img
-                  :src="productor.logo.url"
-                  alt=""
-                  height="120px"
-                  class="mx-auto d-block"
-                />
-              </nuxt-link>
-            </div>
-          </div>
-        </VueSlickCarousel>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script>
-import documents from "../../prismic-mapper";
+import VueSlickCarousel from 'vue-slick-carousel'
+import documents from '../../prismic-mapper'
 
-import VueSlickCarousel from "vue-slick-carousel";
-
-import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
-import locales from "../../locales-mapper";
+import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
+import locales from '../../locales-mapper'
 
 export default {
   components: { VueSlickCarousel },
@@ -68,7 +19,7 @@ export default {
       autoplay: true,
       speed: 8000,
       autoplaySpeed: 0,
-      cssEase: "linear",
+      cssEase: 'linear',
       pauseOnFocus: false,
       pauseOnHover: false,
       rtl: false,
@@ -103,7 +54,7 @@ export default {
       autoplay: true,
       speed: 8000,
       autoplaySpeed: 0,
-      cssEase: "linear",
+      cssEase: 'linear',
       pauseOnFocus: false,
       pauseOnHover: false,
       rtl: true,
@@ -130,25 +81,72 @@ export default {
     },
   }),
   async fetch() {
-    let lang = locales[this.$i18n.locale];
+    let lang = locales[this.$i18n.locale]
 
-    if (lang == "en-gb" && this.$config.STORE == "CMW") {
-      lang = "en-eu";
-    }
+    if (lang == 'en-gb' && this.$config.STORE == 'CMW')
+      lang = 'en-eu'
 
     const response = await this.$prismic.api.getSingle(
-      documents[this.$config.STORE]["productors"],
+      documents[this.$config.STORE].productors,
       {
-        lang: lang,
-      }
-    );
-    const data = response.data.productor;
+        lang,
+      },
+    )
+    const data = response.data.productor
 
-    this.data = data.concat(data);
-    this.label = response.data.label;
+    this.data = data.concat(data)
+    this.label = response.data.label
   },
-};
+}
 </script>
+
+<template>
+  <div class="container-fluid my-5 bg-light py-5">
+    <!-- <div v-for="product in products" :key="product.id">{{ product.title }}</div> -->
+    <div class="row py-5 px-0">
+      <div class="col-12 text-center">
+        <h2>{{ label }}</h2>
+      </div>
+
+      <div class="col-12 px-0 py-4">
+        <VueSlickCarousel v-if="data" v-bind="settingsTop" ref="carousel-top">
+          <div v-for="productor in data" :key="productor.name" class="">
+            <div class="bg-white mx-2 p-1 product-card">
+              <nuxt-link :to="productor.link">
+                <img
+                  :src="productor.logo.url"
+                  alt=""
+                  height="120px"
+                  class="mx-auto d-block"
+                >
+              </nuxt-link>
+            </div>
+          </div>
+        </VueSlickCarousel>
+      </div>
+      <div class="col-12 px-0 py-4">
+        <VueSlickCarousel
+          v-if="data"
+          v-bind="settingsBottom"
+          ref="carousel-bottom"
+        >
+          <div v-for="productor in data" :key="productor.name" class="">
+            <div class="bg-white mx-2 p-1 product-card">
+              <nuxt-link :to="productor.link">
+                <img
+                  :src="productor.logo.url"
+                  alt=""
+                  height="120px"
+                  class="mx-auto d-block"
+                >
+              </nuxt-link>
+            </div>
+          </div>
+        </VueSlickCarousel>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .productor-card {

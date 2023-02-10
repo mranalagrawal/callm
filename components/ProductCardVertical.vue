@@ -7,6 +7,7 @@ import heartFullIcon from '~/assets/svg/heart-full.svg'
 import heartIcon from '~/assets/svg/heart.svg'
 import { useCustomer } from '~/store/customer'
 import { regexRules } from '~/utilities/validators'
+import { SweetAlertToast } from '~/utilities/Swal'
 
 export default {
   name: 'ProductCardVertical',
@@ -43,7 +44,7 @@ export default {
     userCartQuantity() {
       const productVariantId = this.product.variants.nodes[0].id
       const isInCart = this.$store.state.userCart.userCart.find(
-        el => el.productVariantId == productVariantId,
+        el => el.productVariantId === productVariantId,
       )
 
       return isInCart ? isInCart.quantity : 0
@@ -58,7 +59,7 @@ export default {
       }))
 
       const isInCart = cartList.find(
-        el => el.merchandise == this.product.variants.nodes[0].id,
+        el => el.merchandise === this.product.variants.nodes[0].id,
       )
 
       if (isInCart)
@@ -66,12 +67,24 @@ export default {
       else
         return 0
     },
+    canAddMore() {
+      return this.product.totalInventory - this.userCartQuantity > 0
+    },
   },
   methods: {
     async addToUserCart() {
       if (!this.isOpen)
         this.isOpen = true
 
+      if (!this.canAddMore) {
+        await SweetAlertToast.fire({
+          icon: 'warning',
+          text: this.$i18n.t('common.feedback.KO.addToCartReachLimit'),
+        })
+        return
+      }
+
+      const totalInventory = this.product.totalInventory
       const productVariantId = this.product.variants.nodes[0].id
       const amount = Number(this.product.variants.nodes[0].price)
       const amountFullPrice = Number(
@@ -87,6 +100,7 @@ export default {
         tag,
         image,
         title,
+        totalInventory,
       })
       this.flashMessage.show({
         status: '',
@@ -252,7 +266,7 @@ export default {
               {{ product.variants.nodes[0].compareAtPriceV2.currencyCode }}
             </p>
             <p v-else class="mb-1">
-&nbsp;
+              &nbsp;
             </p>
             <p class="mb-0">
               <span class="integer">{{
@@ -263,7 +277,7 @@ export default {
           </div>
 
           <div v-if="product.availableForSale" class="position-relative">
-            <button class="btn btn-cart" @click.stop="addToUserCart()" />
+            <button class="btn btn-cart" @click.stop="addToUserCart" />
             <span v-show="userCartQuantity > 0" class="cart-quantity">
               {{ userCartQuantity }}
             </span>
@@ -272,15 +286,15 @@ export default {
               class="cart-dropup"
               @mouseleave="isOpen = false"
             >
-              <div class="btn text-white">
+              <button class="btn text-white" :disabled="!canAddMore">
                 <span style="font-size: 24px" @click.stop="addToUserCart()">+</span>
-              </div>
+              </button>
               <p class="mb-0 text-white text-center py-2">
                 {{ userCartQuantity }}
               </p>
-              <div class="btn text-white">
+              <button class="btn text-white">
                 <span style="font-size: 24px" @click.stop="removeFromUserCart()">-</span>
-              </div>
+              </button>
             </div>
           </div>
           <div v-else class="position-relative">

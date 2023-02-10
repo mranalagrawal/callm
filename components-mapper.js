@@ -1,13 +1,13 @@
 const components = {
   CMW: {
-    HomeBanner: "HomeBanner",
+    HomeBanner: 'HomeBanner',
   },
   CMW_UK: {
-    HomeBanner: "HomeBanner",
+    HomeBanner: 'HomeBanner',
   },
   WILDVIGNERON: {
-    HomeBanner: "HomeBannerWV",
+    HomeBanner: 'HomeBannerWV',
   },
-};
+}
 
-export default components;
+export default components

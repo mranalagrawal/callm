@@ -82,6 +82,7 @@ export default {
     '@assets/css/layers/base.css',
     // Vendors
     '@/assets/css/vendors/swal.css',
+    '@/assets/css/vendors/vue-slick-carousel.css',
   ],
 
   plugins: [
@@ -268,9 +269,9 @@ export default {
     icons: false,
   },
 
-  /*  router: {
-    middleware: ['splash'],
-  }, */
+  router: {
+    middleware: ['category'],
+  },
 
   build: {
     transpile: ['@prismicio/vue', 'swiper', 'vue-svg-icon', 'vee-validate/dist/rules'],
