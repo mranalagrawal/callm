@@ -165,6 +165,9 @@ export default {
     newPassword: 'Nuova password',
     confirmPassword: 'Conferma password',
   },
+  collections: {
+    breadcrumb: 'Tutte le Selezioni',
+  },
   selections: {
     favourite: 'Favoriti da Callmewine',
     rarewine: 'Vini rari',

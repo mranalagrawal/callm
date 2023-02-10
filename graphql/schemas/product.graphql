@@ -95,3 +95,24 @@ type ProductVariantConnectionEdge {
 type ProductVariantConnectionNodes {
   node: [ProductVariant!]!
 }
+
+type CollectionConnection {
+  nodes: [Collection!]!
+  pageInfo: PageInfo!
+}
+
+type Collection {
+  description:String!
+  descriptionHtml:HTML!
+  handle:String!
+  id:ID!
+  image:Image
+  metafield(namespace:String!,key:String!): Metafield
+  metafields:[Metafield]!
+  onlineStoreUrl:URL
+  seo:SEO!
+  title:String!
+  updatedAt:DateTime!
+  # Connections
+  products(first: Int, reverse: Boolean): ProductConnection
+}
