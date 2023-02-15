@@ -11,6 +11,7 @@ export default {
       customerUpdatePassword: 'Votre mot de passe a été mis à jour avec succès!',
       customerUpdateData: 'Vos informations personnelles ont été mises à jour avec succès !',
       requestAssistance: 'Message envoyé!',
+      emailAdded: 'Inscription réussi!',
     },
     KO: {
       login: 'La connexion a échoué, vérifiez les données saisies',

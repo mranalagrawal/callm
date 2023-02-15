@@ -1,7 +1,8 @@
 <script>
 import logo from 'assets/svg/logo-call-me-wine.svg'
 import walletIcon from 'assets/svg/wallet.svg'
-import locales from '../locales-mapper'
+import { SweetAlertToast } from '~/utilities/Swal'
+/* import locales from '../locales-mapper' */
 export default {
   data() {
     return {
@@ -11,6 +12,7 @@ export default {
       info: null,
       newsletter: false,
       marketing: false,
+      email: '',
     }
   },
   async fetch() {
@@ -35,6 +37,36 @@ export default {
   watch: {
     '$i18n.locale': '$fetch',
   },
+  methods: {
+    async handleSubmit() {
+      const response = await fetch(`${this.$config.CUSTOMER_API}${this.$config.STORE}`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: JSON.stringify({
+          first_name: 'first_name',
+          last_name: 'last_name',
+          email: this.email,
+        }),
+      }).then(r => r.ok)
+
+      if (response) {
+        await SweetAlertToast.fire({
+          icon: 'success',
+          text: this.$i18n.t('common.feedback.OK.emailAdded'),
+        })
+        this.email = ''
+      } else {
+        await SweetAlertToast.fire({
+          icon: 'error',
+          text: this.$i18n.t('common.feedback.KO.unknown'),
+        })
+      }
+    },
+  },
+
 }
 </script>
 
@@ -96,7 +128,7 @@ export default {
           class="text-decoration-none text-uppercase text-white fs-0875 mr-3"
           :to="switchLocalePath($config.DEFAULT_LOCALE)"
           :class="
-            $i18n.locale == $config.DEFAULT_LOCALE ? 'font-weight-bold' : ''
+            $i18n.locale === $config.DEFAULT_LOCALE ? 'font-weight-bold' : ''
           "
         >
           {{ $config.DEFAULT_LOCALE }}
@@ -106,7 +138,7 @@ export default {
           v-if="$config.DEFAULT_LOCALE !== 'en'"
           class="text-decoration-none text-uppercase text-white fs-0875 mr-3"
           :to="switchLocalePath('en')"
-          :class="$i18n.locale == 'en' ? 'font-weight-bold' : ''"
+          :class="$i18n.locale === 'en' ? 'font-weight-bold' : ''"
         >
           EN
         </nuxt-link>
@@ -114,7 +146,7 @@ export default {
           v-else
           class="text-decoration-none text-uppercase text-white fs-0875 mr-3"
           :to="switchLocalePath('it')"
-          :class="$i18n.locale == 'it' ? 'font-weight-bold' : ''"
+          :class="$i18n.locale === 'it' ? 'font-weight-bold' : ''"
         >
           IT
         </nuxt-link>
@@ -137,20 +169,22 @@ export default {
           <p class=" cmw-text-secondary-100">
             {{ info.newsletter_cta }}
           </p>
-          <form class="mb-5 pr-md-4">
+          <form class="mb-5 pr-md-4" @submit.prevent="handleSubmit">
             <div
               class="row border border-light py-1 mx-0"
               style="border-radius: 10px"
             >
               <div class="col-7 col-md-10">
                 <input
-                  id=""
+                  v-model="email"
                   type="email"
-                  class="form-control bg-transparent border-0"
+                  class="form-control bg-transparent border-0 shadow-none focus:shadow-none text-white"
+                  required
                 >
               </div>
               <div class="col-5 col-md-2 px-md-1 text-right">
                 <button
+                  type="submit"
                   class="btn font-weight-bold text-uppercase w-100 btn-newsletter"
                 >
                   {{ $t("navbar.user.signIn") }}
@@ -165,6 +199,7 @@ export default {
                     v-model="newsletter"
                     type="checkbox"
                     class="custom-control-input"
+                    required
                   >
                   <label
                     class="custom-control-label fs-0875 pl-3"
@@ -352,19 +387,6 @@ export default {
 
 .text-light-footer {
   color: #add3d1;
-}
-
-.shadow-menu {
-  box-shadow: 0 0.5rem 0.75rem rgb(0 0 0 / 15%) !important;
-  border-bottom: 1px solid #ddd;
-}
-.menu-link {
-  color: black;
-  text-decoration: none;
-}
-.menu-link:hover {
-  color: var(--dark-secondary);
-  text-decoration: none;
 }
 
 .primary-title {

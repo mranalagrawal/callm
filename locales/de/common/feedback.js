@@ -11,6 +11,7 @@ export default {
       customerUpdatePassword: 'Ihr Passwort wurde erfolgreich aktuallisiert!',
       customerUpdateData: 'Ihre persönlichen Daten wurden erfolgreich aktualisiert!',
       requestAssistance: 'Nachricht gesendet!',
+      emailAdded: 'Registrierung erfolgreich!',
     },
     KO: {
       login: 'Login fehlgeschlagen, überprüfen Sie die eingegebenen Daten',
