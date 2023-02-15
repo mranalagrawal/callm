@@ -71,9 +71,7 @@ export default {
   <div class="container-fluid container-large px-md-0 my-5">
     <div class="row">
       <div v-if="data && data.length > 0" class="col-12 text-center">
-        <h2 class="font-weight-bold text-dark-primary">
-          Comprati spesso insieme
-        </h2>
+        <h2 class="font-weight-bold text-dark-primary" v-text="$t('common.carousel.recommendedProducts')" />
       </div>
 
       <div v-if="data && data.length > 0" class="col-12 py-4">
@@ -98,25 +96,6 @@ export default {
 </template>
 
 <style scoped>
-/* :deep(.slick-list) {
-  overflow: visible !important;
-} */
-/* :deep(.slick-slide) {
-  opacity: 0;
-  visibility: hidden;
-}
-
-:deep(.slick-slide.slick-active) {
-  opacity: 1;
-  visibility: visible;
-} */
-
-.view-more {
-  border: 2px solid var(--light-secondary);
-  border-radius: 12px;
-  color: var(--light-secondary);
-}
-
 :deep(.slick-dots li button:before) {
   font-size: 10px;
   opacity: 0.6;

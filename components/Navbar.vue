@@ -242,7 +242,7 @@ export default {
       >
         <div class="cmw-flex cmw-items-center">
           <button
-            class="btn d-lg-none"
+            class="cmw-relative btn cmw-z-amenadiel d-lg-none"
             @click="toggleSidebar"
           >
             <VueSvgIcon

@@ -21,6 +21,9 @@ export default {
       emptyCart: 'Leerer Warenkorb',
       continueShopping: 'Mit dem Einkaufen fortfahren',
     },
+    carousel: {
+      recommendedProducts: 'Oft zusammen gekauft',
+    },
   },
   loading: 'Daten werden abgerufen...',
   fetchError: 'Ein Fehler ist aufgetreten',

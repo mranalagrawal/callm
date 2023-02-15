@@ -64,14 +64,6 @@ export default {
     goto(id) {
       const query = Object.assign({}, this.$route.query)
 
-      const activeFilter = Object.keys(query).filter(el =>
-        this.allSelections.includes(el),
-      )[0]
-
-      // switch active filter
-      /* if (activeFilter) {
-        delete query[activeFilter];
-      } */
       query[id.key_as_string] = true
 
       if (id !== this.active)
@@ -101,8 +93,8 @@ export default {
         >
           <div class="text-center">
             <VueSvgIcon
-              :src="require(`@/assets/svg/selections/${item.key[1]}.svg`)"
-              class="selection-svg mx-auto d-block"
+              :data="require(`@/assets/svg/selections/${item.key[1]}.svg`)"
+              class="mx-auto d-block"
             />
             <div>
               <span class="small">{{ $t(`selections.${item.key[1]}`) }}</span>
@@ -116,19 +108,3 @@ export default {
     </div>
   </div>
 </template>
-
-<style scoped>
-.selection-svg {
-  filter: brightness(0.7);
-  width: 36px;
-}
-
-.content-item:hover {
-  background: #fae4e8;
-  color: var(--dark-secondary);
-}
-.active {
-  background: #fae4e8;
-  color: var(--dark-secondary);
-}
-</style>

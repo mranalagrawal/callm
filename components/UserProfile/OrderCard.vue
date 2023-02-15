@@ -306,7 +306,7 @@ export default {
           <!-- Products Section -->
           <OrderCardProductRow
             v-for="lineItem in order.lineItems.edges"
-            :key="lineItem.node.variant.sku"
+            :key="`${lineItem.node.variant.sku}-${lineItem.node.originalTotalPrice.amount}`"
             :order-line-item="lineItem.node"
           />
           <!-- Total Section -->

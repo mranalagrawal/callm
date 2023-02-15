@@ -32,7 +32,7 @@ module.exports = {
       },
     ],
     'vue/multi-word-component-names': ['error', {
-      ignores: ['404', '_handle', 'index', 'cart', 'preview', 'login', 'profile', 'wishlist', 'addresses'],
+      ignores: ['404', '_handle', 'Navbar', 'index', 'cart', 'preview', 'login', 'profile', 'wishlist', 'addresses'],
     }],
     // Note: We can change this to "camelCase" when upgrading to Vue3 https://eslint.vuejs.org/rules/custom-event-name-casing.html
     'vue/custom-event-name-casing': ['error', 'kebab-case'],

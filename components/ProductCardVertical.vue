@@ -91,7 +91,7 @@ export default {
         this.product.variants.nodes[0].compareAtPriceV2.amount,
       )
       const tag = this.product.tags[0]
-      const image = this.product.images.nodes[0].url
+      const image = this.product.images.nodes[0] ? this.product.images.nodes[0].url : ''
       const title = this.product.title
       this.$store.commit('userCart/addProduct', {
         productVariantId,
@@ -135,6 +135,7 @@ export default {
           draggable="false"
         >
           <img
+            v-if="product.images.nodes[0]"
             :src="product.images.nodes[0].url"
             alt=""
             class="d-block mx-auto"

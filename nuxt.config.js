@@ -105,7 +105,7 @@ export default {
   buildModules: [
     ['@nuxtjs/eslint-module', {
       exclude: ['node_modules', '.nuxt', 'assets', 'components', 'config', 'layouts',
-        'locales', 'middleware', 'pages', 'plugins', 'static', 'utilities'],
+        'locales', 'middleware', 'pages', 'plugins', 'static'],
       fix: false,
     }],
     '@nuxtjs/composition-api/module',
@@ -252,9 +252,10 @@ export default {
 
   sentry: {
     dsn: 'https://8976f88cc7254b248b330a78ba72a074@o1240128.ingest.sentry.io/4504560369008640',
+    disabled: process.env.NODE_ENV !== 'production',
     config: {
       browserTracing: {
-        tracePropagationTargets: ['callmewine.co.uk', /^\//],
+        tracePropagationTargets: ['callmewine.co.uk'],
       },
       vueOptions: {
         trackComponents: true,
