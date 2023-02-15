@@ -46,8 +46,6 @@ export default {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: JSON.stringify({
-          first_name: 'first_name',
-          last_name: 'last_name',
           email: this.email,
         }),
       }).then(r => r.ok)
