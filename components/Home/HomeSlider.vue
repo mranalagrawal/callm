@@ -51,7 +51,9 @@ export default {
             }"
           >
             <p class="h3 font-weight-bold mt-4 cmw-text-white cmw-max-w-[30%]">
-              {{ content.title }}
+              <nuxt-link :to="content.link" class="cmw-text-white hover:(cmw-text-white cmw-no-underline)">
+                {{ content.title }}
+              </nuxt-link>
             </p>
 
             <nuxt-link :to="content.link" class="btn btn-cta mb-3 px-5 py-2">

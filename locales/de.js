@@ -8,19 +8,10 @@ export default {
   },
   common: {
     ...common.confirm,
+    ...common.cta,
     ...common.features,
     ...common.feedback,
     ...common.filters,
-    cta: {
-      cancel: 'Stornieren',
-      confirm: 'Bestätigung',
-      send: 'Einreichen',
-      requestAssistance: 'Bitte um Unterstützung',
-      reorderProducts: 'Produkte nachbestellen',
-      addAddress: 'Adresse hinzufügen',
-      emptyCart: 'Leerer Warenkorb',
-      continueShopping: 'Mit dem Einkaufen fortfahren',
-    },
     carousel: {
       recommendedProducts: 'Oft zusammen gekauft',
     },
