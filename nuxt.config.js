@@ -352,6 +352,7 @@ export default {
     STORE: process.env.STORE === 'CMW' ? 'CMW_UK' : process.env.STORE,
     SALECHANNEL: process.env.SALECHANNEL,
     DEFAULT_LOCALE: process.env.DEFAULT_LOCALE,
+    CUSTOMER_API: process.env.CUSTOMER_API,
     gtm: {
       id: process.env.GOOGLE_TAG_MANAGER_ID,
     },
