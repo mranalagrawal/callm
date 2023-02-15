@@ -26,17 +26,15 @@ export default {
     const data = response.data
     this.data = data
   },
-  head() {
-    return {
-      meta: [{
-        script: [
-          {
-            src: 'https://consent.cookiebot.com/55bb6862-88ec-43e6-bd22-95823a1ed6ad/cd.js',
-            id: 'CookieDeclaration',
-          },
-        ],
-      }],
-    }
+  head: {
+    script: [
+      {
+        src: 'https://consent.cookiebot.com/55bb6862-88ec-43e6-bd22-95823a1ed6ad/cd.js',
+        id: 'CookieDeclaration',
+        async: true,
+        body: true,
+      },
+    ],
   },
 }
 </script>

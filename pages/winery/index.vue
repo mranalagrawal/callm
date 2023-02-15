@@ -116,16 +116,14 @@ export default {
             v-if="links.prev"
             class="btn text-light-secondary"
             @click="fetchPrev"
-          >
-            Pagina Precedente
-          </button>
+            v-text="$t('common.cta.prevPage')"
+          />
           <button
             v-if="links.next"
             class="btn text-light-secondary"
             @click="fetchNext"
-          >
-            Pagina successiva
-          </button>
+            v-text="$t('common.cta.nextPage')"
+          />
         </div>
       </div>
     </div>

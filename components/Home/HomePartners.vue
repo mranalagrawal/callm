@@ -51,16 +51,18 @@ export default {
         >
           <div class="w-50">
             <h3 class="mb-5 font-weight-bold cmw-text-white">
-              {{ data[0].content.main_text }}
+              <NuxtLink class="cmw-text-white hover:(cmw-text-white cmw-no-underline)" :to="data[0].content.cta_link">
+                {{ data[0].content.main_text }}
+              </NuxtLink>
             </h3>
           </div>
           <div>
-            <nuxt-link
+            <NuxtLink
               :to="data[0].content.cta_link"
               class="btn btn-cta mb-3 px-5 py-2"
             >
               {{ data[0].content.cta_text }}
-            </nuxt-link>
+            </NuxtLink>
           </div>
         </div>
       </div>
@@ -73,16 +75,18 @@ export default {
         >
           <div class="w-75">
             <h3 class="mb-5 font-weight-bold cmw-text-white">
-              {{ data[1].content.main_text }}
+              <NuxtLink class="cmw-text-white hover:(cmw-text-white cmw-no-underline)" :to="data[0].content.cta_link">
+                {{ data[1].content.main_text }}
+              </NuxtLink>
             </h3>
           </div>
           <div>
-            <nuxt-link
+            <NuxtLink
               :to="data[1].content.cta_link"
               class="btn btn-cta mb-3 px-5 py-2"
             >
               {{ data[1].content.cta_text }}
-            </nuxt-link>
+            </NuxtLink>
           </div>
         </div>
       </div>
