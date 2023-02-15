@@ -95,13 +95,13 @@ export default {
   <div>
     <div class="c-filterBar cmw-flex cmw-items-center cmw-justify-between cmw-px-4">
       <div>
-        <CmwSelect
+        <!--        <CmwSelect
           v-model="selectedSort"
           :options="filteredSort"
           @update-value="handleUpdateValue"
         >
           <span>{{ selectedLabel }}</span>
-        </CmwSelect>
+        </CmwSelect> -->
       </div>
       <div class="cmw-hidden cmw-items-center cmw-gap-2 lg:cmw-flex">
         <div
@@ -156,7 +156,10 @@ export default {
           </div>
         </template>
         <template v-else>
-          <div class="cmw-grid cmw-grid-cols-1 cmw-gap-6 phone-md:cmw-grid-cols-2 sm:cmw-grid-cols-3 lg:cmw-grid-cols-4 ">
+          <div
+            class="cmw-grid cmw-grid-cols-1 cmw-gap-4 phone-md:(cmw-grid-cols-2 cmw-gap-2)
+          sm:(cmw-grid-cols-2 cmw-gap-3) lg:(cmw-grid-cols-3 cmw-gap-4) desktop-wide:cmw-grid-cols-4"
+          >
             <ProductBoxVertical
               v-for="product in customerProducts"
               :key="product.id"

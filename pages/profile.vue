@@ -92,7 +92,7 @@ export default {
     <div class="cmw-bg-white/50 cmw-backdrop-filter cmw-backdrop-blur cmw-sticky cmw-z-content cmw-top-$cmw-header-height cmw-pb-1 cmw-pt-4 cmw-pl-4 md:cmw-px-4">
       <nav
         class="
-        c-navigationTab cmw-justify-between cmw-w-full cmw-flex cmw-no-wrap cmw-overflow-x-auto
+        c-navigationTab cmw-font-sans cmw-justify-between cmw-w-full cmw-flex cmw-no-wrap cmw-overflow-x-auto
         cmw-border-b cmw-border-b-gray-dark cmw-mb-3 md:(cmw-mt-9 cmw-max-w-10/12)
 "
       >

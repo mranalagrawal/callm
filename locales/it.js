@@ -21,6 +21,9 @@ export default {
       emptyCart: 'Svuota Carrello',
       continueShopping: 'Continua gli acquisti',
     },
+    carousel: {
+      recommendedProducts: 'Comprati spesso insieme',
+    },
   },
   loading: 'Recuperando i dati...',
   fetchError: 'Si è verificato un errore',

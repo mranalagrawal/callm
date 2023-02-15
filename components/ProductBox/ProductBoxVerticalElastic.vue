@@ -162,6 +162,16 @@ export default {
     @mouseleave="isHovering = false"
   >
     <div class="c-productBox__grid cmw-grid cmw-h-full">
+      <div class="c-productBox__image">
+        <NuxtLink :to="localePath(`/${product._source.handle}-P${product._source.id}`)">
+          <img
+            class="cmw-transition-lazy-image cmw-filter hover:cmw-contrast-150 cmw-mx-auto cmw-mt-4 cmw-text-xxs"
+            :class="{ 'cmw-opacity-50': !isAvailableForSale }"
+            :src="product._source.shopifyImageUrl[$config.STORE]"
+            :alt="product._source.shortName"
+          >
+        </NuxtLink>
+      </div>
       <div class="c-productBox__features cmw-py-2 cmw-pl-2">
         <div class="cmw-flex cmw-flex-col cmw-gap-y-1 cmw-w-max">
           <ProductBoxFeature v-for="feature in availableFeatures" :key="feature" :feature="feature" />
@@ -176,20 +186,10 @@ export default {
           <ProductBoxAward :award="award" />
         </div>
       </div>
-      <div class="c-productBox__image">
-        <NuxtLink :to="localePath(`/${product._source.handle}-P${product._source.id}`)">
-          <img
-            class="cmw-transition-lazy-image cmw-filter hover:cmw-contrast-150 cmw-max-h-[150px] cmw-mx-auto cmw-mt-8 cmw-text-xxs lg:cmw-max-h-[270px]"
-            :class="{ 'cmw-opacity-50': !isAvailableForSale }"
-            :src="product._source.shopifyImageUrl[$config.STORE]"
-            :alt="product._source.shortName"
-          >
-        </NuxtLink>
-      </div>
       <div class="c-productBox__wishlist cmw-place-self-end cmw-relative">
         <ButtonIcon
           :icon="isOnFavourite ? heartFullIcon : heartIcon"
-          class="cmw-mr-4 z-baseLow" :variant="isOnFavourite ? 'icon-primary' : 'icon'"
+          class="z-baseLow" :variant="isOnFavourite ? 'icon-primary' : 'icon'"
           @click.native="handleWishlist({ id: backofficeId, isOnFavourite })"
         />
       </div>
@@ -303,14 +303,25 @@ export default {
 
 .c-productBox__awards {
   grid-area: awards;
+  grid-row: 1;
 }
 
 .c-productBox__image {
-  grid-area: image;
+  grid-row: 1;
+  grid-column: 1 / -1;
+}
+
+.c-productBox__image img {
+  max-height: 270px;
 }
 
 .c-productBox__wishlist {
   grid-area: wishlist;
+  grid-row: 1;
+}
+
+.c-productBox__wishlist button {
+  margin-right: 1rem;
 }
 
 .c-productBox__title {
@@ -331,6 +342,14 @@ export default {
 
 /* We are handling this piece skipping mobile-first to reduce the amount of CSS  */
 @container product-box (max-width: 250px) {
+  .c-productBox__image img {
+    max-height: 240px;
+  }
+
+  .c-productBox__wishlist button {
+    margin-right: 0.25rem;
+  }
+
   .c-productBox__lapel {
     --lapel-top: -5px;
   }

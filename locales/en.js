@@ -21,6 +21,9 @@ export default {
       emptyCart: 'Empty Cart',
       continueShopping: 'Continue shopping',
     },
+    carousel: {
+      recommendedProducts: 'Often bought together',
+    },
   },
   loading: 'Fetching data...',
   fetchError: 'An error occurred',

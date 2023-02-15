@@ -21,6 +21,9 @@ export default {
       emptyCart: 'Panier Vide',
       continueShopping: 'Continuer vos achats',
     },
+    carousel: {
+      recommendedProducts: 'Souvent achetés ensemble',
+    },
   },
   loading: 'Récupération des données...',
   fetchError: 'Une erreur s\'est produite',

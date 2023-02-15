@@ -178,7 +178,7 @@ export default {
     ]
 
     belong_filters.forEach((el) => {
-      const buckets = search.aggregations[`agg-${el}`][`agg-${el}`].buckets.map(
+      let buckets = search.aggregations[`agg-${el}`][`agg-${el}`].buckets.map(
         (x) => {
           return {
             key: x.key.split('|'),
@@ -187,6 +187,8 @@ export default {
           }
         },
       )
+
+      buckets = buckets.filter(bucket => !bucket.key.includes('not specified'))
 
       this[`${el}`] = buckets
 
@@ -379,8 +381,8 @@ export default {
 </script>
 
 <template>
-  <div class="container-fluid px-md-5 mt-5">
-    <div class="row pt-5">
+  <div class="container-fluid px-md-5 cmw-mt-4">
+    <div class="row">
       <div class="col-12">
         <div v-if="searchedTerm" class="">
           <h2 class="font-weight-bold">
@@ -412,13 +414,13 @@ export default {
     </div>
 
     <div v-if="macrocategories" class="row">
-      <div class="col-12">
+      <!--      <div class="col-12">
         <MacroCategories
           :macrocategories="macrocategories"
           keyword="macros"
           :active-macro-categories="activeMacroCategories"
         />
-      </div>
+      </div> -->
     </div>
 
     <div v-if="results" class="row mt-5">
@@ -475,76 +477,91 @@ export default {
             :search="search"
           />
           <Dropdown
+            v-if="categories && categories.length"
             :label="$t('search.categories')"
             :items="categories"
             keyword="categories"
           />
           <Dropdown
+            v-if="winelists && winelists.length"
             :label="$t('search.winelists')"
             :items="winelists"
             keyword="winelists"
           />
           <Dropdown
+            v-if="pairings && pairings.length"
             :label="$t('search.pairings')"
             :items="pairings"
             keyword="pairings"
           />
           <Dropdown
+            v-if="dosagecontents && dosagecontents.length"
             :label="$t('search.dosagecontents')"
             :items="dosagecontents"
             keyword="dosagecontents"
           />
           <Dropdown
+            v-if="bodystyles && bodystyles.length"
             :label="$t('search.bodystyles')"
             :items="bodystyles"
             keyword="bodystyles"
           />
           <Dropdown
+            v-if="boxes && boxes.length"
             :label="$t('search.boxes')"
             :items="boxes"
             keyword="boxes"
           />
           <Dropdown
+            v-if="areas && areas.length"
             :label="$t('search.areas')"
             :items="areas"
             keyword="areas"
           />
           <Dropdown
+            v-if="regions && regions.length"
             :label="$t('search.provenience')"
             :items="regions"
             keyword="regions"
           />
           <Dropdown
+            v-if="brands && brands.length"
             :label="$t('search.brands')"
             :items="brands"
             keyword="brands"
           />
           <Dropdown
+            v-if="countries && countries.length"
             :label="$t('search.countries')"
             :items="countries"
             keyword="countries"
           />
           <Dropdown
+            v-if="sizes && sizes.length"
             :label="$t('search.sizes')"
             :items="sizes"
             keyword="sizes"
           />
           <Dropdown
+            v-if="vintages && vintages.length"
             :label="$t('search.vintages')"
             :items="vintages"
             keyword="vintages"
           />
           <Dropdown
+            v-if="awards && awards.length"
             :label="$t('search.awards')"
             :items="awards"
             keyword="awards"
           />
           <Dropdown
+            v-if="agings && agings.length"
             :label="$t('search.agings')"
             :items="agings"
             keyword="agings"
           />
           <Dropdown
+            v-if="philosophies && philosophies.length"
             :label="$t('search.philosophies')"
             :items="philosophies"
             keyword="philosophies"
@@ -651,8 +668,8 @@ export default {
           </div>
         </div>
         <div
-          v-else class="cmw-grid cmw-grid-cols-1 cmw-gap-6 phone-md:cmw-grid-cols-1
-         sm:cmw-grid-cols-2 lg:cmw-grid-cols-3 desktop-wide:cmw-grid-cols-4"
+          v-else class="cmw-grid cmw-grid-cols-1 cmw-gap-4 phone-md:(cmw-grid-cols-2 cmw-gap-2)
+         sm:(cmw-grid-cols-2 cmw-gap-3) lg:(cmw-grid-cols-3 cmw-gap-4) desktop-wide:cmw-grid-cols-4"
         >
           <div
             v-for="result in results"
@@ -664,7 +681,7 @@ export default {
           <div
             v-for="result in results"
             :key="`mobile${result._id}`"
-            class="d-lg-none col-12 mb-1"
+            class="d-lg-none"
           >
             <ProductBoxVerticalElastic :product="result" />
           </div>
@@ -812,64 +829,86 @@ export default {
         </div>
 
         <Dropdown
+          v-if="categories && !!categories.length"
           :label="$t('search.categories')"
           :items="categories"
           keyword="categories"
         />
         <Dropdown
+          v-if="winelists && !!winelists.length"
           :label="$t('search.winelists')"
           :items="winelists"
           keyword="winelists"
         />
         <Dropdown
+          v-if="pairings && !!pairings.length"
           :label="$t('search.pairings')"
           :items="pairings"
           keyword="pairings"
         />
         <Dropdown
+          v-if="dosagecontents && !!dosagecontents.length"
           :label="$t('search.dosagecontents')"
           :items="dosagecontents"
           keyword="dosagecontents"
         />
         <Dropdown
+          v-if="bodystyles && !!bodystyles.length"
           :label="$t('search.bodystyles')"
           :items="bodystyles"
           keyword="bodystyles"
         />
-        <Dropdown :label="$t('search.boxes')" :items="boxes" keyword="boxes" />
-        <Dropdown :label="$t('search.areas')" :items="areas" keyword="areas" />
         <Dropdown
+          v-if="boxes && !!boxes.length"
+          :label="$t('search.boxes')"
+          :items="boxes" keyword="boxes"
+        />
+        <Dropdown
+          v-if="areas && !!areas.length"
+          :label="$t('search.areas')" :items="areas" keyword="areas"
+        />
+        <Dropdown
+          v-if="regions && !!regions.length"
           :label="$t('search.provenience')"
           :items="regions"
           keyword="regions"
         />
         <Dropdown
+          v-if="brands && !!brands.length"
           :label="$t('search.brands')"
           :items="brands"
           keyword="brands"
         />
         <Dropdown
+          v-if="countries && !!countries.length"
           :label="$t('search.countries')"
           :items="countries"
           keyword="countries"
         />
-        <Dropdown :label="$t('search.sizes')" :items="sizes" keyword="sizes" />
         <Dropdown
+          v-if="sizes && !!sizes.length"
+          :label="$t('search.sizes')" :items="sizes" keyword="sizes"
+        />
+        <Dropdown
+          v-if="vintages && !!vintages.length"
           :label="$t('search.vintages')"
           :items="vintages"
           keyword="vintages"
         />
         <Dropdown
+          v-if="awards && !!awards.length"
           :label="$t('search.awards')"
           :items="awards"
           keyword="awards"
         />
         <Dropdown
+          v-if="agings && !!agings.length"
           :label="$t('search.agings')"
           :items="agings"
           keyword="agings"
         />
         <Dropdown
+          v-if="philosophies && !!philosophies.length"
           :label="$t('search.philosophies')"
           :items="philosophies"
           keyword="philosophies"

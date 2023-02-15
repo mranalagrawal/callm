@@ -60,9 +60,6 @@ export default {
 
     const mapped = data
       .map((firstLevel) => {
-        const secondLevelNames = [
-          ...new Set(firstLevel.items.map(el => el.secondlevelname)),
-        ]
         const secondLevels = firstLevel.items.map((el) => {
           return {
             name: el.secondlevelname,

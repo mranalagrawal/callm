@@ -24,6 +24,8 @@ export default {
       italia: 'italy.svg',
       it: 'italy.svg',
       fr: 'france.svg',
+      france: 'france.svg',
+      francia: 'france.svg',
     })[country]
 
     const currentMap = computed(() => getMap(props.country.toLowerCase()))

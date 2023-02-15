@@ -373,8 +373,8 @@ export default {
 </script>
 
 <template>
-  <div class="container-fluid px-md-5 mt-5">
-    <div class="row pt-5">
+  <div class="container-fluid px-md-5">
+    <div class="row">
       <div class="col-12 col-md-3">
         <h1>questa pagina è di servizio, andrà rimossa</h1>
       </div>
