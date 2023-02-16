@@ -85,7 +85,30 @@ export default {
     async checkout() {
       // redirect if not user
       if (!this.$store.state.user.user) {
-        this.$router.push(this.localeLocation('/login'))
+        // crea carrello su shop
+        const domain = this.$config.DOMAIN
+        const access_token = this.$config.STOREFRONT_ACCESS_TOKEN
+        const user = this.$store.state.user.user || 'test'
+        const cart = await createCart(domain, access_token, user)
+        const cartId = cart.id
+
+        // update in bulk del cart
+        const lines = this.$store.state.userCart.userCart.map((el) => {
+          return {
+            merchandiseId: el.productVariantId,
+            quantity: el.quantity,
+          }
+        })
+
+        const cartFilled = await addProductToCart(
+          domain,
+          access_token,
+          cartId,
+          lines,
+        )
+        // crea checkoutUrl
+        let checkoutUrl = `${cartFilled.checkoutUrl}/?`
+        window.location = checkoutUrl
         return
       }
 

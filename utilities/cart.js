@@ -1,4 +1,4 @@
-export const createCartMutation = (customerAccessToken) => {
+export const createCartMutation = (buyerIdentity = null) => {
   return JSON.stringify({
     query: `mutation cartCreate {
       cartCreate {
@@ -60,9 +60,9 @@ export const createCartMutation = (customerAccessToken) => {
                 }
               }
             }
-            
+
           }
-          
+
         }
         userErrors {
           field
@@ -72,10 +72,7 @@ export const createCartMutation = (customerAccessToken) => {
     }`,
     variables: {
       input: {
-        buyerIdentity: {
-          countryCode: 'UK',
-          customerAccessToken,
-        },
+        buyerIdentity,
         discountCodes: [''],
         lines: [],
         note: '',
@@ -84,22 +81,16 @@ export const createCartMutation = (customerAccessToken) => {
   })
 }
 
-export const addItemMutation = (cartId, lines) => {
-  return JSON.stringify({
-    query: `mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
-      cartLinesAdd(cartId: $cartId, lines: $lines) {
-        ${generalQuery}
-      }
-    }`,
-    variables: {
-      cartId,
-      lines,
-    },
-  })
-}
-
 export const createCart = async (domain, access_token, user) => {
-  const cartQuery = createCartMutation(user.token)
+  const buyer = user
+    ? {
+      buyerIdentity: {
+        countryCode: 'UK',
+        customerAccessToken: user.token,
+      },
+    }
+    : null
+  const cartQuery = createCartMutation(buyer)
 
   const GRAPHQL_BODY_USER = {
     async: true,
@@ -122,25 +113,6 @@ export const createCart = async (domain, access_token, user) => {
       return res.data.cartCreate.cart
     })
   return cart
-}
-
-export const addProductToCart = async (domain, access_token, cartId, lines) => {
-  const cartMutation = addItemMutation(cartId, lines)
-
-  const GRAPHQL_BODY_CART = {
-    async: true,
-    crossDomain: true,
-    method: 'POST',
-    headers: {
-      'X-Shopify-Storefront-Access-Token': access_token,
-      'Content-Type': 'application/json',
-    },
-    body: cartMutation,
-  }
-
-  const res = await fetch(domain, GRAPHQL_BODY_CART).then(res => res.json())
-
-  return res.data.cartLinesAdd.cart
 }
 
 export const removeItemMutation = (cartId, lineId) => {
@@ -205,9 +177,9 @@ export const removeItemMutation = (cartId, lineId) => {
                     }
                   }
                 }
-                
+
               }
-              
+
             }
             userErrors {
               field
@@ -310,9 +282,9 @@ export const updateItemMutation = (cartId, lineId, quantity) => {
                       }
                     }
                   }
-                  
+
                 }
-                
+
               }
               userErrors {
                 field
@@ -416,12 +388,45 @@ const generalQuery = `
                 }
               }
             }
-            
+
           }
-          
+
         }
         userErrors {
           field
           message
         }
         `
+
+export const addItemMutation = (cartId, lines) => {
+  return JSON.stringify({
+    query: `mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
+      cartLinesAdd(cartId: $cartId, lines: $lines) {
+        ${generalQuery}
+      }
+    }`,
+    variables: {
+      cartId,
+      lines,
+    },
+  })
+}
+
+export const addProductToCart = async (domain, access_token, cartId, lines) => {
+  const cartMutation = addItemMutation(cartId, lines)
+
+  const GRAPHQL_BODY_CART = {
+    async: true,
+    crossDomain: true,
+    method: 'POST',
+    headers: {
+      'X-Shopify-Storefront-Access-Token': access_token,
+      'Content-Type': 'application/json',
+    },
+    body: cartMutation,
+  }
+
+  const res = await fetch(domain, GRAPHQL_BODY_CART).then(res => res.json())
+
+  return res.data.cartLinesAdd.cart
+}
