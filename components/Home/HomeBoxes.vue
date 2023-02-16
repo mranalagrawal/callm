@@ -144,7 +144,7 @@ export default {
 }
 .home-carousel :deep(.carousel-indicators) {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
 }
 
 .home-carousel :deep(.carousel-indicators li) {

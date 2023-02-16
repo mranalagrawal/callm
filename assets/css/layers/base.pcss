@@ -1,0 +1,125 @@
+/*@layer base {*/
+  /* Root settings */
+  :root {
+    --cmw-top-banner-height: 0px;
+    --cmw-header-height: 0px;
+  }
+
+  /* ScrollBar styles */
+  ::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: theme("colors.gray.DEFAULT");
+    border-radius: 0;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: theme("colors.primary.DEFAULT");
+    border-radius: 2px;
+  }
+
+  html {
+    overflow-x: hidden;
+  }
+
+  body.lock-scroll {
+    position: fixed;
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
+
+  #__layout {
+    width: 100vw;
+  }
+
+  /* Headings */
+  h1, .h1, .cmw-h1 {
+    /*@apply cmw-text-3xl leading-tight tracking-0px font-bold md:cmw-text-5xl !important;*/
+    font-size: theme("fontSize.3xl") !important;
+    line-height: theme("leading.tight") !important;
+    letter-spacing: 0 !important;
+    font-family: theme("fontFamily.sans"), serif !important;
+    font-weight: bold !important;
+  }
+
+  h2, .h2, .cmw-h2 {
+    /*@apply cmw-text-2xl leading-tight tracking-0px font-bold md:cmw-text-4xl !important;*/
+    font-size: theme("fontSize.2xl") !important;
+    line-height: theme("leading.tight") !important;
+    letter-spacing: 0 !important;
+    font-family: theme("fontFamily.sans"), serif !important;
+    font-weight: bold !important;
+    color: theme("colors.body");
+  }
+
+  h3, .h3, .cmw-h3 {
+    /*@apply cmw-text-xl leading-tight tracking-0px font-bold md:cmw-text-3xl !important;*/
+    font-size: theme("fontSize.xl") !important;
+    line-height: theme("leading.tight") !important;
+    letter-spacing: 0 !important;
+    font-family: theme("fontFamily.sans"), serif !important;
+    font-weight: bold !important;
+    color: theme("colors.body");
+  }
+
+  h4, .h4, .cmw-h4 {
+    /*@apply cmw-text-lg leading-tight tracking-0px font-bold md:cmw-text-xl !important;*/
+    font-size: theme("fontSize.lg") !important;
+    line-height: theme("leading.tight") !important;
+    letter-spacing: 0 !important;
+    font-family: theme("fontFamily.sans"), serif !important;
+    font-weight: bold !important;
+    color: theme("colors.body");
+  }
+
+  h5, .h5, .cmw-h5 {
+    /*@apply cmw-text-base leading-tight tracking-0px font-bold !important;*/
+    font-size: theme("fontSize.base") !important;
+    line-height: theme("leading.tight") !important;
+    letter-spacing: 0 !important;
+    font-family: theme("fontFamily.sans"), serif !important;
+    font-weight: bold !important;
+  }
+
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    font-family: theme("fontFamily.sans"), serif;
+    color: theme("colors.body");
+    /*@apply cmw-my-2 !important;*/
+    margin-top: theme("spacing.2");
+    margin-bottom: theme("spacing.2");
+  }
+
+  .cmw-inherit {
+    position: inherit;
+  }
+
+  .add-product-notification ._vue-flash-msg-body__title, .add-product-notification ._vue-flash-msg-body__text {
+    color: white !important;
+  }
+
+  @media screen and (min-width:768px) {
+    h1, .h1, .cmw-h1 {
+      font-size: theme("fontSize.5xl") !important;
+    }
+
+    h2, .h2, .cmw-h2 {
+      font-size: theme("fontSize.4xl") !important;
+    }
+
+    h3, .h3, .cmw-h3 {
+      font-size: theme("fontSize.3xl") !important;
+    }
+
+    h4, .h4, .cmw-h4 {
+      font-size: theme("fontSize.xl") !important;
+    }
+
+  }
+/*}*/

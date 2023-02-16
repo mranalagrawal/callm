@@ -129,7 +129,7 @@ export default {
 <style lang="css" scoped>
 .home-carousel :deep(.carousel-indicators) {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
   align-items: center;
   margin-right: 5%;
   bottom: 90px;
