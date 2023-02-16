@@ -1,7 +1,3 @@
-// noinspection ES6UnusedImports
-// import * as ImageType from '~/types/image';
-import { ProductVariantType } from '~/types/productVariant'
-
 /**
  * @typedef {Object} Award
  * @property {Number} id

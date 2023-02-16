@@ -79,7 +79,7 @@ export default {
     '@/assets/scss/main.scss',
     '@yzfe/svgicon/lib/svgicon.css',
     '@assets/css/vue-transitions.css',
-    '@assets/css/layers/base.css',
+    '@assets/css/layers/base.pcss',
     // Vendors
     '@/assets/css/vendors/swal.css',
     '@/assets/css/vendors/vue-slick-carousel.css',
@@ -302,19 +302,21 @@ export default {
           },
         ],
       })
+
+      config.module.rules.push({
+        test: /\.(cjs|mjs)$/,
+        exclude: {
+          and: [/node_modules/],
+          not: [/pathe/],
+        },
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [['@babel/preset-env', { targets: 'ie 11' }]],
+          },
+        },
+      })
     },
-  },
-
-  babel: { compact: true },
-
-  /* FixMe: We are using nuxt generate for builds, from docs you can read: For server hosting, target: 'server' is used,
-       which is the default value. You will use the build command to build your application. */
-  /* target: "static", */
-
-  generate: {
-    exclude: [
-      /^\//, // rotte da escludere dalla generazione
-    ],
   },
 
   // https://google-fonts.nuxtjs.org/
@@ -342,6 +344,10 @@ export default {
       // 'timezone', // import 'dayjs/plugin/timezone'
       // 'customParseFormat', // import 'dayjs/plugin/customParseFormat'
     ], // Your Day.js plugin
+  },
+
+  gtm: {
+    id: process.env.GOOGLE_TAG_MANAGER_ID,
   },
 
   publicRuntimeConfig: {
