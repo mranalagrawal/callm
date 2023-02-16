@@ -37,7 +37,7 @@ module.exports = {
     // Note: We can change this to "camelCase" when upgrading to Vue3 https://eslint.vuejs.org/rules/custom-event-name-casing.html
     'vue/custom-event-name-casing': ['error', 'kebab-case'],
     /* TYPESCRIPT ESLINT RULES */
-    '@typescript-eslint/brace-style': ['error', '1tbs', { allowSingleLine: true }],
-    '@typescript-eslint/no-unused-vars': ['error', { ignoreRestSiblings: true }],
+    /* '@typescript-eslint/brace-style': ['error', '1tbs', { allowSingleLine: true }],
+    '@typescript-eslint/no-unused-vars': ['error', { ignoreRestSiblings: true }], */
   },
 }

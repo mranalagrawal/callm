@@ -8,7 +8,7 @@ export const mutations = {
   },
   removeLineFromCart(state, lineId) {
     state.cart.lines.edges.splice(
-      state.cart.lines.edges.findIndex(el => el.node.id == lineId),
+      state.cart.lines.edges.findIndex(el => el.node.id === lineId),
       1,
     )
     /* state.list.splice(state.list.indexOf(todo), 1); */
