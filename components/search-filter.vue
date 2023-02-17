@@ -3,7 +3,6 @@ import { nextTick, onMounted, onUnmounted, ref } from '@nuxtjs/composition-api'
 import debounce from 'lodash.debounce'
 import { storeToRefs } from 'pinia'
 import Loader from '../components/UI/Loader.vue'
-import MacroCategories from './UI/MacroCategories.vue'
 import Dropdown from './UI/Dropdown.vue'
 import DropdownRange from './UI/DropdownRange.vue'
 import DropdownSelections from './UI/DropdownSelections.vue'
@@ -12,7 +11,6 @@ import { useFilters } from '~/store/filters'
 
 export default {
   components: {
-    MacroCategories,
     Dropdown,
     DropdownSelections,
     DropdownRange,

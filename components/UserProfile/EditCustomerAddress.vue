@@ -3,8 +3,6 @@ import { computed, onMounted, ref, unref, useContext } from '@nuxtjs/composition
 import { storeToRefs } from 'pinia'
 import bookmarkIcon from 'assets/svg/bookmark.svg'
 import customerAddressUpdate from '~/graphql/mutations/customerAddressUpdate'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as InputObjects from '~/graphql/schemas/input-objects'
 import { SweetAlertToast } from '~/utilities/Swal'
 import { useSplash } from '~/store/splash'
 import { useCustomerAddresses } from '~/store/customerAddresses'

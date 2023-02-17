@@ -1,10 +1,3 @@
-// noinspection ES6UnusedImports
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as ImageType from '~/types/image'
-// noinspection ES6UnusedImports
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as ProductVariantType from '~/types/productVariant'
-
 /**
  * @typedef {object} Product
  * @property {boolean} availableForSale

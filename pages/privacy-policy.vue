@@ -12,7 +12,7 @@ export default {
   },
   async fetch() {
     let lang = ''
-    if (this.$i18n.locale == 'en')
+    if (this.$i18n.locale === 'en')
       lang = 'en-gb'
     else
       lang = 'it-it'
@@ -23,8 +23,7 @@ export default {
         lang,
       },
     )
-    const data = response.data
-    this.data = data
+    this.data = response.data
   },
 }
 </script>

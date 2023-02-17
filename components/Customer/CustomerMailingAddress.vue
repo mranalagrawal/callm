@@ -4,8 +4,6 @@ import editIcon from 'assets/svg/edit.svg'
 import deleteIcon from 'assets/svg/delete.svg'
 import moreVerticalIcon from 'assets/svg/more-vertical.svg'
 import { ref, useContext } from '@nuxtjs/composition-api'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { MailingAddressType } from '@/types/mailingAddress'
 import { SweetAlertConfirm, SweetAlertToast } from '@/utilities/Swal'
 import customerAddressDelete from '~/graphql/mutations/customerAddressDelete'
 import { useSplash } from '~/store/splash'

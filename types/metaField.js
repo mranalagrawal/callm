@@ -1,9 +1,3 @@
-// import * as ImageType from '~/types/image';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { ProductVariantType } from '~/types/productVariant'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { AwardType } from '~/types/award'
-
 /**
  * @typedef {object} MetaField
  * @property {String} canonical

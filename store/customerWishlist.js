@@ -26,7 +26,7 @@ export const useCustomerWishlist = defineStore({
     async getCustomerWishlist() {
       const { customer } = useCustomer()
       this.$patch({
-        wishlistArr: customer.value.wishlist && customer.value.wishlist.value ? setCustomerWishlist(customer.customer.wishlist.value) : [],
+        wishlistArr: (customer.value.wishlist && customer.value.wishlist.value) ? setCustomerWishlist(customer.customer.wishlist.value) : [],
       })
     },
 

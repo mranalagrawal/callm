@@ -1,11 +1,5 @@
 <script>
-// noinspection ES6UnusedImports
-// import { addProductToCart, createCart } from '../../utilities/cart'
-
 import { computed, useContext } from '@nuxtjs/composition-api'
-// noinspection ES6UnusedImports
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as OrderType from '~/types/order'
 
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 import OrderCardSummary from '~/components/UserProfile/OrderCardSummary.vue'

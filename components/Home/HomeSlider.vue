@@ -1,5 +1,4 @@
 <script>
-import locales from '../../locales-mapper'
 export default {
   data() {
     return {

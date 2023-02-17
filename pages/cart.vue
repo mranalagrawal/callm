@@ -6,7 +6,6 @@ import CartLine from '../components/Cart/CartLine.vue'
 import { getLocaleFromCurrencyCode } from '../utilities/currency'
 import locales from '~/locales-mapper'
 import documents from '~/prismic-mapper'
-import getArticles from '~/graphql/queries/getArticles'
 import { SweetAlertConfirm } from '~/utilities/Swal'
 
 export default {
@@ -107,7 +106,7 @@ export default {
           lines,
         )
         // crea checkoutUrl
-        let checkoutUrl = `${cartFilled.checkoutUrl}/?`
+        const checkoutUrl = `${cartFilled.checkoutUrl}/?`
         window.location = checkoutUrl
         return
       }

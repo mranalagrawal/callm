@@ -104,7 +104,7 @@ export default {
           lines,
         )
         // crea checkoutUrl
-        let checkoutUrl = `${cartFilled.checkoutUrl}/?`
+        const checkoutUrl = `${cartFilled.checkoutUrl}/?`
         window.location = checkoutUrl
         return
       }

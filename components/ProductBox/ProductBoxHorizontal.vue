@@ -9,12 +9,6 @@ import heartFullIcon from 'assets/svg/heart-full.svg'
 import { markRaw, ref } from '@nuxtjs/composition-api'
 import { mapState } from 'vuex'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
-// noinspection ES6UnusedImports
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as ProductVariantType from '~/types/productVariant'
-// noinspection ES6UnusedImports
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as MetaFieldTypeType from '~/types/metaField'
 import { isObject, regexRules } from '~/utilities/validators'
 import { pick } from '~/utilities/arrays'
 import { useCustomer } from '~/store/customer'
