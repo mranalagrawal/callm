@@ -26,16 +26,6 @@ export default {
     const data = response.data
     this.data = data
   },
-  head: {
-    script: [
-      {
-        src: 'https://consent.cookiebot.com/55bb6862-88ec-43e6-bd22-95823a1ed6ad/cd.js',
-        id: 'CookieDeclaration',
-        async: true,
-        body: true,
-      },
-    ],
-  },
 }
 </script>
 
@@ -58,7 +48,7 @@ export default {
       <div v-for="(content, j) in data.section" :key="j" class="col-12">
         <prismic-rich-text :field="[content]" />
       </div>
-      <div id="CookieDeclaration" />
+      <script src="https://consent.cookiebot.com/55bb6862-88ec-43e6-bd22-95823a1ed6ad/cd.js" id="CookieDeclaration" async></script>
     </div>
   </div>
 </template>

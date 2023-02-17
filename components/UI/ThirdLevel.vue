@@ -15,7 +15,7 @@ export default {
       if (!to) {
         // FixMe: Shall we throw an error here? why is it navigation to home when no link provide?
         // throw new Error('No link provided')
-        this.$router.push('/')
+        this.$router.push(this.localeLocation(('/')))
         return
       }
       this.$emit('close-banner')
