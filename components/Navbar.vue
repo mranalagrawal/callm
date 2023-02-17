@@ -22,7 +22,9 @@ export default {
     const headerSize = useHeaderSize()
     const customer = useCustomer()
     const navbar = ref(null)
+    const showMobileButton = ref(true)
 
+    const handleShowMobileButton = (val) => { showMobileButton.value = val }
     const resizeListener = debounce(() => {
       headerSize.$patch({
         navbarHeight: navbar.value ? navbar.value.getBoundingClientRect().height : 0,
@@ -55,6 +57,7 @@ export default {
       customer,
       headerSize,
       navbar,
+      showMobileButton,
       logo,
       cartIcon,
       closeIcon,
@@ -63,6 +66,7 @@ export default {
       searchIcon,
       heartIcon,
       resizeListener,
+      handleShowMobileButton,
     }
   },
   data() {
@@ -242,6 +246,7 @@ export default {
       >
         <div class="cmw-flex cmw-items-center">
           <button
+            v-show="showMobileButton"
             class="cmw-relative btn cmw-z-amenadiel d-lg-none"
             @click="toggleSidebar"
           >
@@ -411,13 +416,13 @@ export default {
     >
       <div
         v-if="data"
-        class="px-3 py-2 mt-5"
+        class="px-3 py-2 mt-5 here?"
       >
         <div
           v-for="(item, i) in data"
           :key="`mobile_${i}`"
         >
-          <DropdownMobileMenu :data="item" />
+          <DropdownMobileMenu :data="item" @update-show="handleShowMobileButton" />
         </div>
       </div>
     </b-sidebar>

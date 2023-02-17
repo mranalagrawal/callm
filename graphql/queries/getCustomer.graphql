@@ -9,6 +9,33 @@ query getCustomer($customerAccessToken: String!, $lang: LanguageCode!) @inContex
     wishlist: metafield(namespace: "custom", key: "wishlist") {
       value
     }
+    addresses(first: 30) {
+      edges {
+        node {
+          firstName
+          lastName
+          address1
+          address2
+          phone
+          country
+          city
+          province
+          zip
+          id
+        }
+      }
+    }
+    defaultAddress {
+      firstName
+      lastName
+      address1
+      address2
+      country
+      city
+      province
+      zip
+      id
+    }
   }
 }
 

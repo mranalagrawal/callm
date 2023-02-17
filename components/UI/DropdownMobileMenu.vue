@@ -14,6 +14,7 @@ export default {
     <button
       v-b-toggle="`sidebar_${data.position}`"
       class="btn d-flex w-100 justify-content-between px-0"
+      @click="$emit('update-show', false)"
     >
       <span class="small text-dark-secondary text-uppercase">{{
         data.name
@@ -36,6 +37,7 @@ export default {
           <i
             v-b-toggle="`sidebar_${data.position}`"
             class="fas fa-chevron-left"
+            @click="$emit('update-show', true)"
           />
         </div>
         <div

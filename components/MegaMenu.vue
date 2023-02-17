@@ -135,8 +135,6 @@ export default {
         style="
         min-height: 300px;
         z-index: 100;
-        max-height: 400px;
-        overflow-y: scroll;
       "
         @mouseleave="onTab(null)"
       >
@@ -160,8 +158,6 @@ export default {
         style="
         min-height: 300px;
         z-index: 100;
-        max-height: 400px;
-        overflow-y: scroll;
       "
         @mouseleave="onTab(null)"
       >
