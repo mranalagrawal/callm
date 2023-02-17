@@ -188,6 +188,7 @@ export default {
     areas: 'areas',
     provenience: 'provenience',
     brands: 'brands',
+    noBrands: 'Essayez notre meilleure liste',
     countries: 'countries',
     sizes: 'sizes',
     vintages: 'vintages',
