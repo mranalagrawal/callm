@@ -45,7 +45,7 @@ export default {
       const domain = this.$config.DOMAIN
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN
 
-      const response = await customerReset(
+      await customerReset(
         domain,
         access_token,
         this.userId,

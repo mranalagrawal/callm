@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "installCommand": "yarn install",
+  "buildCommand": "nuxt build",
+  "builds": [
+    {
+      "src": "nuxt.config.js",
+      "use": "@nuxtjs/vercel-builder"
+    }
+  ]
+}

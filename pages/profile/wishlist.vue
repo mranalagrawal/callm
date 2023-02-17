@@ -114,7 +114,10 @@ export default {
           </div>
         </template>
         <template v-else>
-          <div class="cmw-grid cmw-grid-cols-1 cmw-gap-6 phone-md:cmw-grid-cols-2 sm:cmw-grid-cols-3 lg:cmw-grid-cols-4 ">
+          <div
+            class="cmw-grid cmw-grid-cols-1 cmw-gap-4 phone-md:(cmw-grid-cols-2 cmw-gap-2)
+          sm:(cmw-grid-cols-2 cmw-gap-3) lg:(cmw-grid-cols-3 cmw-gap-4) desktop-wide:cmw-grid-cols-4"
+          >
             <ProductBoxVertical
               v-for="product in customerProducts"
               :key="product.id"

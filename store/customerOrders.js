@@ -1,6 +1,4 @@
 import { defineStore } from 'pinia'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as OrderType from '~/types/order'
 
 export const useCustomerOrders = defineStore({
   id: 'customerOrders',

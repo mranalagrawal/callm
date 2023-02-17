@@ -12,7 +12,7 @@ export default {
   },
   async fetch() {
     let lang = ''
-    if (this.$i18n.locale == 'en')
+    if (this.$i18n.locale === 'en')
       lang = 'en-gb'
     else
       lang = 'it-it'
@@ -23,8 +23,7 @@ export default {
         lang,
       },
     )
-    const data = response.data
-    this.data = data
+    this.data = response.data
   },
 }
 </script>
@@ -48,6 +47,7 @@ export default {
       <div v-for="(content, j) in data.section" :key="j" class="col-12">
         <prismic-rich-text :field="[content]" />
       </div>
+      <script id="CookieDeclaration" src="https://consent.cookiebot.com/55bb6862-88ec-43e6-bd22-95823a1ed6ad/cd.js" async />
     </div>
   </div>
 </template>

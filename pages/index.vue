@@ -42,8 +42,8 @@ export default {
         'en-gb': 'https://www.callmewine.co.uk',
         'it': 'https://www.callmewine.com',
         'en': 'https://www.callmewine.com/en',
-        'fr': 'https://www.callmewine.com/fr',
-        'de': 'https://www.callmewine.com/de',
+        'fr': 'https://www.callmewine.com.fr',
+        'de': 'https://www.callmewine.com.de',
       },
     }
   },

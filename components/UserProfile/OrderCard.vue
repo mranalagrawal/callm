@@ -1,11 +1,5 @@
 <script>
-// noinspection ES6UnusedImports
-// import { addProductToCart, createCart } from '../../utilities/cart'
-
 import { computed, useContext } from '@nuxtjs/composition-api'
-// noinspection ES6UnusedImports
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as OrderType from '~/types/order'
 
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 import OrderCardSummary from '~/components/UserProfile/OrderCardSummary.vue'
@@ -306,7 +300,7 @@ export default {
           <!-- Products Section -->
           <OrderCardProductRow
             v-for="lineItem in order.lineItems.edges"
-            :key="lineItem.node.variant.sku"
+            :key="`${lineItem.node.variant.sku}-${lineItem.node.originalTotalPrice.amount}`"
             :order-line-item="lineItem.node"
           />
           <!-- Total Section -->

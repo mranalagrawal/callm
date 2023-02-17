@@ -36,7 +36,7 @@ export const getUserQuery = token => `query {
           zip
           id
         }
-        
+
         orders(first: 10) {
             edges {
                 node {
@@ -53,7 +53,7 @@ export const getUserQuery = token => `query {
                             node {
                                 quantity
                                 title
-                                
+
                                 originalTotalPrice {
                                     amount
                                 }
@@ -119,7 +119,7 @@ export async function customerRecover(domain, access_token, email) {
 
   const response = await fetch(domain, GRAPHQL_BODY)
 
-  const responseJSON = await response.json()
+  return await response.json()
 }
 
 export const customerResetMutation = (id, password, resetToken) => {

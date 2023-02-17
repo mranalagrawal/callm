@@ -13,11 +13,10 @@ export default {
     }
   },
   async fetch() {
-    const userCart = this.$store.state.userCart.userCart
-    this.data = userCart
+    this.data = this.$store.state.userCart.userCart
 
     let lang = locales[this.$i18n.locale]
-    if (lang == 'en-gb' && this.$config.STORE == 'CMW')
+    if (lang === 'en-gb' && this.$config.STORE === 'CMW')
       lang = 'en-eu'
 
     const response = await this.$prismic.api.getSingle(
@@ -26,8 +25,7 @@ export default {
         lang,
       },
     )
-    const shipping = response.data
-    this.shipping = shipping
+    this.shipping = response.data
   },
   computed: {
     cart() {
@@ -35,11 +33,9 @@ export default {
     },
     cartTotalAmount() {
       const cart = this.$store.state.userCart.userCart
-      const total = cart
+      return cart
         .reduce((t, n) => t + n.quantity * n.singleAmount, 0)
         .toFixed(2)
-
-      return total
     },
     checkoutUrl() {
       let baseUrl = `${this.cart.checkoutUrl}/?`
@@ -78,7 +74,29 @@ export default {
     async checkout() {
       // redirect if not user
       if (!this.$store.state.user.user) {
-        this.$router.push('/login')
+        // crea carrello su shop
+        const domain = this.$config.DOMAIN
+        const access_token = this.$config.STOREFRONT_ACCESS_TOKEN
+        const user = this.$store.state.user.user || 'test'
+        const cart = await createCart(domain, access_token, user)
+        const cartId = cart.id
+
+        // update in bulk del cart
+        const lines = this.$store.state.userCart.userCart.map((el) => {
+          return {
+            merchandiseId: el.productVariantId,
+            quantity: el.quantity,
+          }
+        })
+
+        const cartFilled = await addProductToCart(
+          domain,
+          access_token,
+          cartId,
+          lines,
+        )
+        // crea checkoutUrl
+        window.location = `${cartFilled.checkoutUrl}/?`
         return
       }
 

@@ -9,9 +9,6 @@ import subtractIcon from 'assets/svg/subtract.svg'
 import emailIcon from 'assets/svg/email.svg'
 import { mapState } from 'vuex'
 import { useCustomer } from '~/store/customer'
-// noinspection ES6UnusedImports
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as MetaFieldTypeType from '~/types/metaField'
 import { pick } from '@/utilities/arrays'
 import { isObject, regexRules } from '~/utilities/validators'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
@@ -135,6 +132,16 @@ export default {
     @mouseleave="isHovering = false"
   >
     <div class="c-productBox__grid cmw-grid cmw-h-full">
+      <div class="c-productBox__image">
+        <NuxtLink :to="localePath(`/${product.product.handle}-${backofficeId}`)">
+          <img
+            class="cmw-transition-lazy-image cmw-filter hover:cmw-contrast-150 cmw-mx-auto cmw-mt-4 cmw-text-xxs"
+            :class="{ 'cmw-opacity-50': !product.availableForSale }"
+            :src="product.image.url"
+            :alt="product.image.altText"
+          >
+        </NuxtLink>
+      </div>
       <div class="c-productBox__features cmw-py-2 cmw-pl-2">
         <div class="cmw-flex cmw-flex-col cmw-gap-y-1 cmw-w-max">
           <ProductBoxFeature v-for="feature in availableFeatures" :key="feature" :feature="feature" />
@@ -149,20 +156,10 @@ export default {
           <ProductBoxAward :award="award" />
         </div>
       </div>
-      <div class="c-productBox__image">
-        <NuxtLink :to="localePath(`/${product.product.handle}-${backofficeId}`)">
-          <img
-            class="cmw-transition-lazy-image cmw-filter hover:cmw-contrast-150 cmw-max-h-[150px] cmw-mx-auto cmw-mt-8 lg:cmw-max-h-[270px]"
-            :class="{ 'cmw-opacity-50': !product.availableForSale }"
-            :src="product.image.url"
-            :alt="product.image.altText"
-          >
-        </NuxtLink>
-      </div>
       <div class="c-productBox__wishlist cmw-place-self-end cmw-relative">
         <ButtonIcon
           :icon="isOnFavourite ? heartFullIcon : heartIcon"
-          class="cmw-mr-4 z-baseLow" :variant="isOnFavourite ? 'icon-primary' : 'icon'"
+          class="z-baseLow" :variant="isOnFavourite ? 'icon-primary' : 'icon'"
           @click.native="handleWishlist({ id: backofficeId, isOnFavourite })"
         />
       </div>
@@ -258,6 +255,7 @@ export default {
 <style scoped>
 .c-productBox {
   container: product-box / inline-size;
+  height: 100%;
 }
 
 .c-productBox__grid {
@@ -276,14 +274,25 @@ export default {
 
 .c-productBox__awards {
   grid-area: awards;
+  grid-row: 1;
 }
 
 .c-productBox__image {
-  grid-area: image;
+  grid-row: 1;
+  grid-column: 1 / -1;
+}
+
+.c-productBox__image img {
+  max-height: 270px;
 }
 
 .c-productBox__wishlist {
   grid-area: wishlist;
+  grid-row: 1;
+}
+
+.c-productBox__wishlist button {
+  margin-right: 1rem;
 }
 
 .c-productBox__title {
@@ -304,6 +313,14 @@ export default {
 
 /* We are handling this piece skipping mobile-first to reduce the amount of CSS  */
 @container product-box (max-width: 250px) {
+  .c-productBox__image img {
+    max-height: 240px;
+  }
+
+  .c-productBox__wishlist button {
+    margin-right: 0.25rem;
+  }
+
   .c-productBox__lapel {
     --lapel-top: -5px;
   }

@@ -1,5 +1,3 @@
-process.env.ESLINT_TSCONFIG = 'tsconfig.json'
-
 module.exports = {
   extends: ['@antfu'],
   rules: {
@@ -8,7 +6,7 @@ module.exports = {
     'func-call-spacing': ['error', 'never'],
     'no-tabs': 0,
     'max-len': [
-      'error',
+      'warn',
       {
         code: 180,
         tabWidth: 2,
@@ -22,6 +20,7 @@ module.exports = {
     'no-console': ['warn', { allow: ['warn', 'error'] }],
     /* VUE ESLINT RULES */
     'vue/no-v-text-v-html-on-component': 'warn',
+    'vue/no-deprecated-v-on-native-modifier': 'warn',
     'vue/script-setup-uses-vars': 'error',
     'vue/valid-template-root': 0,
     'vue/no-multiple-template-root': 0,
@@ -31,8 +30,8 @@ module.exports = {
         order: ['script', 'template', 'style'],
       },
     ],
-    'vue/multi-word-component-names': ['error', {
-      ignores: ['404', '_handle', 'index', 'cart', 'preview', 'login', 'profile', 'wishlist', 'addresses'],
+    'vue/multi-word-component-names': ['warn', {
+      ignores: ['404', '_handle', 'Navbar', 'index', 'catalog', 'contact', 'cart', 'preview', 'login', 'profile', 'wishlist', 'addresses', 'shipping', 'search', 'recover'],
     }],
     // Note: We can change this to "camelCase" when upgrading to Vue3 https://eslint.vuejs.org/rules/custom-event-name-casing.html
     'vue/custom-event-name-casing': ['error', 'kebab-case'],

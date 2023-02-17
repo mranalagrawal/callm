@@ -1,5 +1,6 @@
 <script>
 import locales from '../../locales-mapper'
+
 export default {
   data() {
     return {
@@ -9,7 +10,8 @@ export default {
   async fetch() {
     let lang = locales[this.$i18n.locale]
 
-    if (lang == 'en-gb' && this.$config.STORE == 'CMW')
+    // eslint-disable-next-line eqeqeq
+    if (lang === 'en-gb' && this.$config.STORE == 'CMW')
       lang = 'en-eu'
 
     this.contents = (
@@ -40,17 +42,22 @@ export default {
     >
       <div class="col-12 col-md-7 offset-md-5 py-3">
         <h2 class="cmw-text-white">
-          {{ contents[0].data.title[0].text }}
+          <NuxtLink
+            class="cmw-text-white hover:(cmw-text-white cmw-no-underline)"
+            :to="contents[0].data.cta_link || '/'"
+          >
+            {{ contents[0].data.title[0].text }}
+          </NuxtLink>
         </h2>
         <p class="lead">
           {{ contents[0].data.subtitle[0].text }}
         </p>
-        <nuxt-link
+        <NuxtLink
           :to="contents[0].data.cta_link || '/'"
           class="btn btn-outline-light mt-5 px-5"
         >
           {{ contents[0].data.cta_button }}
-        </nuxt-link>
+        </NuxtLink>
       </div>
     </div>
   </div>

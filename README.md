@@ -7,7 +7,7 @@
 ### install dependencies
 
 ```bash
-npm install
+yarn install
 ```
 
 ### Development Server
@@ -17,7 +17,7 @@ Start the development server on http://localhost:3000
 > Make sure you have a .env file with the proper environments, if you are unsure which environments you need, contact [developers@callmewine.com](mailto:developers@callmewine.com) for further advice.
 
 ```bash
-npm run dev
+yarn dev
 ```
 ### Production, Stage and Features Builds
 

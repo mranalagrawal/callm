@@ -76,7 +76,7 @@ export const useCustomer = defineStore({
             })
             this.$patch({
               customer,
-              wishlistArr: customer.wishlist && customer.wishlist.value ? setCustomerWishlist(customer.wishlist.value) : [],
+              wishlistArr: (customer.wishlist && customer.wishlist.value) ? setCustomerWishlist(customer.wishlist.value) : [],
             })
           } else {
             SweetAlertToast.fire({ text: this.$nuxt.app.i18n.t('common.feedback.KO.login') })

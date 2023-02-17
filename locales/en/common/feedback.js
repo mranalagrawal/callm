@@ -11,6 +11,7 @@ export default {
       customerUpdatePassword: 'Your password has been updated successfully!',
       customerUpdateData: 'Your personal information has been successfully updated!',
       requestAssistance: 'Message sent!',
+      emailAdded: 'Registration successful!',
     },
     KO: {
       login: 'Login failed, please check your entries',

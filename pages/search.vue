@@ -190,14 +190,14 @@ export default {
     this.view.brand = brandId
       ? {
           key: brandId,
-          name: brands.find(x => x.key[0] == brandId).key[1],
+          name: brands.find(x => x.key[0] === brandId).key[1],
           field: 'brands',
         }
       : null
     this.view.region = regionId
       ? {
           key: regionId,
-          name: regions.find(x => x.key[0] == regionId).key[1],
+          name: regions.find(x => x.key[0] === regionId).key[1],
           field: 'regions',
         }
       : null
@@ -205,14 +205,14 @@ export default {
     this.view.pairing = pairingId
       ? {
           key: pairingId,
-          name: pairings.find(x => x.key[0] == pairingId).key[1],
+          name: pairings.find(x => x.key[0] === pairingId).key[1],
           field: 'pairings',
         }
       : null
     this.view.aging = agingId
       ? {
           key: agingId,
-          name: agings.find(x => x.key[0] == agingId).key[1],
+          name: agings.find(x => x.key[0] === agingId).key[1],
           field: 'agings',
         }
       : null
@@ -220,14 +220,14 @@ export default {
     this.view.philosophy = philosophyId
       ? {
           key: philosophyId,
-          name: philosophies.find(x => x.key[0] == philosophyId).key[1],
+          name: philosophies.find(x => x.key[0] === philosophyId).key[1],
           field: 'philosophies',
         }
       : null
     this.view.size = sizeId
       ? {
           key: sizeId,
-          name: sizes.find(x => x.key[0] == sizeId).key[1],
+          name: sizes.find(x => x.key[0] === sizeId).key[1],
           field: 'sizes',
         }
       : null
@@ -235,7 +235,7 @@ export default {
     this.view.dosagecontent = dosagecontentId
       ? {
           key: dosagecontentId,
-          name: dosagecontents.find(x => x.key[0] == dosagecontentId).key[1],
+          name: dosagecontents.find(x => x.key[0] === dosagecontentId).key[1],
           field: 'dosagecontents',
         }
       : null
@@ -243,7 +243,7 @@ export default {
     this.view.category = categoryId
       ? {
           key: categoryId,
-          name: categories.find(x => x.key[0] == categoryId).key[1],
+          name: categories.find(x => x.key[0] === categoryId).key[1],
           field: 'categories',
         }
       : null
@@ -251,7 +251,7 @@ export default {
     this.view.winelists = winelistsId
       ? {
           key: winelistsId,
-          name: winelists.find(x => x.key[0] == winelistsId).key[1],
+          name: winelists.find(x => x.key[0] === winelistsId).key[1],
           field: 'winelists',
         }
       : null
@@ -259,14 +259,14 @@ export default {
     this.view.award = awardId
       ? {
           key: awardId,
-          name: awards.find(x => x.key[0] == awardId).key[1],
+          name: awards.find(x => x.key[0] === awardId).key[1],
           field: 'awards',
         }
       : null
     this.view.vintage = vintageId
       ? {
           key: vintageId,
-          name: vintages.find(x => x.key[0] == vintageId).key[1],
+          name: vintages.find(x => x.key[0] === vintageId).key[1],
           field: 'vintages',
         }
       : null
@@ -357,7 +357,7 @@ export default {
     backward() {
       const query = Object.assign({}, this.$route.query)
 
-      if (this.currentPage == 1)
+      if (this.currentPage === 1)
         return
 
       this.currentPage--
@@ -373,8 +373,8 @@ export default {
 </script>
 
 <template>
-  <div class="container-fluid px-md-5 mt-5">
-    <div class="row pt-5">
+  <div class="container-fluid px-md-5">
+    <div class="row">
       <div class="col-12 col-md-3">
         <h1>questa pagina è di servizio, andrà rimossa</h1>
       </div>
@@ -757,7 +757,7 @@ export default {
         :search="search"
       />
 
-      <template #modal-footer class="border-0">
+      <template #modal-footer>
         <div class="w-100 text-center">
           <button class="btn btn-light-secondary btn-lg px-5">
             INVIA
@@ -770,9 +770,9 @@ export default {
 
 <style scoped>
 :deep(.dropdown-menu.dropdown-menu-right.show) {
-  padding-top: 0px;
-  padding-bottom: 0px;
-  border: 0px;
+  padding-top: 0;
+  padding-bottom: 0;
+  border: 0;
 }
 .badge {
   border-radius: 2rem !important;
@@ -783,8 +783,8 @@ export default {
 
 .loader {
   position: fixed;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   width: 100vw;
   height: 100vh;
   z-index: 999;
@@ -857,7 +857,7 @@ export default {
 
 :deep(.modal-footer),
 :deep(.modal-header) {
-  border: 0px;
+  border: 0;
 }
 :deep(.modal-content) {
   height: 100vh;

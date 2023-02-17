@@ -60,9 +60,6 @@ export default {
 
     const mapped = data
       .map((firstLevel) => {
-        const secondLevelNames = [
-          ...new Set(firstLevel.items.map(el => el.secondlevelname)),
-        ]
         const secondLevels = firstLevel.items.map((el) => {
           return {
             name: el.secondlevelname,
@@ -138,8 +135,6 @@ export default {
         style="
         min-height: 300px;
         z-index: 100;
-        max-height: 400px;
-        overflow-y: scroll;
       "
         @mouseleave="onTab(null)"
       >
@@ -163,8 +158,6 @@ export default {
         style="
         min-height: 300px;
         z-index: 100;
-        max-height: 400px;
-        overflow-y: scroll;
       "
         @mouseleave="onTab(null)"
       >

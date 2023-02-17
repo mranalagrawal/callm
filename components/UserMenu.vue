@@ -1,18 +1,11 @@
 <script>
-import { mapActions } from 'vuex'
+import { useCustomer } from '~/store/customer'
 
 export default {
-  data() {
-    return {
-      form: {
-        email: '',
-        password: '',
-        remember: false,
-      },
-    }
-  },
-  methods: {
-    ...mapActions({ logout: 'user/logout' }),
+  setup() {
+    const customerStore = useCustomer()
+    const { logout } = customerStore
+    return { logout }
   },
 }
 </script>
@@ -73,14 +66,6 @@ export default {
 </template>
 
 <style scoped>
-:deep(form) {
-  width: 340px;
-}
-.menu-link:hover {
-  color: var(--dark-secondary);
-  font-weight: bold;
-}
-
 @media screen and (max-width: 768px) {
   .voice {
     padding-bottom: 18px;

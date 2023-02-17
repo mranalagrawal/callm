@@ -34,9 +34,9 @@ export default {
 <template>
   <div class="position-relative" style="overflow: hidden">
     <b-carousel
+      v-if="data"
       id="carousel-1"
       v-model="slide"
-      v-if="data"
       :interval="4000"
       :controls="data.length > 1"
       :indicators="data.length > 1"
@@ -66,10 +66,10 @@ export default {
       </b-carousel-slide>
     </b-carousel>
     <b-carousel
+      v-if="data"
       id="carousel-2"
       v-model="slide"
       :interval="4000"
-      v-if="data"
       :controls="data.length > 1"
       :indicators="data.length > 1"
       fade
@@ -129,7 +129,7 @@ export default {
 <style lang="css" scoped>
 .home-carousel :deep(.carousel-indicators) {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
   align-items: center;
   margin-right: 5%;
   bottom: 90px;

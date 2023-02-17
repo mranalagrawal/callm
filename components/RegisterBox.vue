@@ -129,7 +129,7 @@ export default {
         <Button
           class="sm:cmw-max-w-330px cmw-mt-8"
           type="submit"
-          :disabled="isSubmitting || (new Date(now) - new Date(form.age) > 568036800000 && form.privacy)"
+          :disabled="isSubmitting || !(new Date(now) - new Date(form.age) > 568036800000)"
           :label="$t('navbar.user.register').toString()"
         />
       </form>

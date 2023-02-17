@@ -12,7 +12,7 @@ export default {
   async fetch() {
     let lang = locales[this.$i18n.locale]
 
-    if (lang == 'en-gb' && this.$config.STORE == 'CMW')
+    if (lang === 'en-gb' && this.$config.STORE === 'CMW')
       lang = 'en-eu'
 
     const response = await this.$prismic.api.getSingle('home-carousel', {
@@ -22,10 +22,10 @@ export default {
     this.data = data
   },
   methods: {
-    onSlideStart(slide) {
+    onSlideStart() {
       this.sliding = true
     },
-    onSlideEnd(slide) {
+    onSlideEnd() {
       this.sliding = false
     },
   },
@@ -35,9 +35,9 @@ export default {
 <template>
   <div class="position-relative" style="overflow: hidden">
     <b-carousel
+      v-if="data"
       id="carousel-1"
       v-model="slide"
-      v-if="data"
       :interval="4000"
       :controls="data.length > 1"
       :indicators="data.length > 1"
@@ -52,25 +52,27 @@ export default {
         :key="i"
         :img-src="slide.image.url"
       >
-        <div class="h1 cmw-text-white">
-          {{ slide.text }}
+        <div class="h1">
+          <NuxtLink class="cmw-text-white hover:(cmw-text-white cmw-no-underline)" :to="localePath(slide.link)">
+            {{ slide.text }}
+          </NuxtLink>
         </div>
         <div>
-          <nuxt-link
-            :to="slide.link"
+          <NuxtLink
+            :to="localePath(slide.link)"
             class="btn btn-more px-3 py-2"
             style="text-shadow: none; border-radius: 10px"
           >
             {{ slide.cta }}
-          </nuxt-link>
+          </NuxtLink>
         </div>
       </b-carousel-slide>
     </b-carousel>
     <b-carousel
+      v-if="data"
       id="carousel-2"
       v-model="slide"
       :interval="4000"
-      v-if="data"
       :controls="data.length > 1"
       :indicators="data.length > 1"
       fade
@@ -130,7 +132,7 @@ export default {
 <style lang="css" scoped>
 .home-carousel :deep(.carousel-indicators) {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
   align-items: center;
   margin-right: 5%;
   bottom: 90px;

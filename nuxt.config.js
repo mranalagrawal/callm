@@ -79,7 +79,7 @@ export default {
     '@/assets/scss/main.scss',
     '@yzfe/svgicon/lib/svgicon.css',
     '@assets/css/vue-transitions.css',
-    '@assets/css/layers/base.css',
+    '@assets/css/layers/base.pcss',
     // Vendors
     '@/assets/css/vendors/swal.css',
     '@/assets/css/vendors/vue-slick-carousel.css',
@@ -103,11 +103,12 @@ export default {
   ],
 
   buildModules: [
-    ['@nuxtjs/eslint-module', {
-      exclude: ['node_modules', '.nuxt', 'assets', 'components', 'config', 'layouts',
-        'locales', 'middleware', 'pages', 'plugins', 'static', 'utilities'],
-      fix: false,
-    }],
+    // ['@nuxtjs/eslint-module', {
+    //   // extends: ['@antfu'],
+    //   exclude: ['node_modules', '.nuxt', 'assets', 'components', 'config', 'layouts',
+    //     'locales', 'middleware', 'pages', 'plugins', 'static'],
+    //   fix: false,
+    // }],
     '@nuxtjs/composition-api/module',
     ['@pinia/nuxt', { disableVuex: false }],
     '@nuxtjs/google-fonts',
@@ -252,9 +253,10 @@ export default {
 
   sentry: {
     dsn: 'https://8976f88cc7254b248b330a78ba72a074@o1240128.ingest.sentry.io/4504560369008640',
+    disabled: process.env.NODE_ENV !== 'production',
     config: {
       browserTracing: {
-        tracePropagationTargets: ['callmewine.co.uk', /^\//],
+        tracePropagationTargets: ['callmewine.co.uk'],
       },
       vueOptions: {
         trackComponents: true,
@@ -301,19 +303,21 @@ export default {
           },
         ],
       })
+
+      config.module.rules.push({
+        test: /\.(cjs|mjs)$/,
+        exclude: {
+          and: [/node_modules/],
+          not: [/pathe/],
+        },
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [['@babel/preset-env', { targets: 'ie 11' }]],
+          },
+        },
+      })
     },
-  },
-
-  babel: { compact: true },
-
-  /* FixMe: We are using nuxt generate for builds, from docs you can read: For server hosting, target: 'server' is used,
-       which is the default value. You will use the build command to build your application. */
-  /* target: "static", */
-
-  generate: {
-    exclude: [
-      /^\//, // rotte da escludere dalla generazione
-    ],
   },
 
   // https://google-fonts.nuxtjs.org/
@@ -343,6 +347,10 @@ export default {
     ], // Your Day.js plugin
   },
 
+  gtm: {
+    id: process.env.GOOGLE_TAG_MANAGER_ID,
+  },
+
   publicRuntimeConfig: {
     DOMAIN: process.env.DOMAIN,
     STOREFRONT_ACCESS_TOKEN: process.env.STOREFRONT_ACCESS_TOKEN,
@@ -351,6 +359,7 @@ export default {
     STORE: process.env.STORE === 'CMW' ? 'CMW_UK' : process.env.STORE,
     SALECHANNEL: process.env.SALECHANNEL,
     DEFAULT_LOCALE: process.env.DEFAULT_LOCALE,
+    CUSTOMER_API: process.env.CUSTOMER_API,
     gtm: {
       id: process.env.GOOGLE_TAG_MANAGER_ID,
     },

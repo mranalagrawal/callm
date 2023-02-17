@@ -2,8 +2,6 @@
 import { ref } from '@nuxtjs/composition-api'
 import closeIcon from '~/assets/svg/close.svg'
 // noinspection ES6UnusedImports
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as AwardType from '~/types/award'
 import { isObject } from '~/utilities/validators'
 
 // noinspection JSUnusedGlobalSymbols

@@ -18,7 +18,7 @@ export default {
     },
     color: {
       type: String,
-      validator: prop => ['primary', 'secondary'].includes(prop),
+      validator: prop => ['primary', 'secondary', 'secondary-400'].includes(prop),
       default: 'primary',
     },
     shape: {

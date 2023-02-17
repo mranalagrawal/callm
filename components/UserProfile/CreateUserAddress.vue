@@ -1,8 +1,6 @@
 <script>
 import { ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import customerAddressCreate from '~/graphql/mutations/customerAddressCreate'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as InputObjects from '~/graphql/schemas/input-objects'
 import { SweetAlertToast } from '~/utilities/Swal'
 import { useSplash } from '~/store/splash'
 import { useCustomerAddresses } from '~/store/customerAddresses'

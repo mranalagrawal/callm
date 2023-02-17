@@ -82,7 +82,30 @@ export default {
     async checkout() {
       // redirect if not user
       if (!this.$store.state.user.user) {
-        this.$router.push('/login')
+        // crea carrello su shop
+        const domain = this.$config.DOMAIN
+        const access_token = this.$config.STOREFRONT_ACCESS_TOKEN
+        const user = this.$store.state.user.user || 'test'
+        const cart = await createCart(domain, access_token, user)
+        const cartId = cart.id
+
+        // update in bulk del cart
+        const lines = this.$store.state.userCart.userCart.map((el) => {
+          return {
+            merchandiseId: el.productVariantId,
+            quantity: el.quantity,
+          }
+        })
+
+        const cartFilled = await addProductToCart(
+          domain,
+          access_token,
+          cartId,
+          lines,
+        )
+        // crea checkoutUrl
+        const checkoutUrl = `${cartFilled.checkoutUrl}/?`
+        window.location = checkoutUrl
         return
       }
 
@@ -152,21 +175,20 @@ export default {
             <div
               class="cmw-text-secondary-700 cmw-flex cmw-items-center cmw-justify-center cmw-gap-2 cmw-text-sm cmw-uppercase cmw-py-0"
             >
-              {{ cartTotalAmount }}
               <VueSvgIcon :data="cartTotalAmount < shipping.threshold ? deliveryIcon : checkCircularIcon" width="24" height="24" />
               <span>{{ cartTotalAmount < shipping.threshold ? shipping.threshold_not_reached : shipping.threshold_reached }}</span>
             </div>
             <div class="cmw-px-6">
               <hr>
             </div>
-            <div>
+            <div class="cmw-max-h-[360px] cmw-overflow-y-auto cmw-overflow-x-hidden">
               <div v-for="item in data" :key="item.id">
                 <CartLine :item="item" />
               </div>
             </div>
             <div class="row bg-light py-4 px-4">
               <div class="col-6">
-                <Button variant="ghost" to="/cart">
+                <Button variant="ghost" :to="localePath('/cart')">
                   {{
                     $t("navbar.cart.detail")
                   }}

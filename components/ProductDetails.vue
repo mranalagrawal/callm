@@ -48,7 +48,7 @@ export default {
     // breadcrumb
     const elastic_url = this.$config.ELASTIC_URL
     const urls = await fetch(
-      `${elastic_url}product/${this.product.substring(1)}`,
+      `${elastic_url}product/${this.product.substring(1)}?lang=${this.$i18n.locale}`,
     ).then(r => r.json())
 
     this.breadcrumb = urls.data
@@ -653,11 +653,11 @@ export default {
         </div>
       </div>
 
-      <RecentProducts />
-
-      <VendorProducts :vendor="brand.title" />
-
-      <RecommendedProducts :product="data.id" />
+      <ClientOnly>
+        <RecentProducts />
+        <VendorProducts :vendor="brand.title" />
+        <RecommendedProducts :product="data.id" />
+      </ClientOnly>
     </div>
   </div>
 </template>
