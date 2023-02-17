@@ -189,6 +189,7 @@ export default {
     areas: 'Area',
     provenience: 'Provenienza',
     brands: 'Produttore',
+    noBrands: 'Prova la nostra migliore lista',
     countries: 'Paese',
     sizes: 'Formato',
     vintages: 'Annate',
