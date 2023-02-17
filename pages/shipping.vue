@@ -13,7 +13,7 @@ export default {
   },
   async fetch() {
     let lang = locales[this.$i18n.locale]
-    if (lang == 'en-gb' && this.$config.STORE == 'CMW')
+    if (lang === 'en-gb' && this.$config.STORE === 'CMW')
       lang = 'en-eu'
 
     const response = await this.$prismic.api.getSingle(
@@ -23,8 +23,7 @@ export default {
       },
     )
 
-    const data = response.data
-    this.data = data
+    this.data = response.data
   },
 }
 </script>

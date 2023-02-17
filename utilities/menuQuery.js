@@ -1,17 +1,3 @@
-const collectionsQuery = `query {
-    
-    collections(first: 30) {
-        nodes {
-            id
-            handle
-            title
-            description
-        }
-    }
-    
-    
-}`
-
 const menuQuery = `query MyQuery {
     menu(handle: "menu") {
         items {
@@ -21,7 +7,7 @@ const menuQuery = `query MyQuery {
                 title
                 tags
                 url
-                type    
+                type
             }
         }
     }

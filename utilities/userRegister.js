@@ -1,6 +1,5 @@
 import createTokenQuery from './createUserToken'
 import setUser from './setUser'
-import userLogin from './userLogin'
 
 const fetch = require('node-fetch')
 
@@ -30,9 +29,7 @@ const userRegister = async (
 
   // registro effettivamente l'utente
   const response = await fetch(domain, GRAPHQL_BODY_TOKEN)
-  const res = await response.json()
-
-  console.log(res, 'res')
+  await response.json()
 
   /* console.log(res, "E' qui che si rompe..."); */
   // costruisco la query createTokenQuery, che mi ritorna un token necessario per loggare l'utente

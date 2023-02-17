@@ -84,11 +84,11 @@ export const createCartMutation = (buyerIdentity = null) => {
 export const createCart = async (domain, access_token, user) => {
   const buyer = user
     ? {
-      buyerIdentity: {
-        countryCode: 'UK',
-        customerAccessToken: user.token,
-      },
-    }
+        buyerIdentity: {
+          countryCode: 'UK',
+          customerAccessToken: user.token,
+        },
+      }
     : null
   const cartQuery = createCartMutation(buyer)
 
@@ -106,10 +106,6 @@ export const createCart = async (domain, access_token, user) => {
   const cart = await fetch(domain, GRAPHQL_BODY_USER)
     .then(res => res.json())
     .then((res) => {
-      const cartId = res.data.cartCreate.cart.id
-      if (process.client) {
-        /* console.log(res.data.cartCreate.cart, "cartId from create"); */
-      }
       return res.data.cartCreate.cart
     })
   return cart

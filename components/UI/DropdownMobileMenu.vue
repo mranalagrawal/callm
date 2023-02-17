@@ -1,6 +1,7 @@
 <script>
 export default {
   props: ['data'],
+  emits: ['update-show'],
   data() {
     return {
       visible: false,
@@ -49,8 +50,8 @@ export default {
             {{ secondLevel.name }}
           </p>
           <div
-            v-for="(thirdLevel, i) in secondLevel.items"
-            :key="`thirdLevel_${i}`"
+            v-for="(thirdLevel, idx) in secondLevel.items"
+            :key="`thirdLevel_${idx}`"
             class="py-2"
           >
             <div v-if="!thirdLevel.marketing_cta">
@@ -74,7 +75,7 @@ export default {
                   height: 70px;
                   background-position: center;
                   background-size: cover;
-                  border-radius: 10px 0px 0px 10px;
+                  border-radius: 10px 0 0 10px;
                 "
                 :style="{
                   backgroundImage:

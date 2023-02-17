@@ -1,7 +1,6 @@
 <script>
 import { storeToRefs } from 'pinia'
 // noinspection ES6UnusedImports
-import * as LineItemType from '~/types/lineItem'
 import heartIcon from '~/assets/svg/heart.svg'
 import heartFullIcon from '~/assets/svg/heart-full.svg'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'

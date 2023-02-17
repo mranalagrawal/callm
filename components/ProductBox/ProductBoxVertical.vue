@@ -9,9 +9,6 @@ import subtractIcon from 'assets/svg/subtract.svg'
 import emailIcon from 'assets/svg/email.svg'
 import { mapState } from 'vuex'
 import { useCustomer } from '~/store/customer'
-// noinspection ES6UnusedImports
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as MetaFieldTypeType from '~/types/metaField'
 import { pick } from '@/utilities/arrays'
 import { isObject, regexRules } from '~/utilities/validators'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'

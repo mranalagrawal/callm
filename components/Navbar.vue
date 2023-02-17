@@ -82,6 +82,50 @@ export default {
       mobileLogin: false,
     }
   },
+  async fetch() {
+    let lang = ''
+    if (this.$i18n.locale === 'en')
+      lang = 'en-gb'
+    else
+      lang = 'it-it'
+
+    // TODO component access!
+    const response = await this.$prismic.api.getSingle('mega-menu-test', {
+      lang,
+    })
+    const data = response.data.body
+
+    this.data = data
+      .map((firstLevel) => {
+        const secondLevels = firstLevel.items.map((el) => {
+          return {
+            name: el.secondlevelname,
+            position: el.second_level_position,
+          }
+        })
+        const secondLevelsSet = [
+          ...new Set(secondLevels.map(el => JSON.stringify(el))),
+        ]
+          .map(el => JSON.parse(el))
+          .sort((a, b) => a.position - b.position)
+
+        const items = secondLevelsSet.map((el) => {
+          const temp = firstLevel.items
+            .filter(x => x.secondlevelname === el.name)
+            .sort((a, b) => a.third_level_position - b.third_level_position)
+          return { ...el, items: temp }
+        })
+
+        return {
+          name: firstLevel.primary.group_label,
+          link: firstLevel.primary.first_level_link,
+          position: firstLevel.primary.first_level_position,
+          items,
+        }
+      })
+      .sort((a, b) => a.position - b.position)
+    this.resizeListener()
+  },
   computed: {
     ...mapGetters({
       cartTotalAmount: 'userCart/getCartTotalAmount',
@@ -97,6 +141,8 @@ export default {
       this.showCart = false
       this.search = null
       this.isSidebarOpen = false
+      this.isMobileMenuOpen = false
+      this.showMobileButton = true
     },
     cartTotalAmount(total) {
       if (Number(total) > 50) {
@@ -114,11 +160,10 @@ export default {
   methods: {
     bolder(text) {
       const regexValue = new RegExp(`(${this.search})`, 'ig')
-      const newStr = text.replace(
+      return text.replace(
         regexValue,
         '<span class=\'font-weight-bold\'>$1</span>',
       )
-      return newStr
     },
     toggleMobileLogin() {
       this.mobileLogin = !this.mobileLogin
@@ -154,8 +199,7 @@ export default {
           }&search=${
           this.search}`,
         )
-        const resultJSON = await result.json()
-        this.data = resultJSON
+        this.data = await result.json()
       }
     },
     switchToCart() {
@@ -178,55 +222,6 @@ export default {
     handleBlur() {
       this.showSearchSuggestions = false
     },
-  },
-  async fetch() {
-    let lang = ''
-    if (this.$i18n.locale == 'en')
-      lang = 'en-gb'
-    else
-      lang = 'it-it'
-
-    // TODO component access!
-    const response = await this.$prismic.api.getSingle('mega-menu-test', {
-      lang,
-    })
-    const data = response.data.body
-
-    const mapped = data
-      .map((firstLevel) => {
-        const secondLevelNames = [
-          ...new Set(firstLevel.items.map(el => el.secondlevelname)),
-        ]
-        const secondLevels = firstLevel.items.map((el) => {
-          return {
-            name: el.secondlevelname,
-            position: el.second_level_position,
-          }
-        })
-        const secondLevelsSet = [
-          ...new Set(secondLevels.map(el => JSON.stringify(el))),
-        ]
-          .map(el => JSON.parse(el))
-          .sort((a, b) => a.position - b.position)
-
-        const items = secondLevelsSet.map((el) => {
-          const temp = firstLevel.items
-            .filter(x => x.secondlevelname === el.name)
-            .sort((a, b) => a.third_level_position - b.third_level_position)
-          return { ...el, items: temp }
-        })
-
-        return {
-          name: firstLevel.primary.group_label,
-          link: firstLevel.primary.first_level_link,
-          position: firstLevel.primary.first_level_position,
-          items,
-        }
-      })
-      .sort((a, b) => a.position - b.position)
-
-    this.data = mapped
-    this.resizeListener()
   },
 }
 </script>
@@ -475,16 +470,6 @@ export default {
 </template>
 
 <style scoped>
-.content {
-  position: absolute;
-  right: 0px;
-  transform: translateY(-3px);
-  z-index: 999;
-  border-top: 4px solid var(--dark-secondary);
-  padding-bottom: 0px;
-  background: white;
-}
-
 :deep(.b-sidebar-body) {
   background: white;
 }
@@ -504,7 +489,7 @@ export default {
 :deep(.dropdown-menu) {
   left: -60px;
   border-top: 4px solid var(--dark-secondary);
-  padding-bottom: 0px;
+  padding-bottom: 0;
 }
 
 :deep(.b-sidebar) {
@@ -556,7 +541,7 @@ export default {
 
 .user-box:hover {
   background: var(--darker-secondary);
-  border-radius: 10px 10px 0px 0px;
+  border-radius: 10px 10px 0 0;
 }
 
 .user-box:hover * {
@@ -569,7 +554,7 @@ export default {
 
 .cart-box:hover {
   background: var(--darker-secondary);
-  border-radius: 10px 10px 0px 0px;
+  border-radius: 10px 10px 0 0;
 }
 
 .cart-box:hover * {

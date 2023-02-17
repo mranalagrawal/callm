@@ -103,11 +103,12 @@ export default {
   ],
 
   buildModules: [
-    ['@nuxtjs/eslint-module', {
-      exclude: ['node_modules', '.nuxt', 'assets', 'components', 'config', 'layouts',
-        'locales', 'middleware', 'pages', 'plugins', 'static'],
-      fix: false,
-    }],
+    // ['@nuxtjs/eslint-module', {
+    //   // extends: ['@antfu'],
+    //   exclude: ['node_modules', '.nuxt', 'assets', 'components', 'config', 'layouts',
+    //     'locales', 'middleware', 'pages', 'plugins', 'static'],
+    //   fix: false,
+    // }],
     '@nuxtjs/composition-api/module',
     ['@pinia/nuxt', { disableVuex: false }],
     '@nuxtjs/google-fonts',
