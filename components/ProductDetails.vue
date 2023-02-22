@@ -197,6 +197,18 @@ export default {
 
 <template>
   <div class="cmw-mt-4 cmw-max-w-screen-xl cmw-mx-auto <md:cmw-px-4">
+    <div v-if="$fetchState.error" class="cmw-relative cmw-text-center cmw-mt-12">
+      <div class="md:(cmw-grid cmw-grid-cols-2 cmw-items-center)">
+        <img
+          class="cmw-w-3/4 cmw-mx-auto" :src="require('assets/images/wine-stain.png')"
+          alt="empty-bottles"
+        >
+        <div class="cmw-text-left">
+          <h2 class="cmw-h1 cmw-text-secondary" v-text="$t('notFoundTitle')" />
+          <p class="cmw-mb-8 md:cmw-w-3/5" v-text="$t('notFoundLine')" />
+        </div>
+      </div>
+    </div>
     <div v-if="data && brandMetafields">
       <div v-if="breadcrumb" class="<md:cmw-hidden md:(cmw-flex cmw-items-center) cmw-my-2 cmw-font-sans cmw-text-sm">
         <NuxtLink class="cmw-text-primary-400" :to="localePath(`/catalog`)">

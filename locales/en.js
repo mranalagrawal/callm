@@ -16,6 +16,8 @@ export default {
       recommendedProducts: 'Often bought together',
     },
   },
+  notFoundTitle: 'We are sorry',
+  notFoundLine: 'We didn\'t find anything with these characteristics, try searching for these suggestions',
   loading: 'Fetching data...',
   fetchError: 'An error occurred',
   save: 'Save',
