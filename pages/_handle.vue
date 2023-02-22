@@ -20,6 +20,7 @@ export default {
     const isProduct = /[P][0-9]+/
     if (isProduct.test(path)) {
       this.product = `P${this.$route.path.split('-P')[1]}`
+      this.hasResults = true
       return
     }
 
@@ -71,7 +72,7 @@ export default {
         <ProductDetails :product="product" />
       </div>
       <div v-else>
-        <search-filter :input-parameters="inputParameters" />
+        <search-filter :input-parameters="{ ...$route.query, ...inputParameters }" />
       </div>
     </div>
     <div v-else class="cmw-relative cmw-text-center cmw-mt-12">

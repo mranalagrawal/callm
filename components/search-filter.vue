@@ -97,7 +97,6 @@ export default {
     }
   },
   async fetch() {
-    console.log(this.inputParameters)
     if (process.client)
       window.scrollTo(0, 0)
 
@@ -480,96 +479,112 @@ export default {
             :label="$t('search.categories')"
             :items="categories"
             keyword="categories"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="winelists && winelists.length"
             :label="$t('search.winelists')"
             :items="winelists"
             keyword="winelists"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="pairings && pairings.length"
             :label="$t('search.pairings')"
             :items="pairings"
             keyword="pairings"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="dosagecontents && dosagecontents.length"
             :label="$t('search.dosagecontents')"
             :items="dosagecontents"
             keyword="dosagecontents"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="bodystyles && bodystyles.length"
             :label="$t('search.bodystyles')"
             :items="bodystyles"
             keyword="bodystyles"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="boxes && boxes.length"
             :label="$t('search.boxes')"
             :items="boxes"
             keyword="boxes"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="areas && areas.length"
             :label="$t('search.areas')"
             :items="areas"
             keyword="areas"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="regions && regions.length"
             :label="$t('search.provenience')"
             :items="regions"
             keyword="regions"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="brands && brands.length"
             :label="$t('search.brands')"
             :items="brands"
             keyword="brands"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="countries && countries.length"
             :label="$t('search.countries')"
             :items="countries"
             keyword="countries"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="sizes && sizes.length"
             :label="$t('search.sizes')"
             :items="sizes"
             keyword="sizes"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="vintages && vintages.length"
             :label="$t('search.vintages')"
             :items="vintages"
             keyword="vintages"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="awards && awards.length"
             :label="$t('search.awards')"
             :items="awards"
             keyword="awards"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="agings && agings.length"
             :label="$t('search.agings')"
             :items="agings"
             keyword="agings"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="philosophies && philosophies.length"
             :label="$t('search.philosophies')"
             :items="philosophies"
             keyword="philosophies"
+            :input-parameters="inputParameters"
           />
 
           <DropdownRange
             :label="$t('search.price')"
             :min="minPrice"
             :max="maxPrice"
+            :input-parameters="inputParameters"
           />
         </div>
       </div>
@@ -832,85 +847,100 @@ export default {
           :label="$t('search.categories')"
           :items="categories"
           keyword="categories"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="winelists && !!winelists.length"
           :label="$t('search.winelists')"
           :items="winelists"
           keyword="winelists"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="pairings && !!pairings.length"
           :label="$t('search.pairings')"
           :items="pairings"
           keyword="pairings"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="dosagecontents && !!dosagecontents.length"
           :label="$t('search.dosagecontents')"
           :items="dosagecontents"
           keyword="dosagecontents"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="bodystyles && !!bodystyles.length"
           :label="$t('search.bodystyles')"
           :items="bodystyles"
           keyword="bodystyles"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="boxes && !!boxes.length"
           :label="$t('search.boxes')"
           :items="boxes" keyword="boxes"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="areas && !!areas.length"
           :label="$t('search.areas')" :items="areas" keyword="areas"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="regions && !!regions.length"
           :label="$t('search.provenience')"
           :items="regions"
           keyword="regions"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="brands && !!brands.length"
           :label="$t('search.brands')"
           :items="brands"
           keyword="brands"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="countries && !!countries.length"
           :label="$t('search.countries')"
           :items="countries"
           keyword="countries"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="sizes && !!sizes.length"
           :label="$t('search.sizes')" :items="sizes" keyword="sizes"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="vintages && !!vintages.length"
           :label="$t('search.vintages')"
           :items="vintages"
           keyword="vintages"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="awards && !!awards.length"
           :label="$t('search.awards')"
           :items="awards"
           keyword="awards"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="agings && !!agings.length"
           :label="$t('search.agings')"
           :items="agings"
           keyword="agings"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="philosophies && !!philosophies.length"
           :label="$t('search.philosophies')"
           :items="philosophies"
           keyword="philosophies"
+          :input-parameters="inputParameters"
         />
 
         <DropdownRange
