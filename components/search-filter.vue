@@ -48,7 +48,7 @@ export default {
   },
   data() {
     return {
-      macrocategories: null,
+      // macrocategories: null,
       minPrice: null,
       maxPrice: null,
       searchedTerm: '',
@@ -72,7 +72,7 @@ export default {
       vintages: null,
       results: null,
       activeSelections: null,
-      activeMacroCategories: null,
+      // activeMacroCategories: null,
       total: null,
       totalPages: null,
       currentPage: 1,
@@ -97,13 +97,14 @@ export default {
     }
   },
   async fetch() {
+    console.log(this.inputParameters)
     if (process.client)
       window.scrollTo(0, 0)
 
     /* console.log(this.inputParameters, "this.inputParameters"); */
 
     this.loading = true
-    const route = this.$route
+    // const route = this.$route
     /* console.log(route.fullPath.split("search?")[1], "SSSS"); */
 
     this.currentPage = this.inputParameters.page
@@ -144,11 +145,11 @@ export default {
       this.$i18n.locale
     }&`
 
-    const searchResult = await fetch(elastic_url + query + sel)
+    const searchResult = await fetch(`${elastic_url}${query}${sel}`)
 
-    const allFields = await fetch(elastic_url)
-
-    const allFieldsJSON = await allFields.json()
+    // const allFields = await fetch(elastic_url)
+    //
+    // const allFieldsJSON = await allFields.json()
 
     const search = await searchResult.json()
 
@@ -158,7 +159,7 @@ export default {
     const total = search.hits.total.value
     this.total = total
 
-    if (total == 0)
+    if (total === 0)
       this.loading = false
 
     this.totalPages = Math.ceil(total / 50)
@@ -263,10 +264,10 @@ export default {
     )
     this.activeSelections = activeSelections
 
-    const activeMacroCategories = this.inputParameters.macrocategories
-    if (activeMacroCategories)
-      this.activeMacroCategories = activeMacroCategories
-    console.log(activeMacroCategories, 'activeMacroCategories')
+    // const activeMacroCategories = this.inputParameters.macrocategories
+    // if (activeMacroCategories)
+    //   this.activeMacroCategories = activeMacroCategories
+    // console.log(activeMacroCategories, 'activeMacroCategories')
 
     this.view.priceFrom = priceFrom
       ? {
@@ -363,7 +364,7 @@ export default {
     backward() {
       const query = Object.assign({}, this.inputParameters)
 
-      if (this.currentPage == 1)
+      if (this.currentPage === 1)
         return
 
       this.currentPage--
@@ -411,15 +412,15 @@ export default {
       </div>
     </div>
 
-    <div v-if="macrocategories" class="row">
-      <!--      <div class="col-12">
+    <!--      <div v-if="macrocategories" class="row">
+      <div class="col-12">
         <MacroCategories
           :macrocategories="macrocategories"
           keyword="macros"
           :active-macro-categories="activeMacroCategories"
         />
-      </div> -->
-    </div>
+      </div>
+    </div> -->
 
     <div v-if="results" class="row mt-5">
       <div class="d-none d-md-block col-md-3">
@@ -926,7 +927,7 @@ export default {
         />
       </div>
 
-      <template #modal-footer class="border-0">
+      <template #modal-footer>
         <div class="w-100 text-center">
           <button
             class="btn view-results text-uppercase px-5"
@@ -950,10 +951,6 @@ export default {
 
 .btn-sort-by:hover {
   background: #fae4e8;
-}
-
-.btn-sort {
-  padding: 4px 8px !important;
 }
 
 :deep(.dropdown-menu.dropdown-menu-right.show) {

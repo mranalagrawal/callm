@@ -16,6 +16,8 @@ export default {
       recommendedProducts: 'Oft zusammen gekauft',
     },
   },
+  notFoundTitle: 'Es tut uns leid',
+  notFoundLine: 'Wir haben nichts mit diesen Merkmalen gefunden. Versuchen Sie, nach diesen Vorschlägen zu suchen',
   loading: 'Daten werden abgerufen...',
   fetchError: 'Ein Fehler ist aufgetreten',
   save: 'Speichern',

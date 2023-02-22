@@ -16,6 +16,8 @@ export default {
       recommendedProducts: 'Souvent achetés ensemble',
     },
   },
+  notFoundTitle: 'Nous sommes désolés',
+  notFoundLine: 'Nous n\'avons rien trouvé avec ces caractéristiques, essayez de rechercher ces suggestions',
   loading: 'Récupération des données...',
   fetchError: 'Une erreur s\'est produite',
   save: 'Save',
