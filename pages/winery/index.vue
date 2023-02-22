@@ -37,6 +37,9 @@ export default {
     this.$nuxt.$on('changecountries', (event) => {
       this.fetchCountries(event)
     })
+    this.$nuxt.$on('changecategories', (event) => {
+      this.fetchCategories(event)
+    })
   },
   methods: {
     async fetchNext() {
@@ -74,6 +77,13 @@ export default {
       this.data = dataJSON.brands.data
       this.links = dataJSON.links
     },
+    async fetchCategories(id) {
+      const data = await fetch(`${this.baseURL}?category=${id}`)
+      const dataJSON = await data.json()
+
+      this.data = dataJSON.brands.data
+      this.links = dataJSON.links
+    },
   },
 }
 </script>
@@ -96,6 +106,11 @@ export default {
           label="Country"
           :items="filters.countries"
           keyword="countries"
+        />
+        <DropdownWinery
+          label="Categories"
+          :items="filters.categories"
+          keyword="categories"
         />
       </div>
       <div class="col-12 col-md-9">
