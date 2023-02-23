@@ -473,6 +473,7 @@ export default {
             :items="null"
             keyword="selections"
             :search="search"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="categories && categories.length"
