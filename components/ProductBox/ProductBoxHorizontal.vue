@@ -128,19 +128,32 @@ export default {
 
 <template>
   <div
-    class="cmw-relative cmw-bg-white cmw-rounded-sm cmw-border cmw-border-gray-light cmw-p-2 cmw-grid cmw-grid-cols-[220px_auto_320px]
+    class="cmw-relative cmw-transition cmw-transition-box-shadow cmw-bg-white cmw-rounded-sm cmw-border cmw-border-gray-light cmw-p-2 cmw-grid cmw-grid-cols-[220px_auto_320px]
 hover:cmw-shadow-elevation"
   >
     <!-- Image Section -->
     <div class="cmw-relative cmw-p-2">
-      <NuxtLink :to="localePath(`/${product.product.handle}-${product.product.tags[0]}`)">
-        <img
-          class="cmw-transition-lazy-image cmw-filter hover:cmw-contrast-150"
-          :class="{ 'cmw-opacity-50': !product.availableForSale }"
-          :src="product.image.url"
-          :alt="product.image.altText"
-        >
-      </NuxtLink>
+      <ClientOnly>
+        <NuxtLink :to="localePath(`/${product.product.handle}-${product.product.tags[0]}`)">
+          <LoadingImage
+            class="cmw-filter hover:cmw-contrast-150 cmw-mx-auto cmw-mt-4"
+            :class="{ 'cmw-opacity-50': !product.availableForSale }"
+            :thumbnail="{
+              url: `${product.image.url}&width=20&height=36`,
+              width: 20,
+              height: 36,
+              altText: product.image.altText,
+            }"
+            :source="{
+              url: `${product.image.url}&width=300&height=540`,
+              width: 300,
+              height: 540,
+              altText: product.image.altText,
+            }"
+            img-classes="cmw-w-full cmw-h-auto"
+          />
+        </NuxtLink>
+      </ClientOnly>
       <div class="cmw-absolute cmw-top-4 cmw-left-2 cmw-flex cmw-flex-col cmw-gap-y-1">
         <!-- Todo: create a global tooltip that change position base on mouse position -->
         <ProductBoxFeature v-for="feature in availableFeatures" :key="feature" :feature="feature" />

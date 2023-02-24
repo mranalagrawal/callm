@@ -56,7 +56,6 @@ query getCustomerOrders(
                 compareAtPriceV2 { amount, currencyCode }
                 id
                 priceV2 { amount, currencyCode }
-                unitPrice { amount, currencyCode }
                 compareAtPriceV2 { amount, currencyCode }
                 image { altText, height, url, width }
                 sku
@@ -147,7 +146,6 @@ query getCustomerOrders(
                   compareAtPriceV2 { amount, currencyCode }
                   id
                   priceV2 { amount, currencyCode }
-                  unitPrice { amount, currencyCode }
                   compareAtPriceV2 { amount, currencyCode }
                   image { altText, height, url, width }
                   sku

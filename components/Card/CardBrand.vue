@@ -17,7 +17,21 @@ export default {
     >
       <div class="c-brand__contentContainer cmw-h-full cmw-flex cmw-text-body hover:(cmw-text-body cmw-no-underline)">
         <div class="c-brand__content cmw-p-4">
-          <img class="c-brand__contentImg cmw-mx-auto" :src="brand.url || 'https://picsum.photos/300/200'" :alt="brand.name">
+          <LoadingImage
+            img-classes="c-brand__contentImg cmw-mx-auto"
+            :thumbnail="{
+              url: brand.url ? `${brand.url}&width=20&height=12` : 'https://picsum.photos/id/75/20/12',
+              width: 20,
+              height: 12,
+              altText: brand.name,
+            }"
+            :source="{
+              url: brand.url ? `${brand.url}&width=265&height=164` : 'https://picsum.photos/id/75/265/164',
+              width: 265,
+              height: 164,
+              altText: brand.name,
+            }"
+          />
           <div>
             <div class="cmw-font-bold cmw-text-xl cmw-mt-4" v-text="brand.name" />
             <div v-text="brand.subtitle" />
