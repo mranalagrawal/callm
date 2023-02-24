@@ -58,7 +58,6 @@ export const getUserOrdersQuery = (token, locale) => `query @inContext(language:
                                 variant {
                                     id
                                     price
-                                    unitPrice { amount, currencyCode }
                                     compareAtPrice
                                     image { altText, height, url, width }
                                     sku

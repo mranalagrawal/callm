@@ -156,21 +156,33 @@ export default {
 <template>
   <div
     class="
-    c-productBox cmw-relative cmw-bg-white cmw-rounded-sm cmw-border cmw-border-gray-light
+    c-productBox cmw-relative cmw-transition cmw-transition-box-shadow cmw-bg-white cmw-rounded-sm cmw-border cmw-border-gray-light
     hover:cmw-shadow-elevation"
     @mouseenter="isHovering = true"
     @mouseleave="isHovering = false"
   >
     <div class="c-productBox__grid cmw-grid cmw-h-full">
       <div class="c-productBox__image">
-        <NuxtLink :to="localePath(`/${product._source.handle}-P${product._source.id}`)">
-          <img
-            class="cmw-transition-lazy-image cmw-filter hover:cmw-contrast-150 cmw-mx-auto cmw-mt-4 cmw-text-xxs"
-            :class="{ 'cmw-opacity-50': !isAvailableForSale }"
-            :src="product._source.shopifyImageUrl[$config.STORE]"
-            :alt="product._source.shortName"
-          >
-        </NuxtLink>
+        <ClientOnly>
+          <NuxtLink :to="localePath(`/${product._source.handle}-P${product._source.id}`)">
+            <LoadingImage
+              class="cmw-filter hover:cmw-contrast-150 cmw-mx-auto cmw-mt-4"
+              :class="{ 'cmw-opacity-50': !isAvailableForSale }"
+              :thumbnail="{
+                url: `${product._source.shopifyImageUrl[$config.STORE]}&width=20&height=36`,
+                width: 20,
+                height: 36,
+                altText: product._source.shortName,
+              }"
+              :source="{
+                url: `${product._source.shopifyImageUrl[$config.STORE]}&width=300&height=540`,
+                width: 300,
+                height: 540,
+                altText: product._source.shortName,
+              }"
+            />
+          </NuxtLink>
+        </ClientOnly>
       </div>
       <div class="c-productBox__features cmw-py-2 cmw-pl-2">
         <div class="cmw-flex cmw-flex-col cmw-gap-y-1 cmw-w-max">
@@ -311,8 +323,14 @@ export default {
   grid-column: 1 / -1;
 }
 
-.c-productBox__image img {
-  max-height: 270px;
+.c-productBox__image {
+  height: 270px;
+}
+
+.c-productBox__image ::v-deep(img) {
+  height: 270px;
+  width: auto;
+  margin: 0 auto;
 }
 
 .c-productBox__wishlist {
@@ -342,8 +360,12 @@ export default {
 
 /* We are handling this piece skipping mobile-first to reduce the amount of CSS  */
 @container product-box (max-width: 250px) {
-  .c-productBox__image img {
-    max-height: 240px;
+  .c-productBox__image {
+    height: 240px;
+  }
+
+  .c-productBox__image ::v-deep(img) {
+    height: 240px;
   }
 
   .c-productBox__wishlist button {
