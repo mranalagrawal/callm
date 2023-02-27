@@ -2,15 +2,11 @@
 import TopBar from '../components/TopBar.vue'
 import Navbar from '../components/Navbar.vue'
 
-import Footer from '../components/Footer.vue'
-
 export default {
   name: 'IndexPage',
   components: {
     TopBar,
     Navbar,
-
-    Footer,
   },
 }
 </script>
@@ -26,7 +22,7 @@ export default {
 
     <nuxt class="pt-5" style="position: relative; top: 120px" />
 
-    <Footer style="position: relative; top: 120px" />
+    <LazyTheFooter style="position: relative; top: 120px" />
     <client-only>
       <FlashMessage position="right top" />
     </client-only>

@@ -224,19 +224,6 @@ export default {
         </div>
       </div>
 
-      <!-- <div class="row">
-        <div class="col-12">
-          <div class="text-right">
-            <i
-              class="text-light-secondary mr-2"
-              :class="
-                isInWishList ? 'fas fa-heart fa-2x' : 'fal fa-heart fa-2x '
-              "
-              @click.stop="toggleWishlist"
-            ></i>
-          </div>
-        </div>
-      </div> -->
       <div class="">
         <div class="prodotto-box__nome">
           <nuxt-link

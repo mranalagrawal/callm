@@ -42,6 +42,7 @@
     "vue": "^2.7.14",
     "vue-carousel-3d": "^1.0.1",
     "vue-demi": "^0.13.11",
+    "vue-lazy-hydration": "^2.0.0-beta.4",
     "vue-server-renderer": "^2.7.14",
     "vue-slick-carousel": "^1.0.6",
     "vue-template-compiler": "^2.7.14",

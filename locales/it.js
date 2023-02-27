@@ -2,6 +2,9 @@ import * as enums from '@/locales/it/enums'
 import * as common from '@/locales/it/common'
 
 export default {
+  head: {
+    description: 'Vendita vino online su Callmewine, la tua enoteca online: il modo migliore per comprare vini, champagne e distillati in offerta a prezzi eccezionali!',
+  },
   enums: {
     ...enums.OrderFinancialStatus,
     ...enums.OrderFulfillmentStatus,

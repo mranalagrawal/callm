@@ -2,6 +2,9 @@ import * as enums from '@/locales/en/enums'
 import * as common from '@/locales/en/common'
 
 export default {
+  head: {
+    description: 'Online wine for sale on Callmewine, your online wine shop: the best way to buy wines, champagne and distilled on offer at exceptional prices!',
+  },
   enums: {
     ...enums.OrderFinancialStatus,
     ...enums.OrderFulfillmentStatus,

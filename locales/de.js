@@ -2,6 +2,9 @@ import * as enums from '@/locales/de/enums'
 import * as common from '@/locales/de/common'
 
 export default {
+  head: {
+    description: 'Online -Wein zum Verkauf auf Callmewine, Ihr Online -Weinwerk: Der beste Weg, um Weine zu kaufen, Champagner und destilliert zu außergewöhnlichen Preisen zu destilliert!',
+  },
   enums: {
     ...enums.OrderFinancialStatus,
     ...enums.OrderFulfillmentStatus,
