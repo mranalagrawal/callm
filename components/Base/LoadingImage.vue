@@ -58,7 +58,7 @@ export default {
 
     const createObserver = () => {
       const observer = new IntersectionObserver(handleIntersect, options)
-      observer.observe(el.value)
+      el.value && observer.observe(el.value)
     }
 
     onMounted(() => {
