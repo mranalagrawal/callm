@@ -52,7 +52,7 @@ export default {
     <nuxt class="cmw-main" />
 
     <LazyHydrate :when-visible="{ rootMargin: '100px' }">
-      <LazyTheFooter style="position: relative; top: 120px" />
+      <TheFooter style="position: relative; top: 120px" />
     </LazyHydrate>
 
     <client-only>
