@@ -174,8 +174,9 @@ export default {
           </div>
         </div>
 
-        <div ref="trigger" class="cmw-w-full cmw-h-4">
+        <div ref="trigger" class="cmw-w-full cmw-h-4 cmw-text-transparent">
           <!-- Note: lazy load trigger, can't hide this because it loses the observer, v-if="limit < data.length" -->
+          lazy-loading-trigger
         </div>
         <div v-if="data" class="row justify-content-between">
           <button
