@@ -57,7 +57,7 @@ export default {
   head: {
     title: TITLE[process.env.STORE],
     htmlAttrs: {
-      lang: 'en',
+      lang: process.env.DEFAULT_LOCALE,
     },
     meta: [
       { charset: 'utf-8' },

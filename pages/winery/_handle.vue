@@ -165,7 +165,7 @@ export default {
             <div class="cmw-px-4 md:(cmw-grid cmw-gap-4 cmw-grid-cols-[minmax(auto,_60%)_minmax(auto,_40%)])">
               <BrandInfo v-if="metaFields" :meta-fields="metaFields" />
               <CountryMap
-                v-if="metaFields && isDesktop" :logo="brand.image.url" :country="metaFields.country"
+                v-if="metaFields && isDesktop" :logo="brand.image && brand.image.url || ''" :country="metaFields.country"
                 :region="metaFields.region"
               />
             </div>
@@ -236,14 +236,14 @@ export default {
             <div class="cmw-px-4">
               <BrandInfo v-if="metaFields" :meta-fields="metaFields" />
               <CountryMap
-                v-if="metaFields && isDesktop" :logo="brand.image.url" :country="metaFields.country"
+                v-if="metaFields && isDesktop" :logo="brand.image && brand.image.url || ''" :country="metaFields.country"
                 :region="metaFields.region"
               />
             </div>
-            <div v-if="brand && brand.image.url" class="md:cmw-order-4">
+            <div v-if="brand && brand.image && brand.image.url" class="md:cmw-order-4">
               <!-- Note: on Nuxt 3 we could use Teleport o this component instead of having duplicates -->
               <CountryMap
-                v-if="metaFields && !isDesktop" :logo="brand.image.url" :country="metaFields.country"
+                v-if="metaFields && !isDesktop" :logo="brand.image && brand.image.url || ''" :country="metaFields.country"
                 :region="metaFields.region"
               />
             </div>

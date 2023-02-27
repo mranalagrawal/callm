@@ -7,6 +7,7 @@ export default {
     return {
       product: null,
       inputParameters: {},
+      hasResults: false,
     }
   },
   created() {
@@ -19,6 +20,7 @@ export default {
     const isProduct = /[P][0-9]+/
     if (isProduct.test(path)) {
       this.product = `P${this.$route.path.split('-P')[1]}`
+      this.hasResults = true
       return
     }
 
@@ -36,11 +38,11 @@ export default {
 
     // loop and assign, MUST BE this way
     filters.forEach((el) => {
-      if (el.name != 'selections' && path.match(el.rule)) {
-        console.log('MATCHED >>> ', el.rule, path)
+      if (el.name !== 'selections' && path.match(el.rule)) {
+        // console.log('MATCHED >>> ', el.rule, path)
         this.inputParameters[el.name] = path.match(el.rule)[0].substring(1)
       }
-      if (el.name == 'selections') {
+      if (el.name === 'selections') {
         if (this.$route.fullPath.split('?sel=')[1]) {
           const selectionsInQuery = this.$route.fullPath
             .split('?sel=')[1]
@@ -56,23 +58,34 @@ export default {
       .filter(el => el.rule !== null)
       .every(el => !el.rule.test(path))
 
-    // console.log(noFilterInURL, '>> noFilterInUrl')
-
     const noSelection = !this.$route.fullPath.split('?sel=')[1]
 
-    if (noFilterInURL && noSelection)
-      this.$router.push(this.localeLocation('/catalog'))
+    this.hasResults = !(noFilterInURL && noSelection)
   },
 }
 </script>
 
 <template>
   <div>
-    <div v-if="product">
-      <ProductDetails :product="product" />
+    <div v-if="hasResults">
+      <div v-if="product">
+        <ProductDetails :product="product" />
+      </div>
+      <div v-else>
+        <search-filter :input-parameters="{ ...$route.query, ...inputParameters }" />
+      </div>
     </div>
-    <div v-else>
-      <search-filter :input-parameters="inputParameters" />
+    <div v-else class="cmw-relative cmw-text-center cmw-mt-12">
+      <div class="md:(cmw-grid cmw-grid-cols-2 cmw-items-center)">
+        <img
+          class="cmw-w-3/4 cmw-mx-auto" :src="require('assets/images/wine-stain.png')"
+          alt="empty-bottles"
+        >
+        <div class="cmw-text-left">
+          <h2 class="cmw-h1 cmw-text-secondary" v-text="$t('notFoundTitle')" />
+          <p class="cmw-mb-8 md:cmw-w-3/5" v-text="$t('notFoundLine')" />
+        </div>
+      </div>
     </div>
   </div>
 </template>

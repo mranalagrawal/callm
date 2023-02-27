@@ -48,7 +48,7 @@ export default {
   },
   data() {
     return {
-      macrocategories: null,
+      // macrocategories: null,
       minPrice: null,
       maxPrice: null,
       searchedTerm: '',
@@ -72,7 +72,7 @@ export default {
       vintages: null,
       results: null,
       activeSelections: null,
-      activeMacroCategories: null,
+      // activeMacroCategories: null,
       total: null,
       totalPages: null,
       currentPage: 1,
@@ -103,7 +103,7 @@ export default {
     /* console.log(this.inputParameters, "this.inputParameters"); */
 
     this.loading = true
-    const route = this.$route
+    // const route = this.$route
     /* console.log(route.fullPath.split("search?")[1], "SSSS"); */
 
     this.currentPage = this.inputParameters.page
@@ -144,11 +144,11 @@ export default {
       this.$i18n.locale
     }&`
 
-    const searchResult = await fetch(elastic_url + query + sel)
+    const searchResult = await fetch(`${elastic_url}${query}${sel}`)
 
-    const allFields = await fetch(elastic_url)
-
-    const allFieldsJSON = await allFields.json()
+    // const allFields = await fetch(elastic_url)
+    //
+    // const allFieldsJSON = await allFields.json()
 
     const search = await searchResult.json()
 
@@ -158,7 +158,7 @@ export default {
     const total = search.hits.total.value
     this.total = total
 
-    if (total == 0)
+    if (total === 0)
       this.loading = false
 
     this.totalPages = Math.ceil(total / 50)
@@ -263,10 +263,10 @@ export default {
     )
     this.activeSelections = activeSelections
 
-    const activeMacroCategories = this.inputParameters.macrocategories
-    if (activeMacroCategories)
-      this.activeMacroCategories = activeMacroCategories
-    console.log(activeMacroCategories, 'activeMacroCategories')
+    // const activeMacroCategories = this.inputParameters.macrocategories
+    // if (activeMacroCategories)
+    //   this.activeMacroCategories = activeMacroCategories
+    // console.log(activeMacroCategories, 'activeMacroCategories')
 
     this.view.priceFrom = priceFrom
       ? {
@@ -363,7 +363,7 @@ export default {
     backward() {
       const query = Object.assign({}, this.inputParameters)
 
-      if (this.currentPage == 1)
+      if (this.currentPage === 1)
         return
 
       this.currentPage--
@@ -411,15 +411,15 @@ export default {
       </div>
     </div>
 
-    <div v-if="macrocategories" class="row">
-      <!--      <div class="col-12">
+    <!--      <div v-if="macrocategories" class="row">
+      <div class="col-12">
         <MacroCategories
           :macrocategories="macrocategories"
           keyword="macros"
           :active-macro-categories="activeMacroCategories"
         />
-      </div> -->
-    </div>
+      </div>
+    </div> -->
 
     <div v-if="results" class="row mt-5">
       <div class="d-none d-md-block col-md-3">
@@ -473,102 +473,119 @@ export default {
             :items="null"
             keyword="selections"
             :search="search"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="categories && categories.length"
             :label="$t('search.categories')"
             :items="categories"
             keyword="categories"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="winelists && winelists.length"
             :label="$t('search.winelists')"
             :items="winelists"
             keyword="winelists"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="pairings && pairings.length"
             :label="$t('search.pairings')"
             :items="pairings"
             keyword="pairings"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="dosagecontents && dosagecontents.length"
             :label="$t('search.dosagecontents')"
             :items="dosagecontents"
             keyword="dosagecontents"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="bodystyles && bodystyles.length"
             :label="$t('search.bodystyles')"
             :items="bodystyles"
             keyword="bodystyles"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="boxes && boxes.length"
             :label="$t('search.boxes')"
             :items="boxes"
             keyword="boxes"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="areas && areas.length"
             :label="$t('search.areas')"
             :items="areas"
             keyword="areas"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="regions && regions.length"
             :label="$t('search.provenience')"
             :items="regions"
             keyword="regions"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="brands && brands.length"
             :label="$t('search.brands')"
             :items="brands"
             keyword="brands"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="countries && countries.length"
             :label="$t('search.countries')"
             :items="countries"
             keyword="countries"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="sizes && sizes.length"
             :label="$t('search.sizes')"
             :items="sizes"
             keyword="sizes"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="vintages && vintages.length"
             :label="$t('search.vintages')"
             :items="vintages"
             keyword="vintages"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="awards && awards.length"
             :label="$t('search.awards')"
             :items="awards"
             keyword="awards"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="agings && agings.length"
             :label="$t('search.agings')"
             :items="agings"
             keyword="agings"
+            :input-parameters="inputParameters"
           />
           <Dropdown
             v-if="philosophies && philosophies.length"
             :label="$t('search.philosophies')"
             :items="philosophies"
             keyword="philosophies"
+            :input-parameters="inputParameters"
           />
 
           <DropdownRange
             :label="$t('search.price')"
             :min="minPrice"
             :max="maxPrice"
+            :input-parameters="inputParameters"
           />
         </div>
       </div>
@@ -831,85 +848,100 @@ export default {
           :label="$t('search.categories')"
           :items="categories"
           keyword="categories"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="winelists && !!winelists.length"
           :label="$t('search.winelists')"
           :items="winelists"
           keyword="winelists"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="pairings && !!pairings.length"
           :label="$t('search.pairings')"
           :items="pairings"
           keyword="pairings"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="dosagecontents && !!dosagecontents.length"
           :label="$t('search.dosagecontents')"
           :items="dosagecontents"
           keyword="dosagecontents"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="bodystyles && !!bodystyles.length"
           :label="$t('search.bodystyles')"
           :items="bodystyles"
           keyword="bodystyles"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="boxes && !!boxes.length"
           :label="$t('search.boxes')"
           :items="boxes" keyword="boxes"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="areas && !!areas.length"
           :label="$t('search.areas')" :items="areas" keyword="areas"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="regions && !!regions.length"
           :label="$t('search.provenience')"
           :items="regions"
           keyword="regions"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="brands && !!brands.length"
           :label="$t('search.brands')"
           :items="brands"
           keyword="brands"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="countries && !!countries.length"
           :label="$t('search.countries')"
           :items="countries"
           keyword="countries"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="sizes && !!sizes.length"
           :label="$t('search.sizes')" :items="sizes" keyword="sizes"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="vintages && !!vintages.length"
           :label="$t('search.vintages')"
           :items="vintages"
           keyword="vintages"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="awards && !!awards.length"
           :label="$t('search.awards')"
           :items="awards"
           keyword="awards"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="agings && !!agings.length"
           :label="$t('search.agings')"
           :items="agings"
           keyword="agings"
+          :input-parameters="inputParameters"
         />
         <Dropdown
           v-if="philosophies && !!philosophies.length"
           :label="$t('search.philosophies')"
           :items="philosophies"
           keyword="philosophies"
+          :input-parameters="inputParameters"
         />
 
         <DropdownRange
@@ -926,7 +958,7 @@ export default {
         />
       </div>
 
-      <template #modal-footer class="border-0">
+      <template #modal-footer>
         <div class="w-100 text-center">
           <button
             class="btn view-results text-uppercase px-5"
@@ -950,10 +982,6 @@ export default {
 
 .btn-sort-by:hover {
   background: #fae4e8;
-}
-
-.btn-sort {
-  padding: 4px 8px !important;
 }
 
 :deep(.dropdown-menu.dropdown-menu-right.show) {

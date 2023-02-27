@@ -1,18 +1,24 @@
 <script>
 import { localeChanged, localize } from 'vee-validate'
+import LazyHydrate from 'vue-lazy-hydration'
 import TopBar from '../components/TopBar.vue'
 import Navbar from '../components/Navbar.vue'
 
-import Footer from '../components/Footer.vue'
 import { lookUpLocale } from '~/plugins/vee-validate'
 import { useCustomer } from '~/store/customer'
 
 export default {
   name: 'IndexPage',
   components: {
+    LazyHydrate,
+    TheFooter: () => import('../components/TheFooter.vue'),
     TopBar,
     Navbar,
-    Footer,
+  },
+  data() {
+    return {
+      show: false,
+    }
   },
   async fetch() {
     const customerStore = useCustomer()
@@ -21,6 +27,17 @@ export default {
     const accessToken = this.$nuxt.$cookieHelpers.getToken()
     if (accessToken)
       await customerStore.getCustomer()
+  },
+  head() {
+    return {
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.$i18n.t('head.description'),
+        },
+      ],
+    }
   },
 }
 </script>
@@ -34,7 +51,10 @@ export default {
 
     <nuxt class="cmw-main" />
 
-    <Footer style="position: relative; top: 120px" />
+    <LazyHydrate :when-visible="{ rootMargin: '100px' }">
+      <LazyTheFooter style="position: relative; top: 120px" />
+    </LazyHydrate>
+
     <client-only>
       <FlashMessage position="right top" />
     </client-only>

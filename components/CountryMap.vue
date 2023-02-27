@@ -56,6 +56,6 @@ export default {
       />
     </div>
     <!-- Todo: Handle width dynamically based on logo's orientation -->
-    <img :src="logo" :alt="logo" class="cmw-absolute cmw-top-4 cmw-right-4 cmw-max-w-[100px]">
+    <img v-if="logo" :src="logo" :alt="logo" class="cmw-absolute cmw-top-4 cmw-right-4 cmw-max-w-[100px]">
   </div>
 </template>

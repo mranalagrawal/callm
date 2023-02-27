@@ -1,8 +1,6 @@
 <template>
   <div class="loader">
     <div class="wrapper shadow">
-      <!-- <i class="fas fa-spinner fa-spin fa-3x text-muted"></i> -->
-
       <div class="bottle">
         <svg
           version="1.1"

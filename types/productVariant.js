@@ -18,7 +18,6 @@
  * @property {[SelectedOption!]!} selectedOptions
  * @property {String} sku
  * @property {String} title
- * @property {MoneyV2!} unitPrice
  * @property {UnitPriceMeasurement} unitPriceMeasurement
  * @property {Float} weight
  * @property {WeightUnit!} weightUnit

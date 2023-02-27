@@ -19,9 +19,24 @@ export default {
         <div class="c-brand__imgBox cmw-relative">
           <NuxtLink
             :to="localePath(`/winery/${brand.handle}-B${brand.brandId}`)"
-            class=""
+            class="cnw-flex cmw-w-full cmw-h-full"
           >
-            <img class="cmw-w-full cmw-h-full cmw-object-cover" :src="brand.image || 'https://source.unsplash.com/Ls5oWV9e764'" :alt="brand.name">
+            <LoadingImage
+              class="cmw-w-full cmw-h-full cmw-overflow-hidden"
+              img-classes="cmw-w-full cmw-h-full cmw-object-cover"
+              :thumbnail="{
+                url: brand.image ? `${brand.image}&width=20&height=10` : 'https://source.unsplash.com/Ls5oWV9e764',
+                width: 20,
+                height: 10,
+                altText: brand.name,
+              }"
+              :source="{
+                url: brand.image ? `${brand.image}width=337&height=330&crop=center` : 'https://source.unsplash.com/Ls5oWV9e764',
+                width: 300,
+                height: 540,
+                altText: brand.name,
+              }"
+            />
           </NuxtLink>
           <div class="c-brand__mask cmw-absolute cmw-top-0 cmw-w-full cmw-h-full cmw-object-contain">
           <!--          <VueSvgIcon original :data="require(`@/assets/svg/brand-curve-desktop.svg`)" /> -->
@@ -29,7 +44,21 @@ export default {
         </div>
         <div class="c-brand__contentContainer">
           <div class="c-brand__content cmw-p-4">
-            <img class="cmw-mx-auto cmw-max-w-[80%]" :src="brand.url || 'https://picsum.photos/id/75/300/200'" :alt="brand.name">
+            <LoadingImage
+              img-classes="cmw-m-auto cmw-max-w-[80%]"
+              :thumbnail="{
+                url: brand.url ? `${brand.url}&width=20&height=12` : 'https://picsum.photos/id/75/20/12',
+                width: 20,
+                height: 12,
+                altText: brand.name,
+              }"
+              :source="{
+                url: brand.url ? `${brand.url}&width=265&height=164` : 'https://picsum.photos/id/75/265/164',
+                width: 265,
+                height: 164,
+                altText: brand.name,
+              }"
+            />
             <div>
               <div class="cmw-font-bold cmw-text-xl cmw-mt-4" v-text="brand.name" />
               <div v-text="brand.subtitle" />

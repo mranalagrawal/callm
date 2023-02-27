@@ -1,6 +1,6 @@
 <script>
 export default {
-  props: ['label', 'items', 'keyword', 'search'],
+  props: ['label', 'items', 'keyword', 'search', 'inputParameters'],
   data() {
     return {
       visible: false,
@@ -63,12 +63,15 @@ export default {
     },
   },
   methods: {
+    isOnParameters(id) {
+      return this.$route.fullPath && this.$route.fullPath.toLowerCase().includes(id)
+    },
     goto(id) {
-      const query = Object.assign({}, this.$route.query)
+      const query = Object.assign({}, { ...this.inputParameters, ...this.$route.query })
 
-      const activeFilter = Object.keys(query).filter(el =>
-        this.allSelections.includes(el),
-      )[0]
+      // const activeFilter = Object.keys(query).filter(el =>
+      //   this.allSelections.includes(el),
+      // )[0]
 
       // switch active filter
       /* if (activeFilter) {
@@ -89,7 +92,7 @@ export default {
 </script>
 
 <template>
-  <div class="w-100 d-block">
+  <div v-if="selections.length" class="w-100 d-block">
     <div
       class="btn d-flex w-100 justify-content-between px-0"
       @click="visible = !visible"
@@ -109,7 +112,7 @@ export default {
       >
         <div
           class="content-item p-2 d-flex justify-content-between align-items-center pointer"
-          :class="item.key[0] == active ? 'active' : ''"
+          :class="item.key[0] === active || isOnParameters(item.key[1]) ? 'active' : ''"
         >
           <!-- {{ item }} -->
           <div>

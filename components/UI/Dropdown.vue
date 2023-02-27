@@ -1,6 +1,6 @@
 <script>
 export default {
-  props: ['label', 'items', 'keyword'],
+  props: ['label', 'items', 'keyword', 'inputParameters'],
   data() {
     return {
       search: '',
@@ -44,8 +44,11 @@ export default {
     }, */
   },
   methods: {
+    isOnParameters(id) {
+      return this.inputParameters && this.inputParameters[this.keyword] && this.inputParameters[this.keyword] === `${id}`
+    },
     goto(id) {
-      const query = Object.assign({}, this.$route.query)
+      const query = Object.assign({}, { ...this.inputParameters, ...this.$route.query })
 
       /* query[this.keyword] = id; */
 
@@ -95,7 +98,7 @@ export default {
       >
         <div
           class="content-item p-2 d-flex justify-content-between align-items-center pointer"
-          :class="item.key[0] == active ? 'active' : ''"
+          :class="item.key[0] === active || isOnParameters(item.key[0]) ? 'active' : ''"
         >
           <div>
             <span>{{ item.key[1] }}</span>
@@ -105,7 +108,7 @@ export default {
             > -->
             <span class="text-muted">({{ item.doc_count }})</span>
           </div>
-          <i v-if="item.key[0] == active" class="fal fa-check float-right" />
+          <i v-if="item.key[0] === active || isOnParameters(item.key[0])" class="fal fa-check float-right" />
         </div>
         <!-- <p>debug: {{ item.key_as_string }}</p> -->
       </div>
@@ -116,7 +119,7 @@ export default {
 <style scoped>
 .content {
   max-height: 350px;
-  overflow: scroll;
+  overflow: auto;
 }
 
 .content-item {
