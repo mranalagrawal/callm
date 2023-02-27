@@ -30,7 +30,7 @@ export default {
 
     const createObserver = () => {
       const observer = new IntersectionObserver(handleIntersect, options)
-      observer.observe(trigger.value)
+      trigger.value && observer.observe(trigger.value)
     }
 
     onMounted(() => {
