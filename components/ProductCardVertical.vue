@@ -123,8 +123,8 @@ export default {
   <div class="product-card mx-auto mt-4" style="width: 94%;">
     <div>
       <div v-if="details.inpromotion" class="ribbon">
-        <VueSvgIcon :data="promoTagIcon" color="white" class="d-inline" />
-        <span class="text-uppercase" style="letter-spacing: 3px" v-text="$t('product.promo')" />
+        <VueSvgIcon :data="promoTagIcon" color="white" class="cmw-mt-1" style="line-height: 0.875rem" />
+        <span class="text-uppercase cmw-text-sm cmw-mb-2" style="letter-spacing: 3px;" v-text="$t('product.promoLabel')" />
       </div>
 
       <div
