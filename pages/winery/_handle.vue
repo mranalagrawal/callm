@@ -102,7 +102,7 @@ export default {
                 <VueSvgIcon class="c-ribbon__right" :data="require(`@/assets/svg/ribbon.svg`)" width="9" height="24" />
               </div>
               <h1 v-if="brand" class="cmw-text-white" v-text="brand.title" />
-              <div class="cmw-h4 cmw-my-4 cmw-text-white" v-text="metaFields.subtitle" />
+              <div class="cmw-h4 cmw-my-4 cmw-text-white" style="color: white !important;" v-text="metaFields.subtitle" />
             </div>
             <ClientOnly v-if="!!metaFields.images.length">
               <VueSlickCarousel

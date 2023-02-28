@@ -29,6 +29,7 @@ export default {
     }
 
     const createObserver = () => {
+      scrollTo({ left: 0, top: 0, behavior: 'smooth' })
       const observer = new IntersectionObserver(handleIntersect, options)
       trigger.value && observer.observe(trigger.value)
     }
@@ -138,8 +139,8 @@ export default {
 
 <template>
   <div class="container-fluid px-md-5 mt-5">
-    <div v-if="data" class="row">
-      <div v-if="filters" class="c-filters col-12 col-md-3 cmw-h-max">
+    <div class="row">
+      <div v-if="data && filters" class="c-filters col-12 col-md-3 cmw-h-max">
         <DropdownWinery
           label="Production Types"
           :items="filters.productionTypes"
