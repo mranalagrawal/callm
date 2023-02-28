@@ -262,7 +262,7 @@ export default {
           </h1>
           <NuxtLink
             class="h3 cmw-w-max font-weight-bold cmw-text-primary-400 hover:cmw-text-primary-400"
-            :to="`winery/${data.vendor}-B${brandMetafields.brandId}`"
+            :to="`winery/${brand.handle}-${brandMetafields.key}`"
           >
             {{ data.vendor }}
           </NuxtLink>
