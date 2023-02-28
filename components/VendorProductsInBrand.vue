@@ -73,11 +73,13 @@ export default {
       </div>
 
       <div v-if="data && data.length > 0" class="col-12 py-4">
-        <VueSlickCarousel v-bind="settings">
-          <div v-for="product in data" :key="product.id" class="mb-5">
-            <ProductCardVertical :product="product" />
-          </div>
-        </VueSlickCarousel>
+        <ClientOnly>
+          <VueSlickCarousel v-bind="settings">
+            <div v-for="product in data" :key="product.id" class="mb-5">
+              <ProductCardVertical :product="product" />
+            </div>
+          </VueSlickCarousel>
+        </ClientOnly>
       </div>
     </div>
   </div>
