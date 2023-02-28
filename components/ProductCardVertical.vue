@@ -120,9 +120,9 @@ export default {
 </script>
 
 <template>
-  <div class="product-card mx-auto mt-4" style="width: 94%">
+  <div class="product-card mx-auto mt-4" style="width: 94%;">
     <div>
-      <div v-if="details.promoTagIcon" class="ribbon">
+      <div v-if="details.inpromotion" class="ribbon">
         <VueSvgIcon :data="promoTagIcon" color="white" class="d-inline" />
         <span class="text-uppercase" style="letter-spacing: 3px" v-text="$t('product.promo')" />
       </div>
