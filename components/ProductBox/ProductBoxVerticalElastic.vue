@@ -202,6 +202,7 @@ export default {
         <ButtonIcon
           :icon="isOnFavourite ? heartFullIcon : heartIcon"
           class="z-baseLow" :variant="isOnFavourite ? 'icon-primary' : 'icon'"
+          :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
           @click.native="handleWishlist({ id: backofficeId, isOnFavourite })"
         />
       </div>
@@ -247,6 +248,7 @@ export default {
         <div v-if="isAvailableForSale" class="cmw-mr-4 cmw-mb-4 cmw-relative">
           <ButtonIcon
             :icon="cartIcon"
+            :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
             @click.native="addToUserCart"
           />
           <Badge
@@ -264,6 +266,7 @@ export default {
               hover:(cmw-bg-primary)
               disabled:(cmw-bg-primary-100 cmw-cursor-not-allowed)"
               :disabled="!canAddMore"
+              :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
               @click="addToUserCart"
             >
               <VueSvgIcon class="cmw-m-auto" :data="addIcon" width="14" height="14" color="white" />
@@ -273,6 +276,7 @@ export default {
             </div>
             <button
               class="cmw-flex cmw-transition-colors cmw-w-[40px] cmw-h-[40px] cmw-bg-primary-400 cmw-rounded-b-sm hover:(cmw-bg-primary)"
+              :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
               @click="removeFromUserCart"
             >
               <VueSvgIcon class="cmw-m-auto" :data="subtractIcon" width="14" height="14" color="white" />

@@ -218,7 +218,11 @@ export default {
           />
         </div>
         <div class="cmw-absolute cmw-bottom-0 cmw-right-0">
-          <button type="button" @click="handleWishlist({ id: backofficeId, isOnFavourite })">
+          <button
+            type="button"
+            :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
+            @click="handleWishlist({ id: backofficeId, isOnFavourite })"
+          >
             <VueSvgIcon color="#d94965" width="32" height="32" :data="isOnFavourite ? heartFullIcon : heartIcon" />
           </button>
         </div>

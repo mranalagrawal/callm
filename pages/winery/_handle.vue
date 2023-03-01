@@ -27,6 +27,7 @@ export default {
     const metaFields = ref({
       subtitle: '',
       images: [],
+      hrefLang: {},
       isPartner: false,
     })
 
@@ -72,6 +73,19 @@ export default {
       currentC1Slide,
       inRange,
       stripHtmlAnchors,
+    }
+  },
+  head() {
+    return {
+      title: this.brand.title,
+      link: Object.keys(this.metaFields.hrefLang).length && Object.entries(this.metaFields.hrefLang).map((el) => {
+        return {
+          hid: `alternate-${el[0]}`,
+          rel: 'alternate',
+          href: el[1],
+          hreflang: el[0],
+        }
+      }),
     }
   },
 }
@@ -189,10 +203,21 @@ export default {
                     v-for="image in metaFields.images" :key="image"
                     class="lg:cmw-pl-3 cmw-h-full cmw-flex"
                   >
-                    <img
+                    <LoadingImage
                       class="cmw-select-none cmw-pointer-events-none cmw-flex md:cmw-rounded-sm cmw-h-full cmw-overflow-hidden"
-                      :src="image" :alt="image"
-                    >
+                      :thumbnail="{
+                        url: `${image}&width=40&height=20`,
+                        width: 40,
+                        height: 20,
+                        altText: image,
+                      }"
+                      :source="{
+                        url: `${image}&width=800&height=409`,
+                        width: 800,
+                        height: 409,
+                        altText: image,
+                      }"
+                    />
                   </div>
                   <template #customPaging="page">
                     <button
@@ -213,10 +238,21 @@ export default {
                       v-for="image in metaFields.images" :key="`thumb-${image}`"
                       class="cmw-px-3 cmw-h-full cmw-flex"
                     >
-                      <img
+                      <LoadingImage
                         class="cmw-select-none cmw-pointer-events-none cmw-flex cmw-rounded-sm cmw-h-full cmw-overflow-hidden"
-                        :src="image" :alt="image"
-                      >
+                        :thumbnail="{
+                          url: `${image}&width=40&height=20`,
+                          width: 40,
+                          height: 20,
+                          altText: image,
+                        }"
+                        :source="{
+                          url: `${image}&width=800&height=409`,
+                          width: 800,
+                          height: 409,
+                          altText: image,
+                        }"
+                      />
                     </div>
                     <template #prevArrow>
                       <div class="custom-arrow cmw-bg-white cmw-rounded-sm cmw-text-primary-400 cmw-flex">

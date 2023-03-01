@@ -72,6 +72,7 @@ export default {
       <div class="cmw-order-4">
         <button
           type="button"
+          :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
           @click="handleWishlist({ id: orderLineItem.variant.product.tags[0], isOnFavourite })"
         >
           <VueSvgIcon

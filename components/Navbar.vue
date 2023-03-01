@@ -254,6 +254,7 @@ export default {
 
           <nuxt-link
             class="cmw-flex cmw-max-w-150px md:cmw-max-w-250px"
+            :aria-label="$t('enums.accessibility.labels.GO_TO_HOME_PAGE')"
             :to="localePath('/')"
           >
             <VueSvgIcon
@@ -307,6 +308,7 @@ export default {
         >
         <ButtonIcon
           :icon="searchIcon"
+          :aria-label="$t('enums.accessibility.role.TRIGGER_SEARCH')"
           size="sm"
           class="cmw-transform cmw-absolute cmw-top-1/2 cmw-right-0 cmw-translate-y-[-50%] cmw-translate-x-[-30%]"
           @click.native="startSearch"
