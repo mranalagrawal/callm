@@ -6,6 +6,7 @@ export default {
     description: 'Vin en ligne à vendre sur Callmewine, votre boutique de vins en ligne: la meilleure façon d\'acheter des vins, du champagne et distillé à des prix exceptionnels!',
   },
   enums: {
+    ...enums.Accessibility,
     ...enums.OrderFinancialStatus,
     ...enums.OrderFulfillmentStatus,
   },

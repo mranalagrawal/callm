@@ -323,6 +323,7 @@ export default {
                 <div v-if="data.availableForSale" class="cmw-relative">
                   <Button
                     class="cmw-gap-2 cmw-pl-2 cmw-pr-3 cmw-py-2"
+                    :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
                     @click.native="addToUserCart"
                   >
                     <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
@@ -340,6 +341,7 @@ export default {
                   >
                     <button
                       class="cmw-flex cmw-transition-colors cmw-w-[50px] cmw-h-[50px] cmw-bg-primary-400 cmw-rounded-l hover:(cmw-bg-primary)"
+                      :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
                       @click="removeFromUserCart"
                     >
                       <VueSvgIcon class="cmw-m-auto" :data="subtractIcon" width="14" height="14" color="white" />
@@ -352,6 +354,7 @@ export default {
                         hover:(cmw-bg-primary)
                         disabled:(cmw-bg-primary-100 cmw-cursor-not-allowed)"
                       :disabled="!canAddMore"
+                      :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
                       @click="addToUserCart"
                     >
                       <VueSvgIcon class="cmw-m-auto" :data="addIcon" width="14" height="14" color="white" />
@@ -363,6 +366,7 @@ export default {
             <button
               type="button"
               class="cmw-mb-2"
+              :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
               @click="handleWishlist({ id: product, isOnFavourite })"
             >
               <VueSvgIcon

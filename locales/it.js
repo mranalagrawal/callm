@@ -6,6 +6,7 @@ export default {
     description: 'Vendita vino online su Callmewine, la tua enoteca online: il modo migliore per comprare vini, champagne e distillati in offerta a prezzi eccezionali!',
   },
   enums: {
+    ...enums.Accessibility,
     ...enums.OrderFinancialStatus,
     ...enums.OrderFulfillmentStatus,
   },
