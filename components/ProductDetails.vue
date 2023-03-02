@@ -87,13 +87,14 @@ export default {
   head() {
     return {
       title: `${this.title} - ${this.$config.STORE}`,
-      link: [
-        {
-          hid: 'canonical',
-          rel: 'canonical',
-          href: this.canonical,
-        },
-      ],
+      link: this.metaField
+        && Object.keys(this.metaField.hrefLang).length
+        && Object.entries(this.metaField.hrefLang).map(el => ({
+          hid: `alternate-${el[0]}`,
+          rel: 'alternate',
+          href: el[1],
+          hreflang: el[0],
+        })),
     }
   },
   computed: {
@@ -234,11 +235,22 @@ export default {
       <div class="md:(cmw-grid cmw-grid-cols-[40%_60%] cmw-max-h-[550px] cmw-my-4)">
         <!-- Image Section -->
         <div class="cmw-relative">
-          <img
-            :src="data.images.nodes[0].url"
-            class="cmw-max-h-[350px] md:cmw-max-h-[550px] cmw-mx-auto cmw-object-contain"
-            :alt="data.title"
-          >
+          <LoadingImage
+            class="cmw-h-full"
+            img-classes="cmw-max-h-[350px] md:cmw-max-h-[550px] cmw-mx-auto cmw-object-contain"
+            :thumbnail="{
+              url: `${data.images.nodes[0].url}?&width=20&height=36`,
+              width: 20,
+              height: 36,
+              altText: data.title,
+            }"
+            :source="{
+              url: `${data.images.nodes[0].url}?&width=400&height=719&crop=center`,
+              width: 400,
+              height: 719,
+              altText: data.title,
+            }"
+          />
           <div class="cmw-absolute cmw-top-4 cmw-left-2">
             <ProductBoxFeature v-for="feature in availableFeatures" :key="feature" :feature="feature" />
           </div>
