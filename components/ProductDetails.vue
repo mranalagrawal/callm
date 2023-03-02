@@ -87,13 +87,14 @@ export default {
   head() {
     return {
       title: `${this.title} - ${this.$config.STORE}`,
-      link: [
-        {
-          hid: 'canonical',
-          rel: 'canonical',
-          href: this.canonical,
-        },
-      ],
+      link: this.metaField
+        && Object.keys(this.metaField.hrefLang).length
+        && Object.entries(this.metaField.hrefLang).map(el => ({
+          hid: `alternate-${el[0]}`,
+          rel: 'alternate',
+          href: el[1],
+          hreflang: el[0],
+        })),
     }
   },
   computed: {
@@ -234,11 +235,22 @@ export default {
       <div class="md:(cmw-grid cmw-grid-cols-[40%_60%] cmw-max-h-[550px] cmw-my-4)">
         <!-- Image Section -->
         <div class="cmw-relative">
-          <img
-            :src="data.images.nodes[0].url"
-            class="cmw-max-h-[350px] md:cmw-max-h-[550px] cmw-mx-auto cmw-object-contain"
-            :alt="data.title"
-          >
+          <LoadingImage
+            class="cmw-h-full"
+            img-classes="cmw-max-h-[350px] md:cmw-max-h-[550px] cmw-mx-auto cmw-object-contain"
+            :thumbnail="{
+              url: `${data.images.nodes[0].url}?&width=20&height=36`,
+              width: 20,
+              height: 36,
+              altText: data.title,
+            }"
+            :source="{
+              url: `${data.images.nodes[0].url}?&width=400&height=719&crop=center`,
+              width: 400,
+              height: 719,
+              altText: data.title,
+            }"
+          />
           <div class="cmw-absolute cmw-top-4 cmw-left-2">
             <ProductBoxFeature v-for="feature in availableFeatures" :key="feature" :feature="feature" />
           </div>
@@ -323,6 +335,7 @@ export default {
                 <div v-if="data.availableForSale" class="cmw-relative">
                   <Button
                     class="cmw-gap-2 cmw-pl-2 cmw-pr-3 cmw-py-2"
+                    :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
                     @click.native="addToUserCart"
                   >
                     <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
@@ -340,6 +353,7 @@ export default {
                   >
                     <button
                       class="cmw-flex cmw-transition-colors cmw-w-[50px] cmw-h-[50px] cmw-bg-primary-400 cmw-rounded-l hover:(cmw-bg-primary)"
+                      :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
                       @click="removeFromUserCart"
                     >
                       <VueSvgIcon class="cmw-m-auto" :data="subtractIcon" width="14" height="14" color="white" />
@@ -352,6 +366,7 @@ export default {
                         hover:(cmw-bg-primary)
                         disabled:(cmw-bg-primary-100 cmw-cursor-not-allowed)"
                       :disabled="!canAddMore"
+                      :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
                       @click="addToUserCart"
                     >
                       <VueSvgIcon class="cmw-m-auto" :data="addIcon" width="14" height="14" color="white" />
@@ -363,6 +378,7 @@ export default {
             <button
               type="button"
               class="cmw-mb-2"
+              :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
               @click="handleWishlist({ id: product, isOnFavourite })"
             >
               <VueSvgIcon

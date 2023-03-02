@@ -252,6 +252,8 @@ export default {
         <div :class="horizontal ? 'heart-horizontal' : 'heart-vertical'">
           <i
             class="text-light-secondary"
+            role="button"
+            :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
             :class="isOnFavourite ? 'fas fa-heart fa-2x' : 'fal fa-heart fa-2x '"
             @click="handleWishlist({ id: backofficeId, isOnFavourite })"
           />

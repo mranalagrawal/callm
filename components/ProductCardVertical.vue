@@ -134,14 +134,23 @@ export default {
           :to="`/${product.handle}-${backofficeId}`"
           draggable="false"
         >
-          <img
+          <LoadingImage
             v-if="product.images.nodes[0]"
-            :src="product.images.nodes[0].url"
-            alt=""
-            class="d-block mx-auto"
-            style="height: 300px; user-drag: none"
-            draggable="false"
-          >
+            class="cmw-h-full"
+            img-classes="d-block mx-auto cmw-w-auto cmw-h-[300px]"
+            :thumbnail="{
+              url: `${product.images.nodes[0].url}?&width=20&height=36`,
+              width: 20,
+              height: 36,
+              altText: product.title,
+            }"
+            :source="{
+              url: `${product.images.nodes[0].url}?&width=300&height=540&crop=center`,
+              width: 300,
+              height: 540,
+              altText: product.title,
+            }"
+          />
         </nuxt-link>
         <div
           class="position-absolute"
@@ -218,7 +227,11 @@ export default {
           />
         </div>
         <div class="cmw-absolute cmw-bottom-0 cmw-right-0">
-          <button type="button" @click="handleWishlist({ id: backofficeId, isOnFavourite })">
+          <button
+            type="button"
+            :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
+            @click="handleWishlist({ id: backofficeId, isOnFavourite })"
+          >
             <VueSvgIcon color="#d94965" width="32" height="32" :data="isOnFavourite ? heartFullIcon : heartIcon" />
           </button>
         </div>

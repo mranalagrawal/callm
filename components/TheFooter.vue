@@ -312,34 +312,40 @@ export default {
         </div>
         <div class="cmw-grid cmw-grid-cols-3 md:cmw-grid-cols-6 cmw-justify-items-center cmw-content-center cmw-px-8 cmw-py-4">
           <img
-            src="../assets/images/american-express.png"
+            src="https://cdn.shopify.com/s/files/1/0578/7497/2719/files/american-express.png?v=1677682511&format=webp"
             width="65"
             height="64"
+            alt="american express logo"
           >
           <img
             src="../assets/images/mastercard.png"
             width="65"
             height="64"
+            alt="mastercard logo"
           >
           <img
             src="../assets/images/visa.png"
             width="65"
             height="64"
+            alt="visa logo"
           >
           <img
             src="../assets/images/paypal.png"
             width="65"
             height="64"
+            alt="paypal logo"
           >
           <img
             src="../assets/images/bonifico.png"
             width="65"
             height="64"
+            alt="bonifico logo"
           >
           <img
             src="../assets/images/comodo.png"
             width="65"
             height="64"
+            alt="comodo logo"
           >
         </div>
       </div>
