@@ -88,6 +88,7 @@ export default {
     return {
       title: `${this.title} - ${this.$config.STORE}`,
       link: this.metaField
+        && this.metaField.hrefLang
         && Object.keys(this.metaField.hrefLang).length
         && Object.entries(this.metaField.hrefLang).map(el => ({
           hid: `alternate-${el[0]}`,

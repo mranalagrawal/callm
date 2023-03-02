@@ -78,14 +78,13 @@ export default {
   head() {
     return {
       title: this.brand.title,
-      link: Object.keys(this.metaFields.hrefLang).length && Object.entries(this.metaFields.hrefLang).map((el) => {
-        return {
-          hid: `alternate-${el[0]}`,
-          rel: 'alternate',
-          href: el[1],
-          hreflang: el[0],
-        }
-      }),
+      link: this.metaFields.hrefLang
+        && Object.keys(this.metaFields.hrefLang).length && Object.entries(this.metaFields.hrefLang).map(el => ({
+        hid: `alternate-${el[0]}`,
+        rel: 'alternate',
+        href: el[1],
+        hreflang: el[0],
+      })),
     }
   },
 }
