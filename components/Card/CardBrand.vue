@@ -20,13 +20,13 @@ export default {
           <LoadingImage
             img-classes="c-brand__contentImg cmw-mx-auto"
             :thumbnail="{
-              url: brand.url ? `${brand.url}?width=20&height=12` : 'https://picsum.photos/id/75/20/12',
+              url: brand.url ? `${brand.url}?&width=20&height=12` : 'https://picsum.photos/id/75/20/12',
               width: 20,
               height: 12,
               altText: brand.name,
             }"
             :source="{
-              url: brand.url ? `${brand.url}?width=265&height=164` : 'https://picsum.photos/id/75/265/164',
+              url: brand.url ? `${brand.url}?&width=265&height=164` : 'https://picsum.photos/id/75/265/164',
               width: 265,
               height: 164,
               altText: brand.name,
