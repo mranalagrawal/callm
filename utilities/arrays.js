@@ -39,3 +39,14 @@ export const sortArrayByName = (arr = [], order = '', sort = 'asc') => {
     }
   })
 }
+
+export const generateHeadHreflang = (obj = {}) => (
+  Object.entries(obj)
+    .map(([hreflang, href]) => ({
+      hid: `alternate-${hreflang}`,
+      rel: 'alternate',
+      href,
+      hreflang,
+    }),
+    )
+)

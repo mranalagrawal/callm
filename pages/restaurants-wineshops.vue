@@ -1,4 +1,6 @@
 <script>
+import { generateHeadHreflang } from '@/utilities/arrays'
+
 export default {
   layout(context) {
     return context.$config.STORE
@@ -7,6 +9,13 @@ export default {
     return {
       data: null,
     }
+  },
+  hrefLang: {
+    'it': 'https://www.callmewine.com/enoteche-ristoranti.html',
+    'en': 'https://www.callmewine.com/en/restaurants-Wineshops.html',
+    'fr': 'https://www.callmewine.fr/cave-%C3%A0-vins-ou-restaurants.html',
+    'de': 'https://www.callmewine.de/%C3%96nothek-Restaurants.html',
+    'en-gb': 'https://callmewine.co.uk/restaurants-wineshops',
   },
   async fetch() {
     let lang = ''
@@ -22,6 +31,11 @@ export default {
       },
     )
     this.data = response.data
+  },
+  head() {
+    return {
+      link: generateHeadHreflang(this.$options.hrefLang),
+    }
   },
 }
 </script>

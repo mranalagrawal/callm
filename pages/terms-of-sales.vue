@@ -1,5 +1,6 @@
 <script>
 import documents from '../prismic-mapper'
+import { generateHeadHreflang } from '@/utilities/arrays'
 
 export default {
   layout(context) {
@@ -9,6 +10,13 @@ export default {
     return {
       data: null,
     }
+  },
+  hrefLang: {
+    'it': 'https://www.callmewine.com/condizioni-acquisto.html',
+    'en': 'https://www.callmewine.com/en/terms-of-sales.html',
+    'fr': 'https://www.callmewine.fr/conditions-g%C3%A9n%C3%A9rales-de-vente.html',
+    'de': 'https://www.callmewine.de/agb.html',
+    'en-gb': 'https://callmewine.co.uk/terms-of-sales',
   },
   async fetch() {
     let lang = ''
@@ -25,6 +33,11 @@ export default {
     )
 
     this.data = response.data
+  },
+  head() {
+    return {
+      link: generateHeadHreflang(this.$options.hrefLang),
+    }
   },
 }
 </script>
