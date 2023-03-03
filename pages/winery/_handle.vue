@@ -284,9 +284,9 @@ export default {
             </div>
             <div v-if="!isDesktop" class="cmw-px-4 md:cmw-order-3" v-html="stripHtmlAnchors(brand.contentHtml)" />
           </div>
-          <div v-if="brand && brand.title">
-            <VendorProductsInBrand :vendor="brand.title" />
-          </div>
+        </div>
+        <div v-if="brand && brand.title">
+          <VendorProductsInBrand :vendor="brand.title" />
         </div>
       </div>
       <div v-else class="cmw-max-w-screen-xl cmw-mx-auto cmw-p-4 cmw-text-center">
