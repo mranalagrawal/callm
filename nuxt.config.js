@@ -112,10 +112,14 @@ const getMoreBrands = async (arr, query) => {
   if (!data)
     return arr
   arr = [...arr,
-    ...data.map(brand => ({
-      url: brand.url,
-      lastmod: brand.updatedAt,
-    }))]
+    ...data.map((brand) => {
+      const url = new URL(brand.url)
+
+      return ({
+        url: url.pathname,
+        lastmod: brand.updatedAt,
+      })
+    })]
 
   if (meta.next_cursor)
     return await getMoreBrands(arr, `paginate=300&cursor=${meta.next_cursor}`)
@@ -129,13 +133,16 @@ const getSitemapBrands = async () => {
   if (!data)
     return
 
-  arr = data.map(brand => ({
-    url: brand.url,
-    lastmod: brand.updatedAt,
-  }))
+  arr = data.map((brand) => {
+    const url = new URL(brand.url)
+
+    return ({
+      url: url.pathname,
+      lastmod: brand.updatedAt,
+    })
+  })
 
   arr = await getMoreBrands(arr, `paginate=300&cursor=${meta.next_cursor}`)
-  // console.log(meta.next_cursor)
   return arr
 }
 /*
@@ -183,7 +190,6 @@ const SITEMAP = {
     {
       path: '/sitemap_en_product_pages.xml',
       routes: () => getSitemapProducts('EN'),
-      image: 'test',
       exclude: ['/**'],
     },
     {
