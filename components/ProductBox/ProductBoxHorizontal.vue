@@ -142,13 +142,13 @@ hover:cmw-shadow-elevation"
               url: `${product.image.url}&width=20&height=36`,
               width: 20,
               height: 36,
-              altText: product.image.altText,
+              altText: metaField.name[$i18n.locale],
             }"
             :source="{
               url: `${product.image.url}&width=300&height=540`,
               width: 300,
               height: 540,
-              altText: product.image.altText,
+              altText: metaField.name[$i18n.locale],
             }"
             img-classes="cmw-w-full cmw-h-auto"
           />

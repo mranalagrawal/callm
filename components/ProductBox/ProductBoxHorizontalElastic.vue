@@ -60,10 +60,6 @@ export default {
     isOnFavourite() {
       return this.wishlistArr.includes(this.backofficeId)
     },
-    /** @Type: {MetaFieldType.MetaField} */
-    metaField() {
-      return JSON.parse(this.product.product.metafield.value)
-    },
     availableFeatures() {
       /* Todo: Definitely we need to use some enums here ... */
       let features = pick(this.product._source, this.features)
@@ -160,13 +156,13 @@ hover:cmw-shadow-elevation"
               url: `${product._source.shopifyImageUrl[$config.STORE]}&width=20&height=36`,
               width: 20,
               height: 36,
-              altText: product._source.shortName,
+              altText: product._source.name_t[$i18n.locale],
             }"
             :source="{
               url: `${product._source.shopifyImageUrl[$config.STORE]}&width=300&height=540`,
               width: 300,
               height: 540,
-              altText: product._source.shortName,
+              altText: product._source.name_t[$i18n.locale],
             }"
             img-classes="cmw-w-full cmw-h-auto"
           />
