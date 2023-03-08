@@ -1,6 +1,143 @@
 /* import { apiEndpoint } from "./sm.json"; */
 import { join } from 'path'
 
+// Todo: Move these function to external files
+// import getSitemapProducts from './utilities/getSitemapProducts'
+// import getSitemapBrands from './utilities/getSitemapBrands'
+
+import fetch from 'node-fetch'
+
+const getPageProducts = async (lang, cursor = null) => {
+  let response = {}
+  await fetch(process.env.DOMAIN, {
+    async: true,
+    crossDomain: true,
+    method: 'POST',
+    headers: {
+      'X-Shopify-Storefront-Access-Token': '2f425595735e7504cfc97d1801b25206',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: `query getAllProducts($lang: LanguageCode!, $first: Int = 200, $cursor: String) @inContext(language: $lang) {
+                  products(first: $first, after: $cursor) {
+                    pageInfo {
+                      endCursor
+                      hasNextPage
+                    }
+                    nodes {
+                      handle
+                      title
+                      updatedAt
+                      featuredImage {
+                        url
+                      }
+                      details: metafield(namespace: "custom", key: "details") {
+                        value
+                      }
+                    }
+                  }
+                }`,
+      variables: {
+        lang,
+        cursor,
+      },
+    }),
+  })
+    .then(async r => await r.json())
+    .then(data => response = data || {})
+    .catch(() => {
+      response = {}
+    })
+
+  return response
+}
+
+const getMoreProducts = async (lang, arr, endCursor) => {
+  const { data } = await getPageProducts(lang, endCursor)
+  if (!data?.products.nodes)
+    return arr
+  arr = [...arr,
+    ...data.products?.nodes.map(product => ({
+      url: `/${product.handle}-${product.details?.value ? JSON.parse(product.details.value).key : 'OHBOY'}`,
+      lastmod: product.updatedAt,
+      img: [
+        {
+          url: `${product.featuredImage?.url || 'missing'}`,
+          title: product.title,
+        },
+      ],
+    }))]
+
+  if (data.products.pageInfo && data.products.pageInfo.hasNextPage)
+    return await getMoreProducts(lang, arr, data.products.pageInfo.endCursor)
+  else return arr
+}
+
+const getSitemapProducts = async (lang) => {
+  let arr = []
+  const { data } = await getPageProducts(lang)
+
+  if (!data?.products?.nodes)
+    return
+
+  if (data.products.nodes) {
+    arr = data.products?.nodes.map(product => ({
+      url: `/${product.handle}-${product.details?.value ? JSON.parse(product.details.value).key : 'OHBOY'}`,
+      lastmod: product.updatedAt,
+      img: [
+        {
+          url: `${product.featuredImage?.url || 'missing'}`,
+          title: product.title,
+        },
+      ],
+    }))
+  }
+
+  arr = await getMoreProducts(lang, arr, data.products.pageInfo.endCursor)
+  return arr
+}
+
+const getBrands = async (query) => {
+  let response = {}
+  await fetch(`${process.env.ELASTIC_URL}brands/sitemap?${query}`, { method: 'GET' })
+    .then(async res => await res.json())
+    .then(data => response = data || {})
+    .catch(() => { response = {} })
+
+  return response
+}
+
+const getMoreBrands = async (arr, query) => {
+  const { data, meta } = await getBrands(query)
+  if (!data)
+    return arr
+  arr = [...arr,
+    ...data.map(brand => ({
+      url: brand.url,
+      lastmod: brand.updatedAt,
+    }))]
+
+  if (meta.next_cursor)
+    return await getMoreBrands(arr, `paginate=300&cursor=${meta.next_cursor}`)
+  else return arr
+}
+
+const getSitemapBrands = async () => {
+  let arr = []
+  const { data, meta } = await getBrands('paginate=300')
+
+  if (!data)
+    return
+
+  arr = data.map(brand => ({
+    url: brand.url,
+    lastmod: brand.updatedAt,
+  }))
+
+  arr = await getMoreBrands(arr, `paginate=300&cursor=${meta.next_cursor}`)
+  // console.log(meta.next_cursor)
+  return arr
+}
 /*
 // Have a look at this
 function requestMiddleware(request: RequestInit) {
@@ -11,6 +148,67 @@ function requestMiddleware(request: RequestInit) {
   }
 } */
 
+const storeLocales = (store) => {
+  /* { code: 'de', iso: 'de-DE', file: 'de.js', dir: 'ltr' },
+  { code: 'fr', iso: 'fr-FR', file: 'fr.js', dir: 'ltr' }, */
+
+  const obj = {
+    CMW: [
+      { code: 'en', iso: 'en-GB', file: 'en.js', dir: 'ltr' },
+      { code: 'it', iso: 'it-IT', file: 'it.js', dir: 'ltr' },
+    ],
+    CMW_UK: [
+      { code: 'en', iso: 'en-GB', file: 'en.js', dir: 'ltr' },
+      // { code: 'it', iso: 'it-IT', file: 'it.js', dir: 'ltr' }, // Todo: Remove this line
+    ],
+    WILDVIGNERON: [
+      { code: 'en', iso: 'en-GB', file: 'en.js', dir: 'ltr' },
+    ],
+  }
+
+  return obj[store]
+}
+
+const SITEMAP = {
+  CMW: [
+    {
+      path: '/sitemap_it.xml',
+    }, {
+      path: '/sitemap_en.xml',
+      routes: ['bar/1', 'bar/2'],
+      exclude: ['/**'],
+    },
+  ],
+  CMW_UK: [
+    {
+      path: '/sitemap_en_product_pages.xml',
+      routes: () => getSitemapProducts('EN'),
+      image: 'test',
+      exclude: ['/**'],
+    },
+    {
+      path: '/sitemap_en_category_listing_pages.xml',
+      routes: async () => getSitemapBrands(),
+      exclude: ['/**'],
+    },
+    {
+      path: '/sitemap_en_editorial_other_pages.xml',
+      exclude: ['/', '/profile', '/profile/**', '/catalog', '/business-gifts', '/cart', '/gift-cards', '/login', '/new-password', '/preview', '/recover', '/thank-you', '/winery'],
+    },
+  ],
+  WILDVIGNERON: [
+    {
+      path: '/sitemap-it.xml',
+      routes: ['about-us', 'cookie-policy'],
+      lastmod: '2017-06-31',
+      gzip: true,
+    }, {
+      path: '/folder/sitemap-bar.xml',
+      routes: ['bar/1', 'bar/2'],
+      exclude: ['/**'],
+    },
+  ],
+}
 const THEME_COLORS = {
   CMW: `
   "dark-primary": #11312b,
@@ -131,7 +329,14 @@ export default {
     '@nuxtjs/gtm',
     'cookie-universal-nuxt',
     '@nuxtjs/sentry',
+    '@nuxtjs/sitemap',
   ],
+
+  sitemap: {
+    path: '/sitemap.xml',
+    gzip: true,
+    sitemaps: SITEMAP[process.env.STORE],
+  },
 
   http: {
     baseURL: process.env.ELASTIC_URL,
@@ -179,15 +384,11 @@ export default {
   },
 
   i18n: {
-    locales: [
-      { code: 'en', iso: 'en-GB', file: 'en.js', dir: 'ltr' },
-      { code: 'it', iso: 'it-IT', file: 'it.js', dir: 'ltr' },
-      { code: 'de', iso: 'de-DE', file: 'de.js', dir: 'ltr' },
-      { code: 'fr', iso: 'fr-FR', file: 'fr.js', dir: 'ltr' },
-    ],
+    locales: storeLocales(process.env.STORE),
     defaultLocale: process.env.DEFAULT_LOCALE,
     lazy: true,
     langDir: 'locales/',
+    parsePages: false,
     vueI18n: {
       fallbackLocale: process.env.DEFAULT_LOCALE,
       numberFormats: {
