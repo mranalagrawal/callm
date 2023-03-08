@@ -1,6 +1,5 @@
 <script>
 import promoTagIcon from 'assets/svg/promo-tag.svg'
-import { mapState } from 'vuex'
 import { storeToRefs } from 'pinia'
 import AwardTooltip from './UI/AwardTooltip.vue'
 import heartFullIcon from '~/assets/svg/heart-full.svg'
@@ -25,15 +24,12 @@ export default {
       heartIcon,
       heartFullIcon,
       promoTagIcon,
-      details: JSON.parse(this.product.metafield1.value),
+      details: (this.product.metafield1 && this.product.metafield1.value) ? JSON.parse(this.product.metafield1.value) : {},
       isOpen: false,
-      awards: JSON.parse(this.product.metafield1.value).awards.slice(0, 5),
+      awards: (this.product.metafield1 && this.product.metafield1.value) ? JSON.parse(this.product.metafield1.value).awards.slice(0, 5) : [],
     }
   },
   computed: {
-    ...mapState('user', {
-      favorites: 'wishlist',
-    }),
     backofficeId() {
       // Get the proper tag 🤦🏻
       return this.product.tags.find(tag => new RegExp(regexRules('isProduct')).test(tag))
@@ -121,7 +117,7 @@ export default {
 
 <template>
   <div class="product-card mx-auto mt-4" style="width: 94%;">
-    <div>
+    <div v-if="details">
       <div v-if="details.inpromotion" class="ribbon">
         <VueSvgIcon :data="promoTagIcon" color="white" class="cmw-mt-1" style="line-height: 0.875rem" />
         <span class="text-uppercase cmw-text-sm cmw-mb-2" style="letter-spacing: 3px;" v-text="$t('product.promoLabel')" />
@@ -142,13 +138,13 @@ export default {
               url: `${product.images.nodes[0].url}?&width=20&height=36`,
               width: 20,
               height: 36,
-              altText: product.title,
+              altText: details ? details.name[$i18n.locale] : 'missing',
             }"
             :source="{
               url: `${product.images.nodes[0].url}?&width=300&height=540&crop=center`,
               width: 300,
               height: 540,
-              altText: product.title,
+              altText: details ? details.name[$i18n.locale] : 'missing',
             }"
           />
         </nuxt-link>

@@ -172,13 +172,13 @@ export default {
                 url: `${product._source.shopifyImageUrl[$config.STORE]}&width=20&height=36`,
                 width: 20,
                 height: 36,
-                altText: product._source.shortName,
+                altText: product._source.name_t[$i18n.locale],
               }"
               :source="{
                 url: `${product._source.shopifyImageUrl[$config.STORE]}&width=300&height=540`,
                 width: 300,
                 height: 540,
-                altText: product._source.shortName,
+                altText: product._source.name_t[$i18n.locale],
               }"
             />
           </NuxtLink>
