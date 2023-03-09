@@ -14,7 +14,7 @@ const getPageProducts = async (lang, cursor = null) => {
     crossDomain: true,
     method: 'POST',
     headers: {
-      'X-Shopify-Storefront-Access-Token': process.env.DOMAIN,
+      'X-Shopify-Storefront-Access-Token': process.env.STOREFRONT_ACCESS_TOKEN,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
