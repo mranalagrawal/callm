@@ -9,6 +9,7 @@ export default {
     },
     labels: {
       GO_TO_HOME_PAGE: 'Naviguer vers la page d\'accueil',
+      GO_TO_PAGE: 'Aller à {url}',
       views: {
         GRILLE: 'vue grille',
         LISTE: 'vue liste',
