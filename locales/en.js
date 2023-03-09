@@ -172,7 +172,7 @@ export default {
     favourite: 'Callmewine\'s Favourites',
     rarewine: 'Rare Wines',
     foreveryday: 'Everyday Wines',
-    artisanal: 'Artisanal Wines',
+    artisanal: 'Natural Wines',
     unusualvariety: 'Unusual variety',
     isnew: 'New',
     togift: 'Perfect Gift Ideas',

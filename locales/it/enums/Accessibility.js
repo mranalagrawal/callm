@@ -9,6 +9,7 @@ export default {
     },
     labels: {
       GO_TO_HOME_PAGE: 'Vai alla home page',
+      GO_TO_PAGE: 'Vai a {url}',
       views: {
         GRID: 'vista a griglia',
         LIST: 'visualizzazione elenco',

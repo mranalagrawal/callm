@@ -302,6 +302,7 @@ export default {
           </div>
         </div>
       </div>
+      <FooterSocials />
 
       <hr class="separator">
 

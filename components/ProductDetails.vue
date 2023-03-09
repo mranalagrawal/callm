@@ -213,21 +213,26 @@ export default {
     </div>
     <div v-if="data && brandMetafields">
       <div v-if="breadcrumb" class="<md:cmw-hidden md:(cmw-flex cmw-items-center) cmw-my-2 cmw-font-sans cmw-text-sm">
-        <NuxtLink class="cmw-text-primary-400" :to="localePath(`/catalog`)">
+        <NuxtLink class="cmw-text-primary-400" :to="localePath(`/catalog`)" rel="nofollow">
           {{ breadcrumb.parent_category_name }}
         </NuxtLink>
         <VueSvgIcon class="cmw-mx-1" width="12" height="12" :data="require(`@/assets/svg/chevron-right.svg`)" />
-        <NuxtLink class="cmw-text-primary-400" :to="localePath(`/${breadcrumb.category_handle}-${breadcrumb.category_id}`)">
+        <NuxtLink class="cmw-text-primary-400" :to="localePath(`/${breadcrumb.category_handle}-${breadcrumb.category_id}`)" rel="nofollow">
           {{ breadcrumb.category_name }}
         </NuxtLink>
         <VueSvgIcon class="cmw-mx-1" width="12" height="12" :data="require(`@/assets/svg/chevron-right.svg`)" />
         <NuxtLink
-          class="cmw-text-primary-400" :to=" localePath(`/${breadcrumb.category_handle}-${breadcrumb.region_handle}-${breadcrumb.category_id}${breadcrumb.region_id}`)"
+          class="cmw-text-primary-400"
+          :to=" localePath(`/${breadcrumb.category_handle}-${breadcrumb.region_handle}-${breadcrumb.category_id}${breadcrumb.region_id}`)"
+          rel="nofollow"
         >
           {{ breadcrumb.region_name }}
         </NuxtLink>
         <VueSvgIcon class="cmw-mx-1" width="12" height="12" :data="require(`@/assets/svg/chevron-right.svg`)" />
-        <NuxtLink class="cmw-text-primary-400" :to=" localePath(`/${breadcrumb.winelist_handle}-${breadcrumb.winelist_id}`)">
+        <NuxtLink
+          class="cmw-text-primary-400" :to=" localePath(`/${breadcrumb.winelist_handle}-${breadcrumb.winelist_id}`)"
+          rel="nofollow"
+        >
           {{ breadcrumb.winelist_name }}
         </NuxtLink>
         <VueSvgIcon class="cmw-mx-1" width="12" height="12" :data="require(`@/assets/svg/chevron-right.svg`)" />

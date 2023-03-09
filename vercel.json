@@ -5,7 +5,32 @@
   "builds": [
     {
       "src": "nuxt.config.js",
-      "use": "@nuxtjs/vercel-builder"
+      "use": "@nuxtjs/vercel-builder",
+      "config": {
+        "serverFiles": [
+          "./.nuxt/dist/sitemap-routes.json"
+        ]
+      }
+    }
+  ],
+  "headers":[
+    {
+      "source": "/(.*-[V,C,R,D,B,N,M][0-9]*$)",
+      "headers" : [
+        {
+          "key" : "x-robots-tag",
+          "value" : "noindex"
+        }
+      ]
+    },
+    {
+      "source": "/(.*-[V,C,R,D,B,N,M][0-9]*$[V,C,R,D,B,N,M][0-9]*$)",
+      "headers" : [
+        {
+          "key" : "x-robots-tag",
+          "value" : "noindex"
+        }
+      ]
     }
   ]
 }
