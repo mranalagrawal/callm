@@ -1,5 +1,5 @@
 <script>
-import { onMounted, ref } from '@nuxtjs/composition-api'
+import { computed, onMounted, ref, useContext, useFetch, useRoute, useRouter } from '@nuxtjs/composition-api'
 import DropdownWinery from '../../components/UI/DropdownWinery.vue'
 import Loader from '../../components/UI/Loader.vue'
 
@@ -9,12 +9,66 @@ export default {
     return context.$config.STORE
   },
   setup() {
-    // const data = ref(null)
+    const route = useRoute()
+    const router = useRouter()
+    const data = ref(null)
+    const linksRef = ref(null)
+    const allFilters = ref(null)
+    const selectedFilters = ref(null)
     const limit = ref(5)
     const trigger = ref(null)
     const options = {
       root: null,
       threshold: 0,
+    }
+
+    const { $http, $config } = useContext()
+
+    useFetch(async () => {
+      if (!allFilters.value) {
+        // TODO: get a decent API 'brands-filters' that returns only brands.filters
+        const data = await $http.$get(`${$config.ELASTIC_URL}brands`)
+        allFilters.value = data.brands.filters
+      }
+
+      await $http.$get(`${$config.ELASTIC_URL}brands`, {
+        searchParams: route.value.query,
+      }).then(({ brands, links }) => {
+        data.value = brands.data.sort((a, b) => b.isPartner - a.isPartner)
+        linksRef.value = links
+        selectedFilters.value = brands.filters
+      })
+    })
+
+    const slicedData = computed(() => data.value && data.value.slice(0, limit.value))
+
+    const resetLazyLoad = () => {
+      scrollTo({ left: 0, top: 0, behavior: 'smooth' })
+      limit.value = window.IntersectionObserver ? 5 : 50
+    }
+
+    const fetchPrev = () => {
+      resetLazyLoad()
+      const url = new URL(linksRef.value.prev)
+      const cursor = url.searchParams.get('cursor')
+
+      const query = {
+        ...route.value.query,
+        cursor,
+      }
+      router.push({ path: '/winery', query })
+    }
+
+    const fetchNext = () => {
+      resetLazyLoad()
+      const url = new URL(linksRef.value.next)
+      const cursor = url.searchParams.get('cursor')
+
+      const query = {
+        ...route.value.query,
+        cursor,
+      }
+      router.push({ path: '/winery', query })
     }
 
     const handleLazyLoad = () => {
@@ -39,100 +93,28 @@ export default {
         ? createObserver()
         : limit.value = 50 // <-- Note: this could be messy, how can we handle this?
     })
-    return { trigger, limit }
-  },
-  data() {
-    return {
-      data: null,
-      links: null,
-      filters: null,
-      loading: null,
-      baseURL: `${this.$config.ELASTIC_URL}brands`,
+
+    const fetchBrands = (params) => {
+      resetLazyLoad()
+
+      const { cursor, ...rest } = route.value.query
+
+      const query = {
+        ...rest,
+        [params.keyword]: params.id,
+      }
+      router.push({ path: '/winery', query })
     }
-  },
-  async fetch() {
-    this.loading = true
-    const data = await fetch(this.baseURL)
-    const dataJSON = await data.json()
 
-    this.data = dataJSON.brands.data.sort((a, b) => b.isPartner - a.isPartner)
-    this.links = dataJSON.links
-    this.filters = dataJSON.brands.filters
-
-    this.loading = false
+    return { data, slicedData, linksRef, allFilters, selectedFilters, trigger, limit, fetchBrands, fetchPrev, fetchNext }
   },
-  computed: {
-    slicedData() {
-      return this.data && this.data.slice(0, this.limit)
-    },
+  watch: {
+    '$route.query': '$fetch',
   },
   created() {
-    this.$nuxt.$on('changeregions', (event) => {
-      this.fetchRegions(event)
+    this.$nuxt.$on('update-query', (event) => {
+      this.fetchBrands(event)
     })
-    this.$nuxt.$on('changeproductionTypes', (event) => {
-      this.fetchProductionTypes(event)
-    })
-    this.$nuxt.$on('changecountries', (event) => {
-      this.fetchCountries(event)
-    })
-    this.$nuxt.$on('changecategories', (event) => {
-      this.fetchCategories(event)
-    })
-  },
-  methods: {
-    resetLazyLoad() {
-      scrollTo({ left: 0, top: 0, behavior: 'smooth' })
-      this.limit = window.IntersectionObserver ? 5 : 50
-    },
-    async fetchNext() {
-      this.resetLazyLoad()
-      const data = await fetch(this.links.next)
-      const dataJSON = await data.json()
-
-      this.data = dataJSON.brands.data
-      this.links = dataJSON.links
-    },
-    async fetchPrev() {
-      this.resetLazyLoad()
-      const data = await fetch(this.links.prev)
-      const dataJSON = await data.json()
-
-      this.data = dataJSON.brands.data
-      this.links = dataJSON.links
-    },
-    async fetchRegions(id) {
-      this.resetLazyLoad()
-      const data = await fetch(`${this.baseURL}?region=${id}`)
-      const dataJSON = await data.json()
-
-      this.data = dataJSON.brands.data
-      this.links = dataJSON.links
-    },
-    async fetchProductionTypes(id) {
-      this.resetLazyLoad()
-      const data = await fetch(`${this.baseURL}?type=${id}`)
-      const dataJSON = await data.json()
-
-      this.data = dataJSON.brands.data
-      this.links = dataJSON.links
-    },
-    async fetchCountries(id) {
-      this.resetLazyLoad()
-      const data = await fetch(`${this.baseURL}?country=${id}`)
-      const dataJSON = await data.json()
-
-      this.data = dataJSON.brands.data
-      this.links = dataJSON.links
-    },
-    async fetchCategories(id) {
-      this.resetLazyLoad()
-      const data = await fetch(`${this.baseURL}?category=${id}`)
-      const dataJSON = await data.json()
-
-      this.data = dataJSON.brands.data
-      this.links = dataJSON.links
-    },
   },
 }
 </script>
@@ -140,26 +122,26 @@ export default {
 <template>
   <div class="container-fluid px-md-5 mt-5">
     <div class="row">
-      <div v-if="data && filters" class="c-filters col-12 col-md-3 cmw-h-max">
+      <div v-if="data && allFilters" class="c-filters col-12 col-md-3 cmw-h-max">
         <DropdownWinery
           label="Production Types"
-          :items="filters.productionTypes"
-          keyword="productionTypes"
+          :items="allFilters.productionTypes"
+          keyword="type"
         />
         <DropdownWinery
           label="Regions"
-          :items="filters.regions"
-          keyword="regions"
+          :items="allFilters.regions"
+          keyword="region"
         />
         <DropdownWinery
           label="Country"
-          :items="filters.countries"
-          keyword="countries"
+          :items="allFilters.countries"
+          keyword="country"
         />
         <DropdownWinery
           label="Categories"
-          :items="filters.categories"
-          keyword="categories"
+          :items="allFilters.categories"
+          keyword="categorie"
         />
       </div>
       <div class="col-12 col-md-9">
@@ -181,13 +163,13 @@ export default {
         </div>
         <div v-if="data" class="row justify-content-between">
           <button
-            v-if="links.prev"
+            v-if="linksRef.prev"
             class="btn text-light-secondary"
             @click="fetchPrev"
             v-text="$t('common.cta.prevPage')"
           />
           <button
-            v-if="links.next"
+            v-if="linksRef.next"
             class="btn text-light-secondary"
             @click="fetchNext"
             v-text="$t('common.cta.nextPage')"
@@ -195,7 +177,7 @@ export default {
         </div>
       </div>
     </div>
-    <Loader v-if="loading" />
+    <Loader v-if="$fetchState.pending" />
   </div>
 </template>
 
