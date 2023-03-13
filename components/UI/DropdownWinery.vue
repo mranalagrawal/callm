@@ -5,10 +5,12 @@ export default {
     return {
       search: '',
       visible: false,
-      /* active: this.$route.query[this.keyword], */
     }
   },
   computed: {
+    active() {
+      return this.$route.query[this.keyword]
+    },
     filteredItems() {
       if (this.search.length > 2)
         return this.items.filter(el => el.name.includes(this.search))
@@ -18,21 +20,7 @@ export default {
   },
   methods: {
     goto(id) {
-      $nuxt.$emit(`change${this.keyword}`, id)
-      /* const query = Object.assign({}, this.$route.query);
-
-      if (query[this.keyword] == id) {
-        delete query[this.keyword];
-      } else {
-        query[this.keyword] = id;
-      }
-
-      if (id !== this.active) query["page"] = 1;
-
-      this.$router.push({
-        path: "search",
-        query: query,
-      }); */
+      $nuxt.$emit('update-query', { id, keyword: this.keyword })
     },
   },
 }
@@ -62,11 +50,13 @@ export default {
       >
         <div
           class="content-item p-2 d-flex justify-content-between align-items-center pointer"
+          :class="{ 'cmw-bg-primary-50': active === `${item.id}` }"
           @click="goto(item.id)"
         >
           <div>
             <span>{{ item.name }}</span>
           </div>
+          <i v-if="active === `${item.id}`" class="fal fa-check float-right" />
         </div>
       </div>
     </div>
@@ -76,7 +66,7 @@ export default {
 <style scoped>
 .content {
   max-height: 350px;
-  overflow: scroll;
+  overflow: auto;
 }
 .content-item:hover {
   background: #fae4e8;
