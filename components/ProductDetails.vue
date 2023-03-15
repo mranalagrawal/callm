@@ -23,12 +23,12 @@ export default {
   props: ['product'],
   setup() {
     const customerStore = useCustomer()
-    const { wishlistArr } = storeToRefs(customerStore)
+    const { wishlistArr, getCustomerType } = storeToRefs(customerStore)
     const { handleWishlist } = customerStore
     const features = markRaw(['favourite', 'isnew', 'inpromotion', 'foreveryday', 'togift', 'unusualvariety', 'rarewine', 'artisanal', 'organic', 'topsale'])
     const isOpen = ref(false)
 
-    return { wishlistArr, features, isOpen, cartIcon, addIcon, subtractIcon, heartIcon, heartFullIcon, handleWishlist }
+    return { wishlistArr, getCustomerType, features, isOpen, cartIcon, addIcon, subtractIcon, heartIcon, heartFullIcon, handleWishlist }
   },
   data() {
     return {
@@ -144,6 +144,9 @@ export default {
     canAddMore() {
       return this.data.totalInventory - this.cartQuantity > 0
     },
+    finalPrice() {
+      return this.metaField.priceLists[this.$config.SALECHANNEL][this.getCustomerType]
+    },
   },
   methods: {
     getPercent,
@@ -161,7 +164,7 @@ export default {
 
       const totalInventory = this.data.totalInventory
       const productVariantId = this.data.variants.nodes[0].id
-      const amount = Number(this.data.variants.nodes[0].price)
+      const amount = this.finalPrice
       const amountFullPrice = Number(
         this.data.variants.nodes[0].compareAtPriceV2.amount,
       )
@@ -309,7 +312,7 @@ export default {
                 />
               </div>
               <i18n-n
-                class="cmw-inline-block" :value="Number(data.variants.nodes[0].priceV2.amount)"
+                class="cmw-inline-block" :value="Number(finalPrice)"
                 :format="{ key: 'currency' }"
                 :locale="getLocaleFromCurrencyCode(data.variants.nodes[0].priceV2.currencyCode)"
               >
