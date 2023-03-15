@@ -58,7 +58,7 @@ const getMoreProducts = async (lang, arr, endCursor) => {
     return arr
   arr = [...arr,
     ...data.products?.nodes.map(product => ({
-      url: `/${product.handle}-${product.details?.value ? JSON.parse(product.details.value).key : 'OHBOY'}`,
+      url: `/${product.handle}-${product.details?.value ? JSON.parse(product.details.value).key : 'OHBOY'}.htm`,
       lastmod: product.updatedAt,
       img: [
         {
@@ -82,7 +82,7 @@ const getSitemapProducts = async (lang) => {
 
   if (data.products.nodes) {
     arr = data.products?.nodes.map(product => ({
-      url: `/${product.handle}-${product.details?.value ? JSON.parse(product.details.value).key : 'OHBOY'}`,
+      url: `/${product.handle}-${product.details?.value ? JSON.parse(product.details.value).key : 'OHBOY'}.htm`,
       lastmod: product.updatedAt,
       img: [
         {
