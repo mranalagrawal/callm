@@ -57,8 +57,11 @@ export const mutations = {
 
 export const getters = {
   favoritesCount(state) {
-    return state.user.customer
+    return (
+      state.user.customer
       && !!state.user.customer.wishlist
-      && state.user.customer.wishlist.value && JSON.parse(state.user.customer.wishlist.value).length
+      && state.user.customer.wishlist.value
+      && JSON.parse(state.user.customer.wishlist.value).length
+    )
   },
 }

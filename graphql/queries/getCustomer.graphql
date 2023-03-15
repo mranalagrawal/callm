@@ -1,4 +1,5 @@
-query getCustomer($customerAccessToken: String!, $lang: LanguageCode!) @inContext(language: $lang) {
+query getCustomer($customerAccessToken: String!, $lang: LanguageCode!)
+@inContext(language: $lang) {
   customer(customerAccessToken: $customerAccessToken) {
     id
     firstName
@@ -6,6 +7,7 @@ query getCustomer($customerAccessToken: String!, $lang: LanguageCode!) @inContex
     acceptsMarketing
     email
     phone
+    tags
     wishlist: metafield(namespace: "custom", key: "wishlist") {
       value
     }
@@ -38,4 +40,3 @@ query getCustomer($customerAccessToken: String!, $lang: LanguageCode!) @inContex
     }
   }
 }
-
