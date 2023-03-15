@@ -35,7 +35,7 @@ export default {
       const { articles } = await $graphql.default.request(getArticles, {
         lang: i18n.locale.toUpperCase(),
         first: 1,
-        query: `tag:${route.value.path.split('-').at(-1)}`, // route.value.params.handle,
+        query: `tag:${route.value.path.split('-').at(-1).replace('.htm', '')}`, // route.value.params.handle,
       })
 
       if (articles.nodes[0]) {

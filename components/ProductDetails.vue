@@ -7,7 +7,7 @@ import addIcon from 'assets/svg/add.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
 import heartIcon from 'assets/svg/heart.svg'
 import heartFullIcon from 'assets/svg/heart-full.svg'
-import { getLocaleFromCurrencyCode, getPercent } from '../utilities/currency'
+import { getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
 import { queryProductByIdAsTag } from '~/utilities/productQueries'
 import { getBrand } from '~/utilities/brandForProduct'
 import favouriteIcon from '~/assets/svg/selections/favourite.svg'
@@ -220,20 +220,20 @@ export default {
           {{ breadcrumb.parent_category_name }}
         </NuxtLink>
         <VueSvgIcon class="cmw-mx-1" width="12" height="12" :data="require(`@/assets/svg/chevron-right.svg`)" />
-        <NuxtLink class="cmw-text-primary-400" :to="localePath(`/${breadcrumb.category_handle}-${breadcrumb.category_id}`)" rel="nofollow">
+        <NuxtLink class="cmw-text-primary-400" :to="localePath(`/${breadcrumb.category_handle}-${breadcrumb.category_id}.htm`)" rel="nofollow">
           {{ breadcrumb.category_name }}
         </NuxtLink>
         <VueSvgIcon class="cmw-mx-1" width="12" height="12" :data="require(`@/assets/svg/chevron-right.svg`)" />
         <NuxtLink
           class="cmw-text-primary-400"
-          :to=" localePath(`/${breadcrumb.category_handle}-${breadcrumb.region_handle}-${breadcrumb.category_id}${breadcrumb.region_id}`)"
+          :to=" localePath(`/${breadcrumb.category_handle}-${breadcrumb.region_handle}-${breadcrumb.category_id}${breadcrumb.region_id}.htm`)"
           rel="nofollow"
         >
           {{ breadcrumb.region_name }}
         </NuxtLink>
         <VueSvgIcon class="cmw-mx-1" width="12" height="12" :data="require(`@/assets/svg/chevron-right.svg`)" />
         <NuxtLink
-          class="cmw-text-primary-400" :to=" localePath(`/${breadcrumb.winelist_handle}-${breadcrumb.winelist_id}`)"
+          class="cmw-text-primary-400" :to=" localePath(`/${breadcrumb.winelist_handle}-${breadcrumb.winelist_id}.htm`)"
           rel="nofollow"
         >
           {{ breadcrumb.winelist_name }}
@@ -283,7 +283,7 @@ export default {
           </h1>
           <NuxtLink
             class="h3 cmw-w-max font-weight-bold cmw-text-primary-400 hover:cmw-text-primary-400"
-            :to="`winery/${brand.handle}-${brandMetafields.key}`"
+            :to="localePath({ name: 'winery-handle', params: { handle: `${brand.handle}-${brandMetafields.key}.htm` } })"
           >
             {{ data.vendor }}
           </NuxtLink>

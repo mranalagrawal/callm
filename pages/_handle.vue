@@ -25,7 +25,7 @@ export default {
     // check if product page
     const isProduct = /[P][0-9]+/
     if (isProduct.test(path)) {
-      this.product = `P${this.$route.path.split('-P')[1]}`
+      this.product = `P${this.$route.path.split('-P')[1].replace('.htm', '')}`
       this.hasResults = true
       return
     }
