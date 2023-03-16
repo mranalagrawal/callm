@@ -25,7 +25,7 @@ export default {
     // check if product page
     const isProduct = /[P][0-9]+/
     if (isProduct.test(path)) {
-      this.product = `P${this.$route.path.split('-P')[1]}`
+      this.product = `P${this.$route.path.split('-P')[1].replace('.htm', '')}`
       this.hasResults = true
       return
     }
@@ -71,6 +71,13 @@ export default {
     }
 
     this.hasResults = !(noFilterInURL && noSelection)
+    /* // Todo: throw Error(redirect) // 404
+    if (!this.hasResults) {
+      return this.$nuxt.error({
+        statusCode: 404,
+        message: 'No results',
+      })
+    } */
   },
 }
 </script>

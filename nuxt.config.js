@@ -58,7 +58,7 @@ const getMoreProducts = async (lang, arr, endCursor) => {
     return arr
   arr = [...arr,
     ...data.products?.nodes.map(product => ({
-      url: `/${product.handle}-${product.details?.value ? JSON.parse(product.details.value).key : 'OHBOY'}`,
+      url: `/${product.handle}-${product.details?.value ? JSON.parse(product.details.value).key : 'OHBOY'}.htm`,
       lastmod: product.updatedAt,
       img: [
         {
@@ -82,7 +82,7 @@ const getSitemapProducts = async (lang) => {
 
   if (data.products.nodes) {
     arr = data.products?.nodes.map(product => ({
-      url: `/${product.handle}-${product.details?.value ? JSON.parse(product.details.value).key : 'OHBOY'}`,
+      url: `/${product.handle}-${product.details?.value ? JSON.parse(product.details.value).key : 'OHBOY'}.htm`,
       lastmod: product.updatedAt,
       img: [
         {
@@ -199,13 +199,13 @@ const SITEMAP = {
     },
     {
       path: '/sitemap_en_editorial_other_pages.xml',
-      exclude: ['/', '/profile', '/profile/**', '/catalog', '/business-gifts', '/cart', '/gift-cards', '/login', '/new-password', '/preview', '/recover', '/thank-you', '/winery'],
+      exclude: ['/profile', '/profile/**', '/catalog', '/business-gifts', '/cart', '/gift-cards', '/login', '/new-password', '/preview', '/recover', '/thank-you', '/winery'],
     },
   ],
   WILDVIGNERON: [
     {
       path: '/sitemap-it.xml',
-      routes: ['about-us', 'cookie-policy'],
+      routes: ['about-us', 'cookie'],
       lastmod: '2017-06-31',
       gzip: true,
     }, {

@@ -51,7 +51,7 @@ export default {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           loadSmallImage()
-          observer.unobserve(el.value)
+          el.value && observer.unobserve(el.value)
         }
       })
     }

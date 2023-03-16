@@ -29,13 +29,13 @@ export default {
   },
   setup() {
     const customerStore = useCustomer()
-    const { wishlistArr } = storeToRefs(customerStore)
+    const { wishlistArr, getCustomerType } = storeToRefs(customerStore)
     const { handleWishlist } = customerStore
 
     const features = markRaw(['favourite', 'isnew', 'inpromotion', 'foreveryday', 'togift', 'unusualvariety', 'rarewine', 'artisanal', 'organic', 'topsale'])
     const isOpen = ref(false)
 
-    return { wishlistArr, heartIcon, heartFullIcon, cartIcon, emailIcon, addIcon, subtractIcon, features, isOpen, handleWishlist, stripHtml }
+    return { wishlistArr, getCustomerType, heartIcon, heartFullIcon, cartIcon, emailIcon, addIcon, subtractIcon, features, isOpen, handleWishlist, stripHtml }
   },
   computed: {
     ...mapState('userCart', {
@@ -79,6 +79,9 @@ export default {
     canAddMore() {
       return this.product.quantityAvailable - this.cartQuantity > 0
     },
+    finalPrice() {
+      return this.metaField.priceLists[this.$config.SALECHANNEL][this.getCustomerType]
+    },
   },
   methods: {
     getLocaleFromCurrencyCode,
@@ -94,7 +97,7 @@ export default {
       }
 
       const productVariantId = this.product.product.variants.nodes[0].id
-      const amount = Number(this.product.product.variants.nodes[0].price)
+      const amount = this.finalPrice
       const amountFullPrice = Number(
         this.product.product.variants.nodes[0].compareAtPriceV2.amount,
       )
@@ -247,7 +250,7 @@ hover:cmw-shadow-elevation"
           }}
         </span>
         <i18n-n
-          class="cmw-inline-block cmw-mb-3" :value="Number(product.priceV2.amount)" :format="{ key: 'currency' }"
+          class="cmw-inline-block cmw-mb-3" :value="finalPrice" :format="{ key: 'currency' }"
           :locale="getLocaleFromCurrencyCode(product.priceV2.currencyCode)"
         >
           <template #currency="slotProps">

@@ -10,6 +10,14 @@ const setCustomerWishlist = (value) => {
   const json = JSON.parse(value)
   return json.filter(product => new RegExp(regexRules('isProduct')).test(product))
 }
+
+// Note: Backend should use enums here 'GOLD' | 'B2B' | 'MAIN', this way we could simplify this to an array
+const availableUsers = {
+  list_gold: 'gold',
+  list_b2b: 'b2b',
+  main: 'main',
+}
+
 export const useCustomer = defineStore({
   id: 'customer',
   state: () => ({
@@ -33,6 +41,10 @@ export const useCustomer = defineStore({
     favoritesCount: state => state.wishlistArr.length,
     customerId: (state) => {
       return `${state.customer.id}`.substring(`${state.customer.id}`.lastIndexOf('/') + 1)
+    },
+    getCustomerType(state) {
+      const userType = (state.customer.tags && state.customer.tags.find(k => Object.keys(availableUsers).includes(k))) || 'main'
+      return availableUsers[userType]
     },
   },
 

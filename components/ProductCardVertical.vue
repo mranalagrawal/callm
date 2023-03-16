@@ -14,10 +14,10 @@ export default {
   props: ['product'],
   setup() {
     const customerStore = useCustomer()
-    const { wishlistArr } = storeToRefs(customerStore)
+    const { wishlistArr, getCustomerType } = storeToRefs(customerStore)
     const { handleWishlist } = customerStore
 
-    return { wishlistArr, handleWishlist }
+    return { wishlistArr, getCustomerType, handleWishlist }
   },
   data() {
     return {
@@ -66,6 +66,9 @@ export default {
     canAddMore() {
       return this.product.totalInventory - this.userCartQuantity > 0
     },
+    finalPrice() {
+      return this.details.priceLists[this.$config.SALECHANNEL][this.getCustomerType]
+    },
   },
   methods: {
     async addToUserCart() {
@@ -82,7 +85,7 @@ export default {
 
       const totalInventory = this.product.totalInventory
       const productVariantId = this.product.variants.nodes[0].id
-      const amount = Number(this.product.variants.nodes[0].price)
+      const amount = this.finalPrice
       const amountFullPrice = Number(
         this.product.variants.nodes[0].compareAtPriceV2.amount,
       )
@@ -127,7 +130,7 @@ export default {
         class="position-relative mx-0 mt-2 img-wrapper text-decoration-none text-dark"
       >
         <nuxt-link
-          :to="`/${product.handle}-${backofficeId}`"
+          :to="`/${product.handle}-${backofficeId}.htm`"
           draggable="false"
         >
           <LoadingImage
@@ -237,7 +240,7 @@ export default {
         <div class="prodotto-box__nome">
           <nuxt-link
             draggable="false"
-            :to="localePath(`/${product.handle}-${backofficeId}`)"
+            :to="localePath(`/${product.handle}-${backofficeId}.htm`)"
             class="cmw-text-body hover:(cmw-text-primary-400 cmw-no-underline)"
           >
             {{ product.title }}
@@ -267,8 +270,8 @@ export default {
             </p>
             <p class="mb-0">
               <span class="integer">{{
-                product.variants.nodes[0].price.split(".")[0]
-              }}</span>,<span>{{ product.variants.nodes[0].price.split(".")[1] }}</span>
+                String(finalPrice).split(".")[0]
+              }}</span>,<span>{{ String(finalPrice).split(".")[1] }}</span>
               {{ product.variants.nodes[0].compareAtPriceV2.currencyCode }}
             </p>
           </div>

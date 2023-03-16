@@ -27,7 +27,7 @@ export default {
   },
   setup() {
     const customerStore = useCustomer()
-    const { wishlistArr } = storeToRefs(customerStore)
+    const { wishlistArr, getCustomerType } = storeToRefs(customerStore)
     const { handleWishlist } = customerStore
 
     const features = markRaw(['favourite', 'isnew', 'inpromotion', 'foreveryday', 'togift', 'unusualvariety', 'rarewine', 'artisanal', 'organic', 'topsale'])
@@ -36,6 +36,7 @@ export default {
 
     return {
       wishlistArr,
+      getCustomerType,
       heartIcon,
       heartFullIcon,
       cartIcon,
@@ -100,6 +101,9 @@ export default {
       return (this.product._source.saleprice[this.$config.SALECHANNEL] > this.product._source.price[this.$config.SALECHANNEL])
       || this.product._source.inpromotion
     },
+    finalPrice() {
+      return this.product._source.pricelists[this.$config.SALECHANNEL][this.getCustomerType]
+    },
   },
   methods: {
     getLocaleFromCurrencyCode,
@@ -118,7 +122,7 @@ export default {
       const productVariantId
          = `gid://shopify/ProductVariant/${
          this.product._source.variantId[this.$config.STORE]}`
-      const amount = Number(this.product._source.saleprice[this.$config.SALECHANNEL])
+      const amount = this.finalPrice
       const amountFullPrice = Number(
         this.product._source.price[this.$config.SALECHANNEL],
       )
@@ -164,7 +168,7 @@ export default {
     <div class="c-productBox__grid cmw-grid cmw-h-full">
       <div class="c-productBox__image">
         <ClientOnly>
-          <NuxtLink :to="localePath(`/${product._source.handle}-P${product._source.id}`)">
+          <NuxtLink :to="localePath(`/${product._source.handle}-P${product._source.id}.htm`)">
             <LoadingImage
               class="cmw-filter hover:cmw-contrast-150 cmw-mx-auto cmw-mt-4"
               :class="{ 'cmw-opacity-50': !isAvailableForSale }"
@@ -209,7 +213,7 @@ export default {
       <div class="c-productBox__title">
         <div class="cmw-mx-4 cmw-mt-4">
           <NuxtLink
-            :to="localePath(`/${product._source.handle}-P${product._source.id}`)"
+            :to="localePath(`/${product._source.handle}-P${product._source.id}.htm`)"
             class="cmw-text-body hover:(cmw-text-primary-400 cmw-no-underline)"
           >
             {{ product._source.shortName }}
@@ -226,7 +230,7 @@ export default {
             {{ $n(product._source.saleprice[$config.SALECHANNEL], 'currency', getLocaleFromCurrencyCode($config.STORE === "CMW_UK" ? "GBP" : "EUR")) }}
           </span>
           <i18n-n
-            class="cmw-inline-block" :value="Number(product._source.price[$config.SALECHANNEL])" :format="{ key: 'currency' }"
+            class="cmw-inline-block" :value="Number(finalPrice)" :format="{ key: 'currency' }"
             :locale="getLocaleFromCurrencyCode($config.STORE === 'CMW_UK' ? 'GBP' : 'EUR')"
           >
             <template #currency="slotProps">

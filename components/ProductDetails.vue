@@ -7,7 +7,7 @@ import addIcon from 'assets/svg/add.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
 import heartIcon from 'assets/svg/heart.svg'
 import heartFullIcon from 'assets/svg/heart-full.svg'
-import { getLocaleFromCurrencyCode, getPercent } from '../utilities/currency'
+import { getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
 import { queryProductByIdAsTag } from '~/utilities/productQueries'
 import { getBrand } from '~/utilities/brandForProduct'
 import favouriteIcon from '~/assets/svg/selections/favourite.svg'
@@ -23,12 +23,12 @@ export default {
   props: ['product'],
   setup() {
     const customerStore = useCustomer()
-    const { wishlistArr } = storeToRefs(customerStore)
+    const { wishlistArr, getCustomerType } = storeToRefs(customerStore)
     const { handleWishlist } = customerStore
     const features = markRaw(['favourite', 'isnew', 'inpromotion', 'foreveryday', 'togift', 'unusualvariety', 'rarewine', 'artisanal', 'organic', 'topsale'])
     const isOpen = ref(false)
 
-    return { wishlistArr, features, isOpen, cartIcon, addIcon, subtractIcon, heartIcon, heartFullIcon, handleWishlist }
+    return { wishlistArr, getCustomerType, features, isOpen, cartIcon, addIcon, subtractIcon, heartIcon, heartFullIcon, handleWishlist }
   },
   data() {
     return {
@@ -52,8 +52,6 @@ export default {
     ).then(r => r.json())
 
     this.breadcrumb = urls.data
-
-    this.$store.commit('recent/addRecent', this.product)
 
     const domain = this.$config.DOMAIN
     const access_token = this.$config.STOREFRONT_ACCESS_TOKEN
@@ -81,7 +79,7 @@ export default {
 
     const dataBrand = await getBrand(domain, access_token, `B${brandId}`)
     this.brand = dataBrand
-
+    this.$store.commit('recent/addRecent', this.product)
     this.brandMetafields = JSON.parse(dataBrand.details.value)
   },
   head() {
@@ -144,6 +142,15 @@ export default {
     canAddMore() {
       return this.data.totalInventory - this.cartQuantity > 0
     },
+    finalPrice() {
+      return this.metaField.priceLists[this.$config.SALECHANNEL][this.getCustomerType]
+    },
+  },
+  mounted() {
+    this.$nextTick(() => {
+      if ((this.data && this.$route.params) && !this.$route.params.handle.startsWith(this.data.handle))
+        this.$router.replace(`/${this.data.handle}-${this.metaField.key}.htm`)
+    })
   },
   methods: {
     getPercent,
@@ -161,7 +168,7 @@ export default {
 
       const totalInventory = this.data.totalInventory
       const productVariantId = this.data.variants.nodes[0].id
-      const amount = Number(this.data.variants.nodes[0].price)
+      const amount = this.finalPrice
       const amountFullPrice = Number(
         this.data.variants.nodes[0].compareAtPriceV2.amount,
       )
@@ -217,20 +224,20 @@ export default {
           {{ breadcrumb.parent_category_name }}
         </NuxtLink>
         <VueSvgIcon class="cmw-mx-1" width="12" height="12" :data="require(`@/assets/svg/chevron-right.svg`)" />
-        <NuxtLink class="cmw-text-primary-400" :to="localePath(`/${breadcrumb.category_handle}-${breadcrumb.category_id}`)" rel="nofollow">
+        <NuxtLink class="cmw-text-primary-400" :to="localePath(`/${breadcrumb.category_handle}-${breadcrumb.category_id}.htm`)" rel="nofollow">
           {{ breadcrumb.category_name }}
         </NuxtLink>
         <VueSvgIcon class="cmw-mx-1" width="12" height="12" :data="require(`@/assets/svg/chevron-right.svg`)" />
         <NuxtLink
           class="cmw-text-primary-400"
-          :to=" localePath(`/${breadcrumb.category_handle}-${breadcrumb.region_handle}-${breadcrumb.category_id}${breadcrumb.region_id}`)"
+          :to=" localePath(`/${breadcrumb.category_handle}-${breadcrumb.region_handle}-${breadcrumb.category_id}${breadcrumb.region_id}.htm`)"
           rel="nofollow"
         >
           {{ breadcrumb.region_name }}
         </NuxtLink>
         <VueSvgIcon class="cmw-mx-1" width="12" height="12" :data="require(`@/assets/svg/chevron-right.svg`)" />
         <NuxtLink
-          class="cmw-text-primary-400" :to=" localePath(`/${breadcrumb.winelist_handle}-${breadcrumb.winelist_id}`)"
+          class="cmw-text-primary-400" :to=" localePath(`/${breadcrumb.winelist_handle}-${breadcrumb.winelist_id}.htm`)"
           rel="nofollow"
         >
           {{ breadcrumb.winelist_name }}
@@ -280,7 +287,7 @@ export default {
           </h1>
           <NuxtLink
             class="h3 cmw-w-max font-weight-bold cmw-text-primary-400 hover:cmw-text-primary-400"
-            :to="`winery/${brand.handle}-${brandMetafields.key}`"
+            :to="localePath({ name: 'winery-handle', params: { handle: `${brand.handle}-${brandMetafields.key}.htm` } })"
           >
             {{ data.vendor }}
           </NuxtLink>
@@ -309,7 +316,7 @@ export default {
                 />
               </div>
               <i18n-n
-                class="cmw-inline-block" :value="Number(data.variants.nodes[0].priceV2.amount)"
+                class="cmw-inline-block" :value="Number(finalPrice)"
                 :format="{ key: 'currency' }"
                 :locale="getLocaleFromCurrencyCode(data.variants.nodes[0].priceV2.currencyCode)"
               >
