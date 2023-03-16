@@ -199,13 +199,13 @@ const SITEMAP = {
     },
     {
       path: '/sitemap_en_editorial_other_pages.xml',
-      exclude: ['/', '/profile', '/profile/**', '/catalog', '/business-gifts', '/cart', '/gift-cards', '/login', '/new-password', '/preview', '/recover', '/thank-you', '/winery'],
+      exclude: ['/profile', '/profile/**', '/catalog', '/business-gifts', '/cart', '/gift-cards', '/login', '/new-password', '/preview', '/recover', '/thank-you', '/winery'],
     },
   ],
   WILDVIGNERON: [
     {
       path: '/sitemap-it.xml',
-      routes: ['about-us', 'cookie-policy'],
+      routes: ['about-us', 'cookie'],
       lastmod: '2017-06-31',
       gzip: true,
     }, {

@@ -71,6 +71,13 @@ export default {
     }
 
     this.hasResults = !(noFilterInURL && noSelection)
+    /* // Todo: throw Error(redirect) // 404
+    if (!this.hasResults) {
+      return this.$nuxt.error({
+        statusCode: 404,
+        message: 'No results',
+      })
+    } */
   },
 }
 </script>
