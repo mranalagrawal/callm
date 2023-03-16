@@ -12,11 +12,11 @@ export default {
     }
   },
   hrefLang: {
-    'it': 'https://www.callmewine.com/privacy.html',
-    'en': 'https://www.callmewine.com/en/privacy.html',
-    'fr': 'https://www.callmewine.fr/politique-de-confidentialite.html',
-    'de': 'https://www.callmewine.de/privacy.html',
-    'en-gb': 'https://callmewine.co.uk/privacy-policy',
+    'it': 'https://www.callmewine.com/cookies.html',
+    'en': 'https://www.callmewine.com/en/cookies.html',
+    'fr': 'https://www.callmewine.fr/cookies.html',
+    'de': 'https://www.callmewine.de/cookies.html',
+    'en-gb': 'https://callmewine.co.uk/cookie',
   },
   async fetch() {
     let lang = ''
@@ -26,7 +26,7 @@ export default {
       lang = 'it-it'
 
     const response = await this.$prismic.api.getSingle(
-      documents[this.$config.STORE].privacyPage,
+      documents[this.$config.STORE].cookiePage,
       {
         lang,
       },
@@ -60,6 +60,7 @@ export default {
       <div v-for="(content, j) in data.section" :key="j" class="col-12">
         <prismic-rich-text :field="[content]" />
       </div>
+      <script id="CookieDeclaration" src="https://consent.cookiebot.com/55bb6862-88ec-43e6-bd22-95823a1ed6ad/cd.js" async />
     </div>
   </div>
 </template>

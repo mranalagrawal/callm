@@ -53,8 +53,6 @@ export default {
 
     this.breadcrumb = urls.data
 
-    this.$store.commit('recent/addRecent', this.product)
-
     const domain = this.$config.DOMAIN
     const access_token = this.$config.STOREFRONT_ACCESS_TOKEN
 
@@ -81,7 +79,7 @@ export default {
 
     const dataBrand = await getBrand(domain, access_token, `B${brandId}`)
     this.brand = dataBrand
-
+    this.$store.commit('recent/addRecent', this.product)
     this.brandMetafields = JSON.parse(dataBrand.details.value)
   },
   head() {
@@ -147,6 +145,12 @@ export default {
     finalPrice() {
       return this.metaField.priceLists[this.$config.SALECHANNEL][this.getCustomerType]
     },
+  },
+  mounted() {
+    this.$nextTick(() => {
+      if ((this.data && this.$route.params) && !this.$route.params.handle.startsWith(this.data.handle))
+        this.$router.replace(`/${this.data.handle}-${this.metaField.key}.htm`)
+    })
   },
   methods: {
     getPercent,

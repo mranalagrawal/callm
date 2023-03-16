@@ -230,7 +230,7 @@ export default {
                 Privacy policy
               </nuxt-link>
               <nuxt-link
-                :to="localePath('/cookie-policy')"
+                :to="localePath('/cookie')"
                 class="text-decoration-none text-white d-block mb-2"
               >
                 Cookie policy

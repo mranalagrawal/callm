@@ -141,7 +141,7 @@ export default {
         <DropdownWinery
           label="Categories"
           :items="allFilters.categories"
-          keyword="categorie"
+          keyword="category"
         />
       </div>
       <div class="col-12 col-md-9">
