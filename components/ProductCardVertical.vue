@@ -130,7 +130,7 @@ export default {
         class="position-relative mx-0 mt-2 img-wrapper text-decoration-none text-dark"
       >
         <nuxt-link
-          :to="`/${product.handle}-${backofficeId}`"
+          :to="`/${product.handle}-${backofficeId}.htm`"
           draggable="false"
         >
           <LoadingImage
@@ -240,7 +240,7 @@ export default {
         <div class="prodotto-box__nome">
           <nuxt-link
             draggable="false"
-            :to="localePath(`/${product.handle}-${backofficeId}`)"
+            :to="localePath(`/${product.handle}-${backofficeId}.htm`)"
             class="cmw-text-body hover:(cmw-text-primary-400 cmw-no-underline)"
           >
             {{ product.title }}
