@@ -33,6 +33,10 @@ query getProducts(
                 tags
                 createdAt
                 availableForSale
+                seo {
+                  description
+                  title
+                }
                 variants(first: 10) {
                   nodes {
                     id
