@@ -84,7 +84,14 @@ export default {
   },
   head() {
     return {
-      title: `${this.title} - ${this.$config.STORE}`,
+      title: this.data && this.data.seo?.title,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.data && this.data.seo?.description,
+        },
+      ],
       link: this.metaField
         && this.metaField.hrefLang
         && Object.keys(this.metaField.hrefLang).length

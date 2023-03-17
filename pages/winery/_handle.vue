@@ -20,6 +20,10 @@ export default {
     const brand = ref({
       title: '',
       contentHtml: '',
+      seo: {
+        description: '',
+        title: '',
+      },
       image: {
         url: '',
       },
@@ -50,6 +54,7 @@ export default {
     }, 400)
 
     onMounted(() => {
+      console.log(brand.value)
       // Todo: Move this to a global composable when we implement VueUse
       window.addEventListener('resize', resizeListener)
       nextTick(() => {
@@ -77,7 +82,14 @@ export default {
   },
   head() {
     return {
-      title: this.brand.title,
+      title: this.brand.seo.title,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.brand.seo.description,
+        },
+      ],
       link: this.metaFields.hrefLang
         && Object.keys(this.metaFields.hrefLang).length && Object.entries(this.metaFields.hrefLang).map(el => ({
         hid: `alternate-${el[0]}`,
