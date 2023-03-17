@@ -24,7 +24,25 @@
       ]
     },
     {
-      "source": "/(.*-[V,C,R,D,B,N,M][0-9]*$[V,C,R,D,B,N,M][0-9]*$)",
+      "source": "/(.*-[V,C,R,D,B,N,M][0-9]*[V,C,R,D,B,N,M][0-9]*$)",
+      "headers" : [
+        {
+          "key" : "x-robots-tag",
+          "value" : "noindex"
+        }
+      ]
+    },
+    {
+      "source": "/(.*-[V,C,R,D,B,N,M][0-9]*[V,C,R,D,B,N,M][0-9]*.htm$)",
+      "headers" : [
+        {
+          "key" : "x-robots-tag",
+          "value" : "noindex"
+        }
+      ]
+    },
+    {
+      "source": "/(.*-[V,C,R,D,B,N,M][0-9]*.htm$)",
       "headers" : [
         {
           "key" : "x-robots-tag",

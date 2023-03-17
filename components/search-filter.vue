@@ -604,6 +604,7 @@ export default {
                 <input
                   :id="layout"
                   v-model="selectedLayout"
+                  :aria-label="`select ${layout}`"
                   class="peer cmw-appearance-none cmw-absolute cmw-w-full cmw-h-full cmw-z-dante"
                   type="radio"
                   name="layout"
