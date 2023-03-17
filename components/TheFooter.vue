@@ -175,6 +175,7 @@ export default {
               <div class="col-7 col-md-10">
                 <input
                   v-model="email"
+                  aria-label="enter email"
                   type="email"
                   class="form-control bg-transparent border-0 shadow-none focus:shadow-none text-white"
                   required
