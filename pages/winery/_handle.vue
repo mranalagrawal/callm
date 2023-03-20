@@ -139,15 +139,25 @@ export default {
                 dots-class="c-carouselDots"
               >
                 <div
-                  v-for="image in metaFields.images" :key="image"
+                  v-for="(image, idx) in metaFields.images" :key="image"
                   class="lg:cmw-pl-3 cmw-w-full cmw-flex cmw-h-[410px]"
                 >
-                  <img
-                    class="
-                cmw-object-cover cmw-object-center cmw-select-none cmw-pointer-events-none
-                cmw-flex md:cmw-rounded-sm cmw-w-full cmw-h-full cmw-overflow-hidden"
-                    :src="image" :alt="image"
-                  >
+                  <LoadingImage
+                    class="cmw-select-none cmw-pointer-events-none cmw-flex md:cmw-rounded-sm cmw-w-full cmw-h-full cmw-overflow-hidden"
+                    img-classes="cmw-w-full cmw-object-cover cmw-object-center"
+                    :thumbnail="{
+                      url: `${image}&width=40&height=20`,
+                      width: 40,
+                      height: 20,
+                      altText: `${brand.title} - ${idx}`,
+                    }"
+                    :source="{
+                      url: `${image}&width=800&height=409`,
+                      width: 800,
+                      height: 409,
+                      altText: `${brand.title} - ${idx}`,
+                    }"
+                  />
                 </div>
                 <template #customPaging="page">
                   <button
@@ -166,12 +176,12 @@ export default {
                   :focus-on-select="true"
                 >
                   <div
-                    v-for="image in metaFields.images" :key="`thumb-${image}`"
+                    v-for="(image, idx) in metaFields.images" :key="`thumb-${image}`"
                     class="cmw-px-3 cmw-h-full cmw-flex"
                   >
                     <img
                       class="cmw-select-none cmw-pointer-events-none cmw-flex cmw-rounded-sm cmw-h-full cmw-overflow-hidden"
-                      :src="image" :alt="image"
+                      :src="image" :alt="`${brand.title} - ${idx}`"
                     >
                   </div>
                   <template #prevArrow>
@@ -211,7 +221,7 @@ export default {
                   dots-class="c-carouselDots"
                 >
                   <div
-                    v-for="image in metaFields.images" :key="image"
+                    v-for="(image, idx) in metaFields.images" :key="image"
                     class="lg:cmw-pl-3 cmw-h-full cmw-flex" :class="image"
                   >
                     <LoadingImage
@@ -220,13 +230,13 @@ export default {
                         url: `${image}&width=40&height=20`,
                         width: 40,
                         height: 20,
-                        altText: brand.title,
+                        altText: `${brand.title} - ${idx}`,
                       }"
                       :source="{
                         url: `${image}&width=800&height=409`,
                         width: 800,
                         height: 409,
-                        altText: brand.title,
+                        altText: `${brand.title} - ${idx}`,
                       }"
                     />
                   </div>
@@ -246,7 +256,7 @@ export default {
                     :focus-on-select="true"
                   >
                     <div
-                      v-for="image in metaFields.images" :key="`thumb-${image}`"
+                      v-for="(image, idx) in metaFields.images" :key="`thumb-${image}`"
                       class="cmw-px-3 cmw-h-full cmw-flex"
                     >
                       <LoadingImage
@@ -255,13 +265,13 @@ export default {
                           url: `${image}&width=40&height=20`,
                           width: 40,
                           height: 20,
-                          altText: brand.title,
+                          altText: `${brand.title} - ${idx}`,
                         }"
                         :source="{
                           url: `${image}&width=800&height=409`,
                           width: 800,
                           height: 409,
-                          altText: brand.title,
+                          altText: `${brand.title} - ${idx}`,
                         }"
                       />
                     </div>
