@@ -52,6 +52,10 @@ const queryProductByIdAsTag = tag => `query {
                     vendor
                     totalInventory
                     availableForSale
+                    seo {
+                      description
+                      title
+                    }
                     variants(first: 1) {
                         nodes {
                             compareAtPriceV2 {

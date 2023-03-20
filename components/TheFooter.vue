@@ -69,8 +69,8 @@ export default {
 </script>
 
 <template>
-  <footer class="container-fluid pt-5 mt-5 px-0" style="background: #f8f8f8">
-    <div class="container-fluid px-md-5">
+  <footer class="container-fluid px-0" style="background: #f8f8f8">
+    <!--      <div class="container-fluid px-md-5">
       <div class="row">
         <div class="col-12">
           <p class="font-weight-bold h2 text-center mb-5">
@@ -115,7 +115,7 @@ export default {
           </p>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <div
       v-if="data && info"
@@ -175,6 +175,7 @@ export default {
               <div class="col-7 col-md-10">
                 <input
                   v-model="email"
+                  aria-label="enter email"
                   type="email"
                   class="form-control bg-transparent border-0 shadow-none focus:shadow-none text-white"
                   required

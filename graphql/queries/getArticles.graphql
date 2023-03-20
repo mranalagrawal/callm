@@ -9,6 +9,10 @@ query getArticles(
       handle
       id
       contentHtml
+      seo {
+        description
+        title
+      }
       image {
         url
       }

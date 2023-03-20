@@ -97,7 +97,7 @@ export default {
     <div class="row mt-5">
       <div class="col-12 text-center">
         <nuxt-link
-          :to="localePath('/catalog?isnew=true&page=1')"
+          :to="localePath('/catalog')"
           class="btn px-5 py-2 text-uppercase view-more font-weight-bold"
         >
           {{ $t("viewMore") }}

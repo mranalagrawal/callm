@@ -277,7 +277,7 @@ export default {
           </div>
 
           <div v-if="product.availableForSale" class="position-relative">
-            <button class="btn btn-cart" @click.stop="addToUserCart" />
+            <button class="btn btn-cart" :aria-label="$t('enums.accessibility.role.ADD_TO_CART')" @click.stop="addToUserCart" />
             <span v-show="userCartQuantity > 0" class="cart-quantity">
               {{ userCartQuantity }}
             </span>
