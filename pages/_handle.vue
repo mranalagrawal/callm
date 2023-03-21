@@ -8,12 +8,6 @@ export default {
       product: null,
       inputParameters: {},
       hasResults: false,
-      robots: {},
-    }
-  },
-  head() {
-    return {
-      meta: [this.robots],
     }
   },
   created() {
@@ -65,10 +59,6 @@ export default {
       .every(el => !el.rule.test(path))
 
     const noSelection = !this.$route.fullPath.split('?sel=')[1]
-    this.robots = {
-      name: 'robots',
-      content: 'noindex',
-    }
 
     this.hasResults = !(noFilterInURL && noSelection)
     /* // Todo: throw Error(redirect) // 404

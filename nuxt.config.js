@@ -327,6 +327,7 @@ export default {
   },
 
   modules: [
+    ['@nuxtjs/robots'],
     ['@nuxt/http'],
     '@nuxtjs/dayjs',
     'bootstrap-vue/nuxt',
@@ -570,5 +571,14 @@ export default {
     gtm: {
       id: process.env.GOOGLE_TAG_MANAGER_ID,
     },
+  },
+
+  robots: () => {
+    return {
+      UserAgent: '*',
+      Disallow: process.env.ENVIRONMENT === 'prod' ? ['/*?*', '/catalog*'] : '/',
+      // Be aware that this will NOT work on target: 'static' mode
+      ...(process.env.ENVIRONMENT === 'prod' && { Sitemap: req => `https://${req.headers.host}/sitemap.xml` }),
+    }
   },
 }
