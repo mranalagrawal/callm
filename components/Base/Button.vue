@@ -21,7 +21,7 @@ export default {
   methods: {
     getVariant() {
       return ({
-        default: 'cmw-btn-default',
+        default: 'cmw-btn-default disabled:(cmw-bg-gray-light)',
         ghost: 'cmw-border-primary-400 cmw-text-primary-400 cmw-font-bold cmw-uppercase hover:(cmw-bg-primary-50 cmw-text-primary-400 cmw-no-underline)',
         text: 'cmw-btn-text',
       })[this.$props.variant]
@@ -35,7 +35,7 @@ export default {
     :is="$props.to ? 'NuxtLink' : 'button'"
     :to="$props.to"
     v-bind="$attrs"
-    class="cmw-btn-base disabled:(cmw-bg-gray-light cmw-text-gray cmw-cursor-not-allowed)"
+    class="cmw-btn-base disabled:(cmw-text-gray cmw-cursor-not-allowed)"
     :class="getVariant()"
   >
     <slot>{{ $props.label }}</slot>

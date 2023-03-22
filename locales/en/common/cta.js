@@ -8,7 +8,7 @@ export default {
     addAddress: 'add address',
     emptyCart: 'Empty Cart',
     continueShopping: 'Continue shopping',
-    prevPage: 'Previous',
-    nextPage: 'Next',
+    prevPage: 'Previous page',
+    nextPage: 'Next page',
   },
 }

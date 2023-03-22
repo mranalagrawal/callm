@@ -73,9 +73,14 @@ export default {
       results: null,
       activeSelections: null,
       // activeMacroCategories: null,
-      total: null,
-      totalPages: null,
-      currentPage: 1,
+      total: 0,
+      pagination: {
+        prevPage: 0,
+        nextPage: 0,
+        currentPage: 1,
+        pageNumbers: [],
+        totalPages: 0,
+      },
       view: {
         regions: null,
         brands: null,
@@ -161,7 +166,7 @@ export default {
     if (total === 0)
       this.loading = false
 
-    this.totalPages = Math.ceil(total / 50)
+    this.setPages(Math.ceil(total / 48))
 
     const belong_filters = [
       'areas',
@@ -299,6 +304,25 @@ export default {
   },
 
   methods: {
+    setPages(totalPages) {
+      this.pagination.totalPages = totalPages
+      this.pagination.currentPage = Number(this.$route.query.page ?? 1)
+      this.pagination.prevPage = this.pagination.currentPage > 1 ? (this.pagination.currentPage - 1) : null
+
+      if (!totalPages)
+        this.pagination.nextPage = this.pagination.currentPage ? (Number(this.pagination.currentPage) + 1) : 2
+      else
+        this.pagination.nextPage = this.pagination.currentPage < totalPages ? (Number(this.pagination.currentPage) + 1) : null
+
+      const pageNumbers = []
+      for (let i = 0; i < 7; i++) {
+        const _p = ((Number(this.pagination.currentPage) - 3) + i)
+        if (_p > 0 && _p <= totalPages)
+          pageNumbers.push(_p)
+      }
+
+      this.pagination.pageNumbers = pageNumbers
+    },
     changePage(page) {
       const query = Object.assign({}, this.inputParameters)
       query.page = page
@@ -690,14 +714,6 @@ export default {
           <div
             v-for="result in results"
             :key="`desktop${result._id}`"
-            class="d-none d-lg-block "
-          >
-            <ProductBoxVerticalElastic :product="result" />
-          </div>
-          <div
-            v-for="result in results"
-            :key="`mobile${result._id}`"
-            class="d-lg-none"
           >
             <ProductBoxVerticalElastic :product="result" />
           </div>
@@ -711,51 +727,43 @@ export default {
       </div>
     </div>
 
-    <div class="row">
-      <div class="col-4 text-right">
-        <span v-if="+currentPage > 4" class="d-inline-flex">
-          <button
-            class="btn btn-outline-dark-secondary btn-small"
-            @click="changePage(1)"
-          >
-            Prima
-          </button>
-        </span>
+    <!-- Pagination -->
+    <!-- Todo: Implement pagination as a component -->
+    <!--    <div class="cmw-grid cmw-grid-cols-[auto_auto_auto] cmw-items-center cmw-justify-center cmw-mt-8">
+      <SearchPagination :total-pages="total" :current-page="Number($route.query.page ?? 1)" />
+    </div> -->
+    <div class="cmw-grid cmw-grid-cols-[auto_auto_auto] cmw-items-center cmw-justify-center cmw-mt-8">
+      <div class="">
+        <Button
+          class="cmw-uppercase"
+          :aria-label="$t('common.cta.prevPage')"
+          :disabled="pagination.currentPage.toString() === '1'"
+          type="button" variant="text" @click.native="changePage(pagination.prevPage)"
+        >
+          <VueSvgIcon width="18" height="18" :data="require(`@/assets/svg/chevron-left.svg`)" />
+          <span class="<md:cmw-hidden">{{ $t('common.cta.prevPage') }}</span>
+        </Button>
       </div>
-      <div class="col-4 text-center">
-        <span v-for="i in 3" :key="`${i}prev`" class="d-inline-flex">
-          <button
-            v-if="+currentPage - 4 + i > 0 && +currentPage - 4 + i < totalPages"
-            class="btn btn-outline-dark-secondary btn-small"
-            @click="changePage(+currentPage - 4 + i)"
-          >
-            {{ +currentPage - 4 + i }}
-          </button>
-        </span>
-        <span class="d-inline-flex">
-          <button class="btn btn-dark-secondary btn-small disabled">
-            {{ currentPage }}
-          </button>
-        </span>
-        <span v-for="i in 3" :key="`${i}next`" class="d-inline-flex">
-          <button
-            v-if="+currentPage + i > 0 && +currentPage + i < totalPages"
-            class="btn btn-outline-dark-secondary btn-small"
-            @click="changePage(+currentPage + i)"
-          >
-            {{ +currentPage + i }}
-          </button>
-        </span>
+      <div class="cmw-flex">
+        <div v-for="n in pagination.pageNumbers" :key="n" class="cl">
+          <Button
+            :label="`${n}`" variant="text"
+            class="cmw-relative cmw-text-base cmw-px-3"
+            :class="{ 'cmw-text-primary cmw-font-bold after:(cmw-content-DEFAULT cmw-absolute cmw-bottom-0 cmw-h-1 cmw-bg-primary cmw-w-full)': pagination.currentPage === n }"
+            @click.native="changePage(n)"
+          />
+        </div>
       </div>
-      <div class="col-4 text-left">
-        <span v-if="+currentPage < totalPages" class="d-inline-flex">
-          <button
-            class="btn btn-outline-dark-secondary btn-small"
-            @click="changePage(totalPages)"
-          >
-            Ultima
-          </button>
-        </span>
+      <div class="">
+        <Button
+          class="cmw-uppercase"
+          :disabled="+pagination.currentPage >= pagination.totalPages"
+          :aria-label="$t('common.cta.nextPage')"
+          type="button" variant="text" @click.native="changePage(pagination.nextPage)"
+        >
+          <span class="<md:cmw-hidden">{{ $t('common.cta.nextPage') }}</span>
+          <VueSvgIcon width="18" height="18" :data="require(`@/assets/svg/chevron-right.svg`)" />
+        </Button>
       </div>
     </div>
 
@@ -986,9 +994,9 @@ export default {
 }
 
 :deep(.dropdown-menu.dropdown-menu-right.show) {
-  padding-top: 0px;
-  padding-bottom: 0px;
-  border: 0px;
+  padding-top: 0;
+  padding-bottom: 0;
+  border: 0;
 }
 
 .badge {

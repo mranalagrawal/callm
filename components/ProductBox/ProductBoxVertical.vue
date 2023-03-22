@@ -137,7 +137,7 @@ export default {
     <div class="c-productBox__grid cmw-grid cmw-h-full">
       <div class="c-productBox__image">
         <ClientOnly>
-          <NuxtLink :to="localePath(`/${product.product.handle}-${backofficeId}`)">
+          <NuxtLink :to="localePath(`/${product.product.handle}-${backofficeId}.htm`)">
             <LoadingImage
               class="cmw-filter hover:cmw-contrast-150 cmw-mx-auto cmw-mt-4"
               :class="{ 'cmw-opacity-50': !product.availableForSale }"
@@ -182,7 +182,7 @@ export default {
       <div class="c-productBox__title">
         <div class="cmw-mx-4 cmw-mt-4">
           <NuxtLink
-            :to="localePath(`/${product.product.handle}-${backofficeId}`)"
+            :to="localePath(`/${product.product.handle}-${backofficeId}.htm`)"
             class="cmw-text-body hover:(cmw-text-primary-400 cmw-no-underline)"
           >
             {{ product.title || product.product.title }}
