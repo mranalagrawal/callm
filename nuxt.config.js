@@ -199,7 +199,7 @@ const SITEMAP = {
     },
     {
       path: '/sitemap_en_editorial_other_pages.xml',
-      exclude: ['/profile', '/profile/**', '/catalog', '/business-gifts', '/cart', '/gift-cards', '/login', '/new-password', '/preview', '/recover', '/thank-you', '/winery'],
+      exclude: ['/product/**', '/search/**', '/profile', '/profile/**', '/catalog', '/privacy', '/terms-of-sales', '/cookie', '/business-gifts', '/cart', '/gift-cards', '/login', '/new-password', '/preview', '/recover', '/thank-you', '/winery'],
     },
   ],
   WILDVIGNERON: [
@@ -481,6 +481,30 @@ export default {
 
   router: {
     middleware: ['category'],
+    extendRoutes(routes, resolve) {
+      routes.push(
+        {
+          name: 'search',
+          path: '/(.*)-:filter_key_1(V|C|R|D|B|N|M):filter_id_1(\\d+).htm/',
+          component: resolve(__dirname, 'pages/search/categories.vue'),
+        },
+        {
+          name: 'search-deep',
+          path: '/(.*)-:filter_key_1(V|C|R|D|B|N|M):filter_id_1(\\d+):filter_key_2(V|C|R|D|B|N|M):filter_id_2(\\d+).htm/',
+          component: resolve(__dirname, 'pages/search/categories.vue'),
+        },
+        {
+          name: 'catalog',
+          path: '/catalog',
+          component: resolve(__dirname, 'pages/search/categories.vue'),
+        },
+        {
+          name: 'product',
+          path: '/(.*)-P:id(\\d+).htm/',
+          component: resolve(__dirname, 'pages/product/details.vue'),
+        },
+      )
+    },
   },
 
   build: {
