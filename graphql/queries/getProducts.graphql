@@ -10,6 +10,14 @@ query getProducts(
     }
     edges {
       node {
+        availableForSale
+        descriptionHtml
+        handle
+        id
+        title
+        vendor
+        tags
+        totalInventory
         variants(first: 1) {
           edges {
             node {
@@ -65,6 +73,9 @@ query getProducts(
           }
         }
         metafield: metafield(namespace: "custom", key: "details") {
+          value
+        }
+        details: metafield(namespace: "custom", key: "details") {
           value
         }
       }

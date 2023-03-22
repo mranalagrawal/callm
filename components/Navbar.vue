@@ -338,7 +338,7 @@ export default {
                   v-for="item in data.winelists"
                   :key="item.id"
                   class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-no-underline cmw-bg-primary-50) cmw-text-body"
-                  :to="localePath(`/${item.handle}-V${item.id}`)"
+                  :to="localePath(`/${item.handle}-V${item.id}.htm`)"
                 >
                   <span v-html="bolder(item.name)" />
                 </nuxt-link>
@@ -370,7 +370,7 @@ export default {
                     v-for="item in data.brands"
                     :key="item.id"
                     class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-no-underline cmw-bg-primary-50) cmw-text-body"
-                    :to="localePath(`/winery/${item.handle}-B${item.id}`)"
+                    :to="localePath(`/winery/${item.handle}-B${item.id}.htm`)"
                   >
                     <span v-html="bolder(item.name)" />
                   </nuxt-link>
@@ -384,7 +384,7 @@ export default {
                     v-for="item in data.products"
                     :key="item.id"
                     class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-no-underline cmw-bg-primary-50) cmw-text-body"
-                    :to="localePath(`/${item.handle}-P${item.id}`)"
+                    :to="localePath(`/${item.handle}-P${item.id}.htm`)"
                   >
                     <span v-html="bolder(item.name)" />
                   </nuxt-link>
