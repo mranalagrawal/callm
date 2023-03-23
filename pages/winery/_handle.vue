@@ -54,7 +54,6 @@ export default {
     }, 400)
 
     onMounted(() => {
-      console.log(brand.value)
       // Todo: Move this to a global composable when we implement VueUse
       window.addEventListener('resize', resizeListener)
       nextTick(() => {

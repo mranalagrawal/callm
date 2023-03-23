@@ -246,8 +246,8 @@ const FONTS = {
 }
 
 const TITLE = {
-  CMW: 'CallMeWine',
-  CMW_UK: 'CallMeWine UK',
+  CMW: 'Callmewine',
+  CMW_UK: 'Callmewine UK',
   WILDVIGNERON: 'Wild Vigneron',
 }
 

@@ -16,6 +16,10 @@ query getProducts(
         id
         title
         vendor
+        seo {
+          description
+          title
+        }
         tags
         totalInventory
         variants(first: 1) {
