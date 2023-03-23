@@ -88,7 +88,7 @@ export default {
     </div>
     <div class="cmw-mt-5">
       <Button
-        class="cmw-w-[min(100%,_10rem)] cmw-m-inline-auto m-inline-auto"
+        class="cmw-w-[min(100%,_10rem)] cmw-m-inline-auto"
         variant="ghost"
         :to="localePath('/catalog?favourite=true&page=1')"
       >

@@ -25,10 +25,14 @@ export default {
   },
   methods: {
     setArrow() {
-      const slider = this.$refs.wrapperEl && this.$refs.wrapperEl.querySelector('.carousel-3d-slider')
+      let slider = null
+      setTimeout(() => {
+        if (this.$refs.wrapperEl)
+          slider = this.$refs.wrapperEl.querySelector('.carousel-3d-slider')
 
-      if (slider)
-        setTimeout(() => this.arrowPos = `${slider.getBoundingClientRect().right}px`, 100)
+        if (slider)
+          setTimeout(() => this.arrowPos = `${slider.getBoundingClientRect().right}px`, 300)
+      }, 300)
     },
   },
 }
