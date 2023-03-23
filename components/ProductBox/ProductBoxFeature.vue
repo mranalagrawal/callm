@@ -23,6 +23,7 @@ export default {
     const getFeature = key => ({
       favourite: { icon: 'feature-cmw-favourite', title: i18n.t('common.features.FAVOURITE') },
       isnew: { icon: 'feature-is-new', title: i18n.t('common.features.NEW') },
+      isInPromotion: { icon: 'feature-in-promotion', title: i18n.t('common.features.IN_PROMOTION') },
       inpromotion: { icon: 'feature-in-promotion', title: i18n.t('common.features.IN_PROMOTION') },
       foreveryday: { icon: 'feature-for-everyday', title: i18n.t('common.features.FOR_EVERYDAY') },
       togift: { icon: 'feature-to-gift', title: i18n.t('common.features.TO_GIFT') },

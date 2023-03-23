@@ -66,7 +66,10 @@ export default {
 
       features = Object.keys(features)
         .reduce((o, key) => {
-          features[key] === true && (o[key] = features[key])
+          if (typeof features[key] === 'object')
+            !!features[key][this.$config.SALECHANNEL] && (o[key] = features[key])
+          else
+            features[key] === true && (o[key] = features[key])
 
           return o
         }, {})

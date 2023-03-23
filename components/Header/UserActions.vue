@@ -57,7 +57,7 @@ export default {
           return
         if (!this.hoveringComponent && !this.hoveringAction)
           this.currentComponent = false
-      }, 50)
+      }, 150)
     },
     lookUpComponent(k) {
       return ({

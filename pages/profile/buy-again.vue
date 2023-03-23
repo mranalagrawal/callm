@@ -69,8 +69,14 @@ export default {
         .map((el) => {
           // Note: we can remove this product from the logic if we fix the wishlist
           // const { __typename, product, ...rest } = el.node.variant
-          const { __typename, ...rest } = el.node.variant
-          return (rest)
+          let result = {}
+          if (el.node?.variant) {
+            const { __typename, ...rest } = el.node.variant
+            result = rest
+          } else {
+            result = {}
+          }
+          return (result)
         }) || []
 
       return getUniqueListBy(arr, 'id')

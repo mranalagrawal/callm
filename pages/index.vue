@@ -49,7 +49,7 @@ export default {
   },
   head() {
     return {
-      /* title: "CallMeWine", */
+      description: 'Online wine for sale on Callmewine, your online wine shop: the best way to buy wines and champagne on offer at exceptional prices!',
       link: Object.entries(this.links).map((el) => {
         return {
           hid: `alternate-${el[0]}`,
@@ -94,9 +94,11 @@ export default {
       </client-only>
     </div>
 
-    <div v-if="$config.STORE === 'WILDVIGNERON'">
-      <HomeCollections />
-    </div>
+    <ClientOnly>
+      <div v-if="$config.STORE === 'WILDVIGNERON'">
+        <HomeCollections />
+      </div>
+    </ClientOnly>
 
     <client-only>
       <HomeLast />
@@ -106,9 +108,11 @@ export default {
       <HomeProductors />
     </client-only>
 
-    <div v-if="$config.STORE !== 'WILDVIGNERON'">
-      <HomeCta />
-      <HomeDescription />
-    </div>
+    <ClientOnly>
+      <div v-if="$config.STORE !== 'WILDVIGNERON'">
+        <HomeCta />
+        <HomeDescription />
+      </div>
+    </ClientOnly>
   </div>
 </template>
