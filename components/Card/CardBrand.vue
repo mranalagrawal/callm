@@ -10,7 +10,7 @@ export default {
 </script>
 
 <template>
-  <NuxtLink class="hover:(cmw-no-underline)" :to="localePath(`/winery/${brand.handle}-B${brand.brandId}`)">
+  <NuxtLink class="hover:(cmw-no-underline)" :to="localePath(`/winery/${brand.handle}-B${brand.brandId}.htm`)">
     <div
       class="cmw-font-sans cmw-border cmw-border-gray-light cmw-rounded-sm cmw-border-gray-light cmw-overflow-hidden cmw-h-full
     hover:cmw-shadow-elevation"

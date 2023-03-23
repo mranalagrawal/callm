@@ -49,14 +49,32 @@ export default {
     return { isActive, handleRequestAssistance }
   },
   computed: {
+    orderLineItems() {
+      const lineItems = this.order.lineItems && this.order.lineItems.edges
+
+      const newMap = []
+      if (lineItems) {
+        lineItems.forEach((l) => {
+          if (l.node.variant)
+            newMap.push(l)
+        })
+      }
+
+      return newMap
+    },
     totalItems() {
       return this.order.lineItems.edges
         .map(el => el.node.quantity)
         .reduce((t, n) => t + n)
     },
     canBuyAgain() {
-      return this.order.lineItems.edges
-        .map(el => el.node.variant.product.availableForSale)
+      return this.order.lineItems && this.order.lineItems.edges
+        .map((el) => {
+          if (el.node.variant)
+            return el.node.variant.product.availableForSale
+          else
+            return false
+        })
         .every(el => el === true)
     },
   },
@@ -299,7 +317,7 @@ export default {
           <hr class="cmw-mx-4">
           <!-- Products Section -->
           <OrderCardProductRow
-            v-for="lineItem in order.lineItems.edges"
+            v-for="lineItem in orderLineItems"
             :key="`${lineItem.node.variant.sku}-${lineItem.node.originalTotalPrice.amount}`"
             :order-line-item="lineItem.node"
           />

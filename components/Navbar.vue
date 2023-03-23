@@ -1,5 +1,5 @@
 <script>
-import { nextTick, onMounted, onUnmounted, ref, watch } from '@nuxtjs/composition-api'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from '@nuxtjs/composition-api'
 import debounce from 'lodash.debounce'
 import { mapGetters } from 'vuex'
 import LoginForm from './LoginForm.vue'
@@ -22,10 +22,12 @@ export default {
     const headerSize = useHeaderSize()
     const customer = useCustomer()
     const navbar = ref(null)
+    const isDesktop = ref(false)
     const showMobileButton = ref(true)
 
     const handleShowMobileButton = (val) => { showMobileButton.value = val }
     const resizeListener = debounce(() => {
+      isDesktop.value = window.innerWidth > 991
       headerSize.$patch({
         navbarHeight: navbar.value ? navbar.value.getBoundingClientRect().height : 0,
       })
@@ -33,9 +35,13 @@ export default {
 
     const setHeaderSize = () => {
       const doc = document.querySelector(':root')
-      doc && doc.style.setProperty('--cmw-header-height', `${headerSize.navbarHeight - headerSize.megaMenuHeight}px`)
+      doc && doc.style.setProperty('--cmw-header-height', `${headerSize.navbarHeight + headerSize.megaMenuHeight}px`)
       doc && doc.style.setProperty('--cmw-top-banner-height', headerSize.getTopBarHeight)
     }
+
+    const megaMenuTop = computed(() => {
+      return `${headerSize.navbarHeight}px`
+    })
 
     onMounted(() => {
       window.addEventListener('resize', resizeListener)
@@ -54,6 +60,8 @@ export default {
     }, { deep: true })
 
     return {
+      megaMenuTop,
+      isDesktop,
       customer,
       headerSize,
       navbar,
@@ -67,6 +75,7 @@ export default {
       heartIcon,
       resizeListener,
       handleShowMobileButton,
+      setHeaderSize,
     }
   },
   data() {
@@ -399,8 +408,12 @@ export default {
         <UserActions />
       </div>
     </div>
-    <div class="d-none d-lg-block">
-      <MegaMenu />
+    <div class="d-none d-lg-block c-megaMenu cmw-fixed cmw-left-0 cmw-w-full cmw-bg-white">
+      <div class="shadow-menu">
+        <div class="cmw-max-w-screen-xl cmw-mx-auto">
+          <MegaMenu v-if="isDesktop" />
+        </div>
+      </div>
     </div>
 
     <b-sidebar
@@ -472,6 +485,10 @@ export default {
 </template>
 
 <style scoped>
+.c-megaMenu {
+  top: v-bind(megaMenuTop)
+}
+
 :deep(.b-sidebar-body) {
   background: white;
 }
@@ -580,5 +597,9 @@ export default {
   width: 20px;
   background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIGlkPSJhIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PHBhdGggZD0ibTEyLjQ1LDM3LjY1bC0yLjEtMi4xLDExLjU1LTExLjU1LTExLjU1LTExLjU1LDIuMS0yLjEsMTEuNTUsMTEuNTUsMTEuNTUtMTEuNTUsMi4xLDIuMS0xMS41NSwxMS41NSwxMS41NSwxMS41NS0yLjEsMi4xLTExLjU1LTExLjU1LTExLjU1LDExLjU1WiIgc3R5bGU9ImZpbGw6I2Q5NDk2NTsiLz48L3N2Zz4=");
   background-size: contain;
+}
+
+.shadow-menu {
+  box-shadow: 0 0.5rem 0.75rem rgb(0 0 0 / 15%) !important;
 }
 </style>

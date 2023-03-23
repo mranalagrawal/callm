@@ -25,14 +25,13 @@ export default {
       getCustomerType,
     } = storeToRefs(customerStore)
     const { handleWishlist } = customerStore
-    const { $http, $config, i18n, $graphql, $cmwRepo } = useContext()
+    const { $http, $config, i18n, $graphql, $cmwRepo, error } = useContext()
     const route = useRoute()
     const router = useRouter()
-    const featuresArr = markRaw(['favourite', 'isnew', 'inpromotion', 'foreveryday', 'togift', 'unusualvariety', 'rarewine', 'artisanal', 'organic', 'topsale'])
+    const featuresArr = markRaw(['favourite', 'isnew', 'isInPromotion', 'foreveryday', 'togift', 'unusualvariety', 'rarewine', 'artisanal', 'organic', 'topsale'])
     const isOpen = ref(false)
     const product = ref({
       details: '',
-      // edges: { node: [] },
       handle: '',
       variants: { nodes: [] },
     })
@@ -102,8 +101,9 @@ export default {
               brand.value = articles.nodes[0]
               brandMetaFields.value = articles.nodes[0].details && JSON.parse(articles.nodes[0].details.value)
             }
-          } else { console.log('No Product?') }
-          // console.log(products.edges[0] && products.edges[0].node.length)
+          } else {
+            return error({ statusCode: 404, message: 'No results' })
+          }
         }).catch(err => console.log(err))
     })
 
@@ -112,7 +112,10 @@ export default {
 
       features = Object.keys(features)
         .reduce((o, key) => {
-          features[key] === true && (o[key] = features[key])
+          if (typeof features[key] === 'object')
+            !!features[key][$config.SALECHANNEL] && (o[key] = features[key])
+          else
+            features[key] === true && (o[key] = features[key])
 
           return o
         }, {})
@@ -175,6 +178,27 @@ export default {
       heartFullIcon,
       favouriteIcon,
       handleWishlist,
+    }
+  },
+  head() {
+    return {
+      title: this.product?.seo?.title,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.product?.seo?.description,
+        },
+      ],
+      link: this.productDetails
+        && this.productDetails.hrefLang
+        && Object.keys(this.productDetails.hrefLang).length
+        && Object.entries(this.productDetails.hrefLang).map(el => ({
+          hid: `alternate-${el[0]}`,
+          rel: 'alternate',
+          href: el[1],
+          hreflang: el[0],
+        })),
     }
   },
   computed: {

@@ -105,7 +105,7 @@ export default {
     class="container-fluid position-relative px-md-0"
     @mouseleave="onTab(null)"
   >
-    <div class="row align-items-center shadow-menu">
+    <div ref="megaMenu" class="row align-items-center">
       <div
         v-for="(firstLevel, i) in data"
         :key="i"
@@ -128,10 +128,10 @@ export default {
         </button>
       </div>
     </div>
-    <div ref="megaMenu">
+    <div>
       <div
         v-if="selectedItem && !selectedItem.display_as_cards"
-        class="row bg-white shadow-menu pt-3 px-2"
+        class="row bg-white pt-3 px-2"
         style="
         min-height: 300px;
         z-index: 100;
@@ -142,7 +142,7 @@ export default {
           v-for="(secondLevel, i) in selectedItem.items"
           :key="i"
           class="col"
-          style="border-right: 1px solid #ddd"
+          :class="{ 'cmw-border-r cmw-border-r-gray ': (i + 1) < selectedItem.items.length }"
         >
           <p class="cmw-overline-2 cmw-uppercase cmw-text-secondary-700 cmw-font-semibold">
             {{ secondLevel.name }}
@@ -154,7 +154,7 @@ export default {
       </div>
       <div
         v-if="selectedItem && selectedItem.display_as_cards"
-        class="row bg-white shadow-menu pt-3 px-4"
+        class="row bg-white pt-3 px-4"
         style="
         min-height: 300px;
         z-index: 100;

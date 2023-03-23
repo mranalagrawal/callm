@@ -63,7 +63,10 @@ export default {
 
       features = Object.keys(features)
         .reduce((o, key) => {
-          features[key] === true && (o[key] = features[key])
+          if (typeof features[key] === 'object')
+            !!features[key][this.$config.SALECHANNEL] && (o[key] = features[key])
+          else
+            features[key] === true && (o[key] = features[key])
 
           return o
         }, {})
@@ -128,6 +131,7 @@ export default {
 
 <template>
   <div
+    v-if="product.id"
     class="
     c-productBox cmw-relative cmw-transition cmw-transition-box-shadow cmw-bg-white cmw-rounded-sm cmw-border cmw-border-gray-light
     hover:cmw-shadow-elevation"
@@ -137,7 +141,7 @@ export default {
     <div class="c-productBox__grid cmw-grid cmw-h-full">
       <div class="c-productBox__image">
         <ClientOnly>
-          <NuxtLink :to="localePath(`/${product.product.handle}-${backofficeId}.htm`)">
+          <NuxtLink :to="localePath(`/${product.product?.handle}-${backofficeId}.htm`)">
             <LoadingImage
               class="cmw-filter hover:cmw-contrast-150 cmw-mx-auto cmw-mt-4"
               :class="{ 'cmw-opacity-50': !product.availableForSale }"
