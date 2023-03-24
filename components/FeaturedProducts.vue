@@ -1,13 +1,40 @@
 <script>
+import { ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import VueSlickCarousel from 'vue-slick-carousel'
-import { queryByCollection } from '../utilities/productQueries'
+import getCollection from '@/graphql/queries/getCollection'
 
 import 'vue-slick-carousel/dist/vue-slick-carousel.css'
 import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
-import ProductCardVertical from './ProductCardVertical.vue'
 
 export default {
-  components: { ProductCardVertical, VueSlickCarousel },
+  components: { VueSlickCarousel },
+  setup() {
+    const { $graphql, i18n } = useContext()
+    const collectionRef = ref({
+      description: '',
+      descriptionHtml: '',
+      image: {
+        altText: '',
+        height: '',
+        id: '',
+        url: '',
+        width: '',
+      },
+      title: '',
+      products: {
+        nodes: [],
+      },
+    })
+    const { fetch } = useFetch(async () => {
+      const { collection } = await $graphql.default.request(getCollection, {
+        lang: i18n.locale.toUpperCase(),
+        handle: 'home-shelf-1',
+      })
+
+      collectionRef.value = collection
+    })
+    return { fetch, collectionRef }
+  },
   data: () => ({
     data: null,
     settings: {
@@ -39,69 +66,34 @@ export default {
       ],
     },
   }),
-  async fetch() {
-    const GRAPHQL_URL = this.$config.DOMAIN
-
-    const productQuery = queryByCollection(
-      'home-shelf-1',
-      this.$i18n.locale.toUpperCase(),
-    )
-
-    const GRAPHQL_BODY = () => {
-      return {
-        async: true,
-        crossDomain: true,
-        method: 'POST',
-        headers: {
-          'X-Shopify-Storefront-Access-Token':
-            this.$config.STOREFRONT_ACCESS_TOKEN,
-          'Content-Type': 'application/graphql',
-        },
-        body: productQuery,
-      }
-    }
-    this.data = await fetch(GRAPHQL_URL, GRAPHQL_BODY())
-      .then(res => res.json())
-      .then((res) => {
-        return {
-          products: res.data.collectionByHandle.products.nodes,
-          description: res.data.collectionByHandle.description,
-          title: res.data.collectionByHandle.title,
-        }
-      })
-  },
-  watch: {
-    '$i18n.locale': '$fetch',
-  },
 }
 </script>
 
 <template>
   <div class="container-fluid container-large px-md-3 my-5">
     <div class="row">
-      <div v-if="data" class="col-12 text-center">
+      <div v-if="collectionRef.title" class="col-12 text-center">
         <h2 class="font-weight-bold text-dark-primary">
-          {{ data.description }}
+          {{ collectionRef.description }}
         </h2>
       </div>
 
-      <div v-if="data" class="col-12 py-4">
+      <div v-if="!!collectionRef.products.nodes.length" class="col-12 py-4">
         <VueSlickCarousel v-bind="settings">
-          <div v-for="product in data.products" :key="product.id">
+          <div v-for="product in collectionRef.products.nodes" :key="product.id">
             <ProductCardVertical :product="product" />
           </div>
         </VueSlickCarousel>
       </div>
     </div>
-    <div class="row mt-5">
-      <div class="col-12 text-center">
-        <nuxt-link
-          :to="localePath('/catalog?favourite=true&page=1')"
-          class="btn px-5 py-2 text-uppercase view-more font-weight-bold"
-        >
-          {{ $t("viewMore") }}
-        </nuxt-link>
-      </div>
+    <div class="cmw-mt-5">
+      <Button
+        class="cmw-w-[min(100%,_10rem)] cmw-m-inline-auto"
+        variant="ghost"
+        :to="localePath('/catalog?favourite=true&page=1')"
+      >
+        {{ $t("viewMore") }}
+      </Button>
     </div>
   </div>
 </template>
@@ -120,11 +112,6 @@ export default {
   visibility: visible;
 } */
 
-.view-more {
-  border: 2px solid var(--light-secondary);
-  border-radius: 12px;
-  color: var(--light-secondary);
-}
 :deep(.slick-arrow.slick-prev) {
   width: 48px;
   height: 48px;

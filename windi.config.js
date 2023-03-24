@@ -154,11 +154,17 @@ export default defineConfig({
   },
   plugins: [
     require('windicss/plugin/line-clamp'),
-    plugin(({ addBase, theme }) => {
+    plugin(({ addBase, addComponents, theme }) => {
+      const margins = {
+        '.m-inline-auto': {
+          'margin-inline': 'auto',
+        },
+      }
       addBase({
         'a': { textDecoration: 'underline', transition: 'color 300ms' },
         'a:hover': { color: theme('colors.primary') },
       })
+      addComponents(margins)
     }),
   ],
 })
