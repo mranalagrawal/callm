@@ -25,7 +25,7 @@ export default {
     const customerStore = useCustomer()
     const { wishlistArr, getCustomerType } = storeToRefs(customerStore)
     const { handleWishlist } = customerStore
-    const features = markRaw(['favourite', 'isnew', 'inpromotion', 'foreveryday', 'togift', 'unusualvariety', 'rarewine', 'artisanal', 'organic', 'topsale'])
+    const features = markRaw(['favourite', 'isnew', 'isInPromotion', 'foreveryday', 'togift', 'unusualvariety', 'rarewine', 'artisanal', 'organic', 'topsale'])
     const isOpen = ref(false)
 
     return { wishlistArr, getCustomerType, features, isOpen, cartIcon, addIcon, subtractIcon, heartIcon, heartFullIcon, handleWishlist }
@@ -147,7 +147,7 @@ export default {
       return Object.keys(features).slice(0, 4)
     },
     isOnSale() {
-      return Number(this.data.variants.nodes[0].compareAtPriceV2.amount) > Number(this.data.variants.nodes[0].priceV2.amount) || this.availableFeatures.includes('inpromotion')
+      return Number(this.data.variants.nodes[0].compareAtPriceV2.amount) > Number(this.data.variants.nodes[0].priceV2.amount) || this.availableFeatures.includes('isInPromotion')
     },
     canAddMore() {
       return this.data.totalInventory - this.cartQuantity > 0

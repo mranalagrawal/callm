@@ -4,6 +4,7 @@ query getCollection(
   $id: ID,
 ) @inContext(language: $lang) {
   collection(handle: $handle, id: $id) {
+    description
     descriptionHtml
     handle
     image {

@@ -239,13 +239,12 @@ export default {
                   <hr>
                   <p class="cmw-text-sm cmw-text-gray-darkest" v-html="$t('discountCode')" />
                   <p class="cmw-text-sm cmw-text-gray-darkest" v-html="$t('shippingCost')" />
-                  <button
-                    class="btn w-100 text-white br-10 text-uppercase text-decoration-none text-center cmw-mt-4"
-                    style="background: #d94965"
-                    @click="checkout()"
+                  <Button
+                    type="button" variant="default"
+                    @click.native="checkout()"
                   >
-                    Vai alla cassa
-                  </button>
+                    {{ $t('common.cta.goToCheckout') }}
+                  </Button>
                 </div>
               </div>
             </div>

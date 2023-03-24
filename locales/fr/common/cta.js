@@ -10,5 +10,6 @@ export default {
     continueShopping: 'Continuer vos achats',
     prevPage: 'Page précédente',
     nextPage: 'Page suivante',
+    goToCheckout: 'Aller à la caisse',
   },
 }
