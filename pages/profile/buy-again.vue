@@ -1,6 +1,7 @@
 <script>
 import { computed, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+import { getMappedProducts } from '@/utilities/mappedProduct'
 import { useFilters } from '~/store/filters'
 import { getUniqueListBy } from '~/utilities/arrays'
 import { useCustomerOrders } from '~/store/customerOrders'
@@ -63,15 +64,15 @@ export default {
       if (!orders.value)
         return []
 
-      const arr = orders.value
+      let arr = orders.value
         .map(el => el.lineItems.edges)
         .flat()
         .map((el) => {
           // Note: we can remove this product from the logic if we fix the wishlist
           // const { __typename, product, ...rest } = el.node.variant
           let result = {}
-          if (el.node?.variant) {
-            const { __typename, ...rest } = el.node.variant
+          if (el.node?.variant?.product) {
+            const { __typename, ...rest } = el.node.variant.product
             result = rest
           } else {
             result = {}
@@ -79,7 +80,10 @@ export default {
           return (result)
         }) || []
 
-      return getUniqueListBy(arr, 'id')
+      arr = arr.filter(p => p.id)
+      arr = getUniqueListBy(arr, 'id')
+      arr = getMappedProducts(arr)
+      return arr
     })
 
     return {
@@ -170,7 +174,6 @@ export default {
               v-for="product in customerProducts"
               :key="product.id"
               :product="product"
-              :is-desktop="isDesktop"
             />
           </div>
         </template>

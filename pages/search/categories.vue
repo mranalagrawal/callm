@@ -15,7 +15,7 @@ export default {
       D: 'dosagecontents',
       B: 'brands',
       N: 'countries',
-      M: 'macrocategories',
+      M: 'macros',
       null: 'selections',
     })[key]
 

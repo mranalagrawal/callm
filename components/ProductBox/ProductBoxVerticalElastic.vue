@@ -1,5 +1,5 @@
 <script>
-import { markRaw, ref } from '@nuxtjs/composition-api'
+import { ref } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import heartIcon from 'assets/svg/heart.svg'
 import heartFullIcon from 'assets/svg/heart-full.svg'
@@ -8,6 +8,7 @@ import addIcon from 'assets/svg/add.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
 import emailIcon from 'assets/svg/email.svg'
 import { mapState } from 'vuex'
+import { productFeatures } from '@/utilities/mappedProduct'
 import { useCustomer } from '~/store/customer'
 import { pick } from '@/utilities/arrays'
 import { isObject } from '~/utilities/validators'
@@ -30,7 +31,6 @@ export default {
     const { wishlistArr, getCustomerType } = storeToRefs(customerStore)
     const { handleWishlist } = customerStore
 
-    const features = markRaw(['favourite', 'isnew', 'isInPromotion', 'foreveryday', 'togift', 'unusualvariety', 'rarewine', 'artisanal', 'organic', 'topsale'])
     const isOpen = ref(false)
     const isHovering = ref(false)
 
@@ -43,7 +43,6 @@ export default {
       emailIcon,
       addIcon,
       subtractIcon,
-      features,
       isOpen,
       isHovering,
       handleWishlist,
@@ -74,7 +73,7 @@ export default {
     },
     availableFeatures() {
       /* Todo: Definitely we need to use some enums here ... */
-      let features = pick(this.product._source, this.features)
+      let features = pick(this.product._source, productFeatures)
 
       features = Object.keys(features)
         .reduce((o, key) => {
@@ -101,8 +100,7 @@ export default {
       }))
     },
     isOnSale() {
-      return (this.product._source.saleprice[this.$config.SALECHANNEL] > this.product._source.price[this.$config.SALECHANNEL])
-      || this.product._source.inpromotion
+      return this.availableFeatures.includes('isInPromotion')
     },
     finalPrice() {
       return this.product._source.pricelists[this.$config.SALECHANNEL][this.getCustomerType]
@@ -230,7 +228,7 @@ export default {
             class="cmw-line-through cmw-text-gray cmw-text-sm"
           >
             <!-- Note: can we get product.compareAtPriceV2.currencyCode from elastic? -->
-            {{ $n(product._source.saleprice[$config.SALECHANNEL], 'currency', getLocaleFromCurrencyCode($config.STORE === "CMW_UK" ? "GBP" : "EUR")) }}
+            {{ $n(product._source.price[$config.SALECHANNEL], 'currency', getLocaleFromCurrencyCode($config.STORE === "CMW_UK" ? "GBP" : "EUR")) }}
           </span>
           <i18n-n
             class="cmw-inline-block" :value="Number(finalPrice)" :format="{ key: 'currency' }"
@@ -307,6 +305,7 @@ export default {
 <style scoped>
 .c-productBox {
   container: product-box / inline-size;
+  width: 100%;
   height: 100%;
 }
 

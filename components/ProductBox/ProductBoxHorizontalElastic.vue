@@ -6,8 +6,9 @@ import subtractIcon from 'assets/svg/subtract.svg'
 import emailIcon from 'assets/svg/email.svg'
 import heartIcon from 'assets/svg/heart.svg'
 import heartFullIcon from 'assets/svg/heart-full.svg'
-import { markRaw, ref } from '@nuxtjs/composition-api'
+import { ref } from '@nuxtjs/composition-api'
 import { mapState } from 'vuex'
+import { productFeatures } from '@/utilities/mappedProduct'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { isObject } from '~/utilities/validators'
 import { pick } from '~/utilities/arrays'
@@ -32,10 +33,9 @@ export default {
     const { wishlistArr, getCustomerType } = storeToRefs(customerStore)
     const { handleWishlist } = customerStore
 
-    const features = markRaw(['favourite', 'isnew', 'isInPromotion', 'foreveryday', 'togift', 'unusualvariety', 'rarewine', 'artisanal', 'organic', 'topsale'])
     const isOpen = ref(false)
 
-    return { wishlistArr, getCustomerType, heartIcon, heartFullIcon, cartIcon, emailIcon, addIcon, subtractIcon, features, isOpen, handleWishlist, stripHtml }
+    return { wishlistArr, getCustomerType, heartIcon, heartFullIcon, cartIcon, emailIcon, addIcon, subtractIcon, isOpen, handleWishlist, stripHtml }
   },
   computed: {
     ...mapState('userCart', {
@@ -62,7 +62,7 @@ export default {
     },
     availableFeatures() {
       /* Todo: Definitely we need to use some enums here ... */
-      let features = pick(this.product._source, this.features)
+      let features = pick(this.product._source, productFeatures)
 
       features = Object.keys(features)
         .reduce((o, key) => {
@@ -77,8 +77,7 @@ export default {
       return Object.keys(features).slice(0, 4)
     },
     isOnSale() {
-      return (this.product._source.saleprice[this.$config.SALECHANNEL] > this.product._source.price[this.$config.SALECHANNEL])
-        || this.product._source.inpromotion
+      return this.availableFeatures.includes('isInPromotion')
     },
     finalPrice() {
       return this.product._source.pricelists[this.$config.SALECHANNEL][this.getCustomerType]
@@ -255,7 +254,7 @@ hover:cmw-shadow-elevation"
           v-if="isOnSale"
           class="cmw-line-through cmw-text-gray cmw-text-sm cmw-mr-3"
         >
-          {{ $n(product._source.saleprice[$config.SALECHANNEL], 'currency', getLocaleFromCurrencyCode($config.STORE === "CMW_UK" ? "GBP" : "EUR")) }}
+          {{ $n(product._source.price[$config.SALECHANNEL], 'currency', getLocaleFromCurrencyCode($config.STORE === "CMW_UK" ? "GBP" : "EUR")) }}
         </span>
         <i18n-n
           class="cmw-inline-block" :value="Number(finalPrice)" :format="{ key: 'currency' }"

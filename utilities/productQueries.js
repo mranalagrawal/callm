@@ -1,45 +1,3 @@
-const queryByCollection = (
-  collection,
-  language,
-) => `query @inContext(language: ${language}){
-
-        collectionByHandle(handle: "${collection}") {
-            title
-            description
-            products(first: 30) {
-                nodes {
-                    id
-                    title
-                    description
-                    handle
-                    tags
-                    totalInventory
-                    createdAt
-                    availableForSale
-                    variants(first: 10) {
-                        nodes {
-                            id
-                            compareAtPriceV2 {
-                                amount
-                                currencyCode
-                            }
-                            price
-                        }
-                    }
-                    images(first: 10) {
-                        nodes {
-                            url
-                        }
-                    }
-                    metafield1: metafield(namespace: "custom", key: "details") {
-                        value
-                    }
-                }
-            }
-        }
-
-    }`
-
 const queryProductByIdAsTag = tag => `query {
         products(first: 12, query:"tag:${tag}") {
             edges {
@@ -169,7 +127,6 @@ const queryAllCollections = language => `query @inContext(language: ${language})
         }`
 
 export {
-  queryByCollection,
   queryProductByIdAsTag,
   productRecommendations,
   queryProductsByVendor,

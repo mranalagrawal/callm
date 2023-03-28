@@ -1,5 +1,5 @@
 <script>
-import { computed, markRaw, onMounted, ref, useContext, useFetch, useRoute, useRouter } from '@nuxtjs/composition-api'
+import { computed, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api'
 import addIcon from 'assets/svg/add.svg'
 import cartIcon from 'assets/svg/cart.svg'
 import heartFullIcon from 'assets/svg/heart-full.svg'
@@ -7,12 +7,14 @@ import heartIcon from 'assets/svg/heart.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
 import { storeToRefs } from 'pinia'
 import { mapState } from 'vuex'
+import { productFeatures } from '@/utilities/mappedProduct'
+import { useRecentProductsStore } from '@/store/recent'
+import { useCustomer } from '@/store/customer'
 import { getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
 import favouriteIcon from '~/assets/svg/selections/favourite.svg'
 import { SweetAlertToast } from '@/utilities/Swal'
 import getArticles from '~/graphql/queries/getArticles'
 import { pick } from '@/utilities/arrays'
-import { useCustomer } from '@/store/customer'
 
 export default {
   layout(context) {
@@ -20,15 +22,16 @@ export default {
   },
   setup() {
     const customerStore = useCustomer()
+    const recentProductsStore = useRecentProductsStore()
+    const { recentProducts } = storeToRefs(recentProductsStore)
+
     const {
       wishlistArr,
       getCustomerType,
     } = storeToRefs(customerStore)
     const { handleWishlist } = customerStore
-    const { $http, $config, i18n, $graphql, $cmwRepo, error } = useContext()
+    const { $http, $config, i18n, $graphql, $cmwRepo, error, redirect } = useContext()
     const route = useRoute()
-    const router = useRouter()
-    const featuresArr = markRaw(['favourite', 'isnew', 'isInPromotion', 'foreveryday', 'togift', 'unusualvariety', 'rarewine', 'artisanal', 'organic', 'topsale'])
     const isOpen = ref(false)
     const product = ref({
       details: '',
@@ -91,6 +94,15 @@ export default {
             productVariant.value = products.edges[0].node.variants.edges[0].node
             productDetails.value = JSON.parse(products.edges[0].node.details.value)
 
+            if (route.value.params.pathMatch !== product.value.handle)
+              return redirect(`/${product.value.handle}-${productDetails.value.key}.htm`)
+
+            recentProductsStore.$patch({
+              recentProducts: recentProducts.value?.length > 11
+                ? [...new Set([...recentProducts.value, productDetails.value.key])].slice(-12)
+                : [...new Set([...recentProducts.value, productDetails.value.key])],
+            })
+
             const { articles } = await $graphql.default.request(getArticles, {
               lang: i18n.locale.toUpperCase(),
               first: 1,
@@ -108,7 +120,7 @@ export default {
     })
 
     const availableFeatures = computed(() => {
-      let features = pick(productDetails.value, featuresArr)
+      let features = pick(productDetails.value, productFeatures)
 
       features = Object.keys(features)
         .reduce((o, key) => {
@@ -149,11 +161,6 @@ export default {
 
     const isOnFavourite = computed(() => {
       return [...wishlistArr.value].includes(`P${productDetails.value.feId}`)
-    })
-
-    onMounted(() => {
-      if (!route.value.params.pathMatch.startsWith(product.value.handle))
-        router.replace(`/${product.value.handle}-P${route.value.params.id}.htm`)
     })
 
     return {
@@ -373,7 +380,7 @@ export default {
                 <CmwChip
                   color="secondary"
                   shape="rounded"
-                  :label="`-${getPercent(productVariant.priceV2.amount, productVariant.compareAtPriceV2.amount)}%`"
+                  :label="`-${getPercent(finalPrice, productVariant.compareAtPriceV2.amount)}%`"
                 />
               </div>
               <i18n-n
@@ -758,7 +765,7 @@ export default {
       <ClientOnly>
         <RecentProducts />
         <VendorProducts :vendor="brand.title" />
-        <RecommendedProducts :product="product.id" />
+        <RecommendedProducts :id="product.id" />
       </ClientOnly>
     </div>
   </div>

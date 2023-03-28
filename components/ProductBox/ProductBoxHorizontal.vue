@@ -6,10 +6,11 @@ import subtractIcon from 'assets/svg/subtract.svg'
 import emailIcon from 'assets/svg/email.svg'
 import heartIcon from 'assets/svg/heart.svg'
 import heartFullIcon from 'assets/svg/heart-full.svg'
-import { markRaw, ref } from '@nuxtjs/composition-api'
+import { computed, ref, useContext } from '@nuxtjs/composition-api'
 import { mapState } from 'vuex'
+import { productFeatures } from '@/utilities/mappedProduct'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
-import { isObject, regexRules } from '~/utilities/validators'
+import { isObject } from '~/utilities/validators'
 import { pick } from '~/utilities/arrays'
 import { useCustomer } from '~/store/customer'
 import { stripHtml } from '~/utilities/strings'
@@ -27,63 +28,66 @@ export default {
       },
     },
   },
-  setup() {
+  setup(props) {
     const customerStore = useCustomer()
     const { wishlistArr, getCustomerType } = storeToRefs(customerStore)
     const { handleWishlist } = customerStore
+    const { $config } = useContext()
 
-    const features = markRaw(['favourite', 'isnew', 'isInPromotion', 'foreveryday', 'togift', 'unusualvariety', 'rarewine', 'artisanal', 'organic', 'topsale'])
     const isOpen = ref(false)
 
-    return { wishlistArr, getCustomerType, heartIcon, heartFullIcon, cartIcon, emailIcon, addIcon, subtractIcon, features, isOpen, handleWishlist, stripHtml }
-  },
-  computed: {
-    ...mapState('userCart', {
-      userCart: 'userCart',
-    }),
-    backofficeId() {
-      // Get the proper tag 🤦🏻
-      return this.product.product.tags.find(tag => new RegExp(regexRules('isProduct')).test(tag))
-    },
-    isOnCart() {
-      return this.userCart.find(lineItem => lineItem.productVariantId === this.product.product.variants.nodes[0].id)
-    },
-    cartQuantity() {
-      return this.isOnCart ? this.isOnCart.quantity : 0
-    },
-    isOnFavourite() {
-      return this.wishlistArr.includes(this.backofficeId)
-    },
-    /** @Type: {MetaFieldType.MetaField} */
-    metaField() {
-      return JSON.parse(this.product.product.metafield.value)
-    },
-    availableFeatures() {
+    const availableFeatures = computed(() => {
       /* Todo: Definitely we need to use some enums here ... */
-      let features = pick(this.metaField, this.features)
+      let features = pick(props.product.details, productFeatures)
 
       features = Object.keys(features)
         .reduce((o, key) => {
           if (typeof features[key] === 'object')
-            !!features[key][this.$config.SALECHANNEL] && (o[key] = features[key])
+            !!features[key][$config.SALECHANNEL] && (o[key] = features[key])
           else
             features[key] === true && (o[key] = features[key])
 
           return o
         }, {})
 
-      // FixMe: Shall we slice this? it seems that limiting this to 3 is enough, what do you think?
-      //  what about redesign a bit the product box? maybe put it like the promotion tag but vertical, I'll try something on figma first
       return Object.keys(features).slice(0, 4)
+    })
+
+    const isOnFavourite = computed(() => wishlistArr.value.includes(props.product.details.key))
+    const isOnSale = computed(() => availableFeatures.value.includes('isInPromotion'))
+
+    return {
+      wishlistArr,
+      availableFeatures,
+      isOnFavourite,
+      isOnSale,
+      getCustomerType,
+      heartIcon,
+      heartFullIcon,
+      cartIcon,
+      emailIcon,
+      addIcon,
+      subtractIcon,
+      isOpen,
+      handleWishlist,
+      stripHtml,
+    }
+  },
+  computed: {
+    ...mapState('userCart', {
+      userCart: 'userCart',
+    }),
+    isOnCart() {
+      return this.userCart.find(lineItem => lineItem.productVariantId === this.product.shopify_product_id)
     },
-    isOnSale() {
-      return Number(this.product.compareAtPriceV2.amount) > Number(this.product.priceV2.amount) || this.availableFeatures.includes('isInPromotion')
+    cartQuantity() {
+      return this.isOnCart ? this.isOnCart.quantity : 0
     },
     canAddMore() {
       return this.product.quantityAvailable - this.cartQuantity > 0
     },
     finalPrice() {
-      return this.metaField.priceLists[this.$config.SALECHANNEL][this.getCustomerType]
+      return this.product.details.priceLists[this.$config.SALECHANNEL][this.getCustomerType]
     },
   },
   methods: {
@@ -99,14 +103,12 @@ export default {
         return
       }
 
-      const productVariantId = this.product.product.variants.nodes[0].id
+      const productVariantId = this.product.shopify_product_id
       const amount = this.finalPrice
-      const amountFullPrice = Number(
-        this.product.product.variants.nodes[0].compareAtPriceV2.amount,
-      )
-      const tag = this.product.product.tags[0]
-      const image = this.product.product.images.nodes[0].url
-      const title = this.product.product.title
+      const amountFullPrice = Number(this.product.compareAtPrice.amount)
+      const tag = this.product.tags[0]
+      const image = this.product.image.source.url
+      const title = this.product.title
       this.$store.commit('userCart/addProduct', {
         productVariantId,
         singleAmount: amount,
@@ -117,16 +119,15 @@ export default {
       })
       this.flashMessage.show({
         status: '',
-        message: `${this.product.product.title} è stato aggiunto al carrello!`,
-        icon: this.product.product.images.nodes[0].url,
+        message: `${this.product.title} è stato aggiunto al carrello!`,
+        icon: this.product.image.source.url,
         iconClass: 'bg-transparent ',
         time: 8000,
         blockClass: 'add-product-notification',
       })
     },
     async removeFromUserCart() {
-      const productVariantId = this.product.product.variants.nodes[0].id
-      this.$store.commit('userCart/removeProduct', productVariantId)
+      this.$store.commit('userCart/removeProduct', this.product.shopify_product_id)
     },
   },
 }
@@ -134,29 +135,20 @@ export default {
 
 <template>
   <div
+    v-if="product.shopify_product_id"
     class="cmw-relative cmw-transition cmw-transition-box-shadow cmw-bg-white cmw-rounded-sm cmw-border cmw-border-gray-light cmw-p-2 cmw-grid cmw-grid-cols-[220px_auto_320px]
 hover:cmw-shadow-elevation"
   >
     <!-- Image Section -->
     <div class="cmw-relative cmw-p-2">
       <ClientOnly>
-        <NuxtLink :to="localePath(`/${product.product.handle}-${product.product.tags[0]}`)">
+        <NuxtLink :to="localePath(product.url)">
           <LoadingImage
             class="cmw-filter hover:cmw-contrast-150 cmw-mx-auto cmw-mt-4"
-            :class="{ 'cmw-opacity-50': !product.availableForSale }"
-            :thumbnail="{
-              url: `${product.image.url}&width=20&height=36`,
-              width: 20,
-              height: 36,
-              altText: metaField.name[$i18n.locale],
-            }"
-            :source="{
-              url: `${product.image.url}&width=300&height=540`,
-              width: 300,
-              height: 540,
-              altText: metaField.name[$i18n.locale],
-            }"
             img-classes="cmw-w-full cmw-h-auto"
+            :class="{ 'cmw-opacity-50': !product.availableForSale }"
+            :thumbnail="product.image.thumbnail"
+            :source="product.image.source"
           />
         </NuxtLink>
       </ClientOnly>
@@ -164,37 +156,30 @@ hover:cmw-shadow-elevation"
         <!-- Todo: create a global tooltip that change position base on mouse position -->
         <ProductBoxFeature v-for="feature in availableFeatures" :key="feature" :feature="feature" />
       </div>
-      <button
-        type="button"
-        class="cmw-absolute cmw-top-4 cmw-right-2"
+      <ButtonIcon
+        :icon="isOnFavourite ? heartFullIcon : heartIcon"
+        class="cmw-absolute cmw-top-4 cmw-right-2" :variant="isOnFavourite ? 'icon-primary' : 'icon'"
         :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
-        @click="handleWishlist({ id: backofficeId, isOnFavourite })"
-      >
-        <VueSvgIcon
-          color="#d94965"
-          width="32"
-          height="32"
-          :data="isOnFavourite ? heartFullIcon : heartIcon"
-        />
-      </button>
+        @click.native="handleWishlist({ id: product.details.key, isOnFavourite })"
+      />
     </div>
     <!-- Content Section -->
     <div class="cmw-p-2">
       <div class="h4 cmw-mt-4">
         <NuxtLink
-          :to="localePath(`/${product.product.handle}-${product.product.tags[0]}`)"
+          :to="localePath(product.url)"
           class="cmw-text-body hover:(cmw-text-primary-400 cmw-no-underline)"
         >
-          {{ product.title || product.product.title }}
+          {{ product.title }}
         </NuxtLink>
       </div>
       <!-- <div>TODO: RATING STARS </div> -->
       <div class="cmw-flex cmw-gap-3 cmw-my-8">
         <div
-          v-for="(award, i) in metaField.awards"
+          v-for="(award, i) in product.awards.slice(0, 4)"
           :key="award.id"
           class="cmw-flex cmw-gap-1 cmw-items-center cmw-pr-1.5"
-          :class="{ 'cmw-border-r cmw-border-r-gray': ((i + 1) < metaField.awards.length) }"
+          :class="{ 'cmw-border-r cmw-border-r-gray': ((i + 1) < product.awards.length) }"
         >
           <ProductBoxAward :award="award" />
         </div>
@@ -207,17 +192,17 @@ hover:cmw-shadow-elevation"
           class="cmw-font-bold"
           v-text="$t('product.vines')"
         />
-        <div>{{ metaField.grapes[$i18n.locale] }}</div>
+        <div>{{ product.details.grapes[$i18n.locale] }}</div>
         <div
           class="cmw-font-bold"
           v-text="$t('product.region')"
         />
-        <div>{{ metaField.regionName[$i18n.locale] }}</div>
+        <div>{{ product.details.regionName[$i18n.locale] }}</div>
         <div
           class="cmw-font-bold"
           v-text="$t('product.format')"
         />
-        <div>{{ metaField.size[$i18n.locale] }}</div>
+        <div>{{ product.details.size[$i18n.locale] }}</div>
       </div>
       <!-- Note: Why don't we use these fields from shopify? wouldn't be easier to handle locales? -->
       <!-- <div>{{ product.description }}</div>
@@ -225,15 +210,8 @@ hover:cmw-shadow-elevation"
       <div
         class="c-productBox__desc cmw-mb-4"
         :class="{ 'cmw-opacity-50': !product.availableForSale }"
-        v-html="stripHtml(metaField.shortDescription[$i18n.locale])"
+        v-html="stripHtml(product.details.shortDescription[$i18n.locale])"
       />
-      <!--      <pre>{{ availableFeatures }}</pre>
-      <pre
-        class="cmw-text-xs"
-        style="word-wrap: break-word"
-      >
-        {{ metaField }}
-      </pre> -->
     </div>
     <!-- CTA Section -->
     <div class="cmw-relative cmw-flex">
@@ -248,13 +226,11 @@ hover:cmw-shadow-elevation"
           v-if="isOnSale"
           class="cmw-line-through cmw-text-gray cmw-text-sm cmw-mr-3"
         >
-          {{
-            $n(Number(product.compareAtPriceV2.amount), 'currency', getLocaleFromCurrencyCode(product.compareAtPriceV2.currencyCode))
-          }}
+          {{ $n(Number(product.compareAtPrice.amount), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode)) }}
         </span>
         <i18n-n
           class="cmw-inline-block cmw-mb-3" :value="finalPrice" :format="{ key: 'currency' }"
-          :locale="getLocaleFromCurrencyCode(product.priceV2.currencyCode)"
+          :locale="getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode)"
         >
           <template #currency="slotProps">
             <span class="cmw-text-sm md:cmw-text-base">{{ slotProps.currency }}</span>
