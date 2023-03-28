@@ -1,14 +1,13 @@
 <script>
 import VueSlickCarousel from 'vue-slick-carousel'
-import { queryAllCollections } from '../../utilities/productQueries'
+import { queryAllCollections } from '@/utilities/productQueries'
 
 // optional style for arrows & dots
 import 'vue-slick-carousel/dist/vue-slick-carousel.css'
 import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
-import ProductCardVertical from '../ProductCardVertical.vue'
 
 export default {
-  components: { ProductCardVertical, VueSlickCarousel },
+  components: { VueSlickCarousel },
   data: () => ({
     data: null,
     settings: {

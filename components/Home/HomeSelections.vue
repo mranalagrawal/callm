@@ -18,7 +18,6 @@ export default {
       slidesToShow: 5.5,
       slidesToScroll: 2,
       autoplay: true,
-      speed: 8000,
       autoplaySpeed: 0,
       cssEase: 'linear',
       responsive: [

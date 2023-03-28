@@ -6,7 +6,6 @@ import HomeCta from '../components/Home/HomeCta.vue'
 import HomeDescription from '../components/Home/HomeDescription.vue'
 import HomeLast from '../components/Home/HomeLast.vue'
 import HomeSlider from '../components/Home/HomeSlider.vue'
-import ProductCardVertical from '../components/ProductCardVertical.vue'
 import HomeSelection from '../components/Home/HomeSelections.vue'
 import HomePartners from '../components/Home/HomePartners.vue'
 import HomeProductors from '../components/Home/HomeProductors.vue'
@@ -21,7 +20,6 @@ export default {
     HomeBanner,
     HomeBannerWV,
     HomeBoxes,
-    ProductCardVertical,
     HomeLast,
     HomeCta,
     HomeSlider,

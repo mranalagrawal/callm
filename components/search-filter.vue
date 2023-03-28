@@ -7,6 +7,7 @@ import Dropdown from './UI/Dropdown.vue'
 import DropdownRange from './UI/DropdownRange.vue'
 import DropdownSelections from './UI/DropdownSelections.vue'
 import SelectionsBoxMobile from './UI/SelectionsBoxMobile.vue'
+// import { getMappedProducts } from '@/utilities/mappedProduct'
 import { useFilters } from '~/store/filters'
 
 export default {
@@ -297,7 +298,12 @@ export default {
 
     this.loading = false
   },
-  computed: {},
+  /* computed: {
+    mappedProducts() {
+      // TODO: merge productBox and productBoxElastic
+      return this.results && getMappedProducts(this.results, this.$i18n.locale, true)
+    },
+  }, */
   watch: {
     '$route.query': '$fetch',
     '$i18n.locale': '$fetch',

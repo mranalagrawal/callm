@@ -1,9 +1,16 @@
-export const state = () => ({
-  recent: [],
-})
+import { ref, useContext, watch } from '@nuxtjs/composition-api'
+import { defineStore } from 'pinia'
 
-export const mutations = {
-  addRecent(state, productId) {
-    state.recent = state.recent.length > 11 ? [...new Set([...state.recent, productId])].slice(-12) : [...new Set([...state.recent, productId])]
-  },
-}
+export const useRecentProductsStore = defineStore('recentProductsStore', () => {
+  const recentProducts = ref([])
+  const { $cookies } = useContext()
+
+  if ($cookies.get('recentProducts'))
+    recentProducts.value = $cookies.get('recentProducts')
+
+  watch(recentProducts.value, (val) => {
+    $cookies.set('recentProducts', val)
+  })
+
+  return { recentProducts }
+})
