@@ -107,6 +107,7 @@ export default {
 }
 
 ::v-deep(.slick-track) {
+  margin-top: 15px;
   margin-bottom: 15px;
 }
 

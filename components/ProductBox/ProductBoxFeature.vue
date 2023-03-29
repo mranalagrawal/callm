@@ -49,8 +49,8 @@ export default {
   >
     <VueSvgIcon
       :data="require(`@/assets/svg/${getFeature(feature).icon}.svg`)"
-      class="cmw-block !cmw-fill-gray"
-      :class="getFeature(feature).iconColor"
+      class="cmw-block"
+      :class="getFeature(feature).iconColor || 'cmw-fill-gray'"
       width="28"
       height="auto"
     />

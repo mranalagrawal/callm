@@ -95,7 +95,7 @@ export default {
             productDetails.value = JSON.parse(products.edges[0].node.details.value)
 
             if (route.value.params.pathMatch !== product.value.handle)
-              return redirect(`/${product.value.handle}-${productDetails.value.key}.htm`)
+              return redirect(301, `/${product.value.handle}-${productDetails.value.key}.htm`)
 
             recentProductsStore.$patch({
               recentProducts: recentProducts.value?.length > 11
