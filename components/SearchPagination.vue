@@ -1,5 +1,5 @@
 <script>
-import { computed, reactive } from '@nuxtjs/composition-api'
+import { computed, reactive, toRefs } from '@nuxtjs/composition-api'
 
 export default {
   props: {
@@ -19,24 +19,16 @@ export default {
       pageNumbers: [],
     })
 
+    const { totalPages, currentPage } = toRefs(props)
+
     const setPages = computed(() => {
-      console.log(props.totalPages)
-      pagination.currentPage = Number(props.currentPage)
-      pagination.prevPage = pagination.currentPage > 1 ? (pagination.currentPage - 1) : null
-
-      if (!props.totalPages)
-        pagination.nextPage = pagination.currentPage ? (Number(pagination.currentPage) + 1) : 2
-      else
-        pagination.nextPage = pagination.currentPage < props.totalPages ? (Number(pagination.currentPage) + 1) : null
-
-      for (let i = 0; i < 7; i++) {
-        const _p = ((Number(pagination.currentPage) - 4) + i)
-        if (_p > 0 && _p <= props.totalPages) {
-          console.log(pagination.pageNumbers)
-          pagination.pageNumbers.push(_p)
-        }
-      }
+      pagination.currentPage = Number(currentPage.value)
+      pagination.prevPage = pagination.currentPage > 1 ? pagination.currentPage - 1 : null
+      pagination.nextPage = totalPages ? (pagination.currentPage < totalPages.value ? pagination.currentPage + 1 : null) : pagination.currentPage + 1
+      pagination.pageNumbers = Array.from({ length: totalPages.value }, (_, i) => i + 1)
+        .filter(page => Math.abs(page - pagination.currentPage) < 4)
     })
+
     return { pagination, setPages }
   },
 }

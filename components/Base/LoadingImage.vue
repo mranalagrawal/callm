@@ -1,5 +1,5 @@
 <script>
-import { onMounted, ref } from '@nuxtjs/composition-api'
+import { onMounted, ref, useContext } from '@nuxtjs/composition-api'
 
 export default {
   props: {
@@ -11,6 +11,7 @@ export default {
     imgClasses: { type: String },
   },
   setup(props) {
+    const { $sentry } = useContext()
     const el = ref(null)
     const imgEl = ref(null)
     const imageIsLoaded = ref(false)
@@ -20,15 +21,18 @@ export default {
     }
 
     const loadBigImage = (image) => {
-      image.addEventListener('load', function handler() {
-        imageIsLoaded.value = true
-        this.removeEventListener('load', handler)
-      })
+      if (image) {
+        image.addEventListener('load', function handler() {
+          imageIsLoaded.value = true
+          this.removeEventListener('load', handler)
+        })
 
-      // eslint-disable-next-line no-console
-      image.addEventListener('error', () => console.log('error'))
+        image.addEventListener('error', () => {
+          $sentry.captureException(new Error('Missing Image'))
+        })
 
-      image.src = image.dataset.src
+        image.src = image.dataset.src
+      }
     }
 
     const loadSmallImage = () => {
@@ -37,10 +41,9 @@ export default {
           setTimeout(() => {
             this.removeEventListener('load', handler)
             loadBigImage(imgEl.value)
-          }, 100)
+          }, 200)
         })
-        // eslint-disable-next-line no-console
-        imgEl.value.addEventListener('error', () => console.log('error'))
+        imgEl.value.addEventListener('error', () => $sentry.captureException(new Error('Missing Image')))
         imgEl.value.src = imgEl.value.dataset.thumbnail
         imgEl.value.width = props.source.width
         imgEl.value.height = props.source.height
