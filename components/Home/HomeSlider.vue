@@ -21,7 +21,7 @@ export default {
     this.data = data.data.featured
   },
   mounted() {
-    this.$nextTick(() => this.setArrow())
+    this.$nextTick(() => setTimeout(() => this.setArrow(), 600))
   },
   methods: {
     setArrow() {
@@ -31,8 +31,8 @@ export default {
           slider = this.$refs.wrapperEl.querySelector('.carousel-3d-slider')
 
         if (slider)
-          setTimeout(() => this.arrowPos = `${slider.getBoundingClientRect().right}px`, 300)
-      }, 300)
+          setTimeout(() => this.arrowPos = `${slider.getBoundingClientRect().right}px`, 600)
+      }, 600)
     },
   },
 }
