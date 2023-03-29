@@ -97,6 +97,13 @@ export default {
             if (route.value.params.pathMatch !== product.value.handle)
               return redirect(301, `/${product.value.handle}-${productDetails.value.key}.htm`)
 
+            // if (!productDetails.value.pricelists[$config.SALECHANNEL])
+            //   return redirect(301, 'urlFromBackend')
+
+            // if (!productDetails.value.enabled)
+            //   return redirect(301, productDetails.value.canonicalProductId ||
+            //   `/winery/${product.value.vendor.replace(' ', '-').toLowerCase()}-B-${productDetails.value.brandId}.htm`)
+
             recentProductsStore.$patch({
               recentProducts: recentProducts.value?.length > 11
                 ? [...new Set([...recentProducts.value, productDetails.value.key])].slice(-12)
