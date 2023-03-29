@@ -10,7 +10,7 @@ export default {
     return context.$config.STORE
   },
   setup() {
-    const { $graphql, i18n } = useContext()
+    const { $graphql, i18n, redirect } = useContext()
     const route = useRoute()
     const isDesktop = ref(false)
     const partnerC1 = ref(null)
@@ -18,6 +18,7 @@ export default {
     const c1 = ref(null)
     const c2 = ref(null)
     const brand = ref({
+      handle: '',
       title: '',
       contentHtml: '',
       seo: {
@@ -45,6 +46,9 @@ export default {
       if (articles.nodes[0]) {
         brand.value = articles.nodes[0]
         metaFields.value = articles.nodes[0].details && JSON.parse(articles.nodes[0].details.value)
+
+        if (route.value.params.handle !== `${brand.value.handle}-${metaFields.value.key}}`)
+          return redirect(301, `/winery/${brand.value.handle}-${metaFields.value.key}.htm`)
       }
     })
 
@@ -307,7 +311,7 @@ export default {
           </div>
         </div>
         <div v-if="brand && brand.title">
-          <VendorProductsInBrand :vendor="brand.title" />
+          <VendorProducts :vendor="brand.title" />
         </div>
       </div>
       <div v-else class="cmw-max-w-screen-xl cmw-mx-auto cmw-p-4 cmw-text-center">

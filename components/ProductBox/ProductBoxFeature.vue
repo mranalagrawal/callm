@@ -21,17 +21,17 @@ export default {
     // Note: if we align these features as ENUMS we could use them directly es. enums.feature.$ProdFeature,
     //  we also can have a better look to the tags property and see if they properly fit for these
     const getFeature = key => ({
-      favourite: { icon: 'feature-cmw-favourite', title: i18n.t('common.features.FAVOURITE') },
-      isnew: { icon: 'feature-is-new', title: i18n.t('common.features.NEW') },
-      isInPromotion: { icon: 'feature-in-promotion', title: i18n.t('common.features.IN_PROMOTION') },
-      inpromotion: { icon: 'feature-in-promotion', title: i18n.t('common.features.IN_PROMOTION') },
-      foreveryday: { icon: 'feature-for-everyday', title: i18n.t('common.features.FOR_EVERYDAY') },
-      togift: { icon: 'feature-to-gift', title: i18n.t('common.features.TO_GIFT') },
-      unusualvariety: { icon: 'feature-unusual-variety', title: i18n.t('common.features.UNUSUAL_VARIETY') },
-      rarewine: { icon: 'feature-rare-wine', title: i18n.t('common.features.RARE_WINE') },
-      artisanal: { icon: 'feature-artisanal', title: i18n.t('common.features.ARTISANAL') },
-      organic: { icon: 'feature-organic', title: i18n.t('common.features.ORGANIC') },
-      topsale: { icon: 'feature-best-seller', title: i18n.t('common.features.BEST_SELLER') },
+      favourite: { icon: 'feature-cmw-favourite', iconColor: '!cmw-fill-primary', title: i18n.t('common.features.FAVOURITE') },
+      isnew: { icon: 'feature-is-new', iconColor: '!cmw-fill-gray-dark', title: i18n.t('common.features.NEW') },
+      isInPromotion: { icon: 'feature-in-promotion', iconColor: '!cmw-fill-gray-dark', title: i18n.t('common.features.IN_PROMOTION') },
+      inpromotion: { icon: 'feature-in-promotion', iconColor: '!cmw-fill-gray-dark', title: i18n.t('common.features.IN_PROMOTION') },
+      foreveryday: { icon: 'feature-for-everyday', iconColor: '!cmw-fill-gray-dark', title: i18n.t('common.features.FOR_EVERYDAY') },
+      togift: { icon: 'feature-to-gift', iconColor: '!cmw-fill-gray-dark', title: i18n.t('common.features.TO_GIFT') },
+      unusualvariety: { icon: 'feature-unusual-variety', iconColor: '!cmw-fill-gray-dark', title: i18n.t('common.features.UNUSUAL_VARIETY') },
+      rarewine: { icon: 'feature-rare-wine', iconColor: '!cmw-fill-gray-dark', title: i18n.t('common.features.RARE_WINE') },
+      artisanal: { icon: 'feature-artisanal', iconColor: '!cmw-fill-success', title: i18n.t('common.features.ARTISANAL') },
+      organic: { icon: 'feature-organic', iconColor: '!cmw-fill-gray-dark', title: i18n.t('common.features.ORGANIC') },
+      topsale: { icon: 'feature-best-seller', iconColor: '!cmw-fill-gray-dark', title: i18n.t('common.features.BEST_SELLER') },
     })[key]
 
     return { handleMouseEnter, handleMouseLeave, show, closeIcon, getFeature }
@@ -49,8 +49,8 @@ export default {
   >
     <VueSvgIcon
       :data="require(`@/assets/svg/${getFeature(feature).icon}.svg`)"
-      class="cmw-block !cmw-fill-gray"
-      :class="feature === 'favourite' ? '!cmw-fill-primary' : '!cmw-fill-gray-dark'"
+      class="cmw-block"
+      :class="getFeature(feature).iconColor || 'cmw-fill-gray'"
       width="28"
       height="auto"
     />

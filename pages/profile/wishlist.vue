@@ -1,6 +1,7 @@
 <script>
-import { computed, useFetch, watch } from '@nuxtjs/composition-api'
+import { computed, useContext, useFetch, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+import { getMappedProducts } from '@/utilities/mappedProduct'
 // import getProducts from '~/graphql/queries/getProducts'
 import { useFilters } from '~/store/filters'
 import { useCustomer } from '~/store/customer'
@@ -15,6 +16,7 @@ export default {
     const customerWishlist = useCustomerWishlist()
     const { wishlistArr } = storeToRefs(customerStore)
     const { wishlistProducts } = storeToRefs(customerWishlist)
+    const { i18n } = useContext()
 
     const filtersStore = useFilters()
     const { selectedLayout, availableLayouts } = storeToRefs(filtersStore)
@@ -30,15 +32,10 @@ export default {
 
     const customerProducts = computed(() => {
       // Note: there's an annoying warning but the page renders perfectly, https://github.com/nuxt-community/composition-api/issues/19
-      // on Nuxt 3 we will get nodes directly
-      if (!wishlistProducts.value || !wishlistProducts.value.edges)
+      if (!wishlistProducts.value || !wishlistProducts.value.nodes)
         return []
 
-      return wishlistProducts.value.edges
-        .map((el) => {
-          const { __typename, ...rest } = el.node.variants.edges[0].node
-          return (rest)
-        }) || []
+      return getMappedProducts(wishlistProducts.value.nodes, i18n.locale)
     })
 
     return {

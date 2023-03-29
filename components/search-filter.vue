@@ -1,5 +1,5 @@
 <script>
-import { nextTick, onMounted, onUnmounted, ref } from '@nuxtjs/composition-api'
+import { nextTick, onMounted, onUnmounted, ref, toRefs } from '@nuxtjs/composition-api'
 import debounce from 'lodash.debounce'
 import { storeToRefs } from 'pinia'
 import Loader from '../components/UI/Loader.vue'
@@ -7,6 +7,7 @@ import Dropdown from './UI/Dropdown.vue'
 import DropdownRange from './UI/DropdownRange.vue'
 import DropdownSelections from './UI/DropdownSelections.vue'
 import SelectionsBoxMobile from './UI/SelectionsBoxMobile.vue'
+// import { getMappedProducts } from '@/utilities/mappedProduct'
 import { useFilters } from '~/store/filters'
 
 export default {
@@ -297,7 +298,12 @@ export default {
 
     this.loading = false
   },
-  computed: {},
+  /* computed: {
+    mappedProducts() {
+      // TODO: merge productBox and productBoxElastic
+      return this.results && getMappedProducts(this.results, this.$i18n.locale, true)
+    },
+  }, */
   watch: {
     '$route.query': '$fetch',
     '$i18n.locale': '$fetch',
@@ -305,23 +311,14 @@ export default {
 
   methods: {
     setPages(totalPages) {
+      const { page } = toRefs(this.$route.query)
+
       this.pagination.totalPages = totalPages
-      this.pagination.currentPage = Number(this.$route.query.page ?? 1)
-      this.pagination.prevPage = this.pagination.currentPage > 1 ? (this.pagination.currentPage - 1) : null
-
-      if (!totalPages)
-        this.pagination.nextPage = this.pagination.currentPage ? (Number(this.pagination.currentPage) + 1) : 2
-      else
-        this.pagination.nextPage = this.pagination.currentPage < totalPages ? (Number(this.pagination.currentPage) + 1) : null
-
-      const pageNumbers = []
-      for (let i = 0; i < 7; i++) {
-        const _p = ((Number(this.pagination.currentPage) - 3) + i)
-        if (_p > 0 && _p <= totalPages)
-          pageNumbers.push(_p)
-      }
-
-      this.pagination.pageNumbers = pageNumbers
+      this.pagination.currentPage = Number(page.value ?? 1)
+      this.pagination.prevPage = this.pagination.currentPage > 1 ? this.pagination.currentPage - 1 : null
+      this.pagination.nextPage = totalPages ? (this.pagination.currentPage < totalPages.value ? this.pagination.currentPage + 1 : null) : this.pagination.currentPage + 1
+      this.pagination.pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1)
+        .filter(page => Math.abs(page - this.pagination.currentPage) < 4)
     },
     changePage(page) {
       const query = Object.assign({}, this.inputParameters)

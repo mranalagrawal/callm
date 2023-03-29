@@ -1,6 +1,7 @@
 <script>
 import { computed, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+import { getMappedProducts } from '@/utilities/mappedProduct'
 import { sortArrayByName, sortArrayByNumber } from '~/utilities/arrays'
 import getCollection from '~/graphql/queries/getCollection'
 import { useFilters } from '~/store/filters'
@@ -72,6 +73,7 @@ export default {
       }))
 
       sorted.value = sortArrayByName(sorted.value, 'title', 'asc')
+      sorted.value = getMappedProducts(sorted.value)
     })
 
     return {
@@ -160,7 +162,7 @@ export default {
         >
           <!-- Todo: Implement horizontal product box -->
           <!--          <ProductCardHorizontal :product="product" /> -->
-          <ProductCardVertical :product="product" />
+          <ProductBoxVertical :product="product" />
         </div>
       </div>
     </div>
