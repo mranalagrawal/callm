@@ -42,7 +42,7 @@
       ]
     },
     {
-      "source": "/(.*-[V,C,R,D,B,N,M][0-9]*.htm$)",
+      "source": "/([^\\/.]*-[V,C,R,D,B,N,M][0-9]*.htm$)",
       "headers" : [
         {
           "key" : "x-robots-tag",
