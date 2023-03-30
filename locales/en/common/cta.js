@@ -11,5 +11,6 @@ export default {
     prevPage: 'Previous page',
     nextPage: 'Next page',
     goToCheckout: 'Go to the checkout',
+    apply: 'Apply',
   },
 }

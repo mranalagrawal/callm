@@ -205,7 +205,7 @@ hover:cmw-shadow-elevation"
       <div class="cmw-flex cmw-gap-3 cmw-my-8">
         <div
           v-for="(award, i) in awardsMapped"
-          :key="award.id"
+          :key="`${award.id}-${i}`"
           class="cmw-flex cmw-gap-1 cmw-items-center cmw-pr-1.5"
           :class="{ 'cmw-border-r cmw-border-r-gray': ((i + 1) < awardsMapped.length) }"
         >

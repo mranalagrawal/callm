@@ -194,6 +194,7 @@ export default {
     boxes: 'Con confezione',
     areas: 'Area',
     provenience: 'Provenienza',
+    regions: 'Provenienza',
     brands: 'Produttore',
     noBrands: 'Prova la nostra migliore lista',
     countries: 'Paese',

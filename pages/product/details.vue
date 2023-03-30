@@ -345,8 +345,8 @@ export default {
           </div>
           <div class="cmw-absolute cmw-bottom-0 cmw-left-2">
             <div
-              v-for="(award) in productDetails.awards.slice(0, 4)"
-              :key="award.id"
+              v-for="(award, i) in productDetails.awards.slice(0, 4)"
+              :key="`${award.id}-${i}`"
               class="cmw-flex cmw-gap-1 cmw-items-center cmw-pr-1.5"
             >
               <ProductBoxAward :award="award" />

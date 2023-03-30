@@ -194,6 +194,7 @@ export default {
     boxes: 'Boxen',
     areas: 'Bereiche',
     provenience: 'Herkunft',
+    regions: 'Herkunft',
     brands: 'brands',
     noBrands: 'Probieren Sie unsere beste Liste aus',
     countries: 'Länder',
