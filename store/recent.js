@@ -8,7 +8,7 @@ export const useRecentProductsStore = defineStore('recentProductsStore', () => {
   if ($cookies.get('recentProducts'))
     recentProducts.value = $cookies.get('recentProducts')
 
-  watch(recentProducts.value, (val) => {
+  watch(recentProducts, (val) => {
     $cookies.set('recentProducts', val)
   })
 
