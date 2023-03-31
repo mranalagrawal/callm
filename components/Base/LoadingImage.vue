@@ -28,7 +28,7 @@ export default {
         })
 
         image.addEventListener('error', () => {
-          $sentry.captureException(new Error('Missing Image'))
+          $sentry.captureException(new Error(`Missing Image ${image}`))
         })
 
         image.src = image.dataset.src
@@ -43,7 +43,7 @@ export default {
             loadBigImage(imgEl.value)
           }, 200)
         })
-        imgEl.value.addEventListener('error', () => $sentry.captureException(new Error('Missing Image')))
+        imgEl.value.addEventListener('error', () => $sentry.captureException(new Error(`Missing Image ${imgEl.value}`)))
         imgEl.value.src = imgEl.value.dataset.thumbnail
         imgEl.value.width = props.source.width
         imgEl.value.height = props.source.height
