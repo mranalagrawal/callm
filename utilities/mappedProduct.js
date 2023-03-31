@@ -63,13 +63,13 @@ export const getMappedProducts = (arr = [], lang = 'en', isElastic = false, stor
         url: `/${details.handle[lang]}-${details.key}.htm`,
         image: {
           thumbnail: {
-            url: `${p.featuredImage?.url}&width=20&height=36`,
+            url: p.featuredImage?.url ? `${p.featuredImage?.url}&width=20&height=36` : 'https://cdn.shopify.com/s/files/1/0578/7497/2719/files/no-product-image-400x400_6.png?v=1680253923&width=20&height=36',
             width: 20,
             height: 36,
             altText: details.name[lang],
           },
           source: {
-            url: `${p.featuredImage?.url}&width=300&height=540`,
+            url: p.featuredImage?.url ? `${p.featuredImage?.url}&width=300&height=540` : 'https://cdn.shopify.com/s/files/1/0578/7497/2719/files/no-product-image-400x400_6.png?v=1680253923&width=300&height=540',
             width: 300,
             height: 540,
             altText: details.name[lang],
