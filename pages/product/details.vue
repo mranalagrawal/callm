@@ -324,6 +324,7 @@ export default {
         <!-- Image Section -->
         <div class="cmw-relative">
           <LoadingImage
+            v-if="product.images.nodes[0]"
             class="cmw-h-full"
             img-classes="cmw-max-h-[350px] md:cmw-max-h-[550px] cmw-mx-auto cmw-object-contain"
             :thumbnail="{

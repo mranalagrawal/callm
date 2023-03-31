@@ -27,13 +27,13 @@ export const getMappedProducts = (arr = [], lang = 'en', isElastic = false, stor
         url: `/${p._source.handle[lang]}-${p._source.sourceId}.htm`,
         image: {
           thumbnail: {
-            url: `${p._source.shopifyImageUrl.CMW_UK}&width=20&height=36`,
+            url: `${p._source.shopifyImageUrl?.CMW_UK}&width=20&height=36`,
             width: 20,
             height: 36,
             altText: p._source.name_t[lang],
           },
           source: {
-            url: `${p._source.shopifyImageUrl.CMW_UK}&width=300&height=540`,
+            url: `${p._source.shopifyImageUrl?.CMW_UK}&width=300&height=540`,
             width: 300,
             height: 540,
             altText: p._source.name_t[lang],
@@ -62,13 +62,13 @@ export const getMappedProducts = (arr = [], lang = 'en', isElastic = false, stor
         url: `/${details.handle[lang]}-${details.key}.htm`,
         image: {
           thumbnail: {
-            url: `${p.featuredImage.url}&width=20&height=36`,
+            url: `${p.featuredImage?.url}&width=20&height=36`,
             width: 20,
             height: 36,
             altText: details.name[lang],
           },
           source: {
-            url: `${p.featuredImage.url}&width=300&height=540`,
+            url: `${p.featuredImage?.url}&width=300&height=540`,
             width: 300,
             height: 540,
             altText: details.name[lang],
