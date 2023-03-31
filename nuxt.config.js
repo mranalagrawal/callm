@@ -19,7 +19,7 @@ const getPageProducts = async (lang, cursor = null) => {
     },
     body: JSON.stringify({
       query: `query getAllProducts($lang: LanguageCode!, $first: Int = 200, $cursor: String) @inContext(language: $lang) {
-                  products(first: $first, after: $cursor) {
+                  products(first: $first, after: $cursor, query: "tag:active") {
                     pageInfo {
                       endCursor
                       hasNextPage

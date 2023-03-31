@@ -47,7 +47,7 @@ export default {
         brand.value = articles.nodes[0]
         metaFields.value = articles.nodes[0].details && JSON.parse(articles.nodes[0].details.value)
 
-        if (route.value.params.handle !== `${brand.value.handle}-${metaFields.value.key}}`)
+        if (route.value.params.handle !== `${brand.value.handle}-${metaFields.value.key}`)
           return redirect(301, `/winery/${brand.value.handle}-${metaFields.value.key}.htm`)
       }
     })

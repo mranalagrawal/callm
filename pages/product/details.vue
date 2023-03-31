@@ -324,17 +324,18 @@ export default {
         <!-- Image Section -->
         <div class="cmw-relative">
           <LoadingImage
-            v-if="product.images.nodes[0]"
             class="cmw-h-full"
             img-classes="cmw-max-h-[350px] md:cmw-max-h-[550px] cmw-mx-auto cmw-object-contain"
             :thumbnail="{
-              url: `${product.images.nodes[0].url}?&width=20&height=36`,
+              url: product.images.nodes[0] ? `${product.images.nodes[0].url}?&width=20&height=36`
+                : 'https://cdn.shopify.com/s/files/1/0578/7497/2719/files/no-product-image-400x400_6.png?v=1680253923&width=20&height=36',
               width: 20,
               height: 36,
               altText: product.title,
             }"
             :source="{
-              url: `${product.images.nodes[0].url}?&width=400&height=719&crop=center`,
+              url: product.images.nodes[0] ? `${product.images.nodes[0].url}?&width=400&height=719&crop=center`
+                : 'https://cdn.shopify.com/s/files/1/0578/7497/2719/files/no-product-image-400x400_6.png?v=1680253923&width=400&height=719&crop=center',
               width: 400,
               height: 719,
               altText: product.title,
