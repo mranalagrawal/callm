@@ -14,7 +14,7 @@ export default {
       arrows: false,
       dots: true,
       infinite: true,
-      speed: 500,
+      speed: 8000,
       slidesToShow: 5.5,
       slidesToScroll: 2,
       autoplay: true,
