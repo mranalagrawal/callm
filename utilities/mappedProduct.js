@@ -24,7 +24,8 @@ export const getMappedProducts = (arr = [], lang = 'en', isElastic = false, stor
         // shopify_product_id: p.id,
         // tags: p.tags,
         title: p._source.name_t[lang],
-        url: `/${p._source.handle[lang]}-${p._source.sourceId}.htm`,
+        url: `/${p._source.handle_t[lang]}-${p._source.sourceId}.htm`,
+        // url: `/${p._source.handle}-${p._source.sourceId}.htm`,
         image: {
           thumbnail: {
             url: `${p._source.shopifyImageUrl?.CMW_UK}&width=20&height=36`,
