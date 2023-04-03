@@ -332,18 +332,6 @@ export default {
             alt="visa logo"
           >
           <img
-            src="../assets/images/paypal.png"
-            width="65"
-            height="64"
-            alt="paypal logo"
-          >
-          <img
-            src="../assets/images/bonifico.png"
-            width="65"
-            height="64"
-            alt="bonifico logo"
-          >
-          <img
             src="../assets/images/comodo.png"
             width="65"
             height="64"
