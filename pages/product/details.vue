@@ -146,8 +146,7 @@ export default {
       if (!productVariant.value)
         return false
 
-      return Number(productVariant.value.compareAtPriceV2.amount) > Number(productVariant.value.priceV2.amount)
-        || availableFeatures.value.includes('isInPromotion')
+      return availableFeatures.value.includes('isInPromotion')
     })
 
     const strippedContent = computed(() => {
