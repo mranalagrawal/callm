@@ -75,7 +75,7 @@ export default {
       height="auto"
     />
     <small
-      class="cmw-block cmw-capitalize cmw-leading-[1rem] cmw-select-none cmw-leading-none"
+      class="cmw-block cmw-capitalize cmw-leading-[1rem] cmw-select-none"
       :class="getVariant()"
       v-text="label"
     />
