@@ -301,13 +301,13 @@ export default {
       </div>
 
       <div class="cmw-relative cmw-z-base">
-        <!-- Note: Since we are handling submit with Vue methods we don' need the name attribute in the search field -->
+        <!-- Note: Since we are handling submit with Vue methods we don't need the name attribute in the search field -->
         <input
           id="search-term"
           v-model="search"
           type="search"
           class="
-               cmw-px-4 cmw-text-gray-dark cmw-py-3 cmw-w-full cmw-bg-transparent cmw-border cmw-border-gray-light cmw-rounded
+               c-searchInput -hasIcon cmw-px-4 cmw-text-gray-dark cmw-py-3 cmw-w-full cmw-bg-transparent cmw-border cmw-border-gray-light cmw-rounded
                hover:(cmw-border-gray)
                focus:(cmw-outline-none cmw-border-gray-dark)"
           :placeholder="$t('navbar.search')"
@@ -587,16 +587,6 @@ export default {
 .shadowed {
   box-shadow: 0 1px 8px 0 rgb(51 51 51 / 20%),
   0 3px 3px -2px rgb(51 51 51 / 12%), 0 3px 4px 0 rgb(51 51 51 / 14%);
-}
-
-#search-term::-webkit-search-cancel-button {
-  position: relative;
-  right: 30px;
-  -webkit-appearance: none;
-  height: 20px;
-  width: 20px;
-  background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIGlkPSJhIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PHBhdGggZD0ibTEyLjQ1LDM3LjY1bC0yLjEtMi4xLDExLjU1LTExLjU1LTExLjU1LTExLjU1LDIuMS0yLjEsMTEuNTUsMTEuNTUsMTEuNTUtMTEuNTUsMi4xLDIuMS0xMS41NSwxMS41NSwxMS41NSwxMS41NS0yLjEsMi4xLTExLjU1LTExLjU1LTExLjU1LDExLjU1WiIgc3R5bGU9ImZpbGw6I2Q5NDk2NTsiLz48L3N2Zz4=");
-  background-size: contain;
 }
 
 .shadow-menu {

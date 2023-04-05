@@ -60,7 +60,7 @@ export const getMappedProducts = (arr = [], lang = 'en', isElastic = false, stor
         shopify_product_id: p.id,
         tags: p.tags,
         title: details.name[lang],
-        url: `/${details.handle[lang]}-${details.key}.htm`,
+        url: `/${details.handle}-${details.key}.htm`,
         image: {
           thumbnail: {
             url: p.featuredImage?.url ? `${p.featuredImage?.url}&width=20&height=36` : 'https://cdn.shopify.com/s/files/1/0578/7497/2719/files/no-product-image-400x400_6.png?v=1680253923&width=20&height=36',

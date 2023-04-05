@@ -11,5 +11,6 @@ export default {
     prevPage: 'Pagina Precedente',
     nextPage: 'Pagina successiva',
     goToCheckout: 'Vai alla cassa',
+    apply: 'Applica',
   },
 }

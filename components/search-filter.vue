@@ -1,19 +1,17 @@
 <script>
-import { nextTick, onMounted, onUnmounted, ref, toRefs } from '@nuxtjs/composition-api'
+import { nextTick, onMounted, onUnmounted, ref } from '@nuxtjs/composition-api'
 import debounce from 'lodash.debounce'
 import { storeToRefs } from 'pinia'
+// import { getMappedProducts } from '@/utilities/mappedProduct'
 import Loader from '../components/UI/Loader.vue'
 import Dropdown from './UI/Dropdown.vue'
 import DropdownRange from './UI/DropdownRange.vue'
-import DropdownSelections from './UI/DropdownSelections.vue'
 import SelectionsBoxMobile from './UI/SelectionsBoxMobile.vue'
-// import { getMappedProducts } from '@/utilities/mappedProduct'
 import { useFilters } from '~/store/filters'
 
 export default {
   components: {
     Dropdown,
-    DropdownSelections,
     DropdownRange,
     SelectionsBoxMobile,
     Loader,
@@ -24,7 +22,7 @@ export default {
     const filtersStore = useFilters()
     const { selectedLayout, availableLayouts } = storeToRefs(filtersStore)
     const isDesktop = ref(false)
-
+    const showMoreFilters = ref(false)
     const resizeListener = debounce(() => {
       isDesktop.value = window.innerWidth > 991
     }, 400)
@@ -43,21 +41,25 @@ export default {
 
     return {
       isDesktop,
+      showMoreFilters,
       availableLayouts,
       selectedLayout,
     }
   },
   data() {
     return {
+      cmwActiveSelect: '',
       // macrocategories: null,
-      minPrice: null,
-      maxPrice: null,
+      minPrice: 0,
+      maxPrice: 0,
+      minPriceTotal: null,
+      maxPriceTotal: null,
       searchedTerm: '',
       loading: null,
       brands: null,
       search: null,
       regions: null,
-      selections: null,
+      // selections: null,
       pairings: null,
       agings: null,
       philosophies: null,
@@ -72,9 +74,23 @@ export default {
       awards: null,
       vintages: null,
       results: null,
-      activeSelections: null,
+      activeSelections: [],
       // activeMacroCategories: null,
       total: 0,
+      filters: {
+        categories: [],
+        winelists: [],
+        pairings: [],
+        dosagecontents: [],
+        bodystyles: [],
+        boxes: [],
+        areas: [],
+        provenience: [],
+        awards: [],
+        agings: [],
+        philosophies: [],
+      },
+      selectedFilter: 'test',
       pagination: {
         prevPage: 0,
         nextPage: 0,
@@ -201,7 +217,7 @@ export default {
       this.view[el] = filterId
         ? {
             key: filterId,
-            name: buckets.find(x => x.key[0] == filterId).key[1],
+            name: buckets.find(x => `${x.key[0]}` === `${filterId}`).key[1],
             field: el,
           }
         : null
@@ -230,10 +246,45 @@ export default {
       this.view[el] = filterId
         ? {
             key: filterId,
-            name: data.find(x => x.key[0] == filterId).key[1],
+            name: data.find(x => `${x.key[0]}` === `${filterId}`).key[1],
             field: el,
           }
         : null
+    })
+
+    relation_filters.forEach((el) => {
+      const data = search.aggregations[`agg-${el}`].inner.result.buckets.map((aggregation) => {
+        return {
+          value: JSON.stringify({ id: aggregation.key, keyword: el }),
+          label: `${aggregation.name.buckets[0].key} <span class="cmw-font-light cmw-text-gray">(${aggregation.doc_count})</span>`,
+          selected: this.inputParameters && this.inputParameters[el] && this.inputParameters[el] === `${aggregation.key}`,
+        }
+      })
+
+      this.filters = {
+        ...this.filters,
+        [el]: data,
+      }
+    })
+
+    belong_filters.forEach((el) => {
+      let buckets = search.aggregations[`agg-${el}`][`agg-${el}`].buckets.map(
+        (aggregation) => {
+          return {
+            key: aggregation.key.split('|'),
+            value: JSON.stringify({ id: aggregation.key.split('|')[0], keyword: el }),
+            label: `${aggregation.key.split('|')[1]} <span class="cmw-font-light cmw-text-gray">(${aggregation.doc_count})</span>`,
+            selected: this.inputParameters && this.inputParameters[el] && this.inputParameters[el] === `${aggregation.key}`,
+          }
+        },
+      )
+
+      buckets = buckets.filter(bucket => !bucket.key.includes('not specified'))
+
+      this.filters = {
+        ...this.filters,
+        [el]: buckets,
+      }
     })
 
     // macro categories
@@ -264,10 +315,9 @@ export default {
       'rarewine',
     ]
 
-    const activeSelections = Object.keys(this.inputParameters).filter(el =>
+    this.activeSelections = Object.keys(this.inputParameters).filter(el =>
       allSelections.includes(el),
     )
-    this.activeSelections = activeSelections
 
     // const activeMacroCategories = this.inputParameters.macrocategories
     // if (activeMacroCategories)
@@ -289,29 +339,131 @@ export default {
         }
       : null
 
+    this.maxPriceTotal = Math.round(+search.aggregations.max_price['agg-max-price'].value)
     this.maxPrice
       = priceTo
       || Math.round(+search.aggregations.max_price['agg-max-price'].value)
+    this.minPriceTotal = Math.round(+search.aggregations.min_price['agg-min-price'].value)
     this.minPrice
       = priceFrom
       || Math.round(+search.aggregations.min_price['agg-min-price'].value)
 
     this.loading = false
   },
-  /* computed: {
-    mappedProducts() {
+  allSelections: [
+    'favourite',
+    'artisanal',
+    'isnew',
+    'inpromotion',
+    'topsale',
+    'foreveryday',
+    'organic',
+    'togift',
+    'unusualvariety',
+    'rarewine',
+  ],
+  searchableFilters: ['categories', 'winelists', 'pairings', 'regions', 'areas', 'brands'],
+  computed: {
+    filterCategories() {
+      return Object.entries(this.filters).slice(0, this.showMoreFilters ? undefined : 3).reduce((acc, [k, v]) => {
+        if (v.length)
+          acc[k] = v
+
+        return acc
+      }, {})
+    },
+    selections() {
+      if (!this.search?.aggregations)
+        return []
+
+      const aggregations = JSON.parse(JSON.stringify(this.search.aggregations))
+
+      const selectionsListMapped = []
+      this.$options.allSelections.forEach((el) => {
+        const tmp = aggregations[`agg-${el}`][`agg-${el}`].buckets.find(
+          el => el.key === 1,
+        )
+
+        if (tmp) {
+          tmp.key = [Boolean(tmp.key), el]
+          tmp.key_as_string = el
+          tmp.value = el
+          tmp.label = this.$i18n.t(`selections.${el}`)
+          tmp.icon = el // `selections/${el}.svg`
+          tmp.selected = this.$route.fullPath?.toLowerCase().includes(el)
+          selectionsListMapped.push(tmp)
+        }
+      })
+
+      return selectionsListMapped
+    },
+    /* mappedProducts() {
       // TODO: merge productBox and productBoxElastic
       return this.results && getMappedProducts(this.results, this.$i18n.locale, true)
-    },
-  }, */
+    }, */
+  },
   watch: {
     '$route.query': '$fetch',
     '$i18n.locale': '$fetch',
   },
 
   methods: {
+    handleOnFooterClick() {
+      this.$router.push({
+        path: 'catalog',
+        query: {
+          ...this.$route.query,
+          price_from: this.minPrice,
+          price_to: this.maxPrice,
+          page: 1,
+        },
+      })
+    },
+
+    handleUpdateTrigger(key) {
+      this.cmwActiveSelect = this.cmwActiveSelect === key ? '' : key
+    },
+
+    handleUpdateRangeValues({ minValue, maxValue }) {
+      this.minPrice = Number(minValue)
+      this.maxPrice = Number(maxValue)
+    },
+    handleUpdateValue(val) {
+      this.cmwActiveSelect = ''
+      const { id, keyword } = JSON.parse(val)
+      const query = { ...this.inputParameters, ...this.$route.query }
+
+      if (`${query[keyword]}` === id.toString())
+        delete query[keyword]
+      else query[keyword] = id
+
+      if (id !== this.active)
+        query.page = 1
+
+      this.$router.push({
+        path: 'catalog',
+        query,
+      })
+    },
+    handleUpdateValueSelections(id) {
+      this.cmwActiveSelect = ''
+      const query = { ...this.inputParameters, ...this.$route.query }
+
+      if (`${query[id]}` === 'true')
+        delete query[id]
+      else query[id] = 'true'
+
+      // if (id !== this.active)
+      if (id !== this.$route.query[id])
+        query.page = 1
+
+      this.$router.push({
+        path: 'catalog',
+        query,
+      })
+    },
     setPages(totalPages) {
-      const { page } = toRefs(this.$route.query)
+      const { page } = this.$route.query
 
       this.pagination.totalPages = totalPages
       this.pagination.currentPage = Number(page?.value ?? 1)
@@ -336,12 +488,14 @@ export default {
       this.$refs.modalFilter.hide()
     },
     resetFilter() {
+      this.cmwActiveSelect = ''
       this.$router.push({
         path: 'catalog',
         query: null,
       })
     },
     removeSelectionFromQuery(selection) {
+      this.cmwActiveSelect = ''
       const query = Object.assign({}, this.inputParameters)
 
       delete query[selection]
@@ -352,6 +506,7 @@ export default {
       })
     },
     removeFromQuery(obj) {
+      this.cmwActiveSelect = ''
       const query = Object.assign({}, this.inputParameters)
 
       delete query[obj.field]
@@ -400,7 +555,7 @@ export default {
 </script>
 
 <template>
-  <div class="container-fluid px-md-5 cmw-mt-4">
+  <div class="cmw-max-w-screen-xl cmw-mx-auto cmw-py-4 cmw-px-4 cmw-mt-4">
     <div class="row">
       <div class="col-12">
         <div v-if="searchedTerm" class="">
@@ -442,8 +597,66 @@ export default {
       </div>
     </div> -->
 
-    <div v-if="results" class="row mt-5">
-      <div class="d-none d-md-block col-md-3">
+    <div v-if="isDesktop">
+      <!--      <div class="cmw-text-sm cmw-font-bold" v-text="$t('common.filters.by')" /> -->
+      <div
+        class="cmw-grid cmw-grid-cols-[auto_200px] cmw-items-start cmw-border-y cmw-border-gray-light cmw-py-1 cmw-transition-all"
+      >
+        <!-- Filter Components -->
+        <div class="cmw-flex cmw-flex-wrap">
+          <CmwSelect
+            key="our-selections"
+            v-model="selectedFilter"
+            size="sm"
+            :options="selections"
+            :active="cmwActiveSelect === 'our-selections'"
+            use-parent-control
+            @update-value="handleUpdateValueSelections"
+            @update-trigger="handleUpdateTrigger"
+          >
+            <span>{{ $t(`search.selections`) }}</span>
+          </CmwSelect>
+          <!-- Note: we can also have an array :use-search-field="$options.searchableFilters.includes(key)" -->
+          <CmwSelect
+            v-for="(value, key) in filterCategories"
+            :key="key"
+            v-model="selectedFilter"
+            size="sm"
+            :options="value"
+            :active="cmwActiveSelect === key"
+            use-parent-control
+            @update-trigger="handleUpdateTrigger"
+            @update-value="handleUpdateValue"
+          >
+            <span>{{ $t(`search.${key}`) }}</span>
+          </CmwSelect>
+          <CmwDropdown
+            key="prize"
+            value="test" size="sm" :footer-label="$t('common.cta.apply')" show-footer :on-footer-click="handleOnFooterClick"
+            :active="cmwActiveSelect === 'prize'"
+            use-parent-control
+            @update-trigger="handleUpdateTrigger"
+          >
+            <template #default>
+              {{ $t('search.price') }}
+            </template>
+            <template #children>
+              <div class="cmw-px-4 cmw-pb-4">
+                <CmwRangeSlider
+                  :min="minPrice" :max="maxPrice" :min-value-total="minPriceTotal" :max-value-total="maxPriceTotal"
+                  @update-values="handleUpdateRangeValues"
+                />
+              </div>
+            </template>
+          </CmwDropdown>
+        </div>
+        <button class="cmw-flex cmw-items-center cmw-ml-auto cmw-pt-3 cmw-text-xs hover:(cmw-text-primary)" @click="showMoreFilters = !showMoreFilters">
+          <span class="cmw-overline-1 cmw-uppercase cmw-text-xs" v-text="!showMoreFilters ? 'Show more' : 'Show less'" />
+          <VueSvgIcon :data="require(`@/assets/svg/plus.svg`)" class="cmw-ml-2" color="#d94965" width="16" height="auto" />
+        </button>
+      </div>
+      <!-- selectedFilters -->
+      <div class="cmw-flex cmw-justify-between cmw-items-center">
         <div>
           <div
             v-if="
@@ -451,166 +664,43 @@ export default {
                 || Object.values(view).filter((el) => el != null).length > 0
             "
           >
-            <p class="lead">
+            <!--            <p class="lead">
               {{ $t("search.activeFilters") }}
-            </p>
-            <div>
+            </p> -->
+            <div v-if="!!activeSelections.length || !!Object.keys(view).length" class="cmw-my-4 cmw-flex cmw-gap-2">
               <!-- selections -->
-              <span
-                v-for="item in activeSelections"
-                :key="item"
-                class="badge badge-pill badge-light-secondary mx-1"
-                @click="removeSelectionFromQuery(item)"
-              >
-                {{ $t(`selections.${item}`) }}
-                <i class="fal fa-times ml-1" />
-              </span>
+              <template v-if="!!activeSelections?.length">
+                <CmwChip
+                  v-for="item in activeSelections" :key="item" size="xs"
+                  :label="$t(`selections.${item}`)" :on-delete="() => removeSelectionFromQuery(item)"
+                />
+              </template>
               <!-- other filters -->
 
-              <span
-                v-for="(item, ind) in Object.entries(view).filter(
-                  (el) => el[1] !== null,
-                )"
-                :key="ind"
-                class="badge badge-pill badge-light-secondary mx-1"
-                @click="removeFromQuery(item[1])"
-              >
-                {{ item[1].name }}
-                <i class="fal fa-times ml-1" />
-              </span>
+              <template v-if="!!Object.keys(view).length">
+                <CmwChip
+                  v-for="(item) in Object.entries(view).filter(
+                    (el) => el[1] !== null,
+                  )" :key="item[1].name" size="xs"
+                  :label="item[1].name" :on-delete="() => removeSelectionFromQuery(item[1].field)"
+                />
+              </template>
             </div>
-
-            <button
-              class="btn btn-small ml-auto d-block"
-              style="font-size: 12px"
-              @click="resetFilter"
-            >
-              <i class="fal fa-times" /> {{ $t("search.removeAll") }}
-            </button>
           </div>
-
-          <DropdownSelections
-            :label="$t('search.selections')"
-            :items="null"
-            keyword="selections"
-            :search="search"
-            :input-parameters="inputParameters"
-          />
-          <Dropdown
-            v-if="categories && categories.length"
-            :label="$t('search.categories')"
-            :items="categories"
-            keyword="categories"
-            :input-parameters="inputParameters"
-          />
-          <Dropdown
-            v-if="winelists && winelists.length"
-            :label="$t('search.winelists')"
-            :items="winelists"
-            keyword="winelists"
-            :input-parameters="inputParameters"
-          />
-          <Dropdown
-            v-if="pairings && pairings.length"
-            :label="$t('search.pairings')"
-            :items="pairings"
-            keyword="pairings"
-            :input-parameters="inputParameters"
-          />
-          <Dropdown
-            v-if="dosagecontents && dosagecontents.length"
-            :label="$t('search.dosagecontents')"
-            :items="dosagecontents"
-            keyword="dosagecontents"
-            :input-parameters="inputParameters"
-          />
-          <Dropdown
-            v-if="bodystyles && bodystyles.length"
-            :label="$t('search.bodystyles')"
-            :items="bodystyles"
-            keyword="bodystyles"
-            :input-parameters="inputParameters"
-          />
-          <Dropdown
-            v-if="boxes && boxes.length"
-            :label="$t('search.boxes')"
-            :items="boxes"
-            keyword="boxes"
-            :input-parameters="inputParameters"
-          />
-          <Dropdown
-            v-if="areas && areas.length"
-            :label="$t('search.areas')"
-            :items="areas"
-            keyword="areas"
-            :input-parameters="inputParameters"
-          />
-          <Dropdown
-            v-if="regions && regions.length"
-            :label="$t('search.provenience')"
-            :items="regions"
-            keyword="regions"
-            :input-parameters="inputParameters"
-          />
-          <Dropdown
-            v-if="brands && brands.length"
-            :label="$t('search.brands')"
-            :items="brands"
-            keyword="brands"
-            :input-parameters="inputParameters"
-          />
-          <Dropdown
-            v-if="countries && countries.length"
-            :label="$t('search.countries')"
-            :items="countries"
-            keyword="countries"
-            :input-parameters="inputParameters"
-          />
-          <Dropdown
-            v-if="sizes && sizes.length"
-            :label="$t('search.sizes')"
-            :items="sizes"
-            keyword="sizes"
-            :input-parameters="inputParameters"
-          />
-          <Dropdown
-            v-if="vintages && vintages.length"
-            :label="$t('search.vintages')"
-            :items="vintages"
-            keyword="vintages"
-            :input-parameters="inputParameters"
-          />
-          <Dropdown
-            v-if="awards && awards.length"
-            :label="$t('search.awards')"
-            :items="awards"
-            keyword="awards"
-            :input-parameters="inputParameters"
-          />
-          <Dropdown
-            v-if="agings && agings.length"
-            :label="$t('search.agings')"
-            :items="agings"
-            keyword="agings"
-            :input-parameters="inputParameters"
-          />
-          <Dropdown
-            v-if="philosophies && philosophies.length"
-            :label="$t('search.philosophies')"
-            :items="philosophies"
-            keyword="philosophies"
-            :input-parameters="inputParameters"
-          />
-
-          <DropdownRange
-            :label="$t('search.price')"
-            :min="minPrice"
-            :max="maxPrice"
-            :input-parameters="inputParameters"
-          />
+        </div>
+        <div v-if="!!activeSelections.length || Object.values(view).some(v => v !== null)">
+          <button
+            class="btn btn-small ml-auto d-block"
+            style="font-size: 12px"
+            @click="resetFilter"
+          >
+            <i class="fal fa-times" /> {{ $t("search.removeAll") }}
+          </button>
         </div>
       </div>
-      <div v-if="results.length > 0" class="col-12 col-md-9 px-md-0">
+    </div>
+    <div v-if="results" class="row mt-5">
+      <div v-if="results.length > 0" class="col-12 cmw-px-4">
         <div class="row align-items-center mb-5">
           <div
             class="col-12 col-md-4 d-flex justify-content-between justify-content-md-start"
@@ -716,7 +806,7 @@ export default {
           </div>
         </div>
       </div>
-      <div v-else class="col-12 col-md-9">
+      <div v-else class="col-12">
         <p class="lead mt-5">
           {{ $t("search.noResultsAlert") }}
         </p>
