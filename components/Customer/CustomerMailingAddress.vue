@@ -100,7 +100,7 @@ export default {
   <div class="c-address cmw-h-full cmw-relative cmw-font-sans cmw-p-3 cmw-rounded-sm cmw-border cmw-border-gray-light hover:cmw-shadow-elevation">
     <div class="cmw-flex cmw-items-baseline cmw-justify-between cmw-gap-4">
       <strong>{{ address.name }}</strong>
-      <CmwChip v-if="isDefaultAddress" :icon="bookmarkIcon" color="secondary-400" :label="$t('profile.defaultAddress')" />
+      <CmwChip v-if="isDefaultAddress" :icon="bookmarkIcon" variant="overline-2" color="secondary-400" :label="$t('profile.defaultAddress').toUpperCase()" />
     </div>
     <div class="cmw-text-sm">
       <div>{{ address.address1 }}</div>

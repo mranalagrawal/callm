@@ -667,33 +667,23 @@ export default {
             <!--            <p class="lead">
               {{ $t("search.activeFilters") }}
             </p> -->
-            <div v-if="!!activeSelections.length || !!Object.keys(view).length">
+            <div v-if="!!activeSelections.length || !!Object.keys(view).length" class="cmw-my-4 cmw-flex cmw-gap-2">
               <!-- selections -->
               <template v-if="!!activeSelections?.length">
-                <span
-                  v-for="item in activeSelections"
-                  :key="item"
-                  class="badge badge-pill badge-light-secondary mx-1"
-                  @click="removeSelectionFromQuery(item)"
-                >
-                  {{ $t(`selections.${item}`) }}
-                  <i class="fal fa-times ml-1" />
-                </span>
+                <CmwChip
+                  v-for="item in activeSelections" :key="item" size="xs"
+                  :label="$t(`selections.${item}`)" :on-delete="() => removeSelectionFromQuery(item)"
+                />
               </template>
               <!-- other filters -->
 
               <template v-if="!!Object.keys(view).length">
-                <span
-                  v-for="(item, ind) in Object.entries(view).filter(
+                <CmwChip
+                  v-for="(item) in Object.entries(view).filter(
                     (el) => el[1] !== null,
-                  )"
-                  :key="ind"
-                  class="badge badge-pill badge-light-secondary mx-1"
-                  @click="removeFromQuery(item[1])"
-                >
-                  {{ item[1].name }}
-                  <i class="fal fa-times ml-1" />
-                </span>
+                  )" :key="item[1].name" size="xs"
+                  :label="item[1].name" :on-delete="() => removeSelectionFromQuery(item[1].field)"
+                />
               </template>
             </div>
           </div>
