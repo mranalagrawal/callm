@@ -1,12 +1,14 @@
 <script>
-import { nextTick, onMounted, onUnmounted, ref } from '@nuxtjs/composition-api'
+import { nextTick, onMounted, onUnmounted, ref, watchEffect } from '@nuxtjs/composition-api'
 import debounce from 'lodash.debounce'
 import { storeToRefs } from 'pinia'
 // import { getMappedProducts } from '@/utilities/mappedProduct'
+import closeIcon from 'assets/svg/close.svg'
 import Loader from '../components/UI/Loader.vue'
 import Dropdown from './UI/Dropdown.vue'
 import DropdownRange from './UI/DropdownRange.vue'
 import SelectionsBoxMobile from './UI/SelectionsBoxMobile.vue'
+import { getLocaleFromCurrencyCode } from '@/utilities/currency'
 import { useFilters } from '~/store/filters'
 
 export default {
@@ -23,6 +25,8 @@ export default {
     const { selectedLayout, availableLayouts } = storeToRefs(filtersStore)
     const isDesktop = ref(false)
     const showMoreFilters = ref(false)
+    const showMobileFilters = ref(false)
+
     const resizeListener = debounce(() => {
       isDesktop.value = window.innerWidth > 991
     }, 400)
@@ -39,11 +43,18 @@ export default {
       window.removeEventListener('resize', resizeListener)
     })
 
+    watchEffect(() => {
+      if (process.browser && document.body)
+        document.body.classList.toggle('lock-scroll', showMobileFilters.value && !isDesktop.value)
+    })
+
     return {
       isDesktop,
       showMoreFilters,
+      showMobileFilters,
       availableLayouts,
       selectedLayout,
+      closeIcon,
     }
   },
   data() {
@@ -257,6 +268,7 @@ export default {
         return {
           value: JSON.stringify({ id: aggregation.key, keyword: el }),
           label: `${aggregation.name.buckets[0].key} <span class="cmw-font-light cmw-text-gray">(${aggregation.doc_count})</span>`,
+          simpleLabel: aggregation.name.buckets[0].key,
           selected: this.inputParameters && this.inputParameters[el] && this.inputParameters[el] === `${aggregation.key}`,
         }
       })
@@ -365,7 +377,7 @@ export default {
   searchableFilters: ['categories', 'winelists', 'pairings', 'regions', 'areas', 'brands'],
   computed: {
     filterCategories() {
-      return Object.entries(this.filters).slice(0, this.showMoreFilters ? undefined : 3).reduce((acc, [k, v]) => {
+      return Object.entries(this.filters).slice(0, !(this.showMoreFilters || !this.isDesktop) ? 3 : undefined).reduce((acc, [k, v]) => {
         if (v.length)
           acc[k] = v
 
@@ -408,7 +420,10 @@ export default {
   },
 
   methods: {
+    getLocaleFromCurrencyCode,
     handleOnFooterClick() {
+      this.cmwActiveSelect = ''
+      this.showMobileFilters = false
       this.$router.push({
         path: 'catalog',
         query: {
@@ -430,6 +445,7 @@ export default {
     },
     handleUpdateValue(val) {
       this.cmwActiveSelect = ''
+      this.showMobileFilters = false
       const { id, keyword } = JSON.parse(val)
       const query = { ...this.inputParameters, ...this.$route.query }
 
@@ -447,6 +463,7 @@ export default {
     },
     handleUpdateValueSelections(id) {
       this.cmwActiveSelect = ''
+      this.showMobileFilters = false
       const query = { ...this.inputParameters, ...this.$route.query }
 
       if (`${query[id]}` === 'true')
@@ -481,14 +498,13 @@ export default {
         query,
       })
     },
-    showModal() {
-      this.$refs.modalFilter.show()
-    },
-    hideModal() {
-      this.$refs.modalFilter.hide()
-    },
     resetFilter() {
       this.cmwActiveSelect = ''
+      this.showMobileFilters = false
+      console.log(this.minPriceTotal)
+      this.minPrice = this.minPriceTotal
+      console.log(this.maxPriceTotal)
+      this.maxPrice = this.maxPriceTotal
       this.$router.push({
         path: 'catalog',
         query: null,
@@ -496,20 +512,12 @@ export default {
     },
     removeSelectionFromQuery(selection) {
       this.cmwActiveSelect = ''
+      this.showMobileFilters = false
+      this.minPrice = this.minPriceTotal
+      this.maxPrice = this.maxPriceTotal
       const query = Object.assign({}, this.inputParameters)
 
       delete query[selection]
-
-      this.$router.push({
-        path: 'catalog',
-        query,
-      })
-    },
-    removeFromQuery(obj) {
-      this.cmwActiveSelect = ''
-      const query = Object.assign({}, this.inputParameters)
-
-      delete query[obj.field]
 
       this.$router.push({
         path: 'catalog',
@@ -520,31 +528,6 @@ export default {
       const query = Object.assign({}, this.inputParameters)
       query.sort = field
       query.direction = direction
-      this.$router.push({
-        path: 'catalog',
-        query,
-      })
-    },
-    forward() {
-      const query = Object.assign({}, this.inputParameters)
-
-      this.currentPage++
-      query.page = this.currentPage
-
-      this.$router.push({
-        path: 'catalog',
-        query,
-      })
-    },
-    backward() {
-      const query = Object.assign({}, this.inputParameters)
-
-      if (this.currentPage === 1)
-        return
-
-      this.currentPage--
-      query.page = this.currentPage
-
       this.$router.push({
         path: 'catalog',
         query,
@@ -604,37 +587,48 @@ export default {
       >
         <!-- Filter Components -->
         <div class="cmw-flex cmw-flex-wrap">
-          <CmwSelect
+          <CmwDropdown
             key="our-selections"
-            v-model="selectedFilter"
             size="sm"
-            :options="selections"
             :active="cmwActiveSelect === 'our-selections'"
-            use-parent-control
-            @update-value="handleUpdateValueSelections"
             @update-trigger="handleUpdateTrigger"
           >
-            <span>{{ $t(`search.selections`) }}</span>
-          </CmwSelect>
+            <template #default>
+              <span>{{ $t('search.selections') }}</span>
+            </template>
+            <template #children>
+              <CmwSelect
+                size="sm"
+                :options="selections"
+                @update-value="handleUpdateValueSelections"
+              />
+            </template>
+          </CmwDropdown>
           <!-- Note: we can also have an array :use-search-field="$options.searchableFilters.includes(key)" -->
-          <CmwSelect
+          <CmwDropdown
             v-for="(value, key) in filterCategories"
             :key="key"
-            v-model="selectedFilter"
             size="sm"
-            :options="value"
             :active="cmwActiveSelect === key"
-            use-parent-control
             @update-trigger="handleUpdateTrigger"
-            @update-value="handleUpdateValue"
           >
-            <span>{{ $t(`search.${key}`) }}</span>
-          </CmwSelect>
+            <template #default>
+              <span>{{ $t(`search.${key}`) }}</span>
+            </template>
+            <template #children>
+              <CmwSelect
+                size="sm"
+                :options="value"
+                @update-value="handleUpdateValue"
+              />
+            </template>
+          </CmwDropdown>
           <CmwDropdown
             key="prize"
-            value="test" size="sm" :footer-label="$t('common.cta.apply')" show-footer :on-footer-click="handleOnFooterClick"
+            size="sm"
+            :footer-label="$t('common.cta.apply')"
+            :on-footer-click="handleOnFooterClick"
             :active="cmwActiveSelect === 'prize'"
-            use-parent-control
             @update-trigger="handleUpdateTrigger"
           >
             <template #default>
@@ -856,215 +850,164 @@ export default {
 
     <Loader v-if="loading" />
 
-    <div
-      class="row w-100 d-lg-none"
-      style="position: fixed; bottom: 30px; z-index: 10"
-    >
-      <div class="col-12 text-center">
-        <button
-          class="btn text-center br-10 px-5"
-          style="background: #db4865; color: white"
-          @click="showModal"
-        >
-          <i class="fal fa-bars mr-2" /> {{ $t("search.showFilters") }}
-          <span
-            v-if="
-              activeSelections
-                && (activeSelections.length > 0
-                  || Object.values(view).filter((el) => el != null).length > 0)
-            "
-          >
-            ({{
-              activeSelections.length
-                + Object.values(view).filter((el) => el != null).length
-            }})
-          </span>
-        </button>
-      </div>
+    <div v-if="!isDesktop" class="cmw-sticky cmw-bottom-8 cmw-w-[min(100%,_14rem)] cmw-m-inline-auto">
+      <Button @click.native="showMobileFilters = !showMobileFilters">
+        <VueSvgIcon width="28" height="28" :data="require(`@/assets/svg/filter.svg`)" />
+        <span class="cmw-ml-2">{{ $t("search.showFilters") }}</span>
+      </Button>
     </div>
 
-    <b-modal
-      ref="modalFilter"
-      size="xl"
-      scrollable
-      centered
-      hide-header
-      title=""
-    >
-      <div class="mt-4">
-        <div class="text-right" @click="hideModal">
-          <i class="fal fa-times fa-2x text-light-secondary" />
-        </div>
-
+    <div v-if="!isDesktop">
+      <transition>
         <div
-          v-if="
-            (activeSelections && activeSelections.length > 0)
-              || Object.values(view).filter((el) => el != null).length > 0
-          "
+          v-show="showMobileFilters"
+          class="cmw-fixed cmw-w-screen cmw-h-screen cmw-top-0 cmw-left-0 cmw-bg-white cmw-z-amenadiel cmw-grid cmw-grid-rows-[60px_auto_90px]"
         >
-          <p class="lead">
-            {{ $t("search.activeFilters") }}
-          </p>
-          <div v-if="activeSelections">
-            <!-- selections -->
-            <span
-              v-for="item in activeSelections"
-              :key="item"
-              class="badge badge-pill badge-light-secondary mx-1"
-              @click="removeSelectionFromQuery(item)"
-            >
-              {{ $t(`selections.${item}`) }}
-              <i class="fal fa-times ml-1" />
-            </span>
-            <!-- other filters -->
-            <span
-              v-for="(item, ind) in Object.entries(view).filter(
-                (el) => el[1] !== null,
-              )"
-              :key="ind"
-              class="badge badge-pill badge-light-secondary mx-1"
-              @click="removeFromQuery(item[1])"
-            >
-              {{ item[1].name }}
-              <i class="fal fa-times ml-1" />
-            </span>
+          <!-- splash-header -->
+          <div class="cmw-sticky cmw-grid cmw-grid-cols-[100px_auto_100px] cmw-justify-between cmw-items-center cmw-px-4 cmw-shadow">
+            <div class="cmw-text-center cmw-w-max cmw-text-xs cmw-font-bold" v-text="$t('common.filters.by')" />
+            <div>
+              <Button
+                v-if="!!activeSelections.length || Object.values(view).some(v => v !== null)"
+                variant="text" size="sm" :label="$t('search.removeFilters')" @click.native="resetFilter"
+              />
+            </div>
+            <ButtonIcon class="cmw-justify-self-end" :icon="closeIcon" variant="icon" :size="20" @click.native="showMobileFilters = false" />
           </div>
-
-          <button
-            class="btn btn-small ml-auto d-block"
-            style="font-size: 12px"
-            @click="resetFilter"
-          >
-            <i class="fal fa-times" /> {{ $t("search.removeAll") }}
-          </button>
+          <!-- splash-body -->
+          <div class="cmw-px-2 cmw-max-h-screen cmw-overflow-auto">
+            <CmwAccordion
+              key="mobile-our-selections"
+              size="sm"
+              :has-item="!!activeSelections?.length"
+              :active="cmwActiveSelect === 'mobile-our-selections'"
+              @update-trigger="handleUpdateTrigger"
+            >
+              <template #default>
+                <span class="cmw-block">
+                  <span class="cmw-block cmw-text-left">{{ $t('search.selections') }}</span>
+                  <small v-if="!!activeSelections?.length" class="cmw-block cmw-text-primary cmw-text-left cmw-text-xs">
+                    <span
+                      v-for="selection in activeSelections"
+                      :key="selection"
+                      data-before="∙ "
+                      class="before:(cmw-content-[attr(data-before)] cmw-text-primary cmw-text-xs) first:before:(cmw-content-DEFAULT)"
+                    >
+                      {{ $t(`selections.${selection}`) }}
+                    </span>
+                  </small>
+                </span>
+              </template>
+              <template #children>
+                <CmwSelect
+                  size="sm"
+                  :options="selections"
+                  is-full-width
+                  @update-value="handleUpdateValueSelections"
+                />
+              </template>
+            </CmwAccordion>
+            <CmwAccordion
+              v-for="(value, key) in filterCategories"
+              :key="`mobile-${key}`"
+              size="sm"
+              :has-item="Object.keys(inputParameters).includes(key)"
+              :active="cmwActiveSelect === `mobile-${key}`"
+              @update-trigger="handleUpdateTrigger"
+            >
+              <template #default>
+                <span class="cmw-block">
+                  <span class="cmw-block cmw-text-left">{{ $t(`search.${key}`) }}</span>
+                  <small v-if="Object.keys(inputParameters).includes(key)" class="cmw-block cmw-text-primary cmw-text-left cmw-text-xs">
+                    {{ value.find(v => v.selected) && value.find(v => v.selected).simpleLabel }}
+                  </small>
+                </span>
+              </template>
+              <template #children>
+                <div class="">
+                  <CmwSelect
+                    size="sm"
+                    :options="value"
+                    is-full-width
+                    @update-value="handleUpdateValue"
+                  />
+                </div>
+              </template>
+            </CmwAccordion>
+            <CmwAccordion
+              key="mobile-prize"
+              size="sm"
+              :has-item="Object.keys(inputParameters).includes('price_from')"
+              :footer-label="$t('common.cta.apply')"
+              :on-footer-click="handleOnFooterClick"
+              :active="cmwActiveSelect === 'mobile-prize'"
+              @update-trigger="handleUpdateTrigger"
+            >
+              <template #default>
+                <span class="cmw-block">
+                  <span class="cmw-block cmw-text-left">{{ $t('search.price') }}</span>
+                  <small v-if="Object.keys(inputParameters).includes('price_from')" class="cmw-block cmw-text-primary cmw-text-left cmw-text-xs">
+                    <i18n
+                      path="search.priceFromTo"
+                      tag="span"
+                    >
+                      <i18n-n
+                        class="cmw-inline-block" :value="Number(inputParameters.price_from)" :format="{ key: 'currency' }"
+                        :locale="getLocaleFromCurrencyCode($config.STORE === 'CMW_UK' ? 'GBP' : 'EUR')"
+                      >
+                        <template #currency="slotProps">
+                          <span class="cmw-text-xs">{{ slotProps.currency }}</span>
+                        </template>
+                        <template #integer="slotProps">
+                          <span class="cmw-text-xs">{{ slotProps.integer }}</span>
+                        </template>
+                        <template #group="slotProps">
+                          <span class="cmw-text-xs">{{ slotProps.group }}</span>
+                        </template>
+                        <template #fraction="slotProps">
+                          <span class="cmw-text-xs">{{ slotProps.fraction }}</span>
+                        </template>
+                      </i18n-n>
+                      <i18n-n
+                        class="cmw-inline-block" :value="Number(inputParameters.price_to)" :format="{ key: 'currency' }"
+                        :locale="getLocaleFromCurrencyCode($config.STORE === 'CMW_UK' ? 'GBP' : 'EUR')"
+                      >
+                        <template #currency="slotProps">
+                          <span class="cmw-text-xs">{{ slotProps.currency }}</span>
+                        </template>
+                        <template #integer="slotProps">
+                          <span class="cmw-text-xs">{{ slotProps.integer }}</span>
+                        </template>
+                        <template #group="slotProps">
+                          <span class="cmw-text-xs">{{ slotProps.group }}</span>
+                        </template>
+                        <template #fraction="slotProps">
+                          <span class="cmw-text-xs">{{ slotProps.fraction }}</span>
+                        </template>
+                      </i18n-n>
+                    </i18n>
+                  </small>
+                </span>
+              </template>
+              <template #children>
+                <div class="cmw-px-4 cmw-pb-4">
+                  <CmwRangeSlider
+                    :min="minPrice" :max="maxPrice" :min-value-total="minPriceTotal" :max-value-total="maxPriceTotal"
+                    @update-values="handleUpdateRangeValues"
+                  />
+                </div>
+              </template>
+            </CmwAccordion>
+          </div>
+          <!-- splash-footer -->
+          <div class="cmw-sticky cmw-flex cmw-bottom-0 cmw-left-0 cmw-w-full cmw-bg-white cmw-z-content cmw-shadow-elevation">
+            <div class="cmw-w-[min(100%,_14rem)] cmw-m-inline-auto cmw-place-self-center">
+              <Button :label="$t('search.showResults', { count: total })" @click.native="showMobileFilters = false" />
+            </div>
+          </div>
         </div>
-
-        <Dropdown
-          v-if="categories && !!categories.length"
-          :label="$t('search.categories')"
-          :items="categories"
-          keyword="categories"
-          :input-parameters="inputParameters"
-        />
-        <Dropdown
-          v-if="winelists && !!winelists.length"
-          :label="$t('search.winelists')"
-          :items="winelists"
-          keyword="winelists"
-          :input-parameters="inputParameters"
-        />
-        <Dropdown
-          v-if="pairings && !!pairings.length"
-          :label="$t('search.pairings')"
-          :items="pairings"
-          keyword="pairings"
-          :input-parameters="inputParameters"
-        />
-        <Dropdown
-          v-if="dosagecontents && !!dosagecontents.length"
-          :label="$t('search.dosagecontents')"
-          :items="dosagecontents"
-          keyword="dosagecontents"
-          :input-parameters="inputParameters"
-        />
-        <Dropdown
-          v-if="bodystyles && !!bodystyles.length"
-          :label="$t('search.bodystyles')"
-          :items="bodystyles"
-          keyword="bodystyles"
-          :input-parameters="inputParameters"
-        />
-        <Dropdown
-          v-if="boxes && !!boxes.length"
-          :label="$t('search.boxes')"
-          :items="boxes" keyword="boxes"
-          :input-parameters="inputParameters"
-        />
-        <Dropdown
-          v-if="areas && !!areas.length"
-          :label="$t('search.areas')" :items="areas" keyword="areas"
-          :input-parameters="inputParameters"
-        />
-        <Dropdown
-          v-if="regions && !!regions.length"
-          :label="$t('search.provenience')"
-          :items="regions"
-          keyword="regions"
-          :input-parameters="inputParameters"
-        />
-        <Dropdown
-          v-if="brands && !!brands.length"
-          :label="$t('search.brands')"
-          :items="brands"
-          keyword="brands"
-          :input-parameters="inputParameters"
-        />
-        <Dropdown
-          v-if="countries && !!countries.length"
-          :label="$t('search.countries')"
-          :items="countries"
-          keyword="countries"
-          :input-parameters="inputParameters"
-        />
-        <Dropdown
-          v-if="sizes && !!sizes.length"
-          :label="$t('search.sizes')" :items="sizes" keyword="sizes"
-          :input-parameters="inputParameters"
-        />
-        <Dropdown
-          v-if="vintages && !!vintages.length"
-          :label="$t('search.vintages')"
-          :items="vintages"
-          keyword="vintages"
-          :input-parameters="inputParameters"
-        />
-        <Dropdown
-          v-if="awards && !!awards.length"
-          :label="$t('search.awards')"
-          :items="awards"
-          keyword="awards"
-          :input-parameters="inputParameters"
-        />
-        <Dropdown
-          v-if="agings && !!agings.length"
-          :label="$t('search.agings')"
-          :items="agings"
-          keyword="agings"
-          :input-parameters="inputParameters"
-        />
-        <Dropdown
-          v-if="philosophies && !!philosophies.length"
-          :label="$t('search.philosophies')"
-          :items="philosophies"
-          keyword="philosophies"
-          :input-parameters="inputParameters"
-        />
-
-        <DropdownRange
-          :label="$t('search.price')"
-          :min="minPrice"
-          :max="maxPrice"
-        />
-
-        <SelectionsBoxMobile
-          label="selections"
-          :items="null"
-          keyword="selections"
-          :search="search"
-        />
-      </div>
-
-      <template #modal-footer>
-        <div class="w-100 text-center">
-          <button
-            class="btn view-results text-uppercase px-5"
-            @click="hideModal"
-          >
-            {{ $t("search.showResults") }} ({{ total }})
-          </button>
-        </div>
-      </template>
-    </b-modal>
+      </transition>
+    </div>
   </div>
 </template>
 

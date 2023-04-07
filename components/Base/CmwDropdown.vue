@@ -1,35 +1,20 @@
 <script>
-import { getCurrentInstance, ref, toRef, useRoute, watch } from '@nuxtjs/composition-api'
+import { getCurrentInstance, ref, toRef } from '@nuxtjs/composition-api'
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
-import searchIcon from '~/assets/svg/search.svg'
 
 export default {
   name: 'CmwDropdown',
   inheritAttrs: false,
   props: {
-    useSearchField: {
-      type: Boolean,
-    },
-    useParentControl: {
-      type: Boolean,
-    },
-    active: {
-      type: Boolean,
-    },
+    useSearchField: { type: Boolean },
+    active: { type: Boolean, required: true },
     label: {
       type: String,
       default: '',
     },
-    value: {
-      type: String,
-      required: true,
-    },
     footerLabel: {
       type: String,
       default: '',
-    },
-    showFooter: {
-      type: Boolean,
     },
     onFooterClick: {
       type: [Function],
@@ -40,35 +25,20 @@ export default {
       default: 'md',
     },
   },
-  emits: ['change', 'update-value', 'update-trigger'],
+  emits: ['update-trigger'],
   setup(props, { emit }) {
-    const route = useRoute()
     const key = getCurrentInstance().proxy.$vnode.key
-    const isActive = props.useParentControl ? toRef(props, 'active') : ref(false)
+    const isActive = toRef(props, 'active')
     const searchTerm = ref('')
-    const handleClick = (value) => {
-      if (!props.useParentControl)
-        isActive.value = false
 
-      emit('update-value', value)
-    }
-
-    const handleTriggerClick = () => {
-      emit('update-trigger', key)
-      if (!props.useParentControl)
-        isActive.value = !isActive.value
-    }
+    const handleTriggerClick = () => emit('update-trigger', key)
 
     const getFontSize = () => ({
       sm: 'cmw-text-xs cmw-overline-1',
       md: 'cmw-text-sm',
     })[props.size]
-    // Todo: Implement the search method
-    const startSearch = () => console.log('search')
 
-    watch(() => route.value, () => isActive.value = false, { deep: true })
-
-    return { isActive, searchTerm, searchIcon, chevronDownIcon, startSearch, handleTriggerClick, getFontSize, handleClick }
+    return { isActive, searchTerm, chevronDownIcon, handleTriggerClick, getFontSize }
   },
 }
 </script>
@@ -77,9 +47,8 @@ export default {
   <div class="cmw-relative" :class="isActive ? 'cmw-z-baseHigh' : 'cmw-z-base' ">
     <button
       type="button"
-      class="cmw-inherit cmw-flex cmw-items-center cmw-gap-2 cmw-z-baseHigh cmw-p-3 cmw-rounded-t-sm cmw-text-sm cmw-uppercase cmw-font-light
-      hover:(cmw-text-primary)
-"
+      class="cmw-inherit cmw-flex cmw-items-center cmw-gap-2 cmw-z-baseHigh cmw-p-3 cmw-rounded-t-sm cmw-uppercase cmw-font-light
+      hover:(cmw-text-primary)"
       :class="[
         isActive ? 'cmw-shadow-filter cmw-bg-white cmw-text-primary' : 'cmw-text-body',
         getFontSize(),
@@ -105,7 +74,7 @@ export default {
       >
         <!-- List Items -->
         <slot name="children" />
-        <div v-if="showFooter" class="cmw-bg-gray-lightest cmw-rounded-b-sm">
+        <div v-if="footerLabel" class="cmw-bg-gray-lightest cmw-rounded-b-sm">
           <Button class="cmw-mr-auto cmw-w-max" variant="text" :label="footerLabel" @click.native="onFooterClick" />
         </div>
       </div>
