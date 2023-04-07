@@ -501,9 +501,7 @@ export default {
     resetFilter() {
       this.cmwActiveSelect = ''
       this.showMobileFilters = false
-      console.log(this.minPriceTotal)
       this.minPrice = this.minPriceTotal
-      console.log(this.maxPriceTotal)
       this.maxPrice = this.maxPriceTotal
       this.$router.push({
         path: 'catalog',
