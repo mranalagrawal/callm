@@ -182,7 +182,7 @@ export default {
   search: {
     search: 'Search',
     showFilters: 'Show filters',
-    showResults: 'Show Results',
+    showResults: 'Show Results ({count})',
     products: 'Products',
     selections: 'Our Selections',
     categories: 'Categories',
@@ -203,6 +203,7 @@ export default {
     agings: 'agings',
     philosophies: 'philosophies',
     price: 'price',
+    priceFromTo: 'Tarif de {from} à {to}',
     results: 'results',
     noResultsAlert: 'There are no results for your search',
     noResultsMessage: `
@@ -215,6 +216,7 @@ export default {
         </ul>`,
     activeFilters: 'Active filters',
     removeAll: 'Remove all',
+    removeFilters: 'Supprimer les filtres',
     sortBy: 'Sort by',
     sort: {
       name: 'Nom',

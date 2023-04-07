@@ -183,7 +183,7 @@ export default {
   search: {
     search: 'Suche',
     showFilters: 'Filter anzeigen',
-    showResults: 'Zeige Ergebnisse',
+    showResults: 'Zeige Ergebnisse ({count})',
     products: 'Produkte',
     selections: 'Unsere Auswahl',
     categories: 'Kategorien',
@@ -204,6 +204,7 @@ export default {
     agings: 'Alterungen',
     philosophies: 'Philosophien',
     price: 'Preis',
+    priceFromTo: 'Preis von {from} bis {to}',
     results: 'Ergebnisse',
     noResultsAlert: 'Es gibt keine Ergebnisse für Ihre Suche',
     noResultsMessage: `
@@ -216,6 +217,7 @@ export default {
       </ul>`,
     activeFilters: 'Aktive Filter',
     removeAll: 'Alles entfernen',
+    removeFilters: 'Filter entfernen',
     sortBy: 'Sortieren nach',
     sort: {
       name: 'Name',
