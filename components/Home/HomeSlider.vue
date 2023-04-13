@@ -108,13 +108,13 @@ export default {
   position: absolute;
   content: "";
   height: 8px;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
 }
 
 @keyframes fill {
   from {
-    width: 0%;
+    width: 0;
   }
   to {
     width: 100%;

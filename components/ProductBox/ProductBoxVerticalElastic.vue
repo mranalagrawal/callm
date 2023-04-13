@@ -196,8 +196,8 @@ export default {
       </div>
       <div class="c-productBox__awards cmw-place-self-end">
         <div
-          v-for="(award) in awardsMapped"
-          :key="`${award.id}-${award.year}`"
+          v-for="(award, i) in awardsMapped"
+          :key="`${award.id}-${award.year}-${i}`"
           class="cmw-flex cmw-gap-1 cmw-items-center cmw-pr-1.5"
         >
           <ProductBoxAward :award="award" />
@@ -334,11 +334,11 @@ export default {
 }
 
 .c-productBox__image {
-  height: 270px;
+  height: 320px;
 }
 
 .c-productBox__image ::v-deep(img) {
-  height: 270px;
+  height: 320px;
   width: auto;
   margin: 0 auto;
 }
@@ -371,11 +371,11 @@ export default {
 /* We are handling this piece skipping mobile-first to reduce the amount of CSS  */
 @container product-box (max-width: 250px) {
   .c-productBox__image {
-    height: 240px;
+    height: 270px;
   }
 
   .c-productBox__image ::v-deep(img) {
-    height: 240px;
+    height: 270px;
   }
 
   .c-productBox__wishlist button {

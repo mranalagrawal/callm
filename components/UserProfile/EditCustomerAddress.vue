@@ -208,7 +208,7 @@ export default {
       </div>
       <div class="cmw-flex cmw-items-center cmw-justify-between cmw-mt-8">
         <div>
-          <CmwChip v-if="isDefaultAddress" :icon="bookmarkIcon" color="secondary" :label="$t('profile.defaultAddress')" />
+          <CmwChip v-if="isDefaultAddress" :icon="bookmarkIcon" color="secondary" :label="$t('profile.defaultAddress').toUpperCase()" />
           <!-- Note: v-model is not working as expected, we need to handle change here FTM -->
           <CmwCheckbox v-else id="set-as-default" v-model="setAsDefault" @change="setAsDefault = !setAsDefault">
             <template #label>

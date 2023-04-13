@@ -141,11 +141,11 @@ export default defineConfig({
     'body-1': 'cmw-font-normal cmw-text-sm cmw-text-black hover:cmw-text-black',
     'overline-1': 'cmw-font-light cwm-tracking-wider tracking-wider cmw-text-xxs',
     'overline-2': 'cmw-font-light cwm-tracking-widest tracking-widest cmw-text-xs',
-    'btn-base': 'cmw-font-secondary cmw-flex cmw-items-center cmw-justify-center cmw-text-sm\n'
+    'btn-base': 'cmw-font-secondary cmw-flex cmw-items-center cmw-justify-center'
       + '    cmw-px-6 cmw-py-2 cmw-w-full cmw-transition-colors cmw-rounded cmw-border-2\n'
       + '    md:(cmw-px-8 cmw-py-[0.8rem])',
     'btn-default': 'cmw-font-secondary cmw-border-transparent cmw-bg-primary-400 cmw-text-white cmw-font-bold cmw-uppercase hover:(cmw-text-white cmw-no-underline)',
-    'btn-text': 'cmw-border-transparent cmw-text-primary-400 cmw-text-sm hover:(cmw-text-primary cmw-no-underline)',
+    'btn-text': 'cmw-border-transparent cmw-text-primary-400 hover:(cmw-text-primary cmw-no-underline)',
   },
   alias: {
     // Note: This compiles single utilities, we need to use it with a '*' es. class="*big-titles"

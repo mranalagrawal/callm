@@ -1,6 +1,7 @@
 <script>
 import { computed, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+import { useCustomer } from '@/store/customer'
 import { getMappedProducts } from '@/utilities/mappedProduct'
 import { sortArrayByName, sortArrayByNumber } from '~/utilities/arrays'
 import getCollection from '~/graphql/queries/getCollection'
@@ -11,7 +12,10 @@ export default {
     return context.$config.STORE
   },
   setup() {
-    const { params, $graphql, i18n } = useContext()
+    const { $config, params, $graphql, i18n } = useContext()
+    const customerStore = useCustomer()
+    const { getCustomerType } = storeToRefs(customerStore)
+    const sorting = ref(false)
     const filtersStore = useFilters()
     const { selectedLayout, availableLayouts } = storeToRefs(filtersStore)
 
@@ -58,6 +62,8 @@ export default {
       sorted.value = (['price', 'sortPrice'].includes(order))
         ? sortArrayByNumber(sorted.value, order, sort)
         : sortArrayByName(sorted.value, order, sort)
+
+      sorting.value = false
     }
 
     const { fetch } = useFetch(async () => {
@@ -67,16 +73,19 @@ export default {
       })
 
       collectionRef.value = collection
-      sorted.value = collection.products.nodes.map(p => ({
-        ...p,
-        sortPrice: Number(p.variants.nodes[0].price),
-      }))
 
+      sorted.value = getMappedProducts(collection.products.nodes)
+      sorted.value = sorted.value.map(p => ({
+        ...p,
+        sortPrice: Number(p.priceLists[$config.SALECHANNEL][getCustomerType.value]),
+      }))
       sorted.value = sortArrayByName(sorted.value, 'title', 'asc')
-      sorted.value = getMappedProducts(sorted.value)
     })
 
+    const handleUpdateTrigger = () => sorting.value = !sorting.value
+
     return {
+      sorting,
       fetch,
       selectedFilter,
       selectedLabel,
@@ -86,6 +95,7 @@ export default {
       sorted,
       selectedLayout,
       availableLayouts,
+      handleUpdateTrigger,
       handleUpdateValue,
     }
   },
@@ -145,25 +155,30 @@ export default {
           </label>
         </div> -->
         <div class="cmw-p-4 cmw-ml-auto">
-          <CmwSelect
-            v-model="selectedFilter"
-            :options="periods"
-            @update-value="handleUpdateValue"
+          <CmwDropdown
+            key="sort-by"
+            size="sm"
+            :active="sorting"
+            @update-trigger="handleUpdateTrigger"
           >
-            <span><strong>{{ $t('common.filters.sort.prefix') }}</strong>{{ selectedLabel }}</span>
-          </CmwSelect>
+            <template #default>
+              <span><strong>{{ $t('common.filters.sort.prefix') }}</strong>{{ selectedLabel }}</span>
+            </template>
+            <template #children>
+              <CmwSelect
+                :options="periods"
+                @update-value="handleUpdateValue"
+              />
+            </template>
+          </CmwDropdown>
         </div>
       </div>
-      <div class="row">
-        <div
-          v-for="product in sorted"
-          :key="product.id"
-          class="col-12 col-md-6 col-lg-4 col-xl-3"
-        >
-          <!-- Todo: Implement horizontal product box -->
-          <!--          <ProductCardHorizontal :product="product" /> -->
-          <ProductBoxVertical :product="product" />
-        </div>
+      <div
+        class="cmw-grid cmw-grid-cols-1 cmw-gap-4 phone-md:(cmw-grid-cols-2 cmw-gap-2)
+         sm:(cmw-grid-cols-2 cmw-gap-3) lg:(cmw-grid-cols-3 cmw-gap-4) desktop-wide:cmw-grid-cols-4"
+      >
+        <!-- Todo: Implement horizontal product box <ProductCardHorizontal :product="product" /> -->
+        <ProductBoxVertical v-for="product in sorted" :key="product.id" :product="product" />
       </div>
     </div>
   </div>

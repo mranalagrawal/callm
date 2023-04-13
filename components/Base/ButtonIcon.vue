@@ -8,7 +8,7 @@ export default {
       require: true,
     },
     size: {
-      validator: prop => ['sm', 'md'].includes(prop) || !Number.isNaN(prop),
+      validator: prop => ['xs', 'sm', 'md'].includes(prop) || !Number.isNaN(prop),
       default: 'md',
     },
     variant: {
@@ -18,6 +18,7 @@ export default {
   },
   setup(props) {
     const getSize = () => ({
+      xs: 12,
       sm: 22,
       md: 32,
     })[props.size] || props.size

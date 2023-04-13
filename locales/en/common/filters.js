@@ -1,5 +1,6 @@
 export default {
   filters: {
+    by: 'Filter By',
     periods: {
       prefix: 'Period: ',
       period: {

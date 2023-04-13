@@ -13,12 +13,24 @@ export default {
       type: String,
       default: '',
     },
+    size: {
+      validator: prop => ['xs', 'sm', 'md'].includes(prop) || !Number.isNaN(prop),
+      default: 'sm',
+    },
     variant: {
       validator: prop => ['default', 'ghost', 'text'].includes(prop),
       default: 'default',
     },
   },
   methods: {
+    getSize() {
+      return ({
+        xs: 'cmw-text-xs',
+        sm: 'cmw-text-sm',
+        md: 'cmw-text-base',
+      })[this.size] || this.size
+    },
+
     getVariant() {
       return ({
         default: 'cmw-btn-default disabled:(cmw-bg-gray-light)',
@@ -36,7 +48,7 @@ export default {
     :to="$props.to"
     v-bind="$attrs"
     class="cmw-btn-base disabled:(cmw-text-gray cmw-cursor-not-allowed)"
-    :class="getVariant()"
+    :class="[getVariant(), getSize()]"
   >
     <slot>{{ $props.label }}</slot>
   </component>

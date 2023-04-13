@@ -4,3 +4,18 @@ export const getIconAsImg = (icon = 'success') => ({
   error: '<img alt="" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIGlkPSJ2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHBhdGggZmlsbD0iI0U2MzYyRSIgZD0ibTEwLDU4bC00LTQsMjItMjJMNiwxMGw0LTQsMjIsMjJMNTQsNmw0LDQtMjIsMjIsMjIsMjItNCw0LTIyLTIyLTIyLDIyWiIvPjwvc3ZnPgo=" />',
   close: '<img alt="" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIGlkPSJ2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHBhdGggZD0ibTEwLDU4bC00LTQsMjItMjJMNiwxMGw0LTQsMjIsMjJMNTQsNmw0LDQtMjIsMjIsMjIsMjItNCw0LTIyLTIyLTIyLDIyWiIvPjwvc3ZnPg==" />',
 })[icon]
+
+export const getIconByFeature = key => ({
+  favourite: 'feature-cmw-favourite',
+  isnew: 'feature-is-new',
+  isInPromotion: 'feature-in-promotion',
+  inpromotion: 'feature-in-promotion',
+  foreveryday: 'feature-for-everyday',
+  togift: 'feature-to-gift',
+  unusualvariety: 'feature-unusual-variety',
+  rarewine: 'feature-rare-wine',
+  artisanal: 'feature-artisanal',
+  natural: 'feature-artisanal',
+  organic: 'feature-organic',
+  topsale: 'feature-best-seller',
+})[key] || 'feature-cmw-favourite'

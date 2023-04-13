@@ -1,6 +1,7 @@
 <script>
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from '@nuxtjs/composition-api'
 import debounce from 'lodash.debounce'
+import { is } from 'vee-validate/dist/rules'
 import { mapGetters } from 'vuex'
 import LoginForm from './LoginForm.vue'
 import DropdownMobileMenu from './UI/DropdownMobileMenu.vue'
@@ -22,10 +23,13 @@ export default {
     const headerSize = useHeaderSize()
     const customer = useCustomer()
     const navbar = ref(null)
+    const menuBarRef = ref(null)
     const isDesktop = ref(false)
     const showMobileButton = ref(true)
 
-    const handleShowMobileButton = (val) => { showMobileButton.value = val }
+    const handleShowMobileButton = (val) => {
+      showMobileButton.value = val
+    }
     const resizeListener = debounce(() => {
       isDesktop.value = window.innerWidth > 991
       headerSize.$patch({
@@ -65,6 +69,7 @@ export default {
       customer,
       headerSize,
       navbar,
+      menuBarRef,
       showMobileButton,
       logo,
       cartIcon,
@@ -80,12 +85,13 @@ export default {
   },
   data() {
     return {
+      sideBarTop: 0,
       showUser: false,
       showCart: false,
       showSearchSuggestions: false,
       search: '',
       visible: false,
-      data: null,
+      data: [],
       isMobileMenuOpen: false,
       isSidebarOpen: false,
       mobileLogin: false,
@@ -102,6 +108,7 @@ export default {
     const response = await this.$prismic.api.getSingle('mega-menu-test', {
       lang,
     })
+
     const data = response.data.body
 
     this.data = data
@@ -110,8 +117,10 @@ export default {
           return {
             name: el.secondlevelname,
             position: el.second_level_position,
+            // isSelection: !!el.selection,
           }
         })
+
         const secondLevelsSet = [
           ...new Set(secondLevels.map(el => JSON.stringify(el))),
         ]
@@ -136,6 +145,9 @@ export default {
     this.resizeListener()
   },
   computed: {
+    is() {
+      return is
+    },
     ...mapGetters({
       cartTotalAmount: 'userCart/getCartTotalAmount',
       cartTotalQuantity: 'userCart/cartTotalQuantity',
@@ -152,6 +164,7 @@ export default {
       this.isSidebarOpen = false
       this.isMobileMenuOpen = false
       this.showMobileButton = true
+      this.lockBody()
     },
     cartTotalAmount(total) {
       if (Number(total) > 50) {
@@ -177,8 +190,14 @@ export default {
     toggleMobileLogin() {
       this.mobileLogin = !this.mobileLogin
     },
+    lockBody() {
+      if (process.browser && document.body)
+        document.body.classList.toggle('lock-scroll', this.isMobileMenuOpen)
+    },
     toggleSidebar() {
+      this.sideBarTop = `${this.$refs.menuBarRef.getBoundingClientRect().bottom}px`
       this.isMobileMenuOpen = this.isSidebarOpen = !this.isSidebarOpen
+      this.lockBody()
     },
     showSidebar() {
       this.$refs.sidebar.show()
@@ -238,7 +257,7 @@ export default {
 <template>
   <div
     ref="navbar"
-    class="container-fluid bg-white fixed-top"
+    class="cmw-fixed cmw-w-screen cmw-px-4 cmw-top-0 bg-white cmw-z-tooltip"
   >
     <div
       class="
@@ -246,12 +265,13 @@ export default {
     lg:cmw-grid-cols-[25%_40%_35%] 2xl:cmw-grid-cols-[25%_48%_32%]"
     >
       <div
+        ref="menuBarRef"
         class="bg-white"
       >
-        <div class="cmw-flex cmw-items-center">
+        <div class="cmw-flex cmw-gap-2 cmw-items-center">
           <button
             v-show="showMobileButton"
-            class="cmw-relative btn cmw-z-amenadiel d-lg-none"
+            class="cmw-relative cmw-z-base d-lg-none"
             @click="toggleSidebar"
           >
             <VueSvgIcon
@@ -287,27 +307,27 @@ export default {
             </button>
             <nuxt-link
               :to="localePath('/cart')"
-              class="btn"
+              class="cmw-relative btn"
             >
-              <span class="totalItems">{{ cartTotalQuantity }} </span>
               <VueSvgIcon
                 :data="cartIcon"
                 width="32px"
                 height="32px"
               />
+              <span class="totalItems">{{ cartTotalQuantity }} </span>
             </nuxt-link>
           </div>
         </div>
       </div>
 
       <div class="cmw-relative cmw-z-base">
-        <!-- Note: Since we are handling submit with Vue methods we don' need the name attribute in the search field -->
+        <!-- Note: Since we are handling submit with Vue methods we don't need the name attribute in the search field -->
         <input
           id="search-term"
           v-model="search"
           type="search"
           class="
-               cmw-px-4 cmw-text-gray-dark cmw-py-3 cmw-w-full cmw-bg-transparent cmw-border cmw-border-gray-light cmw-rounded
+               c-searchInput -hasIcon cmw-px-4 cmw-text-gray-dark cmw-py-3 cmw-w-full cmw-bg-transparent cmw-border cmw-border-gray-light cmw-rounded
                hover:(cmw-border-gray)
                focus:(cmw-outline-none cmw-border-gray-dark)"
           :placeholder="$t('navbar.search')"
@@ -404,19 +424,26 @@ export default {
         </transition>
       </div>
 
-      <div class="d-none d-lg-block md:cmw-place-self-end">
+      <div v-if="isDesktop" class="d-none d-lg-block md:cmw-place-self-end">
         <UserActions />
       </div>
     </div>
-    <div class="d-none d-lg-block c-megaMenu cmw-fixed cmw-left-0 cmw-w-full cmw-bg-white">
+    <div v-if="isDesktop" class="d-none d-lg-block c-megaMenu cmw-fixed cmw-left-0 cmw-w-full cmw-bg-white">
       <div class="shadow-menu">
         <div class="cmw-max-w-screen-xl cmw-mx-auto">
-          <MegaMenu v-if="isDesktop" />
+          <MegaMenu />
         </div>
       </div>
     </div>
 
-    <b-sidebar
+    <div v-if="!isDesktop && !!data.length" class="">
+      <transition name="menu-mobile">
+        <div v-show="isSidebarOpen" class="cmw-absolute cmw-left-0 cmw-w-full cmw-z-base" :style="{ top: sideBarTop }">
+          <MenuMobile :menu="data" @close-sidebar="toggleSidebar" />
+        </div>
+      </transition>
+    </div>
+    <!--    <b-sidebar
       v-model="isSidebarOpen"
       title=""
       shadow
@@ -435,7 +462,7 @@ export default {
           <DropdownMobileMenu :data="item" @update-show="handleShowMobileButton" />
         </div>
       </div>
-    </b-sidebar>
+    </b-sidebar> -->
 
     <b-sidebar
       v-model="mobileLogin"
@@ -519,11 +546,11 @@ export default {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #d94965;
+  background-color: #d94965;
   color: white;
   position: absolute;
-  top: 12px;
-  right: 8px;
+  top: 8px;
+  right: 4px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -532,71 +559,9 @@ export default {
 
 @media screen and (max-width: 768px) {
   .totalItems {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: var(--light-secondary);
-    color: white;
-    position: absolute;
-    top: 2px;
-    right: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 12px;
+    top: -2px;
+    right: 0;
   }
-}
-
-.box {
-  /* background: #eee; */
-  border-radius: 10px;
-  height: 52px !important;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  box-sizing: content-box;
-}
-
-.user-box:hover {
-  background: var(--darker-secondary);
-  border-radius: 10px 10px 0 0;
-}
-
-.user-box:hover * {
-  color: white;
-}
-
-.user-box:hover g {
-  fill: white;
-}
-
-.cart-box:hover {
-  background: var(--darker-secondary);
-  border-radius: 10px 10px 0 0;
-}
-
-.cart-box:hover * {
-  color: white;
-}
-
-.cart-box:hover g path {
-  fill: white;
-}
-
-.shadowed {
-  box-shadow: 0 1px 8px 0 rgb(51 51 51 / 20%),
-  0 3px 3px -2px rgb(51 51 51 / 12%), 0 3px 4px 0 rgb(51 51 51 / 14%);
-}
-
-#search-term::-webkit-search-cancel-button {
-  position: relative;
-  right: 30px;
-  -webkit-appearance: none;
-  height: 20px;
-  width: 20px;
-  background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIGlkPSJhIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PHBhdGggZD0ibTEyLjQ1LDM3LjY1bC0yLjEtMi4xLDExLjU1LTExLjU1LTExLjU1LTExLjU1LDIuMS0yLjEsMTEuNTUsMTEuNTUsMTEuNTUtMTEuNTUsMi4xLDIuMS0xMS41NSwxMS41NSwxMS41NSwxMS41NS0yLjEsMi4xLTExLjU1LTExLjU1LTExLjU1LDExLjU1WiIgc3R5bGU9ImZpbGw6I2Q5NDk2NTsiLz48L3N2Zz4=");
-  background-size: contain;
 }
 
 .shadow-menu {

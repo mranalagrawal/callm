@@ -7,14 +7,14 @@ import heartIcon from 'assets/svg/heart.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
 import { storeToRefs } from 'pinia'
 import { mapState } from 'vuex'
+import { SweetAlertToast } from '@/utilities/Swal'
 import { productFeatures } from '@/utilities/mappedProduct'
+import { getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
+import { pick } from '@/utilities/arrays'
 import { useRecentProductsStore } from '@/store/recent'
 import { useCustomer } from '@/store/customer'
-import { getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
 import favouriteIcon from '~/assets/svg/selections/favourite.svg'
-import { SweetAlertToast } from '@/utilities/Swal'
 import getArticles from '~/graphql/queries/getArticles'
-import { pick } from '@/utilities/arrays'
 
 export default {
   layout(context) {
@@ -41,6 +41,7 @@ export default {
     const productVariant = ref()
     const productDetails = ref({
       brandId: '',
+      canonical: '',
       feId: '',
       shortDescription: '',
       awards: [],
@@ -169,6 +170,23 @@ export default {
       return [...wishlistArr.value].includes(`P${productDetails.value.feId}`)
     })
 
+    const generateMetaLink = (arr = []) => {
+      const hrefLangArr = !!arr.length && arr.map(el => ({
+        hid: `alternate-${el[0]}`,
+        rel: 'alternate',
+        href: el[1],
+        hreflang: el[0],
+      }))
+
+      return [
+        ...hrefLangArr,
+        {
+          rel: 'canonical',
+          href: productDetails.value.canonical,
+        },
+      ]
+    }
+
     return {
       product,
       productVariant,
@@ -191,6 +209,7 @@ export default {
       heartFullIcon,
       favouriteIcon,
       handleWishlist,
+      generateMetaLink,
     }
   },
   head() {
@@ -206,12 +225,7 @@ export default {
       link: this.productDetails
         && this.productDetails.hrefLang
         && Object.keys(this.productDetails.hrefLang).length
-        && Object.entries(this.productDetails.hrefLang).map(el => ({
-          hid: `alternate-${el[0]}`,
-          rel: 'alternate',
-          href: el[1],
-          hreflang: el[0],
-        })),
+        && this.generateMetaLink(Object.entries(this.productDetails.hrefLang)),
     }
   },
   computed: {
@@ -345,8 +359,8 @@ export default {
           </div>
           <div class="cmw-absolute cmw-bottom-0 cmw-left-2">
             <div
-              v-for="(award) in productDetails.awards.slice(0, 4)"
-              :key="award.id"
+              v-for="(award, i) in productDetails.awards.slice(0, 4)"
+              :key="`${award.id}-${i}`"
               class="cmw-flex cmw-gap-1 cmw-items-center cmw-pr-1.5"
             >
               <ProductBoxAward :award="award" />

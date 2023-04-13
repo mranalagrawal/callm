@@ -8,6 +8,7 @@ export default {
     const { $dayjs, i18n } = useContext()
     const customerOrders = useCustomerOrders()
     const { orders } = storeToRefs(customerOrders)
+    const sorting = ref(false)
     const selectedFilter = ref($dayjs().subtract(6, 'months').format('YYYY-MM-DD'))
     const periods = ref([
       {
@@ -29,11 +30,14 @@ export default {
     })
 
     const handleUpdateValue = (value) => {
+      sorting.value = false
       selectedFilter.value = value
       fetch()
     }
 
-    return { orders, periods, selectedFilter, selectedLabel, handleUpdateValue }
+    const handleUpdateTrigger = () => sorting.value = !sorting.value
+
+    return { sorting, orders, periods, selectedFilter, selectedLabel, handleUpdateValue, handleUpdateTrigger }
   },
 }
 </script>
@@ -42,13 +46,22 @@ export default {
   <div>
     <!-- Todo: add some skeleton loader, maybe inside the UserOrders Component -->
     <div class="cmw-p-4 md:cmw-max-w-10/12">
-      <CmwSelect
-        v-model="selectedFilter"
-        :options="periods"
-        @update-value="handleUpdateValue"
+      <CmwDropdown
+        key="sort-by"
+        size="sm"
+        :active="sorting"
+        @update-trigger="handleUpdateTrigger"
       >
-        <span><strong>{{ $t('common.filters.periods.prefix') }}</strong>{{ selectedLabel }}</span>
-      </CmwSelect>
+        <template #default>
+          <span><strong>{{ $t('common.filters.periods.prefix') }}</strong>{{ selectedLabel }}</span>
+        </template>
+        <template #children>
+          <CmwSelect
+            :options="periods"
+            @update-value="handleUpdateValue"
+          />
+        </template>
+      </CmwDropdown>
     </div>
     <p v-if="$fetchState.pending" class="px-4">
       {{ $t("loading") }}

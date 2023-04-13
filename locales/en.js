@@ -183,7 +183,7 @@ export default {
   search: {
     search: 'Search',
     showFilters: 'Show filters',
-    showResults: 'Show Results',
+    showResults: 'Show Results ({count})',
     products: 'Products',
     selections: 'Our Selections',
     categories: 'Categories',
@@ -193,7 +193,8 @@ export default {
     bodystyles: 'body styles',
     boxes: 'boxes',
     areas: 'areas',
-    provenience: 'provenience',
+    provenience: 'Provenance',
+    regions: 'Provenance',
     brands: 'brands',
     noBrands: 'Try our finest list',
     countries: 'countries',
@@ -203,6 +204,7 @@ export default {
     agings: 'agings',
     philosophies: 'philosophies',
     price: 'price',
+    priceFromTo: 'Price from {0} to {1}',
     results: 'results',
     noResultsAlert: 'There are no results for your search',
     noResultsMessage: `
@@ -215,6 +217,7 @@ export default {
       </ul>`,
     activeFilters: 'Active filters',
     removeAll: 'Remove all',
+    removeFilters: 'Remove filters',
     sortBy: 'Sort by',
     sort: {
       name: 'Name',

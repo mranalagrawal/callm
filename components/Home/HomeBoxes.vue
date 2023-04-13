@@ -1,217 +1,128 @@
 <script>
+import { computed, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import VueSlickCarousel from 'vue-slick-carousel'
-import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
-
 import documents from '../../prismic-mapper'
-import locales from '../../locales-mapper'
+import { generateKey } from '@/utilities/strings'
+import { inRange } from '@/utilities/math'
+import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
 
 export default {
   components: { VueSlickCarousel },
-  data() {
-    return {
-      data: null,
-      slide: 0,
-      sliding: null,
-      settings: {
-        dots: true,
-        focusOnSelect: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 4,
-        slidesToScroll: 4,
-        touchThreshold: 5,
-        responsive: [
-          {
-            breakpoint: 1024,
-            settings: {
-              slidesToShow: 3,
-              slidesToScroll: 3,
-            },
+  setup() {
+    const { $config, i18n, $prismic } = useContext()
+
+    const boxes = ref([])
+    const carouselSettings = {
+      dots: true,
+      focusOnSelect: true,
+      infinite: true,
+      speed: 500,
+      slidesToShow: 3,
+      slidesToScroll: 3,
+      touchThreshold: 5,
+      responsive: [
+        {
+          breakpoint: 411,
+          settings: {
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            dots: true,
+            arrows: false,
           },
-          {
-            breakpoint: 600,
-            settings: {
-              slidesToShow: 1,
-              slidesToScroll: 1,
-              dots: true,
-              arrows: false,
-            },
+        },
+        {
+          breakpoint: 767,
+          settings: {
+            slidesToShow: 2,
+            slidesToScroll: 2,
+            dots: true,
+            arrows: false,
           },
-        ],
-      },
+        },
+        {
+          breakpoint: 1023,
+          settings: {
+            slidesToShow: 3,
+            slidesToScroll: 3,
+            dots: false,
+            arrows: false,
+          },
+        },
+      ],
     }
-  },
-  async fetch() {
-    let lang = locales[this.$i18n.locale]
 
-    if (lang == 'en-gb' && this.$config.STORE == 'CMW')
-      lang = 'en-eu'
+    const c1 = ref(null)
+    const currentSlide = computed(() => c1.value && c1.value.$refs.innerSlider.currentSlide)
 
-    this.data = await this.$prismic.api.getSingle(
-      documents[this.$config.STORE].homeBoxes,
-      { lang },
-    )
+    const { fetch } = useFetch(async () => {
+      const { data } = await $prismic.api.getSingle(
+        documents[$config.STORE].homeBoxes,
+        { lang: i18n.localeProperties.iso.toLowerCase() },
+      )
+      boxes.value = data.box
+    })
+
+    return { c1, currentSlide, carouselSettings, fetch, boxes }
   },
-  watch: {
-    '$i18n.locale': '$fetch',
-  },
-  methods: {
-    onSlideStart(slide) {
-      this.sliding = true
-    },
-    onSlideEnd(slide) {
-      this.sliding = false
-    },
-  },
+
+  methods: { inRange, generateKey },
 }
 </script>
 
 <template>
-  <div class="container-fluid px-md-5 mt-5">
-    <div v-if="data" class="row pt-md-5 d-none d-md-flex">
-      <div
-        v-for="(box, ind) in data.data.box"
-        :key="ind"
-        class="col-12 col-md-4 mb-5"
-      >
-        <div class="box-card p-2 h-100">
-          <img
-            v-if="box.image.url"
-            :src="box.image.url"
-            class="d-block mx-auto rounded-circle icon-img"
-            alt=""
-            width="80px"
-            height="80px"
-          >
-          <div class="card-body text-center">
-            <h5
-              class="card-title text-dark-primary mb-0"
-              style="font-size: 16px; font-weight: 600"
-              :class="$config.store !== 'WILDVIGNERON' ? 'mt-4' : ''"
+  <div v-if="!!boxes.length" class="cmw-max-w-screen-xl cmw-mx-auto cmw-py-4 cmw-px-4 cmw-mt-4">
+    <VueSlickCarousel ref="c1" v-bind="carouselSettings" dots-class="c-carouselDots">
+      <div v-for="({ title, description, image }) in boxes" :key="generateKey(title)" class="cmw-h-full cmw-pt-8">
+        <div class="cmw-relative cmw-rounded cmw-border cmw-border-gray-light cmw-px-4 cmw-text-center cmw-h-full cmw-pt-12 cmw-pb-2">
+          <div class="cmw-absolute cmw-flex cmw-bg-white cmw-transform cmw-left-1/2 cmw-top-0 cmw-translate-x-[-50%] cmw-translate-y-[-50%] cmw-px-2 cmw-w-[100px] cmw-h-[100px]">
+            <img
+              :src="image.url"
+              class="cmw-m-auto cmw-w-full cmw-h-auto"
+              :alt="image.alt || 'missing'"
+              width="80"
+              height="80"
             >
-              {{ box.title }}
-            </h5>
-
-            <p class="card-text" style="font-size: 16px">
-              {{ box.description }}
-            </p>
           </div>
+          <div class="cmw-font-bold cmw-text-secondary-700" v-text="title" />
+          <p v-text="description" />
         </div>
       </div>
-    </div>
-    <div v-if="data" class="pt-md-5 d-md-none">
-      <VueSlickCarousel v-bind="settings">
-        <div v-for="(box, ind) in data.data.box" :key="ind" class="mb-5">
-          <div class="box-card p-2 h-100">
-            <img
-              :src="box.image.url"
-              class="d-block mx-auto rounded-circle icon-img"
-              alt=""
-              width="80px"
-              height="80px"
-            >
-            <div class="card-body text-center">
-              <h5
-                class="card-title mt-4 text-dark-primary mb-0"
-                style="font-size: 16px; font-weight: 600"
-              >
-                {{ box.title }}
-              </h5>
-
-              <p class="card-text" style="font-size: 16px">
-                {{ box.description }}
-              </p>
-            </div>
-          </div>
-        </div>
-      </VueSlickCarousel>
-    </div>
+      <template #customPaging="page">
+        <button
+          :data-test="page"
+          class="c-carouselDots__dot"
+          :class="{ '-sm': !inRange((page - currentSlide), -2, 2) }"
+        />
+      </template>
+    </VueSlickCarousel>
   </div>
 </template>
 
 <style lang="css" scoped>
-.box-card {
-  border-radius: 8px;
-  padding: 43px 55px 23px;
-  border: 1px solid #e1e2e3;
-  position: relative;
-}
-.icon-img {
-  position: absolute;
-  top: -40px;
-  z-index: 1;
-  left: calc(50% - 40px);
-}
-.home-carousel :deep(.carousel-indicators) {
-  display: flex;
-  justify-content: flex-end;
+::v-deep(.slick-track) {
+  display: flex !important;
 }
 
-.home-carousel :deep(.carousel-indicators li) {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  border: 2px solid gray;
-  background-color: #8b0000;
+::v-deep(.slick-slide) > div {
+  height: 100%;
 }
 
-.home-carousel :deep(.carousel-control-prev),
-.home-carousel :deep(.carousel-control-next) {
-  opacity: 1 !important;
+::v-deep(.slick-slide) {
+  padding-left: 8px;
+  padding-right: 8px;
+  height: inherit !important;
 }
 
-.home-carousel :deep(.carousel-control-prev-icon),
-.home-carousel :deep(.carousel-control-next-icon) {
-  background-color: white;
-  width: 32px;
-  height: 32px;
-  border-radius: 10px;
-  opacity: 1;
+::v-deep(.c-carouselDots li) {
+  display: flex !important;
 }
 
-.home-carousel :deep(.carousel-control-prev-icon) {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iZGFya3JlZCIgY2xhc3M9ImJpIGJpLWNoZXZyb24tbGVmdCIgdmlld0JveD0iMCAwIDE2IDE2Ij4KICA8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMS4zNTQgMS42NDZhLjUuNSAwIDAgMSAwIC43MDhMNS43MDcgOGw1LjY0NyA1LjY0NmEuNS41IDAgMCAxLS43MDguNzA4bC02LTZhLjUuNSAwIDAgMSAwLS43MDhsNi02YS41LjUgMCAwIDEgLjcwOCAweiIvPgo8L3N2Zz4=") !important;
+::v-deep(.slick-active .c-carouselDots__dot) {
+  transform: scale(1);
+  background-color: theme('colors.primary.DEFAULT');
 }
 
-.home-carousel :deep(.carousel-control-next-icon) {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iZGFya3JlZCIgY2xhc3M9ImJpIGJpLWNoZXZyb24tcmlnaHQiIHZpZXdCb3g9IjAgMCAxNiAxNiI+CiAgPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBkPSJNNC42NDYgMS42NDZhLjUuNSAwIDAgMSAuNzA4IDBsNiA2YS41LjUgMCAwIDEgMCAuNzA4bC02IDZhLjUuNSAwIDAgMS0uNzA4LS43MDhMMTAuMjkzIDggNC42NDYgMi4zNTRhLjUuNSAwIDAgMSAwLS43MDh6Ii8+Cjwvc3ZnPg==") !important;
-}
-
-.home-carousel :deep(.carousel-item img) {
-  height: 400px;
-  object-fit: cover;
-}
-
-@media screen and (max-width: 760px) {
-  .home-carousel :deep(.carousel-item img) {
-    height: 90vh;
-    object-fit: cover;
-  }
-}
-
-:deep(.carousel-caption) {
-  text-align: left;
-  bottom: 40px;
-}
-
-:deep(.slick-dots li button:before) {
-  font-size: 10px;
-  opacity: 0.6;
-  color: var(--light-secondary);
-}
-
-:deep(.slick-dots li.slick-active button:before) {
-  opacity: 1;
-  font-size: 16px;
-  color: var(--dark-secondary);
-}
-:deep(.slick-dots) {
-  bottom: 8px;
-}
-
-@media screen and (max-width: 760px) {
-  :deep(.slick-list) {
-    padding-top: 32px;
-  }
+::v-deep(li:not(.slick-active) .c-carouselDots__dot.-sm) {
+  transform: scale(0.3);
 }
 </style>

@@ -183,7 +183,7 @@ export default {
   search: {
     search: 'Cerca',
     showFilters: 'Mostra filtri',
-    showResults: 'Mostra risultati',
+    showResults: 'Mostra risultati ({count})',
     products: 'Prodotti',
     selections: 'Selezioni',
     categories: 'Categorie',
@@ -194,6 +194,7 @@ export default {
     boxes: 'Con confezione',
     areas: 'Area',
     provenience: 'Provenienza',
+    regions: 'Provenienza',
     brands: 'Produttore',
     noBrands: 'Prova la nostra migliore lista',
     countries: 'Paese',
@@ -203,6 +204,7 @@ export default {
     agings: 'Invecchiamento',
     philosophies: 'Filosofie',
     price: 'Prezzo',
+    priceFromTo: 'Prezzo da {from} a {to}',
     results: 'Risultati',
     noResultsAlert: 'Non ci sono risultati',
     noResultsMessage: `
@@ -215,6 +217,7 @@ export default {
       </ul>`,
     activeFilters: 'Filtri attivi',
     removeAll: 'Rimuovi tutti',
+    removeFilters: 'Rimuovi i filtri',
     sortBy: 'Ordina per',
     sort: {
       name: 'Nome',
