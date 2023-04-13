@@ -2,6 +2,7 @@
 import { computed, useContext, useRouter } from '@nuxtjs/composition-api'
 import closeIcon from 'assets/svg/close.svg'
 import chevronLeftIcon from 'assets/svg/chevron-left.svg'
+import { generateKey } from '@/utilities/strings'
 import { getIconByFeature } from '@/utilities/icons'
 
 export default {
@@ -16,7 +17,6 @@ export default {
   setup(props, { emit }) {
     const { localeLocation } = useContext()
     const router = useRouter()
-    const generateKey = (str = '') => str.toLowerCase().replaceAll(' ', '-')
     const closeSidebar = (full = false) => {
       emit('close-sidebar', full)
     }
@@ -28,13 +28,12 @@ export default {
     })))
 
     const handleMarketingClick = (to) => {
-      // emit('close-sidebar', false)
       router.push(localeLocation((to)))
     }
 
-    return { mappedMenu, closeIcon, chevronLeftIcon, generateKey, closeSidebar, handleMarketingClick }
+    return { mappedMenu, closeIcon, chevronLeftIcon, closeSidebar, handleMarketingClick }
   },
-  methods: { getIconByFeature },
+  methods: { generateKey, getIconByFeature },
 }
 </script>
 
@@ -53,7 +52,7 @@ export default {
       <div class="cmw-h-screen">
         <div
           v-for="(item) in mappedMenu"
-          :key="generateKey(item.name || `${item.position}-`)"
+          :key="generateKey(item.name || `missing`)"
           class="cmw-relative cmw-w-full cmw-py-4"
           :class="item.isSelection ? 'cmw-bg-gray-lightest' : 'cmw-bg-white cmw-px-2'"
         >
@@ -96,7 +95,7 @@ export default {
             </div>
             <div
               v-for="({ marketing_image, third_level_name, third_level_link, second_level_name, marketing_cta }) in item.items"
-              :key="generateKey(third_level_name || second_level_name || marketing_cta)"
+              :key="generateKey(third_level_name || second_level_name || marketing_cta || 'missing')"
               class="cmw-relative"
             >
               <Card
@@ -110,12 +109,15 @@ export default {
               {{ item.name }}
             </div>
             <NuxtLink
-              v-for="({ third_level_name, third_level_link, second_level_name, second_level_link }) in item.items"
-              :key="generateKey(third_level_name || second_level_name)"
-              :to="localePath(third_level_link || second_level_link)"
+              v-for="({ third_level_style, third_level_name, third_level_link }) in item.items"
+              :key="generateKey(third_level_name || 'missing')"
+              :to="localePath(third_level_link)"
               class="cmw-relative cmw-flex cmw-justify-between cmw-items-center cmw-w-full cmw-py-4 cmw-px-2"
             >
-              <span class="cmw-text-sm cmw-font-light cmw-tracking-wide cmw-text-body hover:(cmw-text-body cmw-no-underline)">{{ third_level_name }}</span>
+              <span
+                class="cmw-text-sm cmw-font-light cmw-tracking-wide hover:(cmw-text-body cmw-no-underline)"
+                :class="third_level_style ? 'cmw-text-primary-400' : 'cmw-text-body' "
+              >{{ third_level_name }}</span>
               <span class="cmw-absolute cmw-w-[calc(100%_-_1rem)] cmw-left-2 cmw-bottom-0 cmw-h-px cmw-bg-gray-light" />
             </NuxtLink>
           </template>
@@ -124,7 +126,3 @@ export default {
     </div>
   </div>
 </template>
-
-<style scoped>
-
-</style>
