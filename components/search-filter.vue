@@ -643,7 +643,7 @@ export default {
           </CmwDropdown>
         </div>
         <button class="cmw-flex cmw-items-center cmw-ml-auto cmw-pt-3 cmw-text-xs hover:(cmw-text-primary)" @click="showMoreFilters = !showMoreFilters">
-          <span class="cmw-overline-1 cmw-uppercase cmw-text-xs" v-text="!showMoreFilters ? 'Show more' : 'Show less'" />
+          <span class="cmw-overline-1 cmw-font-normal cmw-uppercase cmw-text-xs" v-text="!showMoreFilters ? 'Show more' : 'Show less'" />
           <VueSvgIcon :data="require(`@/assets/svg/plus.svg`)" class="cmw-ml-2" color="#d94965" width="16" height="auto" />
         </button>
       </div>
@@ -691,47 +691,45 @@ export default {
         </div>
       </div>
     </div>
-    <div v-if="results" class="row mt-5">
-      <div v-if="results.length > 0" class="col-12 cmw-px-4">
-        <div class="row align-items-center mb-5">
-          <div
-            class="col-12 col-md-4 d-flex justify-content-between justify-content-md-start"
-          >
-            <span class="mr-3"><strong>{{ total }}</strong> {{ $t("search.results") }}</span>
-            <div class="cmw-hidden cmw-items-center cmw-gap-2 lg:cmw-flex">
-              <div
-                v-for="layout in availableLayouts"
-                :key="layout"
-                class="cmw-relative"
+    <div v-if="results" class="mt-5">
+      <div v-if="results.length > 0" class="">
+        <div class="cmw-flex cmw-gap-2 cmw-items-center cmw-justify-between cmw-mb-2">
+          <div>
+            <strong>{{ total }}</strong> <span>{{ $t('search.results') }}</span>
+          </div>
+          <div class="cmw-hidden cmw-items-center cmw-mr-auto cmw-gap-2 lg:cmw-flex">
+            <div
+              v-for="layout in availableLayouts"
+              :key="layout"
+              class="cmw-relative"
+            >
+              <input
+                :id="layout"
+                v-model="selectedLayout"
+                :aria-label="`select ${layout}`"
+                class="peer cmw-appearance-none cmw-absolute cmw-w-full cmw-h-full cmw-z-dante"
+                type="radio"
+                name="layout"
+                :value="layout"
               >
-                <input
-                  :id="layout"
-                  v-model="selectedLayout"
-                  :aria-label="`select ${layout}`"
-                  class="peer cmw-appearance-none cmw-absolute cmw-w-full cmw-h-full cmw-z-dante"
-                  type="radio"
-                  name="layout"
-                  :value="layout"
-                >
-                <label
-                  :for="layout"
-                  class="
+              <label
+                :for="layout"
+                class="
               cmw-flex cmw-rounded-sm cmw-shadow cmw-p-[0.40rem] cmw-mb-0 cmw-bg-white cmw-cursor-pointer
               peer-checked:(cmw-bg-gray-lightest cmw-shadow-none)"
-                >
-                  <VueSvgIcon
-                    class="cmw-m-auto"
-                    :data="require(`@/assets/svg/layout-${layout}.svg`)"
-                    width="20"
-                    height="20"
-                    color="#992545"
-                  />
-                </label>
-              </div>
+              >
+                <VueSvgIcon
+                  class="cmw-m-auto"
+                  :data="require(`@/assets/svg/layout-${layout}.svg`)"
+                  width="20"
+                  height="20"
+                  color="#992545"
+                />
+              </label>
             </div>
           </div>
           <div class="d-none d-md-block col-4" />
-          <div class="col-12 col-md-4 text-right">
+          <div class="">
             <div>
               <!-- {{ this.$router }} -->
               <b-dropdown id="sorting" variant="null" right class="" no-caret>

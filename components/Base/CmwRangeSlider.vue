@@ -116,6 +116,7 @@ export default {
 
 <style scoped>
 .wrap {
+  position: relative;
   display: grid;
   width: 100%;
   margin-top: 40px;

@@ -65,7 +65,7 @@ export default {
             <div v-if="title" class="cmw-text-center cmw-h3 cmw-pt-4" v-text="title" />
             <div v-if="subtitle" class="cmw-text-center cmw-my-2 cmw-max-w-3/4 cmw-mx-auto" v-text="subtitle" />
             <div class="cmw-absolute cmw-top-0 cmw-right-0">
-              <ButtonIcon :icon="closeIcon" variant="icon" :size="14" @click.native="closeModal" />
+              <ButtonIcon :icon="closeIcon" variant="icon" :size="18" @click.native="closeModal" />
             </div>
           </div>
           <!-- splash-body -->

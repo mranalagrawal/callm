@@ -64,7 +64,7 @@ export default {
 <template>
   <div
     ref="topBar"
-    class="container-fluid text-center
+    class="cmw-w-screen cmw-px-4 cmw-text-center
      cmw-bg-secondary cmw-fixed cmw-top-0 cmw-left-0 cmw-z-1050 cmw-text-white cmw-uppercase cmw-py-1
      cmw-overline-1 md:cmw-overline-2"
   >
