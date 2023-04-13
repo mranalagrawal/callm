@@ -881,7 +881,7 @@ export default {
             >
               <template #default>
                 <span class="cmw-block">
-                  <span class="cmw-block cmw-text-left">{{ $t('search.selections') }}</span>
+                  <span class="cmw-block cmw-text-left" :class="{ 'cmw-font-bold': !!activeSelections?.length }">{{ $t('search.selections') }}</span>
                   <small v-if="!!activeSelections?.length" class="cmw-block cmw-text-primary cmw-text-left cmw-text-xs">
                     <span
                       v-for="selection in activeSelections"
@@ -913,7 +913,7 @@ export default {
             >
               <template #default>
                 <span class="cmw-block">
-                  <span class="cmw-block cmw-text-left">{{ $t(`search.${key}`) }}</span>
+                  <span class="cmw-block cmw-text-left" :class="{ 'cmw-font-bold': Object.keys(inputParameters).includes(key) }">{{ $t(`search.${key}`) }}</span>
                   <small v-if="Object.keys(inputParameters).includes(key)" class="cmw-block cmw-text-primary cmw-text-left cmw-text-xs">
                     {{ value.find(v => v.selected) && value.find(v => v.selected).simpleLabel }}
                   </small>
@@ -941,7 +941,7 @@ export default {
             >
               <template #default>
                 <span class="cmw-block">
-                  <span class="cmw-block cmw-text-left">{{ $t('search.price') }}</span>
+                  <span class="cmw-block cmw-text-left" :class="{ 'cmw-font-bold': Object.keys(inputParameters).includes('price_from') }">{{ $t('search.price') }}</span>
                   <small v-if="Object.keys(inputParameters).includes('price_from')" class="cmw-block cmw-text-primary cmw-text-left cmw-text-xs">
                     <i18n
                       path="search.priceFromTo"
