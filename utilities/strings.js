@@ -5,5 +5,9 @@ export const stripHtml = (str = '') => {
 export const stripHtmlAnchors = (str = '') => {
   return str.replace(/<\/?a[^>]*>/g, '')
 }
+export const generateKey = (str = '') => {
+  if (str === 'missing')
+    $nuxt.$sentry.captureException(new Error(`Missing Image ${str}`))
 
-export const generateKey = (str = '') => str.toLowerCase().replaceAll(' ', '-')
+  return str.toLowerCase().replaceAll(' ', '-')
+}
