@@ -35,7 +35,7 @@ export default {
     const handleTriggerClick = () => emit('update-trigger', key)
 
     const getFontSize = () => ({
-      sm: 'cmw-text-xs cmw-overline-1',
+      sm: 'cmw-text-xs cmw-overline-1 cmw-font-normal',
       md: 'cmw-text-sm',
     })[props.size]
 
@@ -46,14 +46,14 @@ export default {
 
 <template>
   <div
-    class="cmw-relative cmw-border-b"
+    class="cmw-relative cmw-font-sans cmw-border-b"
     :class="[isActive
                ? 'cmw-z-baseHigh cmw-border-b-transparent'
                : 'cmw-z-base cmw-border-b-gray-light',
-             { 'after:(cmw-content-DEFAULT cmw-absolute cmw-bg-primary cmw-top-0 cmw-left-0 cmw-h-[66px] cmw-w-2)': hasItem }] "
+             { 'after:(cmw-content-DEFAULT cmw-absolute cmw-bg-primary cmw-top-0 cmw-left-0 cmw-h-[66px] cmw-w-1)': hasItem && !isActive }] "
   >
     <div
-      class="cmw-m-2 cmw-rounded-sm"
+      class="cmw-my-2 cmw-rounded-sm"
       :class="[
         isActive
           ? 'cmw-shadow-filter cmw-shadow-popover cmw-bg-white cmw-text-primary'
@@ -62,7 +62,7 @@ export default {
     >
       <button
         type="button"
-        class="cmw-w-full cmw-text-body cmw-flex cmw-justify-between cmw-items-center cmw-gap-2 cmw-z-baseHigh cmw-p-3 cmw-rounded-t-sm cmw-text-sm cmw-uppercase cmw-font-light
+        class="cmw-w-full cmw-text-body cmw-flex cmw-justify-between cmw-items-center cmw-gap-2 cmw-z-baseHigh cmw-p-3 cmw-rounded-t-sm cmw-text-sm cmw-uppercase
       hover:(cmw-text-primary)
 "
         :class="[

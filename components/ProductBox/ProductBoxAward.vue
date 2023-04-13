@@ -96,7 +96,7 @@ export default {
             >{{ award.quote[$i18n.locale] }}</i>
           </div>
           <button class="cmw-absolute cmw-top-[-0.25rem] cmw-right-0 cmw-p-2 cmw-text-gray md:cmw-hidden" @click="handleMouseLeave">
-            <VueSvgIcon :data="closeIcon" width="12" height="auto" />
+            <VueSvgIcon :data="closeIcon" width="18" height="auto" />
           </button>
         </div>
       </div>

@@ -300,11 +300,11 @@ export default {
 }
 
 .c-productBox__image {
-  height: 270px;
+  height: 320px;
 }
 
 .c-productBox__image ::v-deep(img) {
-  height: 270px;
+  height: 320px;
   width: auto;
   margin: 0 auto;
 }
@@ -337,11 +337,11 @@ export default {
 /* We are handling this piece skipping mobile-first to reduce the amount of CSS  */
 @container product-box (max-width: 250px) {
   .c-productBox__image {
-    height: 240px;
+    height: 270px;
   }
 
   .c-productBox__image ::v-deep(img) {
-    height: 240px;
+    height: 270px;
   }
 
   .c-productBox__wishlist button {

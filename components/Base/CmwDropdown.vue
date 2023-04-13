@@ -34,7 +34,7 @@ export default {
     const handleTriggerClick = () => emit('update-trigger', key)
 
     const getFontSize = () => ({
-      sm: 'cmw-text-xs cmw-overline-1',
+      sm: 'cmw-text-xs cmw-overline-1 cmw-font-normal',
       md: 'cmw-text-sm',
     })[props.size]
 

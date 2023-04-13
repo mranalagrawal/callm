@@ -27,3 +27,15 @@
 
 .fadeFromRight-enter,
 .fadeFromRight-leave-to { opacity: 0; transform: translate(10%, -50%); }
+
+.menu-mobile-enter-active,
+.menu-mobile-leave-active { transition: transform 300ms ease-in-out; }
+
+.menu-mobile-enter,
+.menu-mobile-leave-to { transform: translateX(-100%); }
+
+.menu-mobile-second-level-enter-active,
+.menu-mobile-second-level-leave-active { transition: transform 300ms ease-in-out; }
+
+.menu-mobile-second-level-enter,
+.menu-mobile-second-level-leave-to { transform: translateX(100%); }
