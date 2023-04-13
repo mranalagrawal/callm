@@ -5,3 +5,5 @@ export const stripHtml = (str = '') => {
 export const stripHtmlAnchors = (str = '') => {
   return str.replace(/<\/?a[^>]*>/g, '')
 }
+
+export const generateKey = (str = '') => str.toLowerCase().replaceAll(' ', '-')

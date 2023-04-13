@@ -2,6 +2,7 @@
 import { computed, useContext, useRouter } from '@nuxtjs/composition-api'
 import closeIcon from 'assets/svg/close.svg'
 import chevronLeftIcon from 'assets/svg/chevron-left.svg'
+import { generateKey } from '@/utilities/strings'
 import { getIconByFeature } from '@/utilities/icons'
 
 export default {
@@ -16,7 +17,6 @@ export default {
   setup(props, { emit }) {
     const { localeLocation } = useContext()
     const router = useRouter()
-    const generateKey = (str = '') => str.toLowerCase().replaceAll(' ', '-')
     const closeSidebar = (full = false) => {
       emit('close-sidebar', full)
     }
@@ -32,9 +32,9 @@ export default {
       router.push(localeLocation((to)))
     }
 
-    return { mappedMenu, closeIcon, chevronLeftIcon, generateKey, closeSidebar, handleMarketingClick }
+    return { mappedMenu, closeIcon, chevronLeftIcon, closeSidebar, handleMarketingClick }
   },
-  methods: { getIconByFeature },
+  methods: { generateKey, getIconByFeature },
 }
 </script>
 

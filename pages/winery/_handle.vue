@@ -364,25 +364,8 @@ export default {
   display: flex !important;
 }
 
-::v-deep(.c-carouselDots) {
-  display: flex !important;
-  gap: 0.5rem;
-  justify-content: center;
-  align-items: center;
-  margin: 1rem auto;
-}
-
 ::v-deep(.c-carouselDots li) {
   display: flex !important;
-}
-
-::v-deep(.c-carouselDots__dot) {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background-color: theme('colors.primary.100');
-  transform: scale(0.5);
-  transition: transform 300ms ease-in-out;
 }
 
 ::v-deep(.slick-active .c-carouselDots__dot) {
