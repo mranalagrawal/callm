@@ -1,53 +1,3 @@
-const queryProductByIdAsTag = tag => `query {
-        products(first: 12, query:"tag:${tag}") {
-            edges {
-                node {
-                    id
-                    title
-                    description
-                    descriptionHtml
-                    handle
-                    vendor
-                    totalInventory
-                    availableForSale
-                    seo {
-                      description
-                      title
-                    }
-                    variants(first: 1) {
-                        nodes {
-                            compareAtPriceV2 {
-                                amount
-                                currencyCode
-                            }
-                            priceV2 {
-                                amount
-                                currencyCode
-                            }
-                            price
-                            id
-                        }
-                        edges {
-                            node {
-                                id
-                            }
-                        }
-                    }
-                    tags
-                    images(first: 10) {
-                        nodes {
-                            id
-                            url
-                        }
-                    }
-                    metafield1: metafield(namespace: "custom", key: "details") {
-                        value
-                    }
-                }
-            }
-        }
-    }`
-
 const productRecommendations = id => `query {
         productRecommendations(productId: "${id}") {
             id
@@ -127,7 +77,6 @@ const queryAllCollections = language => `query @inContext(language: ${language})
         }`
 
 export {
-  queryProductByIdAsTag,
   productRecommendations,
   queryProductsByVendor,
   queryAllCollections,

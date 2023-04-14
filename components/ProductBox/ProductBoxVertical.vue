@@ -102,7 +102,8 @@ export default {
         return
       }
 
-      const productVariantId = this.product.shopify_product_id
+      const totalInventory = this.product.quantityAvailable
+      const productVariantId = this.product.shopify_product_variant_id
       const amount = this.finalPrice
       const amountFullPrice = Number(this.product.compareAtPrice.amount)
       const tag = this.product.tags[0]
@@ -115,6 +116,7 @@ export default {
         tag,
         image,
         title,
+        totalInventory,
       })
       this.flashMessage.show({
         status: '',
