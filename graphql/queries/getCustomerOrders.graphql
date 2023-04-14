@@ -76,6 +76,7 @@ query getCustomerOrders(
                   }
                   variants(first: 1) {
                     nodes {
+                      id
                       compareAtPriceV2 { amount, currencyCode }
                       priceV2 { amount, currencyCode }
                       quantityAvailable

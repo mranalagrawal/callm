@@ -58,6 +58,7 @@ export const getMappedProducts = (arr = [], lang = 'en', isElastic = false, stor
         quantityAvailable: p.variants.nodes[0].quantityAvailable,
         details,
         shopify_product_id: p.id,
+        shopify_product_variant_id: p.variants.nodes[0].id,
         tags: p.tags,
         title: details.name[lang],
         url: `/${details.handle[lang]}-${details.key}.htm`,
