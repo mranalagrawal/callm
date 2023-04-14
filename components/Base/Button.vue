@@ -31,6 +31,14 @@ export default {
       })[this.size] || this.size
     },
 
+    getSpacing() {
+      return ({
+        default: 'cmw-btn-base-spacing',
+        ghost: 'cmw-btn-base-spacing',
+        text: 'cmw-px-1 cmw-py-2 md:(cmw-py-[0.8rem])',
+      })[this.$props.variant]
+    },
+
     getVariant() {
       return ({
         default: 'cmw-btn-default disabled:(cmw-bg-gray-light)',
@@ -48,7 +56,7 @@ export default {
     :to="$props.to"
     v-bind="$attrs"
     class="cmw-btn-base disabled:(cmw-text-gray cmw-cursor-not-allowed)"
-    :class="[getVariant(), getSize()]"
+    :class="[getVariant(), getSize(), getSpacing()]"
   >
     <slot>{{ $props.label }}</slot>
   </component>

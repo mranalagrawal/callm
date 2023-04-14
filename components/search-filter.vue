@@ -1,23 +1,15 @@
 <script>
 import { nextTick, onMounted, onUnmounted, ref, watchEffect } from '@nuxtjs/composition-api'
-import debounce from 'lodash.debounce'
-import { storeToRefs } from 'pinia'
 // import { getMappedProducts } from '@/utilities/mappedProduct'
 import closeIcon from 'assets/svg/close.svg'
+import debounce from 'lodash.debounce'
+import { storeToRefs } from 'pinia'
 import Loader from '../components/UI/Loader.vue'
-import Dropdown from './UI/Dropdown.vue'
-import DropdownRange from './UI/DropdownRange.vue'
-import SelectionsBoxMobile from './UI/SelectionsBoxMobile.vue'
-import { getLocaleFromCurrencyCode } from '@/utilities/currency'
 import { useFilters } from '~/store/filters'
+import { getLocaleFromCurrencyCode } from '@/utilities/currency'
 
 export default {
-  components: {
-    Dropdown,
-    DropdownRange,
-    SelectionsBoxMobile,
-    Loader,
-  },
+  components: { Loader },
   scrollToTop: true,
   props: ['inputParameters'],
   setup() {
@@ -60,7 +52,6 @@ export default {
   data() {
     return {
       cmwActiveSelect: '',
-      // macrocategories: null,
       minPrice: 0,
       maxPrice: 0,
       minPriceTotal: null,
@@ -70,14 +61,11 @@ export default {
       brands: null,
       search: null,
       regions: null,
-      // selections: null,
       pairings: null,
-      agings: null,
       philosophies: null,
       sizes: null,
       dosagecontents: null,
       bodystyles: null,
-      areas: null,
       boxes: null,
       categories: null,
       countries: null,
@@ -86,10 +74,8 @@ export default {
       vintages: null,
       results: null,
       activeSelections: [],
-      // activeMacroCategories: null,
       total: 0,
       filters: {
-        categories: [],
         winelists: [],
         pairings: [],
         dosagecontents: [],
@@ -237,7 +223,6 @@ export default {
     const relation_filters = [
       'awards',
       'agings',
-      'categories',
       'philosophies',
       'winelists',
       'pairings',
@@ -299,18 +284,6 @@ export default {
       }
     })
 
-    // macro categories
-    /* console.clear(); */
-    const macro = search.aggregations['agg-macros'].inner.result.buckets.map(
-      (el) => {
-        return {
-          name: el.name.buckets[0].key,
-          id: el.key,
-        }
-      },
-    )
-    this.macrocategories = macro
-
     const priceFrom = this.inputParameters.price_from
     const priceTo = this.inputParameters.price_to
 
@@ -330,11 +303,6 @@ export default {
     this.activeSelections = Object.keys(this.inputParameters).filter(el =>
       allSelections.includes(el),
     )
-
-    // const activeMacroCategories = this.inputParameters.macrocategories
-    // if (activeMacroCategories)
-    //   this.activeMacroCategories = activeMacroCategories
-    // console.log(activeMacroCategories, 'activeMacroCategories')
 
     this.view.priceFrom = priceFrom
       ? {
@@ -374,15 +342,51 @@ export default {
     'unusualvariety',
     'rarewine',
   ],
-  searchableFilters: ['categories', 'winelists', 'pairings', 'regions', 'areas', 'brands'],
+  searchableFilters: ['winelists', 'pairings', 'regions', 'areas', 'brands'],
   computed: {
     filterCategories() {
-      return Object.entries(this.filters).slice(0, !(this.showMoreFilters || !this.isDesktop) ? 3 : undefined).reduce((acc, [k, v]) => {
+      return Object.entries(this.filters).slice(0, !(this.showMoreFilters || !this.isDesktop) ? 4 : undefined).reduce((acc, [k, v]) => {
         if (v.length)
           acc[k] = v
 
         return acc
       }, {})
+    },
+    aggMacros() {
+      if (!this.search?.aggregations)
+        return []
+
+      return this.search.aggregations['agg-macros'].inner.result.buckets.map(item => ({
+        doc_count: item.doc_count,
+        name: item.name.buckets[0].key,
+        key: item.key,
+        keyword: 'macros',
+      }))
+    },
+    aggCategories() {
+      if (!this.search?.aggregations)
+        return []
+
+      return this.search.aggregations['agg-categories'].inner.result.buckets.map(item => ({
+        doc_count: item.doc_count,
+        name: item.name.buckets[0].key,
+        key: item.key,
+        keyword: 'categories',
+      }))
+    },
+    hasMacrosSelected() {
+      return Object.keys(this.inputParameters).includes('macros')
+    },
+    hasCategorySelected() {
+      return Object.keys(this.inputParameters).includes('categories')
+    },
+    mainFilters() {
+      if (!this.hasMacrosSelected && !this.hasCategorySelected)
+        return this.aggMacros
+      else if (this.hasMacrosSelected && !this.hasCategorySelected)
+        return this.aggCategories
+      else
+        return this.aggCategories.filter(item => `${item.key}` !== `${this.inputParameters.categories}`)
     },
     selections() {
       if (!this.search?.aggregations)
@@ -468,7 +472,8 @@ export default {
 
       if (`${query[id]}` === 'true')
         delete query[id]
-      else query[id] = 'true'
+      else
+        query[id] = 'true'
 
       // if (id !== this.active)
       if (id !== this.$route.query[id])
@@ -549,7 +554,7 @@ export default {
         </div>
         <div class="h3">
           {{ view.regions?.name }} {{ view.vintages?.name }}
-          {{ view.pairing?.name }} {{ view.brands?.name }}
+          {{ view.pairings?.name }} {{ view.brands?.name }}
           {{ view.agings?.name }} {{ view.philosophies?.name }}
           {{ view.sizes?.name }} {{ view.dosagecontents?.name }}
           {{ view.categories?.name }}
@@ -558,25 +563,18 @@ export default {
           <span v-for="selection in activeSelections" :key="selection">
             {{ $t(`selections.${selection}`) }}
           </span>
-          <!-- {{ view }} -->
-
-          <!-- {{ Object.entries(view).filter((el) => el[1] !== null) }} -->
         </div>
-        <!-- <p class="h3">
-          {{ total }}
-        </p> -->
       </div>
     </div>
 
-    <!--      <div v-if="macrocategories" class="row">
-      <div class="col-12">
-        <MacroCategories
-          :macrocategories="macrocategories"
-          keyword="macros"
-          :active-macro-categories="activeMacroCategories"
-        />
-      </div>
-    </div> -->
+    <div class="c-scrollbar cmw-flex cmw-overflow-auto cmw-gap-4 cmw-my-8 md:(cmw-flex-wrap)">
+      <Button
+        v-for="({ key, name, keyword }) in mainFilters" :key="key" variant="ghost" size="sm" class="cmw-flex-shrink-0 cmw-w-max"
+        @click.native="handleUpdateValue(JSON.stringify({ id: key, keyword }))"
+      >
+        {{ name }}
+      </Button>
+    </div>
 
     <div v-if="isDesktop">
       <!--      <div class="cmw-text-sm cmw-font-bold" v-text="$t('common.filters.by')" /> -->
@@ -642,23 +640,26 @@ export default {
             </template>
           </CmwDropdown>
         </div>
-        <button class="cmw-flex cmw-items-center cmw-ml-auto cmw-pt-3 cmw-text-xs hover:(cmw-text-primary)" @click="showMoreFilters = !showMoreFilters">
-          <span class="cmw-overline-1 cmw-font-normal cmw-uppercase cmw-text-xs" v-text="!showMoreFilters ? 'Show more' : 'Show less'" />
-          <VueSvgIcon :data="require(`@/assets/svg/plus.svg`)" class="cmw-ml-2" color="#d94965" width="16" height="auto" />
+        <button
+          class="cmw-flex cmw-items-center cmw-ml-auto cmw-pt-3 cmw-text-xs hover:(cmw-text-primary)"
+          @click="showMoreFilters = !showMoreFilters"
+        >
+          <span
+            class="cmw-overline-1 cmw-font-normal cmw-uppercase cmw-text-xs"
+            v-text="!showMoreFilters ? 'Show more' : 'Show less'"
+          />
+          <VueSvgIcon
+            :data="require(`@/assets/svg/plus.svg`)" class="cmw-ml-2" color="#d94965" width="16"
+            height="auto"
+          />
         </button>
       </div>
       <!-- selectedFilters -->
       <div class="cmw-flex cmw-justify-between cmw-items-center">
         <div>
           <div
-            v-if="
-              (activeSelections && activeSelections.length > 0)
-                || Object.values(view).filter((el) => el != null).length > 0
-            "
+            v-if="(activeSelections && activeSelections.length > 0) || Object.values(view).filter((el) => el != null).length > 0"
           >
-            <!--            <p class="lead">
-              {{ $t("search.activeFilters") }}
-            </p> -->
             <div v-if="!!activeSelections.length || !!Object.keys(view).length" class="cmw-my-4 cmw-flex cmw-gap-2">
               <!-- selections -->
               <template v-if="!!activeSelections?.length">
@@ -681,19 +682,22 @@ export default {
           </div>
         </div>
         <div v-if="!!activeSelections.length || Object.values(view).some(v => v !== null)">
-          <button
-            class="btn btn-small ml-auto d-block"
-            style="font-size: 12px"
-            @click="resetFilter"
+          <Button
+            variant="text"
+            size="sm"
+            class=""
+            @click.native="resetFilter"
           >
-            <i class="fal fa-times" /> {{ $t("search.removeAll") }}
-          </button>
+            <span class="cmw-text-body cmw-flex cmw-items-center cmw-gap-1">
+              <VueSvgIcon :data="require(`@/assets/svg/close.svg`)" width="14" height="14" />
+              {{ $t('search.removeAll') }}</span>
+          </Button>
         </div>
       </div>
     </div>
-    <div v-if="results" class="mt-5">
+    <div v-if="results" class="cmw-mt-2">
       <div v-if="results.length > 0" class="">
-        <div class="cmw-flex cmw-gap-2 cmw-items-center cmw-justify-between cmw-mb-2">
+        <div class="cmw-flex cmw-gap-2 cmw-items-center cmw-justify-between cmw-mb-8">
           <div>
             <strong>{{ total }}</strong> <span>{{ $t('search.results') }}</span>
           </div>
@@ -734,7 +738,7 @@ export default {
               <!-- {{ this.$router }} -->
               <b-dropdown id="sorting" variant="null" right class="" no-caret>
                 <template #button-content>
-                  {{ $t("search.sortBy") }}
+                  {{ $t('search.sortBy') }}
                   <i class="fal fa-chevron-down text-light-secondary ml-3" />
                 </template>
                 <div class="shadow br-10" style="width: 300px">
@@ -742,19 +746,19 @@ export default {
                     class="btn py-3 btn-sort-by w-100 text-left d-block"
                     @click="sortBy('price', 'desc')"
                   >
-                    {{ $t("search.highestPrice") }}
+                    {{ $t('search.highestPrice') }}
                   </button>
                   <button
                     class="btn py-3 btn-sort-by w-100 text-left d-block"
                     @click="sortBy('price', 'asc')"
                   >
-                    {{ $t("search.lowestPrice") }}
+                    {{ $t('search.lowestPrice') }}
                   </button>
                   <button
                     class="btn py-3 btn-sort-by w-100 text-left d-block"
                     @click="sortBy('awardcount', 'desc')"
                   >
-                    {{ $t("search.mostAwarded") }}
+                    {{ $t('search.mostAwarded') }}
                   </button>
                   <button
                     class="btn py-3 btn-sort-by w-100 text-left d-block"
@@ -773,9 +777,7 @@ export default {
             </div>
           </div>
         </div>
-        <div
-          v-if="selectedLayout === 'list' && isDesktop"
-        >
+        <div v-if="selectedLayout === 'list' && isDesktop">
           <div
             v-for="result in results"
             :key="result._id"
@@ -798,7 +800,7 @@ export default {
       </div>
       <div v-else class="col-12">
         <p class="lead mt-5">
-          {{ $t("search.noResultsAlert") }}
+          {{ $t('search.noResultsAlert') }}
         </p>
         <div v-html="$t('search.noResultsMessage')" />
       </div>
@@ -849,7 +851,7 @@ export default {
     <div v-if="!isDesktop" class="cmw-sticky cmw-bottom-8 cmw-w-[min(100%,_14rem)] cmw-m-inline-auto">
       <Button @click.native="showMobileFilters = !showMobileFilters">
         <VueSvgIcon width="28" height="28" :data="require(`@/assets/svg/filter.svg`)" />
-        <span class="cmw-ml-2">{{ $t("search.showFilters") }}</span>
+        <span class="cmw-ml-2">{{ $t('search.showFilters') }}</span>
       </Button>
     </div>
 
@@ -860,7 +862,9 @@ export default {
           class="cmw-fixed cmw-w-screen cmw-h-screen cmw-top-0 cmw-left-0 cmw-bg-white cmw-z-amenadiel cmw-grid cmw-grid-rows-[60px_auto_90px]"
         >
           <!-- splash-header -->
-          <div class="cmw-sticky cmw-grid cmw-grid-cols-[100px_auto_100px] cmw-justify-between cmw-items-center cmw-px-4 cmw-shadow">
+          <div
+            class="cmw-sticky cmw-grid cmw-grid-cols-[100px_auto_100px] cmw-justify-between cmw-items-center cmw-px-4 cmw-shadow"
+          >
             <div class="cmw-text-center cmw-w-max cmw-text-xs cmw-font-bold" v-text="$t('common.filters.by')" />
             <div>
               <Button
@@ -868,7 +872,10 @@ export default {
                 variant="text" size="sm" :label="$t('search.removeFilters')" @click.native="resetFilter"
               />
             </div>
-            <ButtonIcon class="cmw-justify-self-end" :icon="closeIcon" variant="icon" :size="20" @click.native="showMobileFilters = false" />
+            <ButtonIcon
+              class="cmw-justify-self-end" :icon="closeIcon" variant="icon" :size="20"
+              @click.native="showMobileFilters = false"
+            />
           </div>
           <!-- splash-body -->
           <div class="cmw-px-2 cmw-max-h-screen cmw-overflow-auto">
@@ -913,8 +920,14 @@ export default {
             >
               <template #default>
                 <span class="cmw-block">
-                  <span class="cmw-block cmw-text-left" :class="{ 'cmw-font-bold': Object.keys(inputParameters).includes(key) }">{{ $t(`search.${key}`) }}</span>
-                  <small v-if="Object.keys(inputParameters).includes(key)" class="cmw-block cmw-text-primary cmw-text-left cmw-text-xs">
+                  <span
+                    class="cmw-block cmw-text-left"
+                    :class="{ 'cmw-font-bold': Object.keys(inputParameters).includes(key) }"
+                  >{{ $t(`search.${key}`) }}</span>
+                  <small
+                    v-if="Object.keys(inputParameters).includes(key)"
+                    class="cmw-block cmw-text-primary cmw-text-left cmw-text-xs"
+                  >
                     {{ value.find(v => v.selected) && value.find(v => v.selected).simpleLabel }}
                   </small>
                 </span>
@@ -941,14 +954,21 @@ export default {
             >
               <template #default>
                 <span class="cmw-block">
-                  <span class="cmw-block cmw-text-left" :class="{ 'cmw-font-bold': Object.keys(inputParameters).includes('price_from') }">{{ $t('search.price') }}</span>
-                  <small v-if="Object.keys(inputParameters).includes('price_from')" class="cmw-block cmw-text-primary cmw-text-left cmw-text-xs">
+                  <span
+                    class="cmw-block cmw-text-left"
+                    :class="{ 'cmw-font-bold': Object.keys(inputParameters).includes('price_from') }"
+                  >{{ $t('search.price') }}</span>
+                  <small
+                    v-if="Object.keys(inputParameters).includes('price_from')"
+                    class="cmw-block cmw-text-primary cmw-text-left cmw-text-xs"
+                  >
                     <i18n
                       path="search.priceFromTo"
                       tag="span"
                     >
                       <i18n-n
-                        class="cmw-inline-block" :value="Number(inputParameters.price_from)" :format="{ key: 'currency' }"
+                        class="cmw-inline-block" :value="Number(inputParameters.price_from)"
+                        :format="{ key: 'currency' }"
                         :locale="getLocaleFromCurrencyCode($config.STORE === 'CMW_UK' ? 'GBP' : 'EUR')"
                       >
                         <template #currency="slotProps">
@@ -996,7 +1016,9 @@ export default {
             </CmwAccordion>
           </div>
           <!-- splash-footer -->
-          <div class="cmw-sticky cmw-flex cmw-bottom-0 cmw-left-0 cmw-w-full cmw-bg-white cmw-z-content cmw-shadow-elevation">
+          <div
+            class="cmw-sticky cmw-flex cmw-bottom-0 cmw-left-0 cmw-w-full cmw-bg-white cmw-z-content cmw-shadow-elevation"
+          >
             <div class="cmw-w-[min(100%,_14rem)] cmw-m-inline-auto cmw-place-self-center">
               <Button :label="$t('search.showResults', { count: total })" @click.native="showMobileFilters = false" />
             </div>
@@ -1008,6 +1030,10 @@ export default {
 </template>
 
 <style scoped>
+.c-scrollbar::-webkit-scrollbar {
+  display:none;
+}
+
 .view-results {
   border: 2px solid #d94965;
   border-radius: 12px;

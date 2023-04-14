@@ -8,7 +8,7 @@ export default defineConfig({
   // Note: Added prefix to avoid conflicts with bootstrap classes, we can remove it later with find and replace
   prefix: 'cmw-',
   safelist: ['nuxt-link-exact-active', 'peer-focus:cmw-bg-white', 'peer-focus:cmw-bg-black', 'peer-focus:cmw-bg-gray-lightest',
-    'btn-base', 'btn-default', 'btn-text'],
+    'btn-base', 'btn-base-spacing', 'btn-default', 'btn-text'],
   preflight: {
     alias: {
       // add nuxt aliases
@@ -141,9 +141,8 @@ export default defineConfig({
     'body-1': 'cmw-font-normal cmw-text-sm cmw-text-black hover:cmw-text-black',
     'overline-1': 'cmw-font-light cwm-tracking-wider tracking-wider cmw-text-xxs',
     'overline-2': 'cmw-font-light cwm-tracking-widest tracking-widest cmw-text-xs',
-    'btn-base': 'cmw-font-secondary cmw-flex cmw-items-center cmw-justify-center'
-      + '    cmw-px-6 cmw-py-2 cmw-w-full cmw-transition-colors cmw-rounded cmw-border-2\n'
-      + '    md:(cmw-px-8 cmw-py-[0.8rem])',
+    'btn-base': 'cmw-font-secondary cmw-flex cmw-items-center cmw-justify-center cmw-w-full cmw-transition-colors cmw-rounded cmw-border-2',
+    'btn-base-spacing': 'cmw-px-6 cmw-py-2 md:(cmw-px-8 cmw-py-[0.8rem])',
     'btn-default': 'cmw-font-secondary cmw-border-transparent cmw-bg-primary-400 cmw-text-white cmw-font-bold cmw-uppercase hover:(cmw-text-white cmw-no-underline)',
     'btn-text': 'cmw-border-transparent cmw-text-primary-400 hover:(cmw-text-primary cmw-no-underline)',
   },

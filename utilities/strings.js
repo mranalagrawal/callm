@@ -7,7 +7,7 @@ export const stripHtmlAnchors = (str = '') => {
 }
 export const generateKey = (str = '') => {
   if (str === 'missing')
-    $nuxt.$sentry.captureException(new Error(`Missing Image ${str}`))
+    $nuxt.$sentry.captureException(new Error(`Missing a unique key, ${str}`))
 
   return str.toLowerCase().replaceAll(' ', '-')
 }
