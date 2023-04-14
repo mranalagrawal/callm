@@ -17,6 +17,7 @@ query getProducts(
       }
       variants(first: 1) {
         nodes {
+          id
           compareAtPriceV2 { amount, currencyCode }
           priceV2 { amount, currencyCode }
           quantityAvailable
@@ -40,9 +41,9 @@ query getProducts(
         variants(first: 1) {
           edges {
             node {
+              id
               availableForSale
               compareAtPriceV2 { amount, currencyCode }
-              id
               priceV2 { amount, currencyCode }
               compareAtPriceV2 { amount, currencyCode }
               image { altText, height, url, width }
