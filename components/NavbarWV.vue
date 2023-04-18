@@ -6,6 +6,7 @@ import LoginForm from './LoginForm.vue'
 import MegaMenuWV from './MegaMenuWV.vue'
 import DropdownMobileMenu from './UI/DropdownMobileMenu.vue'
 import UserMenu from './UserMenu.vue'
+import themeConfig from '@/config/themeConfig'
 
 export default {
   components: { LoginForm, UserMenu, DropdownMobileMenu, Cart, MegaMenuWV },
@@ -132,20 +133,11 @@ export default {
       this.$refs.sidebar.hide()
     },
     async suggest() {
-      const stores = {
-        CMW: 1,
-        CMW_UK: 2,
-        WILDVIGNERON: 3,
-      }
-      const activeStoreID = stores[this.$config.STORE]
-
       const elastic_url = this.$config.ELASTIC_URL
       if (this.search && this.search.length >= 3) {
         const result = await fetch(
           `${elastic_url
-            }autocomplete/search/?stores=${
-            activeStoreID
-            }&locale=${
+            }autocomplete/search/?stores=${themeConfig[this.$config.STORE].id}&locale=${
             this.$i18n.locale
             }&search=${
             this.search}`,

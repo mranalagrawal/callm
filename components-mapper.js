@@ -5,6 +5,9 @@ const components = {
   CMW_UK: {
     HomeBanner: 'HomeBanner',
   },
+  CMW_DE: {
+    HomeBanner: 'HomeBanner',
+  },
   WILDVIGNERON: {
     HomeBanner: 'HomeBannerWV',
   },
