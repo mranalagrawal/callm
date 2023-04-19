@@ -5,6 +5,7 @@ import closeIcon from 'assets/svg/close.svg'
 import debounce from 'lodash.debounce'
 import { storeToRefs } from 'pinia'
 import Loader from '../components/UI/Loader.vue'
+import { pick } from '@/utilities/arrays'
 import { useFilters } from '~/store/filters'
 import { getLocaleFromCurrencyCode } from '@/utilities/currency'
 
@@ -75,6 +76,13 @@ export default {
       results: null,
       activeSelections: [],
       total: 0,
+      seoData: {
+        pageTitle: null,
+        pageDescription: null,
+        seoTitle: null,
+        seoDescription: null,
+        mainFilters: [],
+      },
       filters: {
         winelists: [],
         pairings: [],
@@ -87,7 +95,6 @@ export default {
         agings: [],
         philosophies: [],
       },
-      selectedFilter: 'test',
       pagination: {
         prevPage: 0,
         nextPage: 0,
@@ -164,6 +171,25 @@ export default {
     }&`
 
     const searchResult = await fetch(`${elastic_url}${query}${sel}`)
+    let seo = await fetch(`${this.$config.ELASTIC_URL}product-list/seo?stores=${activeStoreID}&locale=${this.$i18n.locale}&${query}${sel}`)
+    seo = await seo.json()
+
+    if (seo) {
+      const pickedSeo = pick(seo, ['pageTitle', 'pageDescription', 'seoTitle', 'seoDescription'])
+
+      if (Object.values(pickedSeo).every(item => !item)) {
+        this.$sentry.captureException(new Error('Missing ALL SEO on listing page'))
+      } else {
+        Object.entries(pickedSeo).forEach(([k, v]) => {
+          if (!v)
+            this.$sentry.captureException(new Error(`Missing ${k} SEO on listing page`))
+        })
+
+        this.seoData = pickedSeo
+      }
+    } else {
+      this.$sentry.captureException(new Error('Something went wrong on SEO API on listing page'))
+    }
 
     // const allFields = await fetch(elastic_url)
     //
@@ -223,6 +249,7 @@ export default {
     const relation_filters = [
       'awards',
       'agings',
+      'categories',
       'philosophies',
       'winelists',
       'pairings',
@@ -552,7 +579,10 @@ export default {
             I risultati della tua ricerca
           </p>
         </div>
-        <div class="h3">
+        <div v-if="seoData.pageTitle" class="cmw-h3">
+          {{ seoData.pageTitle }}
+        </div>
+        <div v-else class="cmw-h3">
           {{ view.regions?.name }} {{ view.vintages?.name }}
           {{ view.pairings?.name }} {{ view.brands?.name }}
           {{ view.agings?.name }} {{ view.philosophies?.name }}
@@ -694,6 +724,7 @@ export default {
           </Button>
         </div>
       </div>
+      <p v-html="seoData.pageDescription" />
     </div>
     <div v-if="results" class="cmw-mt-2">
       <div v-if="results.length > 0" class="">

@@ -1,5 +1,5 @@
 /* import { apiEndpoint } from "./sm.json"; */
-import { join } from 'path'
+import { join } from 'node:path'
 
 // Todo: Move these function to external files
 // import getSitemapProducts from './utilities/getSitemapProducts'
@@ -7,7 +7,7 @@ import { join } from 'path'
 
 import fetch from 'node-fetch'
 
-const getPageProducts = async (lang, cursor = null) => {
+async function getPageProducts(lang, cursor = null) {
   let response = {}
   await fetch(process.env.DOMAIN, {
     async: true,
@@ -52,7 +52,7 @@ const getPageProducts = async (lang, cursor = null) => {
   return response
 }
 
-const getMoreProducts = async (lang, arr, endCursor) => {
+async function getMoreProducts(lang, arr, endCursor) {
   const { data } = await getPageProducts(lang, endCursor)
   if (!data?.products.nodes)
     return arr
@@ -73,7 +73,7 @@ const getMoreProducts = async (lang, arr, endCursor) => {
   else return arr
 }
 
-const getSitemapProducts = async (lang) => {
+async function getSitemapProducts(lang) {
   let arr = []
   const { data } = await getPageProducts(lang)
 
@@ -97,7 +97,7 @@ const getSitemapProducts = async (lang) => {
   return arr
 }
 
-const getBrands = async (query) => {
+async function getBrands(query) {
   let response = {}
   await fetch(`${process.env.ELASTIC_URL}brands/sitemap?${query}`, { method: 'GET' })
     .then(async res => await res.json())
@@ -107,7 +107,7 @@ const getBrands = async (query) => {
   return response
 }
 
-const getMoreBrands = async (arr, query) => {
+async function getMoreBrands(arr, query) {
   const { data, meta } = await getBrands(query)
   if (!data)
     return arr
@@ -126,7 +126,7 @@ const getMoreBrands = async (arr, query) => {
   else return arr
 }
 
-const getSitemapBrands = async () => {
+async function getSitemapBrands() {
   let arr = []
   const { data, meta } = await getBrands('paginate=300')
 
@@ -155,7 +155,7 @@ function requestMiddleware(request: RequestInit) {
   }
 } */
 
-const storeLocales = (store) => {
+function storeLocales(store) {
   /* { code: 'de', iso: 'de-DE', file: 'de.js', dir: 'ltr' },
   { code: 'fr', iso: 'fr-FR', file: 'fr.js', dir: 'ltr' }, */
 
@@ -461,7 +461,7 @@ export default {
 
   sentry: {
     dsn: 'https://8976f88cc7254b248b330a78ba72a074@o1240128.ingest.sentry.io/4504560369008640',
-    disabled: process.env.NODE_ENV !== 'production',
+    disabled: process.env.ENVIRONMENT !== 'prod',
     config: {
       browserTracing: {
         tracePropagationTargets: ['callmewine.co.uk'],
@@ -592,6 +592,7 @@ export default {
     SALECHANNEL: process.env.SALECHANNEL,
     DEFAULT_LOCALE: process.env.DEFAULT_LOCALE,
     CUSTOMER_API: process.env.CUSTOMER_API,
+    ENVIRONMENT: process.env.ENVIRONMENT,
     gtm: {
       id: process.env.GOOGLE_TAG_MANAGER_ID,
     },
