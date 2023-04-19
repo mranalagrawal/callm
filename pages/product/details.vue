@@ -5,9 +5,10 @@ import cartIcon from 'assets/svg/cart.svg'
 import heartFullIcon from 'assets/svg/heart-full.svg'
 import heartIcon from 'assets/svg/heart.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
+import emailIcon from 'assets/svg/email.svg'
 import { storeToRefs } from 'pinia'
 import { mapState } from 'vuex'
-import { SweetAlertToast } from '@/utilities/Swal'
+import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import { productFeatures } from '@/utilities/mappedProduct'
 import { getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
 import { pick } from '@/utilities/arrays'
@@ -21,19 +22,17 @@ export default {
     return context.$config.STORE
   },
   setup() {
-    const { $sentry } = useContext()
+    const { i18n, $sentry, $http, $config, $graphql, $cmwRepo, error, redirect } = useContext()
     const customerStore = useCustomer()
     const recentProductsStore = useRecentProductsStore()
     const { recentProducts } = storeToRefs(recentProductsStore)
 
-    const {
-      wishlistArr,
-      getCustomerType,
-    } = storeToRefs(customerStore)
+    const { wishlistArr, getCustomerType } = storeToRefs(customerStore)
+
     const { handleWishlist } = customerStore
-    const { $http, $config, i18n, $graphql, $cmwRepo, error, redirect } = useContext()
     const route = useRoute()
     const isOpen = ref(false)
+    const showRequestModal = ref(false)
     const product = ref({
       details: '',
       handle: '',
@@ -80,10 +79,10 @@ export default {
       },
     })
 
+    const { handleShowRequestModal } = useShowRequestModal()
+
     useFetch(async () => {
-      const { data } = await $http.$get(`${$config.ELASTIC_URL}product/${route.value.params.id}?lang=${i18n.locale}`, {
-        method: 'POST',
-      })
+      const { data } = await $http.$get(`${$config.ELASTIC_URL}product/${route.value.params.id}?lang=${i18n.locale}`)
       breadcrumb.value = data
 
       await $cmwRepo.products.getAll({
@@ -211,7 +210,10 @@ export default {
       heartIcon,
       heartFullIcon,
       favouriteIcon,
+      emailIcon,
+      showRequestModal,
       handleWishlist,
+      handleShowRequestModal,
       generateMetaLink,
     }
   },
@@ -483,6 +485,17 @@ export default {
                         <VueSvgIcon class="cmw-m-auto" :data="addIcon" width="14" height="14" color="white" />
                       </button>
                     </div>
+                  </div>
+                  <div v-else>
+                    <Button
+                      variant="ghost"
+                      class="cmw-gap-2 cmw-pl-2 cmw-pr-3 cmw-py-2"
+                      :aria-label="$t('enums.accessibility.role.MODAL_OPEN')"
+                      @click.native="() => handleShowRequestModal(productDetails.feId)"
+                    >
+                      <VueSvgIcon :data="emailIcon" width="30" height="auto" />
+                      <span class="cmw-text-sm" v-text="$t('common.cta.notifyMe')" />
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -805,11 +818,6 @@ export default {
 <style scoped>
 .svg-favourite {
   filter: brightness(100);
-}
-
-.selection-svg {
-  filter: brightness(0.7);
-  width: 36px;
 }
 
 :deep(.nav-tabs .nav-link) {

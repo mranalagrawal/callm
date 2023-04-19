@@ -17,7 +17,7 @@ export default {
         return
 
       await $cmwRepo.products.getAll({
-        first: 12,
+        first: recentProducts.value?.length,
         query: query.value,
       })
         .then(async ({ products = { nodes: [] } }) => {

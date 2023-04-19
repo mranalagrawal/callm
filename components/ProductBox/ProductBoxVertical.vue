@@ -8,6 +8,7 @@ import addIcon from 'assets/svg/add.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
 import emailIcon from 'assets/svg/email.svg'
 import { mapState } from 'vuex'
+import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import { productFeatures } from '@/utilities/mappedProduct'
 import { useCustomer } from '~/store/customer'
 import { pick } from '@/utilities/arrays'
@@ -27,12 +28,14 @@ export default {
     },
   },
   setup(props) {
+    const { $config } = useContext()
     const customerStore = useCustomer()
     const { wishlistArr, getCustomerType } = storeToRefs(customerStore)
     const { handleWishlist } = customerStore
-    const { $config } = useContext()
+    const { handleShowRequestModal } = useShowRequestModal()
 
     const isOpen = ref(false)
+    const showRequestModal = ref(false)
     const isHovering = ref(false)
 
     const availableFeatures = computed(() => {
@@ -68,8 +71,10 @@ export default {
       addIcon,
       subtractIcon,
       isOpen,
+      showRequestModal,
       isHovering,
       handleWishlist,
+      handleShowRequestModal,
     }
   },
   computed: {
@@ -255,6 +260,14 @@ export default {
               <VueSvgIcon class="cmw-m-auto" :data="subtractIcon" width="14" height="14" color="white" />
             </button>
           </div>
+        </div>
+        <div v-else>
+          <ButtonIcon
+            class="cmw-mr-4 cmw-mb-4 cmw-relative"
+            :icon="emailIcon"
+            :aria-label="$t('enums.accessibility.role.MODAL_OPEN')"
+            @click.native="() => handleShowRequestModal(product.details.feId)"
+          />
         </div>
       </div>
     </div>

@@ -12,5 +12,6 @@ export default {
     nextPage: 'Next page',
     goToCheckout: 'Go to the checkout',
     apply: 'Apply',
+    notifyMe: 'Notify me when it arrives',
   },
 }

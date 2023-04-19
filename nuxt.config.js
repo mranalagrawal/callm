@@ -290,6 +290,7 @@ export default {
   ],
 
   plugins: [
+    { src: '~/plugins/cmw-api.js' },
     { src: '~/plugins/repositories.js' },
     { src: '~/plugins/cookies.js' },
     { src: '~plugins/vee-validate', ssr: false },
@@ -587,6 +588,8 @@ export default {
     DOMAIN: process.env.DOMAIN,
     STOREFRONT_ACCESS_TOKEN: process.env.STOREFRONT_ACCESS_TOKEN,
     ELASTIC_URL: process.env.ELASTIC_URL,
+    CMW_API: process.env.CMW_API,
+    CMW_API_KEY: process.env.CMW_API_KEY,
     MAIN_COLOR: process.env.MAIN_COLOR,
     STORE: process.env.STORE === 'CMW' ? 'CMW_UK' : process.env.STORE,
     SALECHANNEL: process.env.SALECHANNEL,

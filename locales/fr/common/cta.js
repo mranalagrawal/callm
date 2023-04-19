@@ -12,5 +12,6 @@ export default {
     nextPage: 'Page suivante',
     goToCheckout: 'Aller à la caisse',
     apply: 'Appliquer',
+    notifyMe: 'Avertissez-moi quand il arrive',
   },
 }
