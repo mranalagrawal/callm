@@ -290,6 +290,7 @@ export default {
   ],
 
   plugins: [
+    { src: '~/plugins/vue-agile.js' },
     { src: '~/plugins/cmw-api.js' },
     { src: '~/plugins/repositories.js' },
     { src: '~/plugins/cookies.js' },
@@ -509,7 +510,7 @@ export default {
   },
 
   build: {
-    transpile: ['@prismicio/vue', 'swiper', 'vue-svg-icon', 'vee-validate/dist/rules'],
+    transpile: ['@prismicio/vue', 'swiper', 'vue-svg-icon', 'vee-validate/dist/rules', 'vue-agile'],
     loaders: {
       scss: {
         additionalData: `

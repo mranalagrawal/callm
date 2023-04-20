@@ -8,7 +8,7 @@ export default {
     const { $cmwRepo } = useContext()
     const productsRef = ref([])
     const { vendor: vendorRef } = toRefs(props)
-    const query = computed(() => `vendor:${vendorRef.value}`)
+    const query = computed(() => `vendor:'${vendorRef.value}'`)
 
     const { fetch } = useFetch(async () => {
       if (!vendorRef.value)
