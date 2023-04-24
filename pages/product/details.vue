@@ -23,7 +23,7 @@ export default {
     return context.$config.STORE
   },
   setup() {
-    const { i18n, $sentry, $http, $config, $graphql, $cmwRepo, error, redirect } = useContext()
+    const { i18n, $sentry, $config, $graphql, $cmwRepo, error, redirect } = useContext()
     const customerStore = useCustomer()
     const recentProductsStore = useRecentProductsStore()
     const { recentProducts } = storeToRefs(recentProductsStore)
@@ -34,7 +34,6 @@ export default {
     const route = useRoute()
     const isOpen = ref(false)
     const showRequestModal = ref(false)
-    const baseUrls = ['stage.callmewine.co.uk']
     const product = ref({
       details: '',
       handle: '',
@@ -163,8 +162,10 @@ export default {
 
     const cleanUrl = (str = '') =>
       (str
+        .replaceAll('stage.callmewine.com', '')
         .replaceAll('stage.callmewine.co.uk', '')
-        .replaceAll('callmewine.co.uk', ''))
+        .replaceAll('callmewine.co.uk', '')
+        .replaceAll('callmewine.com', ''))
 
     const breadcrumbs = computed(() => !productBreadcrumbs.value[i18n.locale]
       ? []

@@ -357,6 +357,18 @@ export default {
 
     this.loading = false
   },
+  head() {
+    return {
+      title: this.seoData?.seoDescription,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.seoData?.seoDescription,
+        },
+      ],
+    }
+  },
   allSelections: [
     'favourite',
     'artisanal',
