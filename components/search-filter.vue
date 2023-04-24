@@ -8,6 +8,7 @@ import Loader from '../components/UI/Loader.vue'
 import { pick } from '@/utilities/arrays'
 import { useFilters } from '~/store/filters'
 import { getLocaleFromCurrencyCode } from '@/utilities/currency'
+import themeConfig from '~/config/themeConfig'
 
 export default {
   components: { Loader },
@@ -154,19 +155,9 @@ export default {
         .join('&')
     }
 
-    const stores = {
-      CMW: 1,
-      CMW_UK: 2,
-      WILDVIGNERON: 3,
-    }
-
-    const activeStoreID = stores[this.$config.STORE]
-
     const elastic_url
       = `${this.$config.ELASTIC_URL
-    }products/search?stores=${
-      activeStoreID
-    }&locale=${
+    }products/search?stores=${themeConfig[this.$config.STORE].id}&locale=${
       this.$i18n.locale
     }&`
 

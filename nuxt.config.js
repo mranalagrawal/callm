@@ -168,6 +168,9 @@ function storeLocales(store) {
       { code: 'en', iso: 'en-GB', file: 'en.js', dir: 'ltr' },
       // { code: 'it', iso: 'it-IT', file: 'it.js', dir: 'ltr' }, // Todo: Remove this line
     ],
+    CMW_DE: [
+      { code: 'de', iso: 'de-DE', file: 'de.js', dir: 'ltr' },
+    ],
     WILDVIGNERON: [
       { code: 'en', iso: 'en-GB', file: 'en.js', dir: 'ltr' },
     ],
@@ -187,6 +190,22 @@ const SITEMAP = {
     },
   ],
   CMW_UK: [
+    {
+      path: '/sitemap_en_product_pages.xml',
+      routes: () => getSitemapProducts('EN'),
+      exclude: ['/**'],
+    },
+    {
+      path: '/sitemap_en_category_listing_pages.xml',
+      routes: async () => getSitemapBrands(),
+      exclude: ['/**'],
+    },
+    {
+      path: '/sitemap_en_editorial_other_pages.xml',
+      exclude: ['/product/**', '/search/**', '/profile', '/profile/**', '/catalog', '/privacy', '/terms-of-sales', '/cookie', '/business-gifts', '/cart', '/gift-cards', '/login', '/new-password', '/preview', '/recover', '/thank-you', '/winery'],
+    },
+  ],
+  CMW_DE: [
     {
       path: '/sitemap_en_product_pages.xml',
       routes: () => getSitemapProducts('EN'),
@@ -230,6 +249,13 @@ const THEME_COLORS = {
   "dark-secondary": #8e2440,
   "light-secondary": #da4865,
   `,
+  CMW_DE: `
+  "dark-primary": #11312b,
+  "light-primary": #155b53,
+  "darker-secondary": #751f3d,
+  "dark-secondary": #8e2440,
+  "light-secondary": #da4865,
+  `,
   WILDVIGNERON: `
     "dark-primary": #0B4C3C,
     "light-primary": #0B4C3C,
@@ -242,12 +268,14 @@ const THEME_COLORS = {
 const FONTS = {
   CMW: '"main": "Open Sans", "header": "Open Sans"',
   CMW_UK: '"main": "Open Sans", "header": "Open Sans"',
+  CMW_DE: '"main": "Open Sans", "header": "Open Sans"',
   WILDVIGNERON: '"main": "Readex Pro", "header": "Inknut Antiqua"',
 }
 
 const TITLE = {
   CMW: 'Callmewine',
   CMW_UK: 'Callmewine UK',
+  CMW_DE: 'Callmewine DE',
   WILDVIGNERON: 'Wild Vigneron',
 }
 

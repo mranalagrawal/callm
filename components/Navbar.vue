@@ -206,22 +206,12 @@ export default {
     },
     async suggest() {
       this.showSearchSuggestions = true
-      const stores = {
-        CMW: 1,
-        CMW_UK: 2,
-        WILDVIGNERON: 3,
-      }
-
-      const activeStoreID = stores[this.$config.STORE]
-
       const elastic_url = this.$config.ELASTIC_URL
 
       if (this.search && this.search.length >= 3) {
         const result = await fetch(
           `${elastic_url
-          }autocomplete/search/?stores=${
-          activeStoreID
-          }&locale=${
+          }autocomplete/search/?stores=${themeConfig[this.$config.STORE].id}&locale=${
           this.$i18n.locale
           }&search=${
           this.search}`,
