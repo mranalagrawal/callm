@@ -8,6 +8,7 @@ import subtractIcon from 'assets/svg/subtract.svg'
 import emailIcon from 'assets/svg/email.svg'
 import { storeToRefs } from 'pinia'
 import { mapState } from 'vuex'
+import { generateKey } from '@/utilities/strings'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import { productFeatures } from '@/utilities/mappedProduct'
 import { getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
@@ -33,6 +34,7 @@ export default {
     const route = useRoute()
     const isOpen = ref(false)
     const showRequestModal = ref(false)
+    const baseUrls = ['stage.callmewine.co.uk']
     const product = ref({
       details: '',
       handle: '',
@@ -47,18 +49,7 @@ export default {
       awards: [],
       priceLists: {},
     })
-    const breadcrumb = ref({
-      parent_category_name: '',
-      category_name: '',
-      region_name: '',
-      category_handle: '',
-      region_handle: '',
-      region_id: '',
-      category_id: '',
-      winelist_name: '',
-      winelist_handle: '',
-      winelist_id: '',
-    })
+    const productBreadcrumbs = ref({})
     const brandMetaFields = ref({
       key: '',
       subtitle: '',
@@ -82,9 +73,6 @@ export default {
     const { handleShowRequestModal } = useShowRequestModal()
 
     useFetch(async () => {
-      const { data } = await $http.$get(`${$config.ELASTIC_URL}product/${route.value.params.id}?lang=${i18n.locale}`)
-      breadcrumb.value = data
-
       await $cmwRepo.products.getAll({
         first: 1,
         query: `tag:P${route.value.params.id}`,
@@ -94,6 +82,7 @@ export default {
             product.value = products.edges[0].node
             productVariant.value = products.edges[0].node.variants.edges[0].node
             productDetails.value = JSON.parse(products.edges[0].node.details.value)
+            productBreadcrumbs.value = JSON.parse(products.nodes[0].breadcrumbs.value)
 
             if (route.value.params.pathMatch !== product.value.handle)
               return redirect(301, `/${product.value.handle}-${productDetails.value.key}.htm`)
@@ -172,6 +161,18 @@ export default {
       return [...wishlistArr.value].includes(`P${productDetails.value.feId}`)
     })
 
+    const cleanUrl = (str = '') =>
+      (str
+        .replaceAll('stage.callmewine.co.uk', '')
+        .replaceAll('callmewine.co.uk', ''))
+
+    const breadcrumbs = computed(() => !productBreadcrumbs.value[i18n.locale]
+      ? []
+      : productBreadcrumbs.value[i18n.locale].slice(0, -1).map(breadcrumb => ({
+        ...breadcrumb,
+        urlPath: cleanUrl(breadcrumb.handle),
+      })))
+
     const generateMetaLink = (arr = []) => {
       const hrefLangArr = !!arr.length && arr.map(el => ({
         hid: `alternate-${el[0]}`,
@@ -193,12 +194,13 @@ export default {
       product,
       productVariant,
       productDetails,
+      productBreadcrumbs,
       availableFeatures,
       isOnSale,
       isOnFavourite,
       finalPrice,
       strippedContent,
-      breadcrumb,
+      breadcrumbs,
       wishlistArr,
       brandMetaFields,
       brand,
@@ -248,6 +250,7 @@ export default {
     },
   },
   methods: {
+    generateKey,
     getPercent,
     getLocaleFromCurrencyCode,
     async addToUserCart() {
@@ -313,35 +316,14 @@ export default {
     </div>
     <template v-else>
       <div v-if="product.title && brandMetaFields">
-        <div v-if="breadcrumb" class="<md:cmw-hidden md:(cmw-flex cmw-items-center) cmw-my-2 cmw-font-sans cmw-text-sm">
-          <NuxtLink class="cmw-text-primary-400" :to="localePath(`/catalog`)" rel="nofollow">
-            {{ breadcrumb.parent_category_name }}
-          </NuxtLink>
-          <VueSvgIcon class="cmw-mx-1" width="12" height="12" :data="require(`@/assets/svg/chevron-right.svg`)" />
-          <NuxtLink
-            class="cmw-text-primary-400"
-            :to="localePath(`/${breadcrumb.category_handle}-${breadcrumb.category_id}.htm`)" rel="nofollow"
-          >
-            {{ breadcrumb.category_name }}
-          </NuxtLink>
-          <VueSvgIcon class="cmw-mx-1" width="12" height="12" :data="require(`@/assets/svg/chevron-right.svg`)" />
-          <NuxtLink
-            class="cmw-text-primary-400"
-            :to=" localePath(`/${breadcrumb.category_handle}-${breadcrumb.region_handle}-${breadcrumb.category_id}${breadcrumb.region_id}.htm`)"
-            rel="nofollow"
-          >
-            {{ breadcrumb.region_name }}
-          </NuxtLink>
-          <VueSvgIcon class="cmw-mx-1" width="12" height="12" :data="require(`@/assets/svg/chevron-right.svg`)" />
-          <NuxtLink
-            class="cmw-text-primary-400"
-            :to=" localePath(`/${breadcrumb.winelist_handle}-${breadcrumb.winelist_id}.htm`)"
-            rel="nofollow"
-          >
-            {{ breadcrumb.winelist_name }}
-          </NuxtLink>
-          <VueSvgIcon class="cmw-mx-1" width="12" height="12" :data="require(`@/assets/svg/chevron-right.svg`)" />
-          <span class="cmw-text-body">{{ breadcrumb.name }}</span>
+        <div v-if="!!breadcrumbs.length" class="<md:cmw-hidden md:(cmw-flex cmw-items-center) cmw-my-2 cmw-font-sans cmw-text-sm">
+          <div v-for="({ name, urlPath }) in breadcrumbs" :key="generateKey(name)">
+            <NuxtLink class="cmw-text-primary-400" :to="localePath(urlPath)" rel="nofollow">
+              {{ name }}
+            </NuxtLink>
+            <VueSvgIcon class="cmw-mx-1" width="12" height="12" :data="require(`@/assets/svg/chevron-right.svg`)" />
+          </div>
+          <span class="cmw-text-body">{{ productBreadcrumbs[$i18n.locale][productBreadcrumbs[$i18n.locale].length - 1].name }}</span>
         </div>
         <div class="md:(cmw-grid cmw-grid-cols-[40%_60%] cmw-max-h-[550px] cmw-my-4)">
           <!-- Image Section -->
