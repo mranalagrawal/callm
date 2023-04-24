@@ -52,20 +52,13 @@ export default {
         :key="i"
         :img-src="slide.image.url"
       >
-        <div class="h1">
-          <NuxtLink class="cmw-text-white hover:(cmw-text-white cmw-no-underline)" :to="localePath(slide.link)">
-            {{ slide.text }}
-          </NuxtLink>
-        </div>
-        <div>
-          <NuxtLink
-            :to="localePath(slide.link)"
-            class="btn btn-more px-3 py-2"
-            style="text-shadow: none; border-radius: 10px"
-          >
-            {{ slide.cta }}
-          </NuxtLink>
-        </div>
+        <NuxtLink
+          class="md:(cmw-w-[min(100%,_30vw)] cmw-leading-none) cmw-mr-auto cmw-h1 cmw-text-white hover:(cmw-text-white cmw-no-underline)"
+          :to="localePath(slide.link)"
+        >
+          {{ slide.text }}
+        </NuxtLink>
+        <Button class="cmw-w-max cmw-mt-8 cmw-py-2 cmw-text-shadow-none" variant="default-inverse" :to="localePath(slide.link)" :label="slide.cta" />
       </b-carousel-slide>
     </b-carousel>
     <b-carousel
@@ -90,15 +83,7 @@ export default {
         <div class="h1 cmw-text-white">
           {{ slide.text }}
         </div>
-        <div>
-          <nuxt-link
-            :to="slide.link"
-            class="btn text-uppercase bg-white text-light-secondary mb-5"
-            style="text-shadow: none"
-          >
-            {{ slide.cta }}
-          </nuxt-link>
-        </div>
+        <Button class="cmw-w-max cmw-py-2 cmw-mb-12 cmw-text-shadow-none" variant="default-inverse" :to="localePath(slide.link)" :label="slide.cta" />
       </b-carousel-slide>
     </b-carousel>
     <div class="onda">

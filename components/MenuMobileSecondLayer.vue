@@ -94,12 +94,12 @@ export default {
               {{ item.name }}
             </div>
             <div
-              v-for="({ marketing_image, third_level_name, third_level_link, second_level_name, marketing_cta }) in item.items"
+              v-for="({ marketing_image, third_level_name, third_level_link, second_level_name, marketing_cta, icon }) in item.items"
               :key="generateKey(third_level_name || second_level_name || marketing_cta || 'missing')"
               class="cmw-relative"
             >
               <Card
-                :bg-url="marketing_image.url" :title="third_level_name" :subtitle="marketing_cta"
+                :bg-url="marketing_image.url" :title="third_level_name" :subtitle="marketing_cta" :icon="icon"
                 @click.native="handleMarketingClick(third_level_link)"
               />
             </div>
