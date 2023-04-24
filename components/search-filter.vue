@@ -162,7 +162,7 @@ export default {
     }&`
 
     const searchResult = await fetch(`${elastic_url}${query}${sel}`)
-    let seo = await fetch(`${this.$config.ELASTIC_URL}product-list/seo?stores=${activeStoreID}&locale=${this.$i18n.locale}&${query}${sel}`)
+    let seo = await fetch(`${this.$config.ELASTIC_URL}product-list/seo?stores=${themeConfig[this.$config.STORE].id}&locale=${this.$i18n.locale}&${query}${sel}`)
     seo = await seo.json()
 
     if (seo) {
