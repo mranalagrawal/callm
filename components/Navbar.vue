@@ -3,6 +3,7 @@ import { computed, nextTick, onMounted, onUnmounted, ref, watch } from '@nuxtjs/
 import debounce from 'lodash.debounce'
 import { is } from 'vee-validate/dist/rules'
 import { mapGetters } from 'vuex'
+import themeConfig from '@/config/themeConfig'
 import { useHeaderSize } from '~/store/headerSize'
 import { useCustomer } from '~/store/customer'
 import logo from '~/assets/svg/logo-call-me-wine.svg'
