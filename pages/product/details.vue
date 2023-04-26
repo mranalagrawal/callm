@@ -171,7 +171,7 @@ export default {
       ? []
       : productBreadcrumbs.value[i18n.locale].slice(0, -1).map(breadcrumb => ({
         ...breadcrumb,
-        urlPath: cleanUrl(breadcrumb.handle),
+        urlPath: `/${cleanUrl(breadcrumb.handle)}`,
       })))
 
     const generateMetaLink = (arr = []) => {

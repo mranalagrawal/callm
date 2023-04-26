@@ -350,7 +350,7 @@ export default {
   },
   head() {
     return {
-      title: this.seoData?.seoDescription,
+      title: this.seoData?.seoTitle,
       meta: [
         {
           hid: 'description',
