@@ -23,7 +23,7 @@ export default {
     return context.$config.STORE
   },
   setup() {
-    const { i18n, $sentry, $config, $graphql, $cmwRepo, error, redirect } = useContext()
+    const { i18n, $sentry, $config, $graphql, $cmwRepo, error, redirect, localeLocation } = useContext()
     const customerStore = useCustomer()
     const recentProductsStore = useRecentProductsStore()
     const { recentProducts } = storeToRefs(recentProductsStore)
@@ -38,6 +38,7 @@ export default {
       details: '',
       handle: '',
       variants: { nodes: [] },
+      tags: [],
     })
     const productVariant = ref()
     const productDetails = ref({
@@ -47,6 +48,7 @@ export default {
       shortDescription: '',
       awards: [],
       priceLists: {},
+      redirectSeoUrl: {},
     })
     const productBreadcrumbs = ref({})
     const brandMetaFields = ref({
@@ -84,10 +86,10 @@ export default {
             productBreadcrumbs.value = JSON.parse(products.nodes[0].breadcrumbs.value)
 
             if (route.value.params.pathMatch !== product.value.handle)
-              return redirect(301, `/${product.value.handle}-${productDetails.value.key}.htm`)
+              return redirect(301, localeLocation(`/${product.value.handle}-${productDetails.value.key}.htm`))
 
-            // if (!productDetails.value.pricelists[$config.SALECHANNEL])
-            //   return redirect(301, 'urlFromBackend')
+            if (!product.value.tags.find(tag => tag === 'active'))
+              return redirect(301, localeLocation(`/${productDetails.value.redirectSeoUrl[i18n.locale]}`))
 
             // if (!productDetails.value.enabled)
             //   return redirect(301, productDetails.value.canonicalProductId ||
@@ -162,6 +164,7 @@ export default {
 
     const cleanUrl = (str = '') =>
       (str
+        .replaceAll(' ', '')
         .replaceAll('stage.callmewine.com', '')
         .replaceAll('stage.callmewine.co.uk', '')
         .replaceAll('callmewine.co.uk', '')
@@ -319,9 +322,7 @@ export default {
       <div v-if="product.title && brandMetaFields">
         <div v-if="!!breadcrumbs.length" class="<md:cmw-hidden md:(cmw-flex cmw-items-center) cmw-my-2 cmw-font-sans cmw-text-sm">
           <div v-for="({ name, urlPath }) in breadcrumbs" :key="generateKey(name)">
-            <NuxtLink class="cmw-text-primary-400" :to="localePath(urlPath)" rel="nofollow">
-              {{ name }}
-            </NuxtLink>
+            <NuxtLink class="cmw-text-primary-400" :to="localePath(urlPath)" rel="nofollow" v-text="name" />
             <VueSvgIcon class="cmw-mx-1" width="12" height="12" :data="require(`@/assets/svg/chevron-right.svg`)" />
           </div>
           <span class="cmw-text-body">{{ productBreadcrumbs[$i18n.locale][productBreadcrumbs[$i18n.locale].length - 1].name }}</span>

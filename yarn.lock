@@ -3615,6 +3615,14 @@ builtins@^5.0.1:
   dependencies:
     semver "^7.0.0"
 
+bukwild-stylus-library@^3.1.0:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/bukwild-stylus-library/-/bukwild-stylus-library-3.2.1.tgz#abea66a731d3339938daeb2dfc33bfa473bac1d4"
+  integrity sha512-MgaFjTgd0oJO2dwOTzKMig0bSMjzqndhNOCkV05rsPoNlmY/8weCdWFVWUwujGWMTdgRqYsa+oVjGy76KGBwLA==
+  dependencies:
+    stylus-easing "^1"
+    stylus-type-utils "^0"
+
 bytes@3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.0.0.tgz#d32815404d689699f85a4ea4fa8755dd13a96048"
@@ -8802,6 +8810,10 @@ nuxt-graphql-request@^6.0.3:
     graphql-request "5.1.0"
     ramda "0.28.0"
 
+"nuxt-ssr-screen-size@github:hugojerez/nuxt-ssr-screen-size":
+  version "1.0.0"
+  resolved "https://codeload.github.com/hugojerez/nuxt-ssr-screen-size/tar.gz/d1a23f89b6e6fcfc49b4e53bd2dd3d92519cfbb9"
+
 nuxt-windicss@^2.6.1:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/nuxt-windicss/-/nuxt-windicss-2.6.1.tgz#b1e3c4c1002f9464d3c2d30ba054c96ce9463f8a"
@@ -11516,6 +11528,16 @@ stylehacks@^4.0.0:
     postcss "^7.0.0"
     postcss-selector-parser "^3.0.0"
 
+stylus-easing@^1:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/stylus-easing/-/stylus-easing-1.0.0.tgz#1ba3177903a3d3c9605c83ebf71f1895b9b9e5a1"
+  integrity sha512-M2/GG/RXnrVZpXlrWC1gs8JXCXXrLENF33W1KQMhcmxKwTbGup4a1cJh+uZalQL8mLtfegocM+6+u0YHqvcgyg==
+
+stylus-type-utils@^0:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/stylus-type-utils/-/stylus-type-utils-0.0.3.tgz#f048334728bb5144ecd599c627553db64ea0a6bb"
+  integrity sha512-E1yoznMW1fFSm2OUF+oEp41KWSXoTYPEBgpRVAASVPG45mrnCZzs7qmA+0bjegJ9vLRPoYeX38mU3RJFk6BphQ==
+
 supports-color@^5.3.0:
   version "5.5.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-5.5.0.tgz#e2e69a44ac8772f78a1ec0b35b689df6530efc8f"
@@ -12417,6 +12439,13 @@ vue-slick-carousel@^1.0.6:
     lodash.pick "^4.4.0"
     resize-observer-polyfill "1.5.1"
     vue "^2.6.10"
+
+vue-ssr-carousel@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/vue-ssr-carousel/-/vue-ssr-carousel-2.2.0.tgz#887580e52a3072fea3d322f1dae65761f692a675"
+  integrity sha512-/0vlpGtOhEjHZiYYGyz3jp5NhXdHjFLIOUb+6dFeKDbzHe+y/x9qspIUzR4tFAJGR2Ap//c8jf5mpu1//o6cZw==
+  dependencies:
+    bukwild-stylus-library "^3.1.0"
 
 vue-style-loader@^4.1.0, vue-style-loader@^4.1.3:
   version "4.1.3"

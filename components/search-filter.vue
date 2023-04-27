@@ -1,10 +1,10 @@
 <script>
-import { nextTick, onMounted, onUnmounted, ref, watchEffect } from '@nuxtjs/composition-api'
+import { ref, watchEffect } from '@nuxtjs/composition-api'
 // import { getMappedProducts } from '@/utilities/mappedProduct'
 import closeIcon from 'assets/svg/close.svg'
-import debounce from 'lodash.debounce'
 import { storeToRefs } from 'pinia'
 import Loader from '../components/UI/Loader.vue'
+import useScreenSize from '@/components/composables/useScreenSize'
 import { pick } from '@/utilities/arrays'
 import { useFilters } from '~/store/filters'
 import { getLocaleFromCurrencyCode } from '@/utilities/currency'
@@ -17,25 +17,10 @@ export default {
   setup() {
     const filtersStore = useFilters()
     const { selectedLayout, availableLayouts } = storeToRefs(filtersStore)
-    const isDesktop = ref(false)
+    const { isDesktop } = useScreenSize()
+    const showPageFullDescription = ref(false)
     const showMoreFilters = ref(false)
     const showMobileFilters = ref(false)
-
-    const resizeListener = debounce(() => {
-      isDesktop.value = window.innerWidth > 991
-    }, 400)
-
-    onMounted(() => {
-      // Todo: Move this to a global composable when we implement VueUse
-      window.addEventListener('resize', resizeListener)
-      nextTick(() => {
-        resizeListener()
-      })
-    })
-
-    onUnmounted(() => {
-      window.removeEventListener('resize', resizeListener)
-    })
 
     watchEffect(() => {
       if (process.browser && document.body)
@@ -44,6 +29,7 @@ export default {
 
     return {
       isDesktop,
+      showPageFullDescription,
       showMoreFilters,
       showMobileFilters,
       availableLayouts,
@@ -82,6 +68,7 @@ export default {
         pageDescription: null,
         seoTitle: null,
         seoDescription: null,
+        pageFullDescription: '',
         mainFilters: [],
       },
       filters: {
@@ -166,7 +153,7 @@ export default {
     seo = await seo.json()
 
     if (seo) {
-      const pickedSeo = pick(seo, ['pageTitle', 'pageDescription', 'seoTitle', 'seoDescription'])
+      const pickedSeo = pick(seo, ['pageTitle', 'pageDescription', 'seoTitle', 'seoDescription', 'pageFullDescription'])
 
       if (Object.values(pickedSeo).every(item => !item)) {
         this.$sentry.captureException(new Error('Missing ALL SEO on listing page'))
@@ -880,6 +867,19 @@ export default {
       </div>
     </div>
 
+    <div v-if="seoData.pageFullDescription">
+      <div
+        class="cmw-relative cmw-overflow-hidden cmw-pb-8"
+        :class="showPageFullDescription
+          ? 'cmw-h-full'
+          : 'cmw-h-[200px] after:(cmw-content-DEFAULT cmw-absolute cmw-w-full cmw-h-1/2 cmw-bottom-0 cmw-left-0 cmw-bg-gradient-to-b cmw-from-transparent cmw-to-white)'"
+        v-html="seoData.pageFullDescription"
+      />
+      <Button v-if="!showPageFullDescription" class="cmw-justify-end cmw-pb-8" variant="text" @click.native="showPageFullDescription = true">
+        <span class="cmw-mr-2">{{ $t('common.cta.readMore') }}</span>
+        <VueSvgIcon width="18" height="18" :data="require(`@/assets/svg/chevron-down.svg`)" />
+      </Button>
+    </div>
     <Loader v-if="loading" />
 
     <div v-if="!isDesktop" class="cmw-sticky cmw-bottom-8 cmw-w-[min(100%,_14rem)] cmw-m-inline-auto">
@@ -1066,13 +1066,6 @@ export default {
 <style scoped>
 .c-scrollbar::-webkit-scrollbar {
   display:none;
-}
-
-.view-results {
-  border: 2px solid #d94965;
-  border-radius: 12px;
-  background-color: #d94965;
-  color: white;
 }
 
 .btn-sort-by:hover {

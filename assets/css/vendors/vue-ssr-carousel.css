@@ -1,0 +1,15 @@
+.ssr-carousel .ssr-carousel-dot-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: theme('colors.primary.100');
+  border-color: theme('colors.primary.100');
+  transform: scale(0.5);
+  transition: transform 300ms ease-in-out;
+}
+
+.ssr-carousel [aria-disabled] > .ssr-carousel-dot-icon {
+  transform: scale(1);
+  border-color: theme('colors.primary.DEFAULT');
+  background-color: theme('colors.primary.DEFAULT');
+}

@@ -156,17 +156,20 @@ function requestMiddleware(request: RequestInit) {
 } */
 
 function storeLocales(store) {
-  /* { code: 'de', iso: 'de-DE', file: 'de.js', dir: 'ltr' },
-  { code: 'fr', iso: 'fr-FR', file: 'fr.js', dir: 'ltr' }, */
-
   const obj = {
     CMW: [
       { code: 'en', iso: 'en-GB', file: 'en.js', dir: 'ltr' },
       { code: 'it', iso: 'it-IT', file: 'it.js', dir: 'ltr' },
     ],
+    B2B: [
+      { code: 'it', iso: 'it-IT', file: 'it.js', dir: 'ltr' },
+    ],
     CMW_UK: [
       { code: 'en', iso: 'en-GB', file: 'en.js', dir: 'ltr' },
       // { code: 'it', iso: 'it-IT', file: 'it.js', dir: 'ltr' }, // Todo: Remove this line
+    ],
+    CMW_FR: [
+      { code: 'fr', iso: 'fr-FR', file: 'fr.js', dir: 'ltr' },
     ],
     CMW_DE: [
       { code: 'de', iso: 'de-DE', file: 'de.js', dir: 'ltr' },
@@ -315,10 +318,10 @@ export default {
     // Vendors
     '@/assets/css/vendors/swal.css',
     '@/assets/css/vendors/vue-slick-carousel.css',
+    '@/assets/css/vendors/vue-ssr-carousel.css',
   ],
 
   plugins: [
-    { src: '~/plugins/vue-agile.js' },
     { src: '~/plugins/cmw-api.js' },
     { src: '~/plugins/repositories.js' },
     { src: '~/plugins/cookies.js' },
@@ -343,6 +346,7 @@ export default {
     //     'locales', 'middleware', 'pages', 'plugins', 'static'],
     //   fix: false,
     // }],
+    'vue-ssr-carousel/nuxt',
     '@nuxtjs/composition-api/module',
     ['@pinia/nuxt', { disableVuex: false }],
     '@nuxtjs/google-fonts',
@@ -538,7 +542,7 @@ export default {
   },
 
   build: {
-    transpile: ['@prismicio/vue', 'swiper', 'vue-svg-icon', 'vee-validate/dist/rules', 'vue-agile'],
+    transpile: ['@prismicio/vue', 'swiper', 'vue-svg-icon', 'vee-validate/dist/rules'],
     loaders: {
       scss: {
         additionalData: `
