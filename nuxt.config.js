@@ -245,6 +245,20 @@ const THEME_COLORS = {
   "dark-secondary": #8e2440,
   "light-secondary": #da4865,
   `,
+  B2B: `
+  "dark-primary": #11312b,
+  "light-primary": #155b53,
+  "darker-secondary": #751f3d,
+  "dark-secondary": #8e2440,
+  "light-secondary": #da4865,
+  `,
+  CMW_FR: `
+  "dark-primary": #11312b,
+  "light-primary": #155b53,
+  "darker-secondary": #751f3d,
+  "dark-secondary": #8e2440,
+  "light-secondary": #da4865,
+  `,
   CMW_UK: `
   "dark-primary": #11312b,
   "light-primary": #155b53,
@@ -270,14 +284,18 @@ const THEME_COLORS = {
 
 const FONTS = {
   CMW: '"main": "Open Sans", "header": "Open Sans"',
+  B2B: '"main": "Open Sans", "header": "Open Sans"',
   CMW_UK: '"main": "Open Sans", "header": "Open Sans"',
+  CMW_FR: '"main": "Open Sans", "header": "Open Sans"',
   CMW_DE: '"main": "Open Sans", "header": "Open Sans"',
   WILDVIGNERON: '"main": "Readex Pro", "header": "Inknut Antiqua"',
 }
 
 const TITLE = {
   CMW: 'Callmewine',
+  B2B: 'Callmewine B2B',
   CMW_UK: 'Callmewine UK',
+  CMW_FR: 'Callmewine FR',
   CMW_DE: 'Callmewine DE',
   WILDVIGNERON: 'Wild Vigneron',
 }
