@@ -1,37 +1,29 @@
 <script>
 // import locales from '../../locales-mapper'
 
-import { onBeforeUnmount, ref, useContext, useFetch, useRouter } from '@nuxtjs/composition-api'
+import { computed, onBeforeUnmount, ref, useContext, useFetch, useRouter } from '@nuxtjs/composition-api'
+import useScreenSize from '@/components/composables/useScreenSize'
+import { getMobileOperatingSystem } from '@/utilities/getOS'
 import { generateKey } from '@/utilities/strings'
 
 export default {
   setup() {
     const {
+      req,
       i18n,
       localeLocation,
       $prismic,
       $sentry,
+      $cookies,
     } = useContext()
     const router = useRouter()
 
     // Fixme: carousel is loading all images (mobile and desktop) when loading a desktop website
     const carousel = ref(null)
     const slides = ref([])
-    const isDesktop = ref(false)
-
-    const settings = {
-      navButtons: false,
-      dots: false,
-      responsive: [
-        {
-          breakpoint: 768,
-          settings: {
-            dots: false,
-            navButtons: true,
-          },
-        },
-      ],
-    }
+    const OS = ref($cookies.get('iOS'))
+    const isBrowser = ref(false)
+    const { isTablet, isDesktop, isDesktopWide, isDesktopWider, hasBeenSet } = useScreenSize()
 
     const { fetch } = useFetch(async () => {
       await $prismic.api.getSingle(
@@ -39,6 +31,12 @@ export default {
         { lang: i18n.localeProperties.iso.toLowerCase() },
       )
         .then(({ data }) => {
+          if (!process.browser) {
+            OS.value = getMobileOperatingSystem(req.headers['user-agent'])
+            $cookies.set('iOS', getMobileOperatingSystem(req.headers['user-agent']))
+          }
+
+          isBrowser.value = process?.browser
           slides.value = data.body[0].items
         })
         .catch((err) => {
@@ -46,28 +44,33 @@ export default {
         })
     })
 
-    const handleBreakpoint = ({ breakpoint }) => {
-      // Fixme: carousel is leaving alive instances
-      // carousel.value?.reload() // carousel.value?.destroy()
-      isDesktop.value = breakpoint > 0
-    }
-
     const handleMobileClick = (link) => {
-      if (isDesktop.value)
+      if (isTablet.value)
         return
 
       router.push(localeLocation(link))
     }
 
-    onBeforeUnmount(() => carousel.value.destroy())
+    const showDesktopImage = computed(() => {
+      if (hasBeenSet.value)
+        return isTablet.value
+      else
+        return (!isBrowser.value && !OS.value) || (isBrowser.value && isTablet.value)
+    })
+    onBeforeUnmount(() => slides.value = [])
 
     return {
-      settings,
+      showDesktopImage,
+      isTablet,
       isDesktop,
+      isDesktopWide,
+      isDesktopWider,
+      hasBeenSet,
+      OS,
+      isBrowser,
       fetch,
       carousel,
       slides,
-      handleBreakpoint,
       handleMobileClick,
     }
   },
@@ -88,16 +91,21 @@ export default {
 </script>
 
 <template>
-  <div class="cmw-relative">
-    <agile ref="carousel" :key="`${slides.length}-${isDesktop}`" :options="settings" :dots="false" @breakpoint="handleBreakpoint($event)">
+  <div v-if="slides.length" class="cmw-relative">
+    <SsrCarousel ref="carousel" :key="slides.length" :show-arrows="isDesktopWide" show-dots class="cmw-relative">
       <div
-        v-for="({ text, cta, image, link }) in slides" :key="generateKey(text)" class="slide cmw-relative cmw-w-full cmw-h-[505px] cmw-bg-cover cmw-bg-center cmw-overflow-hidden"
-        :style="`backgroundImage: url('${isDesktop ? image.url : image.mobile.url}')`"
+        v-for="({ text, cta, image, link }) in slides" :key="generateKey(text)" class="slide cmw-relative cmw-w-full cmw-h-[505px] cmw-overflow-hidden"
         @click="handleMobileClick(link)"
       >
-        <div class="cmw-grid cmw-grid-cols-[minmax(16px,_1fr)_minmax(100px,_1332px)_minmax(16px,_1fr)] cmw-justify-stretch cmw-h-full md:cmw-justify-center">
+        <div
+          class="cmw-absolute cmw-top-0 cmw-left-0 cmw-w-full cmw-h-full cmw-bg-cover cmw-bg-center"
+          :style="`backgroundImage: url('${showDesktopImage ? image.url : image.mobile.url}')`"
+        />
+        <div
+          class="c-carouselWrapper cmw-relative cmw-z-base cmw-grid cmw-justify-stretch cmw-h-full md:cmw-justify-center"
+        >
           <div />
-          <div class="cmw-grid cmw-grid-rows-2 md:(cmw-w-[min(100%,_30vw)] cmw-justify-center)">
+          <div class="cmw-grid cmw-grid-rows-2 md:(cmw-w-[min(100%,_30vw)]) xl:(cmw-w-[min(100%,_20vw)] cmw-justify-center)">
             <NuxtLink
               class="
               cmw-block cmw-pt-8 cmw-w-full cmw-self-start cmw-leading-none cmw-mr-auto cmw-h1 cmw-text-white
@@ -115,21 +123,22 @@ export default {
           <div />
         </div>
       </div>
-      <template #prevButton>
-        <div class="cmw-absolute cmw-w-12 cmw-h-12 cmw-bg-white cmw-rounded-sm cmw-flex cmw-left-20 cmw-top-2/5 cmw-translate-y-[-50%]">
+      <template #back-arrow>
+        <span class="cmw-absolute cmw-w-12 cmw-h-12 cmw-bg-white cmw-rounded-sm cmw-flex cmw-left-20 cmw-top-2/5 cmw-translate-y-[-50%]">
           <VueSvgIcon :data="require(`@/assets/svg/chevron-left.svg`)" color="#992545" width="20" height="20" class="cmw-m-auto" />
-        </div>
+        </span>
       </template>
-      <template #nextButton>
-        <div class="cmw-absolute cmw-w-12 cmw-h-12 cmw-bg-white cmw-rounded-sm cmw-flex cmw-right-20 cmw-top-2/5 cmw-translate-y-[-50%]">
+      <template #next-arrow>
+        <span class="cmw-absolute cmw-w-12 cmw-h-12 cmw-bg-white cmw-rounded-sm cmw-flex cmw-right-20 cmw-top-2/5 cmw-translate-y-[-50%]">
           <VueSvgIcon :data="require(`@/assets/svg/chevron-right.svg`)" color="#992545" width="20" height="20" class="cmw-m-auto" />
-        </div>
+        </span>
       </template>
-    </agile>
-    <div class="cmw-absolute cmw-left-0 cmw-bottom-0 cmw-w-full cmw-h-auto">
+    </SsrCarousel>
+    <div class="cmw-absolute cmw-left-0 cmw-bottom-[-2px] cmw-w-full cmw-h-auto">
       <VueSvgIcon
         class="cmw-m-auto"
-        :data="isDesktop ? require(`@/assets/svg/carousel-curve-desktop.svg`) : require(`@/assets/svg/carousel-curve-mobile.svg`)"
+        :data="showDesktopImage
+          ? require(`@/assets/svg/carousel-curve-desktop.svg`) : require(`@/assets/svg/carousel-curve-mobile.svg`)"
         width="100%"
         height="auto"
         original
@@ -137,3 +146,80 @@ export default {
     </div>
   </div>
 </template>
+
+<style scoped>
+.c-carouselWrapper {
+  --max-w: theme('screens.md');
+  grid-template-columns: minmax(16px, 1fr) minmax(100px, var(--max-w)) minmax(16px, 1fr);
+}
+
+::v-deep(.ssr-carousel-dots) {
+  margin-top: 0;
+  bottom: 0;
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+  transform: translateY(100%);
+}
+
+@screen md {
+  ::v-deep(.ssr-carousel-dots) {
+    width: 100%;
+    bottom: 100px;
+    justify-content: end;
+    padding-right: 40px;
+  }
+
+  ::v-deep(.ssr-carousel-dot-icon) {
+    background-color: theme('colors.white');
+    border-color: theme('colors.white');
+    opacity: 1;
+  }
+
+  ::v-deep([aria-disabled] > .ssr-carousel-dot-icon) {
+    background-color: theme('colors.primary.400');
+    border-color: theme('colors.primary.400');
+    opacity: 1;
+  }
+}
+
+@screen lg {
+  .c-carouselWrapper {
+    --max-w: theme('screens.lg');
+  }
+}
+
+@screen desktop-wide {
+  ::v-deep(.ssr-carousel-back-button) {
+    left: -2%;
+  }
+
+  ::v-deep(.ssr-carousel-next-button) {
+    right: -2%;
+  }
+}
+
+@screen xl {
+  .c-carouselWrapper {
+    --max-w: theme('screens.desktop');
+  }
+
+  ::v-deep(.ssr-carousel-dots) {
+    width: 100%;
+    bottom: 100px;
+    justify-content: end;
+    padding-right: 40px;
+  }
+
+}
+
+@screen desktop-wider {
+  ::v-deep(.ssr-carousel-back-button) {
+    left: 5%;
+  }
+
+  ::v-deep(.ssr-carousel-next-button) {
+    right: 5%;
+  }
+}
+</style>

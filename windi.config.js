@@ -91,6 +91,7 @@ export default defineConfig({
         'desktop': '1024px',
         'desktop-wide': '1280px',
         'xl': '1332px',
+        'desktop-wider': '1600px',
         '@hover': { raw: '(hover: hover)' },
       },
       boxShadow: {
