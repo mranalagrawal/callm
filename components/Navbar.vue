@@ -3,10 +3,9 @@ import { computed, nextTick, onMounted, onUnmounted, ref, watch } from '@nuxtjs/
 import debounce from 'lodash.debounce'
 import { is } from 'vee-validate/dist/rules'
 import { mapGetters } from 'vuex'
-import LoginForm from './LoginForm.vue'
-import DropdownMobileMenu from './UI/DropdownMobileMenu.vue'
-import UserMenu from './UserMenu.vue'
+import themeConfig from '@/config/themeConfig'
 import { useHeaderSize } from '~/store/headerSize'
+import { useCustomer } from '~/store/customer'
 import logo from '~/assets/svg/logo-call-me-wine.svg'
 import cartIcon from '~/assets/svg/cart.svg'
 import closeIcon from '~/assets/svg/close.svg'
@@ -14,11 +13,12 @@ import menuIcon from '~/assets/svg/menu.svg'
 import userIcon from '~/assets/svg/user.svg'
 import searchIcon from '~/assets/svg/search.svg'
 import heartIcon from '~/assets/svg/heart.svg'
+import LoginForm from '@/components/LoginForm.vue'
+import UserMenu from '@/components/UserMenu.vue'
 import UserActions from '@/components/Header/UserActions.vue'
-import { useCustomer } from '~/store/customer'
 
 export default {
-  components: { UserActions, LoginForm, UserMenu, DropdownMobileMenu },
+  components: { UserActions, LoginForm, UserMenu },
   setup() {
     const headerSize = useHeaderSize()
     const customer = useCustomer()
@@ -207,22 +207,12 @@ export default {
     },
     async suggest() {
       this.showSearchSuggestions = true
-      const stores = {
-        CMW: 1,
-        CMW_UK: 2,
-        WILDVIGNERON: 3,
-      }
-
-      const activeStoreID = stores[this.$config.STORE]
-
       const elastic_url = this.$config.ELASTIC_URL
 
       if (this.search && this.search.length >= 3) {
         const result = await fetch(
           `${elastic_url
-          }autocomplete/search/?stores=${
-          activeStoreID
-          }&locale=${
+          }autocomplete/search/?stores=${themeConfig[this.$config.STORE].id}&locale=${
           this.$i18n.locale
           }&search=${
           this.search}`,
@@ -430,9 +420,7 @@ export default {
     </div>
     <div v-if="isDesktop" class="d-none d-lg-block c-megaMenu cmw-fixed cmw-left-0 cmw-w-full cmw-bg-white">
       <div class="shadow-menu">
-        <div class="cmw-max-w-screen-xl cmw-mx-auto">
-          <MegaMenu />
-        </div>
+        <MegaMenu />
       </div>
     </div>
 

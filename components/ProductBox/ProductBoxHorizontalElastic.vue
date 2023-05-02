@@ -8,6 +8,7 @@ import heartIcon from 'assets/svg/heart.svg'
 import heartFullIcon from 'assets/svg/heart-full.svg'
 import { ref } from '@nuxtjs/composition-api'
 import { mapState } from 'vuex'
+import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import { productFeatures } from '@/utilities/mappedProduct'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { isObject } from '~/utilities/validators'
@@ -32,10 +33,11 @@ export default {
     const customerStore = useCustomer()
     const { wishlistArr, getCustomerType } = storeToRefs(customerStore)
     const { handleWishlist } = customerStore
+    const { handleShowRequestModal } = useShowRequestModal()
 
     const isOpen = ref(false)
 
-    return { wishlistArr, getCustomerType, heartIcon, heartFullIcon, cartIcon, emailIcon, addIcon, subtractIcon, isOpen, handleWishlist, stripHtml }
+    return { wishlistArr, getCustomerType, heartIcon, heartFullIcon, cartIcon, emailIcon, addIcon, subtractIcon, isOpen, handleWishlist, handleShowRequestModal, stripHtml }
   },
   computed: {
     ...mapState('userCart', {
@@ -214,7 +216,7 @@ hover:cmw-shadow-elevation"
       </div>
       <div
         class="cmw-grid cmw-gap-x-8 cmw-gap-y-2 cmw-my-8 cmw-grid-cols-[auto_1fr] cmw-text-sm"
-        :class="{ 'cmw-opacity-50': !product.isAvailableForSale }"
+        :class="{ 'cmw-opacity-50': !isAvailableForSale }"
       >
         <div
           class="cmw-font-bold"
@@ -313,6 +315,17 @@ hover:cmw-shadow-elevation"
               <VueSvgIcon class="cmw-m-auto" :data="addIcon" width="14" height="14" color="white" />
             </button>
           </div>
+        </div>
+        <div v-else>
+          <Button
+            variant="ghost"
+            class="cmw-gap-2 cmw-pl-2 cmw-pr-3 cmw-py-2"
+            :aria-label="$t('enums.accessibility.role.MODAL_OPEN')"
+            @click.native="handleShowRequestModal(product._source.feId)"
+          >
+            <VueSvgIcon :data="emailIcon" width="30" height="auto" />
+            <span class="cmw-text-sm" v-text="$t('common.cta.notifyMe')" />
+          </Button>
         </div>
       </div>
       <div class="cmw-absolute cmw-transform cmw-top-px cmw-left-1/2 cmw-translate-x-[-50%] cmw-translate-y-[-50%]">

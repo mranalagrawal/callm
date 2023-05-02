@@ -1,5 +1,5 @@
 /* import { apiEndpoint } from "./sm.json"; */
-import { join } from 'path'
+import { join } from 'node:path'
 
 // Todo: Move these function to external files
 // import getSitemapProducts from './utilities/getSitemapProducts'
@@ -7,7 +7,7 @@ import { join } from 'path'
 
 import fetch from 'node-fetch'
 
-const getPageProducts = async (lang, cursor = null) => {
+async function getPageProducts(lang, cursor = null) {
   let response = {}
   await fetch(process.env.DOMAIN, {
     async: true,
@@ -52,7 +52,7 @@ const getPageProducts = async (lang, cursor = null) => {
   return response
 }
 
-const getMoreProducts = async (lang, arr, endCursor) => {
+async function getMoreProducts(lang, arr, endCursor) {
   const { data } = await getPageProducts(lang, endCursor)
   if (!data?.products.nodes)
     return arr
@@ -73,7 +73,7 @@ const getMoreProducts = async (lang, arr, endCursor) => {
   else return arr
 }
 
-const getSitemapProducts = async (lang) => {
+async function getSitemapProducts(lang) {
   let arr = []
   const { data } = await getPageProducts(lang)
 
@@ -97,7 +97,7 @@ const getSitemapProducts = async (lang) => {
   return arr
 }
 
-const getBrands = async (query) => {
+async function getBrands(query) {
   let response = {}
   await fetch(`${process.env.ELASTIC_URL}brands/sitemap?${query}`, { method: 'GET' })
     .then(async res => await res.json())
@@ -107,7 +107,7 @@ const getBrands = async (query) => {
   return response
 }
 
-const getMoreBrands = async (arr, query) => {
+async function getMoreBrands(arr, query) {
   const { data, meta } = await getBrands(query)
   if (!data)
     return arr
@@ -126,7 +126,7 @@ const getMoreBrands = async (arr, query) => {
   else return arr
 }
 
-const getSitemapBrands = async () => {
+async function getSitemapBrands() {
   let arr = []
   const { data, meta } = await getBrands('paginate=300')
 
@@ -155,18 +155,24 @@ function requestMiddleware(request: RequestInit) {
   }
 } */
 
-const storeLocales = (store) => {
-  /* { code: 'de', iso: 'de-DE', file: 'de.js', dir: 'ltr' },
-  { code: 'fr', iso: 'fr-FR', file: 'fr.js', dir: 'ltr' }, */
-
+function storeLocales(store) {
   const obj = {
     CMW: [
       { code: 'en', iso: 'en-GB', file: 'en.js', dir: 'ltr' },
       { code: 'it', iso: 'it-IT', file: 'it.js', dir: 'ltr' },
     ],
+    B2B: [
+      { code: 'it', iso: 'it-IT', file: 'it.js', dir: 'ltr' },
+    ],
     CMW_UK: [
       { code: 'en', iso: 'en-GB', file: 'en.js', dir: 'ltr' },
       // { code: 'it', iso: 'it-IT', file: 'it.js', dir: 'ltr' }, // Todo: Remove this line
+    ],
+    CMW_FR: [
+      { code: 'fr', iso: 'fr-FR', file: 'fr.js', dir: 'ltr' },
+    ],
+    CMW_DE: [
+      { code: 'de', iso: 'de-DE', file: 'de.js', dir: 'ltr' },
     ],
     WILDVIGNERON: [
       { code: 'en', iso: 'en-GB', file: 'en.js', dir: 'ltr' },
@@ -187,6 +193,22 @@ const SITEMAP = {
     },
   ],
   CMW_UK: [
+    {
+      path: '/sitemap_en_product_pages.xml',
+      routes: () => getSitemapProducts('EN'),
+      exclude: ['/**'],
+    },
+    {
+      path: '/sitemap_en_category_listing_pages.xml',
+      routes: async () => getSitemapBrands(),
+      exclude: ['/**'],
+    },
+    {
+      path: '/sitemap_en_editorial_other_pages.xml',
+      exclude: ['/product/**', '/search/**', '/profile', '/profile/**', '/catalog', '/privacy', '/terms-of-sales', '/cookie', '/business-gifts', '/cart', '/gift-cards', '/login', '/new-password', '/preview', '/recover', '/thank-you', '/winery'],
+    },
+  ],
+  CMW_DE: [
     {
       path: '/sitemap_en_product_pages.xml',
       routes: () => getSitemapProducts('EN'),
@@ -223,7 +245,28 @@ const THEME_COLORS = {
   "dark-secondary": #8e2440,
   "light-secondary": #da4865,
   `,
+  B2B: `
+  "dark-primary": #11312b,
+  "light-primary": #155b53,
+  "darker-secondary": #751f3d,
+  "dark-secondary": #8e2440,
+  "light-secondary": #da4865,
+  `,
+  CMW_FR: `
+  "dark-primary": #11312b,
+  "light-primary": #155b53,
+  "darker-secondary": #751f3d,
+  "dark-secondary": #8e2440,
+  "light-secondary": #da4865,
+  `,
   CMW_UK: `
+  "dark-primary": #11312b,
+  "light-primary": #155b53,
+  "darker-secondary": #751f3d,
+  "dark-secondary": #8e2440,
+  "light-secondary": #da4865,
+  `,
+  CMW_DE: `
   "dark-primary": #11312b,
   "light-primary": #155b53,
   "darker-secondary": #751f3d,
@@ -241,13 +284,19 @@ const THEME_COLORS = {
 
 const FONTS = {
   CMW: '"main": "Open Sans", "header": "Open Sans"',
+  B2B: '"main": "Open Sans", "header": "Open Sans"',
   CMW_UK: '"main": "Open Sans", "header": "Open Sans"',
+  CMW_FR: '"main": "Open Sans", "header": "Open Sans"',
+  CMW_DE: '"main": "Open Sans", "header": "Open Sans"',
   WILDVIGNERON: '"main": "Readex Pro", "header": "Inknut Antiqua"',
 }
 
 const TITLE = {
   CMW: 'Callmewine',
+  B2B: 'Callmewine B2B',
   CMW_UK: 'Callmewine UK',
+  CMW_FR: 'Callmewine FR',
+  CMW_DE: 'Callmewine DE',
   WILDVIGNERON: 'Wild Vigneron',
 }
 
@@ -287,9 +336,11 @@ export default {
     // Vendors
     '@/assets/css/vendors/swal.css',
     '@/assets/css/vendors/vue-slick-carousel.css',
+    '@/assets/css/vendors/vue-ssr-carousel.css',
   ],
 
   plugins: [
+    { src: '~/plugins/cmw-api.js' },
     { src: '~/plugins/repositories.js' },
     { src: '~/plugins/cookies.js' },
     { src: '~plugins/vee-validate', ssr: false },
@@ -313,6 +364,7 @@ export default {
     //     'locales', 'middleware', 'pages', 'plugins', 'static'],
     //   fix: false,
     // }],
+    'vue-ssr-carousel/nuxt',
     '@nuxtjs/composition-api/module',
     ['@pinia/nuxt', { disableVuex: false }],
     '@nuxtjs/google-fonts',
@@ -461,7 +513,7 @@ export default {
 
   sentry: {
     dsn: 'https://8976f88cc7254b248b330a78ba72a074@o1240128.ingest.sentry.io/4504560369008640',
-    disabled: process.env.NODE_ENV !== 'production',
+    disabled: process.env.ENVIRONMENT !== 'prod',
     config: {
       browserTracing: {
         tracePropagationTargets: ['callmewine.co.uk'],
@@ -587,11 +639,14 @@ export default {
     DOMAIN: process.env.DOMAIN,
     STOREFRONT_ACCESS_TOKEN: process.env.STOREFRONT_ACCESS_TOKEN,
     ELASTIC_URL: process.env.ELASTIC_URL,
+    CMW_API: process.env.CMW_API,
+    CMW_API_KEY: process.env.CMW_API_KEY,
     MAIN_COLOR: process.env.MAIN_COLOR,
     STORE: process.env.STORE === 'CMW' ? 'CMW_UK' : process.env.STORE,
     SALECHANNEL: process.env.SALECHANNEL,
     DEFAULT_LOCALE: process.env.DEFAULT_LOCALE,
     CUSTOMER_API: process.env.CUSTOMER_API,
+    ENVIRONMENT: process.env.ENVIRONMENT,
     gtm: {
       id: process.env.GOOGLE_TAG_MANAGER_ID,
     },

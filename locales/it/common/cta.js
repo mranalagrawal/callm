@@ -11,6 +11,8 @@ export default {
     prevPage: 'Pagina Precedente',
     nextPage: 'Pagina successiva',
     goToCheckout: 'Vai alla cassa',
-    apply: 'Applica',
+    apply: 'Avvisami quando arriva',
+    notifyMe: 'Notify me when it arrives',
+    readMore: 'Leggi tutto',
   },
 }

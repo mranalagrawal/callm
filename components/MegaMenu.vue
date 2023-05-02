@@ -3,7 +3,9 @@ import { nextTick, onMounted, onUnmounted, ref, useContext, useRouter, watch } f
 import debounce from 'lodash.debounce'
 import promoTagIcon from 'assets/svg/promo-tag.svg'
 import ThirdLevel from './UI/ThirdLevel.vue'
+import { generateKey } from '@/utilities/strings'
 import { useHeaderSize } from '~/store/headerSize'
+
 export default {
   components: { ThirdLevel },
   setup() {
@@ -97,102 +99,91 @@ export default {
   watch: {
     '$i18n.locale': '$fetch',
   },
+  methods: { generateKey },
 }
 </script>
 
 <template>
-  <div
-    class="container-fluid position-relative px-md-0"
-    @mouseleave="onTab(null)"
-  >
-    <div ref="megaMenu" class="row align-items-center">
-      <div
-        v-for="(firstLevel, i) in data"
-        :key="i"
-        class="col text-center text-uppercase menu-link cmw-py-2"
-        @mouseenter="onTab(firstLevel)"
-      >
-        <button
-          class="cmw-uppercase cmw-no-underline hover:(!cmw-text-primary cmw-font-bold cmw-no-underline)"
-          :class="firstLevel.isPromotionTab ? '!cmw-text-primary-400' : '!cmw-text-body'"
-          @click="handleClick(`/${firstLevel.link}`)"
+  <div @mouseleave="onTab(null)">
+    <div ref="megaMenu" class="align-items-center">
+      <div class="cmw-max-w-screen-xl cmw-mx-auto cmw-flex cmw-items-center">
+        <div
+          v-for="(firstLevel, i) in data"
+          :key="i"
+          class="col text-center text-uppercase menu-link cmw-py-2"
+          @mouseenter="onTab(firstLevel)"
         >
-          <VueSvgIcon
-            v-if="firstLevel.isPromotionTab"
-            :data="promoTagIcon"
-            width="30"
-            height="30"
-            class="d-inline"
-          />
-          {{ firstLevel.name }}
-        </button>
+          <button
+            class="cmw-text-sm cmw-uppercase cmw-no-underline hover:(!cmw-text-primary cmw-font-bold cmw-no-underline)"
+            :class="firstLevel.isPromotionTab ? '!cmw-text-primary-400' : '!cmw-text-body'"
+            @click="handleClick(`/${firstLevel.link}`)"
+          >
+            <VueSvgIcon
+              v-if="firstLevel.isPromotionTab"
+              :data="promoTagIcon"
+              width="30"
+              height="30"
+              class="d-inline"
+            />
+            {{ firstLevel.name }}
+          </button>
+        </div>
       </div>
     </div>
     <div>
-      <div
-        v-if="selectedItem && !selectedItem.display_as_cards"
-        class="row bg-white pt-3 px-2"
-        style="
-        min-height: 300px;
-        z-index: 100;
-      "
-        @mouseleave="onTab(null)"
-      >
+      <transition>
         <div
-          v-for="(secondLevel, i) in selectedItem.items"
-          :key="i"
-          class="col"
-          :class="{ 'cmw-border-r cmw-border-r-gray ': (i + 1) < selectedItem.items.length }"
+          v-if="selectedItem && !selectedItem.display_as_cards"
+          class="cmw-grid cmw-grid-cols-[1fr_minmax(100px,_1332px)_1fr] cmw-bg-white cmw-min-h-[300px] cmw-border-t cmw-border-t-gray-light"
+          @mouseleave="onTab(null)"
         >
-          <p class="cmw-overline-2 cmw-uppercase cmw-text-secondary-700 cmw-font-semibold">
-            {{ secondLevel.name }}
-          </p>
-          <div v-for="(thirdLevel, j) in secondLevel.items" :key="j">
-            <ThirdLevel :third-level="thirdLevel" @close-banner="onTab(null)" />
+          <div class="cmw-bg-gray-lightest" />
+          <div class="cmw-col-start-2 cmw-flex">
+            <div
+              v-for="(secondLevel, i) in selectedItem.items"
+              :key="generateKey(`${secondLevel.name}-${i}`)"
+              class="cmw-flex-1 cmw-flex cmw-flex-col cmw-px-4"
+              :class="[
+                { 'cmw-border-r cmw-border-r-gray-light': (i + 1) < selectedItem.items.length },
+                { 'cmw-bg-gray-lightest': (i === 0) },
+              ]"
+            >
+              <p class="cmw-overline-2 cmw-uppercase cmw-text-secondary-700 cmw-font-semibold cmw-pt-4">
+                {{ secondLevel.name }}
+              </p>
+              <div class="cmw-flex cmw-flex-col cmw-h-full">
+                <ThirdLevel
+                  v-for="(thirdLevel, i) in secondLevel.items"
+                  :key="generateKey(`${thirdLevel.third_level_name}-${i}`)" :third-level="thirdLevel" @close-banner="onTab(null)"
+                />
+              </div>
+            </div>
+          </div>
+          <div />
+        </div>
+      </transition>
+      <transition>
+        <div
+          v-if="selectedItem && selectedItem.display_as_cards"
+          class="cmw-grid cmw-grid-cols-[minmax(100px,_1332px)] cmw-justify-center"
+          @mouseleave="onTab(null)"
+        >
+          <div v-for="(secondLevel, i) in selectedItem.items" :key="generateKey(`${secondLevel.name}-as-card-${i}`)" class="row">
+            <div class="col-12">
+              <p class="cmw-overline-2 cmw-uppercase cmw-text-secondary-700 cmw-font-semibold cmw-p-8">
+                {{ secondLevel.name }}
+              </p>
+            </div>
+            <div
+              v-for="(thirdLevel, j) in secondLevel.items"
+              :key="j"
+              class="col-12 col-md-6 col-lg-4 col-xl-3"
+            >
+              <ThirdLevel :third-level="thirdLevel" @close-banner="onTab(null)" />
+            </div>
           </div>
         </div>
-      </div>
-      <div
-        v-if="selectedItem && selectedItem.display_as_cards"
-        class="row bg-white pt-3 px-4"
-        style="
-        min-height: 300px;
-        z-index: 100;
-      "
-        @mouseleave="onTab(null)"
-      >
-        <div v-for="(secondLevel, i) in selectedItem.items" :key="i" class="row">
-          <div class="col-12">
-            <p class="cmw-overline-2 cmw-uppercase cmw-text-secondary-700 cmw-font-semibold cmw-p-8">
-              {{ secondLevel.name }}
-            </p>
-          </div>
-          <div
-            v-for="(thirdLevel, j) in secondLevel.items"
-            :key="j"
-            class="col-12 col-md-6 col-lg-4 col-xl-3"
-          >
-            <ThirdLevel :third-level="thirdLevel" @close-banner="onTab(null)" />
-          </div>
-        </div>
-      </div>
+      </transition>
     </div>
   </div>
 </template>
-
-<style scoped>
-.shadow-menu {
-  box-shadow: 0 0.5rem 0.75rem rgb(0 0 0 / 15%) !important;
-  border-bottom: 1px solid #ddd;
-}
-.menu-link {
-  color: black;
-  text-decoration: none;
-  font-size: 0.875rem;
-  font-weight: 600;
-}
-.menu-link:hover {
-  color: var(--dark-secondary);
-  text-decoration: none;
-}
-</style>

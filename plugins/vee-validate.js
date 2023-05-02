@@ -12,16 +12,19 @@ import { regexRules } from '~/utilities/validators'
 
 setInteractionMode('eager')
 
-export const lookUpLocale = k => ({
-  de,
-  en,
-  fr,
-  it,
-})[k]
+export function lookUpLocale(k) {
+  return ({
+    de,
+    en,
+    fr,
+    it,
+  })[k]
+}
 
 localize({
   en: {
     names: {
+      'notify-me-user-email': 'Email',
       'user-email': 'Email',
       'user-password': 'Password',
       'user-email-navbar': 'Email',
@@ -51,6 +54,7 @@ localize({
   },
   it: {
     names: {
+      'notify-me-user-email': 'Email',
       'user-email': 'Email',
       'user-password': 'Password',
       'user-email-navbar': 'Email',
@@ -80,6 +84,7 @@ localize({
   },
   fr: {
     names: {
+      'notify-me-user-email': 'E-mail',
       'user-email': 'E-mail',
       'user-password': 'Mot de passe',
       'user-email-navbar': 'E-mail',
@@ -109,6 +114,7 @@ localize({
   },
   de: {
     names: {
+      'notify-me-user-email': 'Email',
       'user-email': 'Email',
       'user-password': 'Passwort',
       'user-email-navbar': 'Email',

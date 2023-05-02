@@ -9,10 +9,11 @@ import RequestOrderAssistance from '~/components/UserProfile/RequestOrderAssista
 import UpdateCustomerData from '~/components/UserProfile/UpdateCustomerData.vue'
 import UpdateCustomerEmail from '~/components/UserProfile/UpdateCustomerEmail.vue'
 import UpdateCustomerPassword from '~/components/UserProfile/UpdateCustomerPassword.vue'
+import ProductRequestNotification from '~/components/ProductBox/ProductRequestNotification.vue'
 // noinspection JSUnusedGlobalSymbols
 export default {
   name: 'CmwSplash',
-  components: { EditCustomerAddress, CreateUserAddress, UpdateCustomerData, UpdateCustomerEmail, UpdateCustomerPassword },
+  components: { EditCustomerAddress, CreateUserAddress, UpdateCustomerData, UpdateCustomerEmail, UpdateCustomerPassword, ProductRequestNotification },
   setup() {
     const splash = useSplash()
     const { currentSplash, title, subtitle, size } = storeToRefs(splash)
@@ -36,6 +37,7 @@ export default {
       UpdateCustomerData,
       UpdateCustomerEmail,
       UpdateCustomerPassword,
+      ProductRequestNotification,
     })[key]
 
     watchEffect(() => {

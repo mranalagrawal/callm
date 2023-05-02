@@ -35,7 +35,7 @@ export default {
   },
   data() {
     return {
-      homebanner: components[this.$config.STORE].HomeBanner,
+      homeBanner: components[this.$config.STORE].HomeBanner,
       links: {
         'en-gb': 'https://www.callmewine.co.uk',
         'it': 'https://www.callmewine.com',
@@ -66,7 +66,7 @@ export default {
     <!-- <HomeBanner v-if="$config.THEME == 'default'" />
     <HomeBannerWV v-if="$config.THEME == 'wildvigneron'" /> -->
 
-    <component :is="homebanner" />
+    <component :is="homeBanner" />
 
     <client-only>
       <HomeBoxes />

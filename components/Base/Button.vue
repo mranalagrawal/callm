@@ -18,7 +18,7 @@ export default {
       default: 'sm',
     },
     variant: {
-      validator: prop => ['default', 'ghost', 'text'].includes(prop),
+      validator: prop => ['default', 'default-inverse', 'ghost', 'text'].includes(prop),
       default: 'default',
     },
   },
@@ -31,11 +31,21 @@ export default {
       })[this.size] || this.size
     },
 
+    getSpacing() {
+      return ({
+        'default': 'cmw-btn-base-spacing',
+        'default-inverse': 'cmw-btn-base-spacing',
+        'ghost': 'cmw-btn-base-spacing',
+        'text': 'cmw-px-1 cmw-py-2 md:(cmw-py-[0.8rem])',
+      })[this.$props.variant]
+    },
+
     getVariant() {
       return ({
-        default: 'cmw-btn-default disabled:(cmw-bg-gray-light)',
-        ghost: 'cmw-border-primary-400 cmw-text-primary-400 cmw-font-bold cmw-uppercase hover:(cmw-bg-primary-50 cmw-text-primary-400 cmw-no-underline)',
-        text: 'cmw-btn-text',
+        'default': 'cmw-btn-default disabled:(cmw-bg-gray-light)',
+        'default-inverse': 'cmw-font-secondary cmw-font-bold cmw-border-transparent cmw-bg-white cmw-text-primary-400 cmw-uppercase hover:(cmw-text-primary cmw-no-underline)',
+        'ghost': 'cmw-border-primary-400 cmw-text-primary-400 cmw-font-bold cmw-uppercase hover:(cmw-bg-primary-50 cmw-text-primary-400 cmw-no-underline)',
+        'text': 'cmw-btn-text',
       })[this.$props.variant]
     },
   },
@@ -48,7 +58,7 @@ export default {
     :to="$props.to"
     v-bind="$attrs"
     class="cmw-btn-base disabled:(cmw-text-gray cmw-cursor-not-allowed)"
-    :class="[getVariant(), getSize()]"
+    :class="[getVariant(), getSize(), getSpacing()]"
   >
     <slot>{{ $props.label }}</slot>
   </component>

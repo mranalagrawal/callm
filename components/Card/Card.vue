@@ -1,4 +1,6 @@
 <script>
+import { getIconByFeature } from '@/utilities/icons'
+
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Card',
@@ -28,6 +30,7 @@ export default {
     },
   },
   methods: {
+    getIconByFeature,
     getBgColor() {
       return ({
         gray: 'cmw-bg-gray-lightest',
@@ -48,6 +51,13 @@ export default {
       <span v-if="title" class="cmw-block cmw-overline-2 cmw-font-medium cmw-truncate cmw-mb-1" v-text="title" />
       <span v-if="subtitle" class="cmw-block cmw-line-clamp-2 cmw-leading-snug cmw-text-primary-400 cmw-text-sm" v-text="subtitle" />
     </span>
-    <span v-if="icon" class="cmw-w-full"><!-- Todo: Add icon when backend finish --></span>
+    <span v-if="icon" class="cmw-justify-self-end cmw-self-start cmw-p-2 cmw-text-gray">
+      <VueSvgIcon
+        :data="require(`@/assets/svg/${getIconByFeature(icon)}.svg`)"
+        class="cmw-block"
+        width="22"
+        height="auto"
+      />
+    </span>
   </button>
 </template>

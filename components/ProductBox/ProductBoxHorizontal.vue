@@ -8,6 +8,7 @@ import heartIcon from 'assets/svg/heart.svg'
 import heartFullIcon from 'assets/svg/heart-full.svg'
 import { computed, ref, useContext } from '@nuxtjs/composition-api'
 import { mapState } from 'vuex'
+import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import { productFeatures } from '@/utilities/mappedProduct'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { isObject } from '~/utilities/validators'
@@ -30,9 +31,10 @@ export default {
   },
   setup(props) {
     const customerStore = useCustomer()
+    const { $config } = useContext()
     const { wishlistArr, getCustomerType } = storeToRefs(customerStore)
     const { handleWishlist } = customerStore
-    const { $config } = useContext()
+    const { handleShowRequestModal } = useShowRequestModal()
 
     const isOpen = ref(false)
 
@@ -70,6 +72,7 @@ export default {
       subtractIcon,
       isOpen,
       handleWishlist,
+      handleShowRequestModal,
       stripHtml,
     }
   },
@@ -294,6 +297,17 @@ hover:cmw-shadow-elevation"
             <span class="cmw-text-sm" v-text="$t('product.notifyMe')" />
           </Button>
            -->
+        </div>
+        <div v-else>
+          <Button
+            variant="ghost"
+            class="cmw-gap-2 cmw-pl-2 cmw-pr-3 cmw-py-2"
+            :aria-label="$t('enums.accessibility.role.MODAL_OPEN')"
+            @click.native="handleShowRequestModal(product.details.feId)"
+          >
+            <VueSvgIcon :data="emailIcon" width="30" height="auto" />
+            <span class="cmw-text-sm" v-text="$t('common.cta.notifyMe')" />
+          </Button>
         </div>
       </div>
       <div class="cmw-absolute cmw-transform cmw-top-px cmw-left-1/2 cmw-translate-x-[-50%] cmw-translate-y-[-50%]">

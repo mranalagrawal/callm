@@ -6,7 +6,7 @@ import customerAccessTokenCreate from '~/graphql/mutations/authenticateUser'
 
 import { regexRules } from '@/utilities/validators'
 
-const setCustomerWishlist = (value) => {
+function setCustomerWishlist(value) {
   const json = JSON.parse(value)
   return json.filter(product => new RegExp(regexRules('isProduct')).test(product))
 }

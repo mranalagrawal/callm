@@ -12,5 +12,7 @@ export default {
     nextPage: 'Nächste Seite',
     goToCheckout: 'Gehen Sie zur Kasse',
     apply: 'Anwenden',
+    notifyMe: 'Benachrichtigen Sie mich, wenn es ankommt',
+    readMore: 'Lesen Sie alles',
   },
 }

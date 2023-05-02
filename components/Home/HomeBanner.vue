@@ -1,250 +1,225 @@
 <script>
-import locales from '../../locales-mapper'
+// import locales from '../../locales-mapper'
+
+import { computed, onBeforeUnmount, ref, useContext, useFetch, useRouter } from '@nuxtjs/composition-api'
+import useScreenSize from '@/components/composables/useScreenSize'
+import { getMobileOperatingSystem } from '@/utilities/getOS'
+import { generateKey } from '@/utilities/strings'
 
 export default {
-  data() {
+  setup() {
+    const {
+      req,
+      i18n,
+      localeLocation,
+      $prismic,
+      $sentry,
+      $cookies,
+    } = useContext()
+    const router = useRouter()
+
+    // Fixme: carousel is loading all images (mobile and desktop) when loading a desktop website
+    const carousel = ref(null)
+    const slides = ref([])
+    const OS = ref($cookies.get('iOS'))
+    const isBrowser = ref(false)
+    const { isTablet, isDesktop, isDesktopWide, isDesktopWider, hasBeenSet } = useScreenSize()
+
+    const { fetch } = useFetch(async () => {
+      await $prismic.api.getSingle(
+        'home-carousel',
+        { lang: i18n.localeProperties.iso.toLowerCase() },
+      )
+        .then(({ data }) => {
+          if (!process.browser) {
+            OS.value = getMobileOperatingSystem(req.headers['user-agent'])
+            $cookies.set('iOS', getMobileOperatingSystem(req.headers['user-agent']))
+          }
+
+          isBrowser.value = process?.browser
+          slides.value = data.body[0].items
+        })
+        .catch((err) => {
+          $sentry.captureException(new Error(`Catch getting slides from prismic: ${err}`))
+        })
+    })
+
+    const handleMobileClick = (link) => {
+      if (isTablet.value)
+        return
+
+      router.push(localeLocation(link))
+    }
+
+    const showDesktopImage = computed(() => {
+      if (hasBeenSet.value)
+        return isTablet.value
+      else
+        return (!isBrowser.value && !OS.value) || (isBrowser.value && isTablet.value)
+    })
+    onBeforeUnmount(() => slides.value = [])
+
     return {
-      data: null,
-      slide: 0,
-      sliding: null,
+      showDesktopImage,
+      isTablet,
+      isDesktop,
+      isDesktopWide,
+      isDesktopWider,
+      hasBeenSet,
+      OS,
+      isBrowser,
+      fetch,
+      carousel,
+      slides,
+      handleMobileClick,
     }
   },
-  async fetch() {
-    let lang = locales[this.$i18n.locale]
-
-    if (lang === 'en-gb' && this.$config.STORE === 'CMW')
-      lang = 'en-eu'
-
-    const response = await this.$prismic.api.getSingle('home-carousel', {
-      lang,
-    })
-    const data = response.data.body[0].items
-    this.data = data
-  },
   methods: {
-    onSlideStart() {
-      this.sliding = true
-    },
-    onSlideEnd() {
-      this.sliding = false
-    },
+    generateKey,
   },
 }
+// async fetch() {
+//   let lang = locales[this.$i18n.locale]
+//
+//   if (lang === 'en-gb' && this.$config.STORE === 'CMW')
+//     lang = 'en-eu'
+//
+//   const response = await this.$prismic.api.getSingle('home-carousel', {
+//     lang,
+//   })
+// },
 </script>
 
 <template>
-  <div class="position-relative" style="overflow: hidden">
-    <b-carousel
-      v-if="data"
-      id="carousel-1"
-      v-model="slide"
-      :interval="4000"
-      :controls="data.length > 1"
-      :indicators="data.length > 1"
-      background="#ababab"
-      style="text-shadow: 1px 1px 2px #333"
-      class="home-carousel d-none d-md-block"
-      @sliding-start="onSlideStart"
-      @sliding-end="onSlideEnd"
-    >
-      <b-carousel-slide
-        v-for="(slide, i) in data"
-        :key="i"
-        :img-src="slide.image.url"
+  <div v-if="slides.length" class="cmw-relative">
+    <SsrCarousel ref="carousel" :key="slides.length" :show-arrows="isDesktopWide" show-dots class="cmw-relative">
+      <div
+        v-for="({ text, cta, image, link }) in slides" :key="generateKey(text)" class="slide cmw-relative cmw-w-full cmw-h-[505px] cmw-overflow-hidden"
+        @click="handleMobileClick(link)"
       >
-        <div class="h1">
-          <NuxtLink class="cmw-text-white hover:(cmw-text-white cmw-no-underline)" :to="localePath(slide.link)">
-            {{ slide.text }}
-          </NuxtLink>
-        </div>
-        <div>
-          <NuxtLink
-            :to="localePath(slide.link)"
-            class="btn btn-more px-3 py-2"
-            style="text-shadow: none; border-radius: 10px"
-          >
-            {{ slide.cta }}
-          </NuxtLink>
-        </div>
-      </b-carousel-slide>
-    </b-carousel>
-    <b-carousel
-      v-if="data"
-      id="carousel-2"
-      v-model="slide"
-      :interval="4000"
-      :controls="data.length > 1"
-      :indicators="data.length > 1"
-      fade
-      background="#ababab"
-      style="text-shadow: 1px 1px 2px #333"
-      class="home-carousel d-md-none"
-      @sliding-start="onSlideStart"
-      @sliding-end="onSlideEnd"
-    >
-      <b-carousel-slide
-        v-for="(slide, i) in data"
-        :key="i"
-        :img-src="slide.image.mobile.url"
-      >
-        <div class="h1 cmw-text-white">
-          {{ slide.text }}
-        </div>
-        <div>
-          <nuxt-link
-            :to="slide.link"
-            class="btn text-uppercase bg-white text-light-secondary mb-5"
-            style="text-shadow: none"
-          >
-            {{ slide.cta }}
-          </nuxt-link>
-        </div>
-      </b-carousel-slide>
-    </b-carousel>
-    <div class="onda">
-      <svg
-        width="3840px"
-        height="148px"
-        viewBox="0 0 3840 148"
-        version="1.1"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
-      >
-        <title>Onda_3840@1</title>
-        <g
-          id="Onda_3840"
-          stroke="none"
-          stroke-width="1"
-          fill="none"
-          fill-rule="evenodd"
+        <div
+          class="cmw-absolute cmw-top-0 cmw-left-0 cmw-w-full cmw-h-full cmw-bg-cover cmw-bg-center"
+          :style="`backgroundImage: url('${showDesktopImage ? image.url : image.mobile.url}')`"
+        />
+        <div
+          class="c-carouselWrapper cmw-relative cmw-z-base cmw-grid cmw-justify-stretch cmw-h-full md:cmw-justify-center"
         >
-          <path
-            id="Combined-Shape"
-            d="M-569,148 L-569,20.3662102 C-405.287174,40.8088863 -322.507397,51.1344162 -320.660668,51.3427998 C-138.928633,71.8493163 1.12492311,78.6312979 99.5,71.6887445 C280.371464,58.9242331 494.524628,0 646.701493,0 C762.943373,0 878.040299,7.21186649 989.039971,23.9905006 C1133.50589,42.0303423 1206.6052,51.147121 1208.33933,51.3427998 C1390.07137,71.8493163 1530.12492,78.6312979 1628.5,71.6887445 C1809.37146,58.9242331 2023.52463,0 2175.70149,0 C2294.98992,0 2413.07259,7.59484721 2526.75894,25.3294944 C2664.12368,42.4815314 2733.64864,51.1520231 2735.33933,51.3427998 C2917.07137,71.8493163 3057.12492,78.6312979 3155.5,71.6887445 C3336.37146,58.9242331 3550.52463,0 3702.70149,0 C3861.0824,0 4017.33777,13.3883812 4164,46.1216729 C4165.02494,46.3504264 4246.02494,62.8585339 4407,95.6459954 L4407,95.6459954 L4407,148 L-569,148 Z"
-            fill="#fff"
-          />
-        </g>
-      </svg>
+          <div />
+          <div class="cmw-grid cmw-grid-rows-2 md:(cmw-w-[min(100%,_30vw)]) xl:(cmw-w-[min(100%,_20vw)] cmw-justify-center)">
+            <NuxtLink
+              class="
+              cmw-block cmw-pt-8 cmw-w-full cmw-self-start cmw-leading-none cmw-mr-auto cmw-h1 cmw-text-white
+              hover:(cmw-text-white cmw-no-underline)
+              md:cmw-self-end"
+              :to="localePath(link)"
+            >
+              {{ text }}
+            </NuxtLink>
+            <Button
+              class="cmw-hidden cmw-w-max cmw-self-end cmw-mt-8 cmw-py-2 cmw-text-shadow-none md:(cmw-block cmw-self-start)"
+              variant="default-inverse" :to="localePath(link)" :label="cta"
+            />
+          </div>
+          <div />
+        </div>
+      </div>
+      <template #back-arrow>
+        <span class="cmw-absolute cmw-w-12 cmw-h-12 cmw-bg-white cmw-rounded-sm cmw-flex cmw-left-20 cmw-top-2/5 cmw-translate-y-[-50%]">
+          <VueSvgIcon :data="require(`@/assets/svg/chevron-left.svg`)" color="#992545" width="20" height="20" class="cmw-m-auto" />
+        </span>
+      </template>
+      <template #next-arrow>
+        <span class="cmw-absolute cmw-w-12 cmw-h-12 cmw-bg-white cmw-rounded-sm cmw-flex cmw-right-20 cmw-top-2/5 cmw-translate-y-[-50%]">
+          <VueSvgIcon :data="require(`@/assets/svg/chevron-right.svg`)" color="#992545" width="20" height="20" class="cmw-m-auto" />
+        </span>
+      </template>
+    </SsrCarousel>
+    <div class="cmw-absolute cmw-left-0 cmw-bottom-[-2px] cmw-w-full cmw-h-auto">
+      <VueSvgIcon
+        class="cmw-m-auto"
+        :data="showDesktopImage
+          ? require(`@/assets/svg/carousel-curve-desktop.svg`) : require(`@/assets/svg/carousel-curve-mobile.svg`)"
+        width="100%"
+        height="auto"
+        original
+      />
     </div>
   </div>
 </template>
 
-<style lang="css" scoped>
-.home-carousel :deep(.carousel-indicators) {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin-right: 5%;
-  bottom: 90px;
+<style scoped>
+.c-carouselWrapper {
+  --max-w: theme('screens.md');
+  grid-template-columns: minmax(16px, 1fr) minmax(100px, var(--max-w)) minmax(16px, 1fr);
 }
 
-.home-carousel :deep(.carousel-indicators li) {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  opacity: 1;
-  border: 1px solid #ddd;
-  background-color: white;
-  margin: 0px 6px;
-}
-.home-carousel :deep(.carousel-indicators li.active) {
-  background-color: var(--dark-secondary);
-  width: 16px;
-  height: 16px;
-}
-
-.home-carousel :deep(.carousel-control-prev),
-.home-carousel :deep(.carousel-control-next) {
-  opacity: 1 !important;
-}
-
-.home-carousel :deep(.carousel-control-prev) {
-  left: -48px;
-}
-.home-carousel :deep(.carousel-control-next) {
-  right: -48px;
-}
-
-.home-carousel :deep(.carousel-control-prev-icon),
-.home-carousel :deep(.carousel-control-next-icon) {
-  background-color: white;
-  width: 48px;
-  height: 48px;
-  border-radius: 10px;
-  opacity: 1;
-}
-
-/*// TODO: Find a better carousel with template so we can custom the html structure */
-.home-carousel :deep(.carousel-control-prev-icon) {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iZGFya3JlZCIgY2xhc3M9ImJpIGJpLWNoZXZyb24tbGVmdCIgdmlld0JveD0iMCAwIDE2IDE2Ij4KICA8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMS4zNTQgMS42NDZhLjUuNSAwIDAgMSAwIC43MDhMNS43MDcgOGw1LjY0NyA1LjY0NmEuNS41IDAgMCAxLS43MDguNzA4bC02LTZhLjUuNSAwIDAgMSAwLS43MDhsNi02YS41LjUgMCAwIDEgLjcwOCAweiIvPgo8L3N2Zz4=") !important;
-  background-position: center;
-  background-size: 20px;
-}
-
-.home-carousel :deep(.carousel-control-next-icon) {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iZGFya3JlZCIgY2xhc3M9ImJpIGJpLWNoZXZyb24tcmlnaHQiIHZpZXdCb3g9IjAgMCAxNiAxNiI+CiAgPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBkPSJNNC42NDYgMS42NDZhLjUuNSAwIDAgMSAuNzA4IDBsNiA2YS41LjUgMCAwIDEgMCAuNzA4bC02IDZhLjUuNSAwIDAgMS0uNzA4LS43MDhMMTAuMjkzIDggNC42NDYgMi4zNTRhLjUuNSAwIDAgMSAwLS43MDh6Ii8+Cjwvc3ZnPg==") !important;
-  background-position: center;
-  background-size: 20px;
-}
-
-.home-carousel :deep(.carousel-item img) {
-  height: 505px;
-  object-fit: cover;
-}
-
-@media screen and (max-width: 760px) {
-  .home-carousel :deep(.carousel-item img) {
-    height: 450px;
-    object-fit: cover;
-  }
-}
-
-:deep(.carousel-caption) {
-  text-align: left;
-  top: 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  left: 10%;
-  right: 10%;
-}
-
-@media screen and (max-width: 760px) {
-  .home-carousel :deep(.carousel-control-prev),
-  .home-carousel :deep(.carousel-control-next) {
-    display: none !important;
-  }
-
-  .home-carousel :deep(.carousel-indicators) {
-    display: flex;
-    justify-content: center;
-    margin: 0 !important;
-    bottom: 30px;
-  }
-
-  :deep(.carousel-caption) {
-    text-align: left;
-    top: 0px;
-    justify-content: space-between;
-  }
-}
-
-.onda {
+::v-deep(.ssr-carousel-dots) {
+  margin-top: 0;
+  bottom: 0;
   position: absolute;
+  width: 100%;
   z-index: 1;
-  margin: -102px auto 0;
-  left: 50%;
-  transform: translate(-50%);
+  transform: translateY(100%);
 }
 
-.btn-more {
-  text-transform: uppercase;
-  background-color: white;
-  color: var(--light-secondary);
-  font-weight: 700;
+@screen md {
+  ::v-deep(.ssr-carousel-dots) {
+    width: 100%;
+    bottom: 100px;
+    justify-content: end;
+    padding-right: 40px;
+  }
+
+  ::v-deep(.ssr-carousel-dot-icon) {
+    background-color: theme('colors.white');
+    border-color: theme('colors.white');
+    opacity: 1;
+  }
+
+  ::v-deep([aria-disabled] > .ssr-carousel-dot-icon) {
+    background-color: theme('colors.primary.400');
+    border-color: theme('colors.primary.400');
+    opacity: 1;
+  }
 }
-.btn-more:hover {
-  background-color: var(--dark-secondary);
-  color: white;
+
+@screen lg {
+  .c-carouselWrapper {
+    --max-w: theme('screens.lg');
+  }
+}
+
+@screen desktop-wide {
+  ::v-deep(.ssr-carousel-back-button) {
+    left: -2%;
+  }
+
+  ::v-deep(.ssr-carousel-next-button) {
+    right: -2%;
+  }
+}
+
+@screen xl {
+  .c-carouselWrapper {
+    --max-w: theme('screens.desktop');
+  }
+
+  ::v-deep(.ssr-carousel-dots) {
+    width: 100%;
+    bottom: 100px;
+    justify-content: end;
+    padding-right: 40px;
+  }
+
+}
+
+@screen desktop-wider {
+  ::v-deep(.ssr-carousel-back-button) {
+    left: 5%;
+  }
+
+  ::v-deep(.ssr-carousel-next-button) {
+    right: 5%;
+  }
 }
 </style>

@@ -70,7 +70,7 @@ export default {
 
 <template>
   <div>
-    <ValidationObserver ref="registerFormEl" v-slot="{ handleSubmit }" slim>
+    <ValidationObserver v-slot="{ handleSubmit }" slim>
       <form class="px-4 pt-3 py-2 w-75 mx-auto" @submit.prevent="handleSubmit(onSubmit)">
         <InputField
           v-model="form.firstName"
