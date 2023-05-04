@@ -505,9 +505,13 @@ export default {
       const { page } = this.$route.query
 
       this.pagination.totalPages = totalPages
-      this.pagination.currentPage = Number(page?.value ?? 1)
+      this.pagination.currentPage = Number(page ?? 1)
       this.pagination.prevPage = this.pagination.currentPage > 1 ? this.pagination.currentPage - 1 : null
-      this.pagination.nextPage = totalPages ? (this.pagination.currentPage < totalPages.value ? this.pagination.currentPage + 1 : null) : this.pagination.currentPage + 1
+      this.pagination.nextPage = totalPages
+        ? (this.pagination.currentPage < totalPages
+            ? this.pagination.currentPage + 1
+            : null)
+        : this.pagination.currentPage + 1
       this.pagination.pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1)
         .filter(page => Math.abs(page - this.pagination.currentPage) < 4)
     },
