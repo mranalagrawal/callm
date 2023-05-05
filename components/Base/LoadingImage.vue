@@ -9,6 +9,7 @@ export default {
     source: { required: true },
     ignoreObserver: { type: Boolean },
     imgClasses: { type: String },
+    wrapper: { type: String, default: 'div' },
   },
   setup(props) {
     const { $sentry } = useContext()
@@ -75,10 +76,7 @@ export default {
 </script>
 
 <template>
-  <div
-    ref="el"
-    class="w-full"
-  >
+  <component :is="wrapper" ref="el" class="w-full">
     <img
       ref="imgEl"
       class="cmw-filter cmw-transition-lazy-image cmw-duration-600 cmw-text-xxs"
@@ -89,5 +87,5 @@ export default {
       :width="thumbnail.width"
       :height="thumbnail.height"
     >
-  </div>
+  </component>
 </template>

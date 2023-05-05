@@ -1,4 +1,5 @@
 <script>
+import { computed, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import cartIcon from 'assets/svg/cart.svg'
 import addIcon from 'assets/svg/add.svg'
@@ -6,15 +7,14 @@ import subtractIcon from 'assets/svg/subtract.svg'
 import emailIcon from 'assets/svg/email.svg'
 import heartIcon from 'assets/svg/heart.svg'
 import heartFullIcon from 'assets/svg/heart-full.svg'
-import { computed, ref, useContext } from '@nuxtjs/composition-api'
 import { mapState } from 'vuex'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import { productFeatures } from '@/utilities/mappedProduct'
-import { getLocaleFromCurrencyCode } from '~/utilities/currency'
+import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { isObject } from '~/utilities/validators'
 import { pick } from '~/utilities/arrays'
 import { useCustomer } from '~/store/customer'
-import { stripHtml } from '~/utilities/strings'
+import { cleanRoutesLocales, stripHtml } from '~/utilities/strings'
 import { SweetAlertToast } from '~/utilities/Swal'
 
 // noinspection JSUnusedGlobalSymbols
@@ -30,11 +30,13 @@ export default {
     },
   },
   setup(props) {
+    const { $config, localeLocation, $gtm } = useContext()
     const customerStore = useCustomer()
-    const { $config } = useContext()
     const { wishlistArr, getCustomerType } = storeToRefs(customerStore)
     const { handleWishlist } = customerStore
     const { handleShowRequestModal } = useShowRequestModal()
+    const router = useRouter()
+    const route = useRoute()
 
     const isOpen = ref(false)
 
@@ -57,6 +59,41 @@ export default {
 
     const isOnFavourite = computed(() => wishlistArr.value.includes(props.product.details.key))
     const isOnSale = computed(() => availableFeatures.value.includes('isInPromotion'))
+    const finalPrice = computed(() => props.product.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0)
+    const gtmProductData = computed(() => ({
+      ...props.product.gtmProductData,
+      price: finalPrice.value,
+    }))
+    const handleWishlistClick = () => {
+      handleWishlist({ id: props.product.details.key, isOnFavourite: isOnFavourite.value, gtmProductData: gtmProductData.value })
+    }
+
+    const handleProductCLick = (position = '') => {
+      const getActionField = () => {
+        if (route.value.path === '/')
+          return 'home'
+        else if (Object.keys(route.value.query).includes('search'))
+          return 'search_results'
+        else return route.value.meta?.actionField || cleanRoutesLocales(route.value.name)
+      }
+
+      $gtm.push({
+        event: 'productClick',
+        ecommerce: {
+          currencyCode: $nuxt.$config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
+          click: {
+            actionField: getActionField(),
+            products: [{
+              ...props.product.gtmProductData,
+              price: finalPrice.value,
+              position,
+            }],
+          },
+        },
+      })
+
+      router.push(localeLocation(props.product.url))
+    }
 
     return {
       wishlistArr,
@@ -68,10 +105,14 @@ export default {
       heartFullIcon,
       cartIcon,
       emailIcon,
+      gtmProductData,
       addIcon,
       subtractIcon,
       isOpen,
+      finalPrice,
       handleWishlist,
+      handleWishlistClick,
+      handleProductCLick,
       handleShowRequestModal,
       stripHtml,
     }
@@ -81,7 +122,7 @@ export default {
       userCart: 'userCart',
     }),
     isOnCart() {
-      return this.userCart.find(lineItem => lineItem.productVariantId === this.product.shopify_product_id)
+      return this.userCart.find(lineItem => lineItem.productVariantId === this.product.shopify_product_variant_id)
     },
     cartQuantity() {
       return this.isOnCart ? this.isOnCart.quantity : 0
@@ -89,12 +130,10 @@ export default {
     canAddMore() {
       return this.product.quantityAvailable - this.cartQuantity > 0
     },
-    finalPrice() {
-      return this.product.details.priceLists[this.$config.SALECHANNEL][this.getCustomerType]
-    },
   },
   methods: {
     getLocaleFromCurrencyCode,
+    getCountryFromStore,
     async addToUserCart() {
       this.isOpen = true
 
@@ -106,20 +145,25 @@ export default {
         return
       }
 
-      const productVariantId = this.product.shopify_product_id
+      const totalInventory = this.product.quantityAvailable
+      const id = this.product.shopify_product_variant_id
       const amount = this.finalPrice
       const amountFullPrice = Number(this.product.compareAtPrice.amount)
       const tag = this.product.tags[0]
       const image = this.product.image.source.url
       const title = this.product.title
+
       this.$store.commit('userCart/addProduct', {
-        productVariantId,
+        id,
         singleAmount: amount,
         singleAmountFullPrice: amountFullPrice,
         tag,
         image,
         title,
+        totalInventory,
+        gtmProductData: this.gtmProductData,
       })
+
       this.flashMessage.show({
         status: '',
         message: `${this.product.title} è stato aggiunto al carrello!`,
@@ -130,7 +174,10 @@ export default {
       })
     },
     async removeFromUserCart() {
-      this.$store.commit('userCart/removeProduct', this.product.shopify_product_id)
+      this.$store.commit('userCart/removeProduct', {
+        id: this.product.shopify_product_variant_id,
+        gtmProductData: this.product.gtmProductData,
+      })
     },
   },
 }
@@ -145,15 +192,16 @@ hover:cmw-shadow-elevation"
     <!-- Image Section -->
     <div class="cmw-relative cmw-p-2">
       <ClientOnly>
-        <NuxtLink :to="localePath(product.url)">
+        <button class="cmw-block cmw-mx-auto" @click="handleProductCLick">
           <LoadingImage
             class="cmw-filter hover:cmw-contrast-150 cmw-mx-auto cmw-mt-4"
             img-classes="cmw-w-full cmw-h-auto"
             :class="{ 'cmw-opacity-50': !product.availableForSale }"
             :thumbnail="product.image.thumbnail"
             :source="product.image.source"
+            wrapper="span"
           />
-        </NuxtLink>
+        </button>
       </ClientOnly>
       <div class="cmw-absolute cmw-top-4 cmw-left-2 cmw-flex cmw-flex-col cmw-gap-y-1">
         <!-- Todo: create a global tooltip that change position base on mouse position -->
@@ -163,18 +211,18 @@ hover:cmw-shadow-elevation"
         :icon="isOnFavourite ? heartFullIcon : heartIcon"
         class="cmw-absolute cmw-top-4 cmw-right-2" :variant="isOnFavourite ? 'icon-primary' : 'icon'"
         :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
-        @click.native="handleWishlist({ id: product.details.key, isOnFavourite })"
+        @click.native="handleWishlistClick"
       />
     </div>
     <!-- Content Section -->
     <div class="cmw-p-2">
       <div class="h4 cmw-mt-4">
-        <NuxtLink
-          :to="localePath(product.url)"
+        <button
           class="cmw-text-body hover:(cmw-text-primary-400 cmw-no-underline)"
+          @click="handleProductCLick"
         >
           {{ product.title }}
-        </NuxtLink>
+        </button>
       </div>
       <!-- <div>TODO: RATING STARS </div> -->
       <div class="cmw-flex cmw-gap-3 cmw-my-8">
@@ -232,6 +280,7 @@ hover:cmw-shadow-elevation"
           {{ $n(Number(product.compareAtPrice.amount), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode)) }}
         </span>
         <i18n-n
+          v-if="finalPrice"
           class="cmw-inline-block cmw-mb-3" :value="finalPrice" :format="{ key: 'currency' }"
           :locale="getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode)"
         >

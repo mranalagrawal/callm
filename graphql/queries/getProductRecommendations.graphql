@@ -3,24 +3,28 @@ query getProductRecommendations(
   $productId: ID!,
 ) @inContext(language: $lang) {
   productRecommendations(productId: $productId) {
-      availableForSale
-      id
-      featuredImage { altText, height, url, width }
-      seo { description, title }
-      tags
-      title
-      totalInventory
-      details: metafield(namespace: "custom", key: "details") {
-        value
+    availableForSale
+    id
+    featuredImage { altText, height, url, width }
+    seo { description, title }
+    tags
+    title
+    vendor
+    totalInventory
+    details: metafield(namespace: "custom", key: "details") {
+      value
+    }
+    breadcrumbs: metafield(namespace: "custom", key: "breadcrumbs") {
+      value
+    }
+    variants(first: 1) {
+      nodes {
+        id
+        compareAtPriceV2 { amount, currencyCode }
+        priceV2 { amount, currencyCode }
+        quantityAvailable
       }
-      variants(first: 1) {
-        nodes {
-          id
-          compareAtPriceV2 { amount, currencyCode }
-          priceV2 { amount, currencyCode }
-          quantityAvailable
-        }
-      }
+    }
   }
 }
 

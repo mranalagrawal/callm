@@ -68,6 +68,15 @@ export const useCustomer = defineStore({
         this.$nuxt.app.$cookieHelpers.setToken(token)
         this.$nuxt.$graphql.default.setHeader('authorization', `Bearer ${token}`)
         valid = true
+        this.$nuxt.$gtm.push({
+          event: 'login',
+          userType: this.getCustomerType,
+          userId: this.customer.id,
+          userFirstName: this.customer.firstName,
+          userLastName: this.customer.lastName,
+          userEmail: this.customer.email,
+          userPhone: this.customer.phone,
+        })
       } else {
         SweetAlertToast.fire({
           icon: 'error',
@@ -96,10 +105,20 @@ export const useCustomer = defineStore({
         })
     },
     async logout() {
+      this.$nuxt.$gtm.push({
+        event: 'logout',
+        userType: this.getCustomerType,
+        userId: this.customer.id,
+        userFirstName: this.customer.firstName,
+        userLastName: this.customer.lastName,
+        userEmail: this.customer.email,
+        userPhone: this.customer.phone,
+      })
       this.$nuxt.store.commit('user/setUser', null)
       await this.$nuxt.$cookieHelpers.onLogout()
       this.$reset()
       this.$nuxt.$graphql.default.setHeader('authorization', '')
+      window.google_tag_manager[this.$nuxt.app.$config.gtm.id] && window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.reset()
       await this.$nuxt.app.router.push(this.$nuxt.app.localePath('/'))
     },
 
@@ -118,6 +137,20 @@ export const useCustomer = defineStore({
             iconHtml: getIconAsImg('success'),
             text: this.$nuxt.app.i18n.t(args.isOnFavourite ? 'common.feedback.OK.wishlistRemoved' : 'common.feedback.OK.wishlistAdded'),
           })
+
+          if (!args.isOnFavourite) {
+            this.$nuxt.$gtm.push({
+              event: 'addToWishlist',
+              ecommerce: {
+                currencyCode: this.$nuxt.app.$config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
+                add: {
+                  products: [{
+                    ...args.gtmProductData,
+                  }],
+                },
+              },
+            })
+          }
         })
         .catch(() => {
           SweetAlertToast.fire({

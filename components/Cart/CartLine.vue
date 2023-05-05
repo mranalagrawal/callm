@@ -1,4 +1,8 @@
 <script>
+import deleteIcon from 'assets/svg/delete.svg'
+import addIcon from 'assets/svg/add.svg'
+import subtractIcon from 'assets/svg/subtract.svg'
+
 export default {
   name: 'CartLine',
   props: {
@@ -7,31 +11,50 @@ export default {
   },
   data() {
     return {
+      deleteIcon,
+      addIcon,
+      subtractIcon,
       quantity: this.item.quantity,
     }
   },
   computed: {
     userCartQuantity() {
       const isInCart = this.$store.state.userCart.userCart.find(el =>
-        el.productVariantId.includes(this.item.productVariantId),
+        el.productVariantId?.includes(this.item.productVariantId),
       )
 
       return isInCart ? isInCart.quantity : 0
+    },
+    canAddMore() {
+      return this.item.totalInventory - this.userCartQuantity > 0
     },
   },
   methods: {
     async increaseQuantity() {
       if (this.item.totalInventory === this.userCartQuantity)
         return
+
       this.$store.commit('userCart/addProduct', {
-        productVariantId: this.item.productVariantId,
+        id: this.item.productVariantId,
+        gtmProductData: this.item.gtmProductData || {},
       })
     },
     async decreaseQuantity() {
-      this.$store.commit('userCart/removeProduct', this.item.productVariantId)
+      this.$store.commit('userCart/removeProduct', {
+        id: this.item.productVariantId,
+        gtmProductData: this.item.gtmProductData || {},
+      })
     },
-    async remove() {
-      this.$store.commit('userCart/removeLine', this.item.productVariantId)
+    async removeLine() {
+      this.$store.commit('userCart/removeLine', {
+        id: this.item.productVariantId,
+        gtmProductData: !this.item.gtmProductData
+          ? {}
+          : {
+              ...this.item.gtmProductData,
+              quantity: this.item.quantity,
+            },
+      })
     },
   },
 }
@@ -47,23 +70,31 @@ export default {
         </p>
       </div>
       <div class="col-2 d-md-none mb-3">
-        <button class="btn">
-          <i
-            class="fal fa-trash-alt text-light-secondary"
-            @click="remove()"
-          />
-        </button>
+        <ButtonIcon :icon="deleteIcon" variant="icon" :size="22" @click.native="removeLine" />
       </div>
       <div
-        class="col-4 offset-2 offset-md-0 col-md-2 d-flex justify-content-center align-items-center"
+        class="col-4 offset-2 offset-md-0 col-md-2"
       >
-        <button class="btn btn-change-quantity" @click="decreaseQuantity">
-          <i class="fal fa-minus" />
-        </button>
-        <span class="mb-0 mx-3">{{ userCartQuantity }}</span>
-        <button class="btn btn-change-quantity" @click="increaseQuantity">
-          <i class="fal fa-plus" />
-        </button>
+        <div class="cmw-grid cmw-grid-cols-[32px_auto_32px] cmw-h-[32px] cmw-items-center">
+          <button
+            class="cmw-flex cmw-transition-colors cmw-w-full cmw-h-full cmw-bg-white cmw-rounded-sm cmw-border-2 cmw-border-primary
+            disabled:(cmw-border-gray-light cmw-opacity-50 cmw-cursor-not-allowed)"
+            :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
+            @click="decreaseQuantity"
+          >
+            <VueSvgIcon class="cmw-m-auto" :data="subtractIcon" width="14" height="14" color="#992545" />
+          </button>
+          <span class="mb-0 mx-3">{{ userCartQuantity }}</span>
+          <button
+            class="cmw-flex cmw-transition-colors cmw-w-full cmw-h-full cmw-bg-white cmw-rounded-sm cmw-border-2 cmw-border-primary
+               disabled:(cmw-border-gray-light cmw-opacity-50 cmw-cursor-not-allowed)"
+            :disabled="!canAddMore"
+            :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
+            @click="increaseQuantity"
+          >
+            <VueSvgIcon class="cmw-m-auto" :data="addIcon" width="14" height="14" color="#992545" />
+          </button>
+        </div>
       </div>
       <div class="col-6 col-md-2">
         <p
@@ -72,21 +103,16 @@ export default {
           style="text-decoration: line-through"
         >
           {{ (item.quantity * item.singleAmountFullPrice).toFixed(2) }}
-          {{ $config.STORE === "CMW_UK" ? "£" : "€" }}
+          {{ $config.STORE === 'CMW_UK' ? '£' : '€' }}
         </p>
 
         <p class="mb-0 font-weight-bold text-right">
           {{ (item.quantity * item.singleAmount).toFixed(2) }}
-          {{ $config.STORE === "CMW_UK" ? "£" : "€" }}
+          {{ $config.STORE === 'CMW_UK' ? '£' : '€' }}
         </p>
       </div>
       <div class="d-none d-md-block col-md-1 text-right">
-        <button class="btn">
-          <i
-            class="fal fa-trash-alt text-light-secondary"
-            @click="remove()"
-          />
-        </button>
+        <ButtonIcon :icon="deleteIcon" variant="icon" :size="22" @click.native="removeLine" />
       </div>
       <div v-if="!isLast" class="col-12">
         <hr class="cmw-w-11/12 ml-auto">
@@ -94,17 +120,3 @@ export default {
     </div>
   </div>
 </template>
-
-<style scoped>
-.btn-change-quantity {
-  border-radius: 10px;
-  width: 32px;
-  height: 32px;
-  border: 2px solid;
-  background: white;
-  color: var(--light-secondary);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-</style>

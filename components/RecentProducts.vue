@@ -23,7 +23,7 @@ export default {
         .then(async ({ products = { nodes: [] } }) => {
           if (products.nodes.length)
             productsRef.value = getMappedProducts(products.nodes)
-        }).catch(err => console.log(err))
+        }).catch(err => $sentry.captureException(new Error(`Catch getting products getAll from shopify on Recent Products on Vendor Products: ${err}`)))
     })
 
     watch(() => query.value, () => fetch())

@@ -117,7 +117,7 @@ export default {
           >
             <ProductBoxVertical
               v-for="product in customerProducts"
-              :key="product.id"
+              :key="product.shopify_product_id"
               :product="product"
               :is-desktop="isDesktop"
             />

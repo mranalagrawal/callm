@@ -1,5 +1,14 @@
 <script>
-import { computed, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api'
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  ref,
+  useContext,
+  useFetch,
+  useMeta,
+  useRoute,
+} from '@nuxtjs/composition-api'
 import addIcon from 'assets/svg/add.svg'
 import cartIcon from 'assets/svg/cart.svg'
 import heartFullIcon from 'assets/svg/heart-full.svg'
@@ -8,17 +17,19 @@ import subtractIcon from 'assets/svg/subtract.svg'
 import emailIcon from 'assets/svg/email.svg'
 import { storeToRefs } from 'pinia'
 import { mapState } from 'vuex'
+import { SweetAlertToast } from '@/utilities/Swal'
 import { generateKey } from '@/utilities/strings'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import { productFeatures } from '@/utilities/mappedProduct'
-import { getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
+import { getCountryFromStore, getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
 import { pick } from '@/utilities/arrays'
 import { useRecentProductsStore } from '@/store/recent'
 import { useCustomer } from '@/store/customer'
+import useGtm from '@/components/composables/useGtm'
 import favouriteIcon from '~/assets/svg/selections/favourite.svg'
 import getArticles from '~/graphql/queries/getArticles'
 
-export default {
+export default defineComponent({
   layout(context) {
     return context.$config.STORE
   },
@@ -27,8 +38,9 @@ export default {
     const customerStore = useCustomer()
     const recentProductsStore = useRecentProductsStore()
     const { recentProducts } = storeToRefs(recentProductsStore)
+    const { getCustomerGtmData, gtmPushPage } = useGtm()
 
-    const { wishlistArr, getCustomerType } = storeToRefs(customerStore)
+    const { customer, wishlistArr, customerId, getCustomerType } = storeToRefs(customerStore)
 
     const { handleWishlist } = customerStore
     const route = useRoute()
@@ -37,14 +49,21 @@ export default {
     const product = ref({
       details: '',
       handle: '',
+      id: '',
       variants: { nodes: [] },
+      title: '',
       tags: [],
+      seo: {
+        description: '',
+        title: '',
+      },
     })
     const productVariant = ref()
     const productDetails = ref({
       brandId: '',
       canonical: '',
       feId: '',
+      hrefLang: {},
       shortDescription: '',
       awards: [],
       priceLists: {},
@@ -155,7 +174,7 @@ export default {
     const finalPrice = computed(() => {
       if (!productDetails.value.feId)
         return false
-      return productDetails.value.priceLists[$config.SALECHANNEL][getCustomerType.value]
+      return productDetails.value.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0
     })
 
     const isOnFavourite = computed(() => {
@@ -194,7 +213,50 @@ export default {
       ]
     }
 
+    onMounted(() => {
+      process.browser && gtmPushPage('product', {
+        event: 'productDetailView',
+        ecommerce: {
+          currencyCode: $config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
+          detail: {
+            products: [{
+              internal_id: product.value?.id.substring(`${product.value?.id}`.lastIndexOf('/') + 1),
+              stock_id: `'shopify_${getCountryFromStore($config.STORE)}_${product.value?.id.substring(`${product.value?.id}`.lastIndexOf('/') + 1)}_${productVariant.value?.id.substring(`${productVariant.value?.id}`.lastIndexOf('/') + 1)}'`,
+              id: productDetails.value.feId,
+              name: product.value.title.replaceAll('\'', ''),
+              brand: brand.value.title.replaceAll('\'', ''),
+              subcategory: productDetails.value.subCategoryName,
+              winelist: productDetails.value.wineListName,
+              vintage: productDetails.value.vintage,
+              favourite: isOnFavourite.value ? 'yes' : 'no',
+              artisanal: productDetails.value.artisanal ? 'yes' : 'no',
+              rarewine: productDetails.value.rarewine ? 'yes' : 'no',
+              price: finalPrice.value,
+              compare_at_price: productVariant.value?.compareAtPriceV2.amount,
+              stock_status: product.value.totalInventory > 0 ? 'in_stock' : 'out_of_stock',
+            }],
+          },
+        },
+      })
+    })
+
+    useMeta(() => ({
+      title: product?.value?.seo?.title,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: product?.value?.seo?.description,
+        },
+      ],
+      link: productDetails.value
+        && productDetails.value.hrefLang
+        && Object.keys(productDetails.value?.hrefLang).length
+        && generateMetaLink(Object.entries(productDetails.value?.hrefLang)),
+    }))
+
     return {
+      customer,
       product,
       productVariant,
       productDetails,
@@ -208,7 +270,6 @@ export default {
       wishlistArr,
       brandMetaFields,
       brand,
-      getCustomerType,
       isOpen,
       cartIcon,
       addIcon,
@@ -218,27 +279,15 @@ export default {
       favouriteIcon,
       emailIcon,
       showRequestModal,
+      customerId,
+      getCustomerGtmData,
+      getCustomerType,
       handleWishlist,
       handleShowRequestModal,
       generateMetaLink,
     }
   },
-  head() {
-    return {
-      title: this.product?.seo?.title,
-      meta: [
-        {
-          hid: 'description',
-          name: 'description',
-          content: this.product?.seo?.description,
-        },
-      ],
-      link: this.productDetails
-        && this.productDetails.hrefLang
-        && Object.keys(this.productDetails.hrefLang).length
-        && this.generateMetaLink(Object.entries(this.productDetails.hrefLang)),
-    }
-  },
+  head: {},
   computed: {
     ...mapState('userCart', {
       userCart: 'userCart',
@@ -298,10 +347,13 @@ export default {
       })
     },
     async removeFromUserCart() {
-      this.$store.commit('userCart/removeProduct', this.productVariant.id)
+      this.$store.commit('userCart/removeProduct', {
+        id: this.product.productVariant,
+        gtmProductData: this.product.gtmProductData,
+      })
     },
   },
-}
+})
 </script>
 
 <template>
@@ -370,6 +422,7 @@ export default {
             <NuxtLink
               class="h3 cmw-w-max font-weight-bold cmw-text-primary-400 hover:cmw-text-primary-400"
               :to="localePath({ name: 'winery-handle', params: { handle: `${brand.handle}-${brandMetaFields.key}.htm` } })"
+              prefetch
             >
               {{ product.vendor }}
             </NuxtLink>
@@ -400,6 +453,7 @@ export default {
                   />
                 </div>
                 <i18n-n
+                  v-if="finalPrice"
                   class="cmw-inline-block" :value="Number(finalPrice)"
                   :format="{ key: 'currency' }"
                   :locale="getLocaleFromCurrencyCode(productVariant.priceV2.currencyCode)"
