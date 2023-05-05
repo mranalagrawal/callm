@@ -5,7 +5,7 @@ import { getMappedProducts } from '@/utilities/mappedProduct'
 export default {
   props: ['vendor'],
   setup(props) {
-    const { $cmwRepo } = useContext()
+    const { $cmwRepo, $sentry } = useContext()
     const productsRef = ref([])
     const { vendor: vendorRef } = toRefs(props)
     const query = computed(() => `vendor:'${vendorRef.value}'`)
@@ -21,7 +21,7 @@ export default {
         .then(async ({ products = { nodes: [] } }) => {
           if (products.nodes.length)
             productsRef.value = getMappedProducts(products.nodes)
-        }).catch(err => console.log(err))
+        }).catch(err => $sentry.captureException(new Error(`Catch getting products getAll from shopify: ${err}`)))
     })
 
     watch(() => query.value, () => fetch())

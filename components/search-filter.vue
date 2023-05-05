@@ -1,9 +1,9 @@
 <script>
 import { ref, watchEffect } from '@nuxtjs/composition-api'
-// import { getMappedProducts } from '@/utilities/mappedProduct'
 import closeIcon from 'assets/svg/close.svg'
 import { storeToRefs } from 'pinia'
 import Loader from '../components/UI/Loader.vue'
+import { getMappedProducts } from '@/utilities/mappedProduct'
 import useScreenSize from '@/components/composables/useScreenSize'
 import { pick } from '@/utilities/arrays'
 import { useFilters } from '~/store/filters'
@@ -60,7 +60,7 @@ export default {
       winelists: null,
       awards: null,
       vintages: null,
-      results: null,
+      results: [],
       activeSelections: [],
       total: 0,
       seoData: {
@@ -114,11 +114,7 @@ export default {
     if (process.client)
       window.scrollTo(0, 0)
 
-    /* console.log(this.inputParameters, "this.inputParameters"); */
-
     this.loading = true
-    // const route = this.$route
-    /* console.log(route.fullPath.split("search?")[1], "SSSS"); */
 
     this.currentPage = this.inputParameters.page
       ? this.inputParameters.page
@@ -361,6 +357,9 @@ export default {
   ],
   searchableFilters: ['winelists', 'pairings', 'regions', 'areas', 'brands'],
   computed: {
+    mappedProducts() {
+      return this.results.length && getMappedProducts(this.results, this.$i18n.locale, true, this.$config.STORE, this.$config.SALECHANNEL)
+    },
     filterCategories() {
       return Object.entries(this.filters).slice(0, !(this.showMoreFilters || !this.isDesktop) ? 4 : undefined).reduce((acc, [k, v]) => {
         if (v.length)
@@ -430,10 +429,6 @@ export default {
 
       return selectionsListMapped
     },
-    /* mappedProducts() {
-      // TODO: merge productBox and productBoxElastic
-      return this.results && getMappedProducts(this.results, this.$i18n.locale, true)
-    }, */
   },
   watch: {
     '$route.query': '$fetch',
@@ -804,11 +799,11 @@ export default {
         </div>
         <div v-if="selectedLayout === 'list' && isDesktop">
           <div
-            v-for="result in results"
-            :key="result._id"
+            v-for="(result, idx) in mappedProducts"
+            :key="result.shopify_product_id"
             class="cmw-mb-4"
           >
-            <ProductBoxHorizontalElastic :product="result" :horizontal="true" />
+            <ProductBoxHorizontalElastic :product="result" :position="idx + 1" />
           </div>
         </div>
         <div
@@ -816,10 +811,10 @@ export default {
          sm:(cmw-grid-cols-2 cmw-gap-3) lg:(cmw-grid-cols-3 cmw-gap-4) desktop-wide:cmw-grid-cols-4"
         >
           <div
-            v-for="result in results"
-            :key="`desktop${result._id}`"
+            v-for="(result, idx) in mappedProducts"
+            :key="`desktop${result.shopify_product_id}`"
           >
-            <ProductBoxVerticalElastic :product="result" />
+            <ProductBoxVerticalElastic :product="result" :position="idx + 1" />
           </div>
         </div>
       </div>

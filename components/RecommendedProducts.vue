@@ -21,7 +21,7 @@ export default {
         .then(async ({ productRecommendations = [] }) => {
           if (productRecommendations.length)
             productsRef.value = getMappedProducts(productRecommendations)
-        }).catch(err => console.log(err))
+        }).catch(err => $sentry.captureException(new Error(`Catch getProductRecommendations from shopify: ${err}`)))
     })
 
     watch(() => idRef.value, () => fetch())

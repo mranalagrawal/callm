@@ -11,3 +11,11 @@ export const generateKey = (str = '') => {
 
   return str.toLowerCase().replaceAll(' ', '-')
 }
+
+export const cleanRoutesLocales = (str = '') =>
+  (str
+    .replaceAll('___en', '')
+    .replaceAll('___it', '')
+    .replaceAll('___fr', '')
+    .replaceAll('___de', '')
+  )

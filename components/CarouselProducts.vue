@@ -75,8 +75,8 @@ export default {
     <div class="cmw-h2 cmw-text-center cmw-py-4" v-text="title" />
     <ClientOnly>
       <VueSlickCarousel ref="c1" v-bind="settings" dots-class="c-carouselDots">
-        <div v-for="product in products" :key="product.id">
-          <ProductBoxVertical :product="product" />
+        <div v-for="(product, idx) in products" :key="product.id">
+          <ProductBoxVertical :product="product" :position="idx + 1" />
         </div>
         <template #customPaging="page">
           <button

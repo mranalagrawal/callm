@@ -385,9 +385,9 @@ export default {
     'bootstrap-vue/nuxt',
     '@nuxtjs/style-resources',
     ['@nuxtjs/i18n'],
-    '@nuxtjs/gtm',
     'cookie-universal-nuxt',
     '@nuxtjs/sentry',
+    '@nuxtjs/gtm',
     '@nuxtjs/sitemap',
   ],
 
@@ -533,27 +533,33 @@ export default {
 
   router: {
     middleware: ['category'],
+    prefetchLinks: false,
+    linkPrefetchedClass: 'nuxt-link-prefetched',
     extendRoutes(routes, resolve) {
       routes.push(
         {
           name: 'search',
           path: '/(.*)-:filter_key_1(V|C|R|D|B|N|M):filter_id_1(\\d+).htm/',
           component: resolve(__dirname, 'pages/search/categories.vue'),
+          meta: { actionField: 'category' },
         },
         {
           name: 'search-deep',
           path: '/(.*)-:filter_key_1(V|C|R|D|B|N|M):filter_id_1(\\d+):filter_key_2(V|C|R|D|B|N|M):filter_id_2(\\d+).htm/',
           component: resolve(__dirname, 'pages/search/categories.vue'),
+          meta: { actionField: 'category' },
         },
         {
           name: 'catalog',
           path: '/catalog',
           component: resolve(__dirname, 'pages/search/categories.vue'),
+          meta: { actionField: 'category' },
         },
         {
           name: 'product',
           path: '/(.*)-P:id(\\d+).htm/',
           component: resolve(__dirname, 'pages/product/details.vue'),
+          meta: { actionField: 'related_products' },
         },
       )
     },
@@ -633,6 +639,11 @@ export default {
 
   gtm: {
     id: process.env.GOOGLE_TAG_MANAGER_ID,
+    enabled: process.env.ENVIRONMENT === 'prod' || process.env.ENVIRONMENT === 'staging',
+    pageTracking: false,
+    pageViewEventName: 'nuxtRoute',
+    autoInit: process.env.ENVIRONMENT === 'prod' || process.env.ENVIRONMENT === 'staging',
+    debug: !process.env.ENVIRONMENT || process.env.ENVIRONMENT === 'dev',
   },
 
   publicRuntimeConfig: {

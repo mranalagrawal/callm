@@ -1,13 +1,24 @@
-export const getCurrencySymbol = (k = '') => ({
+const getCurrencySymbol = (k = '') => ({
   GBP: '£',
   EUR: '€',
 })[k]
 
-export const getLocaleFromCurrencyCode = (code = '') => ({
+const getLocaleFromCurrencyCode = (code = '') => ({
   GBP: 'en-GB',
   EUR: 'it-IT',
 })[code]
 
-export const getPercent = (x = 0, y = 0) => {
+const getPercent = (x = 0, y = 0) => {
   return Math.round(Math.abs(((x - y) / y) * 100))
 }
+
+const getCountryFromStore = (store = '') => ({
+  CMW: 'IT',
+  B2B: 'IT',
+  CMW_UK: 'GB',
+  CMW_FR: 'FR',
+  CMW_DE: 'DE',
+  WILDVIGNERON: 'IT',
+})[store]
+
+export { getCurrencySymbol, getLocaleFromCurrencyCode, getPercent, getCountryFromStore }

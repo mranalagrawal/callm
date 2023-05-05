@@ -58,35 +58,27 @@ query getProducts(
                 value
               }
               product {
-                id
-                title
-                description
-                descriptionHtml
-                handle
-                tags
-                createdAt
                 availableForSale
-                seo {
-                  description
-                  title
+                id
+                featuredImage { altText, height, url, width }
+                seo { description, title }
+                tags
+                title
+                vendor
+                totalInventory
+                details: metafield(namespace: "custom", key: "details") {
+                  value
                 }
-                variants(first: 10) {
+                breadcrumbs: metafield(namespace: "custom", key: "breadcrumbs") {
+                  value
+                }
+                variants(first: 1) {
                   nodes {
                     id
-                    compareAtPriceV2 {
-                      amount
-                      currencyCode
-                    }
-                    price
+                    compareAtPriceV2 { amount, currencyCode }
+                    priceV2 { amount, currencyCode }
+                    quantityAvailable
                   }
-                }
-                images(first: 10) {
-                  nodes {
-                    url
-                  }
-                }
-                metafield: metafield(namespace: "custom", key: "details") {
-                  value
                 }
               }
             }
