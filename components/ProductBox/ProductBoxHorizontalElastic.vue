@@ -198,6 +198,7 @@ export default {
   <div
     class="cmw-relative cmw-transition cmw-transition-box-shadow cmw-bg-white cmw-rounded-sm cmw-border cmw-border-gray-light cmw-p-2 cmw-grid cmw-grid-cols-[220px_auto_320px]
 hover:cmw-shadow-elevation"
+    :data-sku="product.sku"
   >
     <!-- Image Section -->
     <div class="cmw-relative cmw-p-2">

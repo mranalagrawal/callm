@@ -198,6 +198,7 @@ export default {
     class="
     c-productBox cmw-relative cmw-transition cmw-transition-box-shadow cmw-bg-white cmw-rounded-sm cmw-border cmw-border-gray-light
     hover:cmw-shadow-elevation"
+    :data-sku="product.sku"
     @mouseenter="isHovering = true"
     @mouseleave="isHovering = false"
   >

@@ -66,6 +66,7 @@ export const getMappedProducts = (arr = [], lang = 'en', isElastic = false, stor
           stock_status: p._source.quantity[store] > 0 ? 'in_stock' : 'out_of_stock',
           quantity: 1,
         },
+        sku: p._source.sku,
       })
     })
   } else {
@@ -125,6 +126,7 @@ export const getMappedProducts = (arr = [], lang = 'en', isElastic = false, stor
           stock_status: p.quantityAvailable > 0 ? 'in_stock' : 'out_of_stock',
           quantity: 1,
         },
+        sku: p.variants.nodes[0].sku,
       })
     })
   }

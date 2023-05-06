@@ -84,6 +84,7 @@ query getCustomerOrders(
                       compareAtPriceV2 { amount, currencyCode }
                       priceV2 { amount, currencyCode }
                       quantityAvailable
+                      sku
                     }
                   }
                 }
