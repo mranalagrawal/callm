@@ -1,6 +1,7 @@
 <script>
-import { computed, ref, useContext, useFetch } from '@nuxtjs/composition-api'
+import { computed, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+import useGtm from '@/components/composables/useGtm'
 import { useCustomer } from '@/store/customer'
 import { getMappedProducts } from '@/utilities/mappedProduct'
 import { sortArrayByName, sortArrayByNumber } from '~/utilities/arrays'
@@ -15,6 +16,8 @@ export default {
     const { $config, params, $graphql, i18n } = useContext()
     const customerStore = useCustomer()
     const { getCustomerType } = storeToRefs(customerStore)
+    const { gtmPushPage } = useGtm()
+
     const sorting = ref(false)
     const filtersStore = useFilters()
     const { selectedLayout, availableLayouts } = storeToRefs(filtersStore)
@@ -83,6 +86,10 @@ export default {
     })
 
     const handleUpdateTrigger = () => sorting.value = !sorting.value
+
+    onMounted(() => {
+      process.browser && gtmPushPage('page')
+    })
 
     return {
       sorting,
