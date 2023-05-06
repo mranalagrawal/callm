@@ -1,6 +1,7 @@
 <script>
-import { computed, useContext, useFetch, watch } from '@nuxtjs/composition-api'
+import { computed, onMounted, useContext, useFetch, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+import useGtm from '@/components/composables/useGtm'
 import { getMappedProducts } from '@/utilities/mappedProduct'
 // import getProducts from '~/graphql/queries/getProducts'
 import { useFilters } from '~/store/filters'
@@ -17,6 +18,7 @@ export default {
     const { wishlistArr } = storeToRefs(customerStore)
     const { wishlistProducts } = storeToRefs(customerWishlist)
     const { i18n } = useContext()
+    const { gtmPushPage } = useGtm()
 
     const filtersStore = useFilters()
     const { selectedLayout, availableLayouts } = storeToRefs(filtersStore)
@@ -36,6 +38,10 @@ export default {
         return []
 
       return getMappedProducts(wishlistProducts.value.nodes, i18n.locale)
+    })
+
+    onMounted(() => {
+      process.browser && gtmPushPage('page')
     })
 
     return {
