@@ -20,7 +20,7 @@
   width: 48px;
   height: 48px;
   box-shadow: 0 0.5rem 1rem rgb(102 101 101 / 50%);
-  transform: translate(-80%, -50%);
+  transform: translate(-85%, -50%);
   @apply cmw-rounded-sm;
 }
 
@@ -34,7 +34,7 @@
 }
 
 .ssr-carousel-arrows .ssr-carousel-next-button {
-  transform: translate(80%, -50%);
+  transform: translate(85%, -50%);
   right: 0;
 }
 

@@ -14,13 +14,9 @@ export default {
 <template>
   <div>
     <TopBar />
-    <client-only>
-      <div class="">
-        <Navbar />
-      </div>
-    </client-only>
+    <Navbar class="cmw-navbar" />
 
-    <nuxt class="pt-5" style="position: relative; top: 120px" />
+    <nuxt class="cmw-main" />
 
     <LazyTheFooter style="position: relative; top: 120px" />
     <client-only>

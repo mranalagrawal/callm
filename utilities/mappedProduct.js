@@ -68,7 +68,7 @@ export const getMappedProducts = (arr = [], lang = 'en', isElastic = false, stor
           brand: p._source.brandname,
           category: p._source.macros[0].name_it,
           subcategory: p._source.categoryname,
-          winelist: p._source.winelists[0].name_it,
+          winelist: p._source.winelists[0] ? p._source.winelists[0].name_it : 'missing',
           vintage: p._source.vintageyear,
           favourite: p._source.favourite ? 'yes' : 'no',
           artisanal: p._source.artisanal ? 'yes' : 'no',
