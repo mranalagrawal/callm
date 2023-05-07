@@ -238,7 +238,7 @@ export default {
       <div class="c-productBox__title">
         <div class="cmw-mx-4 cmw-mt-4 cmw-min-h-[4.6em]">
           <button
-            class="cmw-text-body hover:(cmw-text-primary-400 cmw-no-underline)"
+            class="cmw-text-body cmw-text-left hover:(cmw-text-primary-400 cmw-no-underline)"
             @click="handleProductCLick"
             v-text="product.title"
           />

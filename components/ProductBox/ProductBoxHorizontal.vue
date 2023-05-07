@@ -222,7 +222,7 @@ hover:cmw-shadow-elevation"
     <div class="cmw-p-2">
       <div class="h4 cmw-mt-4">
         <button
-          class="cmw-text-body hover:(cmw-text-primary-400 cmw-no-underline)"
+          class="cmw-text-body cmw-text-left hover:(cmw-text-primary-400 cmw-no-underline)"
           @click="handleProductCLick"
         >
           {{ product.title }}
