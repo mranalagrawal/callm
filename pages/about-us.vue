@@ -51,7 +51,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="pageData.title" class="cmw-max-w-screen-xl cmw-mx-auto cmw-mt-5">
+  <div v-if="pageData.title" class="cmw-max-w-screen-xl cmw-mx-auto cmw-p-4 cmw-mt-5">
     <h1 v-text="pageData.title" />
     <LoadingImage
       v-if="pageData.image"

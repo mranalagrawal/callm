@@ -1,61 +1,77 @@
 <script>
-import documents from '../prismic-mapper'
+import { defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
+import useGtm from '@/components/composables/useGtm'
 import { generateHeadHreflang } from '@/utilities/arrays'
 
-export default {
+export default defineComponent({
   layout(context) {
     return context.$config.STORE
   },
-  data() {
-    return {
-      data: null,
-    }
-  },
-  hrefLang: {
-    'it': 'https://www.callmewine.com/contatti.html',
-    'en': 'https://www.callmewine.com/en/contatti.html',
-    'fr': 'https://www.callmewine.fr/contatti.html',
-    'de': 'https://www.callmewine.de/contatti.html',
-    'en-gb': 'https://callmewine.co.uk/contact',
-  },
-  async fetch() {
-    let lang = ''
-    if (this.$i18n.locale === 'en')
-      lang = 'en-gb'
-    else
-      lang = 'it-it'
+  setup() {
+    const { i18n, $prismic, $sentry } = useContext()
+    const { gtmPushPage } = useGtm()
 
-    const response = await this.$prismic.api.getSingle(
-      documents[this.$config.STORE].contactPage,
-      {
-        lang,
-      },
-    )
-
-    this.data = response.data
-  },
-  head() {
-    return {
-      link: generateHeadHreflang(this.$options.hrefLang),
+    const hrefLang = {
+      'it': 'https://www.callmewine.com/chi-siamo.html',
+      'en': 'https://www.callmewine.com/en/about-us.html',
+      'fr': 'https://www.callmewine.fr/qui-nous-sommes.html',
+      'de': 'https://www.callmewine.de/uber-uns.html',
+      'en-gb': 'https://callmewine.co.uk/about-us',
     }
+
+    const pageData = ref({ section: [] })
+    const sectionContent = ref({ section: [] })
+
+    const { fetch } = useFetch(async () => {
+      await $prismic.api.getSingle(
+        'contact_us',
+        { lang: i18n.localeProperties.iso.toLowerCase() },
+      )
+        .then(({ data }) => {
+          pageData.value = data
+          sectionContent.value = data.section[0] ? data.section : []
+        })
+        .catch((err) => {
+          $sentry.captureException(new Error(`Catch getting contact us data from prismic: ${err}`))
+        })
+    })
+
+    onMounted(() => {
+      process.browser && gtmPushPage('page')
+    })
+
+    useMeta(() => ({
+      link: generateHeadHreflang(hrefLang),
+    }))
+
+    return { fetch, pageData, sectionContent }
   },
-}
+  head: {},
+})
 </script>
 
 <template>
-  <div v-if="data" class="container mt-5">
-    <div class="row">
-      <div class="col-12">
-        <h1>{{ data.title }}</h1>
-      </div>
-      <div class="col-12">
-        <img :src="data.image.url" class="img-fluid w-100" alt="">
-      </div>
-    </div>
-    <div class="row mt-5">
-      <div v-for="(content, j) in data.section" :key="j" class="col-12">
-        <prismic-rich-text :field="[content]" />
-      </div>
+  <div v-if="pageData.title" class="cmw-max-w-screen-xl cmw-mx-auto cmw-p-4 cmw-mt-5">
+    <h1 v-text="pageData.title" />
+    <LoadingImage
+      v-if="pageData.image"
+      :thumbnail="{
+        url: pageData.image.url ? `${pageData.image.url}?&width=20&height=12` : 'https://picsum.photos/id/75/20/12',
+        width: 20,
+        height: 12,
+        altText: pageData.image.alt,
+      }"
+      :source="{
+        url: pageData.image.url
+          ? `${pageData.image.url}?&width=${pageData.image.dimensions.width}&height=${pageData.image.dimensions.height}`
+          : 'https://picsum.photos/id/75/265/164',
+        width: pageData.image.dimensions.width,
+        height: pageData.image.dimensions.height,
+        altText: pageData.image.alt,
+      }"
+    />
+    <div v-for="(section, i) in sectionContent" :key="i" class="cmw-mt-5">
+      <PrismicRichText :field="[section]" />
     </div>
   </div>
 </template>
