@@ -12,13 +12,23 @@ export const getMappedProducts = (arr = [], lang = 'en', isElastic = false, stor
         amount: p._source.price[sale_channel],
         currencyCode: store === 'CMW_UK' ? 'GBP' : 'EUR',
       }
+      const id = p._source.feId
       const shopify_product_id = `gid://shopify/Product/${p._source.productId[store]}`
       const shopify_product_variant_id = `gid://shopify/ProductVariant/${p._source.variantId[store]}`
       const priceLists = p._source.pricelists
 
       return ({
         availableForSale: p._source.quantity[store] > 0,
-        awards: p._source.awards,
+        awards: p._source.awards.map(award => ({
+          ...award,
+          title: award[`name_${lang}`],
+          quote: {
+            it: award.quote_it,
+            en: award.quote_en,
+            fr: award.quote_fr,
+            de: award.quote_de,
+          },
+        })) || [],
         compareAtPrice,
         // price: {
         //   // amount: details.priceLists[this.$config.SALECHANNEL][this.getCustomerType],
@@ -27,6 +37,8 @@ export const getMappedProducts = (arr = [], lang = 'en', isElastic = false, stor
         priceLists,
         quantityAvailable: p._source.quantity[store],
         details: p._source,
+        id,
+        source_id: `P${id}`,
         shopify_product_id,
         shopify_product_variant_id,
         // tags: p.tags,
@@ -51,7 +63,7 @@ export const getMappedProducts = (arr = [], lang = 'en', isElastic = false, stor
         gtmProductData: {
           internal_id: shopify_product_id.substring(`${shopify_product_id}`.lastIndexOf('/') + 1),
           stock_id: `shopify_${getCountryFromStore(store)}_${shopify_product_id.substring(`${shopify_product_id}`.lastIndexOf('/') + 1)}_${shopify_product_variant_id.substring(`${shopify_product_variant_id}`.lastIndexOf('/') + 1)}`,
-          id: p._source.feId,
+          id,
           name: p._source.name_t[lang],
           brand: p._source.brandname,
           category: p._source.macros[0].name_it,
@@ -67,12 +79,19 @@ export const getMappedProducts = (arr = [], lang = 'en', isElastic = false, stor
           quantity: 1,
         },
         sku: p._source.sku,
+        tbd: {
+          description: p._source.description,
+          grapes: p._source.grapes,
+          regionName: p._source.regionname,
+          size: p._source.sizes[`identifier_${lang}`].split('|')[1],
+        },
       })
     })
   } else {
     products = arr.map((p) => {
       const details = JSON.parse(p.details.value)
       const compareAtPrice = p.variants.nodes[0].compareAtPriceV2
+      const id = details.feId
       const shopify_product_id = p.id
       const shopify_product_variant_id = p.variants.nodes[0].id
       const priceLists = details.priceLists
@@ -88,6 +107,8 @@ export const getMappedProducts = (arr = [], lang = 'en', isElastic = false, stor
         priceLists,
         quantityAvailable: p.variants.nodes[0].quantityAvailable,
         details,
+        id,
+        source_id: `P${id}`,
         shopify_product_id,
         shopify_product_variant_id,
         tags: p.tags,
@@ -111,7 +132,7 @@ export const getMappedProducts = (arr = [], lang = 'en', isElastic = false, stor
         gtmProductData: {
           internal_id: shopify_product_id.substring(`${shopify_product_id}`.lastIndexOf('/') + 1),
           stock_id: `shopify_${getCountryFromStore(store)}_${shopify_product_id.substring(`${shopify_product_id}`.lastIndexOf('/') + 1)}_${shopify_product_variant_id.substring(`${shopify_product_variant_id}`.lastIndexOf('/') + 1)}`,
-          id: details.feId,
+          id,
           name: p.title,
           brand: p.vendor,
           category: details.categoryName,
@@ -127,6 +148,12 @@ export const getMappedProducts = (arr = [], lang = 'en', isElastic = false, stor
           quantity: 1,
         },
         sku: p.variants.nodes[0].sku,
+        tbd: {
+          description: details.shortDescription[lang],
+          grapes: details.grapes[lang],
+          regionName: details.regionName[lang],
+          size: details.size[lang],
+        },
       })
     })
   }

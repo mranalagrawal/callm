@@ -1,22 +1,21 @@
 <script>
 import { computed, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+import heartIcon from 'assets/svg/heart.svg'
+import heartFullIcon from 'assets/svg/heart-full.svg'
 import cartIcon from 'assets/svg/cart.svg'
 import addIcon from 'assets/svg/add.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
 import emailIcon from 'assets/svg/email.svg'
-import heartIcon from 'assets/svg/heart.svg'
-import heartFullIcon from 'assets/svg/heart-full.svg'
 import { mapState } from 'vuex'
+import { cleanRoutesLocales, stripHtml } from '@/utilities/strings'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import { productFeatures } from '@/utilities/mappedProduct'
-import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
-import { isObject } from '~/utilities/validators'
-import { pick } from '~/utilities/arrays'
 import { useCustomer } from '~/store/customer'
-import { cleanRoutesLocales, stripHtml } from '~/utilities/strings'
+import { pick } from '@/utilities/arrays'
+import { isObject } from '~/utilities/validators'
+import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { SweetAlertToast } from '~/utilities/Swal'
-
 // noinspection JSUnusedGlobalSymbols
 export default {
   name: 'ProductBoxHorizontal',
@@ -27,6 +26,10 @@ export default {
       validator(value) {
         return isObject(value)
       },
+    },
+    position: {
+      type: [String, Number],
+      default: '',
     },
   },
   setup(props) {
@@ -57,7 +60,7 @@ export default {
       return Object.keys(features).slice(0, 4)
     })
 
-    const isOnFavourite = computed(() => wishlistArr.value.includes(props.product.details.key))
+    const isOnFavourite = computed(() => wishlistArr.value.includes(props.product.source_id))
     const isOnSale = computed(() => availableFeatures.value.includes('isInPromotion'))
     const finalPrice = computed(() => props.product.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0)
     const gtmProductData = computed(() => ({
@@ -65,7 +68,7 @@ export default {
       price: finalPrice.value,
     }))
     const handleWishlistClick = () => {
-      handleWishlist({ id: props.product.details.key, isOnFavourite: isOnFavourite.value, gtmProductData: gtmProductData.value })
+      handleWishlist({ id: props.product.source_id, isOnFavourite: isOnFavourite.value, gtmProductData: gtmProductData.value })
     }
 
     const handleProductCLick = (position = '') => {
@@ -114,7 +117,6 @@ export default {
       handleWishlistClick,
       handleProductCLick,
       handleShowRequestModal,
-      stripHtml,
     }
   },
   computed: {
@@ -132,6 +134,7 @@ export default {
     },
   },
   methods: {
+    stripHtml,
     getLocaleFromCurrencyCode,
     getCountryFromStore,
     async addToUserCart() {
@@ -244,25 +247,25 @@ hover:cmw-shadow-elevation"
           class="cmw-font-bold"
           v-text="$t('product.vines')"
         />
-        <div>{{ product.details.grapes[$i18n.locale] }}</div>
+        <div>{{ product.tbd.grapes }}</div>
         <div
           class="cmw-font-bold"
           v-text="$t('product.region')"
         />
-        <div>{{ product.details.regionName[$i18n.locale] }}</div>
+        <div>{{ product.tbd.regionName }}</div>
         <div
           class="cmw-font-bold"
           v-text="$t('product.format')"
         />
-        <div>{{ product.details.size[$i18n.locale] }}</div>
+        <div>{{ product.tbd.size }}</div>
       </div>
       <!-- Note: Why don't we use these fields from shopify? wouldn't be easier to handle locales? -->
       <!-- <div>{{ product.description }}</div>
       <div>{{ product.descriptionHtml }}</div> -->
       <div
-        class="c-productBox__desc cmw-mb-4"
+        class="c-productBox__desc cmw-mb-4 cmw-line-clamp-6"
         :class="{ 'cmw-opacity-50': !product.availableForSale }"
-        v-html="stripHtml(product.details.shortDescription[$i18n.locale])"
+        v-html="stripHtml(product.tbd.description)"
       />
     </div>
     <!-- CTA Section -->
