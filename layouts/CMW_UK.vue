@@ -45,9 +45,7 @@ export default {
 <template>
   <div>
     <TopBar />
-    <client-only>
-      <Navbar class="cmw-navbar" />
-    </client-only>
+    <Navbar class="cmw-navbar" />
 
     <nuxt class="cmw-main" />
 

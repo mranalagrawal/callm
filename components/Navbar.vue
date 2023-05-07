@@ -3,6 +3,7 @@ import { computed, nextTick, onMounted, onUnmounted, ref, watch } from '@nuxtjs/
 import debounce from 'lodash.debounce'
 import { is } from 'vee-validate/dist/rules'
 import { mapGetters } from 'vuex'
+import useScreenSize from '@/components/composables/useScreenSize'
 import themeConfig from '@/config/themeConfig'
 import { useHeaderSize } from '~/store/headerSize'
 import { useCustomer } from '~/store/customer'
@@ -24,14 +25,13 @@ export default {
     const customer = useCustomer()
     const navbar = ref(null)
     const menuBarRef = ref(null)
-    const isDesktop = ref(false)
     const showMobileButton = ref(true)
+    const { isDesktop } = useScreenSize()
 
     const handleShowMobileButton = (val) => {
       showMobileButton.value = val
     }
     const resizeListener = debounce(() => {
-      isDesktop.value = window.innerWidth > 991
       headerSize.$patch({
         navbarHeight: navbar.value ? navbar.value.getBoundingClientRect().height : 0,
       })

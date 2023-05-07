@@ -20,9 +20,7 @@ export default function () {
   onMounted(() => {
     // Todo: Move this to a global composable when we implement VueUse
     window.addEventListener('resize', resizeListener)
-    nextTick(() => {
-      resizeListener()
-    })
+    nextTick(() => resizeListener())
   })
 
   onUnmounted(() => {
