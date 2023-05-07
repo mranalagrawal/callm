@@ -1,6 +1,7 @@
 <script>
-import { computed, nextTick, onMounted, onUnmounted, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api'
-import debounce from 'lodash.debounce'
+import { computed, onMounted, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api'
+import useGtm from '@/components/composables/useGtm'
+import useScreenSize from '@/components/composables/useScreenSize'
 import getArticles from '~/graphql/queries/getArticles'
 import { inRange } from '~/utilities/math'
 import { stripHtmlAnchors } from '~/utilities/strings'
@@ -12,7 +13,8 @@ export default {
   setup() {
     const { $graphql, i18n, redirect } = useContext()
     const route = useRoute()
-    const isDesktop = ref(false)
+    const { gtmPushPage } = useGtm()
+    const { isDesktop } = useScreenSize()
     const partnerC1 = ref(null)
     const partnerC2 = ref(null)
     const c1 = ref(null)
@@ -53,20 +55,9 @@ export default {
     })
 
     const currentC1Slide = computed(() => c1.value && c1.value.$refs.innerSlider.currentSlide)
-    const resizeListener = debounce(() => {
-      isDesktop.value = window.innerWidth > 991
-    }, 400)
 
     onMounted(() => {
-      // Todo: Move this to a global composable when we implement VueUse
-      window.addEventListener('resize', resizeListener)
-      nextTick(() => {
-        resizeListener()
-      })
-    })
-
-    onUnmounted(() => {
-      window.removeEventListener('resize', resizeListener)
+      process.browser && gtmPushPage('page')
     })
 
     return {

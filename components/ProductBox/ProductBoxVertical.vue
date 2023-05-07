@@ -13,7 +13,7 @@ import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import { productFeatures } from '@/utilities/mappedProduct'
 import { useCustomer } from '~/store/customer'
 import { pick } from '@/utilities/arrays'
-import { isObject } from '~/utilities/validators'
+import { isObject, regexRules } from '~/utilities/validators'
 import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { SweetAlertToast } from '~/utilities/Swal'
 // noinspection JSUnusedGlobalSymbols
@@ -155,7 +155,7 @@ export default {
       const id = this.product.shopify_product_variant_id
       const amount = this.finalPrice
       const amountFullPrice = Number(this.product.compareAtPrice.amount)
-      const tag = this.product.tags[0] // find 'PXXXX'
+      const tag = this.product.tags.find(tag => new RegExp(regexRules('isProduct')).test(tag))
       const image = this.product.image.source.url
       const title = this.product.title
 
@@ -195,6 +195,7 @@ export default {
     class="
     c-productBox cmw-relative cmw-transition cmw-transition-box-shadow cmw-bg-white cmw-rounded-sm cmw-border cmw-border-gray-light
     hover:cmw-shadow-elevation"
+    :data-sku="product.sku"
     @mouseenter="isHovering = true"
     @mouseleave="isHovering = false"
   >

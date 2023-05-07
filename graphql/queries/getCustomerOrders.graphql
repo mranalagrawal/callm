@@ -65,6 +65,7 @@ query getCustomerOrders(
                 }
                 product {
                   availableForSale
+                  handle
                   id
                   featuredImage { altText, height, url, width }
                   seo { description, title }
@@ -84,6 +85,7 @@ query getCustomerOrders(
                       compareAtPriceV2 { amount, currencyCode }
                       priceV2 { amount, currencyCode }
                       quantityAvailable
+                      sku
                     }
                   }
                 }

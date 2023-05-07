@@ -19,6 +19,7 @@ query getCollection(
       # How can we reuse the objects on graphql?
       nodes {
         availableForSale
+        handle
         id
         featuredImage { altText, height, url, width }
         seo { description, title }
@@ -38,6 +39,7 @@ query getCollection(
             compareAtPriceV2 { amount, currencyCode }
             priceV2 { amount, currencyCode }
             quantityAvailable
+            sku
           }
         }
       }

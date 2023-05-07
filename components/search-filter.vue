@@ -803,7 +803,7 @@ export default {
             :key="result.shopify_product_id"
             class="cmw-mb-4"
           >
-            <ProductBoxHorizontalElastic :product="result" :position="idx + 1" />
+            <ProductBoxHorizontal :product="result" :position="idx + 1" />
           </div>
         </div>
         <div
@@ -814,7 +814,7 @@ export default {
             v-for="(result, idx) in mappedProducts"
             :key="`desktop${result.shopify_product_id}`"
           >
-            <ProductBoxVerticalElastic :product="result" :position="idx + 1" />
+            <ProductBoxVertical :product="result" :position="idx + 1" />
           </div>
         </div>
       </div>

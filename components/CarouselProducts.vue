@@ -1,71 +1,47 @@
 <script>
-import { computed, ref } from '@nuxtjs/composition-api'
-import VueSlickCarousel from 'vue-slick-carousel'
+import { ref } from '@nuxtjs/composition-api'
+import useScreenSize from '@/components/composables/useScreenSize'
 import { inRange } from '@/utilities/math'
-import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
 
 export default {
-  components: { VueSlickCarousel },
   props: {
     products: { type: Array },
-    settings: {
-      type: Object,
-      default: () => ({
-        focusOnSelect: true,
-        infinite: true,
-        speed: 500,
-        touchThreshold: 5,
-        slidesToShow: 4,
-        slidesToScroll: 4,
-        dots: false,
-        arrows: true,
-        responsive: [
-          {
-            breakpoint: 411,
-            settings: {
-              slidesToShow: 1,
-              slidesToScroll: 1,
-              dots: true,
-              arrows: false,
-            },
-          },
-          {
-            breakpoint: 767,
-            settings: {
-              slidesToShow: 2,
-              slidesToScroll: 2,
-              dots: true,
-              arrows: false,
-            },
-          },
-          {
-            breakpoint: 1023,
-            settings: {
-              slidesToShow: 3,
-              slidesToScroll: 3,
-              dots: true,
-              arrows: false,
-            },
-          },
-          {
-            breakpoint: 1280,
-            settings: {
-              slidesToShow: 4,
-              slidesToScroll: 4,
-              dots: true,
-              arrows: false,
-            },
-          },
-        ],
-      }),
+    responsive: {
+      type: Array,
+      default: () => ([
+        {
+          minWidth: 0,
+          slidesPerPage: 2,
+        },
+        {
+          minWidth: 411,
+          slidesPerPage: 1,
+        },
+        {
+          minWidth: 767,
+          slidesPerPage: 2,
+        },
+        {
+          minWidth: 1023,
+          slidesPerPage: 3,
+        },
+        {
+          minWidth: 1280,
+          slidesPerPage: 4,
+        },
+      ]),
     },
     title: { type: String },
   },
   setup() {
-    const c1 = ref(null)
-    const currentSlide = computed(() => c1.value && c1.value.$refs.innerSlider.currentSlide)
+    const { isTablet } = useScreenSize()
+    const carousel = ref(null)
 
-    return { c1, currentSlide, inRange }
+    return {
+      carousel,
+      isTablet,
+      inRange,
+    }
   },
 }
 </script>
@@ -73,62 +49,37 @@ export default {
 <template>
   <div class="cmw-max-w-screen-xl cmw-mx-auto cmw-py-4 cmw-px-4">
     <div class="cmw-h2 cmw-text-center cmw-py-4" v-text="title" />
-    <ClientOnly>
-      <VueSlickCarousel ref="c1" v-bind="settings" dots-class="c-carouselDots">
-        <div v-for="(product, idx) in products" :key="product.id">
-          <ProductBoxVertical :product="product" :position="idx + 1" />
-        </div>
-        <template #customPaging="page">
+    <SsrCarousel
+      ref="carousel" :key="products.length" :responsive="responsive" :show-arrows="isTablet"
+      :show-dots="isTablet" class="cmw-relative"
+    >
+      <div v-for="(product, idx) in products" :key="product.id" class="cmw-my-8">
+        <ProductBoxVertical :product="product" :position="idx + 1" />
+      </div>
+      <!--
+      <template #customPaging="page">
           <button
-            :data-test="page"
             class="c-carouselDots__dot"
             :class="{ '-sm': !inRange((page - currentSlide), -2, 2) }"
           />
         </template>
-        <template #prevArrow>
-          <div class="custom-arrow">
-            <VueSvgIcon :data="require(`@/assets/svg/chevron-left.svg`)" width="20" height="20" />
-          </div>
-        </template>
-        <template #nextArrow>
-          <div class="custom-arrow">
-            <VueSvgIcon :data="require(`@/assets/svg/chevron-right.svg`)" width="20" height="20" />
-          </div>
-        </template>
-      </VueSlickCarousel>
-    </ClientOnly>
+        -->
+      <template #back-arrow>
+        <span class="cmw-w-12 cmw-h-12 cmw-bg-white cmw-rounded-sm">
+          <VueSvgIcon
+            :data="require(`@/assets/svg/chevron-left.svg`)" color="#992545" width="20" height="20"
+            class="cmw-m-auto"
+          />
+        </span>
+      </template>
+      <template #next-arrow>
+        <span class="cmw-w-12 cmw-h-12 cmw-bg-white cmw-rounded-sm">
+          <VueSvgIcon
+            :data="require(`@/assets/svg/chevron-right.svg`)" color="#992545" width="20" height="20"
+            class="cmw-m-auto"
+          />
+        </span>
+      </template>
+    </SsrCarousel>
   </div>
 </template>
-
-<style scoped>
-::v-deep(.slick-slide) {
-  padding-left: 8px;
-  padding-right: 8px;
-}
-
-::v-deep(.slick-track) {
-  margin-top: 15px;
-  margin-bottom: 15px;
-}
-
-::v-deep(.custom-arrow.slick-prev) {
-  left: -30px;
-}
-
-::v-deep(.custom-arrow.slick-next) {
-  right: -30px;
-}
-
-::v-deep(.c-carouselDots li) {
-  display: flex !important;
-}
-
-::v-deep(.slick-active .c-carouselDots__dot) {
-  transform: scale(1);
-  background-color: theme('colors.primary.DEFAULT');
-}
-
-::v-deep(li:not(.slick-active) .c-carouselDots__dot.-sm) {
-  transform: scale(0.3);
-}
-</style>

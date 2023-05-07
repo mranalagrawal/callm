@@ -17,6 +17,7 @@ import subtractIcon from 'assets/svg/subtract.svg'
 import emailIcon from 'assets/svg/email.svg'
 import { storeToRefs } from 'pinia'
 import { mapState } from 'vuex'
+import { regexRules } from '@/utilities/validators'
 import { SweetAlertToast } from '@/utilities/Swal'
 import { generateKey } from '@/utilities/strings'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
@@ -48,6 +49,7 @@ export default defineComponent({
     const showRequestModal = ref(false)
     const product = ref({
       details: '',
+      featuredImage: { altText: '', height: 0, url: '', width: 0 },
       handle: '',
       id: '',
       variants: { nodes: [] },
@@ -97,11 +99,11 @@ export default defineComponent({
         first: 1,
         query: `tag:P${route.value.params.id}`,
       })
-        .then(async ({ products = { edges: [] } }) => {
-          if (!!products.edges.length && products.edges[0].node.handle) {
-            product.value = products.edges[0].node
-            productVariant.value = products.edges[0].node.variants.edges[0].node
-            productDetails.value = JSON.parse(products.edges[0].node.details.value)
+        .then(async ({ products = { nodes: [] } }) => {
+          if (!!products.nodes.length && products.nodes[0].handle) {
+            product.value = products.nodes[0]
+            productVariant.value = products.nodes[0].variants.nodes[0]
+            productDetails.value = JSON.parse(products.nodes[0].details.value)
             productBreadcrumbs.value = JSON.parse(products.nodes[0].breadcrumbs.value)
 
             if (route.value.params.pathMatch !== product.value.handle)
@@ -325,7 +327,7 @@ export default defineComponent({
       )
 
       /* data.variants.nodes[0].compareAtPriceV2 */
-      const tag = this.product.tags[0]
+      const tag = this.product.tags.find(tag => new RegExp(regexRules('isProduct')).test(tag))
       const image = this.product.images.nodes[0].url
       const title = this.product.title
       this.$store.commit('userCart/addProduct', {
@@ -386,14 +388,14 @@ export default defineComponent({
               class="cmw-h-full"
               img-classes="cmw-max-h-[350px] md:cmw-max-h-[550px] cmw-mx-auto cmw-object-contain"
               :thumbnail="{
-                url: product.images.nodes[0] ? `${product.images.nodes[0].url}?&width=20&height=36`
+                url: product.featuredImage.url ? `${product.featuredImage.url}?&width=20&height=36`
                   : 'https://cdn.shopify.com/s/files/1/0578/7497/2719/files/no-product-image-400x400_6.png?v=1680253923&width=20&height=36',
                 width: 20,
                 height: 36,
                 altText: product.title,
               }"
               :source="{
-                url: product.images.nodes[0] ? `${product.images.nodes[0].url}?&width=400&height=719&crop=center`
+                url: product.featuredImage.url ? `${product.featuredImage.url}?&width=400&height=719&crop=center`
                   : 'https://cdn.shopify.com/s/files/1/0578/7497/2719/files/no-product-image-400x400_6.png?v=1680253923&width=400&height=719&crop=center',
                 width: 400,
                 height: 719,

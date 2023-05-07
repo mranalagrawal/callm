@@ -4,6 +4,7 @@ query getProductRecommendations(
 ) @inContext(language: $lang) {
   productRecommendations(productId: $productId) {
     availableForSale
+    handle
     id
     featuredImage { altText, height, url, width }
     seo { description, title }
@@ -23,6 +24,7 @@ query getProductRecommendations(
         compareAtPriceV2 { amount, currencyCode }
         priceV2 { amount, currencyCode }
         quantityAvailable
+        sku
       }
     }
   }
