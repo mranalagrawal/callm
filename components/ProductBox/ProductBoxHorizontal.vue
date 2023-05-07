@@ -13,7 +13,7 @@ import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import { productFeatures } from '@/utilities/mappedProduct'
 import { useCustomer } from '~/store/customer'
 import { pick } from '@/utilities/arrays'
-import { isObject } from '~/utilities/validators'
+import { isObject, regexRules } from '~/utilities/validators'
 import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { SweetAlertToast } from '~/utilities/Swal'
 // noinspection JSUnusedGlobalSymbols
@@ -152,7 +152,7 @@ export default {
       const id = this.product.shopify_product_variant_id
       const amount = this.finalPrice
       const amountFullPrice = Number(this.product.compareAtPrice.amount)
-      const tag = this.product.tags[0]
+      const tag = this.product.tags.find(tag => new RegExp(regexRules('isProduct')).test(tag))
       const image = this.product.image.source.url
       const title = this.product.title
 

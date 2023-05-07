@@ -38,6 +38,7 @@ export default {
     },
   },
   methods: {
+    regexRules,
     getLocaleFromCurrencyCode(code) {
       return getLocaleFromCurrencyCode(code)
     },
@@ -73,7 +74,7 @@ export default {
         <button
           type="button"
           :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
-          @click="handleWishlist({ id: orderLineItem.variant.product.tags[0], isOnFavourite })"
+          @click="handleWishlist({ id: orderLineItem.variant.product.tags.find(tag => new RegExp(regexRules('isProduct')).test(tag)), isOnFavourite })"
         >
           <VueSvgIcon
             color="#d94965"
