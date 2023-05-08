@@ -379,6 +379,7 @@ export default {
   },
 
   modules: [
+    '@nuxt/typescript-build',
     ['@nuxtjs/robots'],
     ['@nuxt/http'],
     '@nuxtjs/dayjs',

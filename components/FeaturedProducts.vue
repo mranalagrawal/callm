@@ -1,7 +1,7 @@
-<script>
+<script lang="ts">
 import { ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { getMappedProducts } from '@/utilities/mappedProduct'
-import getCollection from '@/graphql/queries/getCollection'
+import getCollection from '@/graphql/queries/getCollection.graphql'
 
 export default {
   setup() {
