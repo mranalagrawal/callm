@@ -17,7 +17,7 @@ export default {
       default: 'text',
     },
     label: {
-      type: String,
+      type: [String, Object], // <-- Using object until we turn this script to ts, so we can properly use VueI18n.TranslateResult
       required: true,
     },
     rules: {

@@ -290,4 +290,13 @@ export default {
       oneSpecialChar: 'one special character',
     },
   },
+  recoverPwd: {
+    title: 'Reset password',
+    paragraph: 'Enter the email with which you registered. You will receive a message in your inbox with instructions for changing your password.',
+    feedback: 'Se l\'indirizzo {0} è associato ad un profilo registrato, riceverai via mail il link per reimpostare la password del tuo account.',
+    feedbackFooter: {
+      text: 'Is your profile registered and you haven\'t received the email? Search your junk mail or {0}',
+      link: 'request a resend',
+    },
+  },
 }

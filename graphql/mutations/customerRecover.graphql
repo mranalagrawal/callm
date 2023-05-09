@@ -1,0 +1,8 @@
+mutation customerRecover($email: String!, $lang: LanguageCode!) @inContext(language: $lang) {
+  customerRecover(email: $email) {
+    customerUserErrors {
+      field
+      message
+    }
+  }
+}

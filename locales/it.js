@@ -286,4 +286,13 @@ export default {
       oneSpecialChar: 'un carattere speciale',
     },
   },
+  recoverPwd: {
+    title: 'Reimposta password',
+    paragraph: 'Inserisci l\'email con la quale ti sei registrato. Riceverai nella tua casella di posta un messaggio con le istruzioni per modificare la password.',
+    feedback: 'Se l\'indirizzo {0} è associato ad un profilo registrato, riceverai via mail il link per reimpostare la password del tuo account.',
+    feedbackFooter: {
+      text: 'Il tuo profilo è registrato e non hai ricevuto l\'e-mail? Cerca nella posta indesiderata oppure {0}',
+      link: 'richiede un nuovo invio',
+    },
+  },
 }
