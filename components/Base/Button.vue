@@ -10,7 +10,7 @@ export default {
       default: '',
     },
     label: {
-      type: String,
+      type: [String, Object],
       default: '',
     },
     size: {

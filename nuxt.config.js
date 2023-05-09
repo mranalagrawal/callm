@@ -205,7 +205,7 @@ const SITEMAP = {
     },
     {
       path: '/sitemap_en_editorial_other_pages.xml',
-      exclude: ['/product/**', '/search/**', '/profile', '/profile/**', '/catalog', '/privacy', '/terms-of-sales', '/cookie', '/business-gifts', '/cart', '/gift-cards', '/login', '/new-password', '/preview', '/recover', '/thank-you', '/winery'],
+      exclude: ['/product/**', '/search/**', '/profile', '/profile/**', '/catalog', '/privacy', '/terms-of-sales', '/cookie', '/business-gifts', '/cart', '/gift-cards', '/login', '/preview', '/recover', '/thank-you', '/winery'],
     },
   ],
   CMW_DE: [
@@ -221,7 +221,7 @@ const SITEMAP = {
     },
     {
       path: '/sitemap_en_editorial_other_pages.xml',
-      exclude: ['/product/**', '/search/**', '/profile', '/profile/**', '/catalog', '/privacy', '/terms-of-sales', '/cookie', '/business-gifts', '/cart', '/gift-cards', '/login', '/new-password', '/preview', '/recover', '/thank-you', '/winery'],
+      exclude: ['/product/**', '/search/**', '/profile', '/profile/**', '/catalog', '/privacy', '/terms-of-sales', '/cookie', '/business-gifts', '/cart', '/gift-cards', '/login', '/preview', '/recover', '/thank-you', '/winery'],
     },
   ],
   WILDVIGNERON: [
@@ -340,7 +340,7 @@ export default {
   ],
 
   plugins: [
-    { src: '~/plugins/cmw-api.js' },
+    { src: '~/plugins/cmw-api.ts' },
     { src: '~/plugins/repositories.js' },
     { src: '~/plugins/cookies.js' },
     { src: '~plugins/vee-validate', ssr: false },

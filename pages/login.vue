@@ -1,20 +1,22 @@
-<script>
-import LoginForm from '../components/LoginForm.vue'
-import RegisterBox from '../components/RegisterBox.vue'
-export default {
-  components: {
-    RegisterBox,
-    LoginForm,
-  },
+<script lang="ts">
+import { defineComponent, onMounted, ref } from '@nuxtjs/composition-api'
+import useGtm from '~/components/composables/useGtm'
+
+export default defineComponent({
   layout(context) {
     return context.$config.STORE
   },
-  data() {
-    return {
-      registerIsVisible: false,
-    }
+  setup() {
+    const { gtmPushPage } = useGtm()
+    const registerIsVisible = ref(false)
+
+    onMounted(() => {
+      process.browser && gtmPushPage('page')
+    })
+
+    return { registerIsVisible }
   },
-}
+})
 </script>
 
 <template>

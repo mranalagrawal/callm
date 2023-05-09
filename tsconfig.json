@@ -28,7 +28,9 @@
       "@types/node",
       "@nuxtjs/composition-api/module",
       "@nuxtjs/i18n",
-      "nuxt-graphql-request"
+      "nuxt-graphql-request",
+      "@nuxt/http",
+      "@nuxtjs/sentry"
     ]
   },
   "exclude": [

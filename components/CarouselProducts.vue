@@ -2,6 +2,7 @@
 import { ref } from '@nuxtjs/composition-api'
 import useScreenSize from '@/components/composables/useScreenSize'
 import { inRange } from '@/utilities/math'
+import { generateKey } from '~/utilities/strings'
 
 export default {
   props: {
@@ -43,6 +44,7 @@ export default {
       inRange,
     }
   },
+  methods: { generateKey },
 }
 </script>
 
@@ -53,7 +55,7 @@ export default {
       ref="carousel" :key="products.length" :responsive="responsive" :show-arrows="isTablet"
       :show-dots="isTablet" class="cmw-relative"
     >
-      <div v-for="(product, idx) in products" :key="product.id" class="cmw-my-8">
+      <div v-for="(product, idx) in products" :key="generateKey(`${title}-${product.id}`)" class="cmw-my-8">
         <ProductBoxVertical :product="product" :position="idx + 1" />
       </div>
       <!--

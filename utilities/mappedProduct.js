@@ -41,7 +41,7 @@ export const getMappedProducts = (arr = [], lang = 'en', isElastic = false, stor
         source_id: `P${id}`,
         shopify_product_id,
         shopify_product_variant_id,
-        // tags: p.tags,
+        tags: [`P${id}`],
         title: p._source.name_t[lang],
         url: `/${p._source.handle_t[lang]}-${p._source.sourceId}.htm`,
         // url: `/${p._source.handle}-${p._source.sourceId}.htm`,

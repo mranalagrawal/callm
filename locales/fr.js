@@ -290,4 +290,12 @@ export default {
       oneSpecialChar: 'un caractère spécial',
     },
   },
+  recoverPwd: {
+    title: 'Réinitialiser le mot de passe',
+    paragraph: 'Entrez l\'e-mail avec lequel vous vous êtes inscrit. Vous recevrez un message dans votre boîte de réception avec des instructions pour changer votre mot de passe.',
+    feedbackFooter: {
+      text: 'Votre profil est enregistré et vous n\'avez pas reçu l\'email ? Rechercher dans vos courriers indésirables ou {0}',
+      link: 'demander un renvoi',
+    },
+  },
 }

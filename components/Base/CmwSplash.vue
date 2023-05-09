@@ -3,8 +3,9 @@ import { storeToRefs } from 'pinia'
 import closeIcon from 'assets/svg/close.svg'
 import { ref, watchEffect } from '@nuxtjs/composition-api'
 import { useSplash } from '@/store/splash'
-import EditCustomerAddress from '~/components/UserProfile/EditCustomerAddress.vue'
 import CreateUserAddress from '~/components/UserProfile/CreateUserAddress.vue'
+import CustomerRecoverFeedback from '~/components/UserProfile/CustomerRecoverFeedback.vue'
+import EditCustomerAddress from '~/components/UserProfile/EditCustomerAddress.vue'
 import RequestOrderAssistance from '~/components/UserProfile/RequestOrderAssistance.vue'
 import UpdateCustomerData from '~/components/UserProfile/UpdateCustomerData.vue'
 import UpdateCustomerEmail from '~/components/UserProfile/UpdateCustomerEmail.vue'
@@ -32,6 +33,7 @@ export default {
     // Note: for now we need to import all modals, on Nuxt3 we can use resolveComponent function to handle this
     const lookUp = key => ({
       EditCustomerAddress,
+      CustomerRecoverFeedback,
       CreateUserAddress,
       RequestOrderAssistance,
       UpdateCustomerData,

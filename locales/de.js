@@ -286,4 +286,12 @@ export default {
       oneSpecialChar: 'ein Sonderzeichen',
     },
   },
+  recoverPwd: {
+    title: 'Passwort zurücksetzen',
+    paragraph: 'Geben Sie die E-Mail ein, mit der Sie sich registriert haben. Sie erhalten eine Nachricht in Ihrem Posteingang mit Anweisungen zum Ändern Ihres Passworts.',
+    feedbackFooter: {
+      text: 'Ist Ihr Profil registriert und Sie haben die E-Mail nicht erhalten? Durchsuchen Sie Ihre Junk-Mail oder fordern Sie eine {0}',
+      link: 'erneute Zusendung an',
+    },
+  },
 }

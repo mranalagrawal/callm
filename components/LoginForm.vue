@@ -44,7 +44,6 @@ export default {
 
 <template>
   <ValidationObserver
-    ref="formEl"
     v-slot="{ handleSubmit }"
     slim
   >

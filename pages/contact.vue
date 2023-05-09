@@ -1,38 +1,48 @@
-<script>
+<script lang="ts">
 import { defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
 import useGtm from '@/components/composables/useGtm'
 import { generateHeadHreflang } from '@/utilities/arrays'
+import type { IPrismicPageData } from '~/types/prismic'
 
 export default defineComponent({
-  layout(context) {
-    return context.$config.STORE
+  layout({ $config }) {
+    return $config.STORE
   },
   setup() {
-    const { i18n, $prismic, $sentry } = useContext()
+    const { app } = useContext()
     const { gtmPushPage } = useGtm()
 
     const hrefLang = {
-      'it': 'https://www.callmewine.com/chi-siamo.html',
-      'en': 'https://www.callmewine.com/en/about-us.html',
-      'fr': 'https://www.callmewine.fr/qui-nous-sommes.html',
-      'de': 'https://www.callmewine.de/uber-uns.html',
-      'en-gb': 'https://callmewine.co.uk/about-us',
+      'it': 'https://www.callmewine.com/contatti.html',
+      'en': 'https://www.callmewine.com/en/contatti.html',
+      'fr': 'https://www.callmewine.fr/contatti.html',
+      'de': 'https://www.callmewine.de/contatti.html',
+      'en-gb': 'https://callmewine.co.uk/contact',
     }
 
-    const pageData = ref({ section: [] })
-    const sectionContent = ref({ section: [] })
+    const pageData = ref<IPrismicPageData>({
+      title: '',
+      image: {
+        alt: '',
+        dimensions: {
+          height: 0,
+          width: 0,
+        },
+        url: '',
+      },
+      section: [],
+    })
 
-    const { fetch } = useFetch(async () => {
-      await $prismic.api.getSingle(
+    useFetch(async ({ $i18n, handleApiErrors }) => {
+      await app.$prismic.api.getSingle(
         'contact_us',
-        { lang: i18n.localeProperties.iso.toLowerCase() },
+        { lang: $i18n.localeProperties.iso?.toLowerCase() },
       )
-        .then(({ data }) => {
+        .then(({ data }: Record<string, any>) => {
           pageData.value = data
-          sectionContent.value = data.section[0] ? data.section : []
         })
-        .catch((err) => {
-          $sentry.captureException(new Error(`Catch getting contact us data from prismic: ${err}`))
+        .catch((err: Error) => {
+          handleApiErrors(`Catch getting contact us data from prismic: ${err}`)
         })
     })
 
@@ -44,7 +54,7 @@ export default defineComponent({
       link: generateHeadHreflang(hrefLang),
     }))
 
-    return { fetch, pageData, sectionContent }
+    return { pageData }
   },
   head: {},
 })
@@ -70,7 +80,7 @@ export default defineComponent({
         altText: pageData.image.alt,
       }"
     />
-    <div v-for="(section, i) in sectionContent" :key="i" class="cmw-mt-5">
+    <div v-for="(section, i) in pageData.section" :key="i" class="cmw-mt-5">
       <PrismicRichText :field="[section]" />
     </div>
   </div>

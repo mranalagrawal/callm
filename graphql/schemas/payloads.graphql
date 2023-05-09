@@ -28,6 +28,10 @@ type CustomerAccessTokenCreatePayload {
   customerUserErrors: DisplayableError # [CustomerUserError!]!
 }
 
+type CustomerRecoverPayload {
+  customerUserErrors: DisplayableError
+}
+
 type CustomerUpdatePayload {
   customer: Customer
   customerAccessToken: CustomerAccessToken
