@@ -653,7 +653,6 @@ export default {
     ELASTIC_URL: process.env.ELASTIC_URL,
     CMW_API: process.env.CMW_API,
     CMW_API_KEY: process.env.CMW_API_KEY,
-    MAIN_COLOR: process.env.MAIN_COLOR,
     STORE: process.env.STORE,
     SALECHANNEL: process.env.SALECHANNEL,
     DEFAULT_LOCALE: process.env.DEFAULT_LOCALE,
