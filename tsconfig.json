@@ -30,7 +30,8 @@
       "@nuxtjs/i18n",
       "nuxt-graphql-request",
       "@nuxt/http",
-      "@nuxtjs/sentry"
+      "@nuxtjs/sentry",
+      "@pinia/nuxt"
     ]
   },
   "exclude": [

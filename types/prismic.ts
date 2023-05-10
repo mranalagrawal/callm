@@ -10,3 +10,16 @@ export interface IPrismicPageData {
   }
   section: Record<string, any>
 }
+
+export const initialPageData: IPrismicPageData = {
+  title: '',
+  image: {
+    alt: '',
+    dimensions: {
+      height: 0,
+      width: 0,
+    },
+    url: '',
+  },
+  section: [],
+}
