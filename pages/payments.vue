@@ -2,6 +2,7 @@
 import { defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
 import useGtm from '~/components/composables/useGtm'
 import { generateHeadHreflang } from '@/utilities/arrays'
+import { initialPageData } from '~/types/prismic'
 import type { IPrismicPageData } from '~/types/prismic'
 
 export default defineComponent({
@@ -20,18 +21,7 @@ export default defineComponent({
       'en-gb': 'https://callmewine.co.uk/payments',
     }
 
-    const pageData = ref<IPrismicPageData>({
-      title: '',
-      image: {
-        alt: '',
-        dimensions: {
-          height: 0,
-          width: 0,
-        },
-        url: '',
-      },
-      section: [],
-    })
+    const pageData = ref<IPrismicPageData>(initialPageData)
 
     useFetch(async ({ $i18n, handleApiErrors }) => {
       await app.$prismic.api.getSingle(
