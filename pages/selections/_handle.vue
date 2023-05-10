@@ -3,17 +3,17 @@ import { computed, onMounted, ref, useContext, useFetch } from '@nuxtjs/composit
 import { storeToRefs } from 'pinia'
 import useGtm from '@/components/composables/useGtm'
 import { useCustomer } from '@/store/customer'
-import { getMappedProducts } from '@/utilities/mappedProduct'
+import { getMappedProducts } from '~/utilities/mappedProduct'
 import { sortArrayByName, sortArrayByNumber } from '~/utilities/arrays'
 import getCollection from '~/graphql/queries/getCollection'
 import { useFilters } from '~/store/filters'
 
 export default {
-  layout(context) {
-    return context.$config.STORE
+  layout({ $config }) {
+    return $config.STORE
   },
   setup() {
-    const { $config, params, $graphql, i18n } = useContext()
+    const { params, i18n } = useContext()
     const customerStore = useCustomer()
     const { getCustomerType } = storeToRefs(customerStore)
     const { gtmPushPage } = useGtm()
@@ -69,20 +69,29 @@ export default {
       sorting.value = false
     }
 
-    const { fetch } = useFetch(async () => {
-      const { collection } = await $graphql.default.request(getCollection, {
+    const { fetch } = useFetch(async ({ $config, $graphql, handleApiErrors }) => {
+      await $graphql.default.request(getCollection, {
         lang: i18n.locale.toUpperCase(),
         handle: params.value.handle,
       })
+        .then(({ collection }) => {
+          collectionRef.value = collection
 
-      collectionRef.value = collection
-
-      sorted.value = getMappedProducts(collection.products.nodes)
-      sorted.value = sorted.value.map(p => ({
-        ...p,
-        sortPrice: Number(p.priceLists[$config.SALECHANNEL][getCustomerType.value]),
-      }))
-      sorted.value = sortArrayByName(sorted.value, 'title', 'asc')
+          sorted.value = getMappedProducts({
+            arr: collection.products.nodes,
+            lang: i18n.locale,
+            store: $config.STORE,
+            sale_channel: $config.SALECHANNEL,
+          })
+          sorted.value = sorted.value.map(p => ({
+            ...p,
+            sortPrice: Number(p.priceLists[$config.SALECHANNEL][getCustomerType.value]),
+          }))
+          sorted.value = sortArrayByName(sorted.value, 'title', 'asc')
+        })
+        .catch((err) => {
+          handleApiErrors(`Catch getting getCollection Products from Shopify: ${err}`)
+        })
     })
 
     const handleUpdateTrigger = () => sorting.value = !sorting.value

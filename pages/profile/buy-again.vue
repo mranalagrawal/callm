@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import useGtm from '@/components/composables/useGtm'
-import { getMappedProducts } from '@/utilities/mappedProduct'
+import { getMappedProducts } from '~/utilities/mappedProduct'
 import { useFilters } from '~/store/filters'
 import { getUniqueListBy } from '~/utilities/arrays'
 import { useCustomerOrders } from '~/store/customerOrders'
@@ -12,7 +12,7 @@ export default {
     isDesktop: Boolean,
   },
   setup() {
-    const { i18n } = useContext()
+    const { i18n, $config } = useContext()
     const customerOrders = useCustomerOrders()
     const { orders } = storeToRefs(customerOrders)
     const { gtmPushPage } = useGtm()
@@ -84,7 +84,7 @@ export default {
 
       arr = arr.filter(p => p.id)
       arr = getUniqueListBy(arr, 'id')
-      arr = getMappedProducts(arr)
+      arr = getMappedProducts({ arr, lang: i18n.locale, store: $config.STORE })
       return arr
     })
 

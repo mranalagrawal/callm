@@ -2,7 +2,7 @@
 import { computed, onMounted, useContext, useFetch, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import useGtm from '@/components/composables/useGtm'
-import { getMappedProducts } from '@/utilities/mappedProduct'
+import { getMappedProducts } from '~/utilities/mappedProduct'
 // import getProducts from '~/graphql/queries/getProducts'
 import { useFilters } from '~/store/filters'
 import { useCustomer } from '~/store/customer'

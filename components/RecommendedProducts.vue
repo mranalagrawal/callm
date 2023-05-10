@@ -1,16 +1,18 @@
-<script>
+<script lang="ts">
 import { ref, toRefs, useContext, useFetch, watch } from '@nuxtjs/composition-api'
-import { getMappedProducts } from '@/utilities/mappedProduct'
-import getProductRecommendations from '@/graphql/queries/getProductRecommendations'
+import type { TISO639, TStores } from '~/config/themeConfig'
+import type { IProductMapped } from '~/types/product'
+import { getMappedProducts } from '~/utilities/mappedProduct'
+import getProductRecommendations from '@/graphql/queries/getProductRecommendations.graphql'
 
 export default {
   props: ['id'],
-  setup(props) {
+  setup(props: any) {
     const { i18n, $graphql } = useContext()
-    const productsRef = ref([])
+    const productsRef = ref<IProductMapped[]>([])
     const { id: idRef } = toRefs(props)
 
-    const { fetch } = useFetch(async () => {
+    const { fetch } = useFetch(async ({ $config, $i18n, handleApiErrors }) => {
       if (!idRef.value)
         return
 
@@ -19,9 +21,17 @@ export default {
         productId: idRef.value,
       })
         .then(async ({ productRecommendations = [] }) => {
-          if (productRecommendations.length)
-            productsRef.value = getMappedProducts(productRecommendations)
-        }).catch(err => $sentry.captureException(new Error(`Catch getProductRecommendations from shopify: ${err}`)))
+          if (productRecommendations.length) {
+            productsRef.value = getMappedProducts({
+              arr: productRecommendations,
+              lang: $i18n.locale as TISO639,
+              store: $config.STORE as TStores,
+            })
+          }
+        })
+        .catch((err: Error) => {
+          handleApiErrors(`Catch getProductRecommendations from shopify: ${err}`)
+        })
     })
 
     watch(() => idRef.value, () => fetch())

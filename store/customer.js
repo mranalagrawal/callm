@@ -141,13 +141,10 @@ export const useCustomer = defineStore({
           if (!args.isOnFavourite) {
             this.$nuxt.$gtm.push({
               event: 'addToWishlist',
-              ecommerce: {
-                currencyCode: this.$nuxt.app.$config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
-                add: {
-                  products: [{
-                    ...args.gtmProductData,
-                  }],
-                },
+              wishlistAddedProduct: {
+                products: [{
+                  ...args.gtmProductData,
+                }],
               },
             })
           }

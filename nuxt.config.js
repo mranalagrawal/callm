@@ -341,7 +341,7 @@ export default {
 
   plugins: [
     { src: '~/plugins/cmw-api.ts' },
-    { src: '~/plugins/repositories.js' },
+    { src: '~/plugins/repositories.ts' },
     { src: '~/plugins/cookies.js' },
     { src: '~plugins/vee-validate', ssr: false },
     { src: '~plugins/vue-carousel-3d', ssr: false },

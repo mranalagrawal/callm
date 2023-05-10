@@ -1,7 +1,22 @@
 import { getCountryFromStore } from '@/utilities/currency'
+import type { TISO639, TSalesChannel, TStores } from '~/config/themeConfig'
+import type { IProductMapped } from '~/types/product'
 
+interface IGetMappedProducts {
+  arr: Record<string, any>[]
+  lang: TISO639
+  isElastic?: boolean
+  store?: TStores | ''
+  sale_channel?: TSalesChannel | ''
+}
 export const productFeatures = ['favourite', 'isnew', 'isInPromotion', 'foreveryday', 'togift', 'unusualvariety', 'rarewine', 'artisanal', 'organic', 'topsale']
-export const getMappedProducts = (arr = [], lang = 'en', isElastic = false, store = '', sale_channel = '') => {
+export const getMappedProducts = ({
+  arr = [],
+  lang = 'en',
+  isElastic = false,
+  store = '',
+  sale_channel = '',
+}: IGetMappedProducts): IProductMapped[] => {
   let products = []
 
   if (isElastic) {
@@ -19,7 +34,7 @@ export const getMappedProducts = (arr = [], lang = 'en', isElastic = false, stor
 
       return ({
         availableForSale: p._source.quantity[store] > 0,
-        awards: p._source.awards.map(award => ({
+        awards: p._source.awards.map((award: Record<string, any>) => ({
           ...award,
           title: award[`name_${lang}`],
           quote: {
@@ -105,7 +120,7 @@ export const getMappedProducts = (arr = [], lang = 'en', isElastic = false, stor
           // currencyCode: 0,
         },
         priceLists,
-        quantityAvailable: p.variants.nodes[0].quantityAvailable,
+        quantityAvailable: p.totalInventory,
         details,
         id,
         source_id: `P${id}`,
@@ -144,7 +159,7 @@ export const getMappedProducts = (arr = [], lang = 'en', isElastic = false, stor
           rarewine: details.rarewine ? 'yes' : 'no',
           // price: priceLists[sale_channel][getCustomerType.value], We have no access to pinia here
           compare_at_price: Number(compareAtPrice.amount),
-          stock_status: p.quantityAvailable > 0 ? 'in_stock' : 'out_of_stock',
+          stock_status: p.totalInventory > 0 ? 'in_stock' : 'out_of_stock',
           quantity: 1,
         },
         sku: p.variants.nodes[0].sku,

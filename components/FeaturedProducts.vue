@@ -1,11 +1,11 @@
 <script lang="ts">
-import { ref, useContext, useFetch } from '@nuxtjs/composition-api'
-import { getMappedProducts } from '@/utilities/mappedProduct'
+import { ref, useFetch } from '@nuxtjs/composition-api'
+import type { TISO639, TStores } from '~/config/themeConfig'
+import { getMappedProducts } from '~/utilities/mappedProduct'
 import getCollection from '@/graphql/queries/getCollection.graphql'
 
 export default {
   setup() {
-    const { $graphql, i18n } = useContext()
     const collectionRef = ref({
       description: '',
       descriptionHtml: '',
@@ -19,50 +19,27 @@ export default {
       title: '',
       products: [],
     })
-    const { fetch } = useFetch(async () => {
-      const { collection } = await $graphql.default.request(getCollection, {
-        lang: i18n.locale.toUpperCase(),
+    useFetch(async ({ $config, $i18n, $graphql, handleApiErrors }) => {
+      await $graphql.default.request(getCollection, {
+        lang: $i18n.locale.toUpperCase(),
         handle: 'home-shelf-1',
       })
-
-      collectionRef.value = {
-        ...collection,
-        products: collection.products.nodes.length && getMappedProducts(collection.products.nodes),
-      }
+        .then(({ collection }) => {
+          collectionRef.value = {
+            ...collection,
+            products: collection.products.nodes.length && getMappedProducts({
+              arr: collection.products.nodes,
+              lang: $i18n.locale as TISO639,
+              store: $config.STORE as TStores,
+            }),
+          }
+        })
+        .catch((err: Error) => {
+          handleApiErrors(`Catch getting Feature Products from Shopify: ${err}`)
+        })
     })
-    return { fetch, collectionRef }
+    return { collectionRef }
   },
-  data: () => ({
-    data: null,
-    settings: {
-      dots: true,
-      focusOnSelect: true,
-      infinite: true,
-      speed: 500,
-      slidesToShow: 4,
-      slidesToScroll: 4,
-      touchThreshold: 5,
-      responsive: [
-        {
-          breakpoint: 1024,
-          settings: {
-            slidesToShow: 3,
-            slidesToScroll: 3,
-            arrows: false,
-          },
-        },
-        {
-          breakpoint: 600,
-          settings: {
-            slidesToShow: 1,
-            slidesToScroll: 1,
-            dots: true,
-            arrows: false,
-          },
-        },
-      ],
-    },
-  }),
 }
 </script>
 

@@ -1,18 +1,19 @@
-<script>
+<script lang="ts">
 import { computed, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import { useRecentProductsStore } from '@/store/recent'
-import { getMappedProducts } from '@/utilities/mappedProduct'
+import type { TISO639, TStores } from '~/config/themeConfig'
+import { getMappedProducts } from '~/utilities/mappedProduct'
 
 export default {
   setup() {
     const recentProductsStore = useRecentProductsStore()
     const { recentProducts } = storeToRefs(recentProductsStore)
     const { $cmwRepo } = useContext()
-    const productsRef = ref([])
+    const productsRef = ref<Record<string, any>[]>([])
     const query = computed(() => `tag:${recentProducts.value.join(' OR ')}`)
 
-    const { fetch } = useFetch(async () => {
+    const { fetch } = useFetch(async ({ $i18n, $config, handleApiErrors }) => {
       if (!recentProducts.value)
         return
 
@@ -21,9 +22,17 @@ export default {
         query: query.value,
       })
         .then(async ({ products = { nodes: [] } }) => {
-          if (products.nodes.length)
-            productsRef.value = getMappedProducts(products.nodes)
-        }).catch(err => $sentry.captureException(new Error(`Catch getting products getAll from shopify on Recent Products on Vendor Products: ${err}`)))
+          if (products.nodes.length) {
+            productsRef.value = getMappedProducts({
+              arr: products.nodes,
+              lang: $i18n.locale as TISO639,
+              store: $config.STORE as TStores,
+            })
+          }
+        })
+        .catch((err: Error) => {
+          handleApiErrors(`Catch getting products getAll from shopify on Recent Products on Vendor Products: ${err}`)
+        })
     })
 
     watch(() => query.value, () => fetch())

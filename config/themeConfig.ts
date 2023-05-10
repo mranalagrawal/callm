@@ -1,6 +1,7 @@
 import colors from 'windicss/colors'
 
 export type TStores = 'CMW' | 'B2B' | 'CMW_UK' | 'CMW_FR' | 'CMW_DE' | 'WILDVIGNERON'
+export type TSalesChannel = 'cmw_it_b2c' | 'cmw_it_b2b' | 'cmw_uk_b2c' | 'cmw_fr_b2c' | 'cmw_de_b2c'
 export type TISO639 = 'it' | 'en' | 'fr' | 'de'
 export type TPrismicIsoCodes = 'it-it' | 'it-bn' | 'en-eu' | 'en-gb' | 'fr-fr' | 'de-de'
 
@@ -73,7 +74,7 @@ const themeConfig: TThemeConfig = {
   },
   CMW_UK: {
     id: 2,
-    customerType: 'B2B',
+    customerType: 'B2C',
     prismicIsoCode: {
       en: 'en-gb',
     },
@@ -85,7 +86,7 @@ const themeConfig: TThemeConfig = {
   },
   CMW_FR: {
     id: 3,
-    customerType: 'B2B',
+    customerType: 'B2C',
     prismicIsoCode: {
       fr: 'fr-fr',
     },
@@ -97,7 +98,7 @@ const themeConfig: TThemeConfig = {
   },
   CMW_DE: {
     id: 4,
-    customerType: 'B2B',
+    customerType: 'B2C',
     prismicIsoCode: {
       de: 'de-de',
     },
@@ -109,7 +110,7 @@ const themeConfig: TThemeConfig = {
   },
   WILDVIGNERON: {
     id: 5,
-    customerType: 'B2B',
+    customerType: 'B2C',
     prismicIsoCode: {
       it: 'it-it',
     },

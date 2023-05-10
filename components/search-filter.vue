@@ -3,7 +3,7 @@ import { ref, watchEffect } from '@nuxtjs/composition-api'
 import closeIcon from 'assets/svg/close.svg'
 import { storeToRefs } from 'pinia'
 import Loader from '../components/UI/Loader.vue'
-import { getMappedProducts } from '@/utilities/mappedProduct'
+import { getMappedProducts } from '~/utilities/mappedProduct'
 import useScreenSize from '@/components/composables/useScreenSize'
 import { pick } from '@/utilities/arrays'
 import { useFilters } from '~/store/filters'
@@ -358,7 +358,13 @@ export default {
   searchableFilters: ['winelists', 'pairings', 'regions', 'areas', 'brands'],
   computed: {
     mappedProducts() {
-      return this.results.length && getMappedProducts(this.results, this.$i18n.locale, true, this.$config.STORE, this.$config.SALECHANNEL)
+      return this.results.length && getMappedProducts({
+        arr: this.results,
+        lang: this.$i18n.locale,
+        isElastic: true,
+        store: this.$config.STORE,
+        sale_channel: this.$config.SALECHANNEL,
+      })
     },
     filterCategories() {
       return Object.entries(this.filters).slice(0, !(this.showMoreFilters || !this.isDesktop) ? 4 : undefined).reduce((acc, [k, v]) => {

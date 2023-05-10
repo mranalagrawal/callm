@@ -32,7 +32,7 @@ export default {
         },
       ]),
     },
-    title: { type: String },
+    title: { type: [String, Object] },
   },
   setup() {
     const { isTablet } = useScreenSize()
