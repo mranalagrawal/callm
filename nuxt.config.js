@@ -514,7 +514,7 @@ export default {
 
   sentry: {
     dsn: 'https://8976f88cc7254b248b330a78ba72a074@o1240128.ingest.sentry.io/4504560369008640',
-    disabled: process.env.ENVIRONMENT !== 'prod',
+    disabled: process.env.DEPLOY_ENV !== 'prod',
     config: {
       browserTracing: {
         tracePropagationTargets: ['callmewine.co.uk'],
@@ -640,11 +640,11 @@ export default {
 
   gtm: {
     id: process.env.GOOGLE_TAG_MANAGER_ID,
-    enabled: process.env.ENVIRONMENT === 'prod' || process.env.ENVIRONMENT === 'staging',
+    enabled: process.env.DEPLOY_ENV === 'prod' || process.env.DEPLOY_ENV === 'staging',
     pageTracking: false,
     pageViewEventName: 'nuxtRoute',
-    autoInit: process.env.ENVIRONMENT === 'prod' || process.env.ENVIRONMENT === 'staging',
-    debug: !process.env.ENVIRONMENT || process.env.ENVIRONMENT === 'dev',
+    autoInit: process.env.DEPLOY_ENV === 'prod' || process.env.DEPLOY_ENV === 'staging',
+    debug: !process.env.DEPLOY_ENV || process.env.DEPLOY_ENV === 'dev',
   },
 
   publicRuntimeConfig: {
@@ -658,7 +658,7 @@ export default {
     SALECHANNEL: process.env.SALECHANNEL,
     DEFAULT_LOCALE: process.env.DEFAULT_LOCALE,
     CUSTOMER_API: process.env.CUSTOMER_API,
-    ENVIRONMENT: process.env.ENVIRONMENT,
+    DEPLOY_ENV: process.env.DEPLOY_ENV,
     gtm: {
       id: process.env.GOOGLE_TAG_MANAGER_ID,
     },
@@ -667,9 +667,9 @@ export default {
   robots: () => {
     return {
       UserAgent: '*',
-      Disallow: process.env.ENVIRONMENT === 'prod' ? ['/*?*', '/catalog*'] : '/',
+      Disallow: process.env.DEPLOY_ENV === 'prod' ? ['/*?*', '/catalog*'] : '/',
       // Be aware that this will NOT work on target: 'static' mode
-      ...(process.env.ENVIRONMENT === 'prod' && { Sitemap: req => `https://${req.headers.host}/sitemap.xml` }),
+      ...(process.env.DEPLOY_ENV === 'prod' && { Sitemap: req => `https://${req.headers.host}/sitemap.xml` }),
     }
   },
 }

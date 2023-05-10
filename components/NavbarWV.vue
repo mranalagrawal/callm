@@ -6,7 +6,7 @@ import LoginForm from './LoginForm.vue'
 import MegaMenuWV from './MegaMenuWV.vue'
 import DropdownMobileMenu from './UI/DropdownMobileMenu.vue'
 import UserMenu from './UserMenu.vue'
-import themeConfig from '@/config/themeConfig'
+import themeConfig from '~/config/themeConfig'
 
 export default {
   components: { LoginForm, UserMenu, DropdownMobileMenu, Cart, MegaMenuWV },

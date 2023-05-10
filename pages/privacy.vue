@@ -2,6 +2,8 @@
 import { defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
 import useGtm from '~/components/composables/useGtm'
 import { generateHeadHreflang } from '@/utilities/arrays'
+import type { TISO639, TStores } from '~/config/themeConfig'
+import themeConfig from '~/config/themeConfig'
 import { initialPageData } from '~/types/prismic'
 import type { IPrismicPageData } from '~/types/prismic'
 
@@ -23,10 +25,13 @@ export default defineComponent({
 
     const pageData = ref<IPrismicPageData>(initialPageData)
 
-    useFetch(async ({ $i18n, handleApiErrors }) => {
+    useFetch(async ({ $config, $i18n, handleApiErrors }) => {
+      const store: TStores = $config.STORE || 'CMW_UK'
+      const locale: TISO639 = $i18n.locale as TISO639
+
       await app.$prismic.api.getSingle(
         'payments',
-        { lang: $i18n.localeProperties.iso?.toLowerCase() },
+        { lang: themeConfig[store]?.prismicIsoCode[locale] },
       )
         .then(({ data }: Record<string, any>) => {
           pageData.value = data
