@@ -1,9 +1,9 @@
 <script>
-import { onMounted, ref, useContext, useRoute } from '@nuxtjs/composition-api'
+import { onMounted, ref, useContext } from '@nuxtjs/composition-api'
 import useScreenSize from '@/components/composables/useScreenSize'
 import { inRange } from '@/utilities/math'
 import useGtm from '~/components/composables/useGtm'
-import { cleanRoutesLocales, generateKey } from '~/utilities/strings'
+import { generateKey } from '~/utilities/strings'
 
 export default {
   props: {
@@ -37,18 +37,9 @@ export default {
   },
   setup(props) {
     const { $config } = useContext()
-    const route = useRoute()
     const { isTablet } = useScreenSize()
-    const { gtmPushPage } = useGtm()
+    const { getActionField, gtmPushPage } = useGtm()
     const carousel = ref(null)
-
-    const getActionField = () => {
-      if (route.value.path === '/')
-        return 'home'
-      else if (Object.keys(route.value.query).includes('search'))
-        return 'search_results'
-      else return route.value.meta?.actionField || cleanRoutesLocales(route.value.name)
-    }
 
     onMounted(() => {
       process.browser && gtmPushPage(getActionField(), {
@@ -65,6 +56,7 @@ export default {
       carousel,
       isTablet,
       inRange,
+      getActionField,
     }
   },
   methods: { generateKey },

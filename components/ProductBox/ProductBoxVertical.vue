@@ -1,5 +1,5 @@
 <script>
-import { computed, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api'
+import { computed, ref, useContext, useRouter } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import heartIcon from 'assets/svg/heart.svg'
 import heartFullIcon from 'assets/svg/heart-full.svg'
@@ -8,8 +8,8 @@ import addIcon from 'assets/svg/add.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
 import emailIcon from 'assets/svg/email.svg'
 import { mapState } from 'vuex'
-import { cleanRoutesLocales } from '@/utilities/strings'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
+import useGtm from '~/components/composables/useGtm'
 import { productFeatures } from '~/utilities/mappedProduct'
 import { useCustomer } from '~/store/customer'
 import { pick } from '@/utilities/arrays'
@@ -39,7 +39,7 @@ export default {
     const { handleWishlist } = customerStore
     const { handleShowRequestModal } = useShowRequestModal()
     const router = useRouter()
-    const route = useRoute()
+    const { getActionField } = useGtm()
 
     const isOpen = ref(false)
     const showRequestModal = ref(false)
@@ -74,14 +74,6 @@ export default {
     }
 
     const handleProductCLick = () => {
-      const getActionField = () => {
-        if (route.value.path === '/')
-          return 'home'
-        else if (Object.keys(route.value.query).includes('search'))
-          return 'search_results'
-        else return route.value.meta?.actionField || cleanRoutesLocales(route.value.name)
-      }
-
       $gtm.push({
         event: 'productClick',
         ecommerce: {
@@ -121,6 +113,7 @@ export default {
       handleWishlistClick,
       handleProductCLick,
       handleShowRequestModal,
+      getActionField,
     }
   },
   computed: {
