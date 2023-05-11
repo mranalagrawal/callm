@@ -1,4 +1,3 @@
-import { useRoute } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import { useCustomer } from '@/store/customer'
 import themeConfig from '~/config/themeConfig'
@@ -7,7 +6,6 @@ import { cleanRoutesLocales } from '~/utilities/strings'
 export default function () {
   const customerStore = useCustomer()
   const { customer } = storeToRefs(customerStore)
-  const route = useRoute()
 
   const getCustomerGtmData = () => {
     return {
@@ -26,12 +24,16 @@ export default function () {
   }
 
   const getActionField = () => {
-    console.log(route.value)
-    if (route.value.path === '/')
+    if ($nuxt.$route.path === '/')
       return 'home'
-    else if (Object.keys(route.value.query).includes('search'))
+    else if (Object.keys($nuxt.$route.query).includes('search'))
       return 'search_results'
-    else return route.value.meta?.actionField || cleanRoutesLocales(route.value.name)
+    else return $nuxt.$route.meta?.actionField || cleanRoutesLocales($nuxt.$route.name)
+  }
+
+  const resetDatalayerFields = (fields = []) => {
+    if (typeof window !== 'undefined' && window.google_tag_manager[$nuxt.$store.$config.gtm.id])
+      fields.forEach(field => window.google_tag_manager[$nuxt.app.$config.gtm.id].dataLayer.set(field, undefined))
   }
 
   const gtmPushPage = (pageType = '', data = {}) => {
@@ -41,7 +43,9 @@ export default function () {
       userLogStatus: customer.value.firstName ? 'logged' : 'not_logged',
       ...(getCustomerGtmData()),
     })
+
+    resetDatalayerFields(['ecommerce', 'actionField', 'impressions', 'pageType'])
   }
 
-  return { getActionField, getCustomerGtmData, gtmPushPage }
+  return { getActionField, getCustomerGtmData, gtmPushPage, resetDatalayerFields }
 }

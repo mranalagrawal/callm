@@ -39,7 +39,7 @@ export default {
     const { handleWishlist } = customerStore
     const { handleShowRequestModal } = useShowRequestModal()
     const router = useRouter()
-    const { getActionField } = useGtm()
+    const { getActionField, resetDatalayerFields } = useGtm()
 
     const isOpen = ref(false)
     const showRequestModal = ref(false)
@@ -89,6 +89,8 @@ export default {
         },
       })
 
+      resetDatalayerFields(['ecommerce', 'actionField', 'impressions', 'pageType'])
+
       router.push(localeLocation(props.product.url))
     }
 
@@ -114,6 +116,7 @@ export default {
       handleProductCLick,
       handleShowRequestModal,
       getActionField,
+      resetDatalayerFields,
     }
   },
   computed: {

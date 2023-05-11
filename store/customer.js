@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import useGtm from '~/components/composables/useGtm'
 import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
 import { getIconAsImg } from '~/utilities/icons'
 import customerAccessTokenCreate from '~/graphql/mutations/authenticateUser'
@@ -50,6 +51,7 @@ export const useCustomer = defineStore({
 
   actions: {
     async login(email, password) {
+      const { resetDatalayerFields } = useGtm()
       let valid = false
       const data
         = await this.$nuxt.$graphql.default.request(customerAccessTokenCreate, {
@@ -77,6 +79,8 @@ export const useCustomer = defineStore({
           userEmail: this.customer.email,
           userPhone: this.customer.phone,
         })
+
+        resetDatalayerFields(['ecommerce', 'actionField', 'impressions', 'pageType'])
       } else {
         SweetAlertToast.fire({
           icon: 'error',
@@ -90,6 +94,12 @@ export const useCustomer = defineStore({
       await this.$nuxt.$cmwRepo.customer.getCustomer()
         .then(({ customer }) => {
           if (customer) {
+            // Todo: Implement this when CORS is resolved
+            /* await this.$nuxt.$cmw.$post(`/customer/${customer.id.substring(`${customer.id}`.lastIndexOf('/') + 1)}/user-info`)
+              .then(({ data }) => {
+                console.log(data)
+              }) */
+
             // Todo: Remove this when done with Vuex
             this.$nuxt.store.commit('user/setUser', {
               token: this.$nuxt.$cookieHelpers.getToken(),
@@ -123,6 +133,7 @@ export const useCustomer = defineStore({
     },
 
     async addOrRemoveFromWishlist(args) {
+      const { resetDatalayerFields } = useGtm()
       const customerId = `${this.customer.id}`.substring(`${this.customer.id}`.lastIndexOf('/') + 1)
       const { ELASTIC_URL, STORE } = this.$nuxt.app.$config
       await fetch(
@@ -147,6 +158,8 @@ export const useCustomer = defineStore({
                 }],
               },
             })
+
+            resetDatalayerFields(['ecommerce', 'actionField', 'impressions', 'pageType'])
           }
         })
         .catch(() => {
