@@ -1,60 +1,82 @@
-<script>
-import documents from '../prismic-mapper'
-import locales from '../locales-mapper'
+<script lang="ts">
+import { defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
+import useGtm from '~/components/composables/useGtm'
 import { generateHeadHreflang } from '@/utilities/arrays'
+import type { TISO639, TStores } from '~/config/themeConfig'
+import themeConfig from '~/config/themeConfig'
+import { initialPageData } from '~/types/prismic'
+import type { IPrismicPageData } from '~/types/prismic'
 
-export default {
-  layout(context) {
-    return context.$config.STORE
+export default defineComponent({
+  layout({ $config }) {
+    return $config.STORE
   },
-  data() {
-    return {
-      data: null,
+  setup() {
+    const { app } = useContext()
+    const { gtmPushPage } = useGtm()
+
+    const hrefLang = {
+      'it': 'https://www.callmewine.com/spedizioni.html',
+      'en': 'https://www.callmewine.com/en/shipping.html',
+      'fr': 'https://www.callmewine.fr/livraisons.html',
+      'de': 'https://www.callmewine.de/lieferung.html',
+      'en-gb': 'https://callmewine.co.uk/shipping',
     }
-  },
-  hrefLang: {
-    'it': 'https://www.callmewine.com/spedizioni.html',
-    'en': 'https://www.callmewine.com/en/shipping.html',
-    'fr': 'https://www.callmewine.fr/livraisons.html',
-    'de': 'https://www.callmewine.de/lieferung.html',
-    'en-gb': 'https://callmewine.co.uk/shipping',
-  },
-  async fetch() {
-    let lang = locales[this.$i18n.locale]
-    if (lang === 'en-gb' && this.$config.STORE === 'CMW')
-      lang = 'en-eu'
 
-    const response = await this.$prismic.api.getSingle(
-      documents[this.$config.STORE].shippingPage,
-      {
-        lang,
-      },
-    )
+    const pageData = ref<IPrismicPageData>(initialPageData)
 
-    this.data = response.data
+    useFetch(async ({ $config, $i18n, $handleApiErrors }) => {
+      const store: TStores = $config.STORE || 'CMW_UK'
+      const locale: TISO639 = $i18n.locale as TISO639
+
+      await app.$prismic.api.getSingle(
+        themeConfig[store]?.prismic.components.shippingPage,
+        { lang: themeConfig[store]?.prismic.isoCode[locale] },
+      )
+        .then(({ data }: Record<string, any>) => {
+          pageData.value = data
+        })
+        .catch((err: Error) => {
+          $handleApiErrors(`Catch getting contact us data from prismic: ${err}`)
+        })
+    })
+
+    onMounted(() => {
+      process.browser && gtmPushPage('page')
+    })
+
+    useMeta(() => ({
+      link: generateHeadHreflang(hrefLang),
+    }))
+
+    return { pageData }
   },
-  head() {
-    return {
-      link: generateHeadHreflang(this.$options.hrefLang),
-    }
-  },
-}
+  head: {},
+})
 </script>
 
 <template>
-  <div v-if="data" class="container-fluid px-md-5 mt-5">
-    <div class="row">
-      <div class="col-12">
-        <h1>{{ data.title }}</h1>
-      </div>
-      <div class="col-12">
-        <img :src="data.image.url" class="img-fluid w-100" alt="">
-      </div>
-    </div>
-    <div class="row mt-5">
-      <div v-for="(content, j) in data.section" :key="j" class="col-12">
-        <prismic-rich-text :field="[content]" />
-      </div>
+  <div v-if="pageData.title" class="cmw-max-w-screen-xl cmw-mx-auto cmw-p-4 cmw-mt-5">
+    <h1 v-text="pageData.title" />
+    <LoadingImage
+      v-if="pageData.image"
+      :thumbnail="{
+        url: pageData.image.url ? `${pageData.image.url}?&width=20&height=12` : 'https://picsum.photos/id/75/20/12',
+        width: 20,
+        height: 12,
+        altText: pageData.image.alt,
+      }"
+      :source="{
+        url: pageData.image.url
+          ? `${pageData.image.url}?&width=${pageData.image.dimensions.width}&height=${pageData.image.dimensions.height}`
+          : 'https://picsum.photos/id/75/265/164',
+        width: pageData.image.dimensions.width,
+        height: pageData.image.dimensions.height,
+        altText: pageData.image.alt,
+      }"
+    />
+    <div v-for="(section, i) in pageData.section" :key="i" class="cmw-mt-5">
+      <PrismicRichText :field="[section]" />
     </div>
   </div>
 </template>

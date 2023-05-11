@@ -10,7 +10,7 @@ export default {
     const { vendor: vendorRef } = toRefs(props)
     const query = computed(() => `vendor:'${vendorRef.value}'`)
 
-    const { fetch } = useFetch(async ({ $config, $i18n, $cmwRepo, handleApiErrors }) => {
+    const { fetch } = useFetch(async ({ $config, $i18n, $cmwRepo, $handleApiErrors }) => {
       if (!vendorRef.value)
         return
 
@@ -28,7 +28,7 @@ export default {
           }
         })
         .catch((err: Error) => {
-          handleApiErrors(`Catch getting products getAll from shopify: ${err}`)
+          $handleApiErrors(`Catch getting products getAll from shopify: ${err}`)
         })
     })
 

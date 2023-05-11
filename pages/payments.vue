@@ -25,19 +25,19 @@ export default defineComponent({
 
     const pageData = ref<IPrismicPageData>(initialPageData)
 
-    useFetch(async ({ $config, $i18n, handleApiErrors }) => {
+    useFetch(async ({ $config, $i18n, $handleApiErrors }) => {
       const store: TStores = $config.STORE || 'CMW_UK'
       const locale: TISO639 = $i18n.locale as TISO639
 
       await app.$prismic.api.getSingle(
-        'payments',
-        { lang: themeConfig[store]?.prismicIsoCode[locale] },
+        themeConfig[store]?.prismic.components.paymentsPage,
+        { lang: themeConfig[store]?.prismic.isoCode[locale] },
       )
         .then(({ data }: Record<string, any>) => {
           pageData.value = data
         })
         .catch((err: Error) => {
-          handleApiErrors(`Catch getting contact us data from prismic: ${err}`)
+          $handleApiErrors(`Catch getting contact us data from prismic: ${err}`)
         })
     })
 

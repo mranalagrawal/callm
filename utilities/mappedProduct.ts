@@ -58,7 +58,7 @@ export const getMappedProducts = ({
         shopify_product_variant_id,
         tags: [`P${id}`],
         title: p._source.name_t[lang],
-        url: `/${p._source.handle_t[lang]}-${p._source.sourceId}.htm`,
+        url: `/${p._source.handle_t[lang]}-P${p._source.feId}.htm`,
         // url: `/${p._source.handle}-${p._source.sourceId}.htm`,
         vendor: p._source.brandname,
         image: {
