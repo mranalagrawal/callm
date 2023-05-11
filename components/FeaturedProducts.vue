@@ -19,7 +19,7 @@ export default {
       title: '',
       products: [],
     })
-    useFetch(async ({ $config, $i18n, $graphql, handleApiErrors }) => {
+    useFetch(async ({ $config, $i18n, $graphql, $handleApiErrors }) => {
       await $graphql.default.request(getCollection, {
         lang: $i18n.locale.toUpperCase(),
         handle: 'home-shelf-1',
@@ -35,7 +35,7 @@ export default {
           }
         })
         .catch((err: Error) => {
-          handleApiErrors(`Catch getting Feature Products from Shopify: ${err}`)
+          $handleApiErrors(`Catch getting Feature Products from Shopify: ${err}`)
         })
     })
     return { collectionRef }

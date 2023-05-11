@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     async handleSubmit() {
-      const response = await fetch(`${this.$config.CUSTOMER_API}${this.$config.STORE}`, {
+      await fetch(`${this.$config.CUSTOMER_API}${this.$config.STORE}`, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -48,23 +48,35 @@ export default {
         body: JSON.stringify({
           email: this.email,
         }),
-      }).then(r => r.ok)
+      }).then(async (r) => {
+        const valid = r.ok
+        const response = await r.json()
 
-      if (response) {
-        await SweetAlertToast.fire({
+        if (!valid)
+          return
+
+        this.$gtm.push({
+          event: 'newsletterSubscription',
+          leadId: response.customer.id,
+          userEmail: this.email,
+        })
+
+        SweetAlertToast.fire({
           icon: 'success',
           text: this.$i18n.t('common.feedback.OK.emailAdded'),
         })
+
         this.email = ''
-      } else {
-        await SweetAlertToast.fire({
-          icon: 'error',
-          text: this.$i18n.t('common.feedback.KO.unknown'),
+      })
+        .catch((err) => {
+          this.$sentry.captureException(new Error((`Catch on newsletterSubscription: ${err}`)))
+          SweetAlertToast.fire({
+            icon: 'error',
+            text: this.$i18n.t('common.feedback.KO.unknown'),
+          })
         })
-      }
     },
   },
-
 }
 </script>
 
@@ -381,28 +393,6 @@ export default {
 
 .text-light-footer {
   color: #add3d1;
-}
-
-.primary-title {
-  font-size: 0.875rem;
-  color: #176a62;
-  font-weight: normal;
-  line-height: 1.5;
-  letter-spacing: 2.1px;
-  font-style: normal;
-  text-transform: uppercase;
-}
-
-.secondary-title {
-  font-size: 15px;
-  color: #000;
-  font-weight: normal;
-  letter-spacing: normal;
-  font-style: normal;
-  padding: 8px 0px !important;
-}
-.secondary-title:hover {
-  color: var(--dark-secondary);
 }
 
 .custom-control-label:before {

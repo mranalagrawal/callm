@@ -30,14 +30,14 @@ export const useCustomerWishlist = defineStore({
       })
     },
 
-    async getWishlistProducts(query) {
+    async getWishlistProducts({ query, first = 30 }) {
       await this.$nuxt.$cmwRepo.products.getAll({
-        first: 30,
+        first: Number(first),
         query,
       })
         .then(({ products }) => {
           this.$patch({
-            wishlistProducts: products,
+            wishlistProducts: products.nodes,
           })
         })
     },

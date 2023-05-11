@@ -21,8 +21,8 @@ import { regexRules } from '@/utilities/validators'
 import { SweetAlertToast } from '@/utilities/Swal'
 import { generateKey } from '@/utilities/strings'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
-import { productFeatures } from '~/utilities/mappedProduct'
-import { getCountryFromStore, getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
+import { getMappedProducts, productFeatures } from '~/utilities/mappedProduct'
+import { getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
 import { pick } from '@/utilities/arrays'
 import { useRecentProductsStore } from '@/store/recent'
 import { useCustomer } from '@/store/customer'
@@ -35,7 +35,7 @@ export default defineComponent({
     return context.$config.STORE
   },
   setup() {
-    const { i18n, $sentry, $config, $graphql, $cmwRepo, error, redirect, localeLocation } = useContext()
+    const { i18n, $config, $graphql, $cmwRepo, error, redirect, localeLocation } = useContext()
     const customerStore = useCustomer()
     const recentProductsStore = useRecentProductsStore()
     const { recentProducts } = storeToRefs(recentProductsStore)
@@ -94,14 +94,18 @@ export default defineComponent({
 
     const { handleShowRequestModal } = useShowRequestModal()
 
-    useFetch(async () => {
+    useFetch(async ({ $sentry }) => {
       await $cmwRepo.products.getAll({
         first: 1,
         query: `tag:P${route.value.params.id}`,
       })
         .then(async ({ products = { nodes: [] } }) => {
           if (!!products.nodes.length && products.nodes[0].handle) {
-            product.value = products.nodes[0]
+            product.value = getMappedProducts({
+              arr: [products.nodes[0]],
+              lang: i18n.locale,
+            })[0]
+
             productVariant.value = products.nodes[0].variants.nodes[0]
             productDetails.value = JSON.parse(products.nodes[0].details.value)
             productBreadcrumbs.value = JSON.parse(products.nodes[0].breadcrumbs.value)
@@ -221,22 +225,7 @@ export default defineComponent({
         ecommerce: {
           currencyCode: $config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
           detail: {
-            products: [{
-              internal_id: product.value?.id.substring(`${product.value?.id}`.lastIndexOf('/') + 1),
-              stock_id: `'shopify_${getCountryFromStore($config.STORE)}_${product.value?.id.substring(`${product.value?.id}`.lastIndexOf('/') + 1)}_${productVariant.value?.id.substring(`${productVariant.value?.id}`.lastIndexOf('/') + 1)}'`,
-              id: productDetails.value.feId,
-              name: product.value.title.replaceAll('\'', ''),
-              brand: brand.value.title.replaceAll('\'', ''),
-              subcategory: productDetails.value.subCategoryName,
-              winelist: productDetails.value.wineListName,
-              vintage: productDetails.value.vintage,
-              favourite: isOnFavourite.value ? 'yes' : 'no',
-              artisanal: productDetails.value.artisanal ? 'yes' : 'no',
-              rarewine: productDetails.value.rarewine ? 'yes' : 'no',
-              price: finalPrice.value,
-              compare_at_price: productVariant.value?.compareAtPriceV2.amount,
-              stock_status: product.value.totalInventory > 0 ? 'in_stock' : 'out_of_stock',
-            }],
+            products: [{ ...product.value.gtmProductData }],
           },
         },
       })
@@ -301,7 +290,7 @@ export default defineComponent({
       return this.isOnCart ? this.isOnCart.quantity : 0
     },
     canAddMore() {
-      return this.product.totalInventory - this.cartQuantity > 0
+      return this.product.quantityAvailable - this.cartQuantity > 0
     },
   },
   methods: {
@@ -319,8 +308,8 @@ export default defineComponent({
         return
       }
 
-      const totalInventory = this.product.totalInventory
-      const productVariantId = this.productVariant.id
+      const totalInventory = this.product.quantityAvailable
+      const id = this.product.shopify_product_variant_id
       const amount = this.finalPrice
       const amountFullPrice = Number(
         this.productVariant.compareAtPriceV2.amount,
@@ -328,10 +317,10 @@ export default defineComponent({
 
       /* data.variants.nodes[0].compareAtPriceV2 */
       const tag = this.product.tags.find(tag => new RegExp(regexRules('isProduct')).test(tag))
-      const image = this.product.images.nodes[0].url
+      const image = this.product.image.thumbnail.url
       const title = this.product.title
       this.$store.commit('userCart/addProduct', {
-        productVariantId,
+        id,
         singleAmount: amount,
         singleAmountFullPrice: amountFullPrice,
         tag,
@@ -342,7 +331,7 @@ export default defineComponent({
       this.flashMessage.show({
         status: '',
         message: `${this.product.title} è stato aggiunto al carrello!`,
-        icon: this.product.images.nodes[0].url,
+        icon: this.product.image.thumbnail.url,
         iconClass: 'bg-transparent ',
         time: 8000,
         blockClass: 'add-product-notification',
@@ -350,7 +339,7 @@ export default defineComponent({
     },
     async removeFromUserCart() {
       this.$store.commit('userCart/removeProduct', {
-        id: this.product.productVariant,
+        id: this.product.shopify_product_variant_id,
         gtmProductData: this.product.gtmProductData,
       })
     },
@@ -387,20 +376,8 @@ export default defineComponent({
             <LoadingImage
               class="cmw-h-full"
               img-classes="cmw-max-h-[350px] md:cmw-max-h-[550px] cmw-mx-auto cmw-object-contain"
-              :thumbnail="{
-                url: product.featuredImage.url ? `${product.featuredImage.url}?&width=20&height=36`
-                  : 'https://cdn.shopify.com/s/files/1/0578/7497/2719/files/no-product-image-400x400_6.png?v=1680253923&width=20&height=36',
-                width: 20,
-                height: 36,
-                altText: product.title,
-              }"
-              :source="{
-                url: product.featuredImage.url ? `${product.featuredImage.url}?&width=400&height=719&crop=center`
-                  : 'https://cdn.shopify.com/s/files/1/0578/7497/2719/files/no-product-image-400x400_6.png?v=1680253923&width=400&height=719&crop=center',
-                width: 400,
-                height: 719,
-                altText: product.title,
-              }"
+              :thumbnail="product.image.thumbnail"
+              :source="product.image.source"
             />
             <div class="cmw-absolute cmw-top-4 cmw-left-2">
               <ProductBoxFeature v-for="feature in availableFeatures" :key="feature" :feature="feature" />
@@ -477,10 +454,10 @@ export default defineComponent({
               <div class="cmw-ml-auto cmw-mr-4">
                 <div class="">
                   <p
-                    v-if="product.totalInventory > 0" class="cmw-text-success cmw-text-center"
-                    :class="{ 'cmw-hidden': product.totalInventory > 6 }"
+                    v-if="product.quantityAvailable > 0" class="cmw-text-success cmw-text-center"
+                    :class="{ 'cmw-hidden': product.quantityAvailable > 6 }"
                   >
-                    {{ $t('product.available', { quantity: product.totalInventory }) }}
+                    {{ $t('product.available', { quantity: product.quantityAvailable }) }}
                   </p>
                   <p v-else class="text-light-secondary">
                     {{ $t('product.notAvailable') }}
@@ -848,7 +825,7 @@ export default defineComponent({
         <ClientOnly>
           <RecentProducts />
           <VendorProducts :vendor="brand.title" />
-          <RecommendedProducts :id="product.id" />
+          <RecommendedProducts :id="product.shopify_product_id" />
         </ClientOnly>
       </div>
     </template>

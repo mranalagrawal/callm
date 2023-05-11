@@ -12,7 +12,7 @@ export default {
     const productsRef = ref<IProductMapped[]>([])
     const { id: idRef } = toRefs(props)
 
-    const { fetch } = useFetch(async ({ $config, $i18n, handleApiErrors }) => {
+    const { fetch } = useFetch(async ({ $config, $i18n, $handleApiErrors }) => {
       if (!idRef.value)
         return
 
@@ -30,7 +30,7 @@ export default {
           }
         })
         .catch((err: Error) => {
-          handleApiErrors(`Catch getProductRecommendations from shopify: ${err}`)
+          $handleApiErrors(`Catch getProductRecommendations from shopify: ${err}`)
         })
     })
 

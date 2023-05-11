@@ -69,7 +69,7 @@ export default {
       sorting.value = false
     }
 
-    const { fetch } = useFetch(async ({ $config, $graphql, handleApiErrors }) => {
+    const { fetch } = useFetch(async ({ $config, $graphql, $handleApiErrors }) => {
       await $graphql.default.request(getCollection, {
         lang: i18n.locale.toUpperCase(),
         handle: params.value.handle,
@@ -90,7 +90,7 @@ export default {
           sorted.value = sortArrayByName(sorted.value, 'title', 'asc')
         })
         .catch((err) => {
-          handleApiErrors(`Catch getting getCollection Products from Shopify: ${err}`)
+          $handleApiErrors(`Catch getting getCollection Products from Shopify: ${err}`)
         })
     })
 

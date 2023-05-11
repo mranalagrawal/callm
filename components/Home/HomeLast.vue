@@ -19,7 +19,7 @@ export default {
       title: '',
       products: [],
     })
-    const { fetch } = useFetch(async ({ $config, $i18n, $graphql, handleApiErrors }) => {
+    const { fetch } = useFetch(async ({ $config, $i18n, $graphql, $handleApiErrors }) => {
       await $graphql.default.request(getCollection, {
         lang: $i18n.locale.toUpperCase(),
         handle: 'home-shelf-2',
@@ -35,7 +35,7 @@ export default {
           }
         })
         .catch((err: Error) => {
-          handleApiErrors(`Catch getting Home Last Products from Shopify: ${err}`)
+          $handleApiErrors(`Catch getting Home Last Products from Shopify: ${err}`)
         })
     })
     return { fetch, collectionRef }

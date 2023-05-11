@@ -1,9 +1,9 @@
-<script>
+<script lang="ts">
 import { computed, onMounted, useContext, useFetch, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import useGtm from '@/components/composables/useGtm'
+import type { TISO639, TStores } from '~/config/themeConfig'
 import { getMappedProducts } from '~/utilities/mappedProduct'
-// import getProducts from '~/graphql/queries/getProducts'
 import { useFilters } from '~/store/filters'
 import { useCustomer } from '~/store/customer'
 import { useCustomerWishlist } from '~/store/customerWishlist'
@@ -17,7 +17,7 @@ export default {
     const customerWishlist = useCustomerWishlist()
     const { wishlistArr } = storeToRefs(customerStore)
     const { wishlistProducts } = storeToRefs(customerWishlist)
-    const { i18n } = useContext()
+    const { i18n, $config } = useContext()
     const { gtmPushPage } = useGtm()
 
     const filtersStore = useFilters()
@@ -27,17 +27,21 @@ export default {
 
     const { fetch } = useFetch(async () => {
       if (query.value)
-        await customerWishlist.getWishlistProducts(`tag:${query.value}`)
+        await customerWishlist.getWishlistProducts({ query: `tag:${query.value}`, first: Number(wishlistArr.value.length) })
     })
 
     watch(() => query.value, () => fetch())
 
     const customerProducts = computed(() => {
       // Note: there's an annoying warning but the page renders perfectly, https://github.com/nuxt-community/composition-api/issues/19
-      if (!wishlistProducts.value || !wishlistProducts.value.nodes)
+      if (!wishlistProducts.value || !wishlistProducts.value.length)
         return []
 
-      return getMappedProducts(wishlistProducts.value.nodes, i18n.locale)
+      return getMappedProducts({
+        arr: wishlistProducts.value,
+        lang: i18n.locale as TISO639,
+        store: $config.STORE as TStores,
+      })
     })
 
     onMounted(() => {

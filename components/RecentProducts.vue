@@ -13,7 +13,7 @@ export default {
     const productsRef = ref<Record<string, any>[]>([])
     const query = computed(() => `tag:${recentProducts.value.join(' OR ')}`)
 
-    const { fetch } = useFetch(async ({ $i18n, $config, handleApiErrors }) => {
+    const { fetch } = useFetch(async ({ $i18n, $config, $handleApiErrors }) => {
       if (!recentProducts.value)
         return
 
@@ -31,7 +31,7 @@ export default {
           }
         })
         .catch((err: Error) => {
-          handleApiErrors(`Catch getting products getAll from shopify on Recent Products on Vendor Products: ${err}`)
+          $handleApiErrors(`Catch getting products getAll from shopify on Recent Products on Vendor Products: ${err}`)
         })
     })
 
