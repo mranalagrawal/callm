@@ -1,10 +1,13 @@
+import { useRoute } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import { useCustomer } from '@/store/customer'
 import themeConfig from '~/config/themeConfig'
+import { cleanRoutesLocales } from '~/utilities/strings'
 
 export default function () {
   const customerStore = useCustomer()
   const { customer } = storeToRefs(customerStore)
+  const route = useRoute()
 
   const getCustomerGtmData = () => {
     return {
@@ -22,6 +25,15 @@ export default function () {
     }
   }
 
+  const getActionField = () => {
+    console.log(route.value)
+    if (route.value.path === '/')
+      return 'home'
+    else if (Object.keys(route.value.query).includes('search'))
+      return 'search_results'
+    else return route.value.meta?.actionField || cleanRoutesLocales(route.value.name)
+  }
+
   const gtmPushPage = (pageType = '', data = {}) => {
     $nuxt.$gtm.push({
       ...data,
@@ -31,5 +43,5 @@ export default function () {
     })
   }
 
-  return { getCustomerGtmData, gtmPushPage }
+  return { getActionField, getCustomerGtmData, gtmPushPage }
 }

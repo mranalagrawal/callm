@@ -1,7 +1,8 @@
 <script>
-import { ref } from '@nuxtjs/composition-api'
+import { onMounted, ref, useContext } from '@nuxtjs/composition-api'
 import useScreenSize from '@/components/composables/useScreenSize'
 import { inRange } from '@/utilities/math'
+import useGtm from '~/components/composables/useGtm'
 import { generateKey } from '~/utilities/strings'
 
 export default {
@@ -34,14 +35,28 @@ export default {
     },
     title: { type: [String, Object] },
   },
-  setup() {
+  setup(props) {
+    const { $config } = useContext()
     const { isTablet } = useScreenSize()
+    const { getActionField, gtmPushPage } = useGtm()
     const carousel = ref(null)
+
+    onMounted(() => {
+      process.browser && gtmPushPage(getActionField(), {
+        event: 'productListView',
+        ecommerce: {
+          currencyCode: $config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
+          actionField: getActionField(),
+          impressions: props.products.map(product => product.gtmProductData),
+        },
+      })
+    })
 
     return {
       carousel,
       isTablet,
       inRange,
+      getActionField,
     }
   },
   methods: { generateKey },

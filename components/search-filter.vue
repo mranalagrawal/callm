@@ -3,6 +3,7 @@ import { ref, watchEffect } from '@nuxtjs/composition-api'
 import closeIcon from 'assets/svg/close.svg'
 import { storeToRefs } from 'pinia'
 import Loader from '../components/UI/Loader.vue'
+import useGtm from '~/components/composables/useGtm'
 import { getMappedProducts } from '~/utilities/mappedProduct'
 import useScreenSize from '@/components/composables/useScreenSize'
 import { pick } from '@/utilities/arrays'
@@ -15,6 +16,7 @@ export default {
   scrollToTop: true,
   props: ['inputParameters'],
   setup() {
+    const { getActionField, gtmPushPage } = useGtm()
     const filtersStore = useFilters()
     const { selectedLayout, availableLayouts } = storeToRefs(filtersStore)
     const { isDesktop } = useScreenSize()
@@ -35,6 +37,8 @@ export default {
       availableLayouts,
       selectedLayout,
       closeIcon,
+      getActionField,
+      gtmPushPage,
     }
   },
   data() {
@@ -358,13 +362,35 @@ export default {
   searchableFilters: ['winelists', 'pairings', 'regions', 'areas', 'brands'],
   computed: {
     mappedProducts() {
-      return this.results.length && getMappedProducts({
+      const mappedProducts = this.results.length && getMappedProducts({
         arr: this.results,
         lang: this.$i18n.locale,
         isElastic: true,
         store: this.$config.STORE,
         sale_channel: this.$config.SALECHANNEL,
       })
+
+      if (process.browser) {
+        const impressions = mappedProducts.map((product, i) => {
+          // eslint-disable-next-line unused-imports/no-unused-vars
+          const { quantity, ...rest } = product.gtmProductData
+          return {
+            ...rest,
+            position: i + 1,
+          }
+        })
+
+        this.gtmPushPage(this.getActionField(), {
+          event: 'productListView',
+          ecommerce: {
+            currencyCode: this.$config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
+            actionField: this.getActionField(),
+            impressions,
+          },
+        })
+      }
+
+      return mappedProducts
     },
     filterCategories() {
       return Object.entries(this.filters).slice(0, !(this.showMoreFilters || !this.isDesktop) ? 4 : undefined).reduce((acc, [k, v]) => {
