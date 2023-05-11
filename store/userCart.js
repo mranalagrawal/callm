@@ -43,22 +43,20 @@ export const mutations = {
       el => el.productVariantId === entry.id,
     )
 
-    if (product) {
-      // eslint-disable-next-line curly
-      if (product.quantity > 1) {
-        product.quantity = product.quantity - 1
-      // eslint-disable-next-line curly
-      } else {
-        state.userCart.splice(state.userCart.indexOf(product), 1)
-      }
-    }
+    if (!product)
+      return
+
+    if (product.quantity > 1)
+      product.quantity = product.quantity - 1
+    else
+      state.userCart.splice(state.userCart.indexOf(product), 1)
 
     this.app.$gtm.push({
       event: 'removeFromCart',
       ecommerce: {
         currencyCode: state.currencyCode,
         remove: {
-          products: [entry.gtmProductData],
+          products: [product.gtmProductData],
         },
       },
     })

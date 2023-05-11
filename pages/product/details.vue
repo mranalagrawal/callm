@@ -31,15 +31,15 @@ import favouriteIcon from '~/assets/svg/selections/favourite.svg'
 import getArticles from '~/graphql/queries/getArticles'
 
 export default defineComponent({
-  layout(context) {
-    return context.$config.STORE
+  layout({ $config }) {
+    return $config.STORE
   },
   setup() {
     const { i18n, $config, $graphql, $cmwRepo, error, redirect, localeLocation } = useContext()
     const customerStore = useCustomer()
     const recentProductsStore = useRecentProductsStore()
     const { recentProducts } = storeToRefs(recentProductsStore)
-    const { getCustomerGtmData, gtmPushPage } = useGtm()
+    const { gtmPushPage } = useGtm()
 
     const { customer, wishlistArr, customerId, getCustomerType } = storeToRefs(customerStore)
 
@@ -104,6 +104,7 @@ export default defineComponent({
             product.value = getMappedProducts({
               arr: [products.nodes[0]],
               lang: i18n.locale,
+              store: $config.STORE,
             })[0]
 
             productVariant.value = products.nodes[0].variants.nodes[0]
@@ -202,6 +203,11 @@ export default defineComponent({
         urlPath: `/${cleanUrl(breadcrumb.handle)}`,
       })))
 
+    const gtmProductData = computed(() => ({
+      ...product.value.gtmProductData,
+      price: finalPrice.value,
+    }))
+
     const generateMetaLink = (arr = []) => {
       const hrefLangArr = !!arr.length && arr.map(el => ({
         hid: `alternate-${el[0]}`,
@@ -255,6 +261,7 @@ export default defineComponent({
       availableFeatures,
       isOnSale,
       isOnFavourite,
+      gtmProductData,
       finalPrice,
       strippedContent,
       breadcrumbs,
@@ -271,7 +278,6 @@ export default defineComponent({
       emailIcon,
       showRequestModal,
       customerId,
-      getCustomerGtmData,
       getCustomerType,
       handleWishlist,
       handleShowRequestModal,
@@ -327,6 +333,7 @@ export default defineComponent({
         image,
         title,
         totalInventory,
+        gtmProductData: this.gtmProductData,
       })
       this.flashMessage.show({
         status: '',
@@ -340,7 +347,6 @@ export default defineComponent({
     async removeFromUserCart() {
       this.$store.commit('userCart/removeProduct', {
         id: this.product.shopify_product_variant_id,
-        gtmProductData: this.product.gtmProductData,
       })
     },
   },

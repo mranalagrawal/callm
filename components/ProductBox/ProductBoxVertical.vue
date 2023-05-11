@@ -182,7 +182,6 @@ export default {
     async removeFromUserCart() {
       this.$store.commit('userCart/removeProduct', {
         id: this.product.shopify_product_variant_id,
-        gtmProductData: this.product.gtmProductData,
       })
     },
   },
