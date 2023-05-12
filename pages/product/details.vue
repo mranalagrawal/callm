@@ -26,7 +26,6 @@ import { getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
 import { pick } from '@/utilities/arrays'
 import { useRecentProductsStore } from '@/store/recent'
 import { useCustomer } from '@/store/customer'
-import useGtm from '@/components/composables/useGtm'
 import favouriteIcon from '~/assets/svg/selections/favourite.svg'
 import getArticles from '~/graphql/queries/getArticles'
 
@@ -35,11 +34,10 @@ export default defineComponent({
     return $config.STORE
   },
   setup() {
-    const { i18n, $config, $graphql, $cmwRepo, error, redirect, localeLocation } = useContext()
+    const { i18n, $config, $graphql, $cmwRepo, error, redirect, localeLocation, $cmwGtmUtils } = useContext()
     const customerStore = useCustomer()
     const recentProductsStore = useRecentProductsStore()
     const { recentProducts } = storeToRefs(recentProductsStore)
-    const { gtmPushPage } = useGtm()
 
     const { customer, wishlistArr, customerId, getCustomerType } = storeToRefs(customerStore)
 
@@ -226,7 +224,7 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      process.browser && gtmPushPage('product', {
+      process.browser && $cmwGtmUtils.pushPage('product', {
         event: 'productDetailView',
         ecommerce: {
           currencyCode: $config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',

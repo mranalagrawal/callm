@@ -1,6 +1,5 @@
 <script>
 import { defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
-import useGtm from '@/components/composables/useGtm'
 import { generateHeadHreflang } from '@/utilities/arrays'
 
 export default defineComponent({
@@ -8,8 +7,7 @@ export default defineComponent({
     return context.$config.STORE
   },
   setup() {
-    const { i18n, $prismic, $sentry } = useContext()
-    const { gtmPushPage } = useGtm()
+    const { i18n, $prismic, $sentry, $cmwGtmUtils } = useContext()
 
     const hrefLang = {
       'it': 'https://www.callmewine.com/chi-siamo.html',
@@ -37,7 +35,7 @@ export default defineComponent({
     })
 
     onMounted(() => {
-      process.browser && gtmPushPage('page')
+      process.browser && $cmwGtmUtils.pushPage('page')
     })
 
     useMeta(() => ({

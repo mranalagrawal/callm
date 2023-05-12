@@ -1,6 +1,5 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, useContext } from '@nuxtjs/composition-api'
-import useGtm from '~/components/composables/useGtm'
 import GqlCustomerRecover from '~/graphql/mutations/customerRecover.graphql'
 import { useSplash } from '~/store/splash'
 import { SweetAlertToast } from '~/utilities/Swal'
@@ -10,8 +9,7 @@ export default defineComponent({
     return context.$config.STORE
   },
   setup() {
-    const { $graphql, $sentry, i18n } = useContext()
-    const { gtmPushPage } = useGtm()
+    const { $graphql, $sentry, i18n, $cmwGtmUtils } = useContext()
     const splash = useSplash()
     const isSubmitting = ref(false)
     const form = ref({
@@ -51,7 +49,7 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      process.browser && gtmPushPage('page')
+      process.browser && $cmwGtmUtils.pushPage('page')
     })
 
     return { form, isSubmitting, onSubmit }

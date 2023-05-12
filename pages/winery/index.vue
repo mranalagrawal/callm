@@ -2,7 +2,6 @@
 import { computed, onMounted, ref, useContext, useFetch, useRoute, useRouter } from '@nuxtjs/composition-api'
 import DropdownWinery from '../../components/UI/DropdownWinery.vue'
 import Loader from '../../components/UI/Loader.vue'
-import useGtm from '@/components/composables/useGtm'
 
 export default {
   components: { DropdownWinery, Loader },
@@ -10,9 +9,9 @@ export default {
     return context.$config.STORE
   },
   setup() {
+    const { $cmwGtmUtils } = useContext()
     const route = useRoute()
     const router = useRouter()
-    const { gtmPushPage } = useGtm()
 
     const data = ref(null)
     const linksRef = ref(null)
@@ -92,7 +91,7 @@ export default {
     }
 
     onMounted(() => {
-      process.browser && gtmPushPage('page');
+      process.browser && $cmwGtmUtils.pushPage('page');
       (window.IntersectionObserver)
         ? createObserver()
         : limit.value = 50 // <-- Note: this could be messy, how can we handle this?

@@ -3,7 +3,6 @@ import { ref, watchEffect } from '@nuxtjs/composition-api'
 import closeIcon from 'assets/svg/close.svg'
 import { storeToRefs } from 'pinia'
 import Loader from '../components/UI/Loader.vue'
-import useGtm from '~/components/composables/useGtm'
 import { getMappedProducts } from '~/utilities/mappedProduct'
 import useScreenSize from '@/components/composables/useScreenSize'
 import { pick } from '@/utilities/arrays'
@@ -16,7 +15,6 @@ export default {
   scrollToTop: true,
   props: ['inputParameters'],
   setup() {
-    const { getActionField, gtmPushPage } = useGtm()
     const filtersStore = useFilters()
     const { selectedLayout, availableLayouts } = storeToRefs(filtersStore)
     const { isDesktop } = useScreenSize()
@@ -37,8 +35,6 @@ export default {
       availableLayouts,
       selectedLayout,
       closeIcon,
-      getActionField,
-      gtmPushPage,
     }
   },
   data() {
@@ -380,11 +376,11 @@ export default {
           }
         })
 
-        this.gtmPushPage(this.getActionField(), {
+        this.$cmwGtmUtils.pushPage(this.$cmwGtmUtils.getActionField(), {
           event: 'productListView',
           ecommerce: {
             currencyCode: this.$config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
-            actionField: this.getActionField(),
+            actionField: this.$cmwGtmUtils.getActionField(),
             impressions,
           },
         })

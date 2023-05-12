@@ -1,6 +1,7 @@
 <script>
 import LoginForm from './LoginForm.vue'
 import UserMenu from './UserMenu.vue'
+
 export default {
   components: {
     LoginForm,

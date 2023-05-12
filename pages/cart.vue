@@ -4,7 +4,6 @@ import { mapGetters } from 'vuex'
 import CartLine from '../components/Cart/CartLine.vue'
 import { addProductToCart, createCart, removeProductFromCart } from '~/utilities/cart'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
-import useGtm from '~/components/composables/useGtm'
 import locales from '~/locales-mapper'
 import documents from '~/prismic-mapper'
 import { SweetAlertConfirm } from '~/utilities/Swal'
@@ -16,9 +15,8 @@ export default {
     return context.$config.STORE
   },
   setup() {
-    const { $prismic, i18n, $config, store } = useContext()
+    const { $prismic, i18n, $config, store, $cmwGtmUtils } = useContext()
     console.log(store.state)
-    const { gtmPushPage } = useGtm()
     const shipping = ref({})
 
     const { fetch } = useFetch(async () => {
@@ -31,7 +29,7 @@ export default {
     })
 
     onMounted(() => {
-      process.browser && gtmPushPage('product', {
+      process.browser && $cmwGtmUtils.pushPage('product', {
         event: 'cartView',
         pageType: 'cart',
         ecommerce: {

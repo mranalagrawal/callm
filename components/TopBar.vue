@@ -4,6 +4,7 @@ import debounce from 'lodash.debounce'
 import documents from '../prismic-mapper'
 import locales from '../locales-mapper'
 import { useHeaderSize } from '~/store/headerSize'
+
 export default {
   setup() {
     const headerSize = useHeaderSize()

@@ -1,17 +1,16 @@
 <script lang="ts">
-import { defineComponent, onMounted, ref } from '@nuxtjs/composition-api'
-import useGtm from '~/components/composables/useGtm'
+import { defineComponent, onMounted, ref, useContext } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   layout(context) {
     return context.$config.STORE
   },
   setup() {
-    const { gtmPushPage } = useGtm()
+    const { $cmwGtmUtils } = useContext()
     const registerIsVisible = ref(false)
 
     onMounted(() => {
-      process.browser && gtmPushPage('page')
+      process.browser && $cmwGtmUtils.pushPage('page')
     })
 
     return { registerIsVisible }

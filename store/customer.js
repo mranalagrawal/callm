@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import useGtm from '~/components/composables/useGtm'
 import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
 import { getIconAsImg } from '~/utilities/icons'
 import customerAccessTokenCreate from '~/graphql/mutations/authenticateUser'
@@ -22,7 +21,13 @@ const availableUsers = {
 export const useCustomer = defineStore({
   id: 'customer',
   state: () => ({
-    customer: {},
+    customer: {
+      firstName: '',
+      id: '',
+      lastName: '',
+      email: '',
+      phone: '',
+    },
     // FixMe: on Nuxt 3 or using GraphQl local storage properly we shouldn't need this,
     //  we need to reduce the extra objects and relay on the state,
     //  I believe there is an issue with deep watch, for some reason getters are not updating accordingly
@@ -51,7 +56,6 @@ export const useCustomer = defineStore({
 
   actions: {
     async login(email, password) {
-      const { resetDatalayerFields } = useGtm()
       let valid = false
       const data
         = await this.$nuxt.$graphql.default.request(customerAccessTokenCreate, {
@@ -80,7 +84,7 @@ export const useCustomer = defineStore({
           userPhone: this.customer.phone,
         })
 
-        resetDatalayerFields(['ecommerce', 'actionField', 'impressions', 'pageType'])
+        this.$nuxt.$cmwGtmUtils.resetDatalayerFields(['ecommerce', 'actionField', 'impressions', 'pageType'])
       } else {
         SweetAlertToast.fire({
           icon: 'error',
@@ -92,13 +96,16 @@ export const useCustomer = defineStore({
     },
     async getCustomer() {
       await this.$nuxt.$cmwRepo.customer.getCustomer()
-        .then(({ customer }) => {
+        .then(async ({ customer }) => {
           if (customer) {
             // Todo: Implement this when CORS is resolved
-            /* await this.$nuxt.$cmw.$post(`/customer/${customer.id.substring(`${customer.id}`.lastIndexOf('/') + 1)}/user-info`)
-              .then(({ data }) => {
-                console.log(data)
-              }) */
+            await this.$nuxt.$cmw.$get(`/customers/${customer.id.substring(`${customer.id}`.lastIndexOf('/') + 1)}/user-info`)
+              .then(({ data = {}, errors = [] }) => {
+                console.log({ data, errors })
+                // success data: {...} errors: null
+                // success errors data: null errors: [...]
+                // server errors data: null errors: null <-- gestirlo con statusCode in catch
+              })
 
             // Todo: Remove this when done with Vuex
             this.$nuxt.store.commit('user/setUser', {
@@ -133,7 +140,6 @@ export const useCustomer = defineStore({
     },
 
     async addOrRemoveFromWishlist(args) {
-      const { resetDatalayerFields } = useGtm()
       const customerId = `${this.customer.id}`.substring(`${this.customer.id}`.lastIndexOf('/') + 1)
       const { ELASTIC_URL, STORE } = this.$nuxt.app.$config
       await fetch(
@@ -159,7 +165,7 @@ export const useCustomer = defineStore({
               },
             })
 
-            resetDatalayerFields(['ecommerce', 'actionField', 'impressions', 'pageType'])
+            this.$nuxt.$cmwGtmUtils.resetDatalayerFields(['ecommerce', 'actionField', 'impressions', 'pageType'])
           }
         })
         .catch(() => {

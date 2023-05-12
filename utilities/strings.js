@@ -5,12 +5,7 @@ export const stripHtml = (str = '') => {
 export const stripHtmlAnchors = (str = '') => {
   return str.replace(/<\/?a[^>]*>/g, '')
 }
-export const generateKey = (str = '') => {
-  if (str === 'missing')
-    $nuxt.$sentry.captureException(new Error(`Missing a unique key, ${str}`))
-
-  return str.toLowerCase().replaceAll(' ', '-')
-}
+export const generateKey = (str = '') => str.toLowerCase().replaceAll(' ', '-')
 
 export const cleanRoutesLocales = (str = '') =>
   (str

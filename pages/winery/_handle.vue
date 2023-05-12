@@ -1,6 +1,5 @@
 <script>
 import { computed, onMounted, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api'
-import useGtm from '@/components/composables/useGtm'
 import useScreenSize from '@/components/composables/useScreenSize'
 import getArticles from '~/graphql/queries/getArticles'
 import { inRange } from '~/utilities/math'
@@ -11,9 +10,8 @@ export default {
     return context.$config.STORE
   },
   setup() {
-    const { $graphql, i18n, redirect } = useContext()
+    const { $graphql, i18n, redirect, $cmwGtmUtils } = useContext()
     const route = useRoute()
-    const { gtmPushPage } = useGtm()
     const { isDesktop } = useScreenSize()
     const partnerC1 = ref(null)
     const partnerC2 = ref(null)
@@ -57,7 +55,7 @@ export default {
     const currentC1Slide = computed(() => c1.value && c1.value.$refs.innerSlider.currentSlide)
 
     onMounted(() => {
-      process.browser && gtmPushPage('page')
+      process.browser && $cmwGtmUtils.pushPage('page')
     })
 
     return {

@@ -1,7 +1,6 @@
 <script>
 import { onMounted, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import useGtm from '@/components/composables/useGtm'
 import { useSplash } from '~/store/splash'
 import { useCustomerAddresses } from '~/store/customerAddresses'
 
@@ -10,11 +9,10 @@ export default {
     isDesktop: Boolean,
   },
   setup() {
-    const { i18n } = useContext()
+    const { i18n, $cmwGtmUtils } = useContext()
     const splash = useSplash()
     const customerAddresses = useCustomerAddresses()
     const { defaultAddress, addresses } = storeToRefs(customerAddresses)
-    const { gtmPushPage } = useGtm()
 
     useFetch(async () => {
       await customerAddresses.getCustomerAddresses()
@@ -29,7 +27,7 @@ export default {
     }
 
     onMounted(() => {
-      process.browser && gtmPushPage('page')
+      process.browser && $cmwGtmUtils.pushPage('page')
     })
 
     return { defaultAddress, addresses, openCreateAddressSplash }

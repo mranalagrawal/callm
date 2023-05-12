@@ -1,7 +1,6 @@
 <script lang="ts">
 import { computed, onMounted, useContext, useFetch, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import useGtm from '@/components/composables/useGtm'
 import type { TISO639, TStores } from '~/config/themeConfig'
 import { getMappedProducts } from '~/utilities/mappedProduct'
 import { useFilters } from '~/store/filters'
@@ -17,8 +16,7 @@ export default {
     const customerWishlist = useCustomerWishlist()
     const { wishlistArr } = storeToRefs(customerStore)
     const { wishlistProducts } = storeToRefs(customerWishlist)
-    const { i18n, $config } = useContext()
-    const { gtmPushPage } = useGtm()
+    const { i18n, $config, $cmwGtmUtils } = useContext()
 
     const filtersStore = useFilters()
     const { selectedLayout, availableLayouts } = storeToRefs(filtersStore)
@@ -45,7 +43,7 @@ export default {
     })
 
     onMounted(() => {
-      process.browser && gtmPushPage('page')
+      process.browser && $cmwGtmUtils.pushPage('page')
     })
 
     return {

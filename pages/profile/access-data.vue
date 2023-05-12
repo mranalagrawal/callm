@@ -2,17 +2,15 @@
 import editIcon from 'assets/svg/edit.svg'
 import { onMounted, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import useGtm from '@/components/composables/useGtm'
 import { useCustomer } from '~/store/customer'
 import { useSplash } from '~/store/splash'
 
 export default {
   setup() {
-    const { i18n } = useContext()
+    const { i18n, $cmwGtmUtils } = useContext()
     const splash = useSplash()
     const customerStore = useCustomer()
     const { customer } = storeToRefs(customerStore)
-    const { gtmPushPage } = useGtm()
 
     useFetch(async () => {
       await customerStore.getCustomer()
@@ -56,7 +54,7 @@ export default {
     }
 
     onMounted(() => {
-      process.browser && gtmPushPage('page')
+      process.browser && $cmwGtmUtils.pushPage('page')
     })
 
     return { customer, editIcon, openEditEmailSplash, openEditPasswordSplash, openEditDataSplash }

@@ -1,7 +1,6 @@
 <script>
 import { computed, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import useGtm from '@/components/composables/useGtm'
 import { useCustomer } from '@/store/customer'
 import { getMappedProducts } from '~/utilities/mappedProduct'
 import { sortArrayByName, sortArrayByNumber } from '~/utilities/arrays'
@@ -13,10 +12,9 @@ export default {
     return $config.STORE
   },
   setup() {
-    const { params, i18n } = useContext()
+    const { params, i18n, $cmwGtmUtils } = useContext()
     const customerStore = useCustomer()
     const { getCustomerType } = storeToRefs(customerStore)
-    const { gtmPushPage } = useGtm()
 
     const sorting = ref(false)
     const filtersStore = useFilters()
@@ -97,7 +95,7 @@ export default {
     const handleUpdateTrigger = () => sorting.value = !sorting.value
 
     onMounted(() => {
-      process.browser && gtmPushPage('page')
+      process.browser && $cmwGtmUtils.pushPage('page')
     })
 
     return {

@@ -1,15 +1,13 @@
 <script>
 import { computed, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import useGtm from '@/components/composables/useGtm'
 import { useCustomerOrders } from '@/store/customerOrders'
 
 export default {
   setup() {
-    const { $dayjs, i18n } = useContext()
+    const { $dayjs, i18n, $cmwGtmUtils } = useContext()
     const customerOrders = useCustomerOrders()
     const { orders } = storeToRefs(customerOrders)
-    const { gtmPushPage } = useGtm()
 
     const sorting = ref(false)
     const selectedFilter = ref($dayjs().subtract(6, 'months').format('YYYY-MM-DD'))
@@ -41,7 +39,7 @@ export default {
     const handleUpdateTrigger = () => sorting.value = !sorting.value
 
     onMounted(() => {
-      process.browser && gtmPushPage('page')
+      process.browser && $cmwGtmUtils.pushPage('page')
     })
 
     return { sorting, orders, periods, selectedFilter, selectedLabel, handleUpdateValue, handleUpdateTrigger }

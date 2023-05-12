@@ -1,5 +1,6 @@
 import colors from 'windicss/colors'
 
+export type TCustomerType = 'B2C' | 'B2B'
 export type TStores = 'CMW' | 'B2B' | 'CMW_UK' | 'CMW_FR' | 'CMW_DE' | 'WILDVIGNERON'
 export type TSalesChannel = 'cmw_it_b2c' | 'cmw_it_b2b' | 'cmw_uk_b2c' | 'cmw_fr_b2c' | 'cmw_de_b2c'
 export type TISO639 = 'it' | 'en' | 'fr' | 'de'
@@ -28,7 +29,7 @@ type TPrismicComponentsMap = {
 
 interface IStoreConfig {
   id: number
-  customerType: string
+  customerType: TCustomerType
   prismic: {
     components: TPrismicComponentsMap
     isoCode: TPrismicIsoMap

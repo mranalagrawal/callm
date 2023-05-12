@@ -9,7 +9,6 @@ import subtractIcon from 'assets/svg/subtract.svg'
 import emailIcon from 'assets/svg/email.svg'
 import { mapState } from 'vuex'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
-import useGtm from '~/components/composables/useGtm'
 import { productFeatures } from '~/utilities/mappedProduct'
 import { useCustomer } from '~/store/customer'
 import { pick } from '@/utilities/arrays'
@@ -33,13 +32,12 @@ export default {
     },
   },
   setup(props) {
-    const { $config, localeLocation, $gtm } = useContext()
+    const { $config, localeLocation, $gtm, $cmwGtmUtils } = useContext()
     const customerStore = useCustomer()
     const { wishlistArr, getCustomerType } = storeToRefs(customerStore)
     const { handleWishlist } = customerStore
     const { handleShowRequestModal } = useShowRequestModal()
     const router = useRouter()
-    const { getActionField, resetDatalayerFields } = useGtm()
 
     const isOpen = ref(false)
     const showRequestModal = ref(false)
@@ -79,7 +77,7 @@ export default {
         ecommerce: {
           currencyCode: $nuxt.$config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
           click: {
-            actionField: getActionField(),
+            actionField: $cmwGtmUtils.getActionField(),
             products: [{
               ...props.product.gtmProductData,
               price: finalPrice.value,
@@ -89,7 +87,7 @@ export default {
         },
       })
 
-      resetDatalayerFields(['ecommerce', 'actionField', 'impressions', 'pageType'])
+      $cmwGtmUtils.resetDatalayerFields(['ecommerce', 'actionField', 'impressions', 'pageType'])
 
       router.push(localeLocation(props.product.url))
     }
@@ -115,8 +113,6 @@ export default {
       handleWishlistClick,
       handleProductCLick,
       handleShowRequestModal,
-      getActionField,
-      resetDatalayerFields,
     }
   },
   computed: {
