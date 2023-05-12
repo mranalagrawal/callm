@@ -1,13 +1,10 @@
 <script>
 import TopBar from '../components/TopBar.vue'
 
-import NavbarWV from '../components/NavbarWV.vue'
-
 export default {
   name: 'IndexPage',
   components: {
     TopBar,
-    NavbarWV,
   },
 }
 </script>

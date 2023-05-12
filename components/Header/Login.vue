@@ -32,7 +32,7 @@ export default {
       const valid = await customerStore.login(form.value.email, form.value.password)
 
       if (valid) {
-        await customerStore.getCustomer()
+        await customerStore.getCustomer('login')
           .then(() => router.push(localeLocation('/profile/my-orders')))
       } else {
         message.value = i18n.t('common.feedback.KO.login')

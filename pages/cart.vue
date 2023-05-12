@@ -16,7 +16,6 @@ export default {
   },
   setup() {
     const { $prismic, i18n, $config, store, $cmwGtmUtils } = useContext()
-    console.log(store.state)
     const shipping = ref({})
 
     const { fetch } = useFetch(async () => {
