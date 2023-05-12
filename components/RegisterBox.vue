@@ -8,7 +8,7 @@ import { useCustomer } from '~/store/customer'
 
 export default {
   setup() {
-    const { $graphql, i18n, localeLocation } = useContext()
+    const { $graphql, i18n, localeLocation, $gtm } = useContext()
     const router = useRouter()
     const customerStore = useCustomer()
     const isSubmitting = ref(false)
@@ -33,7 +33,7 @@ export default {
 
       // eslint-disable-next-line unused-imports/no-unused-vars
       const { age, privacy, ...input } = form.value
-      const { customerCreate: { customerUserErrors } } = await $graphql.default.request(GqlCustomerCreate, {
+      const { customerCreate: { customer, customerUserErrors } } = await $graphql.default.request(GqlCustomerCreate, {
         lang: i18n.locale.toUpperCase(),
         input,
       })
@@ -41,10 +41,16 @@ export default {
       if (!customerUserErrors.length) {
         // Handle success
         // Todo: Call API to save customer birthday
+        $gtm.push({
+          event: 'siteSubscription',
+          userId: customer.id,
+          userEmail: form.value.email,
+        })
+
         const valid = await customerStore.login(form.value.email, form.value.password)
 
         if (valid) {
-          await customerStore.getCustomer('register')
+          await customerStore.getCustomer()
             .then(() => router.push(localeLocation('/profile/my-orders') as RawLocation))
         }
       } else {
@@ -76,29 +82,29 @@ export default {
       <form class="px-4 pt-3 py-2 w-75 mx-auto" @submit.prevent="handleSubmit(onSubmit)">
         <InputField
           v-model="form.firstName"
-          name="register-user-firstname" :label="$t('firstName').toString()"
-          :placeholder="$t('firstName').toString()" rules="required" theme="gray"
+          name="register-user-firstname" :label="$t('firstName')"
+          :placeholder="$t('firstName')" rules="required" theme="gray"
         />
 
         <InputField
           v-model="form.lastName"
-          name="register-user-lastname" :label="$t('lastName').toString()"
-          :placeholder="$t('lastName').toString()" rules="required" theme="gray"
+          name="register-user-lastname" :label="$t('lastName')"
+          :placeholder="$t('lastName')" rules="required" theme="gray"
         />
 
         <InputField
           v-model="form.email"
           type="email"
-          name="register-user-email" :label="$t('email').toString()"
-          :placeholder="$t('email').toString()" rules="required|email" theme="gray"
+          name="register-user-email" :label="$t('email')"
+          :placeholder="$t('email')" rules="required|email" theme="gray"
         />
 
-        <CmwStrongPassword v-model="form.password" theme="gray" :placeholder="$t('passwordPlaceholder').toString()" />
+        <CmwStrongPassword v-model="form.password" theme="gray" :placeholder="$t('passwordPlaceholder')" />
 
         <InputField
           v-model="form.age"
           type="date"
-          name="register-user-age" :label="$t('birthday').toString()"
+          name="register-user-age" :label="$t('birthday')"
           placeholder="dd/mm/yyyy" rules="required"
           theme="gray"
         />
@@ -132,7 +138,7 @@ export default {
           class="sm:cmw-max-w-330px cmw-mt-8"
           type="submit"
           :disabled="isSubmitting || !(new Date(now) - new Date(form.age) > 568036800000)"
-          :label="$t('navbar.user.register').toString()"
+          :label="$t('navbar.user.register')"
         />
       </form>
     </ValidationObserver>
