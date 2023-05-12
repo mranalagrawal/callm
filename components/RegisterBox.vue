@@ -1,7 +1,8 @@
-<script>
+<script lang="ts">
 import { ref, useContext, useRouter } from '@nuxtjs/composition-api'
+import type { RawLocation } from 'vue-router'
 import calendarIcon from '~/assets/svg/calendar.svg'
-import GqlCustomerCreate from '~/graphql/mutations/customerCreate'
+import GqlCustomerCreate from '~/graphql/mutations/customerCreate.graphql'
 import { SweetAlertToast } from '~/utilities/Swal'
 import { useCustomer } from '~/store/customer'
 
@@ -30,6 +31,7 @@ export default {
     const onSubmit = async () => {
       isSubmitting.value = true
 
+      // eslint-disable-next-line unused-imports/no-unused-vars
       const { age, privacy, ...input } = form.value
       const { customerCreate: { customerUserErrors } } = await $graphql.default.request(GqlCustomerCreate, {
         lang: i18n.locale.toUpperCase(),
@@ -42,8 +44,8 @@ export default {
         const valid = await customerStore.login(form.value.email, form.value.password)
 
         if (valid) {
-          await customerStore.getCustomer()
-            .then(() => router.push(localeLocation('/profile/my-orders')))
+          await customerStore.getCustomer('register')
+            .then(() => router.push(localeLocation('/profile/my-orders') as RawLocation))
         }
       } else {
         await SweetAlertToast.fire({

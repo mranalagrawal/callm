@@ -85,7 +85,7 @@ export const useCustomer = defineStore({
 
       return valid
     },
-    async getCustomer() {
+    async getCustomer(event = '') {
       await this.$nuxt.$cmwRepo.customer.getCustomer()
         .then(async ({ customer }) => {
           if (customer) {
@@ -111,19 +111,21 @@ export const useCustomer = defineStore({
               wishlistArr: (customer.wishlist && customer.wishlist.value) ? setCustomerWishlist(customer.wishlist.value) : [],
             })
 
-            this.$nuxt.$gtm.push({
-              event: 'login',
-              userType: this.getCustomerType,
-              userId: this.customer.id,
-              userFirstName: this.customer.firstName,
-              userLastName: this.customer.lastName,
-              userEmail: this.customer.email,
-              userPhone: this.customer.phone,
-              userPurchasesCount: this.customer.orders_count,
-              userPurchasesTot: this.customer.total_spent,
-            })
+            if (event) {
+              this.$nuxt.$gtm.push({
+                event,
+                userType: this.getCustomerType,
+                userId: this.customer.id,
+                userFirstName: this.customer.firstName,
+                userLastName: this.customer.lastName,
+                userEmail: this.customer.email,
+                userPhone: this.customer.phone,
+                userPurchasesCount: this.customer.orders_count,
+                userPurchasesTot: this.customer.total_spent,
+              })
 
-            this.$nuxt.$cmwGtmUtils.resetDatalayerFields(['ecommerce', 'actionField', 'impressions', 'pageType'])
+              this.$nuxt.$cmwGtmUtils.resetDatalayerFields(['ecommerce', 'actionField', 'impressions', 'pageType'])
+            }
           } else {
             await SweetAlertToast.fire({ text: this.$nuxt.app.i18n.t('common.feedback.KO.login') })
           }
