@@ -27,6 +27,8 @@ export const useCustomer = defineStore({
       lastName: '',
       email: '',
       phone: '',
+      orders_count: '',
+      total_spent: '',
     },
     // FixMe: on Nuxt 3 or using GraphQl local storage properly we shouldn't need this,
     //  we need to reduce the extra objects and relay on the state,
@@ -74,17 +76,6 @@ export const useCustomer = defineStore({
         this.$nuxt.app.$cookieHelpers.setToken(token)
         this.$nuxt.$graphql.default.setHeader('authorization', `Bearer ${token}`)
         valid = true
-        this.$nuxt.$gtm.push({
-          event: 'login',
-          userType: this.getCustomerType,
-          userId: this.customer.id,
-          userFirstName: this.customer.firstName,
-          userLastName: this.customer.lastName,
-          userEmail: this.customer.email,
-          userPhone: this.customer.phone,
-        })
-
-        this.$nuxt.$cmwGtmUtils.resetDatalayerFields(['ecommerce', 'actionField', 'impressions', 'pageType'])
       } else {
         SweetAlertToast.fire({
           icon: 'error',
@@ -98,13 +89,16 @@ export const useCustomer = defineStore({
       await this.$nuxt.$cmwRepo.customer.getCustomer()
         .then(async ({ customer }) => {
           if (customer) {
-            // Todo: Implement this when CORS is resolved
             await this.$nuxt.$cmw.$get(`/customers/${customer.id.substring(`${customer.id}`.lastIndexOf('/') + 1)}/user-info`)
               .then(({ data = {}, errors = [] }) => {
-                console.log({ data, errors })
-                // success data: {...} errors: null
-                // success errors data: null errors: [...]
-                // server errors data: null errors: null <-- gestirlo con statusCode in catch
+                if (errors.length) {
+                  this.$nuxt.$handleApiErrors('error login')
+                } else {
+                  customer = {
+                    ...customer,
+                    ...data,
+                  }
+                }
               })
 
             // Todo: Remove this when done with Vuex
@@ -116,8 +110,22 @@ export const useCustomer = defineStore({
               customer,
               wishlistArr: (customer.wishlist && customer.wishlist.value) ? setCustomerWishlist(customer.wishlist.value) : [],
             })
+
+            this.$nuxt.$gtm.push({
+              event: 'login',
+              userType: this.getCustomerType,
+              userId: this.customer.id,
+              userFirstName: this.customer.firstName,
+              userLastName: this.customer.lastName,
+              userEmail: this.customer.email,
+              userPhone: this.customer.phone,
+              userPurchasesCount: this.customer.orders_count,
+              userPurchasesTot: this.customer.total_spent,
+            })
+
+            this.$nuxt.$cmwGtmUtils.resetDatalayerFields(['ecommerce', 'actionField', 'impressions', 'pageType'])
           } else {
-            SweetAlertToast.fire({ text: this.$nuxt.app.i18n.t('common.feedback.KO.login') })
+            await SweetAlertToast.fire({ text: this.$nuxt.app.i18n.t('common.feedback.KO.login') })
           }
         })
     },

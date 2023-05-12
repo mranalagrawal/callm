@@ -73,8 +73,8 @@ const cmwGtm: Plugin = ({ route, $config, $gtm }, inject) => {
         userLastName: customer.value.lastName,
         userEmail: customer.value.email,
         userPhone: customer.value.phone,
-        // userPurchasesCount: '', Note: We don't have this info on Store because we only get it at my-orders
-        // userPurchasesTot: '',
+        userPurchasesCount: customer.value.orders_count, // Note: We don't have this info on Store because we only get it at my-orders
+        userPurchasesTot: customer.value.total_spent,
       }),
     }
   }
