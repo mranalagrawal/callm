@@ -1,7 +1,7 @@
 <script>
 import { ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import documents from '../../prismic-mapper'
-import { generateKey } from '@/utilities/strings'
+import { generateKey } from '~/utilities/strings'
 import { inRange } from '@/utilities/math'
 
 export default {

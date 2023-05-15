@@ -1,8 +1,6 @@
 <script lang="ts">
 import { computed, onMounted, useContext, useFetch, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import type { TISO639, TStores } from '~/config/themeConfig'
-import { getMappedProducts } from '~/utilities/mappedProduct'
 import { useFilters } from '~/store/filters'
 import { useCustomer } from '~/store/customer'
 import { useCustomerWishlist } from '~/store/customerWishlist'
@@ -16,7 +14,7 @@ export default {
     const customerWishlist = useCustomerWishlist()
     const { wishlistArr } = storeToRefs(customerStore)
     const { wishlistProducts } = storeToRefs(customerWishlist)
-    const { i18n, $config, $cmwGtmUtils } = useContext()
+    const { $cmwGtmUtils, $productMapping } = useContext()
 
     const filtersStore = useFilters()
     const { selectedLayout, availableLayouts } = storeToRefs(filtersStore)
@@ -35,11 +33,7 @@ export default {
       if (!wishlistProducts.value || !wishlistProducts.value.length)
         return []
 
-      return getMappedProducts({
-        arr: wishlistProducts.value,
-        lang: i18n.locale as TISO639,
-        store: $config.STORE as TStores,
-      })
+      return $productMapping.fromShopify(wishlistProducts.value)
     })
 
     onMounted(() => {

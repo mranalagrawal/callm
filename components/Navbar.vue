@@ -346,6 +346,19 @@ export default {
             <!-- {{ data }} -->
 
             <div class="cmw-bg-white cmw-max-h-[70vh] cmw-rounded-lg cmw-shadow-popover cmw-overflow-hidden cmw-mt-2">
+              <div v-if="data.gift_cards && data.gift_cards.length > 0">
+                <p class="cmw-overline-2 cmw-uppercase cmw-text-secondary-400 cmw-py-2 cmw-px-3 cmw-m-0">
+                  {{ $t("search.giftCards") }}
+                </p>
+                <nuxt-link
+                  v-for="item in data.gift_cards"
+                  :key="item.id"
+                  class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-no-underline cmw-bg-primary-50) cmw-text-body"
+                  :to="localePath(`/${item.handle}`)"
+                >
+                  <span v-html="bolder(item.name)" />
+                </nuxt-link>
+              </div>
               <div
                 v-if="data.winelists && data.winelists.length > 0"
                 class="cmw-max-h-[70vh] cmw-overflow-y-auto"

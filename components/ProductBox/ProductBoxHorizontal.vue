@@ -8,11 +8,9 @@ import addIcon from 'assets/svg/add.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
 import emailIcon from 'assets/svg/email.svg'
 import { mapState } from 'vuex'
-import { stripHtml } from '@/utilities/strings'
+import { stripHtml } from '~/utilities/strings'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
-import { productFeatures } from '~/utilities/mappedProduct'
 import { useCustomer } from '~/store/customer'
-import { pick } from '@/utilities/arrays'
 import { isObject, regexRules } from '~/utilities/validators'
 import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { SweetAlertToast } from '~/utilities/Swal'
@@ -42,25 +40,8 @@ export default {
 
     const isOpen = ref(false)
 
-    const availableFeatures = computed(() => {
-      /* Todo: Definitely we need to use some enums here ... */
-      let features = pick(props.product.details, productFeatures)
-
-      features = Object.keys(features)
-        .reduce((o, key) => {
-          if (typeof features[key] === 'object')
-            !!features[key][$config.SALECHANNEL] && (o[key] = features[key])
-          else
-            features[key] === true && (o[key] = features[key])
-
-          return o
-        }, {})
-
-      return Object.keys(features).slice(0, 4)
-    })
-
     const isOnFavourite = computed(() => wishlistArr.value.includes(props.product.source_id))
-    const isOnSale = computed(() => availableFeatures.value.includes('isInPromotion'))
+    const isOnSale = computed(() => props.product.availableFeatures.includes('isInPromotion'))
     const finalPrice = computed(() => props.product.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0)
     const gtmProductData = computed(() => ({
       ...props.product.gtmProductData,
@@ -93,7 +74,6 @@ export default {
 
     return {
       wishlistArr,
-      availableFeatures,
       isOnFavourite,
       isOnSale,
       getCustomerType,
@@ -162,7 +142,7 @@ export default {
 
       this.flashMessage.show({
         status: '',
-        message: `${this.product.title} è stato aggiunto al carrello!`,
+        message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title}` }),
         icon: this.product.image.source.url,
         iconClass: 'bg-transparent ',
         time: 8000,
@@ -201,7 +181,7 @@ hover:cmw-shadow-elevation"
       </ClientOnly>
       <div class="cmw-absolute cmw-top-4 cmw-left-2 cmw-flex cmw-flex-col cmw-gap-y-1">
         <!-- Todo: create a global tooltip that change position base on mouse position -->
-        <ProductBoxFeature v-for="feature in availableFeatures" :key="feature" :feature="feature" />
+        <ProductBoxFeature v-for="feature in product.availableFeatures" :key="feature" :feature="feature" />
       </div>
       <ButtonIcon
         :icon="isOnFavourite ? heartFullIcon : heartIcon"

@@ -233,6 +233,7 @@ export default {
         'altro interno': 'finale',
       },
     },
+    giftCards: 'Gift Cards',
   },
   product: {
     tooltip: {

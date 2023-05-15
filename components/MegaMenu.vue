@@ -3,7 +3,7 @@ import { nextTick, onMounted, onUnmounted, ref, useContext, useRouter, watch } f
 import debounce from 'lodash.debounce'
 import promoTagIcon from 'assets/svg/promo-tag.svg'
 import ThirdLevel from './UI/ThirdLevel.vue'
-import { generateKey } from '@/utilities/strings'
+import { generateKey } from '~/utilities/strings'
 import { useHeaderSize } from '~/store/headerSize'
 
 export default {

@@ -29,6 +29,7 @@ type TPrismicComponentsMap = {
 
 interface IStoreConfig {
   id: number
+  salesChannel: TSalesChannel
   customerType: TCustomerType
   prismic: {
     components: TPrismicComponentsMap
@@ -85,6 +86,7 @@ const defaultPrismicComponents: TPrismicComponentsMap = {
 const themeConfig: TThemeConfig = {
   CMW: {
     id: 1,
+    salesChannel: 'cmw_it_b2c',
     customerType: 'B2C',
     prismic: {
       components: defaultPrismicComponents,
@@ -101,6 +103,7 @@ const themeConfig: TThemeConfig = {
   },
   B2B: {
     id: 5,
+    salesChannel: 'cmw_it_b2b',
     customerType: 'B2B',
     prismic: {
       components: defaultPrismicComponents,
@@ -116,6 +119,7 @@ const themeConfig: TThemeConfig = {
   },
   CMW_UK: {
     id: 2,
+    salesChannel: 'cmw_uk_b2c',
     customerType: 'B2C',
     prismic: {
       isoCode: { en: 'en-gb' },
@@ -129,6 +133,7 @@ const themeConfig: TThemeConfig = {
   },
   CMW_FR: {
     id: 3,
+    salesChannel: 'cmw_fr_b2c',
     customerType: 'B2C',
     prismic: {
       components: defaultPrismicComponents,
@@ -142,6 +147,7 @@ const themeConfig: TThemeConfig = {
   },
   CMW_DE: {
     id: 4,
+    salesChannel: 'cmw_de_b2c',
     customerType: 'B2C',
     prismic: {
       components: defaultPrismicComponents,
@@ -155,6 +161,7 @@ const themeConfig: TThemeConfig = {
   },
   WILDVIGNERON: {
     id: 5,
+    salesChannel: 'cmw_it_b2c',
     customerType: 'B2C',
     prismic: {
       components: {

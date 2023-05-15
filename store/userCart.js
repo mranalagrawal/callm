@@ -15,7 +15,7 @@ export const mutations = {
       product.quantity = product.quantity + 1
     } else {
       state.userCart.push({
-        productVariantId: entry.id,
+        productVariantId: entry.id, // ma funziona?
         quantity: 1,
         singleAmount: entry.singleAmount,
         singleAmountFullPrice: entry.singleAmountFullPrice,

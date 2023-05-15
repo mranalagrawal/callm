@@ -19,11 +19,9 @@ import { storeToRefs } from 'pinia'
 import { mapState } from 'vuex'
 import { regexRules } from '@/utilities/validators'
 import { SweetAlertToast } from '@/utilities/Swal'
-import { generateKey } from '@/utilities/strings'
+import { generateKey } from '~/utilities/strings'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
-import { getMappedProducts, productFeatures } from '~/utilities/mappedProduct'
 import { getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
-import { pick } from '@/utilities/arrays'
 import { useRecentProductsStore } from '@/store/recent'
 import { useCustomer } from '@/store/customer'
 import favouriteIcon from '~/assets/svg/selections/favourite.svg'
@@ -34,7 +32,7 @@ export default defineComponent({
     return $config.STORE
   },
   setup() {
-    const { i18n, $config, $graphql, $cmwRepo, error, redirect, localeLocation, $cmwGtmUtils } = useContext()
+    const { i18n, $config, $graphql, $cmwRepo, error, redirect, localeLocation, $cmwGtmUtils, $productMapping } = useContext()
     const customerStore = useCustomer()
     const recentProductsStore = useRecentProductsStore()
     const { recentProducts } = storeToRefs(recentProductsStore)
@@ -46,6 +44,7 @@ export default defineComponent({
     const isOpen = ref(false)
     const showRequestModal = ref(false)
     const product = ref({
+      availableFeatures: [],
       details: '',
       featuredImage: { altText: '', height: 0, url: '', width: 0 },
       handle: '',
@@ -69,7 +68,7 @@ export default defineComponent({
       priceLists: {},
       redirectSeoUrl: {},
     })
-    const productBreadcrumbs = ref({})
+    const productBreadcrumbs = ref([])
     const brandMetaFields = ref({
       key: '',
       subtitle: '',
@@ -99,15 +98,14 @@ export default defineComponent({
       })
         .then(async ({ products = { nodes: [] } }) => {
           if (!!products.nodes.length && products.nodes[0].handle) {
-            product.value = getMappedProducts({
-              arr: [products.nodes[0]],
-              lang: i18n.locale,
-              store: $config.STORE,
-            })[0]
+            product.value = $productMapping.fromShopify([products.nodes[0]])[0]
 
             productVariant.value = products.nodes[0].variants.nodes[0]
             productDetails.value = JSON.parse(products.nodes[0].details.value)
             productBreadcrumbs.value = JSON.parse(products.nodes[0].breadcrumbs.value)
+            productBreadcrumbs.value = !Object.keys(productBreadcrumbs.value).length
+              ? []
+              : $productMapping.breadcrumbs(productBreadcrumbs.value[i18n.locale])
 
             if (route.value.params.pathMatch !== product.value.handle)
               return redirect(301, localeLocation(`/${product.value.handle}-${productDetails.value.key}.htm`))
@@ -143,27 +141,11 @@ export default defineComponent({
         })
     })
 
-    const availableFeatures = computed(() => {
-      let features = pick(productDetails.value, productFeatures)
-
-      features = Object.keys(features)
-        .reduce((o, key) => {
-          if (typeof features[key] === 'object')
-            !!features[key][$config.SALECHANNEL] && (o[key] = features[key])
-          else
-            features[key] === true && (o[key] = features[key])
-
-          return o
-        }, {})
-
-      return Object.keys(features).slice(0, 4)
-    })
-
     const isOnSale = computed(() => {
       if (!productVariant.value)
         return false
 
-      return availableFeatures.value.includes('isInPromotion')
+      return product.value.availableFeatures.includes('isInPromotion')
     })
 
     const strippedContent = computed(() => {
@@ -185,21 +167,6 @@ export default defineComponent({
     const isOnFavourite = computed(() => {
       return [...wishlistArr.value].includes(`P${productDetails.value.feId}`)
     })
-
-    const cleanUrl = (str = '') =>
-      (str
-        .replaceAll(' ', '')
-        .replaceAll('stage.callmewine.com', '')
-        .replaceAll('stage.callmewine.co.uk', '')
-        .replaceAll('callmewine.co.uk', '')
-        .replaceAll('callmewine.com', ''))
-
-    const breadcrumbs = computed(() => !productBreadcrumbs.value[i18n.locale]
-      ? []
-      : productBreadcrumbs.value[i18n.locale].slice(0, -1).map(breadcrumb => ({
-        ...breadcrumb,
-        urlPath: `/${cleanUrl(breadcrumb.handle)}`,
-      })))
 
     const gtmProductData = computed(() => ({
       ...product.value.gtmProductData,
@@ -256,13 +223,11 @@ export default defineComponent({
       productVariant,
       productDetails,
       productBreadcrumbs,
-      availableFeatures,
       isOnSale,
       isOnFavourite,
       gtmProductData,
       finalPrice,
       strippedContent,
-      breadcrumbs,
       wishlistArr,
       brandMetaFields,
       brand,
@@ -335,7 +300,7 @@ export default defineComponent({
       })
       this.flashMessage.show({
         status: '',
-        message: `${this.product.title} è stato aggiunto al carrello!`,
+        message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title}` }),
         icon: this.product.image.thumbnail.url,
         iconClass: 'bg-transparent ',
         time: 8000,
@@ -367,13 +332,7 @@ export default defineComponent({
     </div>
     <template v-else>
       <div v-if="product.title && brandMetaFields">
-        <div v-if="!!breadcrumbs.length" class="<md:cmw-hidden md:(cmw-flex cmw-items-center) cmw-my-2 cmw-font-sans cmw-text-sm">
-          <div v-for="({ name, urlPath }) in breadcrumbs" :key="generateKey(name)">
-            <NuxtLink class="cmw-text-primary-400" :to="localePath(urlPath)" rel="nofollow" v-text="name" />
-            <VueSvgIcon class="cmw-mx-1" width="12" height="12" :data="require(`@/assets/svg/chevron-right.svg`)" />
-          </div>
-          <span class="cmw-text-body">{{ productBreadcrumbs[$i18n.locale][productBreadcrumbs[$i18n.locale].length - 1].name }}</span>
-        </div>
+        <TheBreadcrumbs v-if="!!productBreadcrumbs.length" :breadcrumbs="productBreadcrumbs" />
         <div class="md:(cmw-grid cmw-grid-cols-[40%_60%] cmw-max-h-[550px] cmw-my-4)">
           <!-- Image Section -->
           <div class="cmw-relative">
@@ -384,7 +343,7 @@ export default defineComponent({
               :source="product.image.source"
             />
             <div class="cmw-absolute cmw-top-4 cmw-left-2">
-              <ProductBoxFeature v-for="feature in availableFeatures" :key="feature" :feature="feature" />
+              <ProductBoxFeature v-for="feature in product.availableFeatures" :key="feature" :feature="feature" />
             </div>
             <div class="cmw-absolute cmw-bottom-0 cmw-left-2">
               <div

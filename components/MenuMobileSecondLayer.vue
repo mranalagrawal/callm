@@ -2,7 +2,7 @@
 import { computed, useContext, useRouter } from '@nuxtjs/composition-api'
 import closeIcon from 'assets/svg/close.svg'
 import chevronLeftIcon from 'assets/svg/chevron-left.svg'
-import { generateKey } from '@/utilities/strings'
+import { generateKey } from '~/utilities/strings'
 import { getIconByFeature } from '@/utilities/icons'
 
 export default {

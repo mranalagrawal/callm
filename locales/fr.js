@@ -232,6 +232,7 @@ export default {
         'altro interno': 'finale',
       },
     },
+    giftCards: 'Chèque cadeau',
   },
   product: {
     tooltip: {
