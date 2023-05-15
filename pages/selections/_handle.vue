@@ -2,7 +2,6 @@
 import { computed, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import { useCustomer } from '@/store/customer'
-import { getMappedProducts } from '~/utilities/mappedProduct'
 import { sortArrayByName, sortArrayByNumber } from '~/utilities/arrays'
 import getCollection from '~/graphql/queries/getCollection'
 import { useFilters } from '~/store/filters'
@@ -67,7 +66,7 @@ export default {
       sorting.value = false
     }
 
-    const { fetch } = useFetch(async ({ $config, $graphql, $handleApiErrors }) => {
+    const { fetch } = useFetch(async ({ $config, $graphql, $productMapping, $handleApiErrors }) => {
       await $graphql.default.request(getCollection, {
         lang: i18n.locale.toUpperCase(),
         handle: params.value.handle,
@@ -75,12 +74,7 @@ export default {
         .then(({ collection }) => {
           collectionRef.value = collection
 
-          sorted.value = getMappedProducts({
-            arr: collection.products.nodes,
-            lang: i18n.locale,
-            store: $config.STORE,
-            sale_channel: $config.SALECHANNEL,
-          })
+          sorted.value = $productMapping.fromShopify(collection.products.nodes)
           sorted.value = sorted.value.map(p => ({
             ...p,
             sortPrice: Number(p.priceLists[$config.SALECHANNEL][getCustomerType.value]),

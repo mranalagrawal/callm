@@ -1,7 +1,5 @@
 <script lang="ts">
 import { ref, useFetch } from '@nuxtjs/composition-api'
-import type { TISO639, TStores } from '~/config/themeConfig'
-import { getMappedProducts } from '~/utilities/mappedProduct'
 import getCollection from '@/graphql/queries/getCollection.graphql'
 
 export default {
@@ -19,7 +17,7 @@ export default {
       title: '',
       products: [],
     })
-    useFetch(async ({ $config, $i18n, $graphql, $handleApiErrors }) => {
+    useFetch(async ({ $i18n, $graphql, $productMapping, $handleApiErrors }) => {
       await $graphql.default.request(getCollection, {
         lang: $i18n.locale.toUpperCase(),
         handle: 'home-shelf-1',
@@ -27,11 +25,7 @@ export default {
         .then(({ collection }) => {
           collectionRef.value = {
             ...collection,
-            products: collection.products.nodes.length && getMappedProducts({
-              arr: collection.products.nodes,
-              lang: $i18n.locale as TISO639,
-              store: $config.STORE as TStores,
-            }),
+            products: collection.products.nodes.length && $productMapping.fromElastic(collection.products.nodes),
           }
         })
         .catch((err: Error) => {

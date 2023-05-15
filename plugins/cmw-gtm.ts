@@ -6,7 +6,7 @@ import { useCustomer } from '~/store/customer'
 import { cleanRoutesLocales } from '~/utilities/strings'
 
 interface ICmwGtmUtils {
-  getActionField: Function
+  getActionField(): string
   resetDatalayerFields: Function
   pushPage(pageType: string, data?: Record<string, any>): void
   getCustomerGtmData: Function
@@ -42,20 +42,18 @@ const cmwGtm: Plugin = ({ route, $config, $gtm }, inject) => {
   const { customer } = storeToRefs(customerStore)
 
   const store: TStores = $config.STORE || 'CMW_UK'
-  // See https://github.com/sindresorhus/ky#options
+
   const $cmwGtmUtils: ICmwGtmUtils = {
-    getActionField: () => {},
+    getActionField: () => {
+      if (route.path === '/')
+        return 'home'
+      else if (Object.keys(route.query).includes('search'))
+        return 'search_results'
+      else return route.meta?.actionField || cleanRoutesLocales(route.name as string)
+    },
     pushPage: () => {},
     getCustomerGtmData: () => {},
     resetDatalayerFields: () => {},
-  }
-
-  $cmwGtmUtils.getActionField = () => {
-    if (route.path === '/')
-      return 'home'
-    else if (Object.keys(route.query).includes('search'))
-      return 'search_results'
-    else return route.meta?.actionField || cleanRoutesLocales(route.name as string)
   }
 
   $cmwGtmUtils.resetDatalayerFields = (fields = []) => {

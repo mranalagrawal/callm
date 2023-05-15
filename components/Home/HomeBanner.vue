@@ -4,7 +4,7 @@
 import { computed, onBeforeUnmount, ref, useContext, useFetch, useRouter } from '@nuxtjs/composition-api'
 import useScreenSize from '@/components/composables/useScreenSize'
 import { getMobileOperatingSystem } from '@/utilities/getOS'
-import { generateKey } from '@/utilities/strings'
+import { generateKey } from '~/utilities/strings'
 
 export default {
   setup() {

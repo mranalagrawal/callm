@@ -228,6 +228,7 @@ export default {
     mostAwarded: 'Più premitati',
     newArrivals: 'Nuovi arrivi',
     popularity: 'Popolarità',
+    giftCards: 'Buoni Regalo',
   },
   product: {
     tooltip: {
