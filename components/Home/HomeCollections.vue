@@ -1,10 +1,10 @@
 <script>
 import VueSlickCarousel from 'vue-slick-carousel'
 import { queryAllCollections } from '@/utilities/productQueries'
+import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
 
 // optional style for arrows & dots
 import 'vue-slick-carousel/dist/vue-slick-carousel.css'
-import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
 
 export default {
   components: { VueSlickCarousel },
@@ -61,11 +61,9 @@ export default {
       res.json(),
     )
 
-    const responseFiltered = response.data.collections.edges.filter(
-      el => el.node.title != 'home shelf 1' && el.node.title != 'home shelf 2',
+    this.data = response.data.collections.edges.filter(
+      el => el.node.title !== 'home shelf 1' && el.node.title !== 'home shelf 2',
     )
-
-    this.data = responseFiltered
   },
   watch: {
     '$i18n.locale': '$fetch',

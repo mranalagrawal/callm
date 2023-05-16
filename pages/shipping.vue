@@ -1,8 +1,8 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
 import { generateHeadHreflang } from '@/utilities/arrays'
-import type { TISO639, TStores } from '~/config/themeConfig'
-import themeConfig from '~/config/themeConfig'
+import prismicConfig from '~/config/prismicConfig'
+import type { TStores } from '~/config/themeConfig'
 import { initialPageData } from '~/types/prismic'
 import type { IPrismicPageData } from '~/types/prismic'
 
@@ -11,7 +11,7 @@ export default defineComponent({
     return $config.STORE
   },
   setup() {
-    const { app, $cmwGtmUtils } = useContext()
+    const { $cmwGtmUtils } = useContext()
 
     const hrefLang = {
       'it': 'https://www.callmewine.com/spedizioni.html',
@@ -23,20 +23,12 @@ export default defineComponent({
 
     const pageData = ref<IPrismicPageData>(initialPageData)
 
-    useFetch(async ({ $config, $i18n, $handleApiErrors }) => {
-      const store: TStores = $config.STORE || 'CMW_UK'
-      const locale: TISO639 = $i18n.locale as TISO639
-
-      await app.$prismic.api.getSingle(
-        themeConfig[store]?.prismic.components.shippingPage,
-        { lang: themeConfig[store]?.prismic.isoCode[locale] },
-      )
-        .then(({ data }: Record<string, any>) => {
+    useFetch(async ({ $config, $cmwRepo, $handleApiErrors }) => {
+      await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.shippingPage })
+        .then(({ data }) => {
           pageData.value = data
         })
-        .catch((err: Error) => {
-          $handleApiErrors(`Catch getting contact us data from prismic: ${err}`)
-        })
+        .catch((err: Error) => $handleApiErrors(`Catch getting contact us data from prismic: ${err}`))
     })
 
     onMounted(() => {

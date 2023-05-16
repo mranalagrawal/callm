@@ -10,7 +10,7 @@ export default {
   },
   async fetch() {
     let lang = ''
-    if (this.$i18n.locale == 'en')
+    if (this.$i18n.locale === 'en')
       lang = 'en-gb'
     else
       lang = 'it-it'
@@ -91,20 +91,20 @@ export default {
       class="container-fluid bg-dark-primary text-light-footer px-md-5 py-5 mt-5"
     >
       <div
-        v-if="$config.STORE != 'WILDVIGNERON'"
+        v-if="$config.STORE !== 'WILDVIGNERON'"
         class="row justify-content-end"
       >
         <nuxt-link
           class="text-decoration-none text-white fs-0875 mr-3"
           :to="switchLocalePath('it')"
-          :class="$i18n.locale == 'it' ? 'font-weight-bold' : ''"
+          :class="$i18n.locale === 'it' ? 'font-weight-bold' : ''"
         >
           IT
         </nuxt-link>
         <nuxt-link
           class="text-decoration-none text-white fs-0875 mr-3"
           :to="switchLocalePath('en')"
-          :class="$i18n.locale == 'en' ? 'font-weight-bold' : ''"
+          :class="$i18n.locale === 'en' ? 'font-weight-bold' : ''"
         >
           EN
         </nuxt-link>

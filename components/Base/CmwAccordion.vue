@@ -1,8 +1,10 @@
-<script>
-import { getCurrentInstance, ref, toRef } from '@nuxtjs/composition-api'
+<script lang="ts">
+import type { PropType } from '@nuxtjs/composition-api'
+import { defineComponent, getCurrentInstance, ref, toRef } from '@nuxtjs/composition-api'
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
+import type { TSizes } from '~/types/types'
 
-export default {
+export default defineComponent({
   name: 'CmwAccordion',
   inheritAttrs: false,
   props: {
@@ -22,13 +24,13 @@ export default {
       default: () => {},
     },
     size: {
-      validator: prop => ['sm', 'md'].includes(prop) || !Number.isNaN(prop),
+      type: String as PropType<TSizes>,
       default: 'md',
     },
   },
   emits: ['update-trigger'],
   setup(props, { emit }) {
-    const key = getCurrentInstance().proxy.$vnode.key
+    const key = getCurrentInstance()?.proxy.$vnode.key
     const isActive = toRef(props, 'active')
     const searchTerm = ref('')
 
@@ -37,11 +39,12 @@ export default {
     const getFontSize = () => ({
       sm: 'cmw-text-xs cmw-overline-1 cmw-font-normal',
       md: 'cmw-text-sm',
+      lg: 'cmw-text',
     })[props.size]
 
     return { isActive, searchTerm, chevronDownIcon, handleTriggerClick, getFontSize }
   },
-}
+})
 </script>
 
 <template>
@@ -93,7 +96,7 @@ export default {
           <!-- List Items -->
           <slot name="children" />
           <div v-if="footerLabel" class="cmw-bg-gray-lightest cmw-rounded-b-sm">
-            <Button class="cmw-mr-auto cmw-w-max" variant="text" :label="footerLabel" @click.native="onFooterClick" />
+            <Button class="cmw-mr-auto cmw-w-max" variant="text" :label="footerLabel" @click="onFooterClick" />
           </div>
         </div>
       </transition>

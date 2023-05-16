@@ -45,7 +45,7 @@ export default {
   async fetch() {
     let lang = locales[this.$i18n.locale]
 
-    if (lang == 'en-gb' && this.$config.STORE == 'CMW')
+    if (lang === 'en-gb' && this.$config.STORE === 'CMW')
       lang = 'en-eu'
 
     const response = await this.$prismic.api.getSingle('selections', {
@@ -68,7 +68,7 @@ export default {
         </h2>
       </div>
       <div v-if="data" class="col-12 px-0 py-4">
-        <VueSlickCarousel v-bind="settings" ref="carousel">
+        <VueSlickCarousel v-bind="settings">
           <div v-for="(item, i) in data" :key="i" class="px-2">
             <div class="selection-card px-3 text-decoration-none">
               <img

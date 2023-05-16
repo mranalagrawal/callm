@@ -344,7 +344,7 @@ export default {
     { src: '~/plugins/cmw-gtm.ts' },
     { src: '~/plugins/product-mapping.ts' },
     { src: '~/plugins/repositories.ts' },
-    { src: '~/plugins/cookies.js' },
+    { src: '~/plugins/cookies.ts' },
     { src: '~plugins/vee-validate', ssr: false },
     { src: '~plugins/vue-carousel-3d', ssr: false },
     { src: '~/plugins/vuex-persist', ssr: false },
