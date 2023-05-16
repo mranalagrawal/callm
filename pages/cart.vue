@@ -37,7 +37,7 @@ export default {
             actionField: {
               step: '0',
             },
-            products: store.state.userCart.userCart,
+            products: store.state.userCart.userCart.map(p => p.gtmProductData),
           },
         },
       })

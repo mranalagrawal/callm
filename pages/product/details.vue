@@ -97,7 +97,8 @@ export default defineComponent({
       })
         .then(async ({ products = { nodes: [] } }) => {
           if (!!products.nodes.length && products.nodes[0].handle) {
-            product.value = $productMapping.fromShopify([products.nodes[0]])[0]
+            // Note: type will be fix when we migrate this file to typescript
+            product.value = await $productMapping.fromShopify([products.nodes[0]])[0]
 
             productVariant.value = products.nodes[0].variants.nodes[0]
             productDetails.value = JSON.parse(products.nodes[0].details.value)

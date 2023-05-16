@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import themeConfig from '~/config/themeConfig'
 import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
 import { getIconAsImg } from '~/utilities/icons'
 import customerAccessTokenCreate from '~/graphql/mutations/authenticateUser'
@@ -114,7 +115,7 @@ export const useCustomer = defineStore({
             if (event) {
               this.$nuxt.$gtm.push({
                 event,
-                userType: this.getCustomerType,
+                userType: themeConfig[this.$nuxt.$config.STORE].customerType,
                 userId: this.customer.id,
                 userFirstName: this.customer.firstName,
                 userLastName: this.customer.lastName,
@@ -134,7 +135,7 @@ export const useCustomer = defineStore({
     async logout() {
       this.$nuxt.$gtm.push({
         event: 'logout',
-        userType: this.getCustomerType,
+        userType: themeConfig[this.$nuxt.$config.STORE].customerType,
         userId: this.customer.id,
         userFirstName: this.customer.firstName,
         userLastName: this.customer.lastName,

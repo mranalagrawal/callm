@@ -57,7 +57,7 @@ export default {
         ecommerce: {
           currencyCode: $nuxt.$config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
           click: {
-            actionField: $cmwGtmUtils.getActionField(),
+            actionField: { list: $cmwGtmUtils.getActionField() },
             products: [{
               ...props.product.gtmProductData,
               price: finalPrice.value,

@@ -370,7 +370,7 @@ export default {
           event: 'productListView',
           ecommerce: {
             currencyCode: this.$config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
-            actionField: this.$cmwGtmUtils.getActionField(),
+            actionField: { list: this.$cmwGtmUtils.getActionField() },
             impressions,
           },
         })

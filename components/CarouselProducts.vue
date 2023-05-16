@@ -44,7 +44,7 @@ export default {
         event: 'productListView',
         ecommerce: {
           currencyCode: $config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
-          actionField: $cmwGtmUtils.getActionField(),
+          actionField: { list: $cmwGtmUtils.getActionField() },
           impressions: props.products.map(product => product.gtmProductData),
         },
       })

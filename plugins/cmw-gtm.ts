@@ -84,7 +84,7 @@ const cmwGtm: Plugin = ({ route, $config, $gtm }, inject) => {
       ...($cmwGtmUtils.getCustomerGtmData()),
     })
 
-    $cmwGtmUtils.resetDatalayerFields(['ecommerce', 'actionField', 'impressions', 'pageType'])
+    $cmwGtmUtils.resetDatalayerFields(['ecommerce', 'actionField', 'impressions', 'pageType', 'event'])
   }
 
   inject('cmwGtmUtils', $cmwGtmUtils)
