@@ -24,6 +24,12 @@ export const mutations = {
         title: entry.title,
         totalInventory: entry.totalInventory,
         gtmProductData: entry.gtmProductData,
+        attributes: [
+          {
+            key: 'bundle',
+            value: entry.tag.includes('bundle'),
+          },
+        ],
       })
     }
 

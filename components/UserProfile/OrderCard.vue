@@ -4,7 +4,7 @@ import { computed, useContext } from '@nuxtjs/composition-api'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 import OrderCardSummary from '~/components/UserProfile/OrderCardSummary.vue'
 import OrderCardProductRow from '~/components/UserProfile/OrderCardProductRow.vue'
-import { isObject, regexRules } from '~/utilities/validators'
+import { isObject } from '~/utilities/validators'
 import { useSplash } from '~/store/splash'
 import { useCustomerOrders } from '~/store/customerOrders'
 
@@ -91,7 +91,7 @@ export default {
           const amountFullPrice = Number(
             el.variant.product.variants.nodes[0].compareAtPriceV2.amount,
           )
-          const tag = el.variant.product.tags.find(tag => new RegExp(regexRules('isProduct')).test(tag))
+          const tag = el.variant.product.tags
           const image = el.variant.product.images.nodes[0].url
 
           const title = el.title
