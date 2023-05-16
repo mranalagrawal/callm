@@ -20,12 +20,11 @@ export default {
       isMobileMenuOpen: false,
       isSidebarOpen: false,
       mobileLogin: false,
-      data: null,
     }
   },
   async fetch() {
     let lang = ''
-    if (this.$i18n.locale == 'en')
+    if (this.$i18n.locale === 'en')
       lang = 'en-gb'
     else
       lang = 'it-it'
@@ -37,9 +36,6 @@ export default {
 
     const mapped = data
       .map((firstLevel) => {
-        const secondLevelNames = [
-          ...new Set(firstLevel.items.map(el => el.secondlevelname)),
-        ]
         const secondLevels = firstLevel.items.map((el) => {
           return {
             name: el.secondlevelname,

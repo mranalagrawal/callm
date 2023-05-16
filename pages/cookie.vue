@@ -1,13 +1,17 @@
-<script>
+<script lang="ts">
 import { defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
 import { generateHeadHreflang } from '@/utilities/arrays'
+import prismicConfig from '~/config/prismicConfig'
+import type { TStores } from '~/config/themeConfig'
+import type { IPrismicPageData } from '~/types/prismic'
+import { initialPageData } from '~/types/prismic'
 
 export default defineComponent({
-  layout(context) {
-    return context.$config.STORE
+  layout({ $config }) {
+    return $config.STORE
   },
   setup() {
-    const { i18n, $prismic, $sentry, $cmwGtmUtils } = useContext()
+    const { $cmwGtmUtils } = useContext()
 
     const hrefLang = {
       'it': 'https://www.callmewine.com/chi-siamo.html',
@@ -17,21 +21,16 @@ export default defineComponent({
       'en-gb': 'https://callmewine.co.uk/about-us',
     }
 
-    const pageData = ref({ section: [] })
+    const pageData = ref<IPrismicPageData>(initialPageData)
     const sectionContent = ref({ section: [] })
 
-    const { fetch } = useFetch(async () => {
-      await $prismic.api.getSingle(
-        'cookie-policy',
-        { lang: i18n.localeProperties.iso.toLowerCase() },
-      )
+    const { fetch } = useFetch(async ({ $config, $cmwRepo, $handleApiErrors }) => {
+      await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.cookiePage })
         .then(({ data }) => {
           pageData.value = data
           sectionContent.value = data.section[0] ? data.section : []
         })
-        .catch((err) => {
-          $sentry.captureException(new Error(`Catch getting cookies data from prismic: ${err}`))
-        })
+        .catch((err: Error) => $handleApiErrors(`Catch getting cookies data from prismic: ${err}`))
     })
 
     onMounted(() => {

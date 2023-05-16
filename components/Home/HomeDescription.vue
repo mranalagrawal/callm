@@ -11,7 +11,7 @@ export default {
   async fetch() {
     let lang = locales[this.$i18n.locale]
 
-    if (lang == 'en-gb' && this.$config.STORE == 'CMW')
+    if (lang === 'en-gb' && this.$config.STORE === 'CMW')
       lang = 'en-eu'
 
     const data = await this.$prismic.api.getSingle('home-description', {

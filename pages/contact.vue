@@ -1,8 +1,8 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
 import { generateHeadHreflang } from '@/utilities/arrays'
-import type { TISO639, TStores } from '~/config/themeConfig'
-import themeConfig from '~/config/themeConfig'
+import prismicConfig from '~/config/prismicConfig'
+import type { TStores } from '~/config/themeConfig'
 import type { IPrismicPageData } from '~/types/prismic'
 
 export default defineComponent({
@@ -10,7 +10,7 @@ export default defineComponent({
     return $config.STORE
   },
   setup() {
-    const { app, $cmwGtmUtils } = useContext()
+    const { $cmwGtmUtils } = useContext()
 
     const hrefLang = {
       'it': 'https://www.callmewine.com/contatti.html',
@@ -33,14 +33,8 @@ export default defineComponent({
       section: [],
     })
 
-    useFetch(async ({ $config, $i18n, $handleApiErrors }) => {
-      const store: TStores = $config.STORE || 'CMW_UK'
-      const locale: TISO639 = $i18n.locale as TISO639
-
-      await app.$prismic.api.getSingle(
-        themeConfig[store]?.prismic.components.contactPage,
-        { lang: themeConfig[store]?.prismic.isoCode[locale] },
-      )
+    useFetch(async ({ $config, $cmwRepo, $handleApiErrors }) => {
+      await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.contactPage })
         .then(({ data }: Record<string, any>) => {
           pageData.value = data
         })

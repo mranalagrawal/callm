@@ -4,37 +4,11 @@ export type TCustomerType = 'B2C' | 'B2B'
 export type TStores = 'CMW' | 'B2B' | 'CMW_UK' | 'CMW_FR' | 'CMW_DE' | 'WILDVIGNERON'
 export type TSalesChannel = 'cmw_it_b2c' | 'cmw_it_b2b' | 'cmw_uk_b2c' | 'cmw_fr_b2c' | 'cmw_de_b2c'
 export type TISO639 = 'it' | 'en' | 'fr' | 'de'
-export type TPrismicIsoCodes = 'it-it' | 'it-bn' | 'en-eu' | 'en-gb' | 'fr-fr' | 'de-de'
-export type TPrismicComponents =
-  | 'topbar'
-  | 'homeBoxes'
-  | 'producers'
-  | 'shipping'
-  | 'aboutUs'
-  | 'shippingPage'
-  | 'paymentsPage'
-  | 'conditionsPage'
-  | 'contactPage'
-  | 'privacyPage'
-  | 'cookiePage'
-  | 'wineShops'
-
-type TPrismicIsoMap = {
-  [k in TISO639]?: TPrismicIsoCodes
-}
-
-type TPrismicComponentsMap = {
-  [k in TPrismicComponents]?: string
-}
 
 interface IStoreConfig {
   id: number
   salesChannel: TSalesChannel
   customerType: TCustomerType
-  prismic: {
-    components: TPrismicComponentsMap
-    isoCode: TPrismicIsoMap
-  }
   fonts: {
     sans: string[]
     secondary: string[]
@@ -68,33 +42,11 @@ const defaultColors = {
   info: '#69baf1',
 }
 
-const defaultPrismicComponents: TPrismicComponentsMap = {
-  topbar: 'topbar',
-  homeBoxes: 'home-boxes',
-  producers: 'productors',
-  shipping: 'shipping',
-  aboutUs: 'about_us',
-  shippingPage: 'shipping-page',
-  paymentsPage: 'payments',
-  conditionsPage: 'conditions',
-  contactPage: 'contact_us',
-  privacyPage: 'privacy-policy',
-  cookiePage: 'cookie-policy',
-  wineShops: 'restaurants-wineshops',
-}
-
 const themeConfig: TThemeConfig = {
   CMW: {
     id: 1,
     salesChannel: 'cmw_it_b2c',
     customerType: 'B2C',
-    prismic: {
-      components: defaultPrismicComponents,
-      isoCode: {
-        it: 'it-it',
-        en: 'en-eu',
-      },
-    },
     fonts: {
       sans: ['"Open Sans"', 'Helvetica', 'Arial', 'sans-serif'],
       secondary: ['"Open Sans"', 'Helvetica', 'Arial', 'sans-serif'],
@@ -105,12 +57,6 @@ const themeConfig: TThemeConfig = {
     id: 5,
     salesChannel: 'cmw_it_b2b',
     customerType: 'B2B',
-    prismic: {
-      components: defaultPrismicComponents,
-      isoCode: {
-        it: 'it-bn',
-      },
-    },
     fonts: {
       sans: ['"Open Sans"', 'Helvetica', 'Arial', 'sans-serif'],
       secondary: ['"Open Sans"', 'Helvetica', 'Arial', 'sans-serif'],
@@ -121,10 +67,6 @@ const themeConfig: TThemeConfig = {
     id: 2,
     salesChannel: 'cmw_uk_b2c',
     customerType: 'B2C',
-    prismic: {
-      isoCode: { en: 'en-gb' },
-      components: defaultPrismicComponents,
-    },
     fonts: {
       sans: ['"Open Sans"', 'Helvetica', 'Arial', 'sans-serif'],
       secondary: ['"Open Sans"', 'Helvetica', 'Arial', 'sans-serif'],
@@ -135,10 +77,6 @@ const themeConfig: TThemeConfig = {
     id: 3,
     salesChannel: 'cmw_fr_b2c',
     customerType: 'B2C',
-    prismic: {
-      components: defaultPrismicComponents,
-      isoCode: { fr: 'fr-fr' },
-    },
     fonts: {
       sans: ['"Open Sans"', 'Helvetica', 'Arial', 'sans-serif'],
       secondary: ['"Open Sans"', 'Helvetica', 'Arial', 'sans-serif'],
@@ -149,10 +87,6 @@ const themeConfig: TThemeConfig = {
     id: 4,
     salesChannel: 'cmw_de_b2c',
     customerType: 'B2C',
-    prismic: {
-      components: defaultPrismicComponents,
-      isoCode: { de: 'de-de' },
-    },
     fonts: {
       sans: ['"Open Sans"', 'Helvetica', 'Arial', 'sans-serif'],
       secondary: ['"Open Sans"', 'Helvetica', 'Arial', 'sans-serif'],
@@ -163,23 +97,6 @@ const themeConfig: TThemeConfig = {
     id: 5,
     salesChannel: 'cmw_it_b2c',
     customerType: 'B2C',
-    prismic: {
-      components: {
-        topbar: 'wv_topbar',
-        homeBoxes: 'wv_home-boxes',
-        producers: 'wv_productors',
-        shipping: 'wv_shipping',
-        aboutUs: 'wv_about_us',
-        shippingPage: 'wv_shipping-page',
-        paymentsPage: 'wv_payments',
-        conditionsPage: 'wv_conditions',
-        contactPage: 'wv_contact_us',
-        privacyPage: 'wv_privacy-policy',
-        cookiePage: 'wv_cookie-policy',
-        wineShops: 'wv_restaurants-wineshops',
-      },
-      isoCode: { it: 'it-it' },
-    },
     fonts: {
       sans: ['"Readex Pro"', 'Helvetica', 'Arial', 'sans-serif'],
       secondary: ['"Readex Pro"', 'Helvetica', 'Arial', 'sans-serif'],

@@ -31,7 +31,8 @@
       "nuxt-graphql-request",
       "@nuxt/http",
       "@nuxtjs/sentry",
-      "@pinia/nuxt"
+      "@pinia/nuxt",
+      "cookie-universal-nuxt"
     ]
   },
   "exclude": [

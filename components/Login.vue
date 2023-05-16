@@ -22,7 +22,7 @@ export default {
     this.$nuxt.$on('login', (e) => {
       this.user = e.customer.firstName
     })
-    this.$nuxt.$on('logout', (e) => {
+    this.$nuxt.$on('logout', () => {
       this.user = ''
     })
   },

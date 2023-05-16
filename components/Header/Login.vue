@@ -71,11 +71,7 @@ export default {
   <div>
     <div class="cmw-border-t-4 cmw-border-t-primary-900 cmw-py-4 cmw-px-6">
       <template v-if="!customer.id">
-        <ValidationObserver
-          ref="formEl"
-          v-slot="{ handleSubmit }"
-          slim
-        >
+        <ValidationObserver v-slot="{ handleSubmit }" slim>
           <form
             autocomplete="off"
             @submit.prevent="handleSubmit(onSubmit)"

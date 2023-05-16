@@ -1,12 +1,12 @@
-<script>
-import { ref, useContext, useFetch } from '@nuxtjs/composition-api'
-import documents from '../../prismic-mapper'
+<script lang="ts">
+import { defineComponent, ref, useFetch } from '@nuxtjs/composition-api'
+import prismicConfig from '~/config/prismicConfig'
+import type { TStores } from '~/config/themeConfig'
 import { generateKey } from '~/utilities/strings'
 import { inRange } from '@/utilities/math'
 
-export default {
+export default defineComponent({
   setup() {
-    const { $config, i18n, $prismic, $sentry } = useContext()
     const carousel = ref(null)
 
     const boxes = ref([])
@@ -25,24 +25,19 @@ export default {
       },
     ]
 
-    const { fetch } = useFetch(async () => {
-      await $prismic.api.getSingle(
-        documents[$config.STORE].homeBoxes,
-        { lang: i18n.localeProperties.iso.toLowerCase() },
-      )
+    const { fetch } = useFetch(async ({ $config, $cmwRepo, $handleApiErrors }) => {
+      await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.homeBoxes })
         .then(({ data }) => {
           boxes.value = data.box
         })
-        .catch((err) => {
-          $sentry.captureException(new Error(`Catch getting homeBoxes from prismic: ${err}`))
-        })
+        .catch((err: Error) => $handleApiErrors(`Catch getting homeBoxes from prismic: ${err}`))
     })
 
     return { carousel, responsive, fetch, boxes }
   },
 
   methods: { inRange, generateKey },
-}
+})
 </script>
 
 <template>

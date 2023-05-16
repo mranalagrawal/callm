@@ -68,9 +68,7 @@ export default {
 
     <component :is="homeBanner" />
 
-    <client-only>
-      <HomeBoxes />
-    </client-only>
+    <HomeBoxes />
 
     <client-only>
       <FeaturedProducts />
@@ -87,9 +85,7 @@ export default {
         <HomeSlider />
       </div>
 
-      <client-only>
-        <HomePartners />
-      </client-only>
+      <HomePartners />
     </div>
 
     <ClientOnly>
