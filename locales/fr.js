@@ -227,12 +227,8 @@ export default {
     mostAwarded: 'Most awarded',
     newArrivals: 'New arrivals',
     popularity: 'Popularity',
-    prova: {
-      'altra prova': {
-        'altro interno': 'finale',
-      },
-    },
     giftCards: 'Chèque cadeau',
+    chooseGiftCard: 'choose your gift card',
   },
   product: {
     tooltip: {

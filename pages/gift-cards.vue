@@ -41,9 +41,8 @@ export default defineComponent({
     })
     const giftCardVariantSelected = ref({ id: '' }) // set a default?
 
-    useFetch(async ({ $cmwRepo, $productMapping, $i18n, $handleApiErrors }) => {
+    useFetch(async ({ $cmwRepo, $productMapping, $handleApiErrors }) => {
       await $cmwRepo.products.getGiftCardByHandle({
-        lang: $i18n.locale,
         handle: 'gift-cards', // or by route $route.value.name,
       })
         .then(({ product: shopifyProduct }) => {
@@ -205,6 +204,7 @@ export default defineComponent({
 
             <div v-html="strippedContent" />
             <div>
+              <div class="cmw-py-4 cmw-h4" v-text="$t('search.chooseGiftCard')" />
               <div class="cmw-items-center cmw-mr-auto cmw-gap-2 cmw-flex">
                 <div
                   v-for="variant in product.variants"
@@ -222,13 +222,13 @@ export default defineComponent({
                   >
                   <label
                     :for="variant.id"
-                    class="
-              cmw-flex cmw-rounded-sm cmw-shadow cmw-p-[0.40rem] cmw-mb-0 cmw-bg-white cmw-cursor-pointer
-              peer-checked:(cmw-bg-gray-lightest cmw-shadow-none)"
+                    class="cmw-btn-base cmw-btn-base-spacing cmw-text-sm cmw-cursor-pointer cmw-border-primary-400 cmw-text-primary-400 cmw-font-bold cmw-uppercase
+                     hover:(cmw-bg-primary-50 cmw-text-primary-400 cmw-no-underline)"
+                    :class="{ 'cmw-bg-primary-400': variant.id === giftCardVariantSelected.id }"
                   >
                     <i18n-n
                       class="cmw-flex cmw-items-end cmw-leading-none"
-                      :class="{ 'cmw-text-primary': variant.id === giftCardVariantSelected.id }"
+                      :class="{ 'cmw-text-white': variant.id === giftCardVariantSelected.id }"
                       :value="Number(variant.price.amount)" :format="{ key: 'currency' }"
                       :locale="getLocaleFromCurrencyCode(variant.price.currencyCode)"
                     >

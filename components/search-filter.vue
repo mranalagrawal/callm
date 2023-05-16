@@ -123,9 +123,6 @@ export default {
       ? this.inputParameters.search
       : ''
 
-    if (!this.inputParameters.search)
-      delete this.inputParameters.search
-
     const query = new URLSearchParams(this.inputParameters).toString()
 
     let sel = '&'

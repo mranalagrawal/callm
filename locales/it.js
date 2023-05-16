@@ -229,6 +229,7 @@ export default {
     newArrivals: 'Nuovi arrivi',
     popularity: 'Popolarità',
     giftCards: 'Buoni Regalo',
+    chooseGiftCard: 'choose your gift card',
   },
   product: {
     tooltip: {

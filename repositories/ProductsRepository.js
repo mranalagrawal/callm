@@ -10,10 +10,10 @@ export default ctx => ({
       query,
     })
   },
-  getGiftCardByHandle({ handle = '', lang }) {
+  getGiftCardByHandle({ handle = '' }) {
     return ctx.$graphql.default.request(getGiftCardQuery, {
+      lang: ctx.i18n.locale.toUpperCase(),
       handle,
-      lang: lang.toUpperCase(),
     })
   },
 })

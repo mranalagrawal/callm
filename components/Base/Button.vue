@@ -55,6 +55,7 @@ export default {
 <template>
   <component
     :is="$props.to ? 'NuxtLink' : 'button'"
+    :type="$attrs.type || !$props.to ? 'button' : ''"
     :to="$props.to"
     v-bind="$attrs"
     class="cmw-btn-base disabled:(cmw-text-gray cmw-cursor-not-allowed)"

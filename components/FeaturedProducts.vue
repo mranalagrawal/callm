@@ -25,7 +25,7 @@ export default {
         .then(({ collection }) => {
           collectionRef.value = {
             ...collection,
-            products: collection.products.nodes.length && $productMapping.fromElastic(collection.products.nodes),
+            products: collection.products.nodes.length && $productMapping.fromShopify(collection.products.nodes),
           }
         })
         .catch((err: Error) => {
