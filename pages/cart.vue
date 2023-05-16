@@ -106,6 +106,12 @@ export default {
           return {
             merchandiseId: el.productVariantId,
             quantity: el.quantity,
+            attributes: [
+              {
+                key: 'bundle',
+                value: el.tag.includes('bundle'),
+              },
+            ],
           }
         })
 

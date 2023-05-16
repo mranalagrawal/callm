@@ -11,7 +11,7 @@ import { mapState } from 'vuex'
 import { stripHtml } from '~/utilities/strings'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import { useCustomer } from '~/store/customer'
-import { isObject, regexRules } from '~/utilities/validators'
+import { isObject } from '~/utilities/validators'
 import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { SweetAlertToast } from '~/utilities/Swal'
 // noinspection JSUnusedGlobalSymbols
@@ -125,7 +125,7 @@ export default {
       const id = this.product.shopify_product_variant_id
       const amount = this.finalPrice
       const amountFullPrice = Number(this.product.compareAtPrice.amount)
-      const tag = this.product.tags.find(tag => new RegExp(regexRules('isProduct')).test(tag))
+      const tag = this.product.tags
       const image = this.product.image.source.url
       const title = this.product.title
 

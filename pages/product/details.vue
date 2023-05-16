@@ -17,7 +17,6 @@ import subtractIcon from 'assets/svg/subtract.svg'
 import emailIcon from 'assets/svg/email.svg'
 import { storeToRefs } from 'pinia'
 import { mapState } from 'vuex'
-import { regexRules } from '@/utilities/validators'
 import { SweetAlertToast } from '@/utilities/Swal'
 import { generateKey } from '~/utilities/strings'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
@@ -285,7 +284,7 @@ export default defineComponent({
       )
 
       /* data.variants.nodes[0].compareAtPriceV2 */
-      const tag = this.product.tags.find(tag => new RegExp(regexRules('isProduct')).test(tag))
+      const tag = this.product.tags
       const image = this.product.image.thumbnail.url
       const title = this.product.title
       this.$store.commit('userCart/addProduct', {

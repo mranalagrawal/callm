@@ -144,7 +144,7 @@ export default defineComponent({
         singleAmountFullPrice: (this.giftCardVariantSelected.compareAtPrice)
           ? parseFloat(this.giftCardVariantSelected.compareAtPrice.amount)
           : parseFloat(this.giftCardVariantSelected.price.amount),
-        tag: null, // TODO. a cosa serve nel cart/checkout, nella gift card probabilmente non c'è
+        tag: this.giftCardVariantSelected.tags || [],
         image: this.product.image.thumbnail.url,
         title: this.giftCardVariantSelected.title,
         totalInventory: 999, // TODO da discutere
