@@ -369,6 +369,7 @@ export default defineComponent({
               {{ product.vendor }}
             </NuxtLink>
             <div v-html="strippedContent" />
+            <ProductDetailsVintages :sku="product.sku" />
             <div
               class="
             <md:(cmw-fixed cmw-bottom-0 cmw-left-0 cmw-w-full cmw-bg-white cmw-z-content cmw-shadow-elevation cmw-px-3 cmw-py-4)

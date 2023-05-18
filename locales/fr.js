@@ -231,6 +231,7 @@ export default {
     chooseGiftCard: 'choose your gift card',
   },
   product: {
+    otherVintages: 'Autres millésimes: ',
     tooltip: {
       guide: 'Guide {guide}',
       score: 'note {value} sur {maxValue}',
