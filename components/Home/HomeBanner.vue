@@ -1,17 +1,26 @@
 <script lang="ts">
-import { computed, onBeforeUnmount, ref, useContext, useFetch, useRouter } from '@nuxtjs/composition-api'
+import type { Ref } from '@nuxtjs/composition-api'
+import {
+  computed,
+  defineComponent,
+  inject,
+  onBeforeUnmount,
+  ref,
+  useContext,
+  useFetch,
+  useRouter,
+} from '@nuxtjs/composition-api'
 import type { RawLocation } from 'vue-router'
 import chevronLeftIcon from 'assets/svg/chevron-left.svg'
 import chevronRightIcon from 'assets/svg/chevron-right.svg'
 import carouselCurveDesktop from 'assets/svg/carousel-curve-desktop.svg'
 import carouselCurveMobile from 'assets/svg/carousel-curve-mobile.svg'
-import useScreenSize from '@/components/composables/useScreenSize'
 import { getMobileOperatingSystem } from '@/utilities/getOS'
 import { generateKey } from '@/utilities/strings'
 import prismicConfig from '~/config/prismicConfig'
 import type { TStores } from '~/config/themeConfig'
 
-export default {
+export default defineComponent({
   setup() {
     const {
       req,
@@ -25,13 +34,9 @@ export default {
     const slides = ref([])
     const OS = ref($cookies.get('iOS'))
     const isBrowser = ref(false)
-    const {
-      isTablet,
-      isDesktop,
-      isDesktopWide,
-      isDesktopWider,
-      hasBeenSet,
-    } = useScreenSize()
+    const isTablet = inject('isTablet') as Ref<boolean>
+    const isDesktopWide = inject('isDesktopWide') as Ref<boolean>
+    const hasBeenSet = inject('hasBeenSet') as Ref<boolean>
 
     const { fetch } = useFetch(async ({ $config, $cmwRepo, $handleApiErrors }) => {
       await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.homeCarousel })
@@ -65,9 +70,7 @@ export default {
     return {
       showDesktopImage,
       isTablet,
-      isDesktop,
       isDesktopWide,
-      isDesktopWider,
       hasBeenSet,
       OS,
       isBrowser,
@@ -84,7 +87,7 @@ export default {
   methods: {
     generateKey,
   },
-}
+})
 </script>
 
 <template>

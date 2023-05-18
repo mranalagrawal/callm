@@ -1,169 +1,109 @@
-<script>
-import VueSlickCarousel from 'vue-slick-carousel'
-import 'vue-slick-carousel/dist/vue-slick-carousel.css'
-// optional style for arrows & dots
-import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
-import locales from '../../locales-mapper'
+<script lang="ts">
+import { computed, defineComponent, ref, useFetch } from '@nuxtjs/composition-api'
+import bgCarousel from 'assets/images/bg-carousel.png'
+import prismicConfig from '~/config/prismicConfig'
+import type { TStores } from '~/config/themeConfig'
+import { getIconByFeature } from '~/utilities/icons'
+import { generateKey } from '~/utilities/strings'
+import { inRange } from '~/utilities/math'
 
-export default {
-  components: { VueSlickCarousel },
-  data: () => ({
-    data: null,
-    label: null,
-    settings: {
+export default defineComponent({
+  setup() {
+    const items = ref([])
+    const title = ref('')
+    const c1 = ref<any>(null)
+    const currentC1Slide = computed(() => c1.value && c1.value.$refs.innerSlider.currentSlide)
+
+    const settings = {
       arrows: false,
       dots: true,
       infinite: true,
       speed: 8000,
-      slidesToShow: 5.5,
+      slidesToShow: 4,
       slidesToScroll: 2,
       autoplay: true,
       autoplaySpeed: 0,
       cssEase: 'linear',
       responsive: [
         {
-          breakpoint: 1025,
+          breakpoint: 1023,
           settings: {
-            slidesToShow: 3.5,
+            slidesToShow: 3,
           },
         },
         {
-          breakpoint: 770,
+          breakpoint: 767,
           settings: {
-            slidesToShow: 2.5,
+            slidesToShow: 2,
           },
         },
         {
-          breakpoint: 420,
+          breakpoint: 411,
           settings: {
-            slidesToShow: 1.5,
+            slidesToShow: 1,
           },
         },
       ],
-    },
-  }),
-  async fetch() {
-    let lang = locales[this.$i18n.locale]
+    }
 
-    if (lang === 'en-gb' && this.$config.STORE === 'CMW')
-      lang = 'en-eu'
-
-    const response = await this.$prismic.api.getSingle('selections', {
-      lang,
+    useFetch(async ({ $config, $cmwRepo, $handleApiErrors }) => {
+      await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.selections })
+        .then(({ data }) => {
+          items.value = data.body[0].items.concat(data.body[0].items).concat(data.body[0].items)
+          title.value = data.body[0].primary.title
+        })
+        .catch((err: Error) => $handleApiErrors(`Catch getting callToAction data from prismic: ${err}`))
     })
-
-    const items = response.data.body[0].items
-    this.data = items.concat(items).concat(items)
-    this.label = response.data.body[0].primary.label
+    return { c1, currentC1Slide, items, title, settings, bgCarousel }
   },
-}
+  methods: { inRange, getIconByFeature, generateKey },
+
+})
 </script>
 
 <template>
-  <div v-if="data" class="container-fluid my-5 bg-light py-5">
-    <div class="row py-5 px-0">
-      <div class="col-12 text-center">
-        <h2 class="font-weight-bold text-dark-primary">
-          {{ label }}
-        </h2>
-      </div>
-      <div v-if="data" class="col-12 px-0 py-4">
-        <VueSlickCarousel v-bind="settings">
-          <div v-for="(item, i) in data" :key="i" class="px-2">
-            <div class="selection-card px-3 text-decoration-none">
-              <img
-                :src="item.icon.url"
-                width="24px"
-                height="24px"
-                class="mr-2"
-                style=""
-                :style="{ filter: 'contrast(0) brightness(5) !important' }"
-              >
-              <nuxt-link
-                :to="item.link"
-                class="text-decoration-none text-white"
-              >
-                {{ item.label }}
-              </nuxt-link>
-            </div>
-          </div>
-        </VueSlickCarousel>
-      </div>
-    </div>
+  <div class="cmw-py-8 cmw-mt-4 cmw-bg-gray-lightest cmw-min-h-[200px]">
+    <PrismicRichText v-if="title" class="cmw-text-center" :field="title" />
+    <ClientOnly v-if="!!items.length">
+      <VueSlickCarousel v-bind="settings" ref="c1" :dots="false" dots-class="c-carouselDots">
+        <div v-for="({ icon_code, label, link }, idx) in items" :key="generateKey(`${title}-${idx}`)" class="cmw-my-8">
+          <NuxtLink
+            :to="link"
+            class="cmw-bg-cover cmw-bg-no-repeat cmw-bg-center cmw-text-white cmw-h-[88px] cmw-m-2 cmw-rounded-sm
+           cmw-flex cmw-gap-2 cmw-items-center cmw-justify-center hover:(!cmw-text-white cmw-no-underline cmw-shadow-elevation)"
+            :style="{ backgroundImage: `url('${bgCarousel}')` }"
+          >
+            <VueSvgIcon
+              :data="require(`@/assets/svg/${getIconByFeature(icon_code)}.svg`)"
+              class="cmw-block cmw-flex-shrink-0"
+              width="40"
+              height="auto"
+            />
+            <span>{{ label }}</span>
+          </NuxtLink>
+        </div>
+        <template #customPaging="page">
+          <button
+            class="c-carouselDots__dot"
+            :class="{ '-sm': !inRange((page - currentC1Slide), -2, 2) }"
+          />
+        </template>
+      </VueSlickCarousel>
+    </ClientOnly>
   </div>
 </template>
 
 <style scoped>
-.selection-card {
-  background: linear-gradient(
-    76deg,
-    var(--dark-secondary) 1%,
-    var(--light-secondary) 95%
-  );
-  border-radius: 12px;
-  height: 88px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  /* pointer-events: none !important; */
+::v-deep(.c-carouselDots li) {
+  display: flex !important;
 }
 
-:deep(.slick-arrow.slick-prev) {
-  width: 48px;
-  height: 48px;
-  background: white;
-  box-shadow: 0 0.5rem 1rem rgba(102, 101, 101, 0.5) !important;
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iZGFya3JlZCIgY2xhc3M9ImJpIGJpLWNoZXZyb24tbGVmdCIgdmlld0JveD0iMCAwIDE2IDE2Ij4KICA8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMS4zNTQgMS42NDZhLjUuNSAwIDAgMSAwIC43MDhMNS43MDcgOGw1LjY0NyA1LjY0NmEuNS41IDAgMCAxLS43MDguNzA4bC02LTZhLjUuNSAwIDAgMSAwLS43MDhsNi02YS41LjUgMCAwIDEgLjcwOCAweiIvPgo8L3N2Zz4=") !important;
-  background-size: 75%;
-  background-position: center;
-  background-repeat: no-repeat;
-  border-radius: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 99;
-}
-:deep(.slick-arrow.slick-next) {
-  width: 48px;
-  height: 48px;
-  background: white;
-  box-shadow: 0 0.5rem 1rem rgba(102, 101, 101, 0.5) !important;
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iZGFya3JlZCIgY2xhc3M9ImJpIGJpLWNoZXZyb24tcmlnaHQiIHZpZXdCb3g9IjAgMCAxNiAxNiI+CiAgPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBkPSJNNC42NDYgMS42NDZhLjUuNSAwIDAgMSAuNzA4IDBsNiA2YS41LjUgMCAwIDEgMCAuNzA4bC02IDZhLjUuNSAwIDAgMS0uNzA4LS43MDhMMTAuMjkzIDggNC42NDYgMi4zNTRhLjUuNSAwIDAgMSAwLS43MDh6Ii8+Cjwvc3ZnPg==") !important;
-  background-size: 75%;
-  background-position: center;
-  background-repeat: no-repeat;
-  border-radius: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 99;
-}
-:deep(.slick-prev::before) {
-  color: red;
-  /* content: "\2039"; */
-  content: "";
-  font-size: 60px;
-  line-height: unset;
-}
-:deep(.slick-next::before) {
-  color: red;
-  /* content: "\203A"; */
-  content: "";
-  font-size: 60px;
-  line-height: unset;
+::v-deep(.slick-active .c-carouselDots__dot) {
+  transform: scale(1);
+  background-color: theme('colors.primary.DEFAULT');
 }
 
-:deep(.slick-dots li button:before) {
-  font-size: 16px;
-  opacity: 0.25;
-  color: var(--dark-secondary);
-}
-
-:deep(.slick-dots li.slick-active button:before) {
-  opacity: 1;
-}
-:deep(.slick-dots) {
-  bottom: -48px;
+::v-deep(.c-carouselDots__dot.-sm) {
+  transform: scale(0.3);
 }
 </style>

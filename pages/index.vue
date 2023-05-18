@@ -1,41 +1,22 @@
 <script>
-import FeaturedProducts from '../components/FeaturedProducts.vue'
-import HomeBanner from '../components/Home/HomeBanner.vue'
-import HomeBoxes from '../components/Home/HomeBoxes.vue'
-import HomeCta from '../components/Home/HomeCta.vue'
-import HomeDescription from '../components/Home/HomeDescription.vue'
-import HomeLast from '../components/Home/HomeLast.vue'
-import HomeSlider from '../components/Home/HomeSlider.vue'
-import HomeSelection from '../components/Home/HomeSelections.vue'
-import HomePartners from '../components/Home/HomePartners.vue'
-import HomeProductors from '../components/Home/HomeProductors.vue'
-import HomeBannerWV from '../components/Home/HomeBannerWV.vue'
-
-import HomeCollections from '../components/Home/HomeCollections.vue'
-import components from './../components-mapper'
+import LazyHydrate from 'vue-lazy-hydration'
+import prismicConfig from '~/config/prismicConfig'
 
 export default {
   name: 'IndexPage',
   components: {
-    HomeBanner,
-    HomeBannerWV,
-    HomeBoxes,
-    HomeLast,
-    HomeCta,
-    HomeSlider,
-    HomeDescription,
-    FeaturedProducts,
-    HomeSelection,
-    HomePartners,
-    HomeProductors,
-    HomeCollections,
+    LazyHydrate,
+    FeaturedProducts: () => import('../components/FeaturedProducts.vue'),
+    HomeLast: () => import('../components/Home/HomeLast.vue'),
+    HomeCta: () => import('../components/Home/HomeCta.vue'),
+    HomeSelections: () => import('../components/Home/HomeSelections.vue'),
   },
-  layout(context) {
-    return context.$config.STORE
+  layout({ $config }) {
+    return $config.STORE
   },
   data() {
     return {
-      homeBanner: components[this.$config.STORE].HomeBanner,
+      homeBanner: prismicConfig[this.$config.STORE].components.homeBanner,
       links: {
         'en-gb': 'https://www.callmewine.co.uk',
         'it': 'https://www.callmewine.com',
@@ -63,22 +44,14 @@ export default {
 
 <template>
   <div>
-    <!-- <HomeBanner v-if="$config.THEME == 'default'" />
-    <HomeBannerWV v-if="$config.THEME == 'wildvigneron'" /> -->
-
     <component :is="homeBanner" />
-
     <HomeBoxes />
+    <!-- Note: LazyHydrate is not working as expected on carousels -->
+    <FeaturedProducts />
 
-    <client-only>
-      <FeaturedProducts />
-    </client-only>
-
-    <div v-if="$config.STORE !== 'WILDVIGNERON'">
-      <client-only>
-        <home-selections />
-      </client-only>
-    </div>
+    <LazyHydrate v-if="$config.STORE !== 'WILDVIGNERON'" :when-visible="{ rootMargin: '100px' }">
+      <HomeSelections />
+    </LazyHydrate>
 
     <div v-if="$config.STORE !== 'WILDVIGNERON'">
       <div class="d-none d-md-block">
@@ -94,19 +67,14 @@ export default {
       </div>
     </ClientOnly>
 
-    <client-only>
-      <HomeLast />
-    </client-only>
+    <LazyHomeLast />
 
     <client-only>
       <HomeProductors />
     </client-only>
 
-    <ClientOnly>
-      <div v-if="$config.STORE !== 'WILDVIGNERON'">
-        <HomeCta />
-        <HomeDescription />
-      </div>
-    </ClientOnly>
+    <LazyHydrate v-if="$config.STORE !== 'WILDVIGNERON'" :when-visible="{ rootMargin: '100px' }">
+      <HomeCta />
+    </LazyHydrate>
   </div>
 </template>

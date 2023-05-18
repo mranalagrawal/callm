@@ -1,72 +1,67 @@
-<script>
-import locales from '../../locales-mapper'
+<script lang="ts">
+import { defineComponent, ref, useFetch } from '@nuxtjs/composition-api'
+import readMoreBg from 'assets/images/enoteca.jpeg'
+import prismicConfig from '~/config/prismicConfig'
+import type { TStores } from '~/config/themeConfig'
 
-export default {
-  data() {
-    return {
-      contents: null,
-    }
+export default defineComponent({
+  setup() {
+    const componentData = ref({
+      image: {
+        url: '',
+      },
+      title: '',
+      subtitle: '',
+      cta_button: '',
+      cta_link: '',
+      shown: '',
+      hidden: '',
+    })
+    const showMoreText = ref(false)
+
+    useFetch(async ({ $config, $cmwRepo, $handleApiErrors }) => {
+      await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.callToAction })
+        .then(({ data }) => {
+          componentData.value = data
+        })
+        .catch((err: Error) => $handleApiErrors(`Catch getting callToAction data from prismic: ${err}`))
+    })
+    return { componentData, showMoreText, readMoreBg }
   },
-  async fetch() {
-    let lang = locales[this.$i18n.locale]
-
-    // eslint-disable-next-line eqeqeq
-    if (lang === 'en-gb' && this.$config.STORE == 'CMW')
-      lang = 'en-eu'
-
-    this.contents = (
-      await this.$prismic.api.query(
-        this.$prismic.predicates.at('document.type', 'call-to-action'),
-        { lang },
-      )
-    ).results
-  },
-}
+})
 </script>
 
 <template>
-  <div v-if="contents" class="container-fluid px-md-5 my-5">
-    <div class="row">
-      <div class="col-12 text-center my-3">
-        <h4>{{ contents[0].data["call-to-action"][0].text }}</h4>
-      </div>
+  <div class="cmw-max-w-screen-xl cmw-mx-auto cmw-py-8 cmw-px-4 cmw-mt-4">
+    <div
+      :style="{ backgroundImage: `linear-gradient(90deg,rgba(0,0,0,0) 10%,rgba(0,0,0,1), rgba(0,0,0,1)), url('${componentData.image.url}')` }"
+      class="cmw-rounded-sm cmw-overflow-hidden cmw-pl-3/12 cmw-py-20"
+    >
+      <PrismicText v-if="componentData.title" class="cmw-h2 !cmw-text-white" :field="componentData.title" />
+      <PrismicRichText v-if="componentData.subtitle" :field="componentData.subtitle" />
+      <Button
+        class="cmw-w-max" variant="ghost-inverse" :label="componentData.cta_button" :to="componentData.cta_link"
+      />
     </div>
     <div
-      class="row cta-banner py-5"
-      :style="{
-        backgroundImage:
-          `linear-gradient(90deg,rgba(0,0,0,0) 10%,rgba(0,0,0,1), rgba(0,0,0,1)),url(${
-            contents[0].data.image.url
-          })`,
-      }"
+      class="cmw-relative cmw-my-8 cmw-bg-auto cmw-bg-no-repeat cmw-bg-right-top"
+      :class="[
+        { 'after:(cmw-content-DEFAULT cmw-absolute cmw-w-full cmw-h-1/2 cmw-bottom-0 cmw-left-0 cmw-bg-gradient-to-b cmw-from-transparent cmw-to-white)': !showMoreText },
+        { 'cmw-min-h-[700px] ': showMoreText },
+      ]
+      "
+      :style="{ backgroundImage: `url('${readMoreBg}')` }"
     >
-      <div class="col-12 col-md-7 offset-md-5 py-3">
-        <h2 class="cmw-text-white">
-          <NuxtLink
-            class="cmw-text-white hover:(cmw-text-white cmw-no-underline)"
-            :to="contents[0].data.cta_link || '/'"
-          >
-            {{ contents[0].data.title[0].text }}
-          </NuxtLink>
-        </h2>
-        <p class="lead">
-          {{ contents[0].data.subtitle[0].text }}
-        </p>
-        <NuxtLink
-          :to="contents[0].data.cta_link || '/'"
-          class="btn btn-outline-light mt-5 px-5"
-        >
-          {{ contents[0].data.cta_button }}
-        </NuxtLink>
+      <div class="cmw-w-[min(100%,_60rem)] cmw-m-inline-auto cmw-pr-1/12">
+        <PrismicRichText v-if="componentData.shown" :field="componentData.shown" />
+        <transition>
+          <PrismicRichText v-if="componentData.hidden && showMoreText" :field="componentData.hidden" />
+        </transition>
+        <Button
+          v-if="!showMoreText" class="cmw-relative cmw-w-max cmw-z-base"
+          :label="$t('common.cta.readMore')" variant="ghost" @click.native="showMoreText = true"
+        />
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.cta-banner {
-  border-radius: 10px;
-  background-size: cover;
-  color: white;
-}
-</style>
