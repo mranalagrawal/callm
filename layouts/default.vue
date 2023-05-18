@@ -18,19 +18,11 @@ export default {
     Navbar,
   },
   setup() {
-    const {
-      isTablet,
-      isDesktop,
-      isDesktopWide,
-      hasBeenSet,
-    } = useScreenSize()
-
-    provide('isTablet', readonly(isTablet))
+    const { isTablet, isDesktop } = useScreenSize()
     provide('isDesktop', readonly(isDesktop))
-    provide('isDesktopWide', readonly(isDesktopWide))
-    provide('hasBeenSet', readonly(hasBeenSet))
+    provide('isTablet', readonly(isTablet))
 
-    return { isTablet, isDesktop, isDesktopWide, hasBeenSet }
+    return { isTablet, isDesktop }
   },
   data() {
     return {

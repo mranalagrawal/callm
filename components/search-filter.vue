@@ -1,9 +1,8 @@
 <script>
-import { ref, watchEffect } from '@nuxtjs/composition-api'
+import { inject, ref, watchEffect } from '@nuxtjs/composition-api'
 import closeIcon from 'assets/svg/close.svg'
 import { storeToRefs } from 'pinia'
 import Loader from '../components/UI/Loader.vue'
-import useScreenSize from '@/components/composables/useScreenSize'
 import { pick } from '@/utilities/arrays'
 import { useFilters } from '~/store/filters'
 import { getLocaleFromCurrencyCode } from '@/utilities/currency'
@@ -16,7 +15,7 @@ export default {
   setup() {
     const filtersStore = useFilters()
     const { selectedLayout, availableLayouts } = storeToRefs(filtersStore)
-    const { isDesktop } = useScreenSize()
+    const isDesktop = inject('isDesktop')
     const showPageFullDescription = ref(false)
     const showMoreFilters = ref(false)
     const showMobileFilters = ref(false)

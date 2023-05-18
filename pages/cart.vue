@@ -109,7 +109,7 @@ export default {
             attributes: [
               {
                 key: 'bundle',
-                value: el.tag.includes('bundle'),
+                value: el.tag.includes('BUNDLE'),
               },
             ],
           }

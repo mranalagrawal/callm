@@ -5,3 +5,5 @@ declare module "*.vue" {
 
 declare module "*.graphql"
 declare module "*.svg"
+declare module "*.jpeg"
+declare module "*.png"

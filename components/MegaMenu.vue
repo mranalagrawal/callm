@@ -1,17 +1,14 @@
 <script>
-import { nextTick, onMounted, onUnmounted, ref, useContext, useRouter, watch } from '@nuxtjs/composition-api'
-import debounce from 'lodash.debounce'
+import { ref, useContext, useRouter } from '@nuxtjs/composition-api'
 import promoTagIcon from 'assets/svg/promo-tag.svg'
 import ThirdLevel from './UI/ThirdLevel.vue'
 import { generateKey } from '~/utilities/strings'
-import { useHeaderSize } from '~/store/headerSize'
 
 export default {
   components: { ThirdLevel },
   setup() {
     const { localeLocation } = useContext()
     const router = useRouter()
-    const headerSize = useHeaderSize()
     const megaMenu = ref(null)
     const selectedItem = ref(null)
     const handleClick = (to) => {
@@ -21,26 +18,7 @@ export default {
 
     const onTab = item => selectedItem.value = item
 
-    const resizeListener = debounce(() => {
-      headerSize.$patch({
-        megaMenuHeight: megaMenu.value ? megaMenu.value.getBoundingClientRect().height : 0,
-      })
-    }, 400)
-
-    onMounted(() => {
-      window.addEventListener('resize', resizeListener)
-      nextTick(() => resizeListener())
-    })
-
-    onUnmounted(() => {
-      window.removeEventListener('resize', resizeListener)
-    })
-
-    watch(() => headerSize, () => {
-      resizeListener()
-    }, { deep: true })
-
-    return { headerSize, megaMenu, selectedItem, handleClick, onTab }
+    return { megaMenu, selectedItem, handleClick, onTab }
   },
   data: () => ({
     promoTagIcon,
@@ -114,16 +92,16 @@ export default {
           @mouseenter="onTab(firstLevel)"
         >
           <button
-            class="cmw-text-sm cmw-uppercase cmw-no-underline hover:(!cmw-text-primary cmw-font-bold cmw-no-underline)"
+            class="cmw-text-xs desktop-wide:cmw-text-sm cmw-uppercase cmw-no-underline hover:(!cmw-text-primary cmw-font-bold cmw-no-underline)"
             :class="firstLevel.isPromotionTab ? '!cmw-text-primary-400' : '!cmw-text-body'"
             @click="handleClick(`/${firstLevel.link}`)"
           >
             <VueSvgIcon
               v-if="firstLevel.isPromotionTab"
               :data="promoTagIcon"
-              width="30"
-              height="30"
-              class="d-inline"
+              width="26"
+              height="26"
+              class="cmw-inline"
             />
             {{ firstLevel.name }}
           </button>

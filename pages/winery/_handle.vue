@@ -1,6 +1,5 @@
 <script>
-import { computed, onMounted, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api'
-import useScreenSize from '@/components/composables/useScreenSize'
+import { computed, inject, onMounted, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api'
 import getArticles from '~/graphql/queries/getArticles'
 import { inRange } from '~/utilities/math'
 import { stripHtmlAnchors } from '~/utilities/strings'
@@ -12,7 +11,7 @@ export default {
   setup() {
     const { $graphql, i18n, redirect, $cmwGtmUtils } = useContext()
     const route = useRoute()
-    const { isDesktop } = useScreenSize()
+    const isDesktop = inject('isDesktop')
     const partnerC1 = ref(null)
     const partnerC2 = ref(null)
     const c1 = ref(null)

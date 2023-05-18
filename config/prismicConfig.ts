@@ -3,14 +3,17 @@ import type { TISO639, TStores } from '~/config/themeConfig'
 export type TPrismicIsoCodes = 'it-it' | 'it-bn' | 'en-eu' | 'en-gb' | 'fr-fr' | 'de-de'
 export type TPrismicComponents =
   | 'aboutUs'
+  | 'callToAction'
   | 'cookiePage'
   | 'contactPage'
   | 'conditionsPage'
   | 'homeCarousel'
+  | 'homeBanner'
   | 'homeBoxes'
   | 'producers'
   | 'shipping'
   | 'shippingPage'
+  | 'selections'
   | 'paymentsPage'
   | 'partners'
   | 'privacyPage'
@@ -35,19 +38,22 @@ type TPrismicConfig = {
 }
 
 const defaultPrismicComponents: TPrismicComponentsMap = {
+  aboutUs: 'about_us',
+  callToAction: 'call-to-action',
+  cookiePage: 'cookie-policy',
+  conditionsPage: 'conditions',
+  contactPage: 'contact_us',
   homeCarousel: 'home-carousel',
+  homeBanner: 'HomeBannerWV',
   partners: 'partners',
   topbar: 'topbar',
   homeBoxes: 'home-boxes',
   producers: 'productors',
   shipping: 'shipping',
-  aboutUs: 'about_us',
   shippingPage: 'shipping-page',
+  selections: 'selections',
   paymentsPage: 'payments',
-  conditionsPage: 'conditions',
-  contactPage: 'contact_us',
   privacyPage: 'privacy-policy',
-  cookiePage: 'cookie-policy',
   wineShops: 'restaurants-wineshops',
 }
 
@@ -79,23 +85,27 @@ const prismicConfig: TPrismicConfig = {
   },
   WILDVIGNERON: {
     components: {
+      aboutUs: 'wv_about_us',
+      callToAction: 'call-to-action',
+      cookiePage: 'wv_cookie-policy',
+      conditionsPage: 'wv_conditions',
+      contactPage: 'wv_contact_us',
       homeCarousel: 'wv_home-carousel',
+      homeBanner: 'HomeBannerWV',
       partners: 'partners',
       topbar: 'wv_topbar',
       homeBoxes: 'wv_home-boxes',
       producers: 'wv_productors',
       shipping: 'wv_shipping',
-      aboutUs: 'wv_about_us',
       shippingPage: 'wv_shipping-page',
       paymentsPage: 'wv_payments',
-      conditionsPage: 'wv_conditions',
-      contactPage: 'wv_contact_us',
+      selections: 'selections',
       privacyPage: 'wv_privacy-policy',
-      cookiePage: 'wv_cookie-policy',
       wineShops: 'wv_restaurants-wineshops',
     },
     isoCode: { it: 'it-it' },
   },
 }
 
+// Note: maybe we can rethink this export to gain some performance, that way we could just import necessary
 export default prismicConfig

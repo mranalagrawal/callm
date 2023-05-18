@@ -1,12 +1,18 @@
-<script>
-import { onMounted, ref, useContext } from '@nuxtjs/composition-api'
-import useScreenSize from '@/components/composables/useScreenSize'
+<script lang="ts">
+import type { PropType } from '@nuxtjs/composition-api'
+import { defineComponent, inject, onMounted, useContext } from '@nuxtjs/composition-api'
+import chevronLeftIcon from 'assets/svg/chevron-left.svg'
+import chevronRightIcon from 'assets/svg/chevron-right.svg'
 import { inRange } from '@/utilities/math'
+import type { IProductMapped } from '~/types/product'
 import { generateKey } from '~/utilities/strings'
 
-export default {
+export default defineComponent({
   props: {
-    products: { type: Array },
+    products: {
+      type: Array as PropType<IProductMapped[]>,
+      required: true,
+    },
     responsive: {
       type: Array,
       default: () => ([
@@ -36,8 +42,7 @@ export default {
   },
   setup(props) {
     const { $config, $cmwGtmUtils } = useContext()
-    const { isTablet } = useScreenSize()
-    const carousel = ref(null)
+    const isTablet = inject('isTablet')
 
     onMounted(() => {
       process.browser && $cmwGtmUtils.pushPage($cmwGtmUtils.getActionField(), {
@@ -51,20 +56,21 @@ export default {
     })
 
     return {
-      carousel,
       isTablet,
+      chevronLeftIcon,
+      chevronRightIcon,
       inRange,
     }
   },
   methods: { generateKey },
-}
+})
 </script>
 
 <template>
   <div class="cmw-max-w-screen-xl cmw-mx-auto cmw-py-4 cmw-px-4">
     <div class="cmw-h2 cmw-text-center cmw-py-4" v-text="title" />
     <SsrCarousel
-      ref="carousel" :key="products.length" :responsive="responsive" :show-arrows="isTablet"
+      :key="products.length" :responsive="responsive" :show-arrows="isTablet"
       :show-dots="isTablet" class="cmw-relative"
     >
       <div v-for="(product, idx) in products" :key="generateKey(`${title}-${product.id}`)" class="cmw-my-8">
@@ -81,7 +87,7 @@ export default {
       <template #back-arrow>
         <span class="cmw-w-12 cmw-h-12 cmw-bg-white cmw-rounded-sm">
           <VueSvgIcon
-            :data="require(`@/assets/svg/chevron-left.svg`)" color="#992545" width="20" height="20"
+            :data="chevronLeftIcon" color="#992545" width="20" height="20"
             class="cmw-m-auto"
           />
         </span>
@@ -89,7 +95,7 @@ export default {
       <template #next-arrow>
         <span class="cmw-w-12 cmw-h-12 cmw-bg-white cmw-rounded-sm">
           <VueSvgIcon
-            :data="require(`@/assets/svg/chevron-right.svg`)" color="#992545" width="20" height="20"
+            :data="chevronRightIcon" color="#992545" width="20" height="20"
             class="cmw-m-auto"
           />
         </span>
