@@ -18,7 +18,7 @@
       "source": "/(.*-[V,C,R,D,B,N,M][0-9]*$)",
       "has": [
         {
-          "value": "callmewine.co.uk",
+          "value": ".*callmewine.co.uk",
           "type": "host"
         }
       ],
@@ -33,7 +33,7 @@
       "source": "/(.*-[V,C,R,D,B,N,M][0-9]*[V,C,R,D,B,N,M][0-9]*$)",
       "has": [
         {
-          "value": "callmewine.co.uk",
+          "value": ".*callmewine.co.uk",
           "type": "host"
         }
       ],
@@ -48,7 +48,7 @@
       "source": "/(.*-[V,C,R,D,B,N,M][0-9]*[V,C,R,D,B,N,M][0-9]*.htm$)",
       "has": [
         {
-          "value": "callmewine.co.uk",
+          "value": ".*callmewine.co.uk",
           "type": "host"
         }
       ],
@@ -63,7 +63,7 @@
       "source": "/([^\\/.]*-[V,C,R,D,B,N,M][0-9]*.htm$)",
       "has": [
         {
-          "value": "callmewine.co.uk",
+          "value": ".*callmewine.co.uk",
           "type": "host"
         }
       ],
