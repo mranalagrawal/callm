@@ -29,7 +29,6 @@ export default defineComponent({
     <div v-for="({ label, to }) in shallowBreadcrumb" v-once :key="to">
       <NuxtLink
         class="cmw-text-primary-400"
-        rel="nofollow"
         :to="localePath(to)"
       >
         {{ label }}
