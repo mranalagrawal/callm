@@ -39,35 +39,33 @@ export default {
   },
   methods: {
     async handleSubmit() {
-      await fetch(`${this.$config.CUSTOMER_API}${this.$config.STORE}`, {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: JSON.stringify({
-          email: this.email,
-        }),
-      }).then(async (r) => {
-        const valid = r.ok
-        const response = await r.json()
-
-        if (!valid)
-          return
-
-        this.$gtm.push({
-          event: 'newsletterSubscription',
-          leadId: response.customer.id,
-          userEmail: this.email,
-        })
-
-        SweetAlertToast.fire({
-          icon: 'success',
-          text: this.$i18n.t('common.feedback.OK.emailAdded'),
-        })
-
-        this.email = ''
+      await this.$cmw.$post('/customers', {
+        email: this.email,
       })
+        .then(({ data }) => {
+          const { errors = {}, customer = {} } = data
+
+          if (Object.keys(errors).length) {
+            SweetAlertToast.fire({
+              icon: 'error',
+              text: errors.email,
+            })
+            return
+          }
+
+          this.$gtm.push({
+            event: 'newsletterSubscription',
+            leadId: customer.id,
+            userEmail: this.email,
+          })
+
+          SweetAlertToast.fire({
+            icon: 'success',
+            text: this.$i18n.t('common.feedback.OK.emailAdded'),
+          })
+
+          this.email = ''
+        })
         .catch((err) => {
           this.$sentry.captureException(new Error((`Catch on newsletterSubscription: ${err}`)))
           SweetAlertToast.fire({

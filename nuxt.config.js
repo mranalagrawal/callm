@@ -659,7 +659,6 @@ export default {
     STORE: process.env.STORE,
     SALECHANNEL: process.env.SALECHANNEL,
     DEFAULT_LOCALE: process.env.DEFAULT_LOCALE,
-    CUSTOMER_API: process.env.CUSTOMER_API,
     DEPLOY_ENV: process.env.DEPLOY_ENV,
     gtm: {
       id: process.env.GOOGLE_TAG_MANAGER_ID,
