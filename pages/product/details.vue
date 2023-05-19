@@ -55,6 +55,7 @@ export default defineComponent({
         description: '',
         title: '',
       },
+      gtmProductData: { id: '' },
     })
     const productVariant = ref()
     const productDetails = ref({
@@ -343,7 +344,7 @@ export default defineComponent({
               :source="product.image.source"
             />
             <div class="cmw-absolute cmw-top-4 cmw-left-2">
-              <ProductBoxFeature v-for="feature in product.availableFeatures" :key="feature" :feature="feature" />
+              <ProductBoxFeature v-for="feature in product.availableFeatures" :key="generateKey(`details-feature-${feature}`)" :feature="feature" />
             </div>
             <div class="cmw-absolute cmw-bottom-0 cmw-left-2">
               <div
@@ -569,16 +570,8 @@ export default defineComponent({
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="(award, i) in productDetails.awards" :key="i">
+                      <tr v-for="(award) in productDetails.awards" :key="generateKey(`details-awards-${award.title}`)">
                         <td scope="row">
-                          <!-- <img
-                        :src="
-                          require(`@/assets/images/awards/${award.id}.svg`)
-                        "
-                        class="award-img pr-2"
-                        width="24px"
-                      /> -->
-
                           <strong>{{ award.title }}</strong>
                         </td>
                         <td>{{ award.year }}</td>
@@ -683,7 +676,7 @@ export default defineComponent({
                   <div class="row">
                     <div
                       v-for="pairing in productDetails.foodPairings"
-                      :key="pairing.id"
+                      :key="generateKey(`food-pairing-${pairing.id}`)"
                       class="col-6 col-md-4 col-lg-3"
                     >
                       <img

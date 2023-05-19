@@ -82,7 +82,7 @@ export default {
 
 <template>
   <footer class="container-fluid px-0" style="background: #f8f8f8">
-    <!--      <div class="container-fluid px-md-5">
+    <div v-if="$config.STORE !== 'CMW_UK'" class="container-fluid px-md-5">
       <div class="row">
         <div class="col-12">
           <p class="font-weight-bold h2 text-center mb-5">
@@ -127,7 +127,7 @@ export default {
           </p>
         </div>
       </div>
-    </div> -->
+    </div>
 
     <div
       v-if="data && info"
