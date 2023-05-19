@@ -79,8 +79,8 @@ export default {
   <component :is="wrapper" ref="el" class="w-full">
     <img
       ref="imgEl"
-      class="cmw-filter cmw-transition-lazy-image cmw-duration-600 cmw-text-xxs"
-      :class="[imageIsLoaded ? 'cmw-blur-0' : 'cmw-blur-9', imgClasses]"
+      class="cmw-filter cmw-transition-lazy-image cmw-duration-300 cmw-text-xxs"
+      :class="[imageIsLoaded ? 'cmw-blur-0' : 'cmw-blur-6', imgClasses]"
       :data-src="source.url"
       :data-thumbnail="thumbnail.url"
       :alt="thumbnail.altText"

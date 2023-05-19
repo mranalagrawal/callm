@@ -18,6 +18,7 @@ import emailIcon from 'assets/svg/email.svg'
 import { storeToRefs } from 'pinia'
 import { mapState } from 'vuex'
 import { SweetAlertToast } from '@/utilities/Swal'
+import { getUniqueListBy } from '~/utilities/arrays'
 import { generateKey } from '~/utilities/strings'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import { getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
@@ -67,6 +68,7 @@ export default defineComponent({
       awards: [],
       priceLists: {},
       redirectSeoUrl: {},
+      foodPairings: [],
     })
     const productBreadcrumbs = ref([])
     const brandMetaFields = ref({
@@ -174,6 +176,9 @@ export default defineComponent({
       price: finalPrice.value,
     }))
 
+    const productDetailsFoodPairings = computed(() => getUniqueListBy(productDetails.value.foodPairings, 'id'))
+    const productDetailsAwards = computed(() => getUniqueListBy(productDetails.value.awards, 'id'))
+
     const generateMetaLink = (arr = []) => {
       const hrefLangArr = !!arr.length && arr.map(el => ({
         hid: `alternate-${el[0]}`,
@@ -232,6 +237,8 @@ export default defineComponent({
       wishlistArr,
       brandMetaFields,
       brand,
+      productDetailsFoodPairings,
+      productDetailsAwards,
       isOpen,
       cartIcon,
       addIcon,
@@ -570,7 +577,7 @@ export default defineComponent({
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="(award) in productDetails.awards" :key="generateKey(`details-awards-${award.title}`)">
+                      <tr v-for="(award) in productDetailsAwards" :key="generateKey(`details-awards-${award.title}`)">
                         <td scope="row">
                           <strong>{{ award.title }}</strong>
                         </td>
@@ -675,7 +682,7 @@ export default defineComponent({
 
                   <div class="row">
                     <div
-                      v-for="pairing in productDetails.foodPairings"
+                      v-for="pairing in productDetailsFoodPairings"
                       :key="generateKey(`food-pairing-${pairing.id}`)"
                       class="col-6 col-md-4 col-lg-3"
                     >
