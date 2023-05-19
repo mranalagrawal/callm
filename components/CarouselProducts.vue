@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { PropType } from '@nuxtjs/composition-api'
-import { defineComponent, inject, onMounted, useContext } from '@nuxtjs/composition-api'
+import { defineComponent, inject, onMounted, useContext, useRoute } from '@nuxtjs/composition-api'
 import chevronLeftIcon from 'assets/svg/chevron-left.svg'
 import chevronRightIcon from 'assets/svg/chevron-right.svg'
 import { inRange } from '@/utilities/math'
@@ -43,13 +43,14 @@ export default defineComponent({
   setup(props) {
     const { $config, $cmwGtmUtils } = useContext()
     const isTablet = inject('isTablet')
+    const route = useRoute()
 
     onMounted(() => {
-      process.browser && $cmwGtmUtils.pushPage($cmwGtmUtils.getActionField(), {
+      process.browser && $cmwGtmUtils.pushPage($cmwGtmUtils.getActionField(route.value), {
         event: 'productListView',
         ecommerce: {
           currencyCode: $config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
-          actionField: { list: $cmwGtmUtils.getActionField() },
+          actionField: { list: $cmwGtmUtils.getActionField(route.value) },
           impressions: props.products.map(product => product.gtmProductData),
         },
       })

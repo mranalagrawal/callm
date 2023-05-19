@@ -6,8 +6,8 @@ import { useCustomer } from '~/store/customer'
 import { cleanRoutesLocales } from '~/utilities/strings'
 
 interface ICmwGtmUtils {
-  getActionField(): string
-  resetDatalayerFields: Function
+  getActionField(route: any): string
+  resetDatalayerFields(): void
   pushPage(pageType: string, data?: Record<string, any>): void
   getCustomerGtmData: Function
 }
@@ -37,14 +37,14 @@ declare module 'vuex/types/index' {
   }
 }
 
-const cmwGtm: Plugin = ({ route, $config, $gtm }, inject) => {
+const cmwGtm: Plugin = ({ $config, $gtm }, inject) => {
   const customerStore = useCustomer()
   const { customer } = storeToRefs(customerStore)
 
   const store: TStores = $config.STORE || 'CMW_UK'
 
   const $cmwGtmUtils: ICmwGtmUtils = {
-    getActionField: () => {
+    getActionField: (route) => {
       if (route.path === '/')
         return 'home'
       else if (Object.keys(route.query).includes('search'))
@@ -53,12 +53,22 @@ const cmwGtm: Plugin = ({ route, $config, $gtm }, inject) => {
     },
     pushPage: () => {},
     getCustomerGtmData: () => {},
-    resetDatalayerFields: () => {},
-  }
+    resetDatalayerFields: async () => {
+      const fields = ['ecommerce', 'actionField', 'impressions', 'pageType', 'wishlistAddedProduct', 'event']
 
-  $cmwGtmUtils.resetDatalayerFields = (fields = []) => {
-    if (typeof window !== 'undefined' && window.google_tag_manager[$config.gtm.id])
-      fields.forEach(field => window.google_tag_manager[$config.gtm.id].dataLayer.set(field, undefined))
+      console.log('Try Cleaning?', typeof window !== 'undefined')
+      console.log('Try Cleaning?', $config.gtm)
+      console.log('Try Cleaning?', window.google_tag_manager)
+
+      if (typeof window !== 'undefined' && window.google_tag_manager && window.google_tag_manager[$config.gtm.id]) {
+        console.log('Cleaning', window.google_tag_manager[$config.gtm.id])
+        window.google_tag_manager[$config.gtm.id].push(() => {
+          fields.forEach(field => window.google_tag_manager[$config.gtm.id].dataLayer.set(field, undefined))
+        })
+
+        window.google_tag_manager[$config.gtm.id].dataLayer.reset()
+      }
+    },
   }
 
   $cmwGtmUtils.getCustomerGtmData = () => {
@@ -77,14 +87,14 @@ const cmwGtm: Plugin = ({ route, $config, $gtm }, inject) => {
     }
   }
 
-  $cmwGtmUtils.pushPage = (pageType = '', data = {}) => {
+  $cmwGtmUtils.pushPage = async (pageType = '', data = {}) => {
+    await $cmwGtmUtils.resetDatalayerFields()
+
     $gtm.push({
       ...data,
       pageType,
       ...($cmwGtmUtils.getCustomerGtmData()),
     })
-
-    $cmwGtmUtils.resetDatalayerFields(['ecommerce', 'actionField', 'impressions', 'pageType', 'event'])
   }
 
   inject('cmwGtmUtils', $cmwGtmUtils)

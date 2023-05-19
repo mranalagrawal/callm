@@ -113,6 +113,8 @@ export const useCustomer = defineStore({
             })
 
             if (event) {
+              await this.$nuxt.$cmwGtmUtils.resetDatalayerFields()
+
               this.$nuxt.$gtm.push({
                 event,
                 userType: themeConfig[this.$nuxt.$config.STORE].customerType,
@@ -124,8 +126,6 @@ export const useCustomer = defineStore({
                 userPurchasesCount: this.customer.orders_count,
                 userPurchasesTot: this.customer.total_spent,
               })
-
-              this.$nuxt.$cmwGtmUtils.resetDatalayerFields(['ecommerce', 'actionField', 'impressions', 'pageType'])
             }
           } else {
             await SweetAlertToast.fire({ text: this.$nuxt.app.i18n.t('common.feedback.KO.login') })
@@ -158,7 +158,7 @@ export const useCustomer = defineStore({
         { method: 'POST' },
       )
         .then(response => (response.json()))
-        .then((array) => {
+        .then(async (array) => {
           // TODO: Animate the filling heart for a better UX
           this.$patch({ wishlistArr: setCustomerWishlist(JSON.stringify(array)) })
           SweetAlertToast.fire({
@@ -167,6 +167,8 @@ export const useCustomer = defineStore({
           })
 
           if (!args.isOnFavourite) {
+            await this.$nuxt.$cmwGtmUtils.resetDatalayerFields()
+
             this.$nuxt.$gtm.push({
               event: 'addToWishlist',
               wishlistAddedProduct: {
@@ -175,8 +177,6 @@ export const useCustomer = defineStore({
                 }],
               },
             })
-
-            this.$nuxt.$cmwGtmUtils.resetDatalayerFields(['ecommerce', 'actionField', 'impressions', 'pageType'])
           }
         })
         .catch(() => {

@@ -1,5 +1,5 @@
 <script>
-import { computed, ref, useContext, useRouter } from '@nuxtjs/composition-api'
+import { computed, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import heartIcon from 'assets/svg/heart.svg'
 import heartFullIcon from 'assets/svg/heart-full.svg'
@@ -36,6 +36,7 @@ export default {
     const { handleWishlist } = customerStore
     const { handleShowRequestModal } = useShowRequestModal()
     const router = useRouter()
+    const route = useRoute()
 
     const isOpen = ref(false)
     const showRequestModal = ref(false)
@@ -52,13 +53,15 @@ export default {
       handleWishlist({ id: props.product.details.key, isOnFavourite: isOnFavourite.value, gtmProductData: gtmProductData.value })
     }
 
-    const handleProductCLick = () => {
+    const handleProductCLick = async () => {
+      await $cmwGtmUtils.resetDatalayerFields()
+
       $gtm.push({
         event: 'productClick',
         ecommerce: {
           currencyCode: $nuxt.$config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
           click: {
-            actionField: { list: $cmwGtmUtils.getActionField() },
+            actionField: { list: $cmwGtmUtils.getActionField(route.value) },
             products: [{
               ...props.product.gtmProductData,
               price: finalPrice.value,
@@ -67,8 +70,6 @@ export default {
           },
         },
       })
-
-      $cmwGtmUtils.resetDatalayerFields(['ecommerce', 'actionField', 'impressions', 'pageType'])
 
       router.push(localeLocation(props.product.url))
     }

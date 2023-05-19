@@ -175,7 +175,7 @@ export default defineComponent({
     <div v-if="$fetchState.error" class="cmw-relative cmw-text-center cmw-mt-12">
       <div class="md:(cmw-grid cmw-grid-cols-2 cmw-items-center)">
         <img
-          class="cmw-w-3/4 cmw-mx-auto" :src="require('assets/images/wine-stain.png')"
+          class="cmw-w-3/4 cmw-mx-auto" src="https://cdn.shopify.com/s/files/1/0668/1860/5335/files/wine-stain.png?width=900"
           alt="empty-bottles"
         >
         <div class="cmw-text-left">

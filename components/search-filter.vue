@@ -365,11 +365,11 @@ export default {
           }
         })
 
-        this.$cmwGtmUtils.pushPage(this.$cmwGtmUtils.getActionField(), {
+        this.$cmwGtmUtils.pushPage(this.$cmwGtmUtils.getActionField(this.$route), {
           event: 'productListView',
           ecommerce: {
             currencyCode: this.$config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
-            actionField: { list: this.$cmwGtmUtils.getActionField() },
+            actionField: { list: this.$cmwGtmUtils.getActionField(this.$route) },
             impressions,
           },
         })
