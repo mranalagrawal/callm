@@ -1,6 +1,7 @@
 <script>
 import logo from 'assets/svg/logo-call-me-wine.svg'
 import walletIcon from 'assets/svg/wallet.svg'
+import themeConfig from '~/config/themeConfig'
 import { SweetAlertToast } from '~/utilities/Swal'
 /* import locales from '../locales-mapper' */
 export default {
@@ -33,6 +34,11 @@ export default {
     const info = responseInfo.data
 
     this.info = info
+  },
+  computed: {
+    themeConfig() {
+      return themeConfig
+    },
   },
   watch: {
     '$i18n.locale': '$fetch',
@@ -134,16 +140,16 @@ export default {
       <div v-if="$config.STORE === 'CMW'" class="row justify-content-end">
         <nuxt-link
           class="text-decoration-none text-uppercase text-white fs-0875 mr-3"
-          :to="switchLocalePath($config.DEFAULT_LOCALE)"
+          :to="switchLocalePath(themeConfig[$config.STORE].defaultLocale)"
           :class="
-            $i18n.locale === $config.DEFAULT_LOCALE ? 'font-weight-bold' : ''
+            $i18n.locale === themeConfig[$config.STORE].defaultLocale ? 'font-weight-bold' : ''
           "
         >
-          {{ $config.DEFAULT_LOCALE }}
+          {{ themeConfig[$config.STORE].defaultLocale }}
         </nuxt-link>
 
         <nuxt-link
-          v-if="$config.DEFAULT_LOCALE !== 'en'"
+          v-if="themeConfig[$config.STORE].defaultLocale !== 'en'"
           class="text-decoration-none text-uppercase text-white fs-0875 mr-3"
           :to="switchLocalePath('en')"
           :class="$i18n.locale === 'en' ? 'font-weight-bold' : ''"

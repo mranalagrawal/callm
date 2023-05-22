@@ -1,11 +1,10 @@
 /* import { apiEndpoint } from "./sm.json"; */
 import { join } from 'node:path'
+import fetch from 'node-fetch'
 
 // Todo: Move these function to external files
 // import getSitemapProducts from './utilities/getSitemapProducts'
 // import getSitemapBrands from './utilities/getSitemapBrands'
-
-import fetch from 'node-fetch'
 
 async function getPageProducts(lang, cursor = null) {
   let response = {}
@@ -658,7 +657,6 @@ export default {
     CMW_API_KEY: process.env.CMW_API_KEY,
     STORE: process.env.STORE,
     SALECHANNEL: process.env.SALECHANNEL,
-    DEFAULT_LOCALE: process.env.DEFAULT_LOCALE,
     DEPLOY_ENV: process.env.DEPLOY_ENV,
     gtm: {
       id: process.env.GOOGLE_TAG_MANAGER_ID,

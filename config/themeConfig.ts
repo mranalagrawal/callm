@@ -7,6 +7,7 @@ export type TISO639 = 'it' | 'en' | 'fr' | 'de'
 
 interface IStoreConfig {
   id: number
+  defaultLocale: TISO639
   salesChannel: TSalesChannel
   customerType: TCustomerType
   fonts: {
@@ -45,6 +46,7 @@ const defaultColors = {
 const themeConfig: TThemeConfig = {
   CMW: {
     id: 1,
+    defaultLocale: 'it',
     salesChannel: 'cmw_it_b2c',
     customerType: 'B2C',
     fonts: {
@@ -55,6 +57,7 @@ const themeConfig: TThemeConfig = {
   },
   B2B: {
     id: 5,
+    defaultLocale: 'it',
     salesChannel: 'cmw_it_b2b',
     customerType: 'B2B',
     fonts: {
@@ -65,6 +68,7 @@ const themeConfig: TThemeConfig = {
   },
   CMW_UK: {
     id: 2,
+    defaultLocale: 'en',
     salesChannel: 'cmw_uk_b2c',
     customerType: 'B2C',
     fonts: {
@@ -75,6 +79,7 @@ const themeConfig: TThemeConfig = {
   },
   CMW_FR: {
     id: 3,
+    defaultLocale: 'fr',
     salesChannel: 'cmw_fr_b2c',
     customerType: 'B2C',
     fonts: {
@@ -85,6 +90,7 @@ const themeConfig: TThemeConfig = {
   },
   CMW_DE: {
     id: 4,
+    defaultLocale: 'de',
     salesChannel: 'cmw_de_b2c',
     customerType: 'B2C',
     fonts: {
@@ -95,6 +101,7 @@ const themeConfig: TThemeConfig = {
   },
   WILDVIGNERON: {
     id: 5,
+    defaultLocale: 'it',
     salesChannel: 'cmw_it_b2c',
     customerType: 'B2C',
     fonts: {

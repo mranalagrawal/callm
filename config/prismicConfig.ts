@@ -44,7 +44,7 @@ const defaultPrismicComponents: TPrismicComponentsMap = {
   conditionsPage: 'conditions',
   contactPage: 'contact_us',
   homeCarousel: 'home-carousel',
-  homeBanner: 'HomeBannerWV',
+  homeBanner: 'HomeBanner',
   partners: 'partners',
   topbar: 'topbar',
   homeBoxes: 'home-boxes',
