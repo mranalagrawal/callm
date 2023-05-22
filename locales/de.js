@@ -59,6 +59,10 @@ export default {
     subscribed: 'gezeichnet',
     unsubscribed: 'abgemeldet',
     headline: 'Newsletter mit Aktionen und Neuigkeiten zum gesamten Callmewine-Katalog',
+    splash: {
+      headline: 'Abonnieren Sie unseren Newsletter, um täglich Rabatte, Aktionen und Neuigkeiten zu erhalten!',
+      offer: 'Ab sofort für Sie 5% Rabatt auf Ihre erste Bestellung!',
+    },
   },
   loginFailed: 'Ops! Sembra che il nome utente o la password non siano corretti!',
   birthday: 'Geburtstag',

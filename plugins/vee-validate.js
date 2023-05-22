@@ -28,6 +28,7 @@ localize({
       'user-email': 'Email',
       'user-password': 'Password',
       'user-email-navbar': 'Email',
+      'user-email-newsletter': 'Email',
       'user-password-navbar': 'Password',
       'register-user-firstname': 'Name',
       'register-user-lastname': 'Lastname',
@@ -39,6 +40,7 @@ localize({
       'customer-edit-lastname': 'Last name',
       'customer-edit-phone': 'Telephone',
       'message': 'Message',
+      'newsletter-checkbox': 'newsletter',
     },
     fields: {
       'new-password': {
@@ -58,6 +60,7 @@ localize({
       'user-email': 'Email',
       'user-password': 'Password',
       'user-email-navbar': 'Email',
+      'user-email-newsletter': 'Email',
       'user-password-navbar': 'Password',
       'register-user-firstname': 'Nome',
       'register-user-lastname': 'Cognome',
@@ -69,6 +72,7 @@ localize({
       'customer-edit-lastname': 'Cognome',
       'customer-edit-phone': 'Telefono',
       'message': 'Messaggio',
+      'newsletter-checkbox': 'newsletter',
     },
     fields: {
       'new-password': {
@@ -88,6 +92,7 @@ localize({
       'user-email': 'E-mail',
       'user-password': 'Mot de passe',
       'user-email-navbar': 'E-mail',
+      'user-email-newsletter': 'Email',
       'user-password-navbar': 'Mot de passe',
       'register-user-firstname': 'Nom',
       'register-user-lastname': 'Nom de famille',
@@ -99,6 +104,7 @@ localize({
       'customer-edit-lastname': 'Nom',
       'customer-edit-phone': 'Téléphone',
       'message': 'Message',
+      'newsletter-checkbox': 'newsletter',
     },
     fields: {
       'new-password': {
@@ -118,6 +124,7 @@ localize({
       'user-email': 'Email',
       'user-password': 'Passwort',
       'user-email-navbar': 'Email',
+      'user-email-newsletter': 'Email',
       'user-password-navbar': 'Passwort',
       'register-user-firstname': 'Name',
       'register-user-lastname': 'Familienname, Nachname',
@@ -129,6 +136,7 @@ localize({
       'customer-edit-lastname': 'Familienname, Nachname',
       'customer-edit-phone': 'Telefon',
       'message': 'Nachricht',
+      'newsletter-checkbox': 'newsletter',
     },
     fields: {
       'new-password': {

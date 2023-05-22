@@ -23,6 +23,7 @@ export const useCustomer = defineStore({
   id: 'customer',
   state: () => ({
     customer: {
+      acceptsMarketing: false,
       firstName: '',
       id: '',
       lastName: '',
@@ -145,6 +146,7 @@ export const useCustomer = defineStore({
       this.$nuxt.store.commit('user/setUser', null)
       await this.$nuxt.$cookieHelpers.onLogout()
       this.$reset()
+      this.$nuxt.$cookies.remove('newsletter')
       this.$nuxt.$graphql.default.setHeader('authorization', '')
       window.google_tag_manager[this.$nuxt.app.$config.gtm.id] && window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.reset()
       await this.$nuxt.app.router.push(this.$nuxt.app.localePath('/'))
