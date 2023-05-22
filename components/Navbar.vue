@@ -526,6 +526,6 @@ export default {
 }
 
 .shadow-menu {
-  box-shadow: 0 0.5rem 0.75rem rgb(0 0 0 / 15%) !important;
+  box-shadow: 0 0.3rem 0.35rem rgb(0 0 0 / 15%) !important;
 }
 </style>

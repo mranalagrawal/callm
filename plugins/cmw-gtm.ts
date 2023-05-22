@@ -62,11 +62,9 @@ const cmwGtm: Plugin = ({ $config, $gtm }, inject) => {
 
       if (typeof window !== 'undefined' && window.google_tag_manager && window.google_tag_manager[$config.gtm.id]) {
         console.log('Cleaning', window.google_tag_manager[$config.gtm.id])
-        window.google_tag_manager[$config.gtm.id].push(() => {
-          fields.forEach(field => window.google_tag_manager[$config.gtm.id].dataLayer.set(field, undefined))
-        })
+        fields.forEach(field => window.google_tag_manager[$config.gtm.id].dataLayer.set(field, undefined))
 
-        window.google_tag_manager[$config.gtm.id].dataLayer.reset()
+        // window.google_tag_manager[$config.gtm.id].dataLayer.reset()
       }
     },
   }
