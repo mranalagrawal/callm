@@ -97,10 +97,10 @@ export default {
       <div v-if="data" class="row d-md-none">
         <div v-for="item in data" :key="item.id" class="col-12">
           <nuxt-link
-            :to="item.primary.link"
+            :to="localePath(item?.primary?.link || '/')"
             class="text-uppercase primary-title"
           >
-            {{ item.primary.title }}
+            {{ item?.primary?.title }}
           </nuxt-link>
 
           <hr>
@@ -110,11 +110,11 @@ export default {
         <div v-for="item in data" :key="item.id" class="col">
           <p class="" style="margin-bottom: 36px">
             <nuxt-link
-              :to="item.primary.link"
+              :to="localePath(item?.primary?.link || '/')"
               style="color: #176a62"
               class="text-uppercase text-decoration-none primary-title"
             >
-              {{ item.primary.title }}
+              {{ item?.primary?.title }}
             </nuxt-link>
           </p>
           <p
@@ -123,10 +123,10 @@ export default {
             class="pb-0"
           >
             <nuxt-link
-              :to="link.link"
+              :to="localePath(link?.link || '/')"
               class="text-decoration-none secondary-title"
             >
-              {{ link.name }}
+              {{ link?.name }}
             </nuxt-link>
           </p>
         </div>
