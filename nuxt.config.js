@@ -666,11 +666,50 @@ export default {
   },
 
   robots: () => {
-    return {
+    const isProd = process.env.DEPLOY_ENV === 'prod'
+    const isCMWUKStore = process.env.STORE === 'CMW_UK'
+
+    const commonDisallowPaths = [
+      '/?search=',
+      '/!*?search=*',
+      '/?search=*',
+      '/catalog.htm',
+      '/catalog.htm?*',
+      '/!*catalog.htm',
+      '/!*catalog.htm?*',
+      '/!*?pricerange=*',
+      '/!*?acustom=*',
+      '/!*?pcustom=*',
+      '/!*?aid=*',
+      '/!*?sel=*',
+      '/!*?mid=*',
+      '/!*?zid=*',
+      '/!*?sid=*',
+      '/!*?fpid=*',
+      '/!*?fid=*',
+      '/!*?pid=*',
+      '/!*?s_id=*',
+      '/!*sort=*',
+      '/notificadisponibilita',
+      '/en/notificadisponibilita*',
+      '/it/',
+    ]
+
+    const disallowPaths = isProd
+      ? isCMWUKStore
+        ? ['/*?*', '/catalog*']
+        : [...commonDisallowPaths]
+      : ['/']
+
+    const robotsConfig = {
       UserAgent: '*',
-      Disallow: process.env.DEPLOY_ENV === 'prod' ? ['/*?*', '/catalog*'] : '/',
-      // Be aware that this will NOT work on target: 'static' mode
-      ...(process.env.DEPLOY_ENV === 'prod' && { Sitemap: req => `https://${req.headers.host}/sitemap.xml` }),
+      Disallow: disallowPaths,
     }
+
+    if (isProd)
+      robotsConfig.Sitemap = req => `https://${req.headers.host}/sitemap.xml`
+
+    return robotsConfig
   },
+
 }
