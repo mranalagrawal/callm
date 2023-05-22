@@ -1,5 +1,5 @@
 <script>
-import { inject, ref, watchEffect } from '@nuxtjs/composition-api'
+import { inject, ref, useContext, watchEffect } from '@nuxtjs/composition-api'
 import closeIcon from 'assets/svg/close.svg'
 import { storeToRefs } from 'pinia'
 import Loader from '../components/UI/Loader.vue'
@@ -13,6 +13,7 @@ export default {
   scrollToTop: true,
   props: ['inputParameters'],
   setup() {
+    const { redirect } = useContext()
     const filtersStore = useFilters()
     const { selectedLayout, availableLayouts } = storeToRefs(filtersStore)
     const isDesktop = inject('isDesktop')
@@ -33,6 +34,7 @@ export default {
       availableLayouts,
       selectedLayout,
       closeIcon,
+      redirect,
     }
   },
   data() {
@@ -123,6 +125,14 @@ export default {
       : ''
 
     const query = new URLSearchParams(this.inputParameters).toString()
+
+    // We don't wanna know ...🫣
+    const changedCategories = [1, 2, 3, 4, 54, 57, 64, 66, 75, 78, 87, 95, 97, 99, 104, 106, 109]
+
+    if (changedCategories.some(n => query.includes(`categories=${n}`))) {
+      const matched = changedCategories.find(n => query.includes(`categories=${n}`))
+      return this.redirect(301, this.localeLocation(`${this.$route.fullPath.replaceAll(`-C${matched}`, `-M${matched}`)}`))
+    }
 
     let sel = '&'
 
