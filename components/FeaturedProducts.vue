@@ -32,7 +32,7 @@ export default {
       <Button
         class="cmw-w-[min(100%,_10rem)] cmw-m-inline-auto"
         variant="ghost"
-        :to="localePath(collectionRef.link.value || '/catalog?favourite=true&page=1')"
+        :to="localePath(collectionRef.link?.value || '/catalog?favourite=true&page=1')"
       >
         {{ $t("viewMore") }}
       </Button>
