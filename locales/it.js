@@ -62,6 +62,10 @@ export default {
     splash: {
       headline: 'Iscriviti alla nostra Newsletter per ricevere ogni giorno sconti, promozioni e novità!',
       offer: 'Subito per te uno sconto del 5% sul tuo primo ordine!',
+      acceptMarketing: 'Accetto di ricevere newsletter e comunicazioni promozionali da Callmewine, come richiesto dal {0}.',
+      profiling: 'Acconsento all\'utilizzo dei miei dati per attività di profilazione finalizzate a migliorare la mia esperienza di navigazione e ricevere offerte relative ai miei interessi e alle mie abitudini di acquisto, come previsto dalla {0}.',
+      readMore: 'Per ulteriori informazioni, leggi il nostro {0}',
+      privacyPolicy: 'politica sulla riservatezza',
     },
   },
   loginFailed: 'Ops! Sembra che il nome utente o la password non siano corretti!',
