@@ -56,16 +56,8 @@ const cmwGtm: Plugin = ({ $config, $gtm }, inject) => {
     resetDatalayerFields: async () => {
       const fields = ['ecommerce', 'actionField', 'impressions', 'pageType', 'wishlistAddedProduct', 'event']
 
-      console.log('Try Cleaning?', typeof window !== 'undefined')
-      console.log('Try Cleaning?', $config.gtm)
-      console.log('Try Cleaning?', window.google_tag_manager)
-
-      if (typeof window !== 'undefined' && window.google_tag_manager && window.google_tag_manager[$config.gtm.id]) {
-        console.log('Cleaning', window.google_tag_manager[$config.gtm.id])
+      if (typeof window !== 'undefined' && window.google_tag_manager && window.google_tag_manager[$config.gtm.id])
         fields.forEach(field => window.google_tag_manager[$config.gtm.id].dataLayer.set(field, undefined))
-
-        // window.google_tag_manager[$config.gtm.id].dataLayer.reset()
-      }
     },
   }
 

@@ -2,30 +2,30 @@
 import {
   computed,
   defineComponent,
-  onMounted,
   ref,
   useContext,
   useFetch,
   useMeta,
   useRoute,
+  watch,
 } from '@nuxtjs/composition-api'
 import addIcon from 'assets/svg/add.svg'
 import cartIcon from 'assets/svg/cart.svg'
+import emailIcon from 'assets/svg/email.svg'
 import heartFullIcon from 'assets/svg/heart-full.svg'
 import heartIcon from 'assets/svg/heart.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
-import emailIcon from 'assets/svg/email.svg'
 import { storeToRefs } from 'pinia'
 import { mapState } from 'vuex'
 import { SweetAlertToast } from '@/utilities/Swal'
-import { getUniqueListBy } from '~/utilities/arrays'
-import { generateKey } from '~/utilities/strings'
-import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import { getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
 import { useRecentProductsStore } from '@/store/recent'
 import { useCustomer } from '@/store/customer'
+import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import favouriteIcon from '~/assets/svg/selections/favourite.svg'
 import getArticles from '~/graphql/queries/getArticles'
+import { getUniqueListBy } from '~/utilities/arrays'
+import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({
   layout({ $config }) {
@@ -100,7 +100,6 @@ export default defineComponent({
       })
         .then(async ({ products = { nodes: [] } }) => {
           if (!!products.nodes.length && products.nodes[0].handle) {
-            // Note: type will be fix when we migrate this file to typescript
             product.value = await $productMapping.fromShopify([products.nodes[0]])[0]
 
             productVariant.value = products.nodes[0].variants.nodes[0]
@@ -196,7 +195,7 @@ export default defineComponent({
       ]
     }
 
-    onMounted(() => {
+    watch(() => gtmProductData.value.id, () => {
       process.browser && $cmwGtmUtils.pushPage('product', {
         event: 'productDetailView',
         ecommerce: {
