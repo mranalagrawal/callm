@@ -10,8 +10,10 @@ export default {
   components: { Alert },
   props: {
     width: { type: String, default: '' },
+    skipRedirect: { type: Boolean },
   },
-  setup() {
+  emits: ['login-success'],
+  setup(props, { emit }) {
     const { i18n, localeLocation } = useContext()
     const router = useRouter()
     const customerStore = useCustomer()
@@ -30,7 +32,10 @@ export default {
 
       if (valid) {
         await customerStore.getCustomer('login')
-          .then(() => router.push(localeLocation('/profile/my-orders')))
+          .then(() => {
+            emit('login-success', true)
+            !props.skipRedirect && router.push(localeLocation('/profile/my-orders'))
+          })
       } else {
         message.value = i18n.t('common.feedback.KO.login')
       }

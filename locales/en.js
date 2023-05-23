@@ -305,4 +305,16 @@ export default {
       link: 'request a resend',
     },
   },
+  contactForm: {
+    motivation: 'Motivazione del contatto',
+    loginRequired: 'richiede login',
+    choices: {
+      PAYMENT: 'Segnalazioni relative al pagamento di un ordine',
+      ORDER_SHIPMENT: 'Richiesta informazioni sulla spedizione di un ordine',
+      ORDER_RECEIVED: 'Segnalazioni riguardanti un ordine ricevuto',
+      PURCHASE_SUGGEST: 'Richiesta di suggerimento di acquisto',
+      SITE_IMPROVEMENT: 'Suggerimenti di prodotti da aggiungere su Callmewine o miglioramenti del sito',
+      OTHER: 'Altre domande o segnalazioni',
+    },
+  },
 }

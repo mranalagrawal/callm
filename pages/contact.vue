@@ -80,5 +80,6 @@ export default defineComponent({
     <div v-for="(section, i) in pageData.section" :key="i" class="cmw-mt-5">
       <PrismicRichText :field="[section]" />
     </div>
+    <ContactForm />
   </div>
 </template>
