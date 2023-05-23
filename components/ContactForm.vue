@@ -4,14 +4,19 @@ import { storeToRefs } from 'pinia'
 import radioCheckedIcon from '~/assets/svg/radio-checked.svg'
 import radioUncheckedIcon from '~/assets/svg/radio-unchecked.svg'
 import { useCustomer } from '~/store/customer'
+import { useCustomerOrders } from '~/store/customerOrders'
 import { useSplash } from '~/store/splash'
+import { SweetAlertToast } from '~/utilities/Swal'
 
 export default defineComponent({
   setup() {
+    const { i18n, $cmwRepo, $config } = useContext()
     const splash = useSplash()
+    const { orders } = storeToRefs(useCustomerOrders())
     const { customer } = storeToRefs(useCustomer())
-    const { i18n } = useContext()
 
+    const selectingOrder = ref(false)
+    const selectedOrder = ref('')
     const formEl = ref<HTMLFormElement | null>(null)
     const formData = ref({
       firstName: '',
@@ -67,6 +72,22 @@ export default defineComponent({
       }
     }
 
+    const customerOrders = computed(() => {
+      const arr: Record<string, any>[] = orders.value || []
+
+      return arr.map(order => ({
+        value: order.orderNumber,
+        label: i18n.t('contactForm.selectedOrder', {
+          orderNumber: order.orderNumber,
+          date: i18n.d(new Date(order.processedAt), 'short', i18n.localeProperties.iso),
+          name: order.shippingAddress.name,
+          total: order.currentTotalPrice.amount,
+        }),
+      }))
+    })
+
+    const selectedLabel = ref(i18n.t('contactForm.selectOrder'))
+
     const formIsDisabled = computed(() => {
       const motivationIsRequire = selectedMotivation.value && JSON.parse(selectedMotivation.value).loginRequired
 
@@ -74,19 +95,36 @@ export default defineComponent({
     })
 
     const onSubmit = async () => {
+      console.log(formEl.value)
       if (!formEl.value)
         return
 
       const { isValid } = await formEl.value.validateWithInfo()
 
       if (isValid) {
-        /* await customerStore.customerUpdateData({
-            email: email.value,
-          },
-          i18n.t('common.feedback.OK.customerUpdateEmail'),
-          i18n.t('common.feedback.KO.customerUpdateEmail'))
-          .then(() => splash.$reset()) */
+        const { status, message } = await $cmwRepo.orders.requestAssistance({
+          message: formData.value.message,
+          order: selectedOrder.value,
+          fullname: `${customer.value.firstName || formData.value.firstName} ${customer.value.lastName || formData.value.lastName}`,
+          email: customer.value.email || formData.value.email,
+          store: $config.STORE,
+        })
+
+        if (status === 200 && message === 'Ok') {
+          splash.$reset()
+          SweetAlertToast.fire({
+            icon: 'success',
+            text: i18n.t('common.feedback.OK.requestAssistance'),
+          })
+        }
       }
+    }
+
+    const handleUpdateTrigger = () => selectingOrder.value = !selectingOrder.value
+    const handleUpdateValue = (value: any) => {
+      selectedLabel.value = `order ${value}`
+      selectingOrder.value = false
+      selectedOrder.value = value
     }
 
     return {
@@ -94,10 +132,16 @@ export default defineComponent({
       formData,
       formIsDisabled,
       customer,
+      customerOrders,
+      orders,
       selectedMotivation,
       list,
+      selectingOrder,
       radioCheckedIcon,
       radioUncheckedIcon,
+      selectedLabel,
+      handleUpdateTrigger,
+      handleUpdateValue,
       handleChange,
       onSubmit,
     }
@@ -108,11 +152,12 @@ export default defineComponent({
 <template>
   <div class="cl">
     <ValidationObserver
+      ref="formEl"
       v-slot="{ handleSubmit, errors, valid }"
       slim
     >
       <form
-        class="cmw-w-full md:cmw-w-2/4"
+        class="cmw-w-[min(100%,_60rem)] cmw-m-inline-auto"
         @submit.prevent="handleSubmit(onSubmit)"
       >
         <fieldset class="cmw-my-6">
@@ -140,6 +185,22 @@ export default defineComponent({
           </div>
         </fieldset>
 
+        <fieldset class="cmw-my-6">
+          <CmwDropdown
+            v-if="!!customerOrders.length"
+            key="customer-orders"
+            size="sm"
+            :active="selectingOrder"
+            @update-trigger="handleUpdateTrigger"
+          >
+            <template #default>
+              <span>{{ selectedLabel }}</span>
+            </template>
+            <template #children>
+              <CmwSelect is-full-width :options="customerOrders" @update-value="handleUpdateValue" />
+            </template>
+          </CmwDropdown>
+        </fieldset>
         <fieldset v-if="!customer.id" class="cmw-grid cmw-gap-4 cmw-my-6 md:(cmw-grid-cols-3)">
           <InputField
             v-model="formData.firstName"

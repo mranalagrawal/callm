@@ -307,6 +307,8 @@ export default {
   contactForm: {
     motivation: 'Motivazione del contatto',
     loginRequired: 'richiede login',
+    selectOrder: 'Seleziona l\'ordine',
+    selectedOrder: 'Order# {orderNumber} from {date}, by {name} for {total}',
     choices: {
       PAYMENT: 'Segnalazioni relative al pagamento di un ordine',
       ORDER_SHIPMENT: 'Richiesta informazioni sulla spedizione di un ordine',

@@ -5,7 +5,7 @@ import { useSplash } from '~/store/splash'
 export default defineComponent({
   setup() {
     const splash = useSplash()
-    const handleSuccess = () => {
+    const handleSuccess = async () => {
       splash.$reset()
     }
     return { handleSuccess }

@@ -32,7 +32,7 @@ export default {
 
       if (valid) {
         await customerStore.getCustomer('login')
-          .then(() => {
+          .then(async () => {
             emit('login-success', true)
             !props.skipRedirect && router.push(localeLocation('/profile/my-orders'))
           })
