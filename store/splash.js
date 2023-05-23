@@ -10,6 +10,6 @@ export const useSplash = defineStore({
     subtitle: '',
     size: '',
     localData: '',
-    onBeforeCloseModal: () => {},
+    onBeforeCloseModal: {},
   }),
 })
