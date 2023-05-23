@@ -15,6 +15,7 @@ export default defineComponent({
     const { orders } = storeToRefs(useCustomerOrders())
     const { customer } = storeToRefs(useCustomer())
 
+    const isSubmitting = ref(false)
     const selectingOrder = ref(false)
     const selectedOrder = ref('')
     const formEl = ref<HTMLFormElement | null>(null)
@@ -91,13 +92,14 @@ export default defineComponent({
     const formIsDisabled = computed(() => {
       const motivationIsRequire = selectedMotivation.value && JSON.parse(selectedMotivation.value).loginRequired
 
-      return (motivationIsRequire && !customer.value.id) || (!selectedMotivation.value || !formData.value.message)
+      return isSubmitting.value || (motivationIsRequire && !customer.value.id) || (!selectedMotivation.value || !formData.value.message)
     })
 
     const onSubmit = async () => {
-      console.log(formEl.value)
       if (!formEl.value)
         return
+
+      isSubmitting.value = true
 
       const { isValid } = await formEl.value.validateWithInfo()
 
@@ -118,6 +120,7 @@ export default defineComponent({
           })
         }
       }
+      isSubmitting.value = false
     }
 
     const handleUpdateTrigger = () => selectingOrder.value = !selectingOrder.value
