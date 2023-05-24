@@ -84,7 +84,7 @@ export default defineComponent({
         label: i18n.t('contactForm.selectedOrder', {
           orderNumber: order.orderNumber,
           date: i18n.d(new Date(order.processedAt), 'short', i18n.localeProperties.iso),
-          name: order.shippingAddress.name,
+          name: order.shippingAddress?.name || '',
           total: order.currentTotalPrice.amount,
         }),
       }))
