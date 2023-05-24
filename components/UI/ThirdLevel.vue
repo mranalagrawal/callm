@@ -7,7 +7,7 @@ export default {
   setup(props, { emit }) {
     const { localeLocation, $sentry } = useContext()
     const router = useRouter()
-    const { marketing_cta, marketing_image, third_level_name, third_level_link, is_last_item, selection, icon } = toRefs(props.thirdLevel)
+    const { marketing_cta, marketing_image, third_level_name, third_level_link, is_last_item, is_red, selection, icon } = toRefs(props.thirdLevel)
     const handleClick = (to) => {
       if (!to) {
         $sentry.captureException(new Error('Missing destination on third level menu'))
@@ -17,7 +17,7 @@ export default {
       emit('close-banner')
       router.push(localeLocation((to)))
     }
-    return { marketing_cta, marketing_image, third_level_name, third_level_link, is_last_item, selection, icon, handleClick }
+    return { marketing_cta, marketing_image, third_level_name, third_level_link, is_last_item, is_red, selection, icon, handleClick }
   },
 }
 </script>
@@ -36,7 +36,7 @@ export default {
           :data="require(`@/assets/svg/selections/${selection}.svg`)"
           width="20px"
         />
-        <span class="cmw-text-sm cmw-font-light" :class="{ 'cmw-text-primary-400': is_last_item }">{{ third_level_name }}</span>
+        <span class="cmw-text-sm cmw-font-light" :class="{ 'cmw-text-primary-400': is_last_item || is_red }">{{ third_level_name }}</span>
       </button>
     </div>
     <Card
