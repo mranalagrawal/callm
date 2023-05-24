@@ -213,7 +213,7 @@ export default defineComponent({
           <InputField
             v-model="formData.firstName"
             type="text"
-            name="firstName"
+            name="contact-first-name"
             :label="$t('firstName')"
             :placeholder="$t('firstName')"
             rules="required"
@@ -221,7 +221,7 @@ export default defineComponent({
           <InputField
             v-model="formData.lastName"
             type="text"
-            name="lastName"
+            name="contact-last-name"
             :label="$t('lastName')"
             :placeholder="$t('lastName')"
             rules="required"
@@ -229,7 +229,7 @@ export default defineComponent({
           <InputField
             v-model="formData.email"
             type="email"
-            name="user-email"
+            name="contact-user-email"
             label="Email"
             placeholder="User email"
             rules="required|email"
