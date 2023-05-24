@@ -15,6 +15,7 @@ export default defineComponent({
     const { orders } = storeToRefs(useCustomerOrders())
     const { customer } = storeToRefs(useCustomer())
 
+    const showForm = ref(false)
     const isSubmitting = ref(false)
     const selectingOrder = ref(false)
     const selectedOrder = ref('')
@@ -25,8 +26,9 @@ export default defineComponent({
       email: '',
       message: '',
     })
+
     const selectedMotivation = ref('')
-    const list = [
+    const motivations = [
       {
         uuid: 'payment',
         loginRequired: true,
@@ -64,13 +66,14 @@ export default defineComponent({
       const value = JSON.parse(target.value)
 
       if (value.loginRequired && !customer.value.id) {
-        console.log('Dispatch login modal: ', value.loginRequired)
         splash.$patch(
           {
             currentSplash: 'TheCustomerLoginSplash',
             title: i18n.t('navbar.user.alreadyRegistered') as string,
           })
       }
+
+      showForm.value = true
     }
 
     const customerOrders = computed(() => {
@@ -114,6 +117,7 @@ export default defineComponent({
 
         if (status === 200 && message === 'Ok') {
           splash.$reset()
+          showForm.value = false
           SweetAlertToast.fire({
             icon: 'success',
             text: i18n.t('common.feedback.OK.requestAssistance'),
@@ -133,12 +137,13 @@ export default defineComponent({
     return {
       formEl,
       formData,
+      showForm,
       formIsDisabled,
       customer,
       customerOrders,
       orders,
       selectedMotivation,
-      list,
+      motivations,
       selectingOrder,
       radioCheckedIcon,
       radioUncheckedIcon,
@@ -163,11 +168,11 @@ export default defineComponent({
         class="cmw-w-[min(100%,_60rem)] cmw-m-inline-auto"
         @submit.prevent="handleSubmit(onSubmit)"
       >
-        <fieldset class="cmw-my-6">
+        <fieldset class="cmw-mt-6">
           <legend class="cmw-h4 cmw-my-6">
             {{ $t('contactForm.motivation') }}
           </legend>
-          <div v-for="({ label, uuid, loginRequired }) in list" :key="uuid" class="cmw-relative cmw-flex cmw-items-center">
+          <div v-for="({ label, uuid, loginRequired }) in motivations" :key="uuid" class="cmw-relative cmw-flex cmw-items-center">
             <input
               :id="uuid"
               v-model="selectedMotivation"
@@ -188,9 +193,8 @@ export default defineComponent({
           </div>
         </fieldset>
 
-        <fieldset class="cmw-my-6">
+        <fieldset v-if="!!customerOrders.length && showForm" class="cmw-mt-6">
           <CmwDropdown
-            v-if="!!customerOrders.length"
             key="customer-orders"
             size="sm"
             :active="selectingOrder"
@@ -204,7 +208,8 @@ export default defineComponent({
             </template>
           </CmwDropdown>
         </fieldset>
-        <fieldset v-if="!customer.id" class="cmw-grid cmw-gap-4 cmw-my-6 md:(cmw-grid-cols-3)">
+
+        <fieldset v-if="!customer.id && showForm" class="cmw-grid cmw-gap-4 cmw-mb-6 md:(cmw-grid-cols-3)">
           <InputField
             v-model="formData.firstName"
             type="text"
@@ -231,7 +236,7 @@ export default defineComponent({
           />
         </fieldset>
 
-        <div class="cmw-relative">
+        <div v-if="showForm" class="cmw-relative">
           <textarea
             id="message"
             v-model="formData.message"
@@ -260,6 +265,7 @@ export default defineComponent({
         </div>
 
         <Button
+          v-if="showForm"
           class="cmw-w-max cmw-mt-8"
           type="submit"
           :disabled="formIsDisabled || !valid"
