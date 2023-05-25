@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import themeConfig from '~/config/themeConfig'
+import { useCustomerOrders } from '~/store/customerOrders'
 import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
 import { getIconAsImg } from '~/utilities/icons'
 import customerAccessTokenCreate from '~/graphql/mutations/authenticateUser'
@@ -88,9 +89,11 @@ export const useCustomer = defineStore({
       return valid
     },
     async getCustomer(event = '') {
+      const customerOrders = useCustomerOrders()
       await this.$nuxt.$cmwRepo.customer.getCustomer()
         .then(async ({ customer }) => {
           if (customer) {
+            await customerOrders.getOrders('processed_at:>2010-01-01')
             await this.$nuxt.$cmw.$get(`/customers/${customer.id.substring(`${customer.id}`.lastIndexOf('/') + 1)}/user-info`)
               .then(({ data = {}, errors = [] }) => {
                 if (errors.length) {
@@ -134,6 +137,7 @@ export const useCustomer = defineStore({
         })
     },
     async logout() {
+      const customerOrders = useCustomerOrders()
       this.$nuxt.$gtm.push({
         event: 'logout',
         userType: themeConfig[this.$nuxt.$config.STORE].customerType,
@@ -146,6 +150,7 @@ export const useCustomer = defineStore({
       this.$nuxt.store.commit('user/setUser', null)
       await this.$nuxt.$cookieHelpers.onLogout()
       this.$reset()
+      customerOrders.$reset()
       this.$nuxt.$cookies.remove('newsletter')
       this.$nuxt.$graphql.default.setHeader('authorization', '')
       window.google_tag_manager[this.$nuxt.app.$config.gtm.id] && window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.reset()

@@ -305,4 +305,18 @@ export default {
       link: 'erneute Zusendung an',
     },
   },
+  contactForm: {
+    motivation: 'Grund für den Kontakt',
+    loginRequired: 'erfordert eine Anmeldung',
+    selectOrder: 'Wählen Sie die Bestellung aus',
+    selectedOrder: 'Bestellnr. {orderNumber} vom {date}, von {name} für {total}',
+    choices: {
+      PAYMENT: 'Benachrichtigungen bezüglich der Zahlung einer Bestellung',
+      ORDER_SHIPMENT: 'Fordern Sie Informationen zum Versand einer Bestellung an',
+      ORDER_RECEIVED: 'Berichte zu einer eingegangenen Bestellung',
+      PURCHASE_SUGGEST: 'Kaufvorschlagsanfrage',
+      SITE_IMPROVEMENT: 'Produktvorschläge zum Hinzufügen zu Callmewine oder Website-Verbesserungen',
+      OTHER: 'Sonstige Fragen oder Berichte',
+    },
+  },
 }

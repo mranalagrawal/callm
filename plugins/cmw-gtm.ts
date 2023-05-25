@@ -78,6 +78,10 @@ const cmwGtm: Plugin = ({ $config, $gtm }, inject) => {
   }
 
   $cmwGtmUtils.pushPage = async (pageType = '', data = {}) => {
+    // Note: temporary disabled push on Prod
+    if ($config.DEPLOY_ENV === 'prod')
+      return
+
     await $cmwGtmUtils.resetDatalayerFields()
 
     $gtm.push({

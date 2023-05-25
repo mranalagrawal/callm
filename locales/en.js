@@ -305,4 +305,18 @@ export default {
       link: 'request a resend',
     },
   },
+  contactForm: {
+    motivation: 'Reason for the contact',
+    loginRequired: 'requires login',
+    selectOrder: 'Select the order',
+    selectedOrder: 'Order# {orderNumber} from {date}, by {name} for {total}',
+    choices: {
+      PAYMENT: 'Notifications relating to the payment of an order',
+      ORDER_SHIPMENT: 'Request information on the shipment of an order',
+      ORDER_RECEIVED: 'Reports regarding an order received',
+      PURCHASE_SUGGEST: 'Purchase suggestion request',
+      SITE_IMPROVEMENT: 'Product suggestions to add on Callmewine or site improvements',
+      OTHER: 'Other questions or reports',
+    },
+  },
 }

@@ -11,6 +11,7 @@ import RequestOrderAssistance from '~/components/UserProfile/RequestOrderAssista
 import UpdateCustomerData from '~/components/UserProfile/UpdateCustomerData.vue'
 import UpdateCustomerEmail from '~/components/UserProfile/UpdateCustomerEmail.vue'
 import UpdateCustomerPassword from '~/components/UserProfile/UpdateCustomerPassword.vue'
+import TheCustomerLoginSplash from '~/components/TheCustomerLoginSplash.vue'
 import TheNewsletterSplash from '~/components/TheNewsletterSplash.vue'
 
 export default defineComponent({
@@ -22,6 +23,7 @@ export default defineComponent({
     UpdateCustomerEmail,
     UpdateCustomerPassword,
     ProductRequestNotification,
+    TheCustomerLoginSplash,
     TheNewsletterSplash,
   },
   setup() {
@@ -52,6 +54,7 @@ export default defineComponent({
       UpdateCustomerEmail,
       UpdateCustomerPassword,
       ProductRequestNotification,
+      TheCustomerLoginSplash,
       TheNewsletterSplash,
     })[key]
 

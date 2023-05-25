@@ -77,6 +77,7 @@ export default {
         <button
           v-for="(option) in filteredOptions"
           :key="option.value"
+          type="button"
           class="cmw-font-sans cmw-text-body  cmw-block cmw-w-full cmw-text-left cmw-text-sm cmw-py-3 cmw-pl-4 hover:cmw-bg-primary-50"
           :class="{ 'cmw-bg-primary-50 cmw-font-medium': option.selected }"
           @click="handleClick(option.value)"

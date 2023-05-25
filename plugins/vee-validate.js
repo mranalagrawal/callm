@@ -24,6 +24,9 @@ export function lookUpLocale(k) {
 localize({
   en: {
     names: {
+      'contact-user-email': 'Email',
+      'contact-first-name': 'Name',
+      'contact-last-name': 'Lastname',
       'notify-me-user-email': 'Email',
       'user-email': 'Email',
       'user-password': 'Password',
@@ -56,6 +59,9 @@ localize({
   },
   it: {
     names: {
+      'contact-user-email': 'Email',
+      'contact-first-name': 'Nome',
+      'contact-last-name': 'Cognome',
       'notify-me-user-email': 'Email',
       'user-email': 'Email',
       'user-password': 'Password',
@@ -88,6 +94,9 @@ localize({
   },
   fr: {
     names: {
+      'contact-user-email': 'Email',
+      'contact-first-name': 'Nom',
+      'contact-last-name': 'Nom de famille',
       'notify-me-user-email': 'E-mail',
       'user-email': 'E-mail',
       'user-password': 'Mot de passe',
@@ -120,6 +129,9 @@ localize({
   },
   de: {
     names: {
+      'contact-user-email': 'Email',
+      'contact-first-name': 'Name',
+      'contact-last-name': 'Familienname, Nachname',
       'notify-me-user-email': 'Email',
       'user-email': 'Email',
       'user-password': 'Passwort',

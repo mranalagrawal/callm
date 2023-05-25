@@ -304,4 +304,18 @@ export default {
       link: 'demander un renvoi',
     },
   },
+  contactForm: {
+    motivation: 'Raison du contact',
+    loginRequired: 'nécessite une connexion',
+    selectOrder: 'Sélectionnez la commande',
+    selectedOrder: 'Commande n {orderNumber} du {date}, par {name} pour {total}',
+    choices: {
+      PAYMENT: 'Notifications relatives au paiement d\'une commande',
+      ORDER_SHIPMENT: 'Demander des informations sur l\'expédition d\'une commande',
+      ORDER_RECEIVED: 'Rapports concernant une commande reçue',
+      PURCHASE_SUGGEST: 'Demande de suggestion d\'achat',
+      SITE_IMPROVEMENT: 'Suggestions de produits à ajouter sur Callmewine ou améliorations du site',
+      OTHER: 'Autres questions ou rapports',
+    },
+  },
 }
