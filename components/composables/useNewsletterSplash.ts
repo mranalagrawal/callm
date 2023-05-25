@@ -6,7 +6,7 @@ import { useSplash } from '~/store/splash'
 export default function () {
   const { customer } = storeToRefs(useCustomer())
   const splash = useSplash()
-  const { $cookies } = useContext()
+  const { $cookies, $config } = useContext()
 
   const setNewsletterCookie = (expires: Date) => {
     $cookies.set('newsletter', true, {
@@ -16,6 +16,10 @@ export default function () {
   }
 
   const handleNewsletterSplash = () => {
+    // Note: temporary disabled push on Prod
+    if ($config.DEPLOY_ENV === 'prod')
+      return
+
     setTimeout(() => {
       const newsletterCookie = $cookies.get('newsletter')
 
