@@ -113,6 +113,7 @@ export default defineComponent({
           fullname: `${customer.value.firstName || formData.value.firstName} ${customer.value.lastName || formData.value.lastName}`,
           email: customer.value.email || formData.value.email,
           store: $config.STORE,
+          subject: selectedMotivation.value,
         })
 
         if (status === 200 && message === 'Ok') {
