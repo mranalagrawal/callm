@@ -10,6 +10,7 @@ export type TPrismicComponents =
   | 'homeCarousel'
   | 'homeBanner'
   | 'homeBoxes'
+  | 'megaMenu'
   | 'producers'
   | 'shipping'
   | 'shippingPage'
@@ -45,6 +46,7 @@ const defaultPrismicComponents: TPrismicComponentsMap = {
   contactPage: 'contact_us',
   homeCarousel: 'home-carousel',
   homeBanner: 'HomeBanner',
+  megaMenu: 'mega-menu-test',
   partners: 'partners',
   topbar: 'topbar',
   homeBoxes: 'home-boxes',
@@ -92,6 +94,7 @@ const prismicConfig: TPrismicConfig = {
       contactPage: 'wv_contact_us',
       homeCarousel: 'wv_home-carousel',
       homeBanner: 'HomeBannerWV',
+      megaMenu: 'mega-menu-test',
       partners: 'partners',
       topbar: 'wv_topbar',
       homeBoxes: 'wv_home-boxes',

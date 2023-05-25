@@ -2,12 +2,13 @@
 import { ref, useContext, useRouter } from '@nuxtjs/composition-api'
 import promoTagIcon from 'assets/svg/promo-tag.svg'
 import ThirdLevel from './UI/ThirdLevel.vue'
+import prismicConfig from '~/config/prismicConfig'
 import { generateKey } from '~/utilities/strings'
 
 export default {
   components: { ThirdLevel },
   setup() {
-    const { localeLocation } = useContext()
+    const { localeLocation, $cmwRepo } = useContext()
     const router = useRouter()
     const megaMenu = ref(null)
     const selectedItem = ref(null)
@@ -18,7 +19,7 @@ export default {
 
     const onTab = item => selectedItem.value = item
 
-    return { megaMenu, selectedItem, handleClick, onTab }
+    return { $cmwRepo, megaMenu, selectedItem, handleClick, onTab }
   },
   data: () => ({
     promoTagIcon,
@@ -28,14 +29,7 @@ export default {
     marketing: null,
   }),
   async fetch() {
-    let lang = this.$i18n.localeProperties.iso.toLowerCase()
-
-    if (lang === 'en-gb' && this.$config.STORE === 'CMW')
-      lang = 'en-eu'
-
-    const response = await this.$prismic.api.getSingle('mega-menu-test', {
-      lang,
-    })
+    const response = await this.$cmwRepo.prismic.getSingle({ page: prismicConfig[this.$config.STORE]?.components.megaMenu })
     const data = response.data.body
 
     const mapped = data
@@ -72,10 +66,6 @@ export default {
       .sort((a, b) => a.position - b.position)
 
     this.data = mapped
-    /* this.selectedItem = mapped[3]; */
-  },
-  watch: {
-    '$i18n.locale': '$fetch',
   },
   methods: { generateKey },
 }
