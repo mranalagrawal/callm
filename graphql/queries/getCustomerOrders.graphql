@@ -65,14 +65,18 @@ query getCustomerOrders(
                 }
                 product {
                   availableForSale
-                  createdAt
+                  handle
                   id
                   featuredImage { altText, height, url, width }
                   seo { description, title }
                   tags
                   title
+                  vendor
                   totalInventory
                   details: metafield(namespace: "custom", key: "details") {
+                    value
+                  }
+                  breadcrumbs: metafield(namespace: "custom", key: "breadcrumbs") {
                     value
                   }
                   variants(first: 1) {
@@ -81,6 +85,7 @@ query getCustomerOrders(
                       compareAtPriceV2 { amount, currencyCode }
                       priceV2 { amount, currencyCode }
                       quantityAvailable
+                      sku
                     }
                   }
                 }

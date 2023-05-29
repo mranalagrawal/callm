@@ -83,7 +83,7 @@ export default {
   async fetch() {
     let lang = locales[this.$i18n.locale]
 
-    if (lang == 'en-gb' && this.$config.STORE == 'CMW')
+    if (lang === 'en-gb' && this.$config.STORE === 'CMW')
       lang = 'en-eu'
 
     const response = await this.$prismic.api.getSingle(
@@ -109,7 +109,7 @@ export default {
       </div>
 
       <div class="col-12 px-0 py-4">
-        <VueSlickCarousel v-if="data" v-bind="settingsTop" ref="carousel-top">
+        <VueSlickCarousel v-if="data" v-bind="settingsTop">
           <div v-for="productor in data" :key="productor.name" class="">
             <div class="bg-white mx-2 p-1 product-card">
               <nuxt-link :to="productor.link">
@@ -128,7 +128,6 @@ export default {
         <VueSlickCarousel
           v-if="data"
           v-bind="settingsBottom"
-          ref="carousel-bottom"
         >
           <div v-for="productor in data" :key="productor.name" class="">
             <div class="bg-white mx-2 p-1 product-card">

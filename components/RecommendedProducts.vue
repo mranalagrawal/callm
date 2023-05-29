@@ -1,16 +1,16 @@
-<script>
+<script lang="ts">
 import { ref, toRefs, useContext, useFetch, watch } from '@nuxtjs/composition-api'
-import { getMappedProducts } from '@/utilities/mappedProduct'
-import getProductRecommendations from '@/graphql/queries/getProductRecommendations'
+import type { IProductMapped } from '~/types/product'
+import getProductRecommendations from '@/graphql/queries/getProductRecommendations.graphql'
 
 export default {
   props: ['id'],
-  setup(props) {
+  setup(props: any) {
     const { i18n, $graphql } = useContext()
-    const productsRef = ref([])
+    const productsRef = ref<IProductMapped[]>([])
     const { id: idRef } = toRefs(props)
 
-    const { fetch } = useFetch(async () => {
+    const { fetch } = useFetch(async ({ $productMapping, $handleApiErrors }) => {
       if (!idRef.value)
         return
 
@@ -20,8 +20,11 @@ export default {
       })
         .then(async ({ productRecommendations = [] }) => {
           if (productRecommendations.length)
-            productsRef.value = getMappedProducts(productRecommendations)
-        }).catch(err => console.log(err))
+            productsRef.value = $productMapping.fromShopify(productRecommendations)
+        })
+        .catch((err: Error) => {
+          $handleApiErrors(`Catch getProductRecommendations from shopify: ${err}`)
+        })
     })
 
     watch(() => idRef.value, () => fetch())

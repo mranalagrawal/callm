@@ -1,134 +1,106 @@
-<script>
-import { computed, ref } from '@nuxtjs/composition-api'
-import VueSlickCarousel from 'vue-slick-carousel'
+<script lang="ts">
+import type { PropType } from '@nuxtjs/composition-api'
+import { defineComponent, inject, onMounted, useContext, useRoute } from '@nuxtjs/composition-api'
+import chevronLeftIcon from 'assets/svg/chevron-left.svg'
+import chevronRightIcon from 'assets/svg/chevron-right.svg'
 import { inRange } from '@/utilities/math'
-import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
+import type { IProductMapped } from '~/types/product'
+import { generateKey } from '~/utilities/strings'
 
-export default {
-  components: { VueSlickCarousel },
+export default defineComponent({
   props: {
-    products: { type: Array },
-    settings: {
-      type: Object,
-      default: () => ({
-        focusOnSelect: true,
-        infinite: true,
-        speed: 500,
-        touchThreshold: 5,
-        slidesToShow: 4,
-        slidesToScroll: 4,
-        dots: false,
-        arrows: true,
-        responsive: [
-          {
-            breakpoint: 411,
-            settings: {
-              slidesToShow: 1,
-              slidesToScroll: 1,
-              dots: true,
-              arrows: false,
-            },
-          },
-          {
-            breakpoint: 767,
-            settings: {
-              slidesToShow: 2,
-              slidesToScroll: 2,
-              dots: true,
-              arrows: false,
-            },
-          },
-          {
-            breakpoint: 1023,
-            settings: {
-              slidesToShow: 3,
-              slidesToScroll: 3,
-              dots: true,
-              arrows: false,
-            },
-          },
-          {
-            breakpoint: 1280,
-            settings: {
-              slidesToShow: 4,
-              slidesToScroll: 4,
-              dots: true,
-              arrows: false,
-            },
-          },
-        ],
-      }),
+    products: {
+      type: Array as PropType<IProductMapped[]>,
+      required: true,
     },
-    title: { type: String },
+    responsive: {
+      type: Array,
+      default: () => ([
+        {
+          minWidth: 0,
+          slidesPerPage: 2,
+        },
+        {
+          minWidth: 411,
+          slidesPerPage: 1,
+        },
+        {
+          minWidth: 767,
+          slidesPerPage: 2,
+        },
+        {
+          minWidth: 1023,
+          slidesPerPage: 3,
+        },
+        {
+          minWidth: 1280,
+          slidesPerPage: 4,
+        },
+      ]),
+    },
+    title: { type: [String, Object] },
   },
-  setup() {
-    const c1 = ref(null)
-    const currentSlide = computed(() => c1.value && c1.value.$refs.innerSlider.currentSlide)
+  setup(props) {
+    const { $config, $cmwGtmUtils } = useContext()
+    const isTablet = inject('isTablet')
+    const route = useRoute()
 
-    return { c1, currentSlide, inRange }
+    onMounted(() => {
+      process.browser && $cmwGtmUtils.pushPage($cmwGtmUtils.getActionField(route.value), {
+        event: 'productListView',
+        ecommerce: {
+          currencyCode: $config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
+          actionField: { list: $cmwGtmUtils.getActionField(route.value) },
+          impressions: props.products.map(product => product.gtmProductData),
+        },
+      })
+    })
+
+    return {
+      isTablet,
+      chevronLeftIcon,
+      chevronRightIcon,
+      inRange,
+    }
   },
-}
+  methods: { generateKey },
+})
 </script>
 
 <template>
   <div class="cmw-max-w-screen-xl cmw-mx-auto cmw-py-4 cmw-px-4">
     <div class="cmw-h2 cmw-text-center cmw-py-4" v-text="title" />
-    <ClientOnly>
-      <VueSlickCarousel ref="c1" v-bind="settings" dots-class="c-carouselDots">
-        <div v-for="product in products" :key="product.id">
-          <ProductBoxVertical :product="product" />
-        </div>
-        <template #customPaging="page">
+    <SsrCarousel
+      :key="products.length" :responsive="responsive" :show-arrows="isTablet"
+      :show-dots="isTablet" class="cmw-relative"
+    >
+      <div v-for="(product, idx) in products" :key="generateKey(`${title}-${product.id}`)" class="cmw-my-8">
+        <ProductBoxVertical :product="product" :position="idx + 1" />
+      </div>
+      <!--
+      <template #customPaging="page">
           <button
-            :data-test="page"
             class="c-carouselDots__dot"
             :class="{ '-sm': !inRange((page - currentSlide), -2, 2) }"
           />
         </template>
-        <template #prevArrow>
-          <div class="custom-arrow">
-            <VueSvgIcon :data="require(`@/assets/svg/chevron-left.svg`)" width="20" height="20" />
-          </div>
-        </template>
-        <template #nextArrow>
-          <div class="custom-arrow">
-            <VueSvgIcon :data="require(`@/assets/svg/chevron-right.svg`)" width="20" height="20" />
-          </div>
-        </template>
-      </VueSlickCarousel>
-    </ClientOnly>
+        -->
+      <template #back-arrow>
+        <span class="cmw-w-12 cmw-h-12 cmw-bg-white cmw-rounded-sm">
+          <VueSvgIcon
+            :data="chevronLeftIcon" color="#992545" width="20" height="20"
+            class="cmw-m-auto"
+          />
+        </span>
+      </template>
+      <template #next-arrow>
+        <span class="cmw-w-12 cmw-h-12 cmw-bg-white cmw-rounded-sm">
+          <VueSvgIcon
+            :data="chevronRightIcon" color="#992545" width="20" height="20"
+            class="cmw-m-auto"
+          />
+        </span>
+      </template>
+    </SsrCarousel>
   </div>
 </template>
-
-<style scoped>
-::v-deep(.slick-slide) {
-  padding-left: 8px;
-  padding-right: 8px;
-}
-
-::v-deep(.slick-track) {
-  margin-top: 15px;
-  margin-bottom: 15px;
-}
-
-::v-deep(.custom-arrow.slick-prev) {
-  left: -30px;
-}
-
-::v-deep(.custom-arrow.slick-next) {
-  right: -30px;
-}
-
-::v-deep(.c-carouselDots li) {
-  display: flex !important;
-}
-
-::v-deep(.slick-active .c-carouselDots__dot) {
-  transform: scale(1);
-  background-color: theme('colors.primary.DEFAULT');
-}
-
-::v-deep(li:not(.slick-active) .c-carouselDots__dot.-sm) {
-  transform: scale(0.3);
-}
-</style>

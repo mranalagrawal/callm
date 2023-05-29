@@ -1,6 +1,7 @@
 <script>
 import logo from 'assets/svg/logo-call-me-wine.svg'
 import walletIcon from 'assets/svg/wallet.svg'
+import themeConfig from '~/config/themeConfig'
 import { SweetAlertToast } from '~/utilities/Swal'
 /* import locales from '../locales-mapper' */
 export default {
@@ -34,43 +35,58 @@ export default {
 
     this.info = info
   },
+  computed: {
+    themeConfig() {
+      return themeConfig
+    },
+  },
   watch: {
     '$i18n.locale': '$fetch',
   },
   methods: {
     async handleSubmit() {
-      const response = await fetch(`${this.$config.CUSTOMER_API}${this.$config.STORE}`, {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: JSON.stringify({
-          email: this.email,
-        }),
-      }).then(r => r.ok)
+      await this.$cmw.$post('/customers', {
+        email: this.email,
+      })
+        .then(({ data }) => {
+          const { errors = {}, customer = {} } = data
 
-      if (response) {
-        await SweetAlertToast.fire({
-          icon: 'success',
-          text: this.$i18n.t('common.feedback.OK.emailAdded'),
+          if (Object.keys(errors).length) {
+            SweetAlertToast.fire({
+              icon: 'error',
+              text: errors.email,
+            })
+            return
+          }
+
+          this.$gtm.push({
+            event: 'newsletterSubscription',
+            leadId: customer.id,
+            userEmail: this.email,
+          })
+
+          SweetAlertToast.fire({
+            icon: 'success',
+            text: this.$i18n.t('common.feedback.OK.emailAdded'),
+          })
+
+          this.email = ''
         })
-        this.email = ''
-      } else {
-        await SweetAlertToast.fire({
-          icon: 'error',
-          text: this.$i18n.t('common.feedback.KO.unknown'),
+        .catch((err) => {
+          this.$sentry.captureException(new Error((`Catch on newsletterSubscription: ${err}`)))
+          SweetAlertToast.fire({
+            icon: 'error',
+            text: this.$i18n.t('common.feedback.KO.unknown'),
+          })
         })
-      }
     },
   },
-
 }
 </script>
 
 <template>
   <footer class="container-fluid px-0" style="background: #f8f8f8">
-    <!--      <div class="container-fluid px-md-5">
+    <div v-if="$config.STORE !== 'CMW_UK'" class="container-fluid px-md-5">
       <div class="row">
         <div class="col-12">
           <p class="font-weight-bold h2 text-center mb-5">
@@ -81,10 +97,10 @@ export default {
       <div v-if="data" class="row d-md-none">
         <div v-for="item in data" :key="item.id" class="col-12">
           <nuxt-link
-            :to="item.primary.link"
+            :to="localePath(item?.primary?.link || '/')"
             class="text-uppercase primary-title"
           >
-            {{ item.primary.title }}
+            {{ item?.primary?.title }}
           </nuxt-link>
 
           <hr>
@@ -94,11 +110,11 @@ export default {
         <div v-for="item in data" :key="item.id" class="col">
           <p class="" style="margin-bottom: 36px">
             <nuxt-link
-              :to="item.primary.link"
+              :to="localePath(item?.primary?.link || '/')"
               style="color: #176a62"
               class="text-uppercase text-decoration-none primary-title"
             >
-              {{ item.primary.title }}
+              {{ item?.primary?.title }}
             </nuxt-link>
           </p>
           <p
@@ -107,15 +123,15 @@ export default {
             class="pb-0"
           >
             <nuxt-link
-              :to="link.link"
+              :to="localePath(link?.link || '/')"
               class="text-decoration-none secondary-title"
             >
-              {{ link.name }}
+              {{ link?.name }}
             </nuxt-link>
           </p>
         </div>
       </div>
-    </div> -->
+    </div>
 
     <div
       v-if="data && info"
@@ -124,16 +140,16 @@ export default {
       <div v-if="$config.STORE === 'CMW'" class="row justify-content-end">
         <nuxt-link
           class="text-decoration-none text-uppercase text-white fs-0875 mr-3"
-          :to="switchLocalePath($config.DEFAULT_LOCALE)"
+          :to="switchLocalePath(themeConfig[$config.STORE].defaultLocale)"
           :class="
-            $i18n.locale === $config.DEFAULT_LOCALE ? 'font-weight-bold' : ''
+            $i18n.locale === themeConfig[$config.STORE].defaultLocale ? 'font-weight-bold' : ''
           "
         >
-          {{ $config.DEFAULT_LOCALE }}
+          {{ themeConfig[$config.STORE].defaultLocale }}
         </nuxt-link>
 
         <nuxt-link
-          v-if="$config.DEFAULT_LOCALE !== 'en'"
+          v-if="themeConfig[$config.STORE].defaultLocale !== 'en'"
           class="text-decoration-none text-uppercase text-white fs-0875 mr-3"
           :to="switchLocalePath('en')"
           :class="$i18n.locale === 'en' ? 'font-weight-bold' : ''"
@@ -381,28 +397,6 @@ export default {
 
 .text-light-footer {
   color: #add3d1;
-}
-
-.primary-title {
-  font-size: 0.875rem;
-  color: #176a62;
-  font-weight: normal;
-  line-height: 1.5;
-  letter-spacing: 2.1px;
-  font-style: normal;
-  text-transform: uppercase;
-}
-
-.secondary-title {
-  font-size: 15px;
-  color: #000;
-  font-weight: normal;
-  letter-spacing: normal;
-  font-style: normal;
-  padding: 8px 0px !important;
-}
-.secondary-title:hover {
-  color: var(--dark-secondary);
 }
 
 .custom-control-label:before {

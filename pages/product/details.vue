@@ -1,56 +1,76 @@
 <script>
-import { computed, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api'
+import {
+  computed,
+  defineComponent,
+  ref,
+  useContext,
+  useFetch,
+  useMeta,
+  useRoute,
+  watch,
+} from '@nuxtjs/composition-api'
 import addIcon from 'assets/svg/add.svg'
 import cartIcon from 'assets/svg/cart.svg'
+import emailIcon from 'assets/svg/email.svg'
 import heartFullIcon from 'assets/svg/heart-full.svg'
 import heartIcon from 'assets/svg/heart.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
-import emailIcon from 'assets/svg/email.svg'
 import { storeToRefs } from 'pinia'
 import { mapState } from 'vuex'
-import { generateKey } from '@/utilities/strings'
-import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
-import { productFeatures } from '@/utilities/mappedProduct'
+import { SweetAlertToast } from '@/utilities/Swal'
 import { getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
-import { pick } from '@/utilities/arrays'
 import { useRecentProductsStore } from '@/store/recent'
 import { useCustomer } from '@/store/customer'
+import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import favouriteIcon from '~/assets/svg/selections/favourite.svg'
 import getArticles from '~/graphql/queries/getArticles'
+import { getUniqueListBy } from '~/utilities/arrays'
+import { generateKey } from '~/utilities/strings'
 
-export default {
-  layout(context) {
-    return context.$config.STORE
+export default defineComponent({
+  layout({ $config }) {
+    return $config.STORE
   },
   setup() {
-    const { i18n, $sentry, $config, $graphql, $cmwRepo, error, redirect, localeLocation } = useContext()
+    const { i18n, $config, $graphql, $cmwRepo, error, redirect, localeLocation, $cmwGtmUtils, $productMapping } = useContext()
     const customerStore = useCustomer()
     const recentProductsStore = useRecentProductsStore()
     const { recentProducts } = storeToRefs(recentProductsStore)
 
-    const { wishlistArr, getCustomerType } = storeToRefs(customerStore)
+    const { customer, wishlistArr, customerId, getCustomerType } = storeToRefs(customerStore)
 
     const { handleWishlist } = customerStore
     const route = useRoute()
     const isOpen = ref(false)
     const showRequestModal = ref(false)
     const product = ref({
+      availableFeatures: [],
       details: '',
+      featuredImage: { altText: '', height: 0, url: '', width: 0 },
       handle: '',
+      id: '',
       variants: { nodes: [] },
+      title: '',
       tags: [],
+      seo: {
+        description: '',
+        title: '',
+      },
+      gtmProductData: { id: '' },
     })
     const productVariant = ref()
     const productDetails = ref({
       brandId: '',
       canonical: '',
       feId: '',
+      hrefLang: {},
       shortDescription: '',
       awards: [],
       priceLists: {},
       redirectSeoUrl: {},
+      foodPairings: [],
     })
-    const productBreadcrumbs = ref({})
+    const productBreadcrumbs = ref([])
     const brandMetaFields = ref({
       key: '',
       subtitle: '',
@@ -73,17 +93,21 @@ export default {
 
     const { handleShowRequestModal } = useShowRequestModal()
 
-    useFetch(async () => {
+    useFetch(async ({ $sentry }) => {
       await $cmwRepo.products.getAll({
         first: 1,
         query: `tag:P${route.value.params.id}`,
       })
-        .then(async ({ products = { edges: [] } }) => {
-          if (!!products.edges.length && products.edges[0].node.handle) {
-            product.value = products.edges[0].node
-            productVariant.value = products.edges[0].node.variants.edges[0].node
-            productDetails.value = JSON.parse(products.edges[0].node.details.value)
+        .then(async ({ products = { nodes: [] } }) => {
+          if (!!products.nodes.length && products.nodes[0].handle) {
+            product.value = await $productMapping.fromShopify([products.nodes[0]])[0]
+
+            productVariant.value = products.nodes[0].variants.nodes[0]
+            productDetails.value = JSON.parse(products.nodes[0].details.value)
             productBreadcrumbs.value = JSON.parse(products.nodes[0].breadcrumbs.value)
+            productBreadcrumbs.value = !Object.keys(productBreadcrumbs.value).length
+              ? []
+              : $productMapping.breadcrumbs(productBreadcrumbs.value[i18n.locale])
 
             if (route.value.params.pathMatch !== product.value.handle)
               return redirect(301, localeLocation(`/${product.value.handle}-${productDetails.value.key}.htm`))
@@ -119,27 +143,11 @@ export default {
         })
     })
 
-    const availableFeatures = computed(() => {
-      let features = pick(productDetails.value, productFeatures)
-
-      features = Object.keys(features)
-        .reduce((o, key) => {
-          if (typeof features[key] === 'object')
-            !!features[key][$config.SALECHANNEL] && (o[key] = features[key])
-          else
-            features[key] === true && (o[key] = features[key])
-
-          return o
-        }, {})
-
-      return Object.keys(features).slice(0, 4)
-    })
-
     const isOnSale = computed(() => {
       if (!productVariant.value)
         return false
 
-      return availableFeatures.value.includes('isInPromotion')
+      return product.value.availableFeatures.includes('isInPromotion')
     })
 
     const strippedContent = computed(() => {
@@ -155,27 +163,20 @@ export default {
     const finalPrice = computed(() => {
       if (!productDetails.value.feId)
         return false
-      return productDetails.value.priceLists[$config.SALECHANNEL][getCustomerType.value]
+      return productDetails.value.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0
     })
 
     const isOnFavourite = computed(() => {
       return [...wishlistArr.value].includes(`P${productDetails.value.feId}`)
     })
 
-    const cleanUrl = (str = '') =>
-      (str
-        .replaceAll(' ', '')
-        .replaceAll('stage.callmewine.com', '')
-        .replaceAll('stage.callmewine.co.uk', '')
-        .replaceAll('callmewine.co.uk', '')
-        .replaceAll('callmewine.com', ''))
+    const gtmProductData = computed(() => ({
+      ...product.value.gtmProductData,
+      price: finalPrice.value,
+    }))
 
-    const breadcrumbs = computed(() => !productBreadcrumbs.value[i18n.locale]
-      ? []
-      : productBreadcrumbs.value[i18n.locale].slice(0, -1).map(breadcrumb => ({
-        ...breadcrumb,
-        urlPath: `/${cleanUrl(breadcrumb.handle)}`,
-      })))
+    const productDetailsFoodPairings = computed(() => getUniqueListBy(productDetails.value.foodPairings, 'id'))
+    const productDetailsAwards = computed(() => getUniqueListBy(productDetails.value.awards, 'id'))
 
     const generateMetaLink = (arr = []) => {
       const hrefLangArr = !!arr.length && arr.map(el => ({
@@ -194,21 +195,49 @@ export default {
       ]
     }
 
+    watch(() => gtmProductData.value.id, () => {
+      process.browser && $cmwGtmUtils.pushPage('product', {
+        event: 'productDetailView',
+        ecommerce: {
+          currencyCode: $config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
+          detail: {
+            products: [{ ...product.value.gtmProductData }],
+          },
+        },
+      })
+    })
+
+    useMeta(() => ({
+      title: product?.value?.seo?.title,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: product?.value?.seo?.description,
+        },
+      ],
+      link: productDetails.value
+        && productDetails.value.hrefLang
+        && Object.keys(productDetails.value?.hrefLang).length
+        && generateMetaLink(Object.entries(productDetails.value?.hrefLang)),
+    }))
+
     return {
+      customer,
       product,
       productVariant,
       productDetails,
       productBreadcrumbs,
-      availableFeatures,
       isOnSale,
       isOnFavourite,
+      gtmProductData,
       finalPrice,
       strippedContent,
-      breadcrumbs,
       wishlistArr,
       brandMetaFields,
       brand,
-      getCustomerType,
+      productDetailsFoodPairings,
+      productDetailsAwards,
       isOpen,
       cartIcon,
       addIcon,
@@ -218,27 +247,14 @@ export default {
       favouriteIcon,
       emailIcon,
       showRequestModal,
+      customerId,
+      getCustomerType,
       handleWishlist,
       handleShowRequestModal,
       generateMetaLink,
     }
   },
-  head() {
-    return {
-      title: this.product?.seo?.title,
-      meta: [
-        {
-          hid: 'description',
-          name: 'description',
-          content: this.product?.seo?.description,
-        },
-      ],
-      link: this.productDetails
-        && this.productDetails.hrefLang
-        && Object.keys(this.productDetails.hrefLang).length
-        && this.generateMetaLink(Object.entries(this.productDetails.hrefLang)),
-    }
-  },
+  head: {},
   computed: {
     ...mapState('userCart', {
       userCart: 'userCart',
@@ -250,7 +266,7 @@ export default {
       return this.isOnCart ? this.isOnCart.quantity : 0
     },
     canAddMore() {
-      return this.product.totalInventory - this.cartQuantity > 0
+      return this.product.quantityAvailable - this.cartQuantity > 0
     },
   },
   methods: {
@@ -268,40 +284,43 @@ export default {
         return
       }
 
-      const totalInventory = this.product.totalInventory
-      const productVariantId = this.productVariant.id
+      const totalInventory = this.product.quantityAvailable
+      const id = this.product.shopify_product_variant_id
       const amount = this.finalPrice
       const amountFullPrice = Number(
         this.productVariant.compareAtPriceV2.amount,
       )
 
       /* data.variants.nodes[0].compareAtPriceV2 */
-      const tag = this.product.tags[0]
-      const image = this.product.images.nodes[0].url
+      const tag = this.product.tags
+      const image = this.product.image.thumbnail.url
       const title = this.product.title
       this.$store.commit('userCart/addProduct', {
-        productVariantId,
+        id,
         singleAmount: amount,
         singleAmountFullPrice: amountFullPrice,
         tag,
         image,
         title,
         totalInventory,
+        gtmProductData: this.gtmProductData,
       })
       this.flashMessage.show({
         status: '',
-        message: `${this.product.title} è stato aggiunto al carrello!`,
-        icon: this.product.images.nodes[0].url,
+        message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title}` }),
+        icon: this.product.image.thumbnail.url,
         iconClass: 'bg-transparent ',
         time: 8000,
         blockClass: 'add-product-notification',
       })
     },
     async removeFromUserCart() {
-      this.$store.commit('userCart/removeProduct', this.productVariant.id)
+      this.$store.commit('userCart/removeProduct', {
+        id: this.product.shopify_product_variant_id,
+      })
     },
   },
-}
+})
 </script>
 
 <template>
@@ -309,7 +328,7 @@ export default {
     <div v-if="$fetchState.error" class="cmw-relative cmw-text-center cmw-mt-12">
       <div class="md:(cmw-grid cmw-grid-cols-2 cmw-items-center)">
         <img
-          class="cmw-w-3/4 cmw-mx-auto" :src="require('assets/images/wine-stain.png')"
+          class="cmw-w-3/4 cmw-mx-auto" src="https://cdn.shopify.com/s/files/1/0668/1860/5335/files/wine-stain.png?width=900"
           alt="empty-bottles"
         >
         <div class="cmw-text-left">
@@ -320,36 +339,18 @@ export default {
     </div>
     <template v-else>
       <div v-if="product.title && brandMetaFields">
-        <div v-if="!!breadcrumbs.length" class="<md:cmw-hidden md:(cmw-flex cmw-items-center) cmw-my-2 cmw-font-sans cmw-text-sm">
-          <div v-for="({ name, urlPath }) in breadcrumbs" :key="generateKey(name)">
-            <NuxtLink class="cmw-text-primary-400" :to="localePath(urlPath)" rel="nofollow" v-text="name" />
-            <VueSvgIcon class="cmw-mx-1" width="12" height="12" :data="require(`@/assets/svg/chevron-right.svg`)" />
-          </div>
-          <span class="cmw-text-body">{{ productBreadcrumbs[$i18n.locale][productBreadcrumbs[$i18n.locale].length - 1].name }}</span>
-        </div>
+        <TheBreadcrumbs v-if="!!productBreadcrumbs.length" :breadcrumbs="productBreadcrumbs" />
         <div class="md:(cmw-grid cmw-grid-cols-[40%_60%] cmw-max-h-[550px] cmw-my-4)">
           <!-- Image Section -->
           <div class="cmw-relative">
             <LoadingImage
               class="cmw-h-full"
               img-classes="cmw-max-h-[350px] md:cmw-max-h-[550px] cmw-mx-auto cmw-object-contain"
-              :thumbnail="{
-                url: product.images.nodes[0] ? `${product.images.nodes[0].url}?&width=20&height=36`
-                  : 'https://cdn.shopify.com/s/files/1/0578/7497/2719/files/no-product-image-400x400_6.png?v=1680253923&width=20&height=36',
-                width: 20,
-                height: 36,
-                altText: product.title,
-              }"
-              :source="{
-                url: product.images.nodes[0] ? `${product.images.nodes[0].url}?&width=400&height=719&crop=center`
-                  : 'https://cdn.shopify.com/s/files/1/0578/7497/2719/files/no-product-image-400x400_6.png?v=1680253923&width=400&height=719&crop=center',
-                width: 400,
-                height: 719,
-                altText: product.title,
-              }"
+              :thumbnail="product.image.thumbnail"
+              :source="product.image.source"
             />
             <div class="cmw-absolute cmw-top-4 cmw-left-2">
-              <ProductBoxFeature v-for="feature in availableFeatures" :key="feature" :feature="feature" />
+              <ProductBoxFeature v-for="feature in product.availableFeatures" :key="generateKey(`details-feature-${feature}`)" :feature="feature" />
             </div>
             <div class="cmw-absolute cmw-bottom-0 cmw-left-2">
               <div
@@ -370,10 +371,12 @@ export default {
             <NuxtLink
               class="h3 cmw-w-max font-weight-bold cmw-text-primary-400 hover:cmw-text-primary-400"
               :to="localePath({ name: 'winery-handle', params: { handle: `${brand.handle}-${brandMetaFields.key}.htm` } })"
+              prefetch
             >
               {{ product.vendor }}
             </NuxtLink>
             <div v-html="strippedContent" />
+            <ProductDetailsVintages :sku="product.sku" />
             <div
               class="
             <md:(cmw-fixed cmw-bottom-0 cmw-left-0 cmw-w-full cmw-bg-white cmw-z-content cmw-shadow-elevation cmw-px-3 cmw-py-4)
@@ -400,6 +403,7 @@ export default {
                   />
                 </div>
                 <i18n-n
+                  v-if="finalPrice"
                   class="cmw-inline-block" :value="Number(finalPrice)"
                   :format="{ key: 'currency' }"
                   :locale="getLocaleFromCurrencyCode(productVariant.priceV2.currencyCode)"
@@ -421,10 +425,10 @@ export default {
               <div class="cmw-ml-auto cmw-mr-4">
                 <div class="">
                   <p
-                    v-if="product.totalInventory > 0" class="cmw-text-success cmw-text-center"
-                    :class="{ 'cmw-hidden': product.totalInventory > 6 }"
+                    v-if="product.quantityAvailable > 0" class="cmw-text-success cmw-text-center"
+                    :class="{ 'cmw-hidden': product.quantityAvailable > 6 }"
                   >
-                    {{ $t('product.available', { quantity: product.totalInventory }) }}
+                    {{ $t('product.available', { quantity: product.quantityAvailable }) }}
                   </p>
                   <p v-else class="text-light-secondary">
                     {{ $t('product.notAvailable') }}
@@ -487,7 +491,7 @@ export default {
                 type="button"
                 class="cmw-mb-2"
                 :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
-                @click="handleWishlist({ id: `P${productDetails.feId}`, isOnFavourite })"
+                @click="handleWishlist({ id: `P${productDetails.feId}`, isOnFavourite, gtmProductData: product.gtmProductData })"
               >
                 <VueSvgIcon
                   color="#d94965"
@@ -572,16 +576,8 @@ export default {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="(award, i) in productDetails.awards" :key="i">
+                      <tr v-for="(award) in productDetailsAwards" :key="generateKey(`details-awards-${award.title}`)">
                         <td scope="row">
-                          <!-- <img
-                        :src="
-                          require(`@/assets/images/awards/${award.id}.svg`)
-                        "
-                        class="award-img pr-2"
-                        width="24px"
-                      /> -->
-
                           <strong>{{ award.title }}</strong>
                         </td>
                         <td>{{ award.year }}</td>
@@ -685,8 +681,8 @@ export default {
 
                   <div class="row">
                     <div
-                      v-for="pairing in productDetails.foodPairings"
-                      :key="pairing.id"
+                      v-for="pairing in productDetailsFoodPairings"
+                      :key="generateKey(`food-pairing-${pairing.id}`)"
                       class="col-6 col-md-4 col-lg-3"
                     >
                       <img
@@ -792,7 +788,7 @@ export default {
         <ClientOnly>
           <RecentProducts />
           <VendorProducts :vendor="brand.title" />
-          <RecommendedProducts :id="product.id" />
+          <RecommendedProducts :id="product.shopify_product_id" />
         </ClientOnly>
       </div>
     </template>

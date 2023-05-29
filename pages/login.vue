@@ -1,20 +1,21 @@
-<script>
-import LoginForm from '../components/LoginForm.vue'
-import RegisterBox from '../components/RegisterBox.vue'
-export default {
-  components: {
-    RegisterBox,
-    LoginForm,
-  },
+<script lang="ts">
+import { defineComponent, onMounted, ref, useContext } from '@nuxtjs/composition-api'
+
+export default defineComponent({
   layout(context) {
     return context.$config.STORE
   },
-  data() {
-    return {
-      registerIsVisible: false,
-    }
+  setup() {
+    const { $cmwGtmUtils } = useContext()
+    const registerIsVisible = ref(false)
+
+    onMounted(() => {
+      process.browser && $cmwGtmUtils.pushPage('page')
+    })
+
+    return { registerIsVisible }
   },
-}
+})
 </script>
 
 <template>

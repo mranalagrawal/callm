@@ -3,6 +3,7 @@ export default {
     role: {
       TRIGGER_SEARCH: 'Suche auslösen',
       ADD_TO_CART: 'In der CartAdd des Warenkorb',
+      MODAL_OPEN: 'Modales Fenster öffnen',
       REMOVE_FROM_CART: 'Aus Einkaufswagen entfernen',
       ADD_TO_WISHLIST: 'Zur Wunschliste hinzufügen',
       REMOVE_FROM_WISHLIST: 'Von Wunschliste entfernen',

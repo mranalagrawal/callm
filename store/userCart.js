@@ -1,12 +1,13 @@
 export const state = () => ({
   userCart: [],
+  currencyCode: process.env.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
 })
 
 export const mutations = {
   addProduct(state, entry) {
     // find product
     const product = state.userCart.find(
-      el => el.productVariantId === entry.productVariantId,
+      el => el.productVariantId === entry.id,
     )
 
     // se c'è già
@@ -14,7 +15,7 @@ export const mutations = {
       product.quantity = product.quantity + 1
     } else {
       state.userCart.push({
-        productVariantId: entry.productVariantId,
+        productVariantId: entry.id, // ma funziona?
         quantity: 1,
         singleAmount: entry.singleAmount,
         singleAmountFullPrice: entry.singleAmountFullPrice,
@@ -22,31 +23,75 @@ export const mutations = {
         image: entry.image,
         title: entry.title,
         totalInventory: entry.totalInventory,
+        gtmProductData: entry.gtmProductData,
+        attributes: [
+          {
+            key: 'bundle',
+            value: entry.tag.includes('BUNDLE'),
+          },
+        ],
       })
     }
+
+    this.app.$gtm.push({
+      event: 'addToCart',
+      ecommerce: {
+        currencyCode: state.currencyCode,
+        add: {
+          products: [entry.gtmProductData],
+        },
+      },
+    })
+
+    if (typeof window !== 'undefined' && window.google_tag_manager[this.app.$config.gtm.id])
+      window.google_tag_manager[this.app.$config.gtm.id].dataLayer.set('ecommerce', undefined)
   },
-  removeProduct(state, productVariantId) {
+  removeProduct(state, entry) {
     // find product
     const product = state.userCart.find(
-      el => el.productVariantId === productVariantId,
+      el => el.productVariantId === entry.id,
     )
 
-    if (product) {
-      // eslint-disable-next-line curly
-      if (product.quantity > 1) {
-        product.quantity = product.quantity - 1
-      // eslint-disable-next-line curly
-      } else {
-        state.userCart.splice(state.userCart.indexOf(product), 1)
-      }
-    }
+    if (!product)
+      return
+
+    if (product.quantity > 1)
+      product.quantity = product.quantity - 1
+    else
+      state.userCart.splice(state.userCart.indexOf(product), 1)
+
+    this.app.$gtm.push({
+      event: 'removeFromCart',
+      ecommerce: {
+        currencyCode: state.currencyCode,
+        remove: {
+          products: [product.gtmProductData],
+        },
+      },
+    })
+
+    if (typeof window !== 'undefined' && window.google_tag_manager[this.app.$config.gtm.id])
+      window.google_tag_manager[this.app.$config.gtm.id].dataLayer.set('ecommerce', undefined)
   },
 
-  removeLine(state, productVariantId) {
+  removeLine(state, entry) {
     const product = state.userCart.find(
-      el => el.productVariantId === productVariantId,
+      el => el.productVariantId === entry.id,
     )
     state.userCart.splice(state.userCart.indexOf(product), 1)
+
+    this.app.$gtm.push({
+      event: 'removeFromCart',
+      ecommerce: {
+        currencyCode: state.currencyCode,
+        remove: {
+          products: [entry.gtmProductData],
+        },
+      },
+    })
+
+    if (typeof window !== 'undefined' && window.google_tag_manager[this.app.$config.gtm.id])
+      window.google_tag_manager[this.app.$config.gtm.id].dataLayer.set('ecommerce', undefined)
   },
 
   resetCart(state) {

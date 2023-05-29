@@ -1,18 +1,17 @@
-<script>
+<script lang="ts">
 import { computed, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import { useRecentProductsStore } from '@/store/recent'
-import { getMappedProducts } from '@/utilities/mappedProduct'
 
 export default {
   setup() {
     const recentProductsStore = useRecentProductsStore()
     const { recentProducts } = storeToRefs(recentProductsStore)
     const { $cmwRepo } = useContext()
-    const productsRef = ref([])
+    const productsRef = ref<Record<string, any>[]>([])
     const query = computed(() => `tag:${recentProducts.value.join(' OR ')}`)
 
-    const { fetch } = useFetch(async () => {
+    const { fetch } = useFetch(async ({ $productMapping, $handleApiErrors }) => {
       if (!recentProducts.value)
         return
 
@@ -22,8 +21,11 @@ export default {
       })
         .then(async ({ products = { nodes: [] } }) => {
           if (products.nodes.length)
-            productsRef.value = getMappedProducts(products.nodes)
-        }).catch(err => console.log(err))
+            productsRef.value = $productMapping.fromShopify(products.nodes)
+        })
+        .catch((err: Error) => {
+          $handleApiErrors(`Catch getting products getAll from shopify on Recent Products on Vendor Products: ${err}`)
+        })
     })
 
     watch(() => query.value, () => fetch())

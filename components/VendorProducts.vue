@@ -1,16 +1,14 @@
-<script>
-import { computed, ref, toRefs, useContext, useFetch, watch } from '@nuxtjs/composition-api'
-import { getMappedProducts } from '@/utilities/mappedProduct'
+<script lang="ts">
+import { computed, ref, toRefs, useFetch, watch } from '@nuxtjs/composition-api'
 
 export default {
   props: ['vendor'],
-  setup(props) {
-    const { $cmwRepo } = useContext()
-    const productsRef = ref([])
+  setup(props: any) {
+    const productsRef = ref<Record<string, any>>([])
     const { vendor: vendorRef } = toRefs(props)
     const query = computed(() => `vendor:'${vendorRef.value}'`)
 
-    const { fetch } = useFetch(async () => {
+    const { fetch } = useFetch(async ({ $cmwRepo, $productMapping, $handleApiErrors }) => {
       if (!vendorRef.value)
         return
 
@@ -20,8 +18,11 @@ export default {
       })
         .then(async ({ products = { nodes: [] } }) => {
           if (products.nodes.length)
-            productsRef.value = getMappedProducts(products.nodes)
-        }).catch(err => console.log(err))
+            productsRef.value = $productMapping.fromShopify(products.nodes)
+        })
+        .catch((err: Error) => {
+          $handleApiErrors(`Catch getting products getAll from shopify: ${err}`)
+        })
     })
 
     watch(() => query.value, () => fetch())

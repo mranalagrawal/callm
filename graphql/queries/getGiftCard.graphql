@@ -1,0 +1,45 @@
+query getGiftCard(
+  $lang: LanguageCode!,
+  $handle: String!
+) @inContext(language: $lang) {
+  product(handle: $handle) {
+      id,
+      handle,
+      title,
+      description,
+      featuredImage {
+          altText,
+          height,
+          url,
+          width
+      },
+      seo {
+          description,
+          title
+      }
+      availableForSale,
+      totalInventory,
+      variants (first: 10) {
+          nodes {
+            id,
+            title,
+            availableForSale,
+            priceV2 {
+                amount,
+                currencyCode
+            }
+            compareAtPriceV2 {
+                amount,
+                currencyCode
+            }
+            quantityAvailable
+          }
+      },
+      breadcrumbs: metafield(namespace: "custom", key: "breadcrumbs") {
+        value
+      }
+      details: metafield(namespace: "custom", key: "details") {
+        value
+      }
+  }
+}

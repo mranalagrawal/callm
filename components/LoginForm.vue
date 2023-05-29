@@ -10,8 +10,10 @@ export default {
   components: { Alert },
   props: {
     width: { type: String, default: '' },
+    skipRedirect: { type: Boolean },
   },
-  setup() {
+  emits: ['login-success'],
+  setup(props, { emit }) {
     const { i18n, localeLocation } = useContext()
     const router = useRouter()
     const customerStore = useCustomer()
@@ -29,8 +31,11 @@ export default {
       const valid = await customerStore.login(form.value.email, form.value.password)
 
       if (valid) {
-        await customerStore.getCustomer()
-          .then(() => router.push(localeLocation('/profile/my-orders')))
+        await customerStore.getCustomer('login')
+          .then(async () => {
+            emit('login-success', true)
+            !props.skipRedirect && router.push(localeLocation('/profile/my-orders'))
+          })
       } else {
         message.value = i18n.t('common.feedback.KO.login')
       }
@@ -44,7 +49,6 @@ export default {
 
 <template>
   <ValidationObserver
-    ref="formEl"
     v-slot="{ handleSubmit }"
     slim
   >

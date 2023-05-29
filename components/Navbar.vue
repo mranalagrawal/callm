@@ -1,10 +1,8 @@
 <script>
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from '@nuxtjs/composition-api'
-import debounce from 'lodash.debounce'
+import { inject, ref } from '@nuxtjs/composition-api'
 import { is } from 'vee-validate/dist/rules'
 import { mapGetters } from 'vuex'
-import themeConfig from '@/config/themeConfig'
-import { useHeaderSize } from '~/store/headerSize'
+import themeConfig from '~/config/themeConfig'
 import { useCustomer } from '~/store/customer'
 import logo from '~/assets/svg/logo-call-me-wine.svg'
 import cartIcon from '~/assets/svg/cart.svg'
@@ -20,54 +18,19 @@ import UserActions from '@/components/Header/UserActions.vue'
 export default {
   components: { UserActions, LoginForm, UserMenu },
   setup() {
-    const headerSize = useHeaderSize()
     const customer = useCustomer()
     const navbar = ref(null)
     const menuBarRef = ref(null)
-    const isDesktop = ref(false)
     const showMobileButton = ref(true)
+    const isDesktop = inject('isDesktop')
 
     const handleShowMobileButton = (val) => {
       showMobileButton.value = val
     }
-    const resizeListener = debounce(() => {
-      isDesktop.value = window.innerWidth > 991
-      headerSize.$patch({
-        navbarHeight: navbar.value ? navbar.value.getBoundingClientRect().height : 0,
-      })
-    }, 500)
-
-    const setHeaderSize = () => {
-      const doc = document.querySelector(':root')
-      doc && doc.style.setProperty('--cmw-header-height', `${headerSize.navbarHeight + headerSize.megaMenuHeight}px`)
-      doc && doc.style.setProperty('--cmw-top-banner-height', headerSize.getTopBarHeight)
-    }
-
-    const megaMenuTop = computed(() => {
-      return `${headerSize.navbarHeight}px`
-    })
-
-    onMounted(() => {
-      window.addEventListener('resize', resizeListener)
-      nextTick(() => {
-        resizeListener()
-        setHeaderSize()
-      })
-    })
-
-    onUnmounted(() => {
-      window.removeEventListener('resize', resizeListener)
-    })
-
-    watch(() => headerSize, () => {
-      setHeaderSize()
-    }, { deep: true })
 
     return {
-      megaMenuTop,
       isDesktop,
       customer,
-      headerSize,
       navbar,
       menuBarRef,
       showMobileButton,
@@ -78,9 +41,7 @@ export default {
       userIcon,
       searchIcon,
       heartIcon,
-      resizeListener,
       handleShowMobileButton,
-      setHeaderSize,
     }
   },
   data() {
@@ -142,7 +103,6 @@ export default {
         }
       })
       .sort((a, b) => a.position - b.position)
-    this.resizeListener()
   },
   computed: {
     is() {
@@ -247,11 +207,11 @@ export default {
 <template>
   <div
     ref="navbar"
-    class="cmw-fixed cmw-w-screen cmw-px-4 cmw-top-0 bg-white cmw-z-tooltip"
+    class="cmw-fixed cmw-w-screen cmw-min-h-[135px] cmw-px-4 cmw-top-0 bg-white cmw-z-tooltip"
   >
     <div
       class="
-    cmw-max-w-screen-xl cmw-mx-auto cmw-grid cmw-grid-cols-1 cmw-gap-3 cmw-py-3 cmw-items-center
+    cmw-max-w-screen-xl cmw-mx-auto cmw-grid cmw-grid-cols-1 cmw-gap-3 cmw-min-h-[109px] cmw-items-center
     lg:cmw-grid-cols-[25%_40%_35%] 2xl:cmw-grid-cols-[25%_48%_32%]"
     >
       <div
@@ -346,6 +306,19 @@ export default {
             <!-- {{ data }} -->
 
             <div class="cmw-bg-white cmw-max-h-[70vh] cmw-rounded-lg cmw-shadow-popover cmw-overflow-hidden cmw-mt-2">
+              <div v-if="data.gift_cards && data.gift_cards.length > 0">
+                <p class="cmw-overline-2 cmw-uppercase cmw-text-secondary-400 cmw-py-2 cmw-px-3 cmw-m-0">
+                  {{ $t("search.giftCards") }}
+                </p>
+                <nuxt-link
+                  v-for="item in data.gift_cards"
+                  :key="item.id"
+                  class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-no-underline cmw-bg-primary-50) cmw-text-body"
+                  :to="localePath(`/${item.handle}`)"
+                >
+                  <span v-html="bolder(item.name)" />
+                </nuxt-link>
+              </div>
               <div
                 v-if="data.winelists && data.winelists.length > 0"
                 class="cmw-max-h-[70vh] cmw-overflow-y-auto"
@@ -553,6 +526,6 @@ export default {
 }
 
 .shadow-menu {
-  box-shadow: 0 0.5rem 0.75rem rgb(0 0 0 / 15%) !important;
+  box-shadow: 0 0.3rem 0.35rem rgb(0 0 0 / 15%) !important;
 }
 </style>

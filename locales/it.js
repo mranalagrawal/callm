@@ -59,6 +59,14 @@ export default {
     subscribed: 'sottoscritto',
     unsubscribed: 'non iscritto',
     headline: 'Newsletter con promozioni è novità su tutto il catalogo di Callmewine',
+    splash: {
+      headline: 'Iscriviti alla nostra Newsletter per ricevere ogni giorno sconti, promozioni e novità!',
+      offer: 'Subito per te uno sconto del 5% sul tuo primo ordine!',
+      acceptMarketing: 'Accetto di ricevere newsletter e comunicazioni promozionali da Callmewine, come richiesto dal {0}.',
+      profiling: 'Acconsento all\'utilizzo dei miei dati per attività di profilazione finalizzate a migliorare la mia esperienza di navigazione e ricevere offerte relative ai miei interessi e alle mie abitudini di acquisto, come previsto dalla {0}.',
+      readMore: 'Per ulteriori informazioni, leggi il nostro {0}',
+      privacyPolicy: 'politica sulla riservatezza',
+    },
   },
   loginFailed: 'Ops! Sembra che il nome utente o la password non siano corretti!',
   birthday: 'Data di nascita',
@@ -228,8 +236,11 @@ export default {
     mostAwarded: 'Più premitati',
     newArrivals: 'Nuovi arrivi',
     popularity: 'Popolarità',
+    giftCards: 'Buoni Regalo',
+    chooseGiftCard: 'choose your gift card',
   },
   product: {
+    otherVintages: 'Altre annate: ',
     tooltip: {
       guide: 'Guida {guide}',
       score: 'punteggio {value} su {maxValue}',
@@ -284,6 +295,29 @@ export default {
       oneUpperCase: 'una lettera maiuscola',
       oneLowerCase: 'una lettera minuscola',
       oneSpecialChar: 'un carattere speciale',
+    },
+  },
+  recoverPwd: {
+    title: 'Reimposta password',
+    paragraph: 'Inserisci l\'email con la quale ti sei registrato. Riceverai nella tua casella di posta un messaggio con le istruzioni per modificare la password.',
+    feedback: 'Se l\'indirizzo {0} è associato ad un profilo registrato, riceverai via mail il link per reimpostare la password del tuo account.',
+    feedbackFooter: {
+      text: 'Il tuo profilo è registrato e non hai ricevuto l\'e-mail? Cerca nella posta indesiderata oppure {0}',
+      link: 'richiede un nuovo invio',
+    },
+  },
+  contactForm: {
+    motivation: 'Motivazione del contatto',
+    loginRequired: 'richiede login',
+    selectOrder: 'Seleziona l\'ordine',
+    selectedOrder: 'Order# {orderNumber} from {date}, by {name} for {total}',
+    choices: {
+      PAYMENT: 'Segnalazioni relative al pagamento di un ordine',
+      ORDER_SHIPMENT: 'Richiesta informazioni sulla spedizione di un ordine',
+      ORDER_RECEIVED: 'Segnalazioni riguardanti un ordine ricevuto',
+      PURCHASE_SUGGEST: 'Richiesta di suggerimento di acquisto',
+      SITE_IMPROVEMENT: 'Suggerimenti di prodotti da aggiungere su Callmewine o miglioramenti del sito',
+      OTHER: 'Altre domande o segnalazioni',
     },
   },
 }

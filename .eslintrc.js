@@ -31,10 +31,12 @@ module.exports = {
       },
     ],
     'vue/multi-word-component-names': ['warn', {
-      ignores: ['404', '_handle', 'Navbar', 'index', 'catalog', 'contact', 'cart', 'preview', 'login', 'profile', 'wishlist', 'addresses', 'shipping', 'search', 'recover'],
+      ignores: ['404', '_handle', 'Navbar', 'index', 'categories', 'catalog', 'contact', 'cart', 'preview', 'login', 'profile', 'wishlist', 'addresses', 'shipping', 'search', 'recover'],
     }],
     // Note: We can change this to "camelCase" when upgrading to Vue3 https://eslint.vuejs.org/rules/custom-event-name-casing.html
     'vue/custom-event-name-casing': ['error', 'kebab-case'],
+    /* ANTFU ESLINT RULES */
+    'antfu/top-level-function': 'off',
     /* TYPESCRIPT ESLINT RULES */
     '@typescript-eslint/brace-style': ['error', '1tbs', { allowSingleLine: true }],
     '@typescript-eslint/no-unused-vars': ['error', { ignoreRestSiblings: true }],

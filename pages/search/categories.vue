@@ -1,5 +1,5 @@
 <script>
-import { computed, useRoute } from '@nuxtjs/composition-api'
+import { computed, onMounted, useContext, useRoute, watch } from '@nuxtjs/composition-api'
 
 export default {
   layout(context) {
@@ -7,6 +7,7 @@ export default {
   },
   setup() {
     const route = useRoute()
+    const { $cmwGtmUtils } = useContext()
 
     const filtersObj = key => ({
       V: 'winelists',
@@ -27,6 +28,15 @@ export default {
       ...((filter_key_1 && filter_id_1) && { [filtersObj(filter_key_1)]: filter_id_1 }),
       ...((filter_key_2 && filter_id_2) && { [filtersObj(filter_key_2)]: filter_id_2 }),
     }))
+
+    const isSearchPage = computed(() => Object.keys(inputParameters.value).includes('search'))
+
+    watch(() => inputParameters.value, () => {
+      process.browser && $cmwGtmUtils.pushPage(isSearchPage.value ? 'searchresult' : 'list')
+    })
+    onMounted(() => {
+      process.browser && $cmwGtmUtils.pushPage(isSearchPage.value ? 'searchresult' : 'list')
+    })
 
     return { inputParameters, filtersObj }
   },

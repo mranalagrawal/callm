@@ -1,9 +1,9 @@
 <script>
+import { onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { mapGetters } from 'vuex'
-import { ref, useContext, useFetch } from '@nuxtjs/composition-api'
-import { addProductToCart, createCart, removeProductFromCart } from '../utilities/cart'
 import CartLine from '../components/Cart/CartLine.vue'
-import { getLocaleFromCurrencyCode } from '../utilities/currency'
+import { addProductToCart, createCart, removeProductFromCart } from '~/utilities/cart'
+import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 import locales from '~/locales-mapper'
 import documents from '~/prismic-mapper'
 import { SweetAlertConfirm } from '~/utilities/Swal'
@@ -15,7 +15,7 @@ export default {
     return context.$config.STORE
   },
   setup() {
-    const { $prismic, i18n, $config } = useContext()
+    const { $prismic, i18n, $config, store, $cmwGtmUtils } = useContext()
     const shipping = ref({})
 
     const { fetch } = useFetch(async () => {
@@ -25,6 +25,22 @@ export default {
 
       const { data } = await $prismic.api.getSingle(documents[$config.STORE].shipping, { lang })
       shipping.value = data
+    })
+
+    onMounted(() => {
+      process.browser && $cmwGtmUtils.pushPage('product', {
+        event: 'cartView',
+        pageType: 'cart',
+        ecommerce: {
+          currencyCode: $config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
+          checkout: {
+            actionField: {
+              step: '0',
+            },
+            products: store.state.userCart.userCart.map(p => p.gtmProductData),
+          },
+        },
+      })
     })
 
     return { fetch, shipping, getLocaleFromCurrencyCode }
@@ -49,12 +65,6 @@ export default {
   },
 
   methods: {
-    showModal() {
-      this.$refs.modal.show()
-    },
-    hideModal() {
-      this.$refs.modal.hide()
-    },
     async remove(lineId) {
       const domain = this.$config.DOMAIN
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN
@@ -96,6 +106,12 @@ export default {
           return {
             merchandiseId: el.productVariantId,
             quantity: el.quantity,
+            attributes: [
+              {
+                key: 'bundle',
+                value: el.tag.includes('BUNDLE'),
+              },
+            ],
           }
         })
 
@@ -106,8 +122,7 @@ export default {
           lines,
         )
         // crea checkoutUrl
-        const checkoutUrl = `${cartFilled.checkoutUrl}/?`
-        window.location = checkoutUrl
+        window.location = `${cartFilled.checkoutUrl}/?`
         return
       }
 
@@ -271,41 +286,3 @@ export default {
     </div>
   </div>
 </template>
-
-<style scoped>
-.btn-cart {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  color: white;
-  background: #da4865;
-}
-
-.dropdown-cart {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown-cart-content {
-  /* display: none; */
-  position: absolute;
-  bottom: 36px;
-  background-color: #da4865;
-  width: 100%;
-  border-radius: 12px 12px 0 0;
-  z-index: 1;
-  height: 0px;
-  overflow: hidden;
-}
-
-.dropdown-cart:hover .dropdown-cart-content {
-  transition-duration: 0.4s;
-  height: 120px;
-  overflow: auto;
-}
-
-:deep(.modal-footer),
-:deep(.modal-header) {
-  border: 0px;
-}
-</style>

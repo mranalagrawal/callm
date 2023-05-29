@@ -15,25 +15,32 @@ query getCollection(
       width
     }
     title
+    link: metafield(namespace: "custom", key: "link_home") { value }
     products(first: 12) {
       # How can we reuse the objects on graphql?
       nodes {
         availableForSale
+        handle
         id
         featuredImage { altText, height, url, width }
         seo { description, title }
         tags
         title
+        vendor
         totalInventory
         details: metafield(namespace: "custom", key: "details") {
           value
         }
+        breadcrumbs: metafield(namespace: "custom", key: "breadcrumbs") {
+          value
+        }
         variants(first: 1) {
           nodes {
-            id,
+            id
             compareAtPriceV2 { amount, currencyCode }
             priceV2 { amount, currencyCode }
             quantityAvailable
+            sku
           }
         }
       }
@@ -41,4 +48,3 @@ query getCollection(
     }
   }
 }
-

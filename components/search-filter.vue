@@ -1,10 +1,8 @@
 <script>
-import { ref, watchEffect } from '@nuxtjs/composition-api'
-// import { getMappedProducts } from '@/utilities/mappedProduct'
+import { inject, ref, useContext, watchEffect } from '@nuxtjs/composition-api'
 import closeIcon from 'assets/svg/close.svg'
 import { storeToRefs } from 'pinia'
 import Loader from '../components/UI/Loader.vue'
-import useScreenSize from '@/components/composables/useScreenSize'
 import { pick } from '@/utilities/arrays'
 import { useFilters } from '~/store/filters'
 import { getLocaleFromCurrencyCode } from '@/utilities/currency'
@@ -15,9 +13,10 @@ export default {
   scrollToTop: true,
   props: ['inputParameters'],
   setup() {
+    const { redirect } = useContext()
     const filtersStore = useFilters()
     const { selectedLayout, availableLayouts } = storeToRefs(filtersStore)
-    const { isDesktop } = useScreenSize()
+    const isDesktop = inject('isDesktop')
     const showPageFullDescription = ref(false)
     const showMoreFilters = ref(false)
     const showMobileFilters = ref(false)
@@ -35,6 +34,7 @@ export default {
       availableLayouts,
       selectedLayout,
       closeIcon,
+      redirect,
     }
   },
   data() {
@@ -60,7 +60,7 @@ export default {
       winelists: null,
       awards: null,
       vintages: null,
-      results: null,
+      results: [],
       activeSelections: [],
       total: 0,
       seoData: {
@@ -114,11 +114,7 @@ export default {
     if (process.client)
       window.scrollTo(0, 0)
 
-    /* console.log(this.inputParameters, "this.inputParameters"); */
-
     this.loading = true
-    // const route = this.$route
-    /* console.log(route.fullPath.split("search?")[1], "SSSS"); */
 
     this.currentPage = this.inputParameters.page
       ? this.inputParameters.page
@@ -128,10 +124,15 @@ export default {
       ? this.inputParameters.search
       : ''
 
-    if (!this.inputParameters.search)
-      delete this.inputParameters.search
-
     const query = new URLSearchParams(this.inputParameters).toString()
+
+    // We don't wanna know ...🫣
+    const changedCategories = [1, 2, 3, 4, 54, 57, 64, 66, 75, 78, 87, 95, 97, 99, 104, 106, 109]
+
+    if (changedCategories.some(n => query.includes(`categories=${n}`))) {
+      const matched = changedCategories.find(n => query.includes(`categories=${n}`))
+      return this.redirect(301, this.localeLocation(`${this.$route.fullPath.replaceAll(`-C${matched}`, `-M${matched}`)}`))
+    }
 
     let sel = '&'
 
@@ -361,6 +362,31 @@ export default {
   ],
   searchableFilters: ['winelists', 'pairings', 'regions', 'areas', 'brands'],
   computed: {
+    mappedProducts() {
+      const mappedProducts = this.results.length && this.$productMapping.fromElastic(this.results)
+
+      if (process.browser) {
+        const impressions = mappedProducts.map((product, i) => {
+          // eslint-disable-next-line unused-imports/no-unused-vars
+          const { quantity, ...rest } = product.gtmProductData
+          return {
+            ...rest,
+            position: i + 1,
+          }
+        })
+
+        this.$cmwGtmUtils.pushPage(this.$cmwGtmUtils.getActionField(this.$route), {
+          event: 'productListView',
+          ecommerce: {
+            currencyCode: this.$config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
+            actionField: { list: this.$cmwGtmUtils.getActionField(this.$route) },
+            impressions,
+          },
+        })
+      }
+
+      return mappedProducts
+    },
     filterCategories() {
       return Object.entries(this.filters).slice(0, !(this.showMoreFilters || !this.isDesktop) ? 4 : undefined).reduce((acc, [k, v]) => {
         if (v.length)
@@ -430,10 +456,6 @@ export default {
 
       return selectionsListMapped
     },
-    /* mappedProducts() {
-      // TODO: merge productBox and productBoxElastic
-      return this.results && getMappedProducts(this.results, this.$i18n.locale, true)
-    }, */
   },
   watch: {
     '$route.query': '$fetch',
@@ -804,11 +826,11 @@ export default {
         </div>
         <div v-if="selectedLayout === 'list' && isDesktop">
           <div
-            v-for="result in results"
-            :key="result._id"
+            v-for="(result, idx) in mappedProducts"
+            :key="result.shopify_product_id"
             class="cmw-mb-4"
           >
-            <ProductBoxHorizontalElastic :product="result" :horizontal="true" />
+            <ProductBoxHorizontal :product="result" :position="idx + 1" />
           </div>
         </div>
         <div
@@ -816,10 +838,10 @@ export default {
          sm:(cmw-grid-cols-2 cmw-gap-3) lg:(cmw-grid-cols-3 cmw-gap-4) desktop-wide:cmw-grid-cols-4"
         >
           <div
-            v-for="result in results"
-            :key="`desktop${result._id}`"
+            v-for="(result, idx) in mappedProducts"
+            :key="`desktop${result.shopify_product_id}`"
           >
-            <ProductBoxVerticalElastic :product="result" />
+            <ProductBoxVertical :product="result" :position="idx + 1" />
           </div>
         </div>
       </div>

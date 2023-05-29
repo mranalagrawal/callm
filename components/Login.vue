@@ -1,6 +1,7 @@
 <script>
 import LoginForm from './LoginForm.vue'
 import UserMenu from './UserMenu.vue'
+
 export default {
   components: {
     LoginForm,
@@ -21,7 +22,7 @@ export default {
     this.$nuxt.$on('login', (e) => {
       this.user = e.customer.firstName
     })
-    this.$nuxt.$on('logout', (e) => {
+    this.$nuxt.$on('logout', () => {
       this.user = ''
     })
   },

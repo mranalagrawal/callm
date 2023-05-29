@@ -9,8 +9,10 @@ export default {
     return context.$config.STORE
   },
   setup() {
+    const { $cmwGtmUtils } = useContext()
     const route = useRoute()
     const router = useRouter()
+
     const data = ref(null)
     const linksRef = ref(null)
     const allFilters = ref(null)
@@ -89,6 +91,7 @@ export default {
     }
 
     onMounted(() => {
+      process.browser && $cmwGtmUtils.pushPage('page');
       (window.IntersectionObserver)
         ? createObserver()
         : limit.value = 50 // <-- Note: this could be messy, how can we handle this?

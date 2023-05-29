@@ -66,7 +66,7 @@ export default {
     this.data = userCart
 
     let lang = locales[this.$i18n.locale]
-    if (lang == 'en-gb' && this.$config.STORE == 'CMW')
+    if (lang === 'en-gb' && this.$config.STORE === 'CMW')
       lang = 'en-eu'
 
     const response = await this.$prismic.api.getSingle(

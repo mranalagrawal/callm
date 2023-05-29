@@ -1,4 +1,5 @@
 <script>
+import deliveryIcon from 'assets/svg/delivery.svg'
 import { addProductToCart, createCart } from '../../utilities/cart'
 import documents from '../../prismic-mapper'
 import locales from '../../locales-mapper'
@@ -8,6 +9,7 @@ export default {
   components: { CartLine },
   data() {
     return {
+      deliveryIcon,
       data: null,
       shipping: null,
     }
@@ -201,8 +203,8 @@ export default {
         <p
           class="text-light-primary small text-center text-uppercase py-3 mb-0"
         >
-          <i class="fal fa-truck mr-2" />
-          {{ shipping.threshold_not_reached }}
+          <VueSvgIcon :data="deliveryIcon" width="24" height="24" />
+          <span v-text="shipping.threshold_not_reached" />
         </p>
         <hr>
         <strong>{{ $t("navbar.cart.empty") }}</strong>

@@ -1,25 +1,40 @@
-<script>
+<script lang="ts">
 import { storeToRefs } from 'pinia'
 import closeIcon from 'assets/svg/close.svg'
-import { ref, watchEffect } from '@nuxtjs/composition-api'
+import { defineComponent, ref, watchEffect } from '@nuxtjs/composition-api'
 import { useSplash } from '@/store/splash'
-import EditCustomerAddress from '~/components/UserProfile/EditCustomerAddress.vue'
+import ProductRequestNotification from '~/components/ProductBox/ProductRequestNotification.vue'
 import CreateUserAddress from '~/components/UserProfile/CreateUserAddress.vue'
+import CustomerRecoverFeedback from '~/components/UserProfile/CustomerRecoverFeedback.vue'
+import EditCustomerAddress from '~/components/UserProfile/EditCustomerAddress.vue'
 import RequestOrderAssistance from '~/components/UserProfile/RequestOrderAssistance.vue'
 import UpdateCustomerData from '~/components/UserProfile/UpdateCustomerData.vue'
 import UpdateCustomerEmail from '~/components/UserProfile/UpdateCustomerEmail.vue'
 import UpdateCustomerPassword from '~/components/UserProfile/UpdateCustomerPassword.vue'
-import ProductRequestNotification from '~/components/ProductBox/ProductRequestNotification.vue'
-// noinspection JSUnusedGlobalSymbols
-export default {
+import TheCustomerLoginSplash from '~/components/TheCustomerLoginSplash.vue'
+import TheNewsletterSplash from '~/components/TheNewsletterSplash.vue'
+
+export default defineComponent({
   name: 'CmwSplash',
-  components: { EditCustomerAddress, CreateUserAddress, UpdateCustomerData, UpdateCustomerEmail, UpdateCustomerPassword, ProductRequestNotification },
+  components: {
+    EditCustomerAddress,
+    CreateUserAddress,
+    UpdateCustomerData,
+    UpdateCustomerEmail,
+    UpdateCustomerPassword,
+    ProductRequestNotification,
+    TheCustomerLoginSplash,
+    TheNewsletterSplash,
+  },
   setup() {
     const splash = useSplash()
     const { currentSplash, title, subtitle, size } = storeToRefs(splash)
 
     const showBody = ref(false)
     const closeModal = () => {
+      if (typeof splash.onBeforeCloseModal === 'function' && splash.onBeforeCloseModal !== (() => {}))
+        splash.onBeforeCloseModal()
+
       showBody.value = false
     }
     const handleAfterEnter = () => {
@@ -30,23 +45,26 @@ export default {
     }
 
     // Note: for now we need to import all modals, on Nuxt3 we can use resolveComponent function to handle this
-    const lookUp = key => ({
+    const lookUp = (key: string) => ({
       EditCustomerAddress,
+      CustomerRecoverFeedback,
       CreateUserAddress,
       RequestOrderAssistance,
       UpdateCustomerData,
       UpdateCustomerEmail,
       UpdateCustomerPassword,
       ProductRequestNotification,
+      TheCustomerLoginSplash,
+      TheNewsletterSplash,
     })[key]
 
     watchEffect(() => {
       if (process.browser && document.body)
-        document.body.classList.toggle('lock-scroll', currentSplash.value)
+        document.body.classList.toggle('lock-scroll', !!currentSplash.value)
     })
     return { currentSplash, title, subtitle, size, showBody, closeModal, handleAfterEnter, handleAfterLeave, lookUp, closeIcon }
   },
-}
+})
 </script>
 
 <template>

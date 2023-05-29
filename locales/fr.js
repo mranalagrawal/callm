@@ -59,6 +59,14 @@ export default {
     subscribed: 'abonné',
     unsubscribed: 'désabonné',
     headline: 'Newsletter avec promotions et nouveautés sur tout le catalogue Callmewine',
+    splash: {
+      headline: 'Abonnez-vous à notre newsletter pour recevoir des réductions, des promotions et des nouvelles tous les jours !',
+      offer: 'Immédiatement pour vous une remise de 5% sur votre première commande !',
+      acceptMarketing: 'J\'accepte de recevoir des newsletters et des communications promotionnelles de Callmewine, comme l\'exige le {0}.',
+      profiling: 'Je consens à l\'utilisation de mes données pour des activités de profilage visant à améliorer mon expérience de navigation et à recevoir des offres liées à mes intérêts et à mes habitudes d\'achat, comme l\'exige le {0}.',
+      readMore: 'Pour plus d\'informations, veuillez lire notre {0}',
+      privacyPolicy: 'politique de confidentialité',
+    },
   },
   loginFailed: 'Oops! Il semble que le nom d\'utilisateur ou le mot de passe soient incorrects!',
   birthday: 'Birthday',
@@ -227,13 +235,11 @@ export default {
     mostAwarded: 'Most awarded',
     newArrivals: 'New arrivals',
     popularity: 'Popularity',
-    prova: {
-      'altra prova': {
-        'altro interno': 'finale',
-      },
-    },
+    giftCards: 'Chèque cadeau',
+    chooseGiftCard: 'choose your gift card',
   },
   product: {
+    otherVintages: 'Autres millésimes: ',
     tooltip: {
       guide: 'Guide {guide}',
       score: 'note {value} sur {maxValue}',
@@ -288,6 +294,28 @@ export default {
       oneUpperCase: 'une lettre majuscule',
       oneLowerCase: 'une lettre minuscule',
       oneSpecialChar: 'un caractère spécial',
+    },
+  },
+  recoverPwd: {
+    title: 'Réinitialiser le mot de passe',
+    paragraph: 'Entrez l\'e-mail avec lequel vous vous êtes inscrit. Vous recevrez un message dans votre boîte de réception avec des instructions pour changer votre mot de passe.',
+    feedbackFooter: {
+      text: 'Votre profil est enregistré et vous n\'avez pas reçu l\'email ? Rechercher dans vos courriers indésirables ou {0}',
+      link: 'demander un renvoi',
+    },
+  },
+  contactForm: {
+    motivation: 'Raison du contact',
+    loginRequired: 'nécessite une connexion',
+    selectOrder: 'Sélectionnez la commande',
+    selectedOrder: 'Commande n {orderNumber} du {date}, par {name} pour {total}',
+    choices: {
+      PAYMENT: 'Notifications relatives au paiement d\'une commande',
+      ORDER_SHIPMENT: 'Demander des informations sur l\'expédition d\'une commande',
+      ORDER_RECEIVED: 'Rapports concernant une commande reçue',
+      PURCHASE_SUGGEST: 'Demande de suggestion d\'achat',
+      SITE_IMPROVEMENT: 'Suggestions de produits à ajouter sur Callmewine ou améliorations du site',
+      OTHER: 'Autres questions ou rapports',
     },
   },
 }

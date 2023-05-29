@@ -1,8 +1,6 @@
-<script>
-import { computed, useContext, useFetch, watch } from '@nuxtjs/composition-api'
+<script lang="ts">
+import { computed, onMounted, useContext, useFetch, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import { getMappedProducts } from '@/utilities/mappedProduct'
-// import getProducts from '~/graphql/queries/getProducts'
 import { useFilters } from '~/store/filters'
 import { useCustomer } from '~/store/customer'
 import { useCustomerWishlist } from '~/store/customerWishlist'
@@ -16,7 +14,7 @@ export default {
     const customerWishlist = useCustomerWishlist()
     const { wishlistArr } = storeToRefs(customerStore)
     const { wishlistProducts } = storeToRefs(customerWishlist)
-    const { i18n } = useContext()
+    const { $cmwGtmUtils, $productMapping } = useContext()
 
     const filtersStore = useFilters()
     const { selectedLayout, availableLayouts } = storeToRefs(filtersStore)
@@ -25,17 +23,21 @@ export default {
 
     const { fetch } = useFetch(async () => {
       if (query.value)
-        await customerWishlist.getWishlistProducts(`tag:${query.value}`)
+        await customerWishlist.getWishlistProducts({ query: `tag:${query.value}`, first: Number(wishlistArr.value.length) })
     })
 
     watch(() => query.value, () => fetch())
 
     const customerProducts = computed(() => {
       // Note: there's an annoying warning but the page renders perfectly, https://github.com/nuxt-community/composition-api/issues/19
-      if (!wishlistProducts.value || !wishlistProducts.value.nodes)
+      if (!wishlistProducts.value || !wishlistProducts.value.length)
         return []
 
-      return getMappedProducts(wishlistProducts.value.nodes, i18n.locale)
+      return $productMapping.fromShopify(wishlistProducts.value)
+    })
+
+    onMounted(() => {
+      process.browser && $cmwGtmUtils.pushPage('page')
     })
 
     return {
@@ -117,7 +119,7 @@ export default {
           >
             <ProductBoxVertical
               v-for="product in customerProducts"
-              :key="product.id"
+              :key="product.shopify_product_id"
               :product="product"
               :is-desktop="isDesktop"
             />

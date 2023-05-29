@@ -1,6 +1,7 @@
 export default {
   feedback: {
     OK: {
+      cartAdded: '{product} è stato aggiunto al carrello!',
       wishlistAdded: 'Prodotto Aggiunto ai preferiti!',
       wishlistRemoved: 'Prodotto Rimosso dei preferiti!',
       customerDefaultAddressUpdate: 'L\'indirizzo è stato impostato come predefinito!',

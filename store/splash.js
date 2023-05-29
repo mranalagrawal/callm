@@ -9,5 +9,7 @@ export const useSplash = defineStore({
     title: '',
     subtitle: '',
     size: '',
+    localData: '',
+    onBeforeCloseModal: {},
   }),
 })

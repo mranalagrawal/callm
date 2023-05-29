@@ -24,10 +24,14 @@ export function lookUpLocale(k) {
 localize({
   en: {
     names: {
+      'contact-user-email': 'Email',
+      'contact-first-name': 'Name',
+      'contact-last-name': 'Lastname',
       'notify-me-user-email': 'Email',
       'user-email': 'Email',
       'user-password': 'Password',
       'user-email-navbar': 'Email',
+      'user-email-newsletter': 'Email',
       'user-password-navbar': 'Password',
       'register-user-firstname': 'Name',
       'register-user-lastname': 'Lastname',
@@ -39,6 +43,7 @@ localize({
       'customer-edit-lastname': 'Last name',
       'customer-edit-phone': 'Telephone',
       'message': 'Message',
+      'newsletter-checkbox': 'newsletter',
     },
     fields: {
       'new-password': {
@@ -54,10 +59,14 @@ localize({
   },
   it: {
     names: {
+      'contact-user-email': 'Email',
+      'contact-first-name': 'Nome',
+      'contact-last-name': 'Cognome',
       'notify-me-user-email': 'Email',
       'user-email': 'Email',
       'user-password': 'Password',
       'user-email-navbar': 'Email',
+      'user-email-newsletter': 'Email',
       'user-password-navbar': 'Password',
       'register-user-firstname': 'Nome',
       'register-user-lastname': 'Cognome',
@@ -69,6 +78,7 @@ localize({
       'customer-edit-lastname': 'Cognome',
       'customer-edit-phone': 'Telefono',
       'message': 'Messaggio',
+      'newsletter-checkbox': 'newsletter',
     },
     fields: {
       'new-password': {
@@ -84,10 +94,14 @@ localize({
   },
   fr: {
     names: {
+      'contact-user-email': 'Email',
+      'contact-first-name': 'Nom',
+      'contact-last-name': 'Nom de famille',
       'notify-me-user-email': 'E-mail',
       'user-email': 'E-mail',
       'user-password': 'Mot de passe',
       'user-email-navbar': 'E-mail',
+      'user-email-newsletter': 'Email',
       'user-password-navbar': 'Mot de passe',
       'register-user-firstname': 'Nom',
       'register-user-lastname': 'Nom de famille',
@@ -99,6 +113,7 @@ localize({
       'customer-edit-lastname': 'Nom',
       'customer-edit-phone': 'Téléphone',
       'message': 'Message',
+      'newsletter-checkbox': 'newsletter',
     },
     fields: {
       'new-password': {
@@ -114,10 +129,14 @@ localize({
   },
   de: {
     names: {
+      'contact-user-email': 'Email',
+      'contact-first-name': 'Name',
+      'contact-last-name': 'Familienname, Nachname',
       'notify-me-user-email': 'Email',
       'user-email': 'Email',
       'user-password': 'Passwort',
       'user-email-navbar': 'Email',
+      'user-email-newsletter': 'Email',
       'user-password-navbar': 'Passwort',
       'register-user-firstname': 'Name',
       'register-user-lastname': 'Familienname, Nachname',
@@ -129,6 +148,7 @@ localize({
       'customer-edit-lastname': 'Familienname, Nachname',
       'customer-edit-phone': 'Telefon',
       'message': 'Nachricht',
+      'newsletter-checkbox': 'newsletter',
     },
     fields: {
       'new-password': {

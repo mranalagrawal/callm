@@ -1,19 +1,30 @@
-<script>
-// import locales from '../../locales-mapper'
-
-import { computed, onBeforeUnmount, ref, useContext, useFetch, useRouter } from '@nuxtjs/composition-api'
-import useScreenSize from '@/components/composables/useScreenSize'
+<script lang="ts">
+import type { Ref } from '@nuxtjs/composition-api'
+import {
+  computed,
+  defineComponent,
+  inject,
+  onBeforeUnmount,
+  ref,
+  useContext,
+  useFetch,
+  useRouter,
+} from '@nuxtjs/composition-api'
+import type { RawLocation } from 'vue-router'
+import chevronLeftIcon from 'assets/svg/chevron-left.svg'
+import chevronRightIcon from 'assets/svg/chevron-right.svg'
+import carouselCurveDesktop from 'assets/svg/carousel-curve-desktop.svg'
+import carouselCurveMobile from 'assets/svg/carousel-curve-mobile.svg'
 import { getMobileOperatingSystem } from '@/utilities/getOS'
 import { generateKey } from '@/utilities/strings'
+import prismicConfig from '~/config/prismicConfig'
+import type { TStores } from '~/config/themeConfig'
 
-export default {
+export default defineComponent({
   setup() {
     const {
       req,
-      i18n,
       localeLocation,
-      $prismic,
-      $sentry,
       $cookies,
     } = useContext()
     const router = useRouter()
@@ -23,13 +34,12 @@ export default {
     const slides = ref([])
     const OS = ref($cookies.get('iOS'))
     const isBrowser = ref(false)
-    const { isTablet, isDesktop, isDesktopWide, isDesktopWider, hasBeenSet } = useScreenSize()
+    const isTablet = inject('isTablet') as Ref<boolean>
+    const isDesktopWide = inject('isDesktopWide') as Ref<boolean>
+    const hasBeenSet = inject('hasBeenSet') as Ref<boolean>
 
-    const { fetch } = useFetch(async () => {
-      await $prismic.api.getSingle(
-        'home-carousel',
-        { lang: i18n.localeProperties.iso.toLowerCase() },
-      )
+    const { fetch } = useFetch(async ({ $config, $cmwRepo, $handleApiErrors }) => {
+      await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.homeCarousel })
         .then(({ data }) => {
           if (!process.browser) {
             OS.value = getMobileOperatingSystem(req.headers['user-agent'])
@@ -39,16 +49,14 @@ export default {
           isBrowser.value = process?.browser
           slides.value = data.body[0].items
         })
-        .catch((err) => {
-          $sentry.captureException(new Error(`Catch getting slides from prismic: ${err}`))
-        })
+        .catch((err: Error) => $handleApiErrors(`Catch getting slides from prismic: ${err}`))
     })
 
-    const handleMobileClick = (link) => {
+    const handleMobileClick = (link: RawLocation) => {
       if (isTablet.value)
         return
 
-      router.push(localeLocation(link))
+      router.push(localeLocation(link) as RawLocation)
     }
 
     const showDesktopImage = computed(() => {
@@ -62,32 +70,24 @@ export default {
     return {
       showDesktopImage,
       isTablet,
-      isDesktop,
       isDesktopWide,
-      isDesktopWider,
       hasBeenSet,
       OS,
       isBrowser,
       fetch,
       carousel,
       slides,
+      chevronLeftIcon,
+      chevronRightIcon,
+      carouselCurveDesktop,
+      carouselCurveMobile,
       handleMobileClick,
     }
   },
   methods: {
     generateKey,
   },
-}
-// async fetch() {
-//   let lang = locales[this.$i18n.locale]
-//
-//   if (lang === 'en-gb' && this.$config.STORE === 'CMW')
-//     lang = 'en-eu'
-//
-//   const response = await this.$prismic.api.getSingle('home-carousel', {
-//     lang,
-//   })
-// },
+})
 </script>
 
 <template>
@@ -125,12 +125,12 @@ export default {
       </div>
       <template #back-arrow>
         <span class="cmw-absolute cmw-w-12 cmw-h-12 cmw-bg-white cmw-rounded-sm cmw-flex cmw-left-20 cmw-top-2/5 cmw-translate-y-[-50%]">
-          <VueSvgIcon :data="require(`@/assets/svg/chevron-left.svg`)" color="#992545" width="20" height="20" class="cmw-m-auto" />
+          <VueSvgIcon :data="chevronLeftIcon" color="#992545" width="20" height="20" class="cmw-m-auto" />
         </span>
       </template>
       <template #next-arrow>
         <span class="cmw-absolute cmw-w-12 cmw-h-12 cmw-bg-white cmw-rounded-sm cmw-flex cmw-right-20 cmw-top-2/5 cmw-translate-y-[-50%]">
-          <VueSvgIcon :data="require(`@/assets/svg/chevron-right.svg`)" color="#992545" width="20" height="20" class="cmw-m-auto" />
+          <VueSvgIcon :data="chevronRightIcon" color="#992545" width="20" height="20" class="cmw-m-auto" />
         </span>
       </template>
     </SsrCarousel>
@@ -138,7 +138,7 @@ export default {
       <VueSvgIcon
         class="cmw-m-auto"
         :data="showDesktopImage
-          ? require(`@/assets/svg/carousel-curve-desktop.svg`) : require(`@/assets/svg/carousel-curve-mobile.svg`)"
+          ? carouselCurveDesktop : carouselCurveMobile"
         width="100%"
         height="auto"
         original
@@ -176,7 +176,7 @@ export default {
     opacity: 1;
   }
 
-  ::v-deep([aria-disabled] > .ssr-carousel-dot-icon) {
+  ::v-deep([aria-disabled] .ssr-carousel-dot-icon) {
     background-color: theme('colors.primary.400');
     border-color: theme('colors.primary.400');
     opacity: 1;

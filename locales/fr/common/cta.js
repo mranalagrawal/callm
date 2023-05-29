@@ -14,5 +14,6 @@ export default {
     apply: 'Appliquer',
     notifyMe: 'Avertissez-moi quand il arrive',
     readMore: 'Tout lire',
+    subscribe: 'enregistre-moi',
   },
 }

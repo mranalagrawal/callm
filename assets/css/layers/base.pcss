@@ -1,9 +1,23 @@
 /*@layer base {*/
   /* Root settings */
   :root {
-    --cmw-top-banner-height: 26px;
+    --cmw-top-banner-height: 35px;
     --cmw-header-height: 171px;
   }
+
+@media (min-width: 768px) {
+  :root {
+    --cmw-top-banner-height: 26px;
+    --cmw-header-height: 174px;
+  }
+}
+
+@media (min-width: 992px) {
+  :root {
+    --cmw-top-banner-height: 26px;
+    --cmw-header-height: 179px;
+  }
+}
 
   /* ScrollBar styles */
   ::-webkit-scrollbar {
@@ -32,6 +46,7 @@
 
   #__layout {
     width: 100vw;
+    min-height: 120vh;
   }
 
   /* Headings */

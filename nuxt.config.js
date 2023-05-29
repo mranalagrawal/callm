@@ -1,11 +1,10 @@
 /* import { apiEndpoint } from "./sm.json"; */
 import { join } from 'node:path'
+import fetch from 'node-fetch'
 
 // Todo: Move these function to external files
 // import getSitemapProducts from './utilities/getSitemapProducts'
 // import getSitemapBrands from './utilities/getSitemapBrands'
-
-import fetch from 'node-fetch'
 
 async function getPageProducts(lang, cursor = null) {
   let response = {}
@@ -205,7 +204,7 @@ const SITEMAP = {
     },
     {
       path: '/sitemap_en_editorial_other_pages.xml',
-      exclude: ['/product/**', '/search/**', '/profile', '/profile/**', '/catalog', '/privacy', '/terms-of-sales', '/cookie', '/business-gifts', '/cart', '/gift-cards', '/login', '/new-password', '/preview', '/recover', '/thank-you', '/winery'],
+      exclude: ['/product/**', '/search/**', '/profile', '/profile/**', '/catalog', '/privacy', '/terms-of-sales', '/cookie', '/business-gifts', '/cart', '/gift-cards', '/login', '/preview', '/recover', '/thank-you', '/winery'],
     },
   ],
   CMW_DE: [
@@ -221,7 +220,7 @@ const SITEMAP = {
     },
     {
       path: '/sitemap_en_editorial_other_pages.xml',
-      exclude: ['/product/**', '/search/**', '/profile', '/profile/**', '/catalog', '/privacy', '/terms-of-sales', '/cookie', '/business-gifts', '/cart', '/gift-cards', '/login', '/new-password', '/preview', '/recover', '/thank-you', '/winery'],
+      exclude: ['/product/**', '/search/**', '/profile', '/profile/**', '/catalog', '/privacy', '/terms-of-sales', '/cookie', '/business-gifts', '/cart', '/gift-cards', '/login', '/preview', '/recover', '/thank-you', '/winery'],
     },
   ],
   WILDVIGNERON: [
@@ -340,9 +339,11 @@ export default {
   ],
 
   plugins: [
-    { src: '~/plugins/cmw-api.js' },
-    { src: '~/plugins/repositories.js' },
-    { src: '~/plugins/cookies.js' },
+    { src: '~/plugins/cmw-api.ts' },
+    { src: '~/plugins/cmw-gtm.ts' },
+    { src: '~/plugins/product-mapping.ts' },
+    { src: '~/plugins/repositories.ts' },
+    { src: '~/plugins/cookies.ts' },
     { src: '~plugins/vee-validate', ssr: false },
     { src: '~plugins/vue-carousel-3d', ssr: false },
     { src: '~/plugins/vuex-persist', ssr: false },
@@ -355,6 +356,7 @@ export default {
   components: [
     '~/components',
     { path: '~/components/Base', extensions: ['vue'] },
+    { path: '~/components/Home', extensions: ['vue'] },
   ],
 
   buildModules: [
@@ -379,15 +381,16 @@ export default {
   },
 
   modules: [
+    '@nuxt/typescript-build',
     ['@nuxtjs/robots'],
     ['@nuxt/http'],
     '@nuxtjs/dayjs',
     'bootstrap-vue/nuxt',
     '@nuxtjs/style-resources',
     ['@nuxtjs/i18n'],
-    '@nuxtjs/gtm',
     'cookie-universal-nuxt',
     '@nuxtjs/sentry',
+    '@nuxtjs/gtm',
     '@nuxtjs/sitemap',
   ],
 
@@ -513,7 +516,7 @@ export default {
 
   sentry: {
     dsn: 'https://8976f88cc7254b248b330a78ba72a074@o1240128.ingest.sentry.io/4504560369008640',
-    disabled: process.env.ENVIRONMENT !== 'prod',
+    disabled: process.env.DEPLOY_ENV !== 'prod',
     config: {
       browserTracing: {
         tracePropagationTargets: ['callmewine.co.uk'],
@@ -533,27 +536,33 @@ export default {
 
   router: {
     middleware: ['category'],
+    prefetchLinks: false,
+    linkPrefetchedClass: 'nuxt-link-prefetched',
     extendRoutes(routes, resolve) {
       routes.push(
         {
           name: 'search',
           path: '/(.*)-:filter_key_1(V|C|R|D|B|N|M):filter_id_1(\\d+).htm/',
           component: resolve(__dirname, 'pages/search/categories.vue'),
+          meta: { actionField: 'category' },
         },
         {
           name: 'search-deep',
           path: '/(.*)-:filter_key_1(V|C|R|D|B|N|M):filter_id_1(\\d+):filter_key_2(V|C|R|D|B|N|M):filter_id_2(\\d+).htm/',
           component: resolve(__dirname, 'pages/search/categories.vue'),
+          meta: { actionField: 'category' },
         },
         {
           name: 'catalog',
           path: '/catalog',
           component: resolve(__dirname, 'pages/search/categories.vue'),
+          meta: { actionField: 'category' },
         },
         {
           name: 'product',
           path: '/(.*)-P:id(\\d+).htm/',
           component: resolve(__dirname, 'pages/product/details.vue'),
+          meta: { actionField: 'related_products' },
         },
       )
     },
@@ -633,6 +642,11 @@ export default {
 
   gtm: {
     id: process.env.GOOGLE_TAG_MANAGER_ID,
+    enabled: process.env.DEPLOY_ENV === 'prod' || process.env.DEPLOY_ENV === 'staging',
+    pageTracking: false,
+    pageViewEventName: 'nuxtRoute',
+    autoInit: process.env.DEPLOY_ENV === 'prod' || process.env.DEPLOY_ENV === 'staging',
+    debug: !process.env.DEPLOY_ENV || process.env.DEPLOY_ENV === 'dev',
   },
 
   publicRuntimeConfig: {
@@ -641,23 +655,59 @@ export default {
     ELASTIC_URL: process.env.ELASTIC_URL,
     CMW_API: process.env.CMW_API,
     CMW_API_KEY: process.env.CMW_API_KEY,
-    MAIN_COLOR: process.env.MAIN_COLOR,
     STORE: process.env.STORE,
     SALECHANNEL: process.env.SALECHANNEL,
-    DEFAULT_LOCALE: process.env.DEFAULT_LOCALE,
-    CUSTOMER_API: process.env.CUSTOMER_API,
-    ENVIRONMENT: process.env.ENVIRONMENT,
+    DEPLOY_ENV: process.env.DEPLOY_ENV,
     gtm: {
       id: process.env.GOOGLE_TAG_MANAGER_ID,
     },
   },
 
   robots: () => {
-    return {
+    const isProd = process.env.DEPLOY_ENV === 'prod'
+    const isCMWUKStore = process.env.STORE === 'CMW_UK'
+
+    const commonDisallowPaths = [
+      '/?search=',
+      '/!*?search=*',
+      '/?search=*',
+      '/catalog.htm',
+      '/catalog.htm?*',
+      '/!*catalog.htm',
+      '/!*catalog.htm?*',
+      '/!*?pricerange=*',
+      '/!*?acustom=*',
+      '/!*?pcustom=*',
+      '/!*?aid=*',
+      '/!*?sel=*',
+      '/!*?mid=*',
+      '/!*?zid=*',
+      '/!*?sid=*',
+      '/!*?fpid=*',
+      '/!*?fid=*',
+      '/!*?pid=*',
+      '/!*?s_id=*',
+      '/!*sort=*',
+      '/notificadisponibilita',
+      '/en/notificadisponibilita*',
+      '/it/',
+    ]
+
+    const disallowPaths = isProd
+      ? isCMWUKStore
+        ? ['/*?*', '/catalog*']
+        : [...commonDisallowPaths]
+      : ['/']
+
+    const robotsConfig = {
       UserAgent: '*',
-      Disallow: process.env.ENVIRONMENT === 'prod' ? ['/*?*', '/catalog*'] : '/',
-      // Be aware that this will NOT work on target: 'static' mode
-      ...(process.env.ENVIRONMENT === 'prod' && { Sitemap: req => `https://${req.headers.host}/sitemap.xml` }),
+      Disallow: disallowPaths,
     }
+
+    if (isProd)
+      robotsConfig.Sitemap = req => `https://${req.headers.host}/sitemap.xml`
+
+    return robotsConfig
   },
+
 }

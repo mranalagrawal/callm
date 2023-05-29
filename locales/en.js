@@ -59,6 +59,14 @@ export default {
     subscribed: 'subscribed',
     unsubscribed: 'unsubscribed',
     headline: 'Newsletter with promotions and news on the entire Callmewine catalogue',
+    splash: {
+      headline: 'Subscribe to our newsletter to receive discounts, promotions and news every day!',
+      offer: 'Immediately for you a 5% discount on your first order!',
+      acceptMarketing: 'I agree to receive newsletters and promotional communications from Callmewine, as required by the {0}.',
+      profiling: 'I consent to the use of my data for profiling activities aimed at improving my browsing experience and receiving offers related to my interests and my purchasing habits, as required by the {0}.',
+      readMore: 'For more information, please read our {0}',
+      privacyPolicy: 'Privacy Policy',
+    },
   },
   loginFailed: 'Oops! It seems that username or password are incorrect!',
   birthday: 'Birthday',
@@ -228,13 +236,11 @@ export default {
     mostAwarded: 'Most awarded',
     newArrivals: 'New arrivals',
     popularity: 'Popularity',
-    prova: {
-      'altra prova': {
-        'altro interno': 'finale',
-      },
-    },
+    giftCards: 'Gift Cards',
+    chooseGiftCard: 'choose your gift card',
   },
   product: {
+    otherVintages: 'Other vintages: ',
     tooltip: {
       guide: 'Guide {guide}',
       score: 'score {value} out of {maxValue}',
@@ -288,6 +294,29 @@ export default {
       oneUpperCase: 'one uppercase letter',
       oneLowerCase: 'one lowercase letter',
       oneSpecialChar: 'one special character',
+    },
+  },
+  recoverPwd: {
+    title: 'Reset password',
+    paragraph: 'Enter the email with which you registered. You will receive a message in your inbox with instructions for changing your password.',
+    feedback: 'Se l\'indirizzo {0} è associato ad un profilo registrato, riceverai via mail il link per reimpostare la password del tuo account.',
+    feedbackFooter: {
+      text: 'Is your profile registered and you haven\'t received the email? Search your junk mail or {0}',
+      link: 'request a resend',
+    },
+  },
+  contactForm: {
+    motivation: 'Reason for the contact',
+    loginRequired: 'requires login',
+    selectOrder: 'Select the order',
+    selectedOrder: 'Order# {orderNumber} from {date}, by {name} for {total}',
+    choices: {
+      PAYMENT: 'Notifications relating to the payment of an order',
+      ORDER_SHIPMENT: 'Request information on the shipment of an order',
+      ORDER_RECEIVED: 'Reports regarding an order received',
+      PURCHASE_SUGGEST: 'Purchase suggestion request',
+      SITE_IMPROVEMENT: 'Product suggestions to add on Callmewine or site improvements',
+      OTHER: 'Other questions or reports',
     },
   },
 }

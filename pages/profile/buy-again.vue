@@ -1,7 +1,6 @@
 <script>
-import { computed, ref, useContext, useFetch } from '@nuxtjs/composition-api'
+import { computed, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import { getMappedProducts } from '@/utilities/mappedProduct'
 import { useFilters } from '~/store/filters'
 import { getUniqueListBy } from '~/utilities/arrays'
 import { useCustomerOrders } from '~/store/customerOrders'
@@ -11,7 +10,7 @@ export default {
     isDesktop: Boolean,
   },
   setup() {
-    const { i18n } = useContext()
+    const { i18n, $cmwGtmUtils, $productMapping } = useContext()
     const customerOrders = useCustomerOrders()
     const { orders } = storeToRefs(customerOrders)
 
@@ -82,8 +81,12 @@ export default {
 
       arr = arr.filter(p => p.id)
       arr = getUniqueListBy(arr, 'id')
-      arr = getMappedProducts(arr)
+      arr = $productMapping.fromShopify(arr)
       return arr
+    })
+
+    onMounted(() => {
+      process.browser && $cmwGtmUtils.pushPage('page')
     })
 
     return {

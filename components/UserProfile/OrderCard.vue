@@ -91,7 +91,7 @@ export default {
           const amountFullPrice = Number(
             el.variant.product.variants.nodes[0].compareAtPriceV2.amount,
           )
-          const tag = el.variant.product.tags[0]
+          const tag = el.variant.product.tags
           const image = el.variant.product.images.nodes[0].url
 
           const title = el.title

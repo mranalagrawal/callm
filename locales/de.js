@@ -59,6 +59,14 @@ export default {
     subscribed: 'gezeichnet',
     unsubscribed: 'abgemeldet',
     headline: 'Newsletter mit Aktionen und Neuigkeiten zum gesamten Callmewine-Katalog',
+    splash: {
+      headline: 'Abonnieren Sie unseren Newsletter, um täglich Rabatte, Aktionen und Neuigkeiten zu erhalten!',
+      offer: 'Ab sofort für Sie 5% Rabatt auf Ihre erste Bestellung!',
+      acceptMarketing: 'Ich bin damit einverstanden, Newsletter und Werbemitteilungen von Callmewine gemäß den {0}-Vorschriften zu erhalten.',
+      profiling: 'Ich stimme der Verwendung meiner Daten für Profiling-Aktivitäten zu, die darauf abzielen, mein Surferlebnis zu verbessern und Angebote im Zusammenhang mit meinen Interessen und meinen Kaufgewohnheiten zu erhalten, wie in der {0} vorgeschrieben.',
+      readMore: 'Weitere Informationen finden Sie in unserem {0}',
+      privacyPolicy: 'Datenschutz-Bestimmungen',
+    },
   },
   loginFailed: 'Ops! Sembra che il nome utente o la password non siano corretti!',
   birthday: 'Geburtstag',
@@ -228,8 +236,11 @@ export default {
     mostAwarded: 'Meist ausgezeichnet',
     newArrivals: 'Neuankömmlinge',
     popularity: 'Popularität',
+    giftCards: 'Geschenkgutschein',
+    chooseGiftCard: 'choose your gift card',
   },
   product: {
+    otherVintages: 'Andere Jahrgänge: ',
     tooltip: {
       guide: 'Handbuch {guide}',
       score: 'Punktzahl {value} von {maxValue}',
@@ -284,6 +295,28 @@ export default {
       oneUpperCase: 'ein Großbuchstabe',
       oneLowerCase: 'ein kleiner Buchstabe',
       oneSpecialChar: 'ein Sonderzeichen',
+    },
+  },
+  recoverPwd: {
+    title: 'Passwort zurücksetzen',
+    paragraph: 'Geben Sie die E-Mail ein, mit der Sie sich registriert haben. Sie erhalten eine Nachricht in Ihrem Posteingang mit Anweisungen zum Ändern Ihres Passworts.',
+    feedbackFooter: {
+      text: 'Ist Ihr Profil registriert und Sie haben die E-Mail nicht erhalten? Durchsuchen Sie Ihre Junk-Mail oder fordern Sie eine {0}',
+      link: 'erneute Zusendung an',
+    },
+  },
+  contactForm: {
+    motivation: 'Grund für den Kontakt',
+    loginRequired: 'erfordert eine Anmeldung',
+    selectOrder: 'Wählen Sie die Bestellung aus',
+    selectedOrder: 'Bestellnr. {orderNumber} vom {date}, von {name} für {total}',
+    choices: {
+      PAYMENT: 'Benachrichtigungen bezüglich der Zahlung einer Bestellung',
+      ORDER_SHIPMENT: 'Fordern Sie Informationen zum Versand einer Bestellung an',
+      ORDER_RECEIVED: 'Berichte zu einer eingegangenen Bestellung',
+      PURCHASE_SUGGEST: 'Kaufvorschlagsanfrage',
+      SITE_IMPROVEMENT: 'Produktvorschläge zum Hinzufügen zu Callmewine oder Website-Verbesserungen',
+      OTHER: 'Sonstige Fragen oder Berichte',
     },
   },
 }

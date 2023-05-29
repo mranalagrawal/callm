@@ -1,13 +1,10 @@
 <script>
 import TopBar from '../components/TopBar.vue'
 
-import NavbarWV from '../components/NavbarWV.vue'
-
 export default {
   name: 'IndexPage',
   components: {
     TopBar,
-    NavbarWV,
   },
 }
 </script>
@@ -15,13 +12,9 @@ export default {
 <template>
   <div>
     <TopBar />
-    <client-only>
-      <div class="">
-        <NavbarWV />
-      </div>
-    </client-only>
+    <Navbar class="cmw-navbar" />
 
-    <nuxt class="pt-5" style="position: relative; top: 110px" />
+    <nuxt class="cmw-main" />
 
     <LazyTheFooterWV style="position: relative; top: 110px" />
     <client-only>

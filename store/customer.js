@@ -1,4 +1,6 @@
 import { defineStore } from 'pinia'
+import themeConfig from '~/config/themeConfig'
+import { useCustomerOrders } from '~/store/customerOrders'
 import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
 import { getIconAsImg } from '~/utilities/icons'
 import customerAccessTokenCreate from '~/graphql/mutations/authenticateUser'
@@ -21,7 +23,16 @@ const availableUsers = {
 export const useCustomer = defineStore({
   id: 'customer',
   state: () => ({
-    customer: {},
+    customer: {
+      acceptsMarketing: false,
+      firstName: '',
+      id: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      orders_count: '',
+      total_spent: '',
+    },
     // FixMe: on Nuxt 3 or using GraphQl local storage properly we shouldn't need this,
     //  we need to reduce the extra objects and relay on the state,
     //  I believe there is an issue with deep watch, for some reason getters are not updating accordingly
@@ -77,10 +88,24 @@ export const useCustomer = defineStore({
 
       return valid
     },
-    async getCustomer() {
+    async getCustomer(event = '') {
+      const customerOrders = useCustomerOrders()
       await this.$nuxt.$cmwRepo.customer.getCustomer()
-        .then(({ customer }) => {
+        .then(async ({ customer }) => {
           if (customer) {
+            await customerOrders.getOrders('processed_at:>2010-01-01')
+            await this.$nuxt.$cmw.$get(`/customers/${customer.id.substring(`${customer.id}`.lastIndexOf('/') + 1)}/user-info`)
+              .then(({ data = {}, errors = [] }) => {
+                if (errors.length) {
+                  this.$nuxt.$handleApiErrors('error login')
+                } else {
+                  customer = {
+                    ...customer,
+                    ...data,
+                  }
+                }
+              })
+
             // Todo: Remove this when done with Vuex
             this.$nuxt.store.commit('user/setUser', {
               token: this.$nuxt.$cookieHelpers.getToken(),
@@ -90,16 +115,45 @@ export const useCustomer = defineStore({
               customer,
               wishlistArr: (customer.wishlist && customer.wishlist.value) ? setCustomerWishlist(customer.wishlist.value) : [],
             })
+
+            if (event) {
+              await this.$nuxt.$cmwGtmUtils.resetDatalayerFields()
+
+              this.$nuxt.$gtm.push({
+                event,
+                userType: themeConfig[this.$nuxt.$config.STORE].customerType,
+                userId: this.customer.id,
+                userFirstName: this.customer.firstName,
+                userLastName: this.customer.lastName,
+                userEmail: this.customer.email,
+                userPhone: this.customer.phone,
+                userPurchasesCount: this.customer.orders_count,
+                userPurchasesTot: this.customer.total_spent,
+              })
+            }
           } else {
-            SweetAlertToast.fire({ text: this.$nuxt.app.i18n.t('common.feedback.KO.login') })
+            await SweetAlertToast.fire({ text: this.$nuxt.app.i18n.t('common.feedback.KO.login') })
           }
         })
     },
     async logout() {
+      const customerOrders = useCustomerOrders()
+      this.$nuxt.$gtm.push({
+        event: 'logout',
+        userType: themeConfig[this.$nuxt.$config.STORE].customerType,
+        userId: this.customer.id,
+        userFirstName: this.customer.firstName,
+        userLastName: this.customer.lastName,
+        userEmail: this.customer.email,
+        userPhone: this.customer.phone,
+      })
       this.$nuxt.store.commit('user/setUser', null)
       await this.$nuxt.$cookieHelpers.onLogout()
       this.$reset()
+      customerOrders.$reset()
+      this.$nuxt.$cookies.remove('newsletter')
       this.$nuxt.$graphql.default.setHeader('authorization', '')
+      window.google_tag_manager[this.$nuxt.app.$config.gtm.id] && window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.reset()
       await this.$nuxt.app.router.push(this.$nuxt.app.localePath('/'))
     },
 
@@ -111,13 +165,26 @@ export const useCustomer = defineStore({
         { method: 'POST' },
       )
         .then(response => (response.json()))
-        .then((array) => {
+        .then(async (array) => {
           // TODO: Animate the filling heart for a better UX
           this.$patch({ wishlistArr: setCustomerWishlist(JSON.stringify(array)) })
           SweetAlertToast.fire({
             iconHtml: getIconAsImg('success'),
             text: this.$nuxt.app.i18n.t(args.isOnFavourite ? 'common.feedback.OK.wishlistRemoved' : 'common.feedback.OK.wishlistAdded'),
           })
+
+          if (!args.isOnFavourite) {
+            await this.$nuxt.$cmwGtmUtils.resetDatalayerFields()
+
+            this.$nuxt.$gtm.push({
+              event: 'addToWishlist',
+              wishlistAddedProduct: {
+                products: [{
+                  ...args.gtmProductData,
+                }],
+              },
+            })
+          }
         })
         .catch(() => {
           SweetAlertToast.fire({

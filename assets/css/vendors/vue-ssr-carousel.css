@@ -13,3 +13,41 @@
   border-color: theme('colors.primary.DEFAULT');
   background-color: theme('colors.primary.DEFAULT');
 }
+
+/* Arrows */
+.ssr-carousel-arrows .ssr-carousel-back-button, .ssr-carousel-arrows .ssr-carousel-next-button {
+  display: flex;
+  width: 48px;
+  height: 48px;
+  box-shadow: 0 0.5rem 1rem rgb(102 101 101 / 50%);
+  transform: translate(-85%, -50%);
+  @apply cmw-rounded-sm;
+}
+
+.ssr-carousel-arrows .ssr-carousel-back-button span,
+.ssr-carousel-arrows .ssr-carousel-next-button span {
+  display: flex;
+}
+
+.ssr-carousel-arrows .ssr-carousel-back-button {
+  left: 0;
+}
+
+.ssr-carousel-arrows .ssr-carousel-next-button {
+  transform: translate(85%, -50%);
+  right: 0;
+}
+
+/* Dots */
+.ssr-carousel-dots {
+  align-items: center;
+  gap: 8px;
+}
+
+.ssr-carousel-dots .ssr-carousel-dot-button {
+  display: flex;
+}
+
+.ssr-carousel-dot-button span {
+  margin: auto;
+}

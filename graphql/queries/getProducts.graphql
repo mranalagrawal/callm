@@ -7,6 +7,8 @@ query getProducts(
   products(first: $first, reverse: $reverse, query: $query) {
     nodes {
       availableForSale
+      descriptionHtml
+      handle
       id
       featuredImage { altText, height, url, width }
       seo { description, title }
@@ -26,82 +28,7 @@ query getProducts(
           compareAtPriceV2 { amount, currencyCode }
           priceV2 { amount, currencyCode }
           quantityAvailable
-        }
-      }
-    }
-    edges {
-      node {
-        availableForSale
-        descriptionHtml
-        handle
-        id
-        title
-        vendor
-        seo {
-          description
-          title
-        }
-        tags
-        totalInventory
-        variants(first: 1) {
-          edges {
-            node {
-              id
-              availableForSale
-              compareAtPriceV2 { amount, currencyCode }
-              priceV2 { amount, currencyCode }
-              compareAtPriceV2 { amount, currencyCode }
-              image { altText, height, url, width }
-              sku
-              quantityAvailable
-              metafield: metafield(namespace: "custom", key: "details") {
-                value
-              }
-              product {
-                id
-                title
-                description
-                descriptionHtml
-                handle
-                tags
-                createdAt
-                availableForSale
-                seo {
-                  description
-                  title
-                }
-                variants(first: 10) {
-                  nodes {
-                    id
-                    compareAtPriceV2 {
-                      amount
-                      currencyCode
-                    }
-                    price
-                  }
-                }
-                images(first: 10) {
-                  nodes {
-                    url
-                  }
-                }
-                metafield: metafield(namespace: "custom", key: "details") {
-                  value
-                }
-              }
-            }
-          }
-        }
-        images(first: 10) {
-          nodes {
-            url
-          }
-        }
-        metafield: metafield(namespace: "custom", key: "details") {
-          value
-        }
-        details: metafield(namespace: "custom", key: "details") {
-          value
+          sku
         }
       }
     }
