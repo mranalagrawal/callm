@@ -9,7 +9,6 @@ export default function () {
   const hasBeenSet = ref(false)
 
   const resizeListener = debounce(() => {
-    console.log('resizeListener()')
     hasBeenSet.value = true
     isTablet.value = window.innerWidth >= 768
     isDesktop.value = window.innerWidth >= 992
