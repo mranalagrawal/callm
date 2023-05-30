@@ -80,39 +80,10 @@ export default {
   },
   methods: {
     async checkout() {
-      // redirect if not user
-      if (!this.$store.state.user.user) {
-        // crea carrello su shop
-        const domain = this.$config.DOMAIN
-        const access_token = this.$config.STOREFRONT_ACCESS_TOKEN
-        const user = this.$store.state.user.user || 'test'
-        const cart = await createCart(domain, access_token, user)
-        const cartId = cart.id
-
-        // update in bulk del cart
-        const lines = this.$store.state.userCart.userCart.map((el) => {
-          return {
-            merchandiseId: el.productVariantId,
-            quantity: el.quantity,
-          }
-        })
-
-        const cartFilled = await addProductToCart(
-          domain,
-          access_token,
-          cartId,
-          lines,
-        )
-        // crea checkoutUrl
-        const checkoutUrl = `${cartFilled.checkoutUrl}/?`
-        window.location = checkoutUrl
-        return
-      }
-
       // crea carrello su shop
       const domain = this.$config.DOMAIN
       const access_token = this.$config.STOREFRONT_ACCESS_TOKEN
-      const user = this.$store.state.user.user
+      const user = this.$store.state.user.user || 'test'
       const cart = await createCart(domain, access_token, user)
       const cartId = cart.id
 
@@ -121,6 +92,12 @@ export default {
         return {
           merchandiseId: el.productVariantId,
           quantity: el.quantity,
+          attributes: [
+            {
+              key: 'bundle',
+              value: el.tag.includes('BUNDLE').toString(),
+            },
+          ],
         }
       })
 
@@ -130,6 +107,14 @@ export default {
         cartId,
         lines,
       )
+
+      if (!this.$store.state.user.user) {
+        // crea checkoutUrl
+        const checkoutUrl = `${cartFilled.checkoutUrl}/?`
+        window.location = checkoutUrl
+        return
+      }
+
       // crea checkoutUrl
       let checkoutUrl = `${cartFilled.checkoutUrl}/?`
       this.$store.state.user.user.customer.email

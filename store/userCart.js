@@ -27,7 +27,7 @@ export const mutations = {
         attributes: [
           {
             key: 'bundle',
-            value: entry.tag.includes('BUNDLE'),
+            value: entry.tag.includes('BUNDLE').toString(),
           },
         ],
       })
