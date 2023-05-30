@@ -232,7 +232,7 @@ export default {
                   <p class="cmw-text-sm cmw-text-gray-darkest" v-html="$t('shippingCost')" />
                   <Button
                     type="button" variant="default"
-                    @click.native="checkout"
+                    @click.native="checkout()"
                   >
                     {{ $t('common.cta.goToCheckout') }}
                   </Button>
