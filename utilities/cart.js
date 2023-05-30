@@ -33,7 +33,7 @@ export const createCartMutation = (buyerIdentity = null) => {
                 merchandise {
                   ... on ProductVariant {
                     id
-                    price { amount }
+                    priceV2 { amount }
                     product {
                       id
                       title
@@ -146,7 +146,7 @@ export const removeItemMutation = (cartId, lineId) => {
                     merchandise {
                       ... on ProductVariant {
                         id
-                        price { amount }
+                        priceV2 { amount }
                         product {
                           id
                           title
@@ -251,7 +251,7 @@ export const updateItemMutation = (cartId, lineId, quantity) => {
                       merchandise {
                         ... on ProductVariant {
                           id
-                          price { amount }
+                          priceV2 { amount }
                           product {
                             id
                             title
@@ -357,7 +357,7 @@ const generalQuery = `
                 merchandise {
                   ... on ProductVariant {
                     id
-                    price { amount }
+                    priceV2 { amount }
                     product {
                       id
                       title
