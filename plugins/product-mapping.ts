@@ -130,13 +130,13 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
           vendor: p._source.brandname,
           image: {
             thumbnail: {
-              url: `${p._source.shopifyImageUrl?.CMW_UK}&width=20&height=36`,
+              url: p._source.shopifyImageUrl ? `${p._source.shopifyImageUrl[store]}&width=20&height=36` : '',
               width: 20,
               height: 36,
               altText: p._source.name_t[lang],
             },
             source: {
-              url: `${p._source.shopifyImageUrl?.CMW_UK}&width=300&height=540`,
+              url: p._source.shopifyImageUrl ? `${p._source.shopifyImageUrl[store]}&width=300&height=540` : '',
               width: 300,
               height: 540,
               altText: p._source.name_t[lang],
