@@ -82,7 +82,7 @@ export default {
           @mouseenter="onTab(firstLevel)"
         >
           <button
-            class="cmw-text-xs desktop-wide:cmw-text-sm cmw-uppercase cmw-no-underline hover:(!cmw-text-primary cmw-font-bold cmw-no-underline)"
+            class="cmw-w-max cmw-text-xs desktop-wide:cmw-text-sm cmw-uppercase cmw-no-underline hover:(!cmw-text-primary cmw-font-bold cmw-no-underline)"
             :class="firstLevel.isPromotionTab ? '!cmw-text-primary-400' : '!cmw-text-body'"
             @click="handleClick(`/${firstLevel.link}`)"
           >
