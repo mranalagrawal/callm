@@ -569,6 +569,7 @@ export default {
   },
 
   build: {
+    publicPath: '/_cmw/',
     transpile: ['@prismicio/vue', 'swiper', 'vue-svg-icon', 'vee-validate/dist/rules'],
     loaders: {
       scss: {
