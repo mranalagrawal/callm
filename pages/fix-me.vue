@@ -6,6 +6,12 @@ export default defineComponent({
     return 'empty'
   },
   computed: {
+    vuex() {
+      if (typeof window !== 'undefined')
+        return window.localStorage.getItem('vuex')
+
+      return 'EMPTY'
+    },
     userCart() {
       return this.$store.state.userCart.userCart
     },
@@ -14,5 +20,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <pre>{{ userCart }}</pre>
+  <div>
+    <pre>{{ JSON.parse(vuex) }}</pre>
+    <pre>{{ userCart }}</pre>
+  </div>
 </template>
