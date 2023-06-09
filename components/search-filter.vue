@@ -156,23 +156,11 @@ export default {
     if (seo) {
       const pickedSeo = pick(seo, ['pageTitle', 'pageDescription', 'seoTitle', 'seoDescription', 'pageFullDescription'])
 
-      if (Object.values(pickedSeo).every(item => !item)) {
-        this.$sentry.captureException(new Error('Missing ALL SEO on listing page'))
-      } else {
-        Object.entries(pickedSeo).forEach(([k, v]) => {
-          if (!v)
-            this.$sentry.captureException(new Error(`Missing ${k} SEO on listing page`))
-        })
-
+      if (!Object.values(pickedSeo).every(item => !item))
         this.seoData = pickedSeo
-      }
     } else {
       this.$sentry.captureException(new Error('Something went wrong on SEO API on listing page'))
     }
-
-    // const allFields = await fetch(elastic_url)
-    //
-    // const allFieldsJSON = await allFields.json()
 
     const search = await searchResult.json()
 
