@@ -3,6 +3,7 @@ import { inject, ref, useContext, watchEffect } from '@nuxtjs/composition-api'
 import closeIcon from 'assets/svg/close.svg'
 import { storeToRefs } from 'pinia'
 import Loader from '../components/UI/Loader.vue'
+import chevronDownIcon from '~/assets/svg/chevron-down.svg'
 import { pick } from '@/utilities/arrays'
 import { useFilters } from '~/store/filters'
 import { getLocaleFromCurrencyCode } from '@/utilities/currency'
@@ -34,12 +35,14 @@ export default {
       availableLayouts,
       selectedLayout,
       closeIcon,
+      chevronDownIcon,
       redirect,
     }
   },
   data() {
     return {
       cmwActiveSelect: '',
+      sorting: false,
       minPrice: 0,
       maxPrice: 0,
       minPriceTotal: null,
@@ -326,12 +329,12 @@ export default {
   },
   head() {
     return {
-      title: this.seoData?.seoTitle,
+      title: this.seoData?.seoTitle || this.seoTitleReplace,
       meta: [
         {
           hid: 'description',
           name: 'description',
-          content: this.seoData?.seoDescription,
+          content: this.seoData?.seoDescription || this.seoTitleReplace,
         },
       ],
     }
@@ -350,8 +353,22 @@ export default {
   ],
   searchableFilters: ['winelists', 'pairings', 'regions', 'areas', 'brands'],
   computed: {
+    seoTitleReplace() {
+      return this.view.regions?.name
+        || this.view.vintages?.name
+        || this.view.pairings?.name
+        || this.view.brands?.name
+        || this.view.agings?.name
+        || this.view.philosophies?.name
+        || this.view.sizes?.name
+        || this.view.dosagecontents?.name
+        || this.view.categories?.name
+        || this.view.winelists?.name
+        || this.view.awards?.name
+    },
     mappedProducts() {
       const mappedProducts = this.results.length && this.$productMapping.fromElastic(this.results)
+      mappedProducts.sort((a, b) => b.availableForSale - a.availableForSale)
 
       if (process.browser) {
         const impressions = mappedProducts.map((product, i) => {
@@ -511,6 +528,13 @@ export default {
         query,
       })
     },
+    handleUpdateSortTrigger() {
+      this.sorting = !this.sorting
+    },
+    handleUpdateSortValue(value) {
+      const { field, direction } = JSON.parse(value)
+      this.sortBy(field, direction)
+    },
     setPages(totalPages) {
       const { page } = this.$route.query
 
@@ -587,13 +611,7 @@ export default {
           {{ seoData.pageTitle }}
         </div>
         <div v-else class="cmw-h3">
-          {{ view.regions?.name }} {{ view.vintages?.name }}
-          {{ view.pairings?.name }} {{ view.brands?.name }}
-          {{ view.agings?.name }} {{ view.philosophies?.name }}
-          {{ view.sizes?.name }} {{ view.dosagecontents?.name }}
-          {{ view.categories?.name }}
-          {{ view.winelists?.name }}
-          {{ view.awards?.name }}
+          {{ seoTitleReplace }}
           <span v-for="selection in activeSelections" :key="selection">
             {{ $t(`selections.${selection}`) }}
           </span>
@@ -768,49 +786,44 @@ export default {
             </div>
           </div>
           <div class="d-none d-md-block col-4" />
-          <div class="">
-            <div>
-              <!-- {{ this.$router }} -->
-              <b-dropdown id="sorting" variant="null" right class="" no-caret>
-                <template #button-content>
-                  {{ $t('search.sortBy') }}
-                  <i class="fal fa-chevron-down text-light-secondary ml-3" />
-                </template>
-                <div class="shadow br-10" style="width: 300px">
-                  <button
-                    class="btn py-3 btn-sort-by w-100 text-left d-block"
-                    @click="sortBy('price', 'desc')"
-                  >
-                    {{ $t('search.highestPrice') }}
-                  </button>
-                  <button
-                    class="btn py-3 btn-sort-by w-100 text-left d-block"
-                    @click="sortBy('price', 'asc')"
-                  >
-                    {{ $t('search.lowestPrice') }}
-                  </button>
-                  <button
-                    class="btn py-3 btn-sort-by w-100 text-left d-block"
-                    @click="sortBy('awardcount', 'desc')"
-                  >
-                    {{ $t('search.mostAwarded') }}
-                  </button>
-                  <button
-                    class="btn py-3 btn-sort-by w-100 text-left d-block"
-                    @click="sortBy('brandname', 'asc')"
-                  >
-                    Brand (A-Z)
-                  </button>
-                  <button
-                    class="btn py-3 btn-sort-by w-100 text-left d-block"
-                    @click="sortBy('brandname', 'desc')"
-                  >
-                    Brand (Z-A)
-                  </button>
-                </div>
-              </b-dropdown>
-            </div>
-          </div>
+          <CmwDropdown
+            key="sort-by"
+            size="sm"
+            :active="sorting"
+            position="right"
+            @update-trigger="handleUpdateSortTrigger"
+          >
+            <template #default>
+              <span>{{ $t('search.sortBy') }}</span>
+            </template>
+            <template #children>
+              <CmwSelect
+                position="right"
+                :options="[{
+                             label: $t('search.highestPrice'),
+                             value: JSON.stringify({ field: 'price', direction: 'desc' }),
+                           },
+                           {
+                             label: $t('search.lowestPrice'),
+                             value: JSON.stringify({ field: 'price', direction: 'asc' }),
+                           },
+                           {
+                             label: $t('search.mostAwarded'),
+                             value: JSON.stringify({ field: 'awardcount', direction: 'desc' }),
+                           },
+                           {
+                             label: $t('search.brandAsc'),
+                             value: JSON.stringify({ field: 'brandname', direction: 'asc' }),
+                           },
+                           {
+                             label: $t('search.brandDesc'),
+                             value: JSON.stringify({ field: 'brandname', direction: 'desc' }),
+                           },
+                ]"
+                @update-value="handleUpdateSortValue"
+              />
+            </template>
+          </CmwDropdown>
         </div>
         <div v-if="selectedLayout === 'list' && isDesktop">
           <div
@@ -1080,22 +1093,5 @@ export default {
 <style scoped>
 .c-scrollbar::-webkit-scrollbar {
   display:none;
-}
-
-.btn-sort-by:hover {
-  background: #fae4e8;
-}
-
-:deep(.dropdown-menu.dropdown-menu-right.show) {
-  padding-top: 0;
-  padding-bottom: 0;
-  border: 0;
-}
-
-.badge {
-  border-radius: 2rem !important;
-  padding: 0.25em 1em;
-  font-weight: normal;
-  cursor: pointer;
 }
 </style>

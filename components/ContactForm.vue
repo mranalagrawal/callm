@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, ref, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, onMounted, onUnmounted, ref, useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import radioCheckedIcon from '~/assets/svg/radio-checked.svg'
 import radioUncheckedIcon from '~/assets/svg/radio-unchecked.svg'
@@ -10,7 +10,7 @@ import { SweetAlertToast } from '~/utilities/Swal'
 
 export default defineComponent({
   setup() {
-    const { i18n, $cmwRepo, $config } = useContext()
+    const { i18n, $cmwRepo, $config, $recaptcha } = useContext()
     const splash = useSplash()
     const { orders } = storeToRefs(useCustomerOrders())
     const { customer } = storeToRefs(useCustomer())
@@ -105,8 +105,10 @@ export default defineComponent({
       isSubmitting.value = true
 
       const { isValid } = await formEl.value.validateWithInfo()
+      const token = await $recaptcha.execute('login')
+      // console.log('ReCaptcha token:', token)
 
-      if (isValid) {
+      if (isValid && token) {
         const { status, message } = await $cmwRepo.orders.requestAssistance({
           message: formData.value.message,
           order: selectedOrder.value,
@@ -134,6 +136,16 @@ export default defineComponent({
       selectingOrder.value = false
       selectedOrder.value = value
     }
+
+    onMounted(async () => {
+      try {
+        await $recaptcha.init()
+      } catch (e) {
+        console.error(e)
+      }
+    })
+
+    onUnmounted(() => $recaptcha.destroy())
 
     return {
       formEl,
@@ -264,7 +276,6 @@ export default defineComponent({
             ]"
           >{{ $t('profile.message') }}</label>
         </div>
-
         <Button
           v-if="showForm"
           class="cmw-w-max cmw-mt-8"

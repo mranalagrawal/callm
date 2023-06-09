@@ -11,6 +11,7 @@ type OrderLineItem {
 
 type OrderLineItemConnection {
   edges: [CustomerOrderLineItemEdge]
+  nodes: [OrderLineItem!]!
 }
 
 type CustomerOrderLineItemEdge {

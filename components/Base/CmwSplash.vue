@@ -3,29 +3,9 @@ import { storeToRefs } from 'pinia'
 import closeIcon from 'assets/svg/close.svg'
 import { defineComponent, ref, watchEffect } from '@nuxtjs/composition-api'
 import { useSplash } from '@/store/splash'
-import ProductRequestNotification from '~/components/ProductBox/ProductRequestNotification.vue'
-import CreateUserAddress from '~/components/UserProfile/CreateUserAddress.vue'
-import CustomerRecoverFeedback from '~/components/UserProfile/CustomerRecoverFeedback.vue'
-import EditCustomerAddress from '~/components/UserProfile/EditCustomerAddress.vue'
-import RequestOrderAssistance from '~/components/UserProfile/RequestOrderAssistance.vue'
-import UpdateCustomerData from '~/components/UserProfile/UpdateCustomerData.vue'
-import UpdateCustomerEmail from '~/components/UserProfile/UpdateCustomerEmail.vue'
-import UpdateCustomerPassword from '~/components/UserProfile/UpdateCustomerPassword.vue'
-import TheCustomerLoginSplash from '~/components/TheCustomerLoginSplash.vue'
-import TheNewsletterSplash from '~/components/TheNewsletterSplash.vue'
 
 export default defineComponent({
   name: 'CmwSplash',
-  components: {
-    EditCustomerAddress,
-    CreateUserAddress,
-    UpdateCustomerData,
-    UpdateCustomerEmail,
-    UpdateCustomerPassword,
-    ProductRequestNotification,
-    TheCustomerLoginSplash,
-    TheNewsletterSplash,
-  },
   setup() {
     const splash = useSplash()
     const { currentSplash, title, subtitle, size } = storeToRefs(splash)
@@ -44,25 +24,36 @@ export default defineComponent({
       splash.$reset()
     }
 
-    // Note: for now we need to import all modals, on Nuxt3 we can use resolveComponent function to handle this
-    const lookUp = (key: string) => ({
-      EditCustomerAddress,
-      CustomerRecoverFeedback,
-      CreateUserAddress,
-      RequestOrderAssistance,
-      UpdateCustomerData,
-      UpdateCustomerEmail,
-      UpdateCustomerPassword,
-      ProductRequestNotification,
-      TheCustomerLoginSplash,
-      TheNewsletterSplash,
-    })[key]
+    const componentMap = {
+      EditCustomerAddress: () => import('~/components/UserProfile/EditCustomerAddress.vue'),
+      CustomerRecoverFeedback: () => import('~/components/UserProfile/CustomerRecoverFeedback.vue'),
+      CreateUserAddress: () => import('~/components/UserProfile/CreateUserAddress.vue'),
+      RequestOrderAssistance: () => import('~/components/UserProfile/RequestOrderAssistance.vue'),
+      UpdateCustomerData: () => import('~/components/UserProfile/UpdateCustomerData.vue'),
+      UpdateCustomerEmail: () => import('~/components/UserProfile/UpdateCustomerEmail.vue'),
+      UpdateCustomerPassword: () => import('~/components/UserProfile/UpdateCustomerPassword.vue'),
+      ProductRequestNotification: () => import('~/components/ProductBox/ProductRequestNotification.vue'),
+      TheCustomerLoginSplash: () => import('~/components/TheCustomerLoginSplash.vue'),
+      TheNewsletterSplash: () => import('~/components/TheNewsletterSplash.vue'),
+    }
 
     watchEffect(() => {
       if (process.browser && document.body)
         document.body.classList.toggle('lock-scroll', !!currentSplash.value)
     })
-    return { currentSplash, title, subtitle, size, showBody, closeModal, handleAfterEnter, handleAfterLeave, lookUp, closeIcon }
+
+    return {
+      currentSplash,
+      title,
+      subtitle,
+      size,
+      showBody,
+      closeModal,
+      handleAfterEnter,
+      handleAfterLeave,
+      componentMap,
+      closeIcon,
+    }
   },
 })
 </script>
@@ -90,7 +81,7 @@ export default defineComponent({
           </div>
           <!-- splash-body -->
           <div>
-            <component :is="lookUp(currentSplash)" />
+            <component :is="componentMap[currentSplash]" v-if="componentMap[currentSplash]" />
           </div>
         </div>
       </transition>

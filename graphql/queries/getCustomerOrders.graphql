@@ -8,6 +8,16 @@ query getCustomerOrders(
     firstName
     orders(first: 10, reverse: true, query: $query) {
       nodes {
+        billingAddress {
+          city
+          country
+          address1
+          address2
+          zip
+          name
+          phone
+          formattedArea
+        }
         id
         name
         currencyCode
@@ -15,9 +25,9 @@ query getCustomerOrders(
         currentTotalDuties { amount, currencyCode }
         currentTotalPrice { amount, currencyCode }
         currentTotalTax { amount, currencyCode }
-        subtotalPriceV2 { amount, currencyCode }
-        totalShippingPriceV2 { amount, currencyCode }
-        totalPriceV2 { amount, currencyCode }
+        subtotalPrice { amount, currencyCode }
+        totalShippingPrice { amount, currencyCode }
+        totalPrice { amount, currencyCode }
         fulfillmentStatus
         orderNumber
         processedAt
@@ -41,143 +51,51 @@ query getCustomerOrders(
           }
         }
         lineItems(first: 10) {
-          edges {
-            node {
-              quantity
-              title
-              originalTotalPrice {
-                amount
+          nodes {
+            quantity
+            title
+            originalTotalPrice {
+              amount
+            }
+            discountedTotalPrice {
+              amount
+            }
+            variant {
+              availableForSale
+              compareAtPriceV2 { amount, currencyCode }
+              id
+              price { amount, currencyCode }
+              compareAtPriceV2 { amount, currencyCode }
+              image { altText, height, url, width }
+              sku
+              quantityAvailable
+              metafield: metafield(namespace: "custom", key: "details") {
+                value
               }
-              discountedTotalPrice {
-                amount
-              }
-              variant {
+              product {
                 availableForSale
-                compareAtPriceV2 { amount, currencyCode }
+                descriptionHtml
+                handle
                 id
-                priceV2 { amount, currencyCode }
-                compareAtPriceV2 { amount, currencyCode }
-                image { altText, height, url, width }
-                sku
-                quantityAvailable
-                metafield: metafield(namespace: "custom", key: "details") {
+                featuredImage { altText, height, url, width }
+                seo { description, title }
+                tags
+                title
+                vendor
+                totalInventory
+                details: metafield(namespace: "custom", key: "details") {
                   value
                 }
-                product {
-                  availableForSale
-                  handle
-                  id
-                  featuredImage { altText, height, url, width }
-                  seo { description, title }
-                  tags
-                  title
-                  vendor
-                  totalInventory
-                  details: metafield(namespace: "custom", key: "details") {
-                    value
-                  }
-                  breadcrumbs: metafield(namespace: "custom", key: "breadcrumbs") {
-                    value
-                  }
-                  variants(first: 1) {
-                    nodes {
-                      id
-                      compareAtPriceV2 { amount, currencyCode }
-                      priceV2 { amount, currencyCode }
-                      quantityAvailable
-                      sku
-                    }
-                  }
+                breadcrumbs: metafield(namespace: "custom", key: "breadcrumbs") {
+                  value
                 }
-              }
-            }
-          }
-        }
-      }
-      edges {
-        node {
-          id
-          name
-          currencyCode
-          currentSubtotalPrice { amount, currencyCode }
-          currentTotalDuties { amount, currencyCode }
-          currentTotalPrice { amount, currencyCode }
-          currentTotalTax { amount, currencyCode }
-          subtotalPriceV2 { amount, currencyCode }
-          totalShippingPriceV2 { amount, currencyCode }
-          totalPriceV2 { amount, currencyCode }
-          fulfillmentStatus
-          orderNumber
-          processedAt
-          statusUrl
-          financialStatus
-          shippingAddress {
-            city
-            country
-            address1
-            address2
-            zip
-            name
-            phone
-            formattedArea
-          }
-          successfulFulfillments(first: 1) {
-            trackingCompany
-            trackingInfo {
-              number,
-              url
-            }
-          }
-          lineItems(first: 10) {
-            edges {
-              node {
-                quantity
-                title
-                originalTotalPrice {
-                  amount
-                }
-                discountedTotalPrice {
-                  amount
-                }
-                variant {
-                  availableForSale
-                  compareAtPriceV2 { amount, currencyCode }
-                  id
-                  priceV2 { amount, currencyCode }
-                  compareAtPriceV2 { amount, currencyCode }
-                  image { altText, height, url, width }
-                  sku
-                  quantityAvailable
-                  metafield: metafield(namespace: "custom", key: "details") {
-                    value
-                  }
-                  product {
+                variants(first: 1) {
+                  nodes {
                     id
-                    title
-                    description
-                    descriptionHtml
-                    handle
-                    tags
-                    createdAt
-                    availableForSale
-                    variants(first: 10) {
-                      nodes {
-                        id
-                        compareAtPriceV2 {
-                          amount
-                          currencyCode
-                        }
-                        price
-                      }
-                    }
-                    images(first: 10) {
-                      nodes {
-                        url
-                      }
-                    }
-                    metafield: metafield(namespace: "custom", key: "details") {
-                      value
-                    }
+                    compareAtPriceV2 { amount, currencyCode }
+                    price { amount, currencyCode }
+                    quantityAvailable
+                    sku
                   }
                 }
               }

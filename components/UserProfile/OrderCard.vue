@@ -1,15 +1,16 @@
 <script>
 import { computed, useContext } from '@nuxtjs/composition-api'
+import OrderReceiptPrint from '~/components/UserProfile/OrderReceiptPrint.vue'
 
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 import OrderCardSummary from '~/components/UserProfile/OrderCardSummary.vue'
 import OrderCardProductRow from '~/components/UserProfile/OrderCardProductRow.vue'
 import { isObject } from '~/utilities/validators'
 import { useSplash } from '~/store/splash'
-import { useCustomerOrders } from '~/store/customerOrders'
+import { useCustomerOrders } from '~/store/customerOrders.ts'
 
 export default {
-  components: { OrderCardProductRow, OrderCardSummary },
+  components: { OrderReceiptPrint, OrderCardProductRow, OrderCardSummary },
   props: {
     /** @Type: {OrderType.Order} */
     order: {
@@ -25,9 +26,13 @@ export default {
   },
   emits: ['update-order-id'],
   setup(props) {
-    const { i18n } = useContext()
+    const { i18n, $config } = useContext()
     const splash = useSplash()
     const customerOrders = useCustomerOrders()
+
+    const orderLineItems = computed(() => props.order?.lineItems && props.order.lineItems.nodes?.map(node => node))
+    const isActive = computed(() => props.activeOrder === props.order.orderNumber)
+
     const handleRequestAssistance = () => {
       splash.$patch({
         currentSplash: 'RequestOrderAssistance',
@@ -41,37 +46,35 @@ export default {
       )
     }
 
-    /* const handleReorderProducts = () => {
+    const getTitle = (key = 'CMW') => ({
+      CMW: 'Callmewine',
+      B2B: 'Callmewine B2B',
+      CMW_UK: 'Callmewine UK',
+      CMW_FR: 'Callmewine FR',
+      CMW_DE: 'Callmewine DE',
+    })[key]
 
-    } */
+    const handlePrint = () => {
+      document.title = `cmw-${props.order.orderNumber}`
+      window.onafterprint = () => {
+        document.title = getTitle($config.STORE)
+      }
+      window.print()
+    }
 
-    const isActive = computed(() => props.activeOrder === props.order.orderNumber)
-    return { isActive, handleRequestAssistance }
+    return { orderLineItems, isActive, handlePrint, handleRequestAssistance }
   },
   computed: {
-    orderLineItems() {
-      const lineItems = this.order.lineItems && this.order.lineItems.edges
-
-      const newMap = []
-      if (lineItems) {
-        lineItems.forEach((l) => {
-          if (l.node.variant)
-            newMap.push(l)
-        })
-      }
-
-      return newMap
-    },
     totalItems() {
-      return this.order.lineItems.edges
-        .map(el => el.node.quantity)
+      return this.order.lineItems.nodes
+        .map(el => el.quantity)
         .reduce((t, n) => t + n)
     },
     canBuyAgain() {
-      return this.order.lineItems && this.order.lineItems.edges
+      return this.order.lineItems && this.order.lineItems.nodes
         .map((el) => {
-          if (el.node.variant)
-            return el.node.variant.product.availableForSale
+          if (el.variant)
+            return el.variant.product.availableForSale
           else
             return false
         })
@@ -83,8 +86,7 @@ export default {
       return getLocaleFromCurrencyCode(code)
     },
     async handleReorderProducts() {
-      this.order.lineItems.edges
-        .map(el => el.node)
+      this.order.lineItems.nodes
         .forEach((el) => {
           const productVariantId = el.variant.id
           const amount = Number(el.variant.product.variants.nodes[0].price)
@@ -129,12 +131,12 @@ export default {
 <template>
   <div
     class="cmw-font-sans cmw-mb-3 cmw-rounded cmw-border cmw-border-gray-light cmw-overflow-hidden hover:cmw-shadow-elevation"
-    :class="{ 'cmw-shadow-elevation': isActive }"
+    :class="isActive ? 'cmw-shadow-elevation' : 'print:cmw-border-white'"
   >
     <div>
       <div
         ref="upperButton"
-        class=""
+        class="print:cmw-hidden"
       >
         <!-- Desktop Top Card -->
         <div class="<md:cmw-hidden cmw-grid cmw-grid-cols-[auto_90px] cmw-h-90px cmw-text-sm">
@@ -160,7 +162,7 @@ export default {
             />
             <span
               class="cmw-font-sans cmw-text-body cmw-tracking-normal"
-              v-text="$n(Number(order.totalPriceV2.amount), 'currency', getLocaleFromCurrencyCode(order.totalPriceV2.currencyCode))"
+              v-text="$n(Number(order.totalPrice.amount), 'currency', getLocaleFromCurrencyCode(order.totalPrice.currencyCode))"
             />
             <span
               class="cmw-font-sans cmw-text-body cmw-tracking-normal"
@@ -242,7 +244,7 @@ export default {
           >
             <span
               class="cmw-font-sans cmw-text-body cmw-tracking-normal"
-              v-text="$n(Number(order.totalPriceV2.amount), 'currency', getLocaleFromCurrencyCode(order.totalPriceV2.currencyCode))"
+              v-text="$n(Number(order.totalPrice.amount), 'currency', getLocaleFromCurrencyCode(order.totalPrice.currencyCode))"
             />
           </i18n>
 
@@ -279,7 +281,7 @@ export default {
         @after-leave="end"
       >
         <div v-if="activeOrder === order.orderNumber">
-          <div class="cmw-bg-gray-lightest md:(cmw-m-4 cmw-rounded)">
+          <div class="cmw-bg-gray-lightest md:(cmw-m-4 cmw-rounded) print:cmw-hidden">
             <OrderCardSummary
               :fulfillment-status="order.fulfillmentStatus"
               :successful-fulfillments="order.successfulFulfillments[0] ? order.successfulFulfillments[0] : null"
@@ -288,14 +290,14 @@ export default {
             <!-- Note: ?? doesn't work well on the current configuration :successful-fulfillments="order.successfulFulfillments[0] ?? null" -->
           </div>
           <!-- <div> TODO: Gift Notes Section </div> -->
-          <div class="cmw-flex cmw-items-end cmw-justify-between cmw-px-4 md:cmw-items-center">
+          <div class="cmw-flex cmw-items-end cmw-justify-between cmw-px-4 md:cmw-items-center print:cmw-hidden">
             <div>
-              <small><strong v-text="order.lineItems.edges.length" />
-                <span>{{ $tc('profile.orders.card.goods', order.lineItems.edges.length) }}</span>
+              <small><strong v-text="order.lineItems.nodes.length" />
+                <span>{{ $tc('profile.orders.card.goods', order.lineItems.nodes.length) }}</span>
               </small>
             </div>
             <!-- Cta Section -->
-            <div class="md:cmw-flex">
+            <div class="cmw-flex cmw-gap-2 cmw-flex-col md:(cmw-flex-row) print:cmw-hidden">
               <div>
                 <Button
                   variant="text"
@@ -312,33 +314,40 @@ export default {
                   @click.native="handleReorderProducts"
                 />
               </div>
+              <div>
+                <Button
+                  :label="$t('common.cta.print')"
+                  @click.native="handlePrint"
+                />
+              </div>
             </div>
           </div>
-          <hr class="cmw-mx-4">
+          <OrderReceiptPrint :order="order" />
+          <hr class="print:cmw-hidden cmw-mx-4">
           <!-- Products Section -->
           <OrderCardProductRow
             v-for="lineItem in orderLineItems"
-            :key="`${lineItem.node.variant.sku}-${lineItem.node.originalTotalPrice.amount}`"
-            :order-line-item="lineItem.node"
+            :key="`${lineItem.variant.sku}-${lineItem.originalTotalPrice.amount}`"
+            :order-line-item="lineItem"
           />
           <!-- Total Section -->
-          <div class="cmw-grid cmw-grid-cols-2 cmw-justify-between cmw-px-6 cmw-mb-8 md:(cmw-px-0 cmw-mr-18 cmw-ml-75px)">
+          <div class="cmw-grid cmw-grid-cols-2 cmw-justify-between cmw-px-6 cmw-mb-8 md:(cmw-px-0 cmw-mr-18 cmw-ml-75px) print:cmw-hidden">
             <div
               class="h5"
               v-text="$t('profile.orders.card.productsTotal')"
             />
             <div
               class="h5 cmw-place-self-end"
-              v-text="$n(Number(order.subtotalPriceV2.amount), 'currency', getLocaleFromCurrencyCode(order.subtotalPriceV2.currencyCode))"
+              v-text="$n(Number(order.subtotalPrice.amount), 'currency', getLocaleFromCurrencyCode(order.subtotalPrice.currencyCode))"
             />
             <div
               class="cmw-text-base cmw-font-regular"
               v-text="$t('profile.orders.card.shipmentCost')"
             />
             <div
-              v-if="order.totalShippingPriceV2.amount > 0"
+              v-if="order.totalShippingPrice.amount > 0"
               class="cmw-place-self-end"
-              v-text="$n(Number(order.totalShippingPriceV2.amount), 'currency', getLocaleFromCurrencyCode(order.totalShippingPriceV2.currencyCode))"
+              v-text="$n(Number(order.totalShippingPrice.amount), 'currency', getLocaleFromCurrencyCode(order.totalShippingPrice.currencyCode))"
             />
             <div v-else class="cmw-place-self-end">
               {{ $t('profile.orders.card.shipmentCostFree') }}
@@ -351,14 +360,14 @@ export default {
             />
             <div
               class="cmw-text-xl cmw-font-bold cmw-my-4 cmw-place-self-end cmw-text-secondary-400"
-              v-text="$n(Number(order.totalPriceV2.amount), 'currency', getLocaleFromCurrencyCode(order.totalPriceV2.currencyCode))"
+              v-text="$n(Number(order.totalPrice.amount), 'currency', getLocaleFromCurrencyCode(order.totalPrice.currencyCode))"
             />
           </div>
         </div>
       </transition>
       <!-- Mobile Botton CTA Card -->
       <button
-        class="md:cmw-hidden cmw-block cmw-bg-gray-lightest cmw-w-full cmw-py-2"
+        class="md:cmw-hidden print:cmw-hidden cmw-block cmw-bg-gray-lightest cmw-w-full cmw-py-2"
         type="button"
         @click="handleClick(order.orderNumber)"
       >

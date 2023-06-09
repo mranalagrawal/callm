@@ -4,6 +4,7 @@ export default {
       TRIGGER_SEARCH: 'Recherche de déclencheur',
       ADD_TO_CART: 'Ajouter au panier',
       MODAL_OPEN: 'Ouvrir la fenêtre modale',
+      MODAL_CLOSE: 'Fermer la fenêtre modale',
       REMOVE_FROM_CART: 'Supprimer du panier',
       ADD_TO_WISHLIST: 'Ajouter à la liste de souhaits',
       REMOVE_FROM_WISHLIST: 'Supprimer de la liste de souhaits',

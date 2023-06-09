@@ -42,7 +42,7 @@ export default {
     const showRequestModal = ref(false)
     const isHovering = ref(false)
 
-    const isOnFavourite = computed(() => wishlistArr.value.includes(props.product.details.key))
+    const isOnFavourite = computed(() => wishlistArr.value.includes(props.product.source_id))
     const isOnSale = computed(() => props.product.availableFeatures.includes('isInPromotion'))
     const finalPrice = computed(() => props.product.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0)
     const gtmProductData = computed(() => ({
@@ -50,7 +50,7 @@ export default {
       price: finalPrice.value,
     }))
     const handleWishlistClick = () => {
-      handleWishlist({ id: props.product.details.key, isOnFavourite: isOnFavourite.value, gtmProductData: gtmProductData.value })
+      handleWishlist({ id: props.product.id, isOnFavourite: isOnFavourite.value, gtmProductData: gtmProductData.value })
     }
 
     const handleProductCLick = async () => {

@@ -5,6 +5,7 @@ export default {
     send: 'Einreichen',
     requestAssistance: 'Bitte um Unterstützung',
     reorderProducts: 'Produkte nachbestellen',
+    print: 'Drucken',
     addAddress: 'Adresse hinzufügen',
     emptyCart: 'Leerer Warenkorb',
     continueShopping: 'Mit dem Einkaufen fortfahren',

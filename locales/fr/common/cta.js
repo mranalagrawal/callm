@@ -5,6 +5,7 @@ export default {
     send: 'Soumettre',
     requestAssistance: 'Demande d\'assistance',
     reorderProducts: 'Réorganiser les produits',
+    print: 'Imprimer',
     addAddress: 'Ajoutez l\'adresse',
     emptyCart: 'Panier Vide',
     continueShopping: 'Continuer vos achats',

@@ -24,7 +24,6 @@ import { useCustomer } from '@/store/customer'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import favouriteIcon from '~/assets/svg/selections/favourite.svg'
 import getArticles from '~/graphql/queries/getArticles'
-import { getUniqueListBy } from '~/utilities/arrays'
 import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({
@@ -44,6 +43,7 @@ export default defineComponent({
     const isOpen = ref(false)
     const showRequestModal = ref(false)
     const product = ref({
+      source_id: '',
       availableFeatures: [],
       details: '',
       featuredImage: { altText: '', height: 0, url: '', width: 0 },
@@ -167,16 +167,13 @@ export default defineComponent({
     })
 
     const isOnFavourite = computed(() => {
-      return [...wishlistArr.value].includes(`P${productDetails.value.feId}`)
+      return [...wishlistArr.value].includes(product.value.source_id)
     })
 
     const gtmProductData = computed(() => ({
       ...product.value.gtmProductData,
       price: finalPrice.value,
     }))
-
-    const productDetailsFoodPairings = computed(() => getUniqueListBy(productDetails.value.foodPairings, 'id'))
-    const productDetailsAwards = computed(() => getUniqueListBy(productDetails.value.awards, 'id'))
 
     const generateMetaLink = (arr = []) => {
       const hrefLangArr = !!arr.length && arr.map(el => ({
@@ -236,8 +233,6 @@ export default defineComponent({
       wishlistArr,
       brandMetaFields,
       brand,
-      productDetailsFoodPairings,
-      productDetailsAwards,
       isOpen,
       cartIcon,
       addIcon,
@@ -376,6 +371,18 @@ export default defineComponent({
               {{ product.vendor }}
             </NuxtLink>
             <div v-html="strippedContent" />
+            <script
+              data-environment="production" src="https://osm.klarnaservices.com/lib.js"
+              data-client-id="c72bae1f-0d1c-5ed1-a3bb-b0fa3d12e442"
+              async
+            />
+            <ClientOnly>
+              <klarna-placement
+                data-key="credit-promotion-badge"
+                data-locale="en-GB"
+                :data-purchase-amount="String(Number(finalPrice)).replace(/[^0-9]/g, '')"
+              />
+            </ClientOnly>
             <ProductDetailsVintages :sku="product.sku" />
             <div
               class="
@@ -406,7 +413,7 @@ export default defineComponent({
                   v-if="finalPrice"
                   class="cmw-inline-block" :value="Number(finalPrice)"
                   :format="{ key: 'currency' }"
-                  :locale="getLocaleFromCurrencyCode(productVariant.priceV2.currencyCode)"
+                  :locale="getLocaleFromCurrencyCode(productVariant.price.currencyCode)"
                 >
                   <template #currency="slotProps">
                     <span class="cmw-text-sm md:cmw-text-base">{{ slotProps.currency }}</span>
@@ -430,7 +437,7 @@ export default defineComponent({
                   >
                     {{ $t('product.available', { quantity: product.quantityAvailable }) }}
                   </p>
-                  <p v-else class="text-light-secondary">
+                  <p v-else class="cmw-text-primary-400">
                     {{ $t('product.notAvailable') }}
                   </p>
                   <div v-if="product.availableForSale" class="cmw-relative">
@@ -491,7 +498,7 @@ export default defineComponent({
                 type="button"
                 class="cmw-mb-2"
                 :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
-                @click="handleWishlist({ id: `P${productDetails.feId}`, isOnFavourite, gtmProductData: product.gtmProductData })"
+                @click="handleWishlist({ id: productDetails.feId, isOnFavourite, gtmProductData: product.gtmProductData })"
               >
                 <VueSvgIcon
                   color="#d94965"
@@ -504,344 +511,14 @@ export default defineComponent({
           </div>
         </div>
 
-        <!-- tt -->
-        <div class="row mt-5">
-          <div class="col-12 col-md-8 pt-5">
-            <div class="pt-2">
-              <b-tabs content-class="mt-4" justified>
-                <b-tab
-                  v-if="product.descriptionHtml !== ''"
-                  :title="$t('product.description')"
-                >
-                  <div v-html="product.descriptionHtml" />
-                </b-tab>
-                <b-tab :title="$t('product.toEnjoyBetter')">
-                  <div>
-                    <h3 class="mb-5">
-                      {{ $t('product.toEnjoyBetter') }}
-                    </h3>
-
-                    <div class="mb-5">
-                      <h4 class="font-weight-bold">
-                        {{ $t('product.temperature') }}
-                      </h4>
-                      <p>{{ productDetails.servingTemperature }}</p>
-                    </div>
-
-                    <div class="mb-5">
-                      <h4 class="font-weight-bold">
-                        {{ $t('product.whenDrink') }}
-                      </h4>
-                      <p>{{ productDetails.drinkNotesDrinkingTitle[$i18n.locale] }}</p>
-                      <p>
-                        {{ productDetails.drinkNotesServingDescription[$i18n.locale] }}
-                      </p>
-                      <p>
-                        {{ productDetails.drinkNotesDrinkingLongevity[$i18n.locale] }}
-                      </p>
-                    </div>
-
-                    <div class="mb-5">
-                      <h4 class="font-weight-bold">
-                        {{ productDetails.glassTitle[$i18n.locale] }}
-                      </h4>
-                      <p>{{ productDetails.glassDescription[$i18n.locale] }}</p>
-                    </div>
-                  </div>
-                </b-tab>
-                <b-tab
-                  v-if="$config.STORE !== 'WILDVIGNERON'"
-                  :title="$t('product.awardsAndAcknowledgments')"
-                >
-                  <table
-                    v-if="productDetails.awards.length > 0"
-                    class="table table-striped"
-                  >
-                    <thead>
-                      <tr class="bg-dark-primary text-white">
-                        <th style="border-radius: 15px 0px 0px 0px" scope="col">
-                          {{ $t('product.guide') }}
-                        </th>
-                        <th style="" scope="col">
-                          {{ $t('product.year') }}
-                        </th>
-
-                        <th style="" scope="col">
-                          {{ $t('product.score') }}
-                        </th>
-
-                        <th style="border-radius: 0px 15px 0px 0px" scope="col">
-                          {{ $t('product.quote') }}
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="(award) in productDetailsAwards" :key="generateKey(`details-awards-${award.title}`)">
-                        <td scope="row">
-                          <strong>{{ award.title }}</strong>
-                        </td>
-                        <td>{{ award.year }}</td>
-                        <td>
-                          <strong>{{ award.value }}</strong> /
-                          {{ award.maxValue }}
-                        </td>
-                        <td>
-                          <em>
-                            {{ award.quote[$i18n.locale] }}
-                          </em>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </b-tab>
-                <b-tab :title="$t('product.producer')">
-                  <div v-if="brand">
-                    <div v-if="brandMetaFields.isPartner" class="ribbon cmw-flex cmw-items-center">
-                      <!-- TODO: This will use the new lapel component -->
-                      <VueSvgIcon
-                        :data="favouriteIcon"
-                        class="svg-favourite"
-                        width="20" height="auto"
-                      />
-                      <span class="small !cmw-top-0">{{
-                        $t('product.recommendedByCallmewine')
-                      }}</span>
-                    </div>
-                    <h3 class="text-light-secondary">
-                      {{ brand.title }}
-                    </h3>
-                    <div class="row">
-                      <div class="col-12 col-md-8">
-                        <div class="row py-3 bg-light">
-                          <div class="col-6 font-weight-bold">
-                            {{ $t('product.mainWines') }}
-                          </div>
-                          <div class="col-6" />
-                        </div>
-                        <div class="row py-3">
-                          <div class="col-6 font-weight-bold">
-                            {{ $t('product.foundation') }}
-                          </div>
-                          <div class="col-6">
-                            {{ brandMetaFields.year }}
-                          </div>
-                        </div>
-                        <div class="row py-3 bg-light">
-                          <div class="col-6 font-weight-bold">
-                            {{ $t('product.vineyardHectares') }}
-                          </div>
-                          <div class="col-6">
-                            {{ brandMetaFields.hectares }}
-                          </div>
-                        </div>
-                        <div class="row py-3">
-                          <div class="col-6 font-weight-bold">
-                            {{ $t('product.ownGrapes') }}
-                          </div>
-                          <div class="col-6">
-                            {{ brandMetaFields.ownedGrapes }} %
-                          </div>
-                        </div>
-                        <div class="row py-3 bg-light">
-                          <div class="col-6 font-weight-bold">
-                            {{ $t('product.annualProduction') }}
-                          </div>
-                          <div class="col-6">
-                            {{ brandMetaFields.annualProduction }}
-                          </div>
-                        </div>
-                        <div class="row py-3">
-                          <div class="col-6 font-weight-bold">
-                            {{ $t('product.winemaker') }}
-                          </div>
-                          <div class="col-6" />
-                        </div>
-                        <div class="row py-3 bg-light">
-                          <div class="col-6 font-weight-bold">
-                            {{ $t('product.address') }}
-                          </div>
-                          <div class="col-6">
-                            {{ brandMetaFields.address }}
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-12 col-md-4">
-                        <img :src="brand.image.url" alt="">
-                      </div>
-                    </div>
-                    <!-- <img :src="search.image.url" alt="" />
-                    <div v-html="search.contentHtml"></div> -->
-                  </div>
-                </b-tab>
-                <b-tab :title="$t('product.pairings')">
-                  <!-- {{ metaField.foodPairings }} -->
-                  <h3 class="mb-5">
-                    {{ $t('product.pairings') }}
-                  </h3>
-
-                  <div class="row">
-                    <div
-                      v-for="pairing in productDetailsFoodPairings"
-                      :key="generateKey(`food-pairing-${pairing.id}`)"
-                      class="col-6 col-md-4 col-lg-3"
-                    >
-                      <img
-                        :src="pairing.image"
-                        class="img-fluid"
-                        style="border-radius: 10px"
-                      >
-                      <p>{{ pairing.name[$i18n.locale] }}</p>
-                    </div>
-                  </div>
-                </b-tab>
-              </b-tabs>
-            </div>
-          </div>
-          <div class="col-12 col-md-4">
-            <div style="width: 80%" class="bg-light p-3 mx-auto cmw-rounded">
-              <h3 class="mb-5">
-                {{ $t('product.features') }}
-              </h3>
-
-              <div v-if="productDetails.denomination[$i18n.locale]">
-                <p class="font-weight-bold mb-0">
-                  {{ $t('product.denomination') }}
-                </p>
-                <p class="mb-4">
-                  {{ productDetails.denomination[$i18n.locale] }}
-                </p>
-                <hr>
-              </div>
-              <div v-if="productDetails.grapes[$i18n.locale]">
-                <p class="font-weight-bold mb-0">
-                  {{ $t('product.vines') }}
-                </p>
-                <p class="mb-4">
-                  {{ productDetails.grapes[$i18n.locale] }}
-                </p>
-                <hr>
-              </div>
-
-              <div
-                v-if="
-                  productDetails.countryName[$i18n.locale]
-                    || productDetails.countryRegionName
-                "
-              >
-                <p class="font-weight-bold mb-0">
-                  {{ $t('product.region') }}
-                </p>
-                <p class="mb-4">
-                  {{ productDetails.countryRegionName }}
-                  {{ productDetails.countryName[$i18n.locale] }}
-                </p>
-                <hr>
-              </div>
-              <div v-if="productDetails.alcoholContent">
-                <p class="font-weight-bold mb-0">
-                  {{ $t('product.alcoholContent') }}
-                </p>
-                <p class="mb-4">
-                  {{ productDetails.alcoholContent }}%
-                </p>
-                <hr>
-              </div>
-              <div v-if="productDetails.size[$i18n.locale]">
-                <p class="font-weight-bold mb-0">
-                  {{ $t('product.format') }}
-                </p>
-                <p class="mb-4">
-                  {{ productDetails.size[$i18n.locale] }}
-                </p>
-                <hr>
-              </div>
-              <div v-if="productDetails.winemaking[$i18n.locale]">
-                <p class="font-weight-bold mb-0">
-                  {{ $t('product.vinification') }}
-                </p>
-                <p class="mb-4">
-                  {{ productDetails.winemaking[$i18n.locale] }}
-                </p>
-                <hr>
-              </div>
-              <div v-if="productDetails.agingDescription[$i18n.locale]">
-                <p class="font-weight-bold mb-0">
-                  {{ $t('product.refinement') }}
-                </p>
-                <p class="mb-4">
-                  {{ productDetails.agingDescription[$i18n.locale] }}
-                </p>
-                <hr>
-              </div>
-              <div v-if="productDetails.productInformations[$i18n.locale]">
-                <p class="font-weight-bold mb-0">
-                  {{ $t('product.additionalNotes') }}
-                </p>
-                <p class="mb-4">
-                  {{ productDetails.productInformations[$i18n.locale] }}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ProductDetailsTabs :product="product" :product-details="productDetails" :brand="brand" :brand-meta-fields="brandMetaFields" />
 
         <ClientOnly>
           <RecentProducts />
-          <VendorProducts :vendor="brand.title" />
+          <VendorProducts :vendor="brand.title" :tag="product.source_id" />
           <RecommendedProducts :id="product.shopify_product_id" />
         </ClientOnly>
       </div>
     </template>
   </div>
 </template>
-
-<style scoped>
-.svg-favourite {
-  filter: brightness(100);
-}
-
-:deep(.nav-tabs .nav-link) {
-  margin-bottom: -1px;
-  border: none;
-  color: #666;
-  /* width: 200px; */
-  padding-left: 0px;
-  padding-right: 0px;
-  font-size: 14px;
-}
-
-:deep(.nav-link:hover) {
-  color: var(--dark-secondary);
-  border-bottom: 4px solid var(--dark-secondary);
-}
-
-:deep(.nav-tabs) {
-  border-bottom: 1px solid #ddd;
-}
-
-:deep(.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link) {
-  color: var(--dark-secondary);
-  /* font-weight: bold; */
-  background-color: #fff;
-  border-bottom: 4px solid var(--dark-secondary);
-}
-
-:deep(ul.nav.nav-tabs.nav-justified) {
-  flex-wrap: nowrap;
-}
-
-@media screen and (max-width: 766px) {
-  :deep(ul.nav.nav-tabs.nav-justified) {
-    flex-wrap: nowrap;
-    overflow-x: scroll;
-  }
-
-  :deep(.nav-tabs .nav-link) {
-    width: 160px;
-  }
-}
-
-.award-img {
-  filter: brightness(0);
-}
-</style>

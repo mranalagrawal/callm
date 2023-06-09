@@ -5,8 +5,8 @@ import debounce from 'lodash.debounce'
 import { useCustomer } from '~/store/customer'
 
 export default {
-  layout(context) {
-    return context.$config.STORE
+  layout({ $config }) {
+    return $config.STORE
   },
   middleware: ['auth', 'splash'],
   profileNavigation: [
@@ -59,8 +59,8 @@ export default {
 </script>
 
 <template>
-  <div class="cmw-max-w-screen-xl cmw-mx-auto cmw-py-4">
-    <nav class="cmw-flex cmw-items-center cmw-gap-2 cmw-text-sm cmw-pt-1.875rem cmw-mt-2 cmw-mb-6 cmw-px-4">
+  <div class="cmw-max-w-screen-xl cmw-mx-auto cmw-pb-4">
+    <nav class="print:cmw-hidden cmw-flex cmw-items-center cmw-gap-2 cmw-text-sm cmw-pt-1.875rem cmw-mt-2 cmw-mb-6 cmw-px-4">
       <NuxtLink
         class="cmw-text-primary-400"
         :to="localePath('/')"
@@ -74,7 +74,7 @@ export default {
       />
       <span class="cmw-text-gray-dark">{{ $t("profile.myAccount") }}</span>
     </nav>
-    <div class="cmw-flex cmw-justify-between cmw-px-4">
+    <div class="print:cmw-hidden cmw-flex cmw-justify-between cmw-px-4">
       <h1 v-text="$t('profile.greeting', { name: customer && customer.firstName })" />
       <button
         class="group cmw-flex cmw-items-center cmw-gap-2 cmw-text-primary-400 cmw-uppercase"
@@ -89,17 +89,19 @@ export default {
         />
       </button>
     </div>
-    <div class="cmw-bg-white/50 cmw-backdrop-filter cmw-backdrop-blur cmw-sticky cmw-z-content cmw-top-$cmw-header-height cmw-pb-1 cmw-pt-4 cmw-pl-4 md:cmw-px-4">
+    <div class="print:cmw-hidden cmw-bg-white/50 cmw-backdrop-filter cmw-backdrop-blur cmw-sticky cmw-z-content cmw-top-$cmw-header-height cmw-pb-1 cmw-pt-4 cmw-pl-4 md:cmw-px-4">
       <nav
         class="
         c-navigationTab cmw-font-sans cmw-justify-between cmw-w-full cmw-flex cmw-no-wrap cmw-overflow-x-auto
         cmw-border-b cmw-border-b-gray-dark cmw-mb-3 md:(cmw-mt-9 cmw-max-w-10/12)
 "
       >
+        <!-- Note: exact-active-class is not recognizing pseudo after -->
         <NuxtLink
           v-for="({ to, label }) in $options.profileNavigation"
           :key="to"
           :to="localePath(to)"
+          exact-active-class="maybeACustomClass"
           class="cmw-relative cmw-py-2 cmw-flex-shrink-0 cmw-font-light cmw-text-sm
                 hover:(cmw-no-underline)
                 hover:after:(cmw-bg-primary cmw-text-primary cmw-w-full)

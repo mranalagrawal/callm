@@ -1,44 +1,45 @@
-<script>
-import { computed, getCurrentInstance, ref, useRoute, watch } from '@nuxtjs/composition-api'
+<script lang="ts">
+import type { PropType } from '@nuxtjs/composition-api'
+import { computed, defineComponent, getCurrentInstance, ref, useRoute, watch } from '@nuxtjs/composition-api'
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
+import type { IOptions, TPosition, TSizes } from '~/types/types'
 
-export default {
+export default defineComponent({
   name: 'CmwSelect',
   inheritAttrs: false,
   props: {
+    position: { type: String as PropType<TPosition> },
     isFullWidth: {
       type: Boolean,
     },
-    label: {
-      type: String,
-      default: '',
-    },
     options: {
-      type: Array,
+      type: Array as PropType<IOptions[]>,
       required: true,
     },
     size: {
-      validator: prop => ['sm', 'md'].includes(prop) || !Number.isNaN(prop),
+      type: String as PropType<TSizes>,
       default: 'md',
     },
   },
   emits: ['update-value'],
   setup(props, { emit }) {
     const route = useRoute()
-    const key = getCurrentInstance().proxy.$vnode.key
+    const key = getCurrentInstance()?.proxy.$vnode.key
     const searchTerm = ref('')
-    const handleClick = (value) => {
+    const handleClick = (value: string) => {
       emit('update-value', value)
     }
 
     const getFontSize = () => ({
+      xs: 'cmw-text-xs cmw-overline-1',
       sm: 'cmw-text-xs cmw-overline-1',
       md: 'cmw-text-sm',
+      lg: 'cmw-text-sm',
     })[props.size]
 
     const useSearchField = computed(() => props.options.length > 10)
     const filteredOptions = computed(() => useSearchField
-      ? props.options.filter(option => option.label.toLowerCase().includes(searchTerm.value.toLowerCase()))
+      ? props.options.filter(option => `${option.label}`.toLowerCase().includes(searchTerm.value.toLowerCase()))
       : props.options,
     )
 
@@ -46,14 +47,17 @@ export default {
 
     return { key, useSearchField, filteredOptions, searchTerm, chevronDownIcon, getFontSize, handleClick }
   },
-}
+})
 </script>
 
 <template>
   <div class="cmw-relative">
     <div
       class="cmw-z-base cmw-bg-white cmw-rounded-b-sm cmw-rounded-tr-sm"
-      :class="isFullWidth ? 'cmw-w-full' : 'cmw-w-[310px]'"
+      :class="[
+        isFullWidth ? 'cmw-w-full' : 'cmw-w-[310px]',
+        position === 'right' ? 'cmw-right-0 cmw-rounded-tl-sm' : 'cmw-left-0 cmw-rounded-tr-sm']
+      "
     >
       <div
         v-if="useSearchField"

@@ -11,7 +11,7 @@
  * @property {ImageType.Image} image
  * @property {Metafield} metafield
  * @property {[Metafield]!} metafields
- * @property {MoneyV2!} priceV2
+ * @property {MoneyV2!} price
  * @property {Product!} product
  * @property {Int} quantityAvailable
  * @property {Boolean} requiresShipping

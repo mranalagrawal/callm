@@ -1,12 +1,14 @@
-<script>
-import { getCurrentInstance, ref, toRef } from '@nuxtjs/composition-api'
+<script lang="ts">
+import type { PropType } from '@nuxtjs/composition-api'
+import { defineComponent, getCurrentInstance, ref, toRef } from '@nuxtjs/composition-api'
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
+import type { TPosition, TSizes } from '~/types/types'
 
-export default {
+export default defineComponent({
   name: 'CmwDropdown',
   inheritAttrs: false,
   props: {
-    useSearchField: { type: Boolean },
+    position: { type: String as PropType<TPosition> },
     active: { type: Boolean, required: true },
     label: {
       type: String,
@@ -21,26 +23,28 @@ export default {
       default: () => {},
     },
     size: {
-      validator: prop => ['sm', 'md'].includes(prop) || !Number.isNaN(prop),
+      type: String as PropType<TSizes>,
       default: 'md',
     },
   },
   emits: ['update-trigger'],
   setup(props, { emit }) {
-    const key = getCurrentInstance().proxy.$vnode.key
+    const key = getCurrentInstance()?.proxy.$vnode.key
     const isActive = toRef(props, 'active')
     const searchTerm = ref('')
 
     const handleTriggerClick = () => emit('update-trigger', key)
 
     const getFontSize = () => ({
+      xs: 'cmw-text-xs cmw-overline-1 cmw-font-normal',
       sm: 'cmw-text-xs cmw-overline-1 cmw-font-normal',
       md: 'cmw-text-sm',
+      lg: 'cmw-text-sm',
     })[props.size]
 
     return { isActive, searchTerm, chevronDownIcon, handleTriggerClick, getFontSize }
   },
-}
+})
 </script>
 
 <template>
@@ -70,7 +74,8 @@ export default {
     <transition>
       <div
         v-show="isActive"
-        class="cmw-absolute top-full left-0 cmw-z-base cmw-bg-white cmw-shadow-popover cmw-w-[310px] cmw-rounded-b-sm cmw-rounded-tr-sm"
+        class="cmw-absolute top-full cmw-z-base cmw-bg-white cmw-shadow-popover cmw-w-[310px] cmw-rounded-b-sm"
+        :class="[position === 'right' ? 'cmw-right-0 cmw-rounded-tl-sm' : 'cmw-left-0 cmw-rounded-tr-sm']"
       >
         <!-- List Items -->
         <slot name="children" />

@@ -29,61 +29,49 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="container my-5">
-    <div v-if="pageData" class="row px-3">
-      <div class="col-12">
-        <div class="col-12 text-center mt-5 mb-5">
-          <h2 class="text-center font-weight-bold text-dark-primary">
-            {{ label }}
-          </h2>
-        </div>
-      </div>
-      <div class="col-12 col-md-8 px-0 mb-3 mb-md-0">
-        <div
-          class="partners partners-first p-3 text-white d-flex flex-column justify-content-end"
-          :style="{
-            backgroundImage: `url(${mask_left}),url('${pageData[0].content.image.url}')`,
-          }"
-        >
-          <div class="w-50">
-            <h3 class="mb-5 font-weight-bold cmw-text-white">
-              <NuxtLink class="cmw-text-white hover:(cmw-text-white cmw-no-underline)" :to="pageData[0].content.cta_link">
-                {{ pageData[0].content.main_text }}
-              </NuxtLink>
-            </h3>
-          </div>
-          <div>
-            <NuxtLink
-              :to="pageData[0].content.cta_link"
-              class="btn btn-cta mb-3 px-5 py-2"
-            >
-              {{ pageData[0].content.cta_text }}
+  <div v-if="pageData" class="cmw-max-w-screen-desktop cmw-mx-auto cmw-my-4">
+    <div class="cmw-h2 cmw-text-center cmw-py-4" v-text="label" />
+    <div class="cmw-grid cmw-gap-4 md:(cmw-grid-cols-[8fr_4fr])">
+      <div
+        class="partners-first cmw-h-[400px] cmw-p-6 cmw-text-white cmw-flex cmw-flex-col cmw-justify-end"
+        :style="{
+          backgroundImage: `url(${mask_left}),url('${pageData[0].content.image.url}')`,
+        }"
+      >
+        <div class="cmw-w-1/2">
+          <h3 class="cmw-font-bold cmw-text-white cmw-mb-8">
+            <NuxtLink class="cmw-text-white hover:(cmw-text-white cmw-no-underline)" :to="pageData[0].content.cta_link">
+              {{ pageData[0].content.main_text }}
             </NuxtLink>
-          </div>
+          </h3>
         </div>
+        <Button
+          class="cmw-w-max"
+          variant="ghost-inverse"
+          :to="pageData[0].content.cta_link"
+          :label="pageData[0].content.cta_text"
+        />
       </div>
-      <div class="col-12 col-md-4 px-0 pl-md-4">
-        <div
-          class="partners partners-last p-3 text-white d-flex flex-column justify-content-end"
-          :style="{
-            backgroundImage: `url(${mask}), url('${pageData[1].content.image.url}')`,
-          }"
-        >
-          <div class="w-75">
-            <h3 class="mb-5 font-weight-bold cmw-text-white">
-              <NuxtLink class="cmw-text-white hover:(cmw-text-white cmw-no-underline)" :to="pageData[0].content.cta_link">
-                {{ pageData[1].content.main_text }}
-              </NuxtLink>
-            </h3>
-          </div>
-          <div>
-            <NuxtLink
-              :to="pageData[1].content.cta_link"
-              class="btn btn-cta mb-3 px-5 py-2"
-            >
-              {{ pageData[1].content.cta_text }}
+      <div
+        class="partners-last cmw-h-[400px] cmw-p-6 cmw-text-white cmw-flex cmw-flex-col cmw-justify-end"
+        :style="{
+          backgroundImage: `url(${mask}), url('${pageData[1].content.image.url}')`,
+        }"
+      >
+        <div class="cmw-w-3/4">
+          <h3 class="cmw-font-bold cmw-text-white cmw-mb-8">
+            <NuxtLink class="cmw-text-white hover:(cmw-text-white cmw-no-underline)" :to="pageData[0].content.cta_link">
+              {{ pageData[1].content.main_text }}
             </NuxtLink>
-          </div>
+          </h3>
+        </div>
+        <div>
+          <Button
+            class="cmw-w-max"
+            variant="ghost-inverse"
+            :to="pageData[1].content.cta_link"
+            :label="pageData[1].content.cta_text"
+          />
         </div>
       </div>
     </div>
@@ -91,33 +79,16 @@ export default defineComponent({
 </template>
 
 <style scoped>
-.btn-cta {
-  text-transform: uppercase;
-  padding-top: 12px !important;
-  padding-bottom: 12px !important;
-  border-radius: 10px;
-  font-weight: 600;
-  border: 2px solid white;
-  color: white;
-}
-.btn-cta:hover {
-  background: #da4865;
-}
-
-.partners {
-  height: 400px;
-}
-
 .partners-first {
   background-size: cover;
   background-position: -150px, center;
   background-repeat: no-repeat;
-  border-radius: 0px 0px 10px 10px;
+  border-radius: 0 0 10px 10px;
 }
 .partners-last {
   background-size: cover;
-  background-position: 0px 60px, center, center;
+  background-position: 0 60px, center, center;
   background-repeat: no-repeat;
-  border-radius: 0px 0px 10px 10px;
+  border-radius: 0 0 10px 10px;
 }
 </style>

@@ -151,4 +151,42 @@
 .c-searchInput.-hasIcon::-webkit-search-cancel-button {
   right: 30px;
 }
+
+.cmw-main {
+  width: 100vw;
+  padding-top: var(--cmw-header-height);
+}
+
+.cmw-navbar {
+  padding-top: var(--cmw-top-banner-height);
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+  &.is-gray { -webkit-box-shadow: 0 0 0 30px #F8F8F8 inset !important; }
+}
+
+input[type=date]::-webkit-calendar-picker-indicator {
+  background-image: url("data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20id%3D%22g%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Cpath%20d%3D%22M51.07%2C6H12.93c-3.83%2C0-6.93%2C2.91-6.93%2C6.5V51.5c0%2C3.59%2C3.1%2C6.5%2C6.93%2C6.5H51.07c3.83%2C0%2C6.93-2.91%2C6.93-6.5V12.5c0-3.59-3.1-6.5-6.93-6.5Zm3.47%2C45.5c0%2C1.8-1.55%2C3.25-3.47%2C3.25H12.93c-1.91%2C0-3.47-1.45-3.47-3.25V19H54.53s0%2C32.5%2C0%2C32.5Zm0-35.75H9.47v-3.25c0-1.8%2C1.55-3.25%2C3.47-3.25H51.07c1.91%2C0%2C3.47%2C1.46%2C3.47%2C3.25%2C0%2C0%2C0%2C3.25%2C0%2C3.25Zm-8.67%2C19.5c2.87%2C0%2C5.2-2.18%2C5.2-4.88s-2.33-4.88-5.2-4.88-5.2%2C2.18-5.2%2C4.88%2C2.33%2C4.88%2C5.2%2C4.88Zm-1.73-6.5h3.47v3.25h-3.47v-3.25Zm1.73%2C19.5c2.87%2C0%2C5.2-2.18%2C5.2-4.88s-2.33-4.88-5.2-4.88-5.2%2C2.18-5.2%2C4.88%2C2.33%2C4.88%2C5.2%2C4.88Zm-1.73-6.5h3.47v3.25h-3.47v-3.25Zm-26-6.5c2.87%2C0%2C5.2-2.18%2C5.2-4.88s-2.33-4.88-5.2-4.88-5.2%2C2.18-5.2%2C4.88%2C2.33%2C4.88%2C5.2%2C4.88Zm-1.73-6.5h3.47v3.25h-3.47v-3.25Zm15.6%2C6.5c2.87%2C0%2C5.2-2.18%2C5.2-4.88s-2.33-4.88-5.2-4.88-5.2%2C2.18-5.2%2C4.88%2C2.33%2C4.88%2C5.2%2C4.88Zm-1.73-6.5h3.47v3.25h-3.47s0-3.25%2C0-3.25Zm-12.13%2C19.5c2.87%2C0%2C5.2-2.18%2C5.2-4.88s-2.33-4.88-5.2-4.88-5.2%2C2.18-5.2%2C4.88%2C2.33%2C4.88%2C5.2%2C4.88Zm-1.73-6.5h3.47v3.25h-3.47v-3.25Zm15.6%2C6.5c2.87%2C0%2C5.2-2.18%2C5.2-4.88s-2.33-4.88-5.2-4.88-5.2%2C2.18-5.2%2C4.88%2C2.33%2C4.88%2C5.2%2C4.88Zm-1.73-6.5h3.47v3.25h-3.47s0-3.25%2C0-3.25Z%22%20style%3D%22fill%3A%23e6362e%3B%22%2F%3E%3C%2Fsvg%3E");
+  height: 26px;
+  width: 26px;
+  padding: 0;
+}
+
+
+@media print {
+  html, body {
+    height: 99%; /* This is to avoid the extra white page while printing*/
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+  }
+
+  .cmw-main {
+    padding-top: theme("spacing.4");
+  }
+}
 /*}*/

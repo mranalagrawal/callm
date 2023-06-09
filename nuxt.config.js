@@ -204,7 +204,7 @@ const SITEMAP = {
     },
     {
       path: '/sitemap_en_editorial_other_pages.xml',
-      exclude: ['/product/**', '/search/**', '/profile', '/profile/**', '/catalog', '/privacy', '/terms-of-sales', '/cookie', '/business-gifts', '/cart', '/gift-cards', '/login', '/preview', '/recover', '/thank-you', '/winery'],
+      exclude: ['/product/**', '/search/**', '/profile', '/profile/**', '/catalog', '/privacy', '/terms-of-sales', '/cookie', '/cart', '/gift-cards', '/login', '/preview', '/recover', '/thank-you', '/winery'],
     },
   ],
   CMW_DE: [
@@ -220,7 +220,7 @@ const SITEMAP = {
     },
     {
       path: '/sitemap_en_editorial_other_pages.xml',
-      exclude: ['/product/**', '/search/**', '/profile', '/profile/**', '/catalog', '/privacy', '/terms-of-sales', '/cookie', '/business-gifts', '/cart', '/gift-cards', '/login', '/preview', '/recover', '/thank-you', '/winery'],
+      exclude: ['/product/**', '/search/**', '/profile', '/profile/**', '/catalog', '/privacy', '/terms-of-sales', '/cookie', '/cart', '/gift-cards', '/login', '/preview', '/recover', '/thank-you', '/winery'],
     },
   ],
   WILDVIGNERON: [
@@ -235,59 +235,6 @@ const SITEMAP = {
       exclude: ['/**'],
     },
   ],
-}
-const THEME_COLORS = {
-  CMW: `
-  "dark-primary": #11312b,
-  "light-primary": #155b53,
-  "darker-secondary": #751f3d,
-  "dark-secondary": #8e2440,
-  "light-secondary": #da4865,
-  `,
-  B2B: `
-  "dark-primary": #11312b,
-  "light-primary": #155b53,
-  "darker-secondary": #751f3d,
-  "dark-secondary": #8e2440,
-  "light-secondary": #da4865,
-  `,
-  CMW_FR: `
-  "dark-primary": #11312b,
-  "light-primary": #155b53,
-  "darker-secondary": #751f3d,
-  "dark-secondary": #8e2440,
-  "light-secondary": #da4865,
-  `,
-  CMW_UK: `
-  "dark-primary": #11312b,
-  "light-primary": #155b53,
-  "darker-secondary": #751f3d,
-  "dark-secondary": #8e2440,
-  "light-secondary": #da4865,
-  `,
-  CMW_DE: `
-  "dark-primary": #11312b,
-  "light-primary": #155b53,
-  "darker-secondary": #751f3d,
-  "dark-secondary": #8e2440,
-  "light-secondary": #da4865,
-  `,
-  WILDVIGNERON: `
-    "dark-primary": #0B4C3C,
-    "light-primary": #0B4C3C,
-    "darker-secondary": #0B4C3C,
-    "dark-secondary": #0B4C3C,
-    "light-secondary": #0B4C3C,
-  `,
-}
-
-const FONTS = {
-  CMW: '"main": "Open Sans", "header": "Open Sans"',
-  B2B: '"main": "Open Sans", "header": "Open Sans"',
-  CMW_UK: '"main": "Open Sans", "header": "Open Sans"',
-  CMW_FR: '"main": "Open Sans", "header": "Open Sans"',
-  CMW_DE: '"main": "Open Sans", "header": "Open Sans"',
-  WILDVIGNERON: '"main": "Readex Pro", "header": "Inknut Antiqua"',
 }
 
 const TITLE = {
@@ -318,13 +265,6 @@ export default {
       { name: 'format-detection', content: 'telephone=no' },
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
-    script: [
-      {
-        src: 'https://kit.fontawesome.com/b5939ad040.js',
-        async: true,
-        crossorigin: 'anonymous',
-      },
-    ],
   },
 
   css: [
@@ -333,6 +273,7 @@ export default {
     '@assets/css/vue-transitions.css',
     '@assets/css/layers/base.pcss',
     // Vendors
+    '@/assets/css/vendors/flash-message.css',
     '@/assets/css/vendors/swal.css',
     '@/assets/css/vendors/vue-slick-carousel.css',
     '@/assets/css/vendors/vue-ssr-carousel.css',
@@ -381,6 +322,7 @@ export default {
   },
 
   modules: [
+    '@nuxtjs/recaptcha',
     '@nuxt/typescript-build',
     ['@nuxtjs/robots'],
     ['@nuxt/http'],
@@ -393,6 +335,15 @@ export default {
     '@nuxtjs/gtm',
     '@nuxtjs/sitemap',
   ],
+
+  recaptcha: {
+    hideBadge: false, // Boolean, // Hide badge element (v3 & v2 via size=invisible)
+    // language: String, // Recaptcha language (v2)
+    // mode: String, // Mode: 'base', 'enterprise'
+    siteKey: '6LcbdBwlAAAAAGDJdHe5Hzlv09V6OuP2GO-0ysbG', // Site key for requests
+    version: 3, // Version
+    size: 'compact', // String, // Size: 'compact', 'normal', 'invisible' (v2)
+  },
 
   sitemap: {
     path: '/sitemap.xml',
@@ -526,6 +477,17 @@ export default {
       },
       tracesSampleRate: 1.0,
     },
+    clientIntegrations: {
+      Replay: {},
+    },
+    clientConfig: {
+      // This sets the sample rate to be 10%. You may want this to be 100% while
+      // in development and sample at a lower rate in production
+      replaysSessionSampleRate: 0.1,
+      // If the entire session is not sampled, use the below sample rate to sample
+      // sessions when an error occurs.
+      replaysOnErrorSampleRate: 1.0,
+    },
   },
 
   bootstrapVue: {
@@ -535,7 +497,7 @@ export default {
   },
 
   router: {
-    middleware: ['category'],
+    middleware: ['category', 'auth-b2b'],
     prefetchLinks: false,
     linkPrefetchedClass: 'nuxt-link-prefetched',
     extendRoutes(routes, resolve) {
@@ -571,14 +533,6 @@ export default {
   build: {
     publicPath: '/_cmw/',
     transpile: ['@prismicio/vue', 'swiper', 'vue-svg-icon', 'vee-validate/dist/rules'],
-    loaders: {
-      scss: {
-        additionalData: `
-          $theme-colors: (${THEME_COLORS[process.env.STORE]});
-          $font: (${FONTS[process.env.STORE]});
-        `,
-      },
-    },
     extend(config) {
       const svgFilePath = join(__dirname, 'assets')
       const imageLoaderRule = config.module.rules.find(rule => rule.test && rule.test.test('.svg'))
@@ -661,6 +615,15 @@ export default {
     DEPLOY_ENV: process.env.DEPLOY_ENV,
     gtm: {
       id: process.env.GOOGLE_TAG_MANAGER_ID,
+    },
+    recaptcha: {
+      /* reCAPTCHA options */
+      hideBadge: false, // Boolean, // Hide badge element (v3 & v2 via size=invisible)
+      // language: String, // Recaptcha language (v2)
+      // mode: String, // Mode: 'base', 'enterprise'
+      siteKey: '6LcbdBwlAAAAAGDJdHe5Hzlv09V6OuP2GO-0ysbG', // Site key for requests
+      version: 3, // Version
+      size: 'compact', // String, // Size: 'compact', 'normal', 'invisible' (v2)
     },
   },
 
