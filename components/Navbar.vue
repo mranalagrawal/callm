@@ -2,6 +2,7 @@
 import { inject, ref } from '@nuxtjs/composition-api'
 import { is } from 'vee-validate/dist/rules'
 import { mapGetters } from 'vuex'
+import chevronLeftIcon from 'assets/svg/chevron-left.svg'
 import themeConfig from '~/config/themeConfig'
 import { useCustomer } from '~/store/customer'
 import logo from '~/assets/svg/logo-call-me-wine.svg'
@@ -41,6 +42,7 @@ export default {
       userIcon,
       searchIcon,
       heartIcon,
+      chevronLeftIcon,
       handleShowMobileButton,
     }
   },
@@ -207,7 +209,7 @@ export default {
 <template>
   <div
     ref="navbar"
-    class="cmw-fixed cmw-w-screen cmw-min-h-[135px] cmw-px-4 cmw-top-0 bg-white cmw-z-tooltip"
+    class="cmw-fixed cmw-w-screen cmw-min-h-[135px] cmw-px-4 cmw-top-0 bg-white cmw-z-tooltip print:cmw-hidden"
   >
     <div
       class="
@@ -231,7 +233,7 @@ export default {
             />
           </button>
 
-          <nuxt-link
+          <NuxtLink
             class="cmw-flex cmw-max-w-150px md:cmw-max-w-250px"
             :aria-label="$t('enums.accessibility.labels.GO_TO_HOME_PAGE')"
             :to="localePath('/')"
@@ -242,7 +244,7 @@ export default {
               height="auto"
               original
             />
-          </nuxt-link>
+          </NuxtLink>
 
           <div class="cmw-flex cmw-items-center ml-auto d-lg-none">
             <button
@@ -255,7 +257,7 @@ export default {
                 height="36"
               />
             </button>
-            <nuxt-link
+            <NuxtLink
               :to="localePath('/cart')"
               class="cmw-relative btn"
             >
@@ -265,7 +267,7 @@ export default {
                 height="32px"
               />
               <span class="totalItems">{{ cartTotalQuantity }} </span>
-            </nuxt-link>
+            </NuxtLink>
           </div>
         </div>
       </div>
@@ -310,14 +312,14 @@ export default {
                 <p class="cmw-overline-2 cmw-uppercase cmw-text-secondary-400 cmw-py-2 cmw-px-3 cmw-m-0">
                   {{ $t("search.giftCards") }}
                 </p>
-                <nuxt-link
+                <NuxtLink
                   v-for="item in data.gift_cards"
                   :key="item.id"
                   class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-no-underline cmw-bg-primary-50) cmw-text-body"
                   :to="localePath(`/${item.handle}`)"
                 >
                   <span v-html="bolder(item.name)" />
-                </nuxt-link>
+                </NuxtLink>
               </div>
               <div
                 v-if="data.winelists && data.winelists.length > 0"
@@ -326,14 +328,14 @@ export default {
                 <p class="cmw-overline-2 cmw-uppercase cmw-text-secondary-400 cmw-py-2 cmw-px-3 cmw-mb-0 cmw-mt-2">
                   {{ $t("search.winelists") }}
                 </p>
-                <nuxt-link
+                <NuxtLink
                   v-for="item in data.winelists"
                   :key="item.id"
                   class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-no-underline cmw-bg-primary-50) cmw-text-body"
                   :to="localePath(`/${item.handle}-V${item.id}.htm`)"
                 >
                   <span v-html="bolder(item.name)" />
-                </nuxt-link>
+                </NuxtLink>
               </div>
 
               <div
@@ -344,42 +346,42 @@ export default {
                   <p class="cmw-overline-2 cmw-uppercase cmw-text-secondary-400 cmw-py-2 cmw-px-3 cmw-m-0">
                     {{ $t("search.categories") }}
                   </p>
-                  <nuxt-link
+                  <NuxtLink
                     v-for="item in data.categories"
                     :key="item.id"
                     class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-no-underline cmw-bg-primary-50) cmw-text-body"
                     :to="localePath(`/catalog?&categories=${item.id}`)"
                   >
                     <span v-html="bolder(item.name)" />
-                  </nuxt-link>
+                  </NuxtLink>
                 </div>
 
                 <div v-if="data.brands && data.brands.length > 0">
                   <p class="cmw-overline-2 cmw-uppercase cmw-text-secondary-400 cmw-py-2 cmw-px-3 cmw-m-0">
                     {{ $t("search.brands") }}
                   </p>
-                  <nuxt-link
+                  <NuxtLink
                     v-for="item in data.brands"
                     :key="item.id"
                     class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-no-underline cmw-bg-primary-50) cmw-text-body"
                     :to="localePath(`/winery/${item.handle}-B${item.id}.htm`)"
                   >
                     <span v-html="bolder(item.name)" />
-                  </nuxt-link>
+                  </NuxtLink>
                 </div>
 
                 <div v-if="data.products && data.products.length > 0">
                   <p class="cmw-overline-2 cmw-uppercase cmw-text-secondary-400 cmw-py-2 cmw-px-3 cmw-m-0">
                     {{ $t("search.products") }}
                   </p>
-                  <nuxt-link
+                  <NuxtLink
                     v-for="item in data.products"
                     :key="item.id"
                     class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-no-underline cmw-bg-primary-50) cmw-text-body"
                     :to="localePath(`/${item.handle}-P${item.id}.htm`)"
                   >
                     <span v-html="bolder(item.name)" />
-                  </nuxt-link>
+                  </NuxtLink>
                 </div>
               </div>
             </div>
@@ -404,61 +406,33 @@ export default {
         </div>
       </transition>
     </div>
-    <!--    <b-sidebar
-      v-model="isSidebarOpen"
-      title=""
-      shadow
-      width="100%"
-      z-index="1029"
-      no-header
-    >
-      <div
-        v-if="data"
-        class="px-3 py-2 mt-5 here?"
-      >
-        <div
-          v-for="(item, i) in data"
-          :key="`mobile_${i}`"
+    <transition name="menu-mobile">
+      <div v-if="mobileLogin" class="cmw-fixed cmw-w-screen cmw-top-0 cmw-left-0 cmw-h-screen cmw-bg-white cmw-z-amenadiel cmw-pt-$cmw-top-banner-height">
+        <Button
+          variant="text"
+          class="cmw-gap-2 cmw-pl-2 cmw-pr-3 cmw-py-2 cmw-justify-between"
+          :aria-label="$t('enums.accessibility.role.MODAL_CLOSE')"
+          @click.native="toggleMobileLogin"
         >
-          <DropdownMobileMenu :data="item" @update-show="handleShowMobileButton" />
-        </div>
-      </div>
-    </b-sidebar> -->
-
-    <b-sidebar
-      v-model="mobileLogin"
-      title=""
-      shadow
-      width="100%"
-      z-index="2089"
-      no-header
-    >
-      <div class="">
-        <div
-          class="p-3 d-flex justify-content-between align-items-center shadow"
-          @click="toggleMobileLogin"
-        >
-          <i class="fal fa-chevron-left fa-2x text-light-secondary" />
-          <p class="mb-0">
-            {{ customer.firstName ? customer.firstName.split(" ")[0] : "Account" }}
-          </p>
-          <i class="fal fa-times fa-2x text-light-secondary" />
-        </div>
+          <VueSvgIcon :data="chevronLeftIcon" color="#E6362E" width="30" height="auto" />
+          <span>{{ customer.firstName ? customer.firstName.split(" ")[0] : "Account" }}</span>
+          <VueSvgIcon :data="closeIcon" color="#E6362E" width="30" height="auto" />
+        </Button>
         <div v-if="!user">
-          <h3 class="px-3 text-center text-dark-primary mt-5 font-weight-bold">
+          <div class="cmw-h3 cmw-text-center text-dark-primary mt-5 font-weight-bold">
             {{ $t("navbar.user.signIn") }}
-          </h3>
-          <div class="px-3">
+          </div>
+          <div class="cmw-px-2">
             <LoginForm width="340px" />
           </div>
-          <div class="bg-light p-3 text-center">
+          <div class="cmw-bg-gray-lightest cmw-p-2 cmw-text-center">
             {{ $t("navbar.user.notRegisteredYet") }}
-            <nuxt-link
+            <NuxtLink
               to="/login"
-              class="text-uppercase text-light-secondary"
+              class="cmw-uppercase cmw-text-primary-400"
             >
               {{ $t("navbar.user.register") }}
-            </nuxt-link>
+            </NuxtLink>
           </div>
         </div>
         <div
@@ -468,41 +442,11 @@ export default {
           <UserMenu />
         </div>
       </div>
-    </b-sidebar>
+    </transition>
   </div>
 </template>
 
 <style scoped>
-.c-megaMenu {
-  top: v-bind(megaMenuTop)
-}
-
-:deep(.b-sidebar-body) {
-  background: white;
-}
-
-:deep(.b-sidebar.shadow.bg-light) {
-  padding-top: 40px !important;
-}
-
-:deep(.dropdown-toggle::after) {
-  display: none;
-}
-
-/* :deep(.btn-secondary) {
-  background-color: var(--dark-secondary) !important;
-  border-color: var(--dark-secondary) !important;
-} */
-:deep(.dropdown-menu) {
-  left: -60px;
-  border-top: 4px solid var(--dark-secondary);
-  padding-bottom: 0;
-}
-
-:deep(.b-sidebar) {
-  padding-top: 48px !important;
-}
-
 .totalItems {
   width: 20px;
   height: 20px;
