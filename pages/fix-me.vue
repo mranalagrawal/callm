@@ -22,6 +22,5 @@ export default defineComponent({
 <template>
   <div>
     <pre>{{ vuex }}</pre>
-    <pre>{{ userCart }}</pre>
   </div>
 </template>
