@@ -6,7 +6,7 @@ export default {
   setup(props: any) {
     const productsRef = ref<Record<string, any>>([])
     const { vendor: vendorRef } = toRefs(props)
-    const query = computed(() => `vendor:'${vendorRef.value}'`)
+    const query = computed(() => `tag:active AND vendor:'${vendorRef.value}'`)
 
     const { fetch } = useFetch(async ({ $cmwRepo, $productMapping, $handleApiErrors }) => {
       if (!vendorRef.value)
