@@ -9,7 +9,7 @@ export default {
     const { recentProducts } = storeToRefs(recentProductsStore)
     const { $cmwRepo } = useContext()
     const productsRef = ref<Record<string, any>[]>([])
-    const query = computed(() => `tag:${recentProducts.value.join(' OR ')}`)
+    const query = computed(() => `tag:active AND ${recentProducts.value.join(' OR ')}`)
 
     const { fetch } = useFetch(async ({ $productMapping, $handleApiErrors }) => {
       if (!recentProducts.value)

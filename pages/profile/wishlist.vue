@@ -23,7 +23,7 @@ export default {
 
     const { fetch } = useFetch(async () => {
       if (query.value)
-        await customerWishlist.getWishlistProducts({ query: `tag:${query.value}`, first: Number(wishlistArr.value.length) })
+        await customerWishlist.getWishlistProducts({ query: `tag:active AND (${query.value})`, first: Number(wishlistArr.value.length) })
     })
 
     watch(() => query.value, () => fetch())
