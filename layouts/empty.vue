@@ -63,7 +63,7 @@ export default defineComponent({
 <template>
   <div>
     <TopBar />
-    <!--    <Navbar class="cmw-navbar" /> -->
+    <Navbar class="cmw-navbar" />
 
     <nuxt class="cmw-main" />
   </div>
