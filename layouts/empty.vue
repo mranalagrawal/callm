@@ -1,20 +1,20 @@
 <script lang="ts">
 import { localeChanged, localize } from 'vee-validate'
-import { onMounted, provide, readonly, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
+import { defineComponent, onMounted, provide, readonly, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
 import TopBar from '../components/TopBar.vue'
-import Navbar from '../components/Navbar.vue'
+// import Navbar from '../components/Navbar.vue'
 import useScreenSize from '~/components/composables/useScreenSize'
 import useNewsletterSplash from '~/components/composables/useNewsletterSplash'
 
 import { lookUpLocale } from '~/plugins/vee-validate'
 import { useCustomer } from '~/store/customer'
 
-export default {
+export default defineComponent({
   components: {
     // LazyHydrate,
     // TheFooter: () => import('../components/TheFooter.vue'),
     TopBar,
-    Navbar,
+    // Navbar,
   },
   setup() {
     const { i18n } = useContext()
@@ -57,25 +57,15 @@ export default {
     return { isTablet, isDesktop, isDesktopWide, hasBeenSet, handleNewsletterSplash }
   },
   head: {},
-}
+})
 </script>
 
 <template>
   <div>
     <TopBar />
-    <Navbar class="cmw-navbar" />
+    <!--    <Navbar class="cmw-navbar" /> -->
 
     <nuxt class="cmw-main" />
-
-    <!--    <LazyHydrate :when-visible="{ rootMargin: '100px' }">
-      <TheFooter style="position: relative; top: 120px" />
-    </LazyHydrate>
-
-    <client-only>
-      <FlashMessage position="right top" />
-    </client-only>
-    &lt;!&ndash; Todo: lazy load this component &ndash;&gt;
-    <CmwSplash /> -->
   </div>
 </template>
 
