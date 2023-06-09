@@ -8,7 +8,7 @@ export default defineComponent({
   computed: {
     vuex() {
       if (process.client && typeof window !== 'undefined')
-        return window.localStorage.getItem('vuex')
+        return JSON.parse(window.localStorage.getItem('vuex') || '')
 
       return 'EMPTY'
     },
@@ -21,7 +21,7 @@ export default defineComponent({
 
 <template>
   <div>
-    <pre>{{ JSON.parse(vuex) }}</pre>
+    <pre>{{ vuex }}</pre>
     <pre>{{ userCart }}</pre>
   </div>
 </template>
