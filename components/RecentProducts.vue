@@ -24,7 +24,7 @@ export default {
             productsRef.value = $productMapping.fromShopify(products.nodes)
         })
         .catch((err: Error) => {
-          $handleApiErrors(`Catch getting products getAll from shopify on Recent Products on Vendor Products: ${err}`)
+          $handleApiErrors(`Catch getting products getAll from shopify on Recent Products on Vendor Products: ${query.value} ${err}`)
         })
     })
 
