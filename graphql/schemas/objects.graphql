@@ -3,3 +3,17 @@ type CustomerUserError {
   code: [String!]
   code: String!
 }
+
+#  An amount discounting the line that has been allocated by a discount.
+type DiscountAllocation {
+  #  Amount of discount allocated.
+  allocatedAmount: MoneyV2!
+  #  The discount this allocated amount originated from.
+  discountApplication: DiscountApplication!
+}
+
+#  The value of the percentage pricing object.
+type PricingPercentageValue {
+  #  The percentage value of the object.
+  percentage: Float!
+}

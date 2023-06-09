@@ -24,7 +24,7 @@ query getGiftCard(
             id,
             title,
             availableForSale,
-            priceV2 {
+            price {
                 amount,
                 currencyCode
             }

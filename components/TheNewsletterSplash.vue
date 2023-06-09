@@ -27,11 +27,15 @@ export default defineComponent({
       const { isValid } = await formEl.value.validateWithInfo()
 
       if (isValid) {
-        await $cmw.$post('/customers', {
-          email: customer.value.email ?? formData.value.email,
+        await $cmw.$post('/customers/subscribe-nl', {
+          email: formData.value.email ? formData.value.email : customer.value.email,
         })
           .then(({ data }: unknown | any) => {
-            const { errors = {}, customer = {} } = data
+            const {
+              errors = {},
+              customer = {},
+              nlSent = false,
+            } = data
 
             if (Object.keys(errors).length) {
               SweetAlertToast.fire({
@@ -41,16 +45,23 @@ export default defineComponent({
               return
             }
 
-            $gtm.push({
-              event: 'newsletterSubscription',
-              leadId: customer.id,
-              userEmail: formData.value.email,
-            })
+            if (nlSent) {
+              $gtm.push({
+                event: 'newsletterSubscription',
+                leadId: customer.id,
+                userEmail: formData.value.email,
+              })
 
-            SweetAlertToast.fire({
-              icon: 'success',
-              text: i18n.t('common.feedback.OK.emailAdded'),
-            })
+              SweetAlertToast.fire({
+                icon: 'success',
+                text: i18n.t('common.feedback.OK.newsletterSubscribed'),
+              })
+            } else {
+              SweetAlertToast.fire({
+                icon: 'warning',
+                text: i18n.t('common.feedback.KO.newsletterSubscribed'),
+              })
+            }
 
             splash.$reset()
             formData.value.email = ''

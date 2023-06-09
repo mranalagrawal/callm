@@ -163,7 +163,7 @@ export default {
               <VueSvgIcon :data="cartTotalAmount < shipping.threshold ? deliveryIcon : checkCircularIcon" width="24" height="24" />
               <span>{{ cartTotalAmount < shipping.threshold ? shipping.threshold_not_reached : shipping.threshold_reached }}</span>
             </div>
-            <div class="cmw-px-6">
+            <div class="cmw-px-4">
               <hr>
             </div>
             <div class="cmw-max-h-[360px] cmw-overflow-y-auto cmw-overflow-x-hidden">
@@ -171,19 +171,15 @@ export default {
                 <CartLine :item="item" />
               </div>
             </div>
-            <div class="row bg-light py-4 px-4">
-              <div class="col-6">
-                <Button variant="ghost" :to="localePath('/cart')">
-                  {{
-                    $t("navbar.cart.detail")
-                  }}
-                </Button>
-              </div>
-              <div class="col-6">
-                <Button @click.native="checkout()">
-                  {{ $t("navbar.cart.checkout") }}
-                </Button>
-              </div>
+            <div class="cmw-grid cmw-grid-cols-2 cmw-gap-4 cmw-bg-gray-lightest cmw-p-4">
+              <Button variant="ghost" :to="localePath('/cart')">
+                {{
+                  $t("navbar.cart.detail")
+                }}
+              </Button>
+              <Button @click.native="checkout()">
+                {{ $t("navbar.cart.checkout") }}
+              </Button>
             </div>
           </div>
           <div v-else class="cmw-min-w-[425px] cmw-text-center cmw-px-6 cmw-pb-4">

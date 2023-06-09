@@ -52,7 +52,7 @@ export default defineComponent({
           items.value = data.body[0].items.concat(data.body[0].items).concat(data.body[0].items)
           title.value = data.body[0].primary.title
         })
-        .catch((err: Error) => $handleApiErrors(`Catch getting callToAction data from prismic: ${err}`))
+        .catch((err: Error) => $handleApiErrors(`Catch getting Selections data from prismic: ${err}`))
     })
     return { c1, currentC1Slide, items, title, settings, bgCarousel }
   },

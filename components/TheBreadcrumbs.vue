@@ -1,16 +1,13 @@
 <script lang="ts">
+import type { PropType } from '@nuxtjs/composition-api'
 import { defineComponent, shallowRef } from '@nuxtjs/composition-api'
 import chevronRightIcon from 'assets/svg/chevron-right.svg'
 import type { IProductBreadcrumbs } from '~/types/product'
 
-interface Props {
-  breadcrumbs: IProductBreadcrumbs[]
-}
-
 export default defineComponent({
   props: {
     breadcrumbs: {
-      type: Array as () => Props['breadcrumbs'],
+      type: Array as PropType<IProductBreadcrumbs[]>,
       required: true,
     },
   },

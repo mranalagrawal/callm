@@ -12,6 +12,7 @@ export default {
     prevPage: 'Previous page',
     readMore: 'Read everything',
     reorderProducts: 'Reorder Products',
+    print: 'Print',
     requestAssistance: 'Request for assistance',
     send: 'Send',
     subscribe: 'sign me up',

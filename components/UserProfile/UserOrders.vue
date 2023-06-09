@@ -26,10 +26,11 @@ export default {
   <div>
     <div
       v-if="orders.length > 0"
-      class="cmw-p-4 md:cmw-max-w-10/12 cmw-pt-0"
+      class="cmw-p-4 md:cmw-max-w-10/12 cmw-pt-0 print:cmw-max-w-12/12"
     >
       <div
-        class="c-tableHeaders cmw-backdrop-filter cmw-backdrop-blur cmw-bg-gray-lightest cmw-rounded <md:cmw-hidden cmw-grid cmw-grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_90px]
+        class="c-tableHeaders print:cmw-hidden cmw-backdrop-filter cmw-backdrop-blur cmw-bg-gray-lightest cmw-rounded
+         <md:cmw-hidden cmw-grid cmw-grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_90px]
        cmw-items-center cmw-justify-items-center cmw-text-center cmw-mb-6 cmw-py-6 cmw-sticky"
       >
         <div
@@ -51,7 +52,7 @@ export default {
         />
       </div>
     </div>
-    <div v-else>
+    <div v-else class="print:cmw-hidden">
       <p class="lead">
         {{ $t("profile.noOrder") }}
       </p>

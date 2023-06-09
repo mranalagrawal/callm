@@ -61,20 +61,20 @@ export default {
           style="border-radius: 10px; border: none"
         >
           <div
-            class="h-100 w-100 p-4 position-relative text-white slide-content"
+            class="cmw-relative cmw-h-full cmw-w-full cmw-p-4 cmw-text-white slide-content"
             :style="{
               background: `url(${mask}),url('${content.image.url}')`,
             }"
           >
             <p class="h3 font-weight-bold mt-4 cmw-text-white cmw-max-w-[30%]">
-              <nuxt-link :to="content.link" class="cmw-text-white hover:(cmw-text-white cmw-no-underline)">
+              <NuxtLink :to="content.link" class="cmw-text-white hover:(cmw-text-white cmw-no-underline)">
                 {{ content.title }}
-              </nuxt-link>
+              </NuxtLink>
             </p>
 
-            <nuxt-link :to="content.link" class="btn btn-cta mb-3 px-5 py-2">
+            <Button :to="content.link" variant="ghost-inverse" class="cmw-w-max cmw-absolute cmw-bottom-6">
               {{ content.cta }}
-            </nuxt-link>
+            </Button>
           </div>
           <div class="w-100 loader" />
         </slide>
@@ -84,18 +84,6 @@ export default {
 </template>
 
 <style scoped>
-.btn-cta {
-  position: absolute;
-  text-transform: uppercase;
-  bottom: 20px;
-  border-radius: 10px;
-  font-weight: 600;
-  border: 2px solid white;
-  color: white;
-}
-.btn-cta:hover {
-  background: #da4865;
-}
 .loader {
   position: absolute;
   background: #ddd;
@@ -165,26 +153,10 @@ export default {
   transform: translateX(250px) translateZ(-400px) rotateY(-35deg) !important;
 }
 
-/* :deep([class^="carousel-3d-slide left-"]) {
-  transform: unset !important;
-}
-
-:deep(.carousel-3d-slide.right-1) {
-  transform: translateX(333px) translateZ(-400px) rotateY(-35deg) !important;
-} */
-/*
-:deep(.carousel-3d-slide.right-2) {
-  transform: translateX(400px) translateZ(-400px) rotateY(-35deg) !important;
-} */
-
 .slide-content {
   background-position: left, center !important;
   background-size: contain, cover !important;
   background-repeat: no-repeat, no-repeat !important;
   border-radius: 10px;
 }
-/* :deep(.carousel-3d-slider) {
-  width: 900 !important;
-  height: 400px !important;
-} */
 </style>

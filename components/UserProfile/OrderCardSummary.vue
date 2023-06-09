@@ -51,7 +51,7 @@ export default {
       </div>
     </div>
     <!-- ShipmentAddress Section -->
-    <div>
+    <div class="print:cmw-hidden">
       <h5
         class="cmw-mb-0"
         v-text="$t('profile.orders.card.shipmentAddress')"

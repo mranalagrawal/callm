@@ -43,6 +43,7 @@ export interface IBaseProductMapped {
 export interface IProductMapped extends IBaseProductMapped {
   gtmProductData: any
   availableFeatures: TProductFeatures[]
+  descriptionHtml: HTMLElement | string
   sku: string
   // awards: []
   // availableForSale: boolean

@@ -1,0 +1,1 @@
+union PricingValue = MoneyV2 | PricingPercentageValue

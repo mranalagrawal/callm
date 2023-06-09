@@ -1,35 +1,71 @@
 type Order {
-  cancelReason: String # Todo: OrderCancelReason
+  #  The address associated with the payment method.
+  billingAddress: MailingAddress
+  #  The reason for the order's cancellation. Returns null if the order wasn't canceled.
+  cancelReason: OrderCancelReason
+  #  The date and time when the order was canceled. Returns null if the order wasn't canceled.
   canceledAt: DateTime
-  currencyCode: CurrencyCode
+  #  The code of the currency used for the payment.
+  currencyCode: CurrencyCode!
+  #  The subtotal of line items and their discounts, excluding line items that have been removed. Does not contain order-level discounts, duties, shipping costs, or shipping discounts. Taxes are not included unless the order is a taxes-included order.
   currentSubtotalPrice: MoneyV2!
-  currentTotalDuties: MoneyV2!
+  #  The total cost of duties for the order, including refunds.
+  currentTotalDuties: MoneyV2
+  #  The total amount of the order, including duties, taxes and discounts, minus amounts for line items that have been removed.
   currentTotalPrice: MoneyV2!
+  #  The total of all taxes applied to the order, excluding taxes for returned line items.
   currentTotalTax: MoneyV2!
+  #  A list of the custom attributes added to the order.
+  customAttributes: [Attribute!]!
+  #  The locale code in which this specific order happened.
   customerLocale: String
+  #  The unique URL that the customer can use to access the order.
   customerUrl: URL
+  #  Whether the order has had any edits applied or not.
   edited: Boolean!
-  email: String
-  financialStatus: OrderFinancialStatus
-  fulfillmentStatus: OrderFulfillmentStatus!
-  id: ID!
-  metafield: String # Todo: Metafield
-  metafields: String # Todo: [Metafield]!
+  #  The customer's email address.
+  email:String
+  #  The financial status of the order.
+  financialStatus:OrderFinancialStatus
+  #  The fulfillment status for the order.
+  fulfillmentStatus:OrderFulfillmentStatus!
+  #  A globally-unique ID.
+  id:ID!
+#  Returns a metafield found by namespace and key.
+  metafield(namespace:String!,key:String!): Metafield
+#  metafield: Metafield
+#  The metafields associated with the resource matching the supplied list of namespaces and keys.
+  metafields: [Metafield]!
+#  Unique identifier for the order that appears on the order. For example, #1000 or _Store1001.
   name: String!
+#  A unique numeric identifier for the order for use by shop owner and customer.
   orderNumber: Int!
-  originalTotalDuties: MoneyV2!
+#  The total cost of duties charged at checkout.
+  originalTotalDuties: MoneyV2
+#  The total price of the order before any applied edits.
   originalTotalPrice: MoneyV2!
+#  The customer's phone number for receiving SMS notifications.
   phone: String
+#  The date and time when the order was imported. This value can be set to dates in the past when importing from other systems. If no value is provided, it will be auto-generated based on current date and time.
   processedAt: DateTime!
+#  The address to where the order will be shipped.
   shippingAddress: MailingAddress
-  shippingDiscountAllocations: String # Todo: [DiscountAllocation!]!
+#  The discounts that have been allocated onto the shipping line by discount applications.
+  shippingDiscountAllocations: [DiscountAllocation!]!
+#  The unique URL for the order's status page.
   statusUrl: URL!
-  subtotalPriceV2: MoneyV2!
-  successfulFulfillments(first: Int): [Fulfillment!]
-  totalPriceV2: MoneyV2!
-  totalRefundedV2: MoneyV2!
-  totalShippingPriceV2: MoneyV2!
-  totalTaxV2: MoneyV2!
+#  Price of the order before shipping and taxes.
+  subtotalPrice: MoneyV2
+#  List of the order’s successful fulfillments.
+  successfulFulfillments: [Fulfillment!]
+#  The sum of all the prices of all the items in the order, duties, taxes and discounts included (must be positive).
+  totalPrice: MoneyV2!
+#  The total amount that has been refunded.
+  totalRefunded: MoneyV2!
+#  The total cost of shipping.
+  totalShippingPrice: MoneyV2!
+#  The total cost of taxes.
+  totalTax: MoneyV2
   # Connections
   lineItems(first: Int, reverse: Boolean, query: String):OrderLineItemConnection
 }

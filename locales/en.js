@@ -115,6 +115,15 @@ export default {
   },
   profile: {
     orders: {
+      print: {
+        invoiceNumber: 'Invoice #{0}',
+        tableHeaders: {
+          code: 'Code',
+          description: 'Description',
+          quantity: 'Amount',
+          price: 'Price',
+        },
+      },
       tableHeaders: {
         order: 'Order',
         date: 'Date',
@@ -135,6 +144,8 @@ export default {
         summary: 'Summary',
         shipment: 'Shipment: {0}',
         shipmentAddress: 'Shipping address',
+        billingAddress: 'Billing address',
+        businessAddress: 'Business address',
         goods: 'item | items',
         productsTotal: 'Total products',
         shipmentCost: 'Shipping cost',
@@ -194,6 +205,9 @@ export default {
     showResults: 'Show Results ({count})',
     products: 'Products',
     selections: 'Our Selections',
+    productionTypes: 'Production Types',
+    regions: 'Regions',
+    country: 'Country',
     categories: 'Categories',
     winelists: 'Wine lists',
     pairings: 'Pairings',
@@ -202,7 +216,6 @@ export default {
     boxes: 'boxes',
     areas: 'areas',
     provenience: 'Provenance',
-    regions: 'Provenance',
     brands: 'brands',
     noBrands: 'Try our finest list',
     countries: 'countries',
@@ -236,6 +249,8 @@ export default {
     mostAwarded: 'Most awarded',
     newArrivals: 'New arrivals',
     popularity: 'Popularity',
+    brandAsc: 'Brand (A-Z)',
+    brandDesc: 'Brand (Z-A)',
     giftCards: 'Gift Cards',
     chooseGiftCard: 'choose your gift card',
   },
@@ -318,5 +333,8 @@ export default {
       SITE_IMPROVEMENT: 'Product suggestions to add on Callmewine or site improvements',
       OTHER: 'Other questions or reports',
     },
+  },
+  waitingForConfirmation: {
+    msg: 'Thank you for sending your data, one of our operators will contact you as soon as possible',
   },
 }

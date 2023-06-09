@@ -93,6 +93,7 @@ export default defineConfig({
         'xl': '1332px',
         'desktop-wider': '1600px',
         '@hover': { raw: '(hover: hover)' },
+        'print': { raw: 'print' },
       },
       boxShadow: {
         'filter': '0px 4px white, 0 -1px 6px 0 rgb(51 51 51 / 20%)',

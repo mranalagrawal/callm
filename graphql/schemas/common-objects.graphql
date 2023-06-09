@@ -31,3 +31,10 @@ interface FilterValue {
   input:JSON!
   label:String!
 }
+
+interface Attribute {
+#  Key or name of the attribute.
+  key: String!
+#  Value of the attribute.
+  value: String
+}

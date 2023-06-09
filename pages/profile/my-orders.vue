@@ -1,7 +1,7 @@
 <script>
 import { computed, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import { useCustomerOrders } from '@/store/customerOrders'
+import { useCustomerOrders } from '~/store/customerOrders.ts'
 
 export default {
   setup() {
@@ -50,7 +50,7 @@ export default {
 <template>
   <div>
     <!-- Todo: add some skeleton loader, maybe inside the UserOrders Component -->
-    <div class="cmw-p-4 md:cmw-max-w-10/12">
+    <div class="print:cmw-hidden cmw-p-4 md:cmw-max-w-10/12">
       <CmwDropdown
         key="sort-by"
         size="sm"
@@ -68,7 +68,7 @@ export default {
         </template>
       </CmwDropdown>
     </div>
-    <p v-if="$fetchState.pending" class="px-4">
+    <p v-if="$fetchState.pending" class="print:cmw-hidden px-4">
       {{ $t("loading") }}
     </p>
     <div v-else>

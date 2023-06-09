@@ -7,6 +7,7 @@ export type TPrismicComponents =
   | 'cookiePage'
   | 'contactPage'
   | 'conditionsPage'
+  | 'footer'
   | 'homeCarousel'
   | 'homeBanner'
   | 'homeBoxes'
@@ -44,6 +45,7 @@ const defaultPrismicComponents: TPrismicComponentsMap = {
   cookiePage: 'cookie-policy',
   conditionsPage: 'conditions',
   contactPage: 'contact_us',
+  footer: 'footer',
   homeCarousel: 'home-carousel',
   homeBanner: 'HomeBanner',
   megaMenu: 'mega-menu-test',
@@ -92,6 +94,7 @@ const prismicConfig: TPrismicConfig = {
       cookiePage: 'wv_cookie-policy',
       conditionsPage: 'wv_conditions',
       contactPage: 'wv_contact_us',
+      footer: 'footer',
       homeCarousel: 'wv_home-carousel',
       homeBanner: 'HomeBannerWV',
       megaMenu: 'mega-menu-test',

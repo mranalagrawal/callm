@@ -253,7 +253,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
         id: v.id,
         title: v.title,
         description: v.description || null,
-        price: { ...v.priceV2 },
+        price: { ...v.price },
         compareAtPrice: v.compareAtPriceV2,
       })) || []
 

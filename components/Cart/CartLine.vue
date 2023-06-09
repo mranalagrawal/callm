@@ -1,32 +1,36 @@
-<script>
+<script lang="ts">
+import { defineComponent } from '@nuxtjs/composition-api'
+import type { PropType } from '@nuxtjs/composition-api'
 import deleteIcon from 'assets/svg/delete.svg'
 import addIcon from 'assets/svg/add.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
+import type { ICartLineItem } from '~/types/order'
 
-export default {
-  name: 'CartLine',
+export default defineComponent({
   props: {
-    item: Object,
+    item: {
+      type: Object as PropType<ICartLineItem>,
+      required: true,
+    },
     isLast: Boolean,
   },
-  data() {
+  setup() {
     return {
       deleteIcon,
       addIcon,
       subtractIcon,
-      quantity: this.item.quantity,
     }
   },
   computed: {
     userCartQuantity() {
-      const isInCart = this.$store.state.userCart.userCart.find(el =>
-        el.productVariantId?.includes(this.item.productVariantId),
+      const isInCart = this.$store.state.userCart.userCart.find((el: { productVariantId: (string | undefined)[] }) =>
+        el.productVariantId?.includes(this.item?.productVariantId),
       )
 
       return isInCart ? isInCart.quantity : 0
     },
     canAddMore() {
-      return this.item.totalInventory - this.userCartQuantity > 0
+      return Number(this.item.totalInventory) - this.userCartQuantity > 0
     },
   },
   methods: {
@@ -57,66 +61,116 @@ export default {
       })
     },
   },
-}
+})
 </script>
 
 <template>
-  <div class="px-3 bg-white">
-    <div class="row align-items-md-center">
-      <div class="col-10 col-md-7 d-flex align-items-md-center mb-3 mb-md-0">
-        <img :src="item.image" alt="" style="width: 50px">
-        <p class="small font-weight-bold">
-          {{ item.title }}
-        </p>
-      </div>
-      <div class="col-2 d-md-none mb-3">
-        <ButtonIcon :icon="deleteIcon" variant="icon" :size="22" @click.native="removeLine" />
-      </div>
-      <div
-        class="col-4 offset-2 offset-md-0 col-md-2"
-      >
-        <div class="cmw-grid cmw-grid-cols-[32px_auto_32px] cmw-h-[32px] cmw-items-center">
-          <button
-            class="cmw-flex cmw-transition-colors cmw-w-full cmw-h-full cmw-bg-white cmw-rounded-sm cmw-border-2 cmw-border-primary
+  <div
+    class="c-cartLineItem cmw-mx-3 cmw-bg-white cmw-py-4 cmw-border-b cmw-border-b-gray-light"
+  >
+    <div class="c-cartLineItem__image">
+      <img class="cmw-w-[min(100%,_46px)] cmw-m-inline-auto" :src="item.image" :alt="item.image">
+    </div>
+    <div class="c-cartLineItem__description">
+      <p class="cmw-text-sm cmw-font-bold">
+        {{ item.title }}
+      </p>
+    </div>
+    <div class="c-cartLineItem__quantity">
+      <div class="cmw-grid cmw-grid-cols-[32px_40px_32px] cmw-h-[32px] cmw-items-center">
+        <button
+          class="cmw-flex cmw-transition-colors cmw-w-full cmw-h-full cmw-bg-white cmw-rounded-sm cmw-border-2 cmw-border-primary
             disabled:(cmw-border-gray-light cmw-opacity-50 cmw-cursor-not-allowed)"
-            :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
-            @click="decreaseQuantity"
-          >
-            <VueSvgIcon class="cmw-m-auto" :data="subtractIcon" width="14" height="14" color="#992545" />
-          </button>
-          <span class="mb-0 mx-3">{{ userCartQuantity }}</span>
-          <button
-            class="cmw-flex cmw-transition-colors cmw-w-full cmw-h-full cmw-bg-white cmw-rounded-sm cmw-border-2 cmw-border-primary
-               disabled:(cmw-border-gray-light cmw-opacity-50 cmw-cursor-not-allowed)"
-            :disabled="!canAddMore"
-            :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
-            @click="increaseQuantity"
-          >
-            <VueSvgIcon class="cmw-m-auto" :data="addIcon" width="14" height="14" color="#992545" />
-          </button>
-        </div>
-      </div>
-      <div class="col-6 col-md-2">
-        <p
-          v-if="item.singleAmount !== item.singleAmountFullPrice"
-          class="mb-0 small text-right text-muted"
-          style="text-decoration: line-through"
+          :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
+          @click="decreaseQuantity"
         >
-          {{ (item.quantity * item.singleAmountFullPrice).toFixed(2) }}
-          {{ $config.STORE === 'CMW_UK' ? '£' : '€' }}
-        </p>
+          <VueSvgIcon class="cmw-m-auto" :data="subtractIcon" width="14" height="14" color="#992545" />
+        </button>
+        <span class="cmw-text-center">{{ userCartQuantity }}</span>
+        <button
+          class="cmw-flex cmw-transition-colors cmw-w-full cmw-h-full cmw-bg-white cmw-rounded-sm cmw-border-2 cmw-border-primary
+               disabled:(cmw-border-gray-light cmw-opacity-50 cmw-cursor-not-allowed)"
+          :disabled="!canAddMore"
+          :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
+          @click="increaseQuantity"
+        >
+          <VueSvgIcon class="cmw-m-auto" :data="addIcon" width="14" height="14" color="#992545" />
+        </button>
+      </div>
+    </div>
+    <div class="c-cartLineItem__price">
+      <div
+        v-if="item.singleAmount !== item.singleAmountFullPrice"
+        class="cmw-text-sm cmw-text-right cmw-text-gray"
+        style="text-decoration: line-through"
+      >
+        {{ (item.quantity * item.singleAmountFullPrice).toFixed(2) }}
+        {{ $config.STORE === 'CMW_UK' ? '£' : '€' }}
+      </div>
 
-        <p class="mb-0 font-weight-bold text-right">
-          {{ (item.quantity * item.singleAmount).toFixed(2) }}
-          {{ $config.STORE === 'CMW_UK' ? '£' : '€' }}
-        </p>
+      <div class="cmw-font-bold cmw-text-lg cmw-text-right">
+        {{ (item.quantity * item.singleAmount).toFixed(2) }}
+        {{ $config.STORE === 'CMW_UK' ? '£' : '€' }}
       </div>
-      <div class="d-none d-md-block col-md-1 text-right">
-        <ButtonIcon :icon="deleteIcon" variant="icon" :size="22" @click.native="removeLine" />
-      </div>
-      <div v-if="!isLast" class="col-12">
-        <hr class="cmw-w-11/12 ml-auto">
-      </div>
+    </div>
+    <div class="c-cartLineItem__cta cmw-absolute md:cmw-relative cmw-top-0 cmw-right-0">
+      <ButtonIcon class="cmw-m-auto" :icon="deleteIcon" variant="icon" :size="28" @click.native="removeLine" />
     </div>
   </div>
 </template>
+
+<style>
+.c-cartLineItem {
+  position: relative;
+  display: grid;
+  grid-template-areas:
+    "image description description"
+    "empty quantity price";
+  grid-template-columns: 70px auto auto;
+  grid-template-rows: 100px 70px;
+  align-items: center;
+
+  /* CSS Nesting is not yet support by firefox @06/06/2023 https://caniuse.com/css-nesting Can't wait for it 😎 */
+  /*&__image {
+    ...
+  }*/
+
+}
+
+.c-cartLineItem__image {
+  width: 50px;
+  grid-area: image;
+  justify-self: center;
+}
+
+.c-cartLineItem__description {
+  grid-area: description;
+  padding-right: 60px;
+}
+
+.c-cartLineItem__quantity {
+  grid-area: quantity;
+}
+
+.c-cartLineItem__price {
+  grid-area: price;
+}
+
+.c-cartLineItem__cta {
+  grid-area: cta;
+}
+
+@screen md {
+  .c-cartLineItem {
+    grid-gap: 1rem;
+    grid-template-areas:
+    "image description quantity price cta";
+    grid-template-columns: 70px auto 110px 120px 60px;
+    grid-template-rows: auto;
+  }
+
+  .c-cartLineItem__description {
+    padding-right: 0;
+  }
+}
+</style>
