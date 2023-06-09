@@ -171,7 +171,44 @@ export const useCustomer = defineStore({
       await this.$nuxt.app.router.push(this.$nuxt.app.localePath('/'))
     },
 
-    async addToWishlist(args) {
+    async addOrRemoveFromWishlist(args) {
+      const customerId = `${this.customer.id}`.substring(`${this.customer.id}`.lastIndexOf('/') + 1)
+      const { ELASTIC_URL, STORE } = this.$nuxt.app.$config
+      await fetch(
+        `${ELASTIC_URL}customers/${STORE}/${customerId}/wishlist/${args.id}`,
+        { method: 'POST' },
+      )
+        .then(response => (response.json()))
+        .then(async (array) => {
+          // TODO: Animate the filling heart for a better UX
+          this.$patch({ wishlistArr: setCustomerWishlist(JSON.stringify(array)) })
+          SweetAlertToast.fire({
+            iconHtml: getIconAsImg('success'),
+            text: this.$nuxt.app.i18n.t(args.isOnFavourite ? 'common.feedback.OK.wishlistRemoved' : 'common.feedback.OK.wishlistAdded'),
+          })
+
+          if (!args.isOnFavourite) {
+            await this.$nuxt.$cmwGtmUtils.resetDatalayerFields()
+
+            this.$nuxt.$gtm.push({
+              event: 'addToWishlist',
+              wishlistAddedProduct: {
+                products: [{
+                  ...args.gtmProductData,
+                }],
+              },
+            })
+          }
+        })
+        .catch(() => {
+          SweetAlertToast.fire({
+            icon: 'error',
+            text: this.$nuxt.app.i18n.t('common.feedback.KO.unknown'),
+          })
+        })
+    },
+
+    /*     async addToWishlist(args) {
       const customerAccessToken = this.$nuxt.$cookieHelpers.getToken()
       const shopifyCustomerId = `${this.customer.id}`.substring(`${this.customer.id}`.lastIndexOf('/') + 1)
       this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
@@ -226,7 +263,7 @@ export const useCustomer = defineStore({
             text: this.$nuxt.app.i18n.t('common.feedback.KO.unknown'),
           })
         })
-    },
+    }, */
 
     handleWishlist(args) {
       if (!this.customer.id) {
@@ -245,10 +282,12 @@ export const useCustomer = defineStore({
           text: this.$nuxt.app.i18n.t('common.confirm.wishlistRemove'),
           cancelButtonText: this.$nuxt.app.i18n.t('common.cta.cancel'),
           confirmButtonText: this.$nuxt.app.i18n.t('common.cta.confirm'),
-          preConfirm: () => this.removeFromWishlist(args),
+          preConfirm: () => this.addOrRemoveFromWishlist(args),
+          // preConfirm: () => this.removeFromWishlist(args),
         }).then(() => {})
       } else {
-        this.addToWishlist(args).then(() => {})
+        this.addOrRemoveFromWishlist(args)
+        // this.addToWishlist(args).then(() => {})
       }
     },
     async customerUpdateData(customer = {}, feedbackOk = '', feedbackKo = '') {
