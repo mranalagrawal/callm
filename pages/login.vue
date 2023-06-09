@@ -1,75 +1,60 @@
 <script lang="ts">
-import { defineComponent, onMounted, ref, useContext } from '@nuxtjs/composition-api'
+import { defineComponent, inject, onMounted, ref, useContext } from '@nuxtjs/composition-api'
 
 export default defineComponent({
-  layout(context) {
-    return context.$config.STORE
+  layout({ $config }) {
+    return $config.STORE
   },
   setup() {
     const { $cmwGtmUtils } = useContext()
     const registerIsVisible = ref(false)
+    const isDesktop = inject('isDesktop')
 
     onMounted(() => {
       process.browser && $cmwGtmUtils.pushPage('page')
     })
 
-    return { registerIsVisible }
+    return { registerIsVisible, isDesktop }
   },
 })
 </script>
 
 <template>
-  <div class="container-fluid min-vh-100">
-    <div class="row h-100 d-lg-none">
-      <div
-        v-if="!registerIsVisible"
-        class="col-12 col-lg-6 px-0 px-lg-3"
-      >
-        <h3 class="text-center">
+  <div class="cmw-px-4 cmw-min-h-screen">
+    <div v-if="!isDesktop" class="cmw-h-full md:(cmw-hidden)">
+      <div v-if="!registerIsVisible">
+        <h3 class="cmw-text-center">
           {{ $t("navbar.user.alreadyRegistered") }}
         </h3>
-        <LoginForm width="90%" />
-        <div class="bg-light py-3 d-lg-none">
+        <LoginForm />
+        <div class="cmw-bg-gray-lightest cmw-py-3">
           <p
-            class="text-center mb-0"
+            class="cmw-text-center cmw-mb-0"
             @click="registerIsVisible = true"
           >
             {{ $t("navbar.user.notRegisteredYet") }}
-            <strong class="text-light-secondary text-uppercase">{{
-              $t("navbar.user.register")
-            }}</strong>
+            <strong class="cmw-text-primary-400 cmw-uppercase" v-text="$t('navbar.user.register')" />
           </p>
         </div>
       </div>
-      <div
-        v-else
-        class="col-12 col-lg-6"
-      >
-        <h3 class="text-center">
-          {{ $t("createYourAccount") }}
-        </h3>
+      <div v-else>
+        <h3 class="cmw-text-center" v-text="$t('createYourAccount')" />
         <RegisterBox />
       </div>
     </div>
-    <div class="row h-100 d-none d-lg-flex">
-      <div class="col-12 col-lg-6 px-0 px-lg-3 cmw-pt-20">
-        <h3 class="text-center">
-          {{ $t("navbar.user.alreadyRegistered") }}
-        </h3>
-        <LoginForm width="90%" />
-        <div class="bg-light py-3 d-lg-none">
-          <p class="text-center mb-0">
+    <div v-else class="cmw-hidden cmw-h-full md:(cmw-grid cmw-grid-cols-2)">
+      <div class="cmw-pt-20">
+        <h3 class="cmw-text-center" v-text="$t('navbar.user.alreadyRegistered')" />
+        <LoginForm />
+        <div class="cmw-bg-gray-lightest cmw-py-3">
+          <p class="cmw-text-center cmw-mb-0">
             {{ $t("navbar.user.notRegisteredYet") }}
-            <strong class="text-light-secondary text-uppercase">{{
-              $t("navbar.user.register")
-            }}</strong>
+            <strong class="cmw-text-primary-400 cmw-uppercase" v-text="$t('navbar.user.register')" />
           </p>
         </div>
       </div>
-      <div class="col-12 col-lg-6 bg-light cmw-py-20">
-        <h3 class="text-center">
-          {{ $t("createYourAccount") }}
-        </h3>
+      <div class="cmw-bg-gray-lightest cmw-py-20">
+        <h3 class="text-center" v-text="$t('createYourAccount')" />
         <RegisterBox />
       </div>
     </div>

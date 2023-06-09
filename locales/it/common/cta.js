@@ -5,6 +5,7 @@ export default {
     send: 'Invia',
     requestAssistance: 'Richiesta di assistenza',
     reorderProducts: 'Riordina Prodotti',
+    print: 'Stampa',
     addAddress: 'Aggiungi indirizzo',
     emptyCart: 'Svuota Carrello',
     continueShopping: 'Continua gli acquisti',

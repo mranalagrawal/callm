@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
 import themeConfig from '~/config/themeConfig'
-import { useCustomerOrders } from '~/store/customerOrders'
-import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
+import { useCustomerOrders } from '~/store/customerOrders.ts'
 import { getIconAsImg } from '~/utilities/icons'
+import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
 import customerAccessTokenCreate from '~/graphql/mutations/authenticateUser'
 // import { useCustomerWishlist } from '@/store/customerWishlist'
 
@@ -32,6 +32,7 @@ export const useCustomer = defineStore({
       phone: '',
       orders_count: '',
       total_spent: '',
+      validated: false,
     },
     // FixMe: on Nuxt 3 or using GraphQl local storage properly we shouldn't need this,
     //  we need to reduce the extra objects and relay on the state,
@@ -62,6 +63,17 @@ export const useCustomer = defineStore({
   actions: {
     async login(email, password) {
       let valid = false
+
+      // call cww api before make login
+      await this.$nuxt.$cmw.$post('/customers/check-login', {
+        email,
+        password,
+      })
+        .then(() => {})
+        .catch((err) => {
+          this.$nuxt.$sentry.captureException(`Catch on check-login: ${err.response?.data?.error || err}`)
+        })
+
       const data
         = await this.$nuxt.$graphql.default.request(customerAccessTokenCreate, {
           lang: this.$nuxt.app.i18n.locale.toUpperCase(),
@@ -76,7 +88,7 @@ export const useCustomer = defineStore({
 
       if (customerAccessToken && customerAccessToken.accessToken && typeof customerAccessToken.accessToken === 'string') {
         const token = customerAccessToken.accessToken
-        this.$nuxt.app.$cookieHelpers.setToken(token)
+        this.$nuxt.$cookieHelpers.setToken(token)
         this.$nuxt.$graphql.default.setHeader('authorization', `Bearer ${token}`)
         valid = true
       } else {
@@ -88,6 +100,7 @@ export const useCustomer = defineStore({
 
       return valid
     },
+
     async getCustomer(event = '') {
       const customerOrders = useCustomerOrders()
       await this.$nuxt.$cmwRepo.customer.getCustomer()
@@ -97,7 +110,7 @@ export const useCustomer = defineStore({
             await this.$nuxt.$cmw.$get(`/customers/${customer.id.substring(`${customer.id}`.lastIndexOf('/') + 1)}/user-info`)
               .then(({ data = {}, errors = [] }) => {
                 if (errors.length) {
-                  this.$nuxt.$handleApiErrors('error login')
+                  this.$nuxt.$handleApiErrors('error getCustomer')
                 } else {
                   customer = {
                     ...customer,
@@ -153,39 +166,60 @@ export const useCustomer = defineStore({
       customerOrders.$reset()
       this.$nuxt.$cookies.remove('newsletter')
       this.$nuxt.$graphql.default.setHeader('authorization', '')
+      this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', undefined)
       window.google_tag_manager[this.$nuxt.app.$config.gtm.id] && window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.reset()
       await this.$nuxt.app.router.push(this.$nuxt.app.localePath('/'))
     },
 
-    async addOrRemoveFromWishlist(args) {
-      const customerId = `${this.customer.id}`.substring(`${this.customer.id}`.lastIndexOf('/') + 1)
-      const { ELASTIC_URL, STORE } = this.$nuxt.app.$config
-      await fetch(
-        `${ELASTIC_URL}customers/${STORE}/${customerId}/wishlist/${args.id}`,
-        { method: 'POST' },
-      )
-        .then(response => (response.json()))
-        .then(async (array) => {
-          // TODO: Animate the filling heart for a better UX
-          this.$patch({ wishlistArr: setCustomerWishlist(JSON.stringify(array)) })
+    async addToWishlist(args) {
+      const customerAccessToken = this.$nuxt.$cookieHelpers.getToken()
+      const shopifyCustomerId = `${this.customer.id}`.substring(`${this.customer.id}`.lastIndexOf('/') + 1)
+      this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
+      await this.$nuxt.$cmw.$post('/wishlists', {
+        shopifyCustomerId,
+        productFeId: args.id,
+      }).then(async () => {
+        await this.getCustomer().then(async () => {
           SweetAlertToast.fire({
             iconHtml: getIconAsImg('success'),
-            text: this.$nuxt.app.i18n.t(args.isOnFavourite ? 'common.feedback.OK.wishlistRemoved' : 'common.feedback.OK.wishlistAdded'),
+            text: this.$nuxt.app.i18n.t('common.feedback.OK.wishlistAdded'),
           })
 
-          if (!args.isOnFavourite) {
-            await this.$nuxt.$cmwGtmUtils.resetDatalayerFields()
+          await this.$nuxt.$cmwGtmUtils.resetDatalayerFields()
 
-            this.$nuxt.$gtm.push({
-              event: 'addToWishlist',
-              wishlistAddedProduct: {
-                products: [{
-                  ...args.gtmProductData,
-                }],
-              },
-            })
-          }
+          this.$nuxt.$gtm.push({
+            event: 'addToWishlist',
+            wishlistAddedProduct: {
+              products: [{
+                ...args.gtmProductData,
+              }],
+            },
+          })
         })
+      })
+        .catch(() => {
+          SweetAlertToast.fire({
+            icon: 'error',
+            text: this.$nuxt.app.i18n.t('common.feedback.KO.unknown'),
+          })
+        })
+    },
+
+    async removeFromWishlist(args) {
+      const customerAccessToken = this.$nuxt.$cookieHelpers.getToken()
+      const shopifyCustomerId = `${this.customer.id}`.substring(`${this.customer.id}`.lastIndexOf('/') + 1)
+      await this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
+      await this.$nuxt.$cmw.$put('/wishlists', {
+        shopifyCustomerId,
+        productFeId: args.id,
+      }).then(async () => {
+        await this.getCustomer().then(async () => {
+          SweetAlertToast.fire({
+            iconHtml: getIconAsImg('success'),
+            text: this.$nuxt.app.i18n.t('common.feedback.OK.wishlistRemoved'),
+          })
+        })
+      })
         .catch(() => {
           SweetAlertToast.fire({
             icon: 'error',
@@ -211,11 +245,10 @@ export const useCustomer = defineStore({
           text: this.$nuxt.app.i18n.t('common.confirm.wishlistRemove'),
           cancelButtonText: this.$nuxt.app.i18n.t('common.cta.cancel'),
           confirmButtonText: this.$nuxt.app.i18n.t('common.cta.confirm'),
-          preConfirm: () => this.addOrRemoveFromWishlist(args),
-        }).then(() => {
-        })
+          preConfirm: () => this.removeFromWishlist(args),
+        }).then(() => {})
       } else {
-        this.addOrRemoveFromWishlist(args)
+        this.addToWishlist(args).then(() => {})
       }
     },
     async customerUpdateData(customer = {}, feedbackOk = '', feedbackKo = '') {

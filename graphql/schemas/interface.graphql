@@ -6,3 +6,15 @@ interface DisplayableError {
   field: [String!]
   message: String!
 }
+
+#Discount applications capture the intentions of a discount source at the time of application.
+interface DiscountApplication {
+#The method by which the discount's value is allocated to its entitled items.
+allocationMethod: DiscountApplicationAllocationMethod!
+#Which lines of targetType that the discount is allocated over.
+targetSelection: DiscountApplicationTargetSelection!
+#The type of line that the discount is applicable towards.
+targetType: DiscountApplicationTargetType!
+#The value of the discount application.
+value: PricingValue!
+}

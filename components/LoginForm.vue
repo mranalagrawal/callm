@@ -9,7 +9,6 @@ import Alert from '~/components/FeedBack/Alert.vue'
 export default {
   components: { Alert },
   props: {
-    width: { type: String, default: '' },
     skipRedirect: { type: Boolean },
   },
   emits: ['login-success'],

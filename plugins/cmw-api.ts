@@ -1,5 +1,7 @@
 import type { NuxtHTTPInstance } from '@nuxt/http'
 import type { Plugin } from '@nuxt/types'
+import type { TSalesChannel, TStores } from '~/config/themeConfig'
+import themeConfig from '~/config/themeConfig'
 import { SweetAlertToast } from '~/utilities/Swal'
 
 declare module 'vue/types/vue' {
@@ -35,11 +37,13 @@ declare module 'vuex/types/index' {
 const cmwApi: Plugin = ({ $http, i18n, $config, $sentry }, inject) => {
   // See https://github.com/sindresorhus/ky#options
   const $cmw = $http.create({})
+  const store: TStores = $config.STORE || 'CMW_UK'
+  const sale_channel: TSalesChannel = themeConfig[store]?.salesChannel || 'cmw_uk_b2c'
 
   $cmw.setBaseURL($config.CMW_API)
   $cmw.setHeader('x-api-key', $config.CMW_API_KEY)
   $cmw.setHeader('X-Cmw-Store', $config.STORE)
-  $cmw.setHeader('X-Cmw-Sales-Channel', $config.SALECHANNEL)
+  $cmw.setHeader('X-Cmw-Sales-Channel', sale_channel)
   $cmw.setHeader('X-Cmw-Locale', i18n.locale)
   $cmw.setHeader('Accept', 'application/json')
   $cmw.setHeader('Content-Type', 'application/json')

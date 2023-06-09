@@ -115,6 +115,15 @@ export default {
   },
   profile: {
     orders: {
+      print: {
+        invoiceNumber: 'Fattura #{0}',
+        tableHeaders: {
+          code: 'Codice',
+          description: 'Descrizione',
+          quantity: 'Quantità',
+          price: 'Prezzo',
+        },
+      },
       tableHeaders: {
         order: 'Ordine',
         date: 'Data',
@@ -135,6 +144,8 @@ export default {
         summary: 'Riepilogo',
         shipment: 'Spedizione: {0}',
         shipmentAddress: 'Indirizzo di spedizione',
+        billingAddress: 'Indirizzo di fatturazione',
+        businessAddress: 'Recapito di lavoro',
         goods: 'articolo | articoli',
         productsTotal: 'Totale prodotti',
         shipmentCost: 'Costo spedizione',
@@ -194,6 +205,9 @@ export default {
     showResults: 'Mostra risultati ({count})',
     products: 'Prodotti',
     selections: 'Selezioni',
+    productionTypes: 'Tipi di produzione',
+    regions: 'Regioni',
+    country: 'Paese',
     categories: 'Categorie',
     winelists: 'Carta vini',
     pairings: 'Abbinamenti',
@@ -202,7 +216,6 @@ export default {
     boxes: 'Con confezione',
     areas: 'Area',
     provenience: 'Provenienza',
-    regions: 'Provenienza',
     brands: 'Produttore',
     noBrands: 'Prova la nostra migliore lista',
     countries: 'Paese',
@@ -236,6 +249,8 @@ export default {
     mostAwarded: 'Più premitati',
     newArrivals: 'Nuovi arrivi',
     popularity: 'Popolarità',
+    brandAsc: 'Brand (A-Z)',
+    brandDesc: 'Brand (Z-A)',
     giftCards: 'Buoni Regalo',
     chooseGiftCard: 'choose your gift card',
   },
@@ -319,5 +334,8 @@ export default {
       SITE_IMPROVEMENT: 'Suggerimenti di prodotti da aggiungere su Callmewine o miglioramenti del sito',
       OTHER: 'Altre domande o segnalazioni',
     },
+  },
+  waitingForConfirmation: {
+    msg: 'Grazie per aver inviato i tuoi dati, un nostro operatore ti contatterà quanto prima',
   },
 }

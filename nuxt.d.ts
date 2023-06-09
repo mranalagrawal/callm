@@ -3,6 +3,7 @@ import 'vue'
 declare module 'vue/types/vue' {
   // this.$gtm inside Vue components
   interface Vue {
+    $recaptcha: any
     $prismic: any
     $gtm: {
       push(event: { event?: string, [p: string]: any }): void
@@ -13,6 +14,7 @@ declare module 'vue/types/vue' {
 declare module '@nuxt/types' {
   // nuxtContext.app.$gtm inside asyncData, fetch, plugins, middleware, nuxtServerInit
   interface Context {
+    $recaptcha: any
     $prismic: any
     $gtm: {
       push(event: { event?: string, [p: string]: any }): void

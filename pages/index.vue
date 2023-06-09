@@ -10,6 +10,7 @@ export default {
     HomeLast: () => import('../components/Home/HomeLast.vue'),
     HomeCta: () => import('../components/Home/HomeCta.vue'),
     HomeSelections: () => import('../components/Home/HomeSelections.vue'),
+    HomeSlider: () => import('../components/Home/HomeSlider.vue'),
   },
   layout({ $config }) {
     return $config.STORE
@@ -61,17 +62,9 @@ export default {
       <HomePartners />
     </div>
 
-    <ClientOnly>
-      <div v-if="$config.STORE === 'WILDVIGNERON'">
-        <HomeCollections />
-      </div>
-    </ClientOnly>
-
     <LazyHomeLast />
 
-    <client-only>
-      <HomeProductors />
-    </client-only>
+    <HomeProductors />
 
     <LazyHydrate v-if="$config.STORE !== 'WILDVIGNERON'" :when-visible="{ rootMargin: '100px' }">
       <HomeCta />

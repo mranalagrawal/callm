@@ -79,14 +79,3 @@ export default {
     <CmwSplash />
   </div>
 </template>
-
-<style scoped>
-.cmw-main {
-  width: 100vw;
-  padding-top: var(--cmw-header-height);
-}
-
-.cmw-navbar {
-  padding-top: var(--cmw-top-banner-height);
-}
-</style>

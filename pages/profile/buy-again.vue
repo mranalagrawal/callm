@@ -3,7 +3,7 @@ import { computed, onMounted, ref, useContext, useFetch } from '@nuxtjs/composit
 import { storeToRefs } from 'pinia'
 import { useFilters } from '~/store/filters'
 import { getUniqueListBy } from '~/utilities/arrays'
-import { useCustomerOrders } from '~/store/customerOrders'
+import { useCustomerOrders } from '~/store/customerOrders.ts'
 
 export default {
   props: {
@@ -64,14 +64,14 @@ export default {
         return []
 
       let arr = orders.value
-        .map(el => el.lineItems.edges)
+        .map(el => el.lineItems.nodes)
         .flat()
         .map((el) => {
           // Note: we can remove this product from the logic if we fix the wishlist
           // const { __typename, product, ...rest } = el.node.variant
           let result = {}
-          if (el.node?.variant?.product) {
-            const { __typename, ...rest } = el.node.variant.product
+          if (el?.variant?.product) {
+            const { __typename, ...rest } = el.variant.product
             result = rest
           } else {
             result = {}

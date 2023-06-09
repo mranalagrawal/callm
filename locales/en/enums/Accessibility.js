@@ -4,6 +4,7 @@ export default {
       TRIGGER_SEARCH: 'Trigger Search',
       ADD_TO_CART: 'Add to cart',
       MODAL_OPEN: 'Open modal window',
+      MODAL_CLOSE: 'Close modal window',
       REMOVE_FROM_CART: 'Remove from cart',
       ADD_TO_WISHLIST: 'Aggiungi alla lista dei desideri',
       REMOVE_FROM_WISHLIST: 'Rimuovi dalla lista dei desideri',

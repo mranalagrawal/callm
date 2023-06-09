@@ -2,11 +2,11 @@
 import { computed, ref, toRefs, useFetch, watch } from '@nuxtjs/composition-api'
 
 export default {
-  props: ['vendor'],
+  props: ['vendor', 'tag'],
   setup(props: any) {
     const productsRef = ref<Record<string, any>>([])
-    const { vendor: vendorRef } = toRefs(props)
-    const query = computed(() => `tag:active AND vendor:'${vendorRef.value}'`)
+    const { vendor: vendorRef, tag } = toRefs(props)
+    const query = computed(() => `tag:active AND vendor:'${vendorRef.value}' AND tag_not:'${tag.value}'`)
 
     const { fetch } = useFetch(async ({ $cmwRepo, $productMapping, $handleApiErrors }) => {
       if (!vendorRef.value)

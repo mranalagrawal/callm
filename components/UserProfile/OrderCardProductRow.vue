@@ -27,7 +27,7 @@ export default {
   },
   computed: {
     isOnSale() {
-      return Number(this.orderLineItem.variant.compareAtPriceV2.amount) > Number(this.orderLineItem.variant.priceV2.amount)
+      return Number(this.orderLineItem.variant.compareAtPriceV2.amount) > Number(this.orderLineItem.variant.price.amount)
     },
     backofficeId() {
       // Get the proper tag 🤦🏻
@@ -47,7 +47,7 @@ export default {
 </script>
 
 <template>
-  <div class="text-left cmw-p-4 cmw-grid cmw-text-sm cmw-auto-rows-auto cmw-gap-4">
+  <div class="text-left cmw-p-4 cmw-grid cmw-text-sm cmw-auto-rows-auto cmw-gap-4 print:cmw-hidden">
     <div class="cmw-grid cmw-grid-cols-[75px_auto_32px] cmw-grid-rows-auto md:(cmw-grid-cols-[75px_auto_100px_32px] cmw-grid-rows-1) cmw-items-center cmw-px-2">
       <div class="cmw-order-1">
         <img
@@ -67,7 +67,7 @@ export default {
           {{ $n(Number(orderLineItem.variant.compareAtPriceV2.amount), 'currency', getLocaleFromCurrencyCode(orderLineItem.variant.compareAtPriceV2.currencyCode)) }}
         </div>
         <div class="cmw-font-bold">
-          {{ $n(Number(orderLineItem.variant.priceV2.amount), 'currency', getLocaleFromCurrencyCode(orderLineItem.variant.compareAtPriceV2.currencyCode)) }}
+          {{ $n(Number(orderLineItem.variant.price.amount), 'currency', getLocaleFromCurrencyCode(orderLineItem.variant.compareAtPriceV2.currencyCode)) }}
         </div>
       </div>
       <div class="cmw-order-4">

@@ -12,7 +12,7 @@ export default {
       customerUpdatePassword: 'Your password has been updated successfully!',
       customerUpdateData: 'Your personal information has been successfully updated!',
       requestAssistance: 'Message sent!',
-      emailAdded: 'Registration successful!',
+      newsletterSubscribed: 'Registration successful!',
     },
     KO: {
       login: 'Login failed, please check your entries',
@@ -21,6 +21,7 @@ export default {
       customerUpdatePassword: 'Your password could not be updated, please try again later',
       customerUpdateData: 'It was not possible to update your personal data, please try again later',
       addToCartReachLimit: 'There\'s no more products available',
+      newsletterSubscribed: 'You are already registered to our newsletter!',
     },
   },
 }

@@ -38,7 +38,7 @@ export default {
 <template>
   <button
     type="button"
-    class="ripple cmw-bg-center cmw-flex cmw-p-1"
+    class="ripple cmw-flex cmw-p-1"
     :class="[getVariant(), `-${variant}`]"
   >
     <VueSvgIcon class="cmw-m-auto" :data="icon" :width="getSize()" height="auto" />

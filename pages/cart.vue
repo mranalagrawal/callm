@@ -2,10 +2,9 @@
 import { onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { mapGetters } from 'vuex'
 import CartLine from '../components/Cart/CartLine.vue'
+import prismicConfig from '~/config/prismicConfig'
 import { addProductToCart, createCart, removeProductFromCart } from '~/utilities/cart'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
-import locales from '~/locales-mapper'
-import documents from '~/prismic-mapper'
 import { SweetAlertConfirm } from '~/utilities/Swal'
 
 export default {
@@ -15,16 +14,15 @@ export default {
     return context.$config.STORE
   },
   setup() {
-    const { $prismic, i18n, $config, store, $cmwGtmUtils } = useContext()
+    const { $config, store, $cmwGtmUtils } = useContext()
     const shipping = ref({})
 
-    const { fetch } = useFetch(async () => {
-      let lang = locales[i18n.locale]
-      if (lang === 'en-gb' && $config.STORE === 'CMW')
-        lang = 'en-eu'
-
-      const { data } = await $prismic.api.getSingle(documents[$config.STORE].shipping, { lang })
-      shipping.value = data
+    const { fetch } = useFetch(async ({ $config, $cmwRepo, $handleApiErrors }) => {
+      await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE]?.components.shipping })
+        .then(({ data }) => {
+          shipping.value = data
+        })
+        .catch(err => $handleApiErrors(`Catch getting shipping from prismic: ${err}`))
     })
 
     onMounted(() => {
@@ -162,46 +160,28 @@ export default {
 </script>
 
 <template>
-  <div class="cmw-font-sans container-fluid">
-    <div class="cmw-max-w-screen-xl cmw-mx-auto">
-      <div class="container-fluid">
-        <nav class="cmw-flex cmw-items-center cmw-gap-2 cmw-text-sm cmw-pt-1.875rem cmw-mt-2 cmw-mb-6 cmw-px-4">
-          <NuxtLink
-            class="cmw-text-primary-400"
-            :to="localePath('/')"
-          >
-            {{ $t('home') }}
-          </NuxtLink>
-          <VueSvgIcon
-            :data="require(`@/assets/svg/chevron-right.svg`)"
-            width="12"
-            height="12"
-          />
-          <span class="cmw-text-gray-dark">{{ $t('cart') }}</span>
-        </nav>
-      </div>
+  <div class="cmw-font-sans">
+    <div class="cmw-max-w-screen-xl cmw-mx-auto cmw-py-4 cmw-px-4 cmw-min-h-[600px]">
+      <TheBreadcrumbs
+        :breadcrumbs="[
+          { handle: '/', label: $t('home'), to: '/' },
+          { handle: '/cart', label: $t('cart'), to: '/cart' },
+        ]"
+      />
 
-      <client-only>
-        <div
-          v-if="userCart && userCart.length > 0"
-          class="container-fluid"
-          style="min-height: 600px"
-        >
-          <div class="row my-5">
-            <div class="col-12 mb-3">
-              <h2 v-text="$t('cartDetails')" />
-            </div>
-            <div class="col-12 col-md-7">
-              <div class="cmw-flex cmw-items-center cmw-justify-between cmw-border-b cmw-border-b-gray-light">
+      <ClientOnly>
+        <div v-if="userCart && userCart.length > 0">
+          <h1 class="cmw-h2 cmw-my-4" v-text="$t('cartDetails')" />
+          <div class="cmw-grid md:(cmw-gap-8 cmw-grid-cols-[8fr_4fr]) cmw-my-4">
+            <div class="">
+              <div class="cmw-flex cmw-items-center cmw-justify-between cmw-border-b cmw-border-b-gray cmw-mt-4">
                 <small><strong v-text="cartTotalQuantity" />
                   <span>{{ $tc('profile.orders.card.goods', cartTotalQuantity) }}</span>
                 </small>
                 <Button class="cmw-w-max cmw-ml-auto" variant="text" :label="$t('common.cta.emptyCart')" @click.native="emptyCart" />
               </div>
+              <CartLine v-for="(item, i) in userCart" :key="item.id" :item="item" :is-last="(i + 1) >= userCart.length" />
               <div class="cmw-my-4">
-                <CartLine v-for="(item, i) in userCart" :key="item.id" :item="item" :is-last="(i + 1) >= userCart.length" />
-              </div>
-              <div class=" cmw-border-t cmw-border-t-gray-light">
                 <p class="cmw-text-sm cmw-mt-2">
                   {{ $t('continueShopping') }}
                   <NuxtLink
@@ -213,20 +193,20 @@ export default {
                 </p>
               </div>
             </div>
-            <div class="col-12 col-md-5 px-0 px-md-5">
+            <div>
               <div class="cmw-text-center cmw-my-2 cmw-overline-2 cmw-uppercase cmw-text-secondary-700">
                 {{
                   cartTotalAmount < shipping.threshold ? shipping.threshold_not_reached : shipping.threshold_reached
                 }}
               </div>
               <div class="shadow mx-auto cmw-border cmw-border-gray-light cmw-rounded cmw-overflow-hidden">
-                <div class="card-body">
-                  <h5 class="card-title font-weight-bold">
+                <div class="cmw-p-4">
+                  <div class="cmw-h5">
                     {{ $t('cartTotal') }}
                     <span class="float-right">{{
                       $n(Number(cartTotalAmountObj.value), 'currency', getLocaleFromCurrencyCode($config.STORE === "CMW_UK" ? "GBP" : "EUR"))
                     }}</span>
-                  </h5>
+                  </div>
                   <hr>
                   <p class="cmw-text-sm cmw-text-gray-darkest" v-html="$t('discountCode')" />
                   <p class="cmw-text-sm cmw-text-gray-darkest" v-html="$t('shippingCost')" />
@@ -242,23 +222,15 @@ export default {
           </div>
         </div>
         <div v-else>
-          <div class="container">
-            <div class="row mt-5">
-              <div class="col-12">
-                <h2 class="cmw-text-center">
-                  {{ $t("navbar.cart.empty") }}
-                </h2>
-                <div class="cmw-text-center cmw-my-12">
-                  <VueSvgIcon :data="require(`@/assets/svg/cart-empty.svg`)" width="200" height="200" original />
-                </div>
-                <div class="cmw-mt-8">
-                  <Button :to="localePath('/')" class="cmw-w-max cmw-mx-auto" :label="$t('common.cta.continueShopping')" />
-                </div>
-              </div>
-            </div>
+          <h1 class="cmw-h2 cmw-my-4" v-text="$t('navbar.cart.empty')" />
+          <div class="cmw-text-center cmw-my-12">
+            <VueSvgIcon :data="require(`@/assets/svg/cart-empty.svg`)" width="200" height="200" original />
+          </div>
+          <div class="cmw-mt-8">
+            <Button :to="localePath('/')" class="cmw-w-max cmw-mx-auto" :label="$t('common.cta.continueShopping')" />
           </div>
         </div>
-      </client-only>
+      </ClientOnly>
     </div>
   </div>
 </template>

@@ -12,7 +12,7 @@ export default {
       customerUpdatePassword: 'Votre mot de passe a été mis à jour avec succès!',
       customerUpdateData: 'Vos informations personnelles ont été mises à jour avec succès !',
       requestAssistance: 'Message envoyé!',
-      emailAdded: 'Inscription réussi!',
+      newsletterSubscribed: 'Inscription réussi!',
     },
     KO: {
       login: 'La connexion a échoué, vérifiez les données saisies',
@@ -21,6 +21,7 @@ export default {
       customerUpdatePassword: 'Votre mot de passe n\'a pas pu être mis à jour, veuillez réessayer plus tard',
       customerUpdateData: 'Il n\'a pas été possible de mettre à jour vos données personnelles, veuillez réessayer plus tard',
       addToCartReachLimit: 'Il n\'y a plus de produits disponibles',
+      newsletterSubscribed: 'Vous êtes déjà inscrit à notre newsletter !',
     },
   },
 }

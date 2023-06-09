@@ -1,6 +1,6 @@
 {
   "name": "callmewine-frontend",
-  "version": "1.10.3",
+  "version": "1.11.3",
   "private": true,
   "engines": {
     "node": ">=16.0.0 <17.0.0"
@@ -21,6 +21,7 @@
     "@nuxtjs/gtm": "^2.4.0",
     "@nuxtjs/i18n": "^7.3.0",
     "@nuxtjs/prismic": "^1.4.2",
+    "@nuxtjs/recaptcha": "^1.1.2",
     "@nuxtjs/robots": "2.5.0",
     "@nuxtjs/sentry": "^7.1.13",
     "@nuxtjs/sitemap": "^2.4.0",

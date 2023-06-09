@@ -3,12 +3,12 @@ import { ref, useContext, useRouter } from '@nuxtjs/composition-api'
 import type { RawLocation } from 'vue-router'
 import calendarIcon from '~/assets/svg/calendar.svg'
 import GqlCustomerCreate from '~/graphql/mutations/customerCreate.graphql'
-import { SweetAlertToast } from '~/utilities/Swal'
+import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
 import { useCustomer } from '~/store/customer'
 
 export default {
   setup() {
-    const { $graphql, i18n, localeLocation, $gtm } = useContext()
+    const { $graphql, i18n, localeLocation, $gtm, $handleApiErrors } = useContext()
     const router = useRouter()
     const customerStore = useCustomer()
     const isSubmitting = ref(false)
@@ -33,32 +33,51 @@ export default {
 
       // eslint-disable-next-line unused-imports/no-unused-vars
       const { age, privacy, ...input } = form.value
-      const { customerCreate: { customer, customerUserErrors } } = await $graphql.default.request(GqlCustomerCreate, {
+      await $graphql.default.request(GqlCustomerCreate, {
         lang: i18n.locale.toUpperCase(),
         input,
-      })
+      }).then(async ({
+        customerCreate: {
+          customer,
+          customerUserErrors,
+        },
+      }) => {
+        if (!customerUserErrors.length) {
+          // Handle success
+          // Todo: Call API to save customer birthday
+          $gtm.push({
+            event: 'siteSubscription',
+            userId: customer.id,
+            userEmail: form.value.email,
+          })
 
-      if (!customerUserErrors.length) {
-        // Handle success
-        // Todo: Call API to save customer birthday
-        $gtm.push({
-          event: 'siteSubscription',
-          userId: customer.id,
-          userEmail: form.value.email,
-        })
+          const valid = await customerStore.login(form.value.email, form.value.password)
 
-        const valid = await customerStore.login(form.value.email, form.value.password)
-
-        if (valid) {
-          await customerStore.getCustomer()
-            .then(() => router.push(localeLocation('/profile/my-orders') as RawLocation))
+          if (valid) {
+            await customerStore.getCustomer()
+              .then(() => router.push(localeLocation('/profile/my-orders') as RawLocation))
+          }
+        } else {
+          if (customerUserErrors[0].field) {
+            await SweetAlertToast.fire({
+              icon: 'error',
+              text: customerUserErrors[0].message,
+            })
+          } else {
+            SweetAlertConfirm.fire({
+              // TODO: Add some cool animated icons and the use with iconHtml: getIconAsImg('error'),
+              icon: 'info',
+              text: customerUserErrors[0].message,
+              showCancelButton: false,
+              showConfirmButton: false,
+              confirmButtonText: i18n.t('common.cta.confirm'),
+              preConfirm: async () => {
+              },
+            }).then(() => {})
+          }
         }
-      } else {
-        await SweetAlertToast.fire({
-          icon: 'error',
-          text: customerUserErrors[0].message,
-        })
-      }
+      }).catch((err: Error) => $handleApiErrors(`Catch getting Feature Products from Shopify: ${err}`))
+
       isSubmitting.value = false
     }
 

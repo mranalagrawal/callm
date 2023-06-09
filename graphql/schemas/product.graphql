@@ -11,29 +11,64 @@ type Image {
   width: Int
 }
 
-type Product {
-  availableForSale: Boolean!
-  compareAtPriceRange: String # Todo: ProductPriceRange!
-  createdAt: DateTime!
-  description: String!
-  descriptionHtml: HTML!
-  featuredImage: Image
-  handle: String!
+type ProductOption {
+#  A globally-unique ID.
   id: ID!
+#  The product option’s name.
+  name: String!
+#  The corresponding value to the product option name.
+  values: [String!]!
+}
+
+type Product {
+#  Indicates if at least one product variant is available for sale.
+  availableForSale: Boolean!
+#  The compare at price of the product across all variants.
+  compareAtPriceRange: ProductPriceRange!
+#  The date and time when the product was created.
+  createdAt: DateTime!
+#  Stripped description of the product, single line with HTML tags removed.
+  description: String!
+#  The description of the product, complete with HTML formatting.
+  descriptionHtml: HTML!
+#  The featured image for the product. (This field is functionally equivalent to images(first: 1)).
+  featuredImage: Image
+#  A human-friendly unique string for the Product automatically generated from its title. They are used by the Liquid templating language to refer to objects.
+  handle: String!
+#  A globally-unique ID.
+  id: ID!
+#  Whether the product is a gift card.
+  isGiftCard: Boolean!
+#  Returns a metafield found by namespace and key.
   metafield(namespace:String!,key:String!): Metafield
+#  metafield: Metafield
+#  The metafields associated with the resource matching the supplied list of namespaces and keys.
   metafields: [Metafield]!
-  onlineStoreUrl:   URL
-  options: String # Todo: [ProductOption!]!
+#  The URL used for viewing the resource on the shop's Online Store. Returns null if the resource is currently not published to the Online Store sales channel.
+  onlineStoreUrl: URL
+#  List of product options.
+  options: [ProductOption!]!
+#  The price range.
   priceRange: ProductPriceRange!
-  productType:  String!
-  publishedAt:  DateTime!
-  requiresSellingPlan:  Boolean!
+#  A categorization that a product can be tagged with, commonly used for filtering and searching.
+  productType: String!
+#  The date and time when the product was published to the channel.
+  publishedAt: DateTime!
+#  Whether the product can only be purchased with a selling plan.
+  requiresSellingPlan: Boolean!
+#  The product's SEO information.
   seo: SEO!
+#  A comma separated list of tags that have been added to the product. Additional access scope required for private apps: unauthenticated_read_product_tags.
   tags: [String!]!
+#  The product’s title.
   title: String!
+#  The total quantity of inventory in stock for this Product.
   totalInventory: Int
+#  The date and time when the product was last modified. A product's updatedAt value can change for different reasons. For example, if an order is placed for a product that has inventory tracking set up, then the inventory adjustment is counted as an update.
   updatedAt: DateTime!
+#  Find a product’s variant based on its selected options. This is useful for converting a user’s selection of product options into a single matching variant. If there is not a variant for the selected options, null will be returned.
   variantBySelectedOptions: ProductVariant
+#  The product’s vendor name.
   vendor: String!
   # Connections
   variants(first: Int, reverse: Boolean, query: String): ProductVariantConnection
@@ -68,7 +103,7 @@ type ProductVariant {
   image: Image
   metafield: Metafield
   metafields: String # Todo: [Metafield]!
-  priceV2: MoneyV2!
+  price: MoneyV2!
   product: Product
   quantityAvailable: Int
   requiresShipping: Boolean!

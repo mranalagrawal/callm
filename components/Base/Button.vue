@@ -1,12 +1,16 @@
-<script>
-// noinspection JSUnusedGlobalSymbols
-export default {
+<script lang="ts">
+import type { PropType } from '@nuxtjs/composition-api'
+import { defineComponent } from '@nuxtjs/composition-api'
+import type { RawLocation } from 'vue-router'
+import type { TButtonVariant, TSizes } from '~/types/types'
+
+export default defineComponent({
   // Note: temp ignore till migrate to Nuxt 3, then we will name this BaseButton
   // eslint-disable-next-line vue/multi-word-component-names,vue/no-reserved-component-names
   name: 'Button',
   props: {
     to: {
-      type: [String],
+      type: String as PropType<RawLocation>,
       default: '',
     },
     label: {
@@ -14,44 +18,41 @@ export default {
       default: '',
     },
     size: {
-      validator: prop => ['xs', 'sm', 'md'].includes(prop) || !Number.isNaN(prop),
+      type: String as PropType<TSizes>,
       default: 'sm',
     },
     variant: {
-      validator: prop => ['default', 'default-inverse', 'ghost', 'ghost-inverse', 'text'].includes(prop),
+      type: String as PropType<TButtonVariant>,
       default: 'default',
     },
   },
-  methods: {
-    getSize() {
-      return ({
-        xs: 'cmw-text-xs',
-        sm: 'cmw-text-sm',
-        md: 'cmw-text-base',
-      })[this.size] || this.size
-    },
+  setup(props) {
+    const getSize = () => ({
+      xs: 'cmw-text-xs cmw-rounded-sm cmw-px-3 cmw-py-1 md:(cmw-px-4 cmw-py-[0.4rem])',
+      sm: 'cmw-text-sm',
+      md: 'cmw-text-base',
+      lg: 'cmw-text-base',
+    })[props.size] || props.size
 
-    getSpacing() {
-      return ({
-        'default': 'cmw-btn-base-spacing',
-        'default-inverse': 'cmw-btn-base-spacing',
-        'ghost': 'cmw-btn-base-spacing',
-        'ghost-inverse': 'cmw-btn-base-spacing',
-        'text': 'cmw-px-1 cmw-py-2 md:(cmw-py-[0.8rem])',
-      })[this.$props.variant]
-    },
+    const getSpacing = () => ({
+      'default': 'cmw-btn-base-spacing',
+      'default-inverse': 'cmw-btn-base-spacing',
+      'ghost': 'cmw-btn-base-spacing',
+      'ghost-inverse': 'cmw-btn-base-spacing',
+      'text': 'cmw-px-1 cmw-py-2 md:(cmw-py-[0.8rem])',
+    })[props.variant]
 
-    getVariant() {
-      return ({
-        'default': 'cmw-btn-default disabled:(cmw-bg-gray-light)',
-        'default-inverse': 'cmw-font-secondary cmw-font-bold cmw-border-transparent cmw-bg-white cmw-text-primary-400 cmw-uppercase hover:(cmw-text-primary cmw-no-underline)',
-        'ghost': 'cmw-border-primary-400 cmw-text-primary-400 cmw-font-bold cmw-uppercase hover:(cmw-bg-primary-50 cmw-text-primary-400 cmw-no-underline)',
-        'ghost-inverse': 'cmw-border-white cmw-text-white cmw-font-bold cmw-uppercase hover:(cmw-bg-primary-50 cmw-text-primary-400 cmw-no-underline)',
-        'text': 'cmw-btn-text',
-      })[this.$props.variant]
-    },
+    const getVariant = () => ({
+      'default': 'cmw-btn-default disabled:(cmw-bg-gray-light)',
+      'default-inverse': 'cmw-font-secondary cmw-font-bold cmw-border-transparent cmw-bg-white cmw-text-primary-400 cmw-uppercase hover:(cmw-text-primary cmw-no-underline)',
+      'ghost': 'cmw-border-primary-400 cmw-text-primary-400 cmw-font-bold cmw-uppercase hover:(cmw-bg-primary-50 cmw-text-primary-400 cmw-no-underline)',
+      'ghost-inverse': 'cmw-border-white cmw-text-white cmw-font-bold cmw-uppercase hover:(cmw-bg-primary-50 cmw-text-primary-400 cmw-no-underline)',
+      'text': 'cmw-btn-text',
+    })[props.variant]
+
+    return { getSpacing, getVariant, getSize }
   },
-}
+})
 </script>
 
 <template>

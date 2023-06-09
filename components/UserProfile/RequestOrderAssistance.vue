@@ -3,7 +3,7 @@ import { ref, useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import { useSplash } from '@/store/splash'
 import { useCustomer } from '@/store/customer'
-import { useCustomerOrders } from '~/store/customerOrders'
+import { useCustomerOrders } from '~/store/customerOrders.ts'
 import { SweetAlertToast } from '~/utilities/Swal'
 // noinspection JSUnusedGlobalSymbols
 export default {
