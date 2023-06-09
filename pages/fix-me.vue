@@ -7,7 +7,7 @@ export default defineComponent({
   },
   computed: {
     vuex() {
-      if (typeof window !== 'undefined')
+      if (process.client && typeof window !== 'undefined')
         return window.localStorage.getItem('vuex')
 
       return 'EMPTY'
