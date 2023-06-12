@@ -350,6 +350,7 @@ export default defineComponent({
               alt="comodo logo"
             >
             <img
+              v-if="$config.STORE === 'CMW_UK'"
               src="https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.png"
               width="65"
               height="36"

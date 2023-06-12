@@ -9,7 +9,7 @@ import { pick } from '~/utilities/arrays'
 import { getCountryFromStore } from '~/utilities/currency'
 import { cleanUrl } from '~/utilities/strings'
 
-type ObjType<T> = {
+export type ObjType<T> = {
   [key in KeyType]: T;
 }
 
@@ -160,7 +160,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
             favourite: p._source.favourite ? 'yes' : 'no',
             artisanal: p._source.artisanal ? 'yes' : 'no',
             rarewine: p._source.rarewine ? 'yes' : 'no',
-            price: priceLists[sale_channel][getCustomerType.value], // We have no access to pinia here
+            price: priceLists[sale_channel] && priceLists[sale_channel][getCustomerType.value], // We have no access to pinia here
             compare_at_price: Number(compareAtPrice.amount),
             stock_status: p._source.quantity[store] > 0 ? 'in_stock' : 'out_of_stock',
             quantity: 1,
@@ -234,7 +234,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
             favourite: details.favourite ? 'yes' : 'no',
             artisanal: details.artisanal ? 'yes' : 'no',
             rarewine: details.rarewine ? 'yes' : 'no',
-            price: priceLists[sale_channel][getCustomerType.value], // We have no access to pinia here
+            price: priceLists[sale_channel] && priceLists[sale_channel][getCustomerType.value],
             compare_at_price: Number(compareAtPrice.amount),
             stock_status: p.totalInventory > 0 ? 'in_stock' : 'out_of_stock',
             quantity: 1,

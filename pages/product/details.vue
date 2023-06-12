@@ -372,12 +372,14 @@ export default defineComponent({
             </NuxtLink>
             <div v-html="strippedContent" />
             <script
+              v-if="$config.STORE === 'CMW_UK'"
               data-environment="production" src="https://osm.klarnaservices.com/lib.js"
               data-client-id="c72bae1f-0d1c-5ed1-a3bb-b0fa3d12e442"
               async
             />
             <ClientOnly>
               <klarna-placement
+                v-if="$config.STORE === 'CMW_UK'"
                 data-key="credit-promotion-badge"
                 data-locale="en-GB"
                 :data-purchase-amount="String(Number(finalPrice)).replace(/[^0-9]/g, '')"
