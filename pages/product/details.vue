@@ -498,7 +498,7 @@ export default defineComponent({
                 type="button"
                 class="cmw-mb-2"
                 :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
-                @click="handleWishlist({ id: productDetails.source_id, isOnFavourite, gtmProductData: product.gtmProductData })"
+                @click="handleWishlist({ id: productDetails.id, isOnFavourite, gtmProductData: product.gtmProductData })"
               >
                 <VueSvgIcon
                   color="#d94965"

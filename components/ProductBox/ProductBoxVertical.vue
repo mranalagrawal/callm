@@ -50,7 +50,7 @@ export default {
       price: finalPrice.value,
     }))
     const handleWishlistClick = () => {
-      handleWishlist({ id: props.product.source_id, isOnFavourite: isOnFavourite.value, gtmProductData: gtmProductData.value })
+      handleWishlist({ id: props.product.id, isOnFavourite: isOnFavourite.value, gtmProductData: gtmProductData.value })
     }
 
     const handleProductCLick = async () => {
