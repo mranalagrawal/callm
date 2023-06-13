@@ -136,18 +136,20 @@ export default {
           class="cmw-grid cmw-grid-cols-[minmax(100px,_1332px)] cmw-justify-center"
           @mouseleave="onTab(null)"
         >
-          <div v-for="(secondLevel, i) in selectedItem.items" :key="generateKey(`${secondLevel.name}-as-card-${i}`)" class="row">
-            <div class="col-12">
+          <div v-for="(secondLevel, i) in selectedItem.items" :key="generateKey(`${secondLevel.name}-as-card-${i}`)">
+            <div>
               <p class="cmw-overline-2 cmw-uppercase cmw-text-secondary-700 cmw-font-semibold cmw-p-8">
                 {{ secondLevel.name }}
               </p>
             </div>
-            <div
-              v-for="(thirdLevel, j) in secondLevel.items"
-              :key="j"
-              class="col-12 col-md-6 col-lg-4 col-xl-3"
-            >
-              <ThirdLevel :third-level="thirdLevel" @close-banner="onTab(null)" />
+            <div class="cmw-grid cmw-gap-4 md:cmw-grid-cols-2 lg:cmw-grid-cols-3 xl:cmw-grid-cols-4">
+              <div
+                v-for="(thirdLevel, j) in secondLevel.items"
+                :key="j"
+                class=""
+              >
+                <ThirdLevel :third-level="thirdLevel" @close-banner="onTab(null)" />
+              </div>
             </div>
           </div>
         </div>

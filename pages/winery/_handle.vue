@@ -100,7 +100,7 @@ export default {
     </p>
     <template v-else>
       <div v-if="metaFields && brand.title">
-        <div v-if="metaFields.isPartner" class="container-fluid px-0 cmw-relative">
+        <div v-if="metaFields.isPartner" class="cmw-relative">
           <img
             class="cmw-absolute cmw-top-0 cmw-left-0 cmw-w-full cmw-h-500px"
             src="@/assets/images/bg-wave.png" alt="image"
