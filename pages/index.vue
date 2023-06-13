@@ -64,7 +64,7 @@ export default {
 
     <LazyHomeLast />
 
-    <HomeProductors />
+    <HomeProducers />
 
     <LazyHydrate v-if="$config.STORE !== 'WILDVIGNERON'" :when-visible="{ rootMargin: '100px' }">
       <HomeCta />
