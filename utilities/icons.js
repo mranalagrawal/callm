@@ -10,6 +10,7 @@ export function getIconAsImg(icon = 'success') {
 export function getIconByFeature(key) {
   // TODO: use enum definitions everywhere and create an Icon viewer for marketing
   return ({
+    AWARDS: 'awards',
     favourite: 'feature-cmw-favourite',
     FAVOURITE: 'feature-cmw-favourite',
     isnew: 'feature-is-new',

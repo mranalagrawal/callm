@@ -1,6 +1,7 @@
 <script lang="ts">
 import type { PropType } from '@nuxtjs/composition-api'
 import { defineComponent, getCurrentInstance, ref, toRef } from '@nuxtjs/composition-api'
+import type { TranslateResult } from 'vue-i18n'
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
 import type { TPosition, TSizes } from '~/types/types'
 
@@ -11,11 +12,11 @@ export default defineComponent({
     position: { type: String as PropType<TPosition> },
     active: { type: Boolean, required: true },
     label: {
-      type: String,
+      type: String as PropType<TranslateResult>,
       default: '',
     },
     footerLabel: {
-      type: String,
+      type: String as PropType<TranslateResult>,
       default: '',
     },
     onFooterClick: {

@@ -70,7 +70,7 @@ export default defineComponent({
           <NuxtLink
             :to="link"
             class="cmw-bg-cover cmw-bg-no-repeat cmw-bg-center cmw-text-white cmw-h-[88px] cmw-m-2 cmw-rounded-sm
-           cmw-flex cmw-gap-2 cmw-items-center cmw-justify-center hover:(!cmw-text-white cmw-no-underline cmw-shadow-elevation)"
+           cmw-flex cmw-gap-2 cmw-items-center cmw-justify-center hover:(cmw-shadow-elevation)"
             :style="{ backgroundImage: `url('${bgCarousel}')` }"
           >
             <VueSvgIcon

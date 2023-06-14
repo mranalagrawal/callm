@@ -158,13 +158,13 @@ export default {
         <div v-if="shipping">
           <div v-if="data && data.length > 0" class="cmw-min-w-[640px]">
             <div
-              class="cmw-text-secondary-700 cmw-flex cmw-items-center cmw-justify-center cmw-gap-2 cmw-text-sm cmw-uppercase cmw-py-0"
+              class="cmw-text-secondary-700 cmw-flex cmw-items-center cmw-justify-center cmw-gap-2 cmw-text-sm cmw-uppercase cmw-pb-4"
             >
               <VueSvgIcon :data="cartTotalAmount < shipping.threshold ? deliveryIcon : checkCircularIcon" width="24" height="24" />
               <span>{{ cartTotalAmount < shipping.threshold ? shipping.threshold_not_reached : shipping.threshold_reached }}</span>
             </div>
             <div class="cmw-px-4">
-              <hr>
+              <hr class="cmw-border-gray-light">
             </div>
             <div class="cmw-max-h-[360px] cmw-overflow-y-auto cmw-overflow-x-hidden">
               <div v-for="item in data" :key="item.id">
@@ -191,7 +191,7 @@ export default {
             </div>
             <hr>
             <strong class="cmw-block">{{ $t("navbar.cart.empty") }}</strong>
-            <p class="pt-4">
+            <p class="cmw-pt-4">
               {{ $t("navbar.cart.startFromMessage") }}
             </p>
             <Button class="cmw-py-4" to="/">

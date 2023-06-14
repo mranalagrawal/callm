@@ -110,7 +110,7 @@ export default defineComponent({
         <!-- <PrismicText v-if="title" class="cmw-text-center" :field="title" /> -->
         <h2 class="cmw-text-center" v-text="title" />
 
-        <VueSlickCarousel v-if="slides" v-bind="settingsTop" class="cmw-py-4">
+        <VueSlickCarousel v-if="!!slides.length" v-bind="settingsTop" class="cmw-py-4">
           <div v-for="productor in slides" :key="productor.name">
             <nuxt-link
               :to="productor.link"
@@ -125,7 +125,7 @@ export default defineComponent({
             </nuxt-link>
           </div>
         </VueSlickCarousel>
-        <VueSlickCarousel v-if="slides" v-bind="settingsBottom" class="cmw-py-4">
+        <VueSlickCarousel v-if="!!slides.length" v-bind="settingsBottom" class="cmw-py-4">
           <div v-for="productor in slides" :key="productor.name">
             <nuxt-link
               :to="productor.link"

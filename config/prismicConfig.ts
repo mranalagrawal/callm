@@ -87,30 +87,6 @@ const prismicConfig: TPrismicConfig = {
     components: defaultPrismicComponents,
     isoCode: { de: 'de-de' },
   },
-  WILDVIGNERON: {
-    components: {
-      aboutUs: 'wv_about_us',
-      callToAction: 'call-to-action',
-      cookiePage: 'wv_cookie-policy',
-      conditionsPage: 'wv_conditions',
-      contactPage: 'wv_contact_us',
-      footer: 'footer',
-      homeCarousel: 'wv_home-carousel',
-      homeBanner: 'HomeBannerWV',
-      megaMenu: 'mega-menu-test',
-      partners: 'partners',
-      topbar: 'wv_topbar',
-      homeBoxes: 'wv_home-boxes',
-      producers: 'wv_productors',
-      shipping: 'wv_shipping',
-      shippingPage: 'wv_shipping-page',
-      paymentsPage: 'wv_payments',
-      selections: 'selections',
-      privacyPage: 'wv_privacy-policy',
-      wineShops: 'wv_restaurants-wineshops',
-    },
-    isoCode: { it: 'it-it' },
-  },
 }
 
 // Note: maybe we can rethink this export to gain some performance, that way we could just import necessary

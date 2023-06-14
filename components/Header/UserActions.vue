@@ -71,11 +71,11 @@ export default {
 
 <template>
   <div class="cmw-relative">
-    <div class="position-relative d-flex">
+    <div class="cmw-relative cmw-flex">
       <NuxtLink
         v-if="customer.id"
         :to="localePath('/profile/wishlist')"
-        class="peer cmw-transition-colors cmw-rounded cmw-py-4 cmw-px-8 cmw-bg-white cmw-text-center cmw-text-body hover:(cmw-bg-primary-900 cmw-text-white cmw-no-underline)"
+        class="peer cmw-transition-colors cmw-rounded cmw-py-4 cmw-px-8 cmw-bg-white cmw-text-center cmw-text-body hover:(cmw-bg-primary-900 cmw-text-white)"
         @mouseenter="hoveringColor = 'white'"
         @mouseleave="hoveringColor = 'primary-400'"
       >

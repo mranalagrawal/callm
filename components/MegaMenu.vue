@@ -73,17 +73,17 @@ export default {
 
 <template>
   <div @mouseleave="onTab(null)">
-    <div ref="megaMenu" class="align-items-center">
-      <div class="cmw-max-w-screen-xl cmw-mx-auto cmw-flex cmw-items-center">
+    <div ref="megaMenu" class="cmw-flex cmw-items-center">
+      <div class="cmw-max-w-screen-xl cmw-mx-auto cmw-flex cmw-items-center cmw-justify-evenly cmw-w-full">
         <div
           v-for="(firstLevel, i) in data"
           :key="i"
-          class="col text-center text-uppercase menu-link cmw-py-2"
+          class="cmw-text-center cmw-text-uppercase cmw-py-2"
           @mouseenter="onTab(firstLevel)"
         >
           <button
-            class="cmw-w-max cmw-text-xs desktop-wide:cmw-text-sm cmw-uppercase cmw-no-underline hover:(!cmw-text-primary cmw-font-bold cmw-no-underline)"
-            :class="firstLevel.isPromotionTab ? '!cmw-text-primary-400' : '!cmw-text-body'"
+            class="cmw-w-max cmw-text-xs cmw-w-max desktop-wide:cmw-text-sm cmw-uppercase hover:(cmw-text-primary cmw-font-bold)"
+            :class="firstLevel.isPromotionTab ? 'cmw-text-primary-400' : 'cmw-text-body'"
             @click="handleClick(`/${firstLevel.link}`)"
           >
             <VueSvgIcon

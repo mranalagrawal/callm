@@ -304,7 +304,7 @@ export default {
       </div>
       <div v-else class="cmw-max-w-screen-xl cmw-mx-auto cmw-p-4 cmw-text-center">
         <div v-text="$t('search.noResultsAlert')" />
-        <NuxtLink class="cmw-text-primary-400 hover:(cmw-text-primary-400 cmw-no-underline)" :to="localePath('winery')">
+        <NuxtLink class="cmw-text-primary-400" :to="localePath('winery')">
           {{ $t('search.noBrands') }}
         </NuxtLink>
       </div>

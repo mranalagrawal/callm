@@ -112,7 +112,7 @@ export default {
 
             <NuxtLink
               to="/recover"
-              class="cmw-block cmw-w-max cmw-text-center cmw-my-3 cmw-mx-auto cmw-text-primary-400 hover:(cmw-text-primary-400 cmw-no-underline)"
+              class="cmw-block cmw-w-max cmw-my-3 cmw-mx-auto cmw-text-primary-400"
             >
               {{ $t("navbar.user.forgotPassword") }}
             </NuxtLink>
@@ -125,7 +125,7 @@ export default {
             v-for="({ to, label }) in $options.userNavigation"
             :key="to"
             :to="localePath(to)"
-            class="cmw-block cmw-mb-4 cmw-w-max cmw-text-body cmw-no-underline hover:(cmw-no-underline cmw-text-primary cmw-font-bold)"
+            class="cmw-block cmw-mb-4 cmw-w-max cmw-text-body hover:(cmw-text-primary cmw-font-bold)"
           >
             {{ $t(label) }}
           </NuxtLink>

@@ -44,5 +44,5 @@ export default {
 </script>
 
 <template>
-  <search-filter :input-parameters="inputParameters" />
+  <SearchFilter :input-parameters="inputParameters" />
 </template>

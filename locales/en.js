@@ -20,6 +20,7 @@ export default {
       recommendedProducts: 'Often bought together',
     },
   },
+  searchResultLabel: 'The results of your search',
   notFoundTitle: 'We are sorry',
   notFoundLine: 'We didn\'t find anything with these characteristics, try searching for these suggestions',
   loading: 'Fetching data...',

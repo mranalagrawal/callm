@@ -39,8 +39,8 @@ export default defineComponent({
         }"
       >
         <div class="cmw-w-1/2">
-          <h3 class="cmw-font-bold cmw-text-white cmw-mb-8">
-            <NuxtLink class="cmw-text-white hover:(cmw-text-white cmw-no-underline)" :to="pageData[0].content.cta_link">
+          <h3 class="cmw-font-bold cmw-mb-8">
+            <NuxtLink class="cmw-text-white" :to="pageData[0].content.cta_link">
               {{ pageData[0].content.main_text }}
             </NuxtLink>
           </h3>
@@ -59,8 +59,8 @@ export default defineComponent({
         }"
       >
         <div class="cmw-w-3/4">
-          <h3 class="cmw-font-bold cmw-text-white cmw-mb-8">
-            <NuxtLink class="cmw-text-white hover:(cmw-text-white cmw-no-underline)" :to="pageData[0].content.cta_link">
+          <h3 class="cmw-font-bold cmw-mb-8">
+            <NuxtLink class="cmw-text-white" :to="pageData[0].content.cta_link">
               {{ pageData[1].content.main_text }}
             </NuxtLink>
           </h3>

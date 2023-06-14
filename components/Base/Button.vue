@@ -1,6 +1,7 @@
 <script lang="ts">
 import type { PropType } from '@nuxtjs/composition-api'
 import { defineComponent } from '@nuxtjs/composition-api'
+import type { TranslateResult } from 'vue-i18n'
 import type { RawLocation } from 'vue-router'
 import type { TButtonVariant, TSizes } from '~/types/types'
 
@@ -14,7 +15,7 @@ export default defineComponent({
       default: '',
     },
     label: {
-      type: [String, Object],
+      type: String as PropType<TranslateResult>,
       default: '',
     },
     size: {
@@ -44,9 +45,9 @@ export default defineComponent({
 
     const getVariant = () => ({
       'default': 'cmw-btn-default disabled:(cmw-bg-gray-light)',
-      'default-inverse': 'cmw-font-secondary cmw-font-bold cmw-border-transparent cmw-bg-white cmw-text-primary-400 cmw-uppercase hover:(cmw-text-primary cmw-no-underline)',
-      'ghost': 'cmw-border-primary-400 cmw-text-primary-400 cmw-font-bold cmw-uppercase hover:(cmw-bg-primary-50 cmw-text-primary-400 cmw-no-underline)',
-      'ghost-inverse': 'cmw-border-white cmw-text-white cmw-font-bold cmw-uppercase hover:(cmw-bg-primary-50 cmw-text-primary-400 cmw-no-underline)',
+      'default-inverse': 'cmw-font-secondary cmw-font-bold cmw-border-transparent cmw-bg-white cmw-text-primary-400 cmw-uppercase',
+      'ghost': 'cmw-border-primary-400 cmw-text-primary-400 cmw-font-bold cmw-uppercase hover:(cmw-bg-primary-50 cmw-text-primary-400)',
+      'ghost-inverse': 'cmw-border-white cmw-text-white cmw-font-bold cmw-uppercase hover:(cmw-bg-primary-50 cmw-text-primary-400)',
       'text': 'cmw-btn-text',
     })[props.variant]
 

@@ -1,6 +1,7 @@
 <script lang="ts">
 import type { PropType } from '@nuxtjs/composition-api'
 import { defineComponent, getCurrentInstance, ref, toRef } from '@nuxtjs/composition-api'
+import type { TranslateResult } from 'vue-i18n'
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
 import type { TSizes } from '~/types/types'
 
@@ -16,7 +17,7 @@ export default defineComponent({
       default: '',
     },
     footerLabel: {
-      type: String,
+      type: String as PropType<TranslateResult>,
       default: '',
     },
     onFooterClick: {
@@ -97,7 +98,7 @@ export default defineComponent({
           <!-- List Items -->
           <slot name="children" />
           <div v-if="footerLabel" class="cmw-bg-gray-lightest cmw-rounded-b-sm">
-            <Button class="cmw-mr-auto cmw-w-max" variant="text" :label="footerLabel" @click="onFooterClick" />
+            <Button class="cmw-mr-auto cmw-w-max cmw-z-base" variant="text" :label="footerLabel" @click.native="onFooterClick" />
           </div>
         </div>
       </transition>

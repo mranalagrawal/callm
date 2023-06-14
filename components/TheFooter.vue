@@ -133,7 +133,7 @@ export default defineComponent({
           <NuxtLink
             :to="localePath(item?.primary?.link || '/')"
             style="color: #176a62"
-            class="cmw-block cmw-text-uppercase cmw-no-underline cmw-pb-8"
+            class="cmw-block cmw-text-uppercase cmw-pb-8"
           >
             {{ item?.primary?.title }}
           </NuxtLink>
@@ -142,10 +142,7 @@ export default defineComponent({
             :key="`inner_${link.name}`"
             class="cmw-pb-0"
           >
-            <NuxtLink
-              :to="localePath(link?.link || '/')"
-              class="cmw-no-underline secondary-title"
-            >
+            <NuxtLink :to="localePath(link?.link || '/')">
               {{ link?.name }}
             </NuxtLink>
           </p>
@@ -160,7 +157,7 @@ export default defineComponent({
       <div class="cmw-max-w-screen-xl cmw-mx-auto cmw-py-4 cmw-px-4 cmw-mt-4">
         <div v-if="$config.STORE === 'CMW'" class="cmw-flex cmw-justify-end">
           <NuxtLink
-            class="cmw-no-underline cmw-uppercase cmw-text-white cmw-text-sm mr-3"
+            class="cmw-uppercase cmw-text-white cmw-text-sm mr-3"
             :to="switchLocalePath(themeConfig[$config.STORE].defaultLocale)"
             :class="
               $i18n.locale === themeConfig[$config.STORE].defaultLocale ? 'font-weight-bold' : ''
@@ -171,7 +168,7 @@ export default defineComponent({
 
           <NuxtLink
             v-if="themeConfig[$config.STORE].defaultLocale !== 'en'"
-            class="cmw-no-underline text-uppercase cmw-text-white cmw-text-sm mr-3"
+            class="text-uppercase cmw-text-white cmw-text-sm mr-3"
             :to="switchLocalePath('en')"
             :class="$i18n.locale === 'en' ? 'font-weight-bold' : ''"
           >
@@ -179,7 +176,7 @@ export default defineComponent({
           </NuxtLink>
           <NuxtLink
             v-else
-            class="cmw-no-underline cmw-uppercase cmw-text-white cmw-text-sm cmw-mr-3"
+            class="cmw-uppercase cmw-text-white cmw-text-sm cmw-mr-3"
             :to="switchLocalePath('it')"
             :class="$i18n.locale === 'it' ? 'font-weight-bold' : ''"
           >
@@ -227,7 +224,7 @@ export default defineComponent({
                     class="custom-control-label cmw-text-sm cmw-pl-3"
                     for="customCheck1"
                   >{{ footerInfoData.first_check }}
-                    <NuxtLink :to="localePath('/privacy')" class="cmw-no-underline cmw-text-white hover:(cmw-text-white cmw-no-underline)">Privacy Policy</NuxtLink></label>
+                    <NuxtLink :to="localePath('/privacy')" class="cmw-text-white">Privacy Policy</NuxtLink></label>
                 </div>
                 <div v-show="newsletter" class="cmw-mt-3">
                   <div class="custom-checkbox">
@@ -241,7 +238,7 @@ export default defineComponent({
                       class="custom-control-label cmw-relative cmw-text-sm cmw-pl-3"
                       for="customCheck2"
                     >{{ footerInfoData.second_check }}
-                      <NuxtLink :to="localePath('/privacy')" class="cmw-no-underline cmw-text-white hover:(cmw-text-white cmw-no-underline)">Privacy Policy</NuxtLink></label>
+                      <NuxtLink :to="localePath('/privacy')" class="cmw-text-white">Privacy Policy</NuxtLink></label>
                   </div>
                 </div>
               </div>
@@ -254,7 +251,7 @@ export default defineComponent({
               </div>
               <NuxtLink
                 :to="localePath('/about-us')"
-                class="cmw-block cmw-no-underline cmw-text-white hover:(cmw-text-white cmw-no-underline)"
+                class="cmw-block  cmw-text-white"
               >
                 {{ $t('footer.who') }}
               </NuxtLink>
@@ -265,7 +262,7 @@ export default defineComponent({
               </div>
               <NuxtLink
                 :to="localePath('/restaurants-wineshops')"
-                class="cmw-block cmw-no-underline cmw-text-white hover:(cmw-text-white cmw-no-underline)"
+                class="cmw-block  cmw-text-white"
               >
                 {{ $t('footer.restaurantsAndWineshops') }}
               </NuxtLink>
@@ -276,37 +273,37 @@ export default defineComponent({
               </div>
               <NuxtLink
                 :to="localePath('/shipping')"
-                class="cmw-block cmw-no-underline cmw-text-white hover:(cmw-text-white cmw-no-underline)"
+                class="cmw-block  cmw-text-white"
               >
                 {{ $t('footer.shipping') }}
               </NuxtLink>
               <NuxtLink
                 :to="localePath('/payments')"
-                class="cmw-block cmw-no-underline cmw-text-white hover:(cmw-text-white cmw-no-underline)"
+                class="cmw-block  cmw-text-white"
               >
                 {{ $t('footer.payments') }}
               </NuxtLink>
               <NuxtLink
                 :to="localePath('/terms-of-sales')"
-                class="cmw-block cmw-no-underline cmw-text-white hover:(cmw-text-white cmw-no-underline)"
+                class="cmw-block  cmw-text-white"
               >
                 {{ $t('footer.termsOfSales') }}
               </NuxtLink>
               <NuxtLink
                 :to="localePath('/privacy')"
-                class="cmw-block cmw-no-underline cmw-text-white hover:(cmw-text-white cmw-no-underline)"
+                class="cmw-block  cmw-text-white"
               >
                 Privacy policy
               </NuxtLink>
               <NuxtLink
                 :to="localePath('/cookie')"
-                class="cmw-block cmw-no-underline cmw-text-white hover:(cmw-text-white cmw-no-underline)"
+                class="cmw-block  cmw-text-white"
               >
                 Cookie policy
               </NuxtLink>
               <NuxtLink
                 :to="localePath('/contact')"
-                class="cmw-block cmw-no-underline cmw-text-white hover:(cmw-text-white cmw-no-underline)"
+                class="cmw-block  cmw-text-white"
               >
                 {{ $t('footer.contacts') }}
               </NuxtLink>
@@ -315,7 +312,7 @@ export default defineComponent({
         </div>
         <FooterSocials />
 
-        <hr class="cmw-bg-secondary-800">
+        <hr class="cmw-bg-secondary-800 cmw-my-4 cmw-border-0 cmw-h-px">
 
         <div class="md:cmw-flex cmw-text-center cmw-justify-center">
           <div class="cmw-flex cmw-gap-2 cmw-items-center cmw-justify-center">
@@ -359,7 +356,7 @@ export default defineComponent({
           </div>
         </div>
 
-        <hr class="cmw-bg-secondary-800">
+        <hr class="cmw-bg-secondary-800 cmw-my-4 cmw-border-0 cmw-h-px">
         <div class="cmw-text-center cmw-mt-4 cmw-text-xs cmw-text-secondary-100 cmw-px-4">
           {{ footerInfoData.info }}
         </div>

@@ -36,7 +36,7 @@ export default defineComponent({
       v-for="({ feId, handle_t, vintageyear }) in vintages"
       :key="feId" :to="`/${handle_t[$i18n.locale]}-P${feId}.htm`"
       class="cmw-bg-primary cmw-border-2 cmw-border-primary cmw-py-2 cmw-px-4 cmw-rounded-pill cmw-text-white
-       hover:(cmw-border-primary-400 cmw-bg-white cmw-text-primary-400 cmw-no-underline)"
+       hover:(cmw-border-primary-400 cmw-bg-white cmw-text-primary-400)"
     >
       {{ vintageyear }}
     </nuxtlink>

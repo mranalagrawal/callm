@@ -91,7 +91,7 @@ export default {
 
       <NuxtLink
         to="/recover"
-        class="cmw-block cmw-w-max cmw-my-3 cmw-text-primary-400 hover:(cmw-text-primary-400 cmw-no-underline)"
+        class="cmw-block cmw-w-max cmw-my-3 cmw-text-primary-400"
       >
         {{ $t("navbar.user.forgotPassword") }}
       </NuxtLink>

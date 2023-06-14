@@ -2,6 +2,9 @@ import type { Plugin } from '@nuxt/types'
 import createRepository from '~/repositories'
 
 interface ICmwRepo {
+  shopifyPages: {
+    getPageByHandle({ handle = '' }): Promise<Record<string, any>>
+  }
   addresses: any
   countries: any
   customer: any
