@@ -195,12 +195,12 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="cmw-max-w-screen-xl cmw-mx-auto cmw-py-4 cmw-px-4 cmw-mt-4">
+  <div class="max-w-screen-xl mx-auto py-4 px-4 mt-4">
     <div
-      class="cmw-grid cmw-grid-cols-[auto_200px] cmw-items-start cmw-border-y cmw-border-gray-light cmw-py-1 cmw-transition-all"
+      class="grid grid-cols-[auto_200px] items-start border-y border-gray-light py-1 transition-all"
     >
       <!-- Filter Components -->
-      <div class="cmw-flex cmw-flex-wrap">
+      <div class="flex flex-wrap">
         <CmwDropdown
           v-if="!!allFilters.productionTypes?.length"
           key="production-types"
@@ -275,17 +275,17 @@ export default defineComponent({
         </CmwDropdown>
       </div>
     </div>
-    <div v-if="activeSelections.length" class="cmw-my-4 cmw-flex cmw-gap-2">
+    <div v-if="activeSelections.length" class="my-4 flex gap-2">
       <CmwChip
         v-for="({ id, label, keyword }) in activeSelections" :key="id" size="xs"
         :label="label" :on-delete="() => fetchBrands(JSON.stringify({ keyword, id }))"
       />
     </div>
-    <div class="l-brands cmw-grid cmw-grid-cols-2 cmw-gap-4 cmw-mt-8 desktop:(cmw-grid-cols-4)">
+    <div class="l-brands grid grid-cols-2 gap-4 mt-8 desktop:(grid-cols-4)">
       <div
         v-for="brand in slicedData"
         :key="brand.brandId"
-        :class="brand.isPartner ? 'cmw-col-span-2' : 'cmw-col-span-2 sm:cmw-col-span-1'"
+        :class="brand.isPartner ? 'col-span-2' : 'col-span-2 sm:col-span-1'"
       >
         <ClientOnly>
           <component :is="brand.isPartner ? 'CardBrandPartner' : 'CardBrand'" :brand="brand" />
@@ -293,21 +293,21 @@ export default defineComponent({
       </div>
     </div>
 
-    <div ref="trigger" class="cmw-w-full cmw-h-4 cmw-text-transparent">
+    <div ref="trigger" class="w-full h-4 text-transparent">
       <!-- Note: lazy load trigger, can't hide this because it loses the observer, v-if="limit < data.length" -->
       lazy-loading-trigger
     </div>
-    <div v-if="data" class="cmw-flex cmw-justify-between">
+    <div v-if="data" class="flex justify-between">
       <Button
         v-if="linksRef.prev"
-        class="cmw-w-max"
+        class="w-max"
         variant="text"
         :label="$t('common.cta.prevPage')"
         @click.native="fetchPage(true)"
       />
       <Button
         v-if="linksRef.next"
-        class="cmw-w-max"
+        class="w-max"
         variant="text"
         :label="$t('common.cta.nextPage')"
         @click.native="fetchPage(false)"

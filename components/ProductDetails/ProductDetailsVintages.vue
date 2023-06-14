@@ -30,13 +30,13 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="vintages.length" class="cmw-flex cmw-gap-2 cmw-items-center">
+  <div v-if="vintages.length" class="flex gap-2 items-center">
     <strong>{{ $t('product.otherVintages') }}</strong>
     <NuxtLink
       v-for="({ feId, handle_t, vintageyear }) in vintages"
       :key="feId" :to="`/${handle_t[$i18n.locale]}-P${feId}.htm`"
-      class="cmw-bg-primary cmw-border-2 cmw-border-primary cmw-py-2 cmw-px-4 cmw-rounded-pill cmw-text-white
-       hover:(cmw-border-primary-400 cmw-bg-white cmw-text-primary-400)"
+      class="bg-primary border-2 border-primary py-2 px-4 rounded-pill text-white
+       hover:(border-primary-400 bg-white text-primary-400)"
     >
       {{ vintageyear }}
     </nuxtlink>

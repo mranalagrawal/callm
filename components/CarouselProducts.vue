@@ -68,13 +68,13 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="cmw-max-w-screen-xl cmw-mx-auto cmw-py-4 cmw-px-4">
-    <div class="cmw-h2 cmw-text-center cmw-py-4" v-text="title" />
+  <div class="max-w-screen-xl mx-auto py-4 px-4">
+    <div class="h2 text-center py-4" v-text="title" />
     <SsrCarousel
       :key="products.length" :responsive="responsive" :show-arrows="isTablet"
-      :show-dots="isTablet" class="cmw-relative"
+      :show-dots="isTablet" class="relative"
     >
-      <div v-for="(product, idx) in products" :key="generateKey(`${title}-${product.id}`)" class="cmw-my-8">
+      <div v-for="(product, idx) in products" :key="generateKey(`${title}-${product.id}`)" class="my-8">
         <ProductBoxVertical :product="product" :position="idx + 1" />
       </div>
       <!--
@@ -86,18 +86,18 @@ export default defineComponent({
         </template>
         -->
       <template #back-arrow>
-        <span class="cmw-w-12 cmw-h-12 cmw-bg-white cmw-rounded-sm">
+        <span class="w-12 h-12 bg-white rounded-sm">
           <VueSvgIcon
             :data="chevronLeftIcon" color="#992545" width="20" height="20"
-            class="cmw-m-auto"
+            class="m-auto"
           />
         </span>
       </template>
       <template #next-arrow>
-        <span class="cmw-w-12 cmw-h-12 cmw-bg-white cmw-rounded-sm">
+        <span class="w-12 h-12 bg-white rounded-sm">
           <VueSvgIcon
             :data="chevronRightIcon" color="#992545" width="20" height="20"
-            class="cmw-m-auto"
+            class="m-auto"
           />
         </span>
       </template>

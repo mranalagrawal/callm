@@ -104,38 +104,38 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="cmw-my-5 cmw-bg-gray-lightest">
+  <div class="my-5 bg-gray-lightest">
     <ClientOnly>
-      <div class="cmw-py-5">
-        <!-- <PrismicText v-if="title" class="cmw-text-center" :field="title" /> -->
-        <h2 class="cmw-text-center" v-text="title" />
+      <div class="py-5">
+        <!-- <PrismicText v-if="title" class="text-center" :field="title" /> -->
+        <h2 class="text-center" v-text="title" />
 
-        <VueSlickCarousel v-if="!!slides.length" v-bind="settingsTop" class="cmw-py-4">
+        <VueSlickCarousel v-if="!!slides.length" v-bind="settingsTop" class="py-4">
           <div v-for="productor in slides" :key="productor.name">
             <nuxt-link
               :to="productor.link"
-              class="cmw-flex cmw-bg-white cmw-mx-2 cmw-p-1 cmw-border cmw-border-gray-light cmw-rounded-sm cmw-border-gray-light cmw-shadow-elevation"
+              class="flex bg-white mx-2 p-1 border border-gray-light rounded-sm border-gray-light shadow-elevation"
             >
               <img
                 :src="productor.logo.url"
                 alt="logo"
                 height="120"
-                class="cmw-m-auto"
+                class="m-auto"
               >
             </nuxt-link>
           </div>
         </VueSlickCarousel>
-        <VueSlickCarousel v-if="!!slides.length" v-bind="settingsBottom" class="cmw-py-4">
+        <VueSlickCarousel v-if="!!slides.length" v-bind="settingsBottom" class="py-4">
           <div v-for="productor in slides" :key="productor.name">
             <nuxt-link
               :to="productor.link"
-              class="cmw-flex cmw-bg-white cmw-mx-2 cmw-p-1 cmw-border cmw-border-gray-light cmw-rounded-sm cmw-border-gray-light cmw-shadow-elevation"
+              class="flex bg-white mx-2 p-1 border border-gray-light rounded-sm border-gray-light shadow-elevation"
             >
               <img
                 :src="productor.logo.url"
                 alt="logo"
                 height="120"
-                class="cmw-m-auto"
+                class="m-auto"
               >
             </nuxt-link>
           </div>

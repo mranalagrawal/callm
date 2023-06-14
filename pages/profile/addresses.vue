@@ -40,10 +40,10 @@ export default {
     <p v-if="$fetchState.pending" class="px-4">
       {{ $t("loading") }}
     </p>
-    <div v-else class="md:(cmw-mt-9 cmw-max-w-10/12)">
+    <div v-else class="md:(mt-9 max-w-10/12)">
       <div
         v-if="!!addresses"
-        class="cmw-p-4 cmw-grid cmw-grid-cols-1 sm:cmw-grid-cols-2 cmw-gap-4"
+        class="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4"
       >
         <CustomerMailingAddress
           v-for="address in addresses"
@@ -53,9 +53,9 @@ export default {
         />
         <button
           class="
-          cmw-custom-border cmw-flex cmw-items-center cmw-justify-center cmw-gap-2 cmw-min-h-[150px]
-          cmw-rounded cmw-text-primary-400 cmw-uppercase cmw-transition-colors
-          hover:(cmw-shadow-elevation cmw-bg-primary-50)
+          custom-border flex items-center justify-center gap-2 min-h-[150px]
+          rounded text-primary-400 uppercase transition-colors
+          hover:(shadow-elevation bg-primary-50)
 "
           @click="openCreateAddressSplash"
         >
@@ -70,7 +70,7 @@ export default {
 </template>
 
 <style scoped>
-.cmw-custom-border {
+.custom-border {
   width: 99%;
   height: 99%;
   /* dashed border */

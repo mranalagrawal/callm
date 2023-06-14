@@ -45,9 +45,9 @@ export default {
   methods: {
     getTheme() {
       return ({
-        light: 'cmw-bg-white',
-        gray: 'cmw-bg-gray-lightest',
-        dark: 'cmw-bg-black',
+        light: 'bg-white',
+        gray: 'bg-gray-lightest',
+        dark: 'bg-black',
       })[this.$props.theme]
     },
   },
@@ -62,20 +62,20 @@ export default {
     :name="name"
     slim
   >
-    <div class="cmw-mt-8">
-      <div class="cmw-relative">
+    <div class="mt-8">
+      <div class="relative">
         <input
           v-bind="[$attrs]"
           :id="name"
           :value="value"
-          class="peer cmw-px-4 cmw-text-gray-dark cmw-py-3 cmw-w-full cmw-bg-transparent cmw-border cmw-border-gray-light
-              cmw-placeholder-transparent cmw-rounded cmw-transition-colors
-              hover:(cmw-border-gray)
-              focus:(cmw-outline-none cmw-border-gray-dark cmw-placeholder-gray-light)
-              autofill:(cmw-text-body cmw-border-info cmw-text-base)
-              disabled:(cmw-border-gray-light/70 cmw-cursor-not-allowed)"
+          class="peer px-4 text-gray-dark py-3 w-full bg-transparent border border-gray-light
+              placeholder-transparent rounded transition-colors
+              hover:(border-gray)
+              focus:(outline-none border-gray-dark placeholder-gray-light)
+              autofill:(text-body border-info text-base)
+              disabled:(border-gray-light/70 cursor-not-allowed)"
           :class="[
-            { 'cmw-border-error': !!errors.length },
+            { 'border-error': !!errors.length },
             `is-${theme}`,
             { '-filled': value },
           ]"
@@ -90,27 +90,27 @@ export default {
         >
         <label
           :for="name"
-          class="cmw-absolute cmw-m-0 cmw-left-4 cmw-transition-all cmw-select-none cmw-pointer-events-none cmw-truncate
-          peer-focus:(cmw-top-[-0.4rem] cmw-text-[0.775rem] cmw-px-2 cmw-w-auto)
-          peer-disabled:(cmw-text-gray-light/70)"
+          class="absolute m-0 left-4 transition-all select-none pointer-events-none truncate
+          peer-focus:(top-[-0.4rem] text-[0.775rem] px-2 w-auto)
+          peer-disabled:(text-gray-light/70)"
           :class="[
-            { 'cmw-sr-only': hideLabel },
+            { 'sr-only': hideLabel },
             `peer-focus:${getTheme()}`,
-            value ? `cmw-text-[0.775rem] cmw-px-2 cmw-top-[-0.4rem] ${getTheme()} cmw-w-auto` : 'cmw-top-[0.75rem] cmw-w-full cmw-pr-8',
-            !!errors.length ? 'cmw-text-error' : value ? 'cmw-text-secondary-800' : 'cmw-text-gray',
+            value ? `text-[0.775rem] px-2 top-[-0.4rem] ${getTheme()} w-auto` : 'top-[0.75rem] w-full pr-8',
+            !!errors.length ? 'text-error' : value ? 'text-secondary-800' : 'text-gray',
             `-${theme}`,
           ]"
         ><slot name="label">{{ label }}</slot></label>
 
         <button
           v-if="icon" type="button"
-          class="cmw-transform cmw-absolute cmw-top-1/2 cmw-right-0 cmw-translate-y-[-50%] cmw-translate-x-[-50%]"
+          class="transform absolute top-1/2 right-0 translate-y-[-50%] translate-x-[-50%]"
           @click="clickIcon"
         >
           <VueSvgIcon :data="icon" color="#E6362E" width="30px" height="30px" />
         </button>
       </div>
-      <span v-if="!!errors.length" class="cmw-block cmw-text-sm cmw-text-error">{{ errors[0] }}</span>
+      <span v-if="!!errors.length" class="block text-sm text-error">{{ errors[0] }}</span>
     </div>
   </ValidationProvider>
 </template>
@@ -118,19 +118,19 @@ export default {
 <style scoped>
 /* Temporary Fix */
 input:not([type='date'])::-internal-input-suggested {
-  @apply cmw-text-base cmw-text-gray-dark;
+  @apply text-base text-gray-dark;
 }
 
 input:not([type='date']):-webkit-autofill ~ label {
-  @apply cmw-text-[0.775rem] cmw-px-2 cmw-top-[-0.4rem];
+  @apply text-[0.775rem] px-2 top-[-0.4rem];
 }
 
 input:-webkit-autofill ~ label.-light {
-  @apply cmw-bg-white;
+  @apply bg-white;
 }
 
 input:-webkit-autofill ~ label.-gray {
-  @apply cmw-bg-gray-lightest;
+  @apply bg-gray-lightest;
 }
 
 input[type='date']::-webkit-datetime-edit {

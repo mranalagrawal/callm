@@ -60,7 +60,7 @@ export default defineComponent({
 
 <template>
   <transition name="fade" @after-enter="handleAfterEnter">
-    <div v-if="currentSplash" class="cmw-fixed cmw-top-0 cmw-left-0 cmw-w-screen cmw-h-screen cmw-bg-black/50 cmw-z-amenadiel" @click.self="closeModal">
+    <div v-if="currentSplash" class="fixed top-0 left-0 w-screen h-screen bg-black/50 z-amenadiel" @click.self="closeModal">
       <transition
         name="fadeFromBottom"
         mode="out-in"
@@ -68,14 +68,14 @@ export default defineComponent({
       >
         <div
           v-show="showBody"
-          class="c-splash__content cmw-overflow-y-auto cmw-bg-white cmw-center-the-unknown cmw-p-4 cmw-h-screen sm:(cmw-rounded cmw-h-auto)"
+          class="c-splash__content overflow-y-auto bg-white center-the-unknown p-4 h-screen sm:(rounded h-auto)"
           :class="size"
         >
           <!-- splash-header -->
-          <div class="cmw-relative">
-            <div v-if="title" class="cmw-text-center cmw-h3 cmw-pt-4" v-text="title" />
-            <div v-if="subtitle" class="cmw-text-center cmw-my-2 cmw-max-w-3/4 cmw-mx-auto" v-text="subtitle" />
-            <div class="cmw-absolute cmw-top-0 cmw-right-0">
+          <div class="relative">
+            <div v-if="title" class="text-center h3 pt-4" v-text="title" />
+            <div v-if="subtitle" class="text-center my-2 max-w-3/4 mx-auto" v-text="subtitle" />
+            <div class="absolute top-0 right-0">
               <ButtonIcon :icon="closeIcon" variant="icon" :size="18" @click.native="closeModal" />
             </div>
           </div>

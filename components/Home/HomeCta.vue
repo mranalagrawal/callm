@@ -32,33 +32,33 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="cmw-max-w-screen-xl cmw-mx-auto cmw-py-8 cmw-px-4 cmw-mt-4">
+  <div class="max-w-screen-xl mx-auto py-8 px-4 mt-4">
     <div
       :style="{ backgroundImage: `linear-gradient(90deg,rgba(0,0,0,0) 10%,rgba(0,0,0,1), rgba(0,0,0,1)), url('${componentData.image.url}')` }"
-      class="cmw-rounded-sm cmw-overflow-hidden cmw-pl-3/12 cmw-py-20"
+      class="rounded-sm overflow-hidden pl-3/12 py-20"
     >
-      <PrismicText v-if="componentData.title" class="cmw-h2 !cmw-text-white" :field="componentData.title" />
+      <PrismicText v-if="componentData.title" class="h2 !text-white" :field="componentData.title" />
       <PrismicRichText v-if="componentData.subtitle" :field="componentData.subtitle" />
       <Button
-        class="cmw-w-max" variant="ghost-inverse" :label="componentData.cta_button" :to="componentData.cta_link"
+        class="w-max" variant="ghost-inverse" :label="componentData.cta_button" :to="componentData.cta_link"
       />
     </div>
     <div
-      class="cmw-relative cmw-my-8 cmw-bg-auto cmw-bg-no-repeat cmw-bg-right-top"
+      class="relative my-8 bg-auto bg-no-repeat bg-right-top"
       :class="[
-        { 'after:(cmw-content-DEFAULT cmw-absolute cmw-w-full cmw-h-1/2 cmw-bottom-0 cmw-left-0 cmw-bg-gradient-to-b cmw-from-transparent cmw-to-white)': !showMoreText },
-        { 'cmw-min-h-[700px] ': showMoreText },
+        { 'after:(content-DEFAULT absolute w-full h-1/2 bottom-0 left-0 bg-gradient-to-b from-transparent to-white)': !showMoreText },
+        { 'min-h-[700px] ': showMoreText },
       ]
       "
       :style="{ backgroundImage: `url('${readMoreBg}')` }"
     >
-      <div class="cmw-w-[min(100%,_60rem)] cmw-m-inline-auto cmw-pr-1/12">
+      <div class="w-[min(100%,_60rem)] m-inline-auto pr-1/12">
         <PrismicRichText v-if="componentData.shown" :field="componentData.shown" />
         <transition>
           <PrismicRichText v-if="componentData.hidden && showMoreText" :field="componentData.hidden" />
         </transition>
         <Button
-          v-if="!showMoreText" class="cmw-relative cmw-w-max cmw-z-base"
+          v-if="!showMoreText" class="relative w-max z-base"
           :label="$t('common.cta.readMore')" variant="ghost" @click.native="showMoreText = true"
         />
       </div>

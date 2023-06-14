@@ -319,52 +319,52 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="cmw-mt-4 cmw-max-w-screen-xl cmw-mx-auto <md:cmw-px-4">
-    <div v-if="$fetchState.error" class="cmw-relative cmw-text-center cmw-mt-12">
-      <div class="md:(cmw-grid cmw-grid-cols-2 cmw-items-center)">
+  <div class="mt-4 max-w-screen-xl mx-auto <md:px-4">
+    <div v-if="$fetchState.error" class="relative text-center mt-12">
+      <div class="md:(grid grid-cols-2 items-center)">
         <img
-          class="cmw-w-3/4 cmw-mx-auto" src="https://cdn.shopify.com/s/files/1/0668/1860/5335/files/wine-stain.png?width=900"
+          class="w-3/4 mx-auto" src="https://cdn.shopify.com/s/files/1/0668/1860/5335/files/wine-stain.png?width=900"
           alt="empty-bottles"
         >
-        <div class="cmw-text-left">
-          <h2 class="cmw-h1 cmw-text-secondary" v-text="$t('notFoundTitle')" />
-          <p class="cmw-mb-8 md:cmw-w-3/5" v-text="$t('notFoundLine')" />
+        <div class="text-left">
+          <h2 class="h1 text-secondary" v-text="$t('notFoundTitle')" />
+          <p class="mb-8 md:w-3/5" v-text="$t('notFoundLine')" />
         </div>
       </div>
     </div>
     <template v-else>
       <div v-if="product.title && brandMetaFields">
         <TheBreadcrumbs v-if="!!productBreadcrumbs.length" :breadcrumbs="productBreadcrumbs" />
-        <div class="md:(cmw-grid cmw-grid-cols-[40%_60%] cmw-max-h-[550px] cmw-my-4)">
+        <div class="md:(grid grid-cols-[40%_60%] max-h-[550px] my-4)">
           <!-- Image Section -->
-          <div class="cmw-relative">
+          <div class="relative">
             <LoadingImage
-              class="cmw-h-full"
-              img-classes="cmw-max-h-[350px] md:cmw-max-h-[550px] cmw-mx-auto cmw-object-contain"
+              class="h-full"
+              img-classes="max-h-[350px] md:max-h-[550px] mx-auto object-contain"
               :thumbnail="product.image.thumbnail"
               :source="product.image.source"
             />
-            <div class="cmw-absolute cmw-top-4 cmw-left-2">
+            <div class="absolute top-4 left-2">
               <ProductBoxFeature v-for="feature in product.availableFeatures" :key="generateKey(`details-feature-${feature}`)" :feature="feature" />
             </div>
-            <div class="cmw-absolute cmw-bottom-0 cmw-left-2">
+            <div class="absolute bottom-0 left-2">
               <div
                 v-for="(award, i) in productDetails.awards.slice(0, 4)"
                 :key="`${award.id}-${i}`"
-                class="cmw-flex cmw-gap-1 cmw-items-center cmw-pr-1.5"
+                class="flex gap-1 items-center pr-1.5"
               >
                 <ProductBoxAward :award="award" />
               </div>
             </div>
-            <div class="cmw-absolute cmw-transform cmw-top-4 cmw-right-8">
+            <div class="absolute transform top-4 right-8">
               <CardLapel v-if="isOnSale" variant="simple" />
             </div>
           </div>
           <!-- Content Section -->
-          <div class="cmw-flex cmw-flex-col">
-            <h1 class="cmw-text-secondary <md:cmw-pt-8" v-text="product.title" />
+          <div class="flex flex-col">
+            <h1 class="text-secondary <md:pt-8" v-text="product.title" />
             <NuxtLink
-              class="h3 cmw-w-max font-weight-bold cmw-text-primary-400 hover:cmw-text-primary-400"
+              class="h3 w-max hover:text-primary-400"
               :to="localePath({ name: 'winery-handle', params: { handle: `${brand.handle}-${brandMetaFields.key}.htm` } })"
               prefetch
             >
@@ -388,17 +388,17 @@ export default defineComponent({
             <ProductDetailsVintages :sku="product.sku" />
             <div
               class="
-            <md:(cmw-fixed cmw-bottom-0 cmw-left-0 cmw-w-full cmw-bg-white cmw-z-content cmw-shadow-elevation cmw-px-3 cmw-py-4)
-            cmw-mt-auto cmw-flex cmw-items-end
-            md:cmw-mb-8
+            <md:(fixed bottom-0 left-0 w-full bg-white z-content shadow-elevation px-3 py-4)
+            mt-auto flex items-end
+            md:mb-8
 "
             >
               <div>
                 <div
                   v-if="isOnSale"
-                  class="cmw-flex cmw-items-center cmw-gap-2"
+                  class="flex items-center gap-2"
                 >
-                  <span class="cmw-line-through cmw-text-gray cmw-text-sm">
+                  <span class="line-through text-gray text-sm">
                     {{
                       $n(Number(productVariant.compareAtPriceV2.amount),
                          'currency',
@@ -413,92 +413,92 @@ export default defineComponent({
                 </div>
                 <i18n-n
                   v-if="finalPrice"
-                  class="cmw-inline-block" :value="Number(finalPrice)"
+                  class="inline-block" :value="Number(finalPrice)"
                   :format="{ key: 'currency' }"
                   :locale="getLocaleFromCurrencyCode(productVariant.price.currencyCode)"
                 >
                   <template #currency="slotProps">
-                    <span class="cmw-text-sm md:cmw-text-base">{{ slotProps.currency }}</span>
+                    <span class="text-sm md:text-base">{{ slotProps.currency }}</span>
                   </template>
                   <template #integer="slotProps">
-                    <span class="cmw-h1 cmw-font-bold !cmw-leading-none">{{ slotProps.integer }}</span>
+                    <span class="h1 font-bold !leading-none">{{ slotProps.integer }}</span>
                   </template>
                   <template #group="slotProps">
-                    <span class="cmw-h1 cmw-font-bold !cmw-leading-none">{{ slotProps.group }}</span>
+                    <span class="h1 font-bold !leading-none">{{ slotProps.group }}</span>
                   </template>
                   <template #fraction="slotProps">
-                    <span class="cmw-text-sm md:cmw-text-base">{{ slotProps.fraction }}</span>
+                    <span class="text-sm md:text-base">{{ slotProps.fraction }}</span>
                   </template>
                 </i18n-n>
               </div>
-              <div class="cmw-ml-auto cmw-mr-4">
+              <div class="ml-auto mr-4">
                 <div class="">
                   <p
-                    v-if="product.quantityAvailable > 0" class="cmw-text-success cmw-text-center"
-                    :class="{ 'cmw-hidden': product.quantityAvailable > 6 }"
+                    v-if="product.quantityAvailable > 0" class="text-success text-center"
+                    :class="{ hidden: product.quantityAvailable > 6 }"
                   >
                     {{ $t('product.available', { quantity: product.quantityAvailable }) }}
                   </p>
-                  <p v-else class="cmw-text-primary-400">
+                  <p v-else class="text-primary-400">
                     {{ $t('product.notAvailable') }}
                   </p>
-                  <div v-if="product.availableForSale" class="cmw-relative">
+                  <div v-if="product.availableForSale" class="relative">
                     <Button
-                      class="cmw-gap-2 cmw-pl-2 cmw-pr-3 cmw-py-2"
+                      class="gap-2 pl-2 pr-3 py-2"
                       :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
                       @click.native="addToUserCart"
                     >
                       <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
-                      <span class="cmw-text-sm" v-text="$t('product.addToCart')" />
+                      <span class="text-sm" v-text="$t('product.addToCart')" />
                     </Button>
                     <Badge
                       v-show="cartQuantity && !isOpen"
-                      class="cmw-absolute cmw-top-0 cmw-left-full cmw-transform cmw-translate-x-[-50%] cmw-translate-y-[-50%]"
+                      class="absolute top-0 left-full transform translate-x-[-50%] translate-y-[-50%]"
                       bg-color="primary-400" :qty="cartQuantity"
                     />
                     <div
                       v-show="isOpen"
-                      class="cmw-absolute cmw-grid cmw-grid-cols-[50px_auto_50px] cmw-items-center cmw-w-full cmw-h-[50px] cmw-top-0 cmw-left-0"
+                      class="absolute grid grid-cols-[50px_auto_50px] items-center w-full h-[50px] top-0 left-0"
                       @mouseleave="isOpen = false"
                     >
                       <button
-                        class="cmw-flex cmw-transition-colors cmw-w-[50px] cmw-h-[50px] cmw-bg-primary-400 cmw-rounded-l hover:(cmw-bg-primary)"
+                        class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l hover:(bg-primary)"
                         :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
                         @click="removeFromUserCart"
                       >
-                        <VueSvgIcon class="cmw-m-auto" :data="subtractIcon" width="14" height="14" color="white" />
+                        <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="white" />
                       </button>
-                      <div class="cmw-flex cmw-h-[40px] cmw-bg-primary-400 cmw-text-white text-center">
-                        <span class="cmw-m-auto cmw-text-sm">{{ cartQuantity }}</span>
+                      <div class="flex h-[40px] bg-primary-400 text-white text-center">
+                        <span class="m-auto text-sm">{{ cartQuantity }}</span>
                       </div>
                       <button
-                        class="cmw-flex cmw-transition-colors cmw-w-[50px] cmw-h-[50px] cmw-bg-primary-400 cmw-rounded-r
-                        hover:(cmw-bg-primary)
-                        disabled:(cmw-bg-primary-100 cmw-cursor-not-allowed)"
+                        class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-r
+                        hover:(bg-primary)
+                        disabled:(bg-primary-100 cursor-not-allowed)"
                         :disabled="!canAddMore"
                         :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
                         @click="addToUserCart"
                       >
-                        <VueSvgIcon class="cmw-m-auto" :data="addIcon" width="14" height="14" color="white" />
+                        <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
                       </button>
                     </div>
                   </div>
                   <div v-else>
                     <Button
                       variant="ghost"
-                      class="cmw-gap-2 cmw-pl-2 cmw-pr-3 cmw-py-2"
+                      class="gap-2 pl-2 pr-3 py-2"
                       :aria-label="$t('enums.accessibility.role.MODAL_OPEN')"
                       @click.native="() => handleShowRequestModal(productDetails.feId)"
                     >
                       <VueSvgIcon :data="emailIcon" width="30" height="auto" />
-                      <span class="cmw-text-sm" v-text="$t('common.cta.notifyMe')" />
+                      <span class="text-sm" v-text="$t('common.cta.notifyMe')" />
                     </Button>
                   </div>
                 </div>
               </div>
               <button
                 type="button"
-                class="cmw-mb-2"
+                class="mb-2"
                 :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
                 @click="handleWishlist({ id: productDetails.id, isOnFavourite, gtmProductData: product.gtmProductData })"
               >

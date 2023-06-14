@@ -12,18 +12,18 @@ export default {
 <template>
   <NuxtLink :to="localePath(`/winery/${brand.handle}-B${brand.brandId}.htm`)">
     <div
-      class="c-brand cmw-font-sans cmw-border-2 cmw-border-primary-400 cmw-rounded-sm cmw-border-gray-light cmw-overflow-hidden cmw-h-full
-    hover:cmw-shadow-elevation"
+      class="c-brand font-sans border-2 border-primary-400 rounded-sm border-gray-light overflow-hidden h-full
+    hover:shadow-elevation"
     >
-      <div class="c-brand__grid cmw-grid cmw-items-center cmw-text-body">
-        <div class="c-brand__imgBox cmw-relative">
+      <div class="c-brand__grid grid items-center text-body">
+        <div class="c-brand__imgBox relative">
           <NuxtLink
             :to="localePath(`/winery/${brand.handle}-B${brand.brandId}.htm`)"
-            class="cnw-flex cmw-w-full cmw-h-full"
+            class="cnw-flex w-full h-full"
           >
             <LoadingImage
-              class="cmw-w-full cmw-h-full cmw-overflow-hidden"
-              img-classes="cmw-w-full cmw-h-full cmw-object-cover"
+              class="w-full h-full overflow-hidden"
+              img-classes="w-full h-full object-cover"
               :thumbnail="{
                 url: brand.image ? `${brand.image}?&width=20&height=10` : 'https://source.unsplash.com/Ls5oWV9e764',
                 width: 20,
@@ -38,14 +38,14 @@ export default {
               }"
             />
           </NuxtLink>
-          <div class="c-brand__mask cmw-absolute cmw-top-0 cmw-w-full cmw-h-full cmw-object-contain">
+          <div class="c-brand__mask absolute top-0 w-full h-full object-contain">
           <!--          <VueSvgIcon original :data="require(`@/assets/svg/brand-curve-desktop.svg`)" /> -->
           </div>
         </div>
         <div class="c-brand__contentContainer">
-          <div class="c-brand__content cmw-p-4">
+          <div class="c-brand__content p-4">
             <LoadingImage
-              img-classes="cmw-m-auto cmw-max-w-[80%]"
+              img-classes="m-auto max-w-[80%]"
               :thumbnail="{
                 url: brand.url ? `${brand.url}?&width=20&height=12` : 'https://picsum.photos/id/75/20/12',
                 width: 20,
@@ -60,9 +60,9 @@ export default {
               }"
             />
             <div>
-              <div class="cmw-font-bold cmw-text-xl cmw-mt-4" v-text="brand.name" />
+              <div class="font-bold text-xl mt-4" v-text="brand.name" />
               <div v-text="brand.subtitle" />
-              <div class="cmw-text-secondary-700" v-text="brand.region" />
+              <div class="text-secondary-700" v-text="brand.region" />
             </div>
           </div>
         </div>

@@ -178,35 +178,35 @@ export default defineComponent({
       slim
     >
       <form
-        class="cmw-w-[min(100%,_60rem)] cmw-m-inline-auto"
+        class="w-[min(100%,_60rem)] m-inline-auto"
         @submit.prevent="handleSubmit(onSubmit)"
       >
-        <fieldset class="cmw-mt-6">
-          <legend class="cmw-h4 cmw-my-6">
+        <fieldset class="mt-6">
+          <legend class="h4 my-6">
             {{ $t('contactForm.motivation') }}
           </legend>
-          <div v-for="({ label, uuid, loginRequired }) in motivations" :key="uuid" class="cmw-relative cmw-flex cmw-items-center">
+          <div v-for="({ label, uuid, loginRequired }) in motivations" :key="uuid" class="relative flex items-center">
             <input
               :id="uuid"
               v-model="selectedMotivation"
               :aria-label="`select ${label}`"
-              class="peer cmw-appearance-none cmw-absolute cmw-w-full cmw-h-full cmw-z-dante"
+              class="peer appearance-none absolute w-full h-full z-dante"
               type="radio"
               name="motivation"
               :value="JSON.stringify({ uuid, loginRequired })"
               @change="handleChange"
             >
-            <span class="cmw-absolute cmw-flex cmw-text-primary-400 cmw-w-[22px] cmw-h-[22px] cmw-top-0 cmw-left-0 cmw-pointer-events-none">
+            <span class="absolute flex text-primary-400 w-[22px] h-[22px] top-0 left-0 pointer-events-none">
               <VueSvgIcon :data="(selectedMotivation && JSON.parse(selectedMotivation).uuid === uuid) ? radioCheckedIcon : radioUncheckedIcon" width="22" height="22" />
             </span>
             <label
               :for="uuid"
-              class="cmw-text-sm cmw-pl-6"
-            >{{ label }} <span v-if="!customer.id && loginRequired" class="cmw-text-xs cmw-text-gray">({{ $t('contactForm.loginRequired') }})</span></label>
+              class="text-sm pl-6"
+            >{{ label }} <span v-if="!customer.id && loginRequired" class="text-xs text-gray">({{ $t('contactForm.loginRequired') }})</span></label>
           </div>
         </fieldset>
 
-        <fieldset v-if="!!customerOrders.length && showForm" class="cmw-mt-6">
+        <fieldset v-if="!!customerOrders.length && showForm" class="mt-6">
           <CmwDropdown
             key="customer-orders"
             size="sm"
@@ -222,7 +222,7 @@ export default defineComponent({
           </CmwDropdown>
         </fieldset>
 
-        <fieldset v-if="!customer.id && showForm" class="cmw-grid cmw-gap-4 cmw-mb-6 md:(cmw-grid-cols-3)">
+        <fieldset v-if="!customer.id && showForm" class="grid gap-4 mb-6 md:(grid-cols-3)">
           <InputField
             v-model="formData.firstName"
             type="text"
@@ -249,36 +249,36 @@ export default defineComponent({
           />
         </fieldset>
 
-        <div v-if="showForm" class="cmw-relative">
+        <div v-if="showForm" class="relative">
           <textarea
             id="message"
             v-model="formData.message"
             :placeholder="$t('profile.messagePlaceholder')"
             rows="4"
             class="
-              peer cmw-px-4 cmw-text-gray-dark cmw-py-3 cmw-w-full cmw-bg-transparent cmw-border cmw-border-gray-light
-              cmw-rounded cmw-transition-colors
-              hover:(cmw-border-gray)
-              focus:(cmw-outline-none cmw-border-gray-dark cmw-placeholder-gray-light)
-              autofill:(cmw-text-body cmw-border-info cmw-text-base)
-              disabled:(cmw-border-gray-light/70 cmw-cursor-not-allowed)
+              peer px-4 text-gray-dark py-3 w-full bg-transparent border border-gray-light
+              rounded transition-colors
+              hover:(border-gray)
+              focus:(outline-none border-gray-dark placeholder-gray-light)
+              autofill:(text-body border-info text-base)
+              disabled:(border-gray-light/70 cursor-not-allowed)
 "
-            :class="formData.message ? 'cmw-placeholder-gray-light' : 'cmw-placeholder-transparent'"
+            :class="formData.message ? 'placeholder-gray-light' : 'placeholder-transparent'"
           />
           <label
             for="message"
-            class="cmw-absolute cmw-m-0 cmw-left-4 cmw-transition-all cmw-select-none cmw-pointer-events-none cmw-truncate
-               peer-focus:(cmw-text-[0.775rem] cmw-px-2 cmw-top-[-0.4rem] cmw-bg-white cmw-w-auto)
-               peer-disabled:(cmw-text-gray-light/70) peer-focus:cmw-bg-white -cmw-bg-white"
+            class="absolute m-0 left-4 transition-all select-none pointer-events-none truncate
+               peer-focus:(text-[0.775rem] px-2 top-[-0.4rem] bg-white w-auto)
+               peer-disabled:(text-gray-light/70) peer-focus:bg-white -bg-white"
             :class="[
-              formData.message ? `cmw-text-[0.775rem] cmw-px-2 cmw-top-[-0.4rem] cmw-bg-white cmw-w-auto` : 'cmw-top-[0.75rem] cmw-w-full cmw-pr-8',
-              !!errors.length ? 'cmw-text-error' : formData.message ? 'cmw-text-secondary-800' : 'cmw-text-gray',
+              formData.message ? `text-[0.775rem] px-2 top-[-0.4rem] bg-white w-auto` : 'top-[0.75rem] w-full pr-8',
+              !!errors.length ? 'text-error' : formData.message ? 'text-secondary-800' : 'text-gray',
             ]"
           >{{ $t('profile.message') }}</label>
         </div>
         <Button
           v-if="showForm"
-          class="cmw-w-max cmw-mt-8"
+          class="w-max mt-8"
           type="submit"
           :disabled="formIsDisabled || !valid"
           :label="$t('common.cta.send')"

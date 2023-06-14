@@ -36,26 +36,26 @@ export default {
   },
   setup(props) {
     const getColor = () => ({
-      'primary': 'cmw-bg-primary-50 cmw-text-primary hover:(cmw-bg-primary cmw-text-white)',
-      'secondary': 'cmw-bg-secondary cmw-text-white',
-      'secondary-400': 'cmw-bg-secondary-400 cmw-text-white',
+      'primary': 'bg-primary-50 text-primary hover:(bg-primary text-white)',
+      'secondary': 'bg-secondary text-white',
+      'secondary-400': 'bg-secondary-400 text-white',
     })[props.color]
 
     const getShape = () => ({
-      pill: 'cmw-rounded-pill',
-      rounded: 'cmw-rounded-sm',
+      pill: 'rounded-pill',
+      rounded: 'rounded-sm',
     })[props.shape]
 
     const getVariant = () => ({
-      'overline-1': 'cmw-overline-1',
-      'overline-2': 'cmw-overline-2',
+      'overline-1': 'overline-1',
+      'overline-2': 'overline-2',
       'default': '',
     })[props.variant]
 
     const getSize = () => ({
-      xs: 'cmw-text-sm cmw-px-2 cmw-py-0',
-      sm: 'cmw-pl-3 cmw-pr-2.5 cmw-py-0',
-      md: 'cmw-pl-2 cmw-pr-2.5 cmw-py-1',
+      xs: 'text-sm px-2 py-0',
+      sm: 'pl-3 pr-2.5 py-0',
+      md: 'pl-2 pr-2.5 py-1',
     })[props.size]
 
     return { closeIcon, getColor, getShape, getVariant, getSize }
@@ -65,7 +65,7 @@ export default {
 
 <template>
   <div
-    class="cmw-transition-colors cmw-w-max cmw-flex cmw-items-center cmw-justify-center cmw-gap-1"
+    class="transition-colors w-max flex items-center justify-center gap-1"
     :class="[getColor(), getShape(), getSize()]"
   >
     <VueSvgIcon
@@ -75,11 +75,11 @@ export default {
       height="auto"
     />
     <small
-      class="cmw-block cmw-capitalize cmw-leading-[1rem] cmw-select-none"
+      class="block capitalize leading-[1rem] select-none"
       :class="getVariant()"
       v-text="label"
     />
-    <button v-if="onDelete" class="cmw-flex cmw-py-1" @click.stop="onDelete">
+    <button v-if="onDelete" class="flex py-1" @click.stop="onDelete">
       <VueSvgIcon :data="closeIcon" width="12" height="12" />
     </button>
   </div>

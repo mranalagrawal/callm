@@ -19,17 +19,17 @@ export default {
 </script>
 
 <template>
-  <div class="text-left cmw-p-4 cmw-grid cmw-text-sm cmw-auto-rows-auto md:cmw-grid-cols-2 cmw-gap-4">
+  <div class="text-left p-4 grid text-sm auto-rows-auto md:grid-cols-2 gap-4">
     <!-- Summary Section -->
     <div>
       <h5 v-text="$t('profile.orders.card.summary')" />
       <i18n
         path="profile.orders.card.fulfillmentStatus"
         tag="span"
-        class="cmw-text-secondary-400"
+        class="text-secondary-400"
       >
         <span
-          class="cmw-font-sans cmw-text-body cmw-tracking-normal"
+          class="font-sans text-body tracking-normal"
           v-text="$t(`enums.fulfillmentStatus.${fulfillmentStatus}`)"
         />
       </i18n>
@@ -37,12 +37,12 @@ export default {
         <i18n
           path="profile.orders.card.shipment"
           tag="span"
-          class="cmw-text-secondary-400"
+          class="text-secondary-400"
         >
-          <span class="cmw-font-sans cmw-text-body cmw-tracking-normal">{{ successfulFulfillments.trackingCompany }}
+          <span class="font-sans text-body tracking-normal">{{ successfulFulfillments.trackingCompany }}
             <a
               v-if="successfulFulfillments.trackingInfo[0]"
-              class="cmw-text-gray-dark hover:cmw-text-primary"
+              class="text-gray-dark hover:text-primary"
               :href="successfulFulfillments.trackingInfo[0].url"
               target="_blank"
             ><small> ({{ successfulFulfillments.trackingInfo[0].number }})</small></a>
@@ -51,35 +51,35 @@ export default {
       </div>
     </div>
     <!-- ShipmentAddress Section -->
-    <div class="print:cmw-hidden">
+    <div class="print:hidden">
       <h5
-        class="cmw-mb-0"
+        class="mb-0"
         v-text="$t('profile.orders.card.shipmentAddress')"
       />
       <address>
         <span
-          class="cmw-block"
+          class="block"
           v-text="shippingAddress.name"
         />
         <span
-          class="cmw-block"
+          class="block"
           v-text="shippingAddress.address1"
         />
         <span
           v-if="shippingAddress.address2"
-          class="cmw-block"
+          class="block"
           v-text="shippingAddress.address2"
         />
         <span
           v-if="shippingAddress.formattedArea"
-          class="cmw-block"
+          class="block"
         >{{
           shippingAddress.formattedArea
         }} {{ shippingAddress.zip }}</span>
         <a
           v-if="shippingAddress.phone"
           :href="`tel:${shippingAddress.phone}`"
-          class="cmw-text-gray-dark hover:cmw-text-primary"
+          class="text-gray-dark hover:text-primary"
         >
           {{ shippingAddress.phone }}
         </a>

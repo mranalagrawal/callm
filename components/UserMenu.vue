@@ -12,45 +12,45 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="cmw-px-4 cmw-py-2">
+  <div class="px-4 py-2">
     <NuxtLink
-      exact-active-class="cmw-text-primary-400"
+      exact-active-class="text-primary-400"
       :to="localePath('/profile/my-orders')"
-      class="cmw-block cmw-py-4 cmw-border-b cmw-border-b-gray-light"
+      class="block py-4 border-b border-b-gray-light"
     >
       {{ $t("navbar.user.myOrders") }}
     </NuxtLink>
     <NuxtLink
-      exact-active-class="cmw-text-primary-400"
+      exact-active-class="text-primary-400"
       :to="localePath('/profile/buy-again')"
-      class="cmw-block cmw-py-4 cmw-border-b cmw-border-b-gray-light"
+      class="block py-4 border-b border-b-gray-light"
     >
       {{ $t("navbar.user.buyAgain") }}
     </NuxtLink>
     <NuxtLink
-      exact-active-class="cmw-text-primary-400"
+      exact-active-class="text-primary-400"
       :to="localePath('/profile/wishlist')"
-      class="cmw-block cmw-py-4 cmw-border-b cmw-border-b-gray-light"
+      class="block py-4 border-b border-b-gray-light"
     >
       {{ $t("navbar.user.favorites") }}
     </NuxtLink>
     <NuxtLink
-      exact-active-class="cmw-text-primary-400"
+      exact-active-class="text-primary-400"
       :to="localePath('/profile/addresses')"
-      class="cmw-block cmw-py-4 cmw-border-b cmw-border-b-gray-light"
+      class="block py-4 border-b border-b-gray-light"
     >
       {{ $t("navbar.user.addresses") }}
     </NuxtLink>
     <NuxtLink
-      exact-active-class="cmw-text-primary-400"
+      exact-active-class="text-primary-400"
       :to="localePath('/profile/access-data')"
-      class="cmw-block cmw-py-4 cmw-border-b cmw-border-b-gray-light"
+      class="block py-4 border-b border-b-gray-light"
     >
       {{ $t("navbar.user.accessData") }}
     </NuxtLink>
     <Button
       variant="ghost"
-      class="cmw-mt-10"
+      class="mt-10"
       :label="$t('navbar.user.logout')"
       @click.native="logout"
     />

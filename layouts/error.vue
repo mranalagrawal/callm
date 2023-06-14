@@ -8,23 +8,23 @@ export default {
 </script>
 
 <template>
-  <div class="cmw-main container">
-    <div class="cmw-relative cmw-text-center cmw-mt-12">
-      <div v-if="error.statusCode === 404" class="md:(cmw-grid cmw-grid-cols-2 cmw-items-center)">
+  <div class="main container">
+    <div class="relative text-center mt-12">
+      <div v-if="error.statusCode === 404" class="md:(grid grid-cols-2 items-center)">
         <img
-          class="cmw-w-3/4 cmw-mx-auto" src="https://cdn.shopify.com/s/files/1/0668/1860/5335/files/wine-stain.png?width=900"
+          class="w-3/4 mx-auto" src="https://cdn.shopify.com/s/files/1/0668/1860/5335/files/wine-stain.png?width=900"
           alt="empty-bottles"
         >
-        <div class="cmw-text-left">
-          <h2 class="cmw-h1 cmw-text-secondary" v-text="$t('notFoundTitle')" />
-          <p class="cmw-mb-8 md:cmw-w-3/5" v-text="$t('notFoundLine')" />
+        <div class="text-left">
+          <h2 class="h1 text-secondary" v-text="$t('notFoundTitle')" />
+          <p class="mb-8 md:w-3/5" v-text="$t('notFoundLine')" />
         </div>
       </div>
       <h1 v-else>
         An error occurred
       </h1>
     </div>
-    <div class="cmw-my-8">
+    <div class="my-8">
       or try a new drink from our
       <NuxtLink to="/">
         Home page

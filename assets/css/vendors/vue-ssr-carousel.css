@@ -21,7 +21,7 @@
   height: 48px;
   box-shadow: 0 0.5rem 1rem rgb(102 101 101 / 50%);
   transform: translate(-85%, -50%);
-  @apply cmw-rounded-sm;
+  @apply rounded-sm;
 }
 
 .ssr-carousel-arrows .ssr-carousel-back-button span,

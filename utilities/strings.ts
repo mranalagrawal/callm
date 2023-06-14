@@ -1,3 +1,5 @@
+import kebabCase from 'lodash.kebabcase'
+
 const stripHtml = (str = '') => {
   return str.replace(/<\/?[^>]+(>|$)/g, '')
 }
@@ -5,7 +7,7 @@ const stripHtml = (str = '') => {
 const stripHtmlAnchors = (str = '') => {
   return str.replace(/<\/?a[^>]*>/g, '')
 }
-const generateKey = (str = '') => str.toLowerCase().replaceAll(' ', '-')
+const generateKey = (str = '') => kebabCase(str)
 
 const cleanRoutesLocales = (str = '') =>
   (str

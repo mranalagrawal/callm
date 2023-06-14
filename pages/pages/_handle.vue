@@ -159,8 +159,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="Object.keys(pageData).length" class="cmw-max-w-screen-xl cmw-mx-auto cmw-py-4 cmw-px-4 cmw-mt-4">
-    <h1 class="cmw-h3" v-text="pageData.title" />
+  <div v-if="Object.keys(pageData).length" class="max-w-screen-xl mx-auto py-4 px-4 mt-4">
+    <h1 class="h3" v-text="pageData.title" />
     <CategoriesMainFilters
       v-if="Object.keys(inputParameters).length && Object.keys(aggregationsRef).length"
       :aggregations="aggregationsRef" :input-parameters="inputParameters"
@@ -177,11 +177,11 @@ export default defineComponent({
     <div v-html="shortDescription" />
     <ProductsResultsList :results="results" :total="total" @update-sort-value="handleUpdateSortValue" />
     <CategoriesPagination :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters" />
-    <div class="cmw-py-12" v-html="pageData?.body" />
-    <div v-if="!isDesktop" class="cmw-sticky cmw-bottom-8 cmw-w-[min(100%,_14rem)] cmw-m-inline-auto">
+    <div class="py-12" v-html="pageData?.body" />
+    <div v-if="!isDesktop" class="sticky bottom-8 w-[min(100%,_14rem)] m-inline-auto">
       <Button @click.native="showMobileFilters = !showMobileFilters">
         <VueSvgIcon width="28" height="28" :data="filterIcon" />
-        <span class="cmw-ml-2">{{ $t('search.showFilters') }}</span>
+        <span class="ml-2">{{ $t('search.showFilters') }}</span>
       </Button>
     </div>
     <CategoriesFiltersComponentsMobile

@@ -20,24 +20,24 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="cmw-mt-6">
+  <div class="mt-6">
     <div v-if="brand">
-      <div v-if="brandMetaFields.isPartner" class="ribbon cmw-flex cmw-items-center">
+      <div v-if="brandMetaFields.isPartner" class="ribbon flex items-center">
         <!-- TODO: This will use the new lapel component -->
         <VueSvgIcon
           :data="favouriteIcon"
           class="svg-favourite"
           width="20" height="auto"
         />
-        <span class="cmw-text-sm !cmw-top-0">{{
+        <span class="text-sm !top-0">{{
           $t('product.recommendedByCallmewine')
         }}</span>
       </div>
-      <h3 class="cmw-text-primary-400">
+      <h3 class="text-primary-400">
         {{ brand.title }}
       </h3>
-      <div class="cmw-grid cmw-gap-4 md:cmw-grid-cols-[8fr_4fr]">
-        <table class="cmw-w-full">
+      <div class="grid gap-4 md:grid-cols-[8fr_4fr]">
+        <table class="w-full">
           <tbody>
             <tr>
               <th scope="row" v-text="$t('product.mainWines')" />

@@ -18,8 +18,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="cmw-max-w-md cmw-mx-auto cmw-text-center">
-    <div class="cmw-mx-auto">
+  <div class="max-w-md mx-auto text-center">
+    <div class="mx-auto">
       <VueSvgIcon :data="emailSentIcon" width="90" height="auto" original />
     </div>
     <i18n
@@ -27,7 +27,7 @@ export default defineComponent({
       tag="p"
     >
       <strong
-        class="cmw-font-sans cmw-text-body cmw-tracking-normal"
+        class="font-sans text-body tracking-normal"
         v-text="localData"
       />
     </i18n>
@@ -37,7 +37,7 @@ export default defineComponent({
       tag="p"
     >
       <button
-        class="cmw-font-sans cmw-text-primary-400 cmw-tracking-normal"
+        class="font-sans text-primary-400 tracking-normal"
         @click="splash.$reset()"
         v-text="$t('recoverPwd.feedbackFooter.link')"
       />

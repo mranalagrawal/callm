@@ -153,25 +153,25 @@ export default {
 
 <template>
   <div>
-    <div class="cmw-border-t-4 cmw-border-t-primary-900 cmw-pt-4">
+    <div class="border-t-4 border-t-primary-900 pt-4">
       <div>
         <div v-if="shipping">
-          <div v-if="data && data.length > 0" class="cmw-min-w-[640px]">
+          <div v-if="data && data.length > 0" class="min-w-[640px]">
             <div
-              class="cmw-text-secondary-700 cmw-flex cmw-items-center cmw-justify-center cmw-gap-2 cmw-text-sm cmw-uppercase cmw-pb-4"
+              class="text-secondary-700 flex items-center justify-center gap-2 text-sm uppercase pb-4"
             >
               <VueSvgIcon :data="cartTotalAmount < shipping.threshold ? deliveryIcon : checkCircularIcon" width="24" height="24" />
               <span>{{ cartTotalAmount < shipping.threshold ? shipping.threshold_not_reached : shipping.threshold_reached }}</span>
             </div>
-            <div class="cmw-px-4">
-              <hr class="cmw-border-gray-light">
+            <div class="px-4">
+              <hr class="border-gray-light">
             </div>
-            <div class="cmw-max-h-[360px] cmw-overflow-y-auto cmw-overflow-x-hidden">
+            <div class="max-h-[360px] overflow-y-auto overflow-x-hidden">
               <div v-for="item in data" :key="item.id">
                 <CartLine :item="item" />
               </div>
             </div>
-            <div class="cmw-grid cmw-grid-cols-2 cmw-gap-4 cmw-bg-gray-lightest cmw-p-4">
+            <div class="grid grid-cols-2 gap-4 bg-gray-lightest p-4">
               <Button variant="ghost" :to="localePath('/cart')">
                 {{
                   $t("navbar.cart.detail")
@@ -182,19 +182,19 @@ export default {
               </Button>
             </div>
           </div>
-          <div v-else class="cmw-min-w-[425px] cmw-text-center cmw-px-6 cmw-pb-4">
+          <div v-else class="min-w-[425px] text-center px-6 pb-4">
             <div
-              class="cmw-text-secondary-700 cmw-flex cmw-items-center cmw-justify-center cmw-gap-2 cmw-text-sm cmw-uppercase cmw-py-0"
+              class="text-secondary-700 flex items-center justify-center gap-2 text-sm uppercase py-0"
             >
               <VueSvgIcon :data="deliveryIcon" width="24" height="24" />
               <span>{{ shipping.threshold_not_reached }}</span>
             </div>
             <hr>
-            <strong class="cmw-block">{{ $t("navbar.cart.empty") }}</strong>
-            <p class="cmw-pt-4">
+            <strong class="block">{{ $t("navbar.cart.empty") }}</strong>
+            <p class="pt-4">
               {{ $t("navbar.cart.startFromMessage") }}
             </p>
-            <Button class="cmw-py-4" to="/">
+            <Button class="py-4" to="/">
               <span>{{ $t("navbar.cart.cta") }}</span>
             </Button>
           </div>

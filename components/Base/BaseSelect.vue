@@ -39,27 +39,27 @@ export default {
     slim
   >
     <div class="text-left" :class="[classes]">
-      <div class="cmw-mt-8">
-        <div class="cmw-relative">
+      <div class="mt-8">
+        <div class="relative">
           <select
             v-bind="[$attrs, ariaInput]"
             :id="id"
             :value="value"
             :name="$attrs.name || id"
             class="
-          peer cmw-appearance-none cmw-px-4 cmw-text-gray-dark cmw-py-3 cmw-w-full cmw-bg-transparent cmw-border cmw-border-gray-light
-          cmw-placeholder-transparent cmw-rounded cmw-transition-colors
-              focus:(cmw-outline-none cmw-border-gray-dark)
+          peer appearance-none px-4 text-gray-dark py-3 w-full bg-transparent border border-gray-light
+          placeholder-transparent rounded transition-colors
+              focus:(outline-none border-gray-dark)
               autofill:!text-black autofill:border-secondary autofill:!shadow-input"
-            :class="[(value) ? 'cmw-text-body' : 'cmw-text-transparent']"
+            :class="[(value) ? 'text-body' : 'text-transparent']"
             @change="$emit('change', $event.target.value)"
           >
             <option value="" disabled selected v-text="label" />
             <option v-for="option in options" :key="option.value" :value="option.value" v-text="option.label" />
           </select>
           <div
-            class="cmw-absolute cmw-transform cmw-right-2 cmw-top-1/2 cmw-translate-y-[-50%] cmw-pointer-events-none"
-            :class="$attrs.disabled ? 'cmw-text-body/50' : 'cmw-text-primary-400'"
+            class="absolute transform right-2 top-1/2 translate-y-[-50%] pointer-events-none"
+            :class="$attrs.disabled ? 'text-body/50' : 'text-primary-400'"
           >
             <VueSvgIcon
               :data="chevronDownIcon"
@@ -71,9 +71,9 @@ export default {
             data-after=" *"
             :for="id"
             class="
-            cmw-absolute cmw-m-0 cmw-left-4 cmw-transition-all cmw-select-none cmw-pointer-events-none
+            absolute m-0 left-4 transition-all select-none pointer-events-none
               "
-            :class="(value) ? 'cmw-text-[0.775rem] cmw-px-2 cmw-top-[-0.4rem] cmw-bg-white cmw-text-secondary-800' : 'cmw-top-[0.7rem] cmw-text-gray'"
+            :class="(value) ? 'text-[0.775rem] px-2 top-[-0.4rem] bg-white text-secondary-800' : 'top-[0.7rem] text-gray'"
             v-text="label"
           />
         </div>

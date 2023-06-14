@@ -29,45 +29,45 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="pageData" class="cmw-max-w-screen-desktop cmw-mx-auto cmw-my-4">
-    <div class="cmw-h2 cmw-text-center cmw-py-4" v-text="label" />
-    <div class="cmw-grid cmw-gap-4 md:(cmw-grid-cols-[8fr_4fr])">
+  <div v-if="pageData" class="max-w-screen-desktop mx-auto my-4">
+    <div class="h2 text-center py-4" v-text="label" />
+    <div class="grid gap-4 md:(grid-cols-[8fr_4fr])">
       <div
-        class="partners-first cmw-h-[400px] cmw-p-6 cmw-text-white cmw-flex cmw-flex-col cmw-justify-end"
+        class="partners-first h-[400px] p-6 text-white flex flex-col justify-end"
         :style="{
           backgroundImage: `url(${mask_left}),url('${pageData[0].content.image.url}')`,
         }"
       >
-        <div class="cmw-w-1/2">
-          <h3 class="cmw-font-bold cmw-mb-8">
-            <NuxtLink class="cmw-text-white" :to="pageData[0].content.cta_link">
+        <div class="w-1/2">
+          <h3 class="font-bold mb-8">
+            <NuxtLink class="text-white" :to="pageData[0].content.cta_link">
               {{ pageData[0].content.main_text }}
             </NuxtLink>
           </h3>
         </div>
         <Button
-          class="cmw-w-max"
+          class="w-max"
           variant="ghost-inverse"
           :to="pageData[0].content.cta_link"
           :label="pageData[0].content.cta_text"
         />
       </div>
       <div
-        class="partners-last cmw-h-[400px] cmw-p-6 cmw-text-white cmw-flex cmw-flex-col cmw-justify-end"
+        class="partners-last h-[400px] p-6 text-white flex flex-col justify-end"
         :style="{
           backgroundImage: `url(${mask}), url('${pageData[1].content.image.url}')`,
         }"
       >
-        <div class="cmw-w-3/4">
-          <h3 class="cmw-font-bold cmw-mb-8">
-            <NuxtLink class="cmw-text-white" :to="pageData[0].content.cta_link">
+        <div class="w-3/4">
+          <h3 class="font-bold mb-8">
+            <NuxtLink class="text-white" :to="pageData[0].content.cta_link">
               {{ pageData[1].content.main_text }}
             </NuxtLink>
           </h3>
         </div>
         <div>
           <Button
-            class="cmw-w-max"
+            class="w-max"
             variant="ghost-inverse"
             :to="pageData[1].content.cta_link"
             :label="pageData[1].content.cta_text"
