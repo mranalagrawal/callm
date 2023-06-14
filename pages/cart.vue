@@ -185,7 +185,7 @@ export default {
                 <p class="cmw-text-sm cmw-mt-2">
                   {{ $t('continueShopping') }}
                   <NuxtLink
-                    class="cmw-font-bold cmw-text-primary-400 hover:(cmw-text-primary-400 cmw-no-underline)"
+                    class="cmw-font-bold cmw-text-primary-400"
                     :to="localePath('/')"
                   >
                     {{ $t('common.cta.continueShopping') }}

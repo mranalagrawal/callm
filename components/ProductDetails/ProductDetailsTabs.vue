@@ -80,7 +80,6 @@ export default defineComponent({
         <div
           v-for="({ label, component }) in tabs" :key="generateKey(component)"
           class="cmw-relative cmw-py-2 cmw-flex-shrink-0 cmw-font-light cmw-text-sm
-                hover:(cmw-no-underline)
                 hover:after:(cmw-bg-primary cmw-text-primary cmw-w-full)
                 after:(cmw-content-DEFAULT cmw-transform cmw-absolute cmw-bottom-0 cmw-left-1/2 cmw-h-1 cmw-transition-progress-bar cmw-translate-x-[-50%])"
           :class="component === currentTab ? 'after:(cmw-bg-primary cmw-text-primary cmw-w-full)' : 'after:(cmw-w-0 cmw-bg-primary-400)'"

@@ -72,7 +72,6 @@ export default {
                   class="
                   cmw-grid cmw-grid-rows-[50px_50px] cmw-items-center cmw-justify-items-center cmw-content-center
                   cmw-bg-white cmw-border cmw-border-gray-light cmw-rounded cmw-text-center cmw-text-primary-400 cmw-fill-primary-400 cmw-pt-4
-                  hover:(cmw-no-underline)
 "
                 >
                   <VueSvgIcon
@@ -81,7 +80,7 @@ export default {
                     width="44"
                     height="auto"
                   />
-                  <div class="cmw-text-xs cmw-text-body hover:(cmw-text-body cmw-no-underline)">
+                  <div class="cmw-text-xs cmw-text-body">
                     {{ third_level_name }}
                   </div>
                 </NuxtLink>
@@ -115,7 +114,7 @@ export default {
               class="cmw-relative cmw-flex cmw-justify-between cmw-items-center cmw-w-full cmw-py-4 cmw-px-2"
             >
               <span
-                class="cmw-text-sm cmw-font-light cmw-tracking-wide hover:(cmw-text-body cmw-no-underline)"
+                class="cmw-text-sm cmw-font-light cmw-tracking-wide"
                 :class="third_level_style ? 'cmw-text-primary-400' : 'cmw-text-body' "
               >{{ third_level_name }}</span>
               <span class="cmw-absolute cmw-w-[calc(100%_-_1rem)] cmw-left-2 cmw-bottom-0 cmw-h-px cmw-bg-gray-light" />

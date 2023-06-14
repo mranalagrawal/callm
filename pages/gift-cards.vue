@@ -223,7 +223,7 @@ export default defineComponent({
                   <label
                     :for="variant.id"
                     class="cmw-btn-base cmw-btn-base-spacing cmw-text-sm cmw-cursor-pointer cmw-border-primary-400 cmw-text-primary-400 cmw-font-bold cmw-uppercase
-                     hover:(cmw-bg-primary-50 cmw-text-primary-400 cmw-no-underline)"
+                     hover:(cmw-bg-primary-50)"
                     :class="{ 'cmw-bg-primary-400': variant.id === giftCardVariantSelected.id }"
                   >
                     <i18n-n

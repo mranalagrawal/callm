@@ -14,32 +14,37 @@ export default defineComponent({
 <template>
   <div class="cmw-px-4 cmw-py-2">
     <NuxtLink
+      exact-active-class="cmw-text-primary-400"
       :to="localePath('/profile/my-orders')"
-      class="cmw-block cmw-py-4 cmw-no-underline cmw-text-primary-900 cmw-border-b cmw-border-b-gray-light"
+      class="cmw-block cmw-py-4 cmw-border-b cmw-border-b-gray-light"
     >
       {{ $t("navbar.user.myOrders") }}
     </NuxtLink>
     <NuxtLink
+      exact-active-class="cmw-text-primary-400"
       :to="localePath('/profile/buy-again')"
-      class="cmw-block cmw-py-4 cmw-no-underline cmw-text-primary-900 cmw-border-b cmw-border-b-gray-light"
+      class="cmw-block cmw-py-4 cmw-border-b cmw-border-b-gray-light"
     >
       {{ $t("navbar.user.buyAgain") }}
     </NuxtLink>
     <NuxtLink
+      exact-active-class="cmw-text-primary-400"
       :to="localePath('/profile/wishlist')"
-      class="cmw-block cmw-py-4 cmw-no-underline cmw-text-primary-900 cmw-border-b cmw-border-b-gray-light"
+      class="cmw-block cmw-py-4 cmw-border-b cmw-border-b-gray-light"
     >
       {{ $t("navbar.user.favorites") }}
     </NuxtLink>
     <NuxtLink
+      exact-active-class="cmw-text-primary-400"
       :to="localePath('/profile/addresses')"
-      class="cmw-block cmw-py-4 cmw-no-underline cmw-text-primary-900 cmw-border-b cmw-border-b-gray-light"
+      class="cmw-block cmw-py-4 cmw-border-b cmw-border-b-gray-light"
     >
       {{ $t("navbar.user.addresses") }}
     </NuxtLink>
     <NuxtLink
+      exact-active-class="cmw-text-primary-400"
       :to="localePath('/profile/access-data')"
-      class="cmw-block cmw-py-4 cmw-no-underline cmw-text-primary-900 cmw-border-b cmw-border-b-gray-light"
+      class="cmw-block cmw-py-4 cmw-border-b cmw-border-b-gray-light"
     >
       {{ $t("navbar.user.accessData") }}
     </NuxtLink>

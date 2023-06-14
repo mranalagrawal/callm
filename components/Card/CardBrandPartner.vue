@@ -10,12 +10,12 @@ export default {
 </script>
 
 <template>
-  <NuxtLink class="hover:(cmw-no-underline)" :to="localePath(`/winery/${brand.handle}-B${brand.brandId}.htm`)">
+  <NuxtLink :to="localePath(`/winery/${brand.handle}-B${brand.brandId}.htm`)">
     <div
       class="c-brand cmw-font-sans cmw-border-2 cmw-border-primary-400 cmw-rounded-sm cmw-border-gray-light cmw-overflow-hidden cmw-h-full
     hover:cmw-shadow-elevation"
     >
-      <div class="c-brand__grid cmw-grid cmw-items-center cmw-text-body hover:(cmw-text-body cmw-no-underline)">
+      <div class="c-brand__grid cmw-grid cmw-items-center cmw-text-body">
         <div class="c-brand__imgBox cmw-relative">
           <NuxtLink
             :to="localePath(`/winery/${brand.handle}-B${brand.brandId}.htm`)"

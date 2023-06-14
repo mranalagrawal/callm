@@ -1,8 +1,8 @@
 <script>
 import { inject, ref, useContext, watchEffect } from '@nuxtjs/composition-api'
-import closeIcon from 'assets/svg/close.svg'
 import { storeToRefs } from 'pinia'
-import Loader from '../components/UI/Loader.vue'
+import Loader from '@/components/UI/Loader.vue'
+import closeIcon from '~/assets/svg/close.svg'
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
 import { pick } from '@/utilities/arrays'
 import { useFilters } from '~/store/filters'
@@ -42,7 +42,6 @@ export default {
   data() {
     return {
       cmwActiveSelect: '',
-      sorting: false,
       minPrice: 0,
       maxPrice: 0,
       minPriceTotal: null,
@@ -50,7 +49,8 @@ export default {
       searchedTerm: '',
       loading: null,
       brands: null,
-      search: null,
+      search: {},
+      aggregations: {},
       regions: null,
       pairings: null,
       philosophies: null,
@@ -168,6 +168,7 @@ export default {
     const search = await searchResult.json()
 
     this.search = search
+    this.aggregations = search?.aggregations || {}
     this.results = search.hits.hits
 
     const total = search.hits.total.value
@@ -175,8 +176,6 @@ export default {
 
     if (total === 0)
       this.loading = false
-
-    this.setPages(Math.ceil(total / 48))
 
     const belong_filters = [
       'areas',
@@ -366,32 +365,6 @@ export default {
         || this.view.winelists?.name
         || this.view.awards?.name
     },
-    mappedProducts() {
-      const mappedProducts = this.results.length && this.$productMapping.fromElastic(this.results)
-      mappedProducts.sort((a, b) => b.availableForSale - a.availableForSale)
-
-      if (process.browser) {
-        const impressions = mappedProducts.map((product, i) => {
-          // eslint-disable-next-line unused-imports/no-unused-vars
-          const { quantity, ...rest } = product.gtmProductData
-          return {
-            ...rest,
-            position: i + 1,
-          }
-        })
-
-        this.$cmwGtmUtils.pushPage(this.$cmwGtmUtils.getActionField(this.$route), {
-          event: 'productListView',
-          ecommerce: {
-            currencyCode: this.$config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
-            actionField: { list: this.$cmwGtmUtils.getActionField(this.$route) },
-            impressions,
-          },
-        })
-      }
-
-      return mappedProducts
-    },
     filterCategories() {
       return Object.entries(this.filters).slice(0, !(this.showMoreFilters || !this.isDesktop) ? 4 : undefined).reduce((acc, [k, v]) => {
         if (v.length)
@@ -399,42 +372,6 @@ export default {
 
         return acc
       }, {})
-    },
-    aggMacros() {
-      if (!this.search?.aggregations)
-        return []
-
-      return this.search.aggregations['agg-macros'].inner.result.buckets.map(item => ({
-        doc_count: item.doc_count,
-        name: item.name.buckets[0].key,
-        key: item.key,
-        keyword: 'macros',
-      }))
-    },
-    aggCategories() {
-      if (!this.search?.aggregations)
-        return []
-
-      return this.search.aggregations['agg-categories'].inner.result.buckets.map(item => ({
-        doc_count: item.doc_count,
-        name: item.name.buckets[0].key,
-        key: item.key,
-        keyword: 'categories',
-      }))
-    },
-    hasMacrosSelected() {
-      return Object.keys(this.inputParameters).includes('macros')
-    },
-    hasCategorySelected() {
-      return Object.keys(this.inputParameters).includes('categories')
-    },
-    mainFilters() {
-      if (!this.hasMacrosSelected && !this.hasCategorySelected)
-        return this.aggMacros
-      else if (this.hasMacrosSelected && !this.hasCategorySelected)
-        return this.aggCategories
-      else
-        return this.aggCategories.filter(item => `${item.key}` !== `${this.inputParameters.categories}`)
     },
     selections() {
       if (!this.search?.aggregations)
@@ -473,7 +410,7 @@ export default {
       this.cmwActiveSelect = ''
       this.showMobileFilters = false
       this.$router.push({
-        path: 'catalog',
+        path: '/catalog',
         query: {
           ...this.$route.query,
           price_from: this.minPrice,
@@ -505,7 +442,7 @@ export default {
         query.page = 1
 
       this.$router.push({
-        path: 'catalog',
+        path: '/catalog',
         query,
       })
     },
@@ -519,44 +456,17 @@ export default {
       else
         query[id] = 'true'
 
-      // if (id !== this.active)
       if (id !== this.$route.query[id])
         query.page = 1
 
       this.$router.push({
-        path: 'catalog',
+        path: '/catalog',
         query,
       })
-    },
-    handleUpdateSortTrigger() {
-      this.sorting = !this.sorting
     },
     handleUpdateSortValue(value) {
       const { field, direction } = JSON.parse(value)
       this.sortBy(field, direction)
-    },
-    setPages(totalPages) {
-      const { page } = this.$route.query
-
-      this.pagination.totalPages = totalPages
-      this.pagination.currentPage = Number(page ?? 1)
-      this.pagination.prevPage = this.pagination.currentPage > 1 ? this.pagination.currentPage - 1 : null
-      this.pagination.nextPage = totalPages
-        ? (this.pagination.currentPage < totalPages
-            ? this.pagination.currentPage + 1
-            : null)
-        : this.pagination.currentPage + 1
-      this.pagination.pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1)
-        .filter(page => Math.abs(page - this.pagination.currentPage) < 4)
-    },
-    changePage(page) {
-      const query = Object.assign({}, this.inputParameters)
-      query.page = page
-
-      this.$router.push({
-        path: 'catalog',
-        query,
-      })
     },
     resetFilter() {
       this.cmwActiveSelect = ''
@@ -564,7 +474,7 @@ export default {
       this.minPrice = this.minPriceTotal
       this.maxPrice = this.maxPriceTotal
       this.$router.push({
-        path: 'catalog',
+        path: '/catalog',
         query: null,
       })
     },
@@ -579,7 +489,10 @@ export default {
 
       this.$router.push({
         path: 'catalog',
-        query,
+        query: {
+          ...query,
+          page: 1,
+        },
       })
     },
     sortBy(field, direction) {
@@ -597,115 +510,34 @@ export default {
 
 <template>
   <div class="cmw-max-w-screen-xl cmw-mx-auto cmw-py-4 cmw-px-4 cmw-mt-4">
-    <div class="row">
-      <div class="col-12">
-        <div v-if="searchedTerm" class="">
-          <h2 class="font-weight-bold">
-            "{{ searchedTerm }}"
-          </h2>
-          <p class="h3">
-            I risultati della tua ricerca
-          </p>
-        </div>
-        <div v-if="seoData.pageTitle" class="cmw-h3">
-          {{ seoData.pageTitle }}
-        </div>
-        <div v-else class="cmw-h3">
-          {{ seoTitleReplace }}
-          <span v-for="selection in activeSelections" :key="selection">
-            {{ $t(`selections.${selection}`) }}
-          </span>
-        </div>
-      </div>
-    </div>
+    <h1 class="cmw-h3">
+      <template v-if="searchedTerm">
+        <span>"{{ searchedTerm }}"</span>
+        <p class="cmw-h4" v-text="$t('searchResultLabel')" />
+      </template>
+      <template v-else-if="seoData && seoData?.pageTitle">
+        {{ seoData.pageTitle }}
+      </template>
+      <template v-else>
+        {{ seoTitleReplace }}
+        <span v-for="selection in activeSelections" :key="selection">
+          {{ $t(`selections.${selection}`) }}
+        </span>
+      </template>
+    </h1>
 
-    <div class="c-scrollbar cmw-flex cmw-overflow-auto cmw-gap-4 cmw-my-8 md:(cmw-flex-wrap)">
-      <Button
-        v-for="({ key, name, keyword }) in mainFilters" :key="key" variant="ghost" size="sm" class="cmw-flex-shrink-0 cmw-w-max"
-        @click.native="handleUpdateValue(JSON.stringify({ id: key, keyword }))"
-      >
-        {{ name }}
-      </Button>
-    </div>
+    <CategoriesMainFilters
+      v-if="Object.keys(aggregations).length && Object.keys(inputParameters).length"
+      :aggregations="aggregations" :input-parameters="inputParameters" @item-clicked="handleUpdateValue"
+    />
 
     <div v-if="isDesktop">
-      <!--      <div class="cmw-text-sm cmw-font-bold" v-text="$t('common.filters.by')" /> -->
-      <div
-        class="cmw-grid cmw-grid-cols-[auto_200px] cmw-items-start cmw-border-y cmw-border-gray-light cmw-py-1 cmw-transition-all"
-      >
-        <!-- Filter Components -->
-        <div class="cmw-flex cmw-flex-wrap">
-          <CmwDropdown
-            key="our-selections"
-            size="sm"
-            :active="cmwActiveSelect === 'our-selections'"
-            @update-trigger="handleUpdateTrigger"
-          >
-            <template #default>
-              <span>{{ $t('search.selections') }}</span>
-            </template>
-            <template #children>
-              <CmwSelect
-                size="sm"
-                :options="selections"
-                @update-value="handleUpdateValueSelections"
-              />
-            </template>
-          </CmwDropdown>
-          <!-- Note: we can also have an array :use-search-field="$options.searchableFilters.includes(key)" -->
-          <CmwDropdown
-            v-for="(value, key) in filterCategories"
-            :key="key"
-            size="sm"
-            :active="cmwActiveSelect === key"
-            @update-trigger="handleUpdateTrigger"
-          >
-            <template #default>
-              <span>{{ $t(`search.${key}`) }}</span>
-            </template>
-            <template #children>
-              <CmwSelect
-                size="sm"
-                :options="value"
-                @update-value="handleUpdateValue"
-              />
-            </template>
-          </CmwDropdown>
-          <CmwDropdown
-            key="prize"
-            size="sm"
-            :footer-label="$t('common.cta.apply')"
-            :on-footer-click="handleOnFooterClick"
-            :active="cmwActiveSelect === 'prize'"
-            @update-trigger="handleUpdateTrigger"
-          >
-            <template #default>
-              {{ $t('search.price') }}
-            </template>
-            <template #children>
-              <div class="cmw-px-4 cmw-pb-4">
-                <CmwRangeSlider
-                  :min="minPrice" :max="maxPrice" :min-value-total="minPriceTotal" :max-value-total="maxPriceTotal"
-                  @update-values="handleUpdateRangeValues"
-                />
-              </div>
-            </template>
-          </CmwDropdown>
-        </div>
-        <button
-          class="cmw-flex cmw-items-center cmw-ml-auto cmw-pt-3 cmw-text-xs hover:(cmw-text-primary)"
-          @click="showMoreFilters = !showMoreFilters"
-        >
-          <span
-            class="cmw-overline-1 cmw-font-normal cmw-uppercase cmw-text-xs"
-            v-text="!showMoreFilters ? 'Show more' : 'Show less'"
-          />
-          <VueSvgIcon
-            :data="require(`@/assets/svg/plus.svg`)" class="cmw-ml-2" color="#d94965" width="16"
-            height="auto"
-          />
-        </button>
-      </div>
+      <!-- Filter Components -->
+      <CategoriesFiltersComponents
+        v-if="Object.keys(aggregations).length"
+        :key="JSON.stringify(inputParameters) || 'categories-filters-components'"
+        :aggregations="aggregations" :input-parameters="inputParameters"
+      />
       <!-- selectedFilters -->
       <div class="cmw-flex cmw-justify-between cmw-items-center">
         <div>
@@ -748,151 +580,8 @@ export default {
       </div>
       <p v-html="seoData.pageDescription" />
     </div>
-    <div v-if="results" class="cmw-mt-2">
-      <div v-if="results.length > 0" class="">
-        <div class="cmw-flex cmw-gap-2 cmw-items-center cmw-justify-between cmw-mb-8">
-          <div>
-            <strong>{{ total }}</strong> <span>{{ $t('search.results') }}</span>
-          </div>
-          <div class="cmw-hidden cmw-items-center cmw-mr-auto cmw-gap-2 lg:cmw-flex">
-            <div
-              v-for="layout in availableLayouts"
-              :key="layout"
-              class="cmw-relative"
-            >
-              <input
-                :id="layout"
-                v-model="selectedLayout"
-                :aria-label="`select ${layout}`"
-                class="peer cmw-appearance-none cmw-absolute cmw-w-full cmw-h-full cmw-z-dante"
-                type="radio"
-                name="layout"
-                :value="layout"
-              >
-              <label
-                :for="layout"
-                class="
-              cmw-flex cmw-rounded-sm cmw-shadow cmw-p-[0.40rem] cmw-mb-0 cmw-bg-white cmw-cursor-pointer
-              peer-checked:(cmw-bg-gray-lightest cmw-shadow-none)"
-              >
-                <VueSvgIcon
-                  class="cmw-m-auto"
-                  :data="require(`@/assets/svg/layout-${layout}.svg`)"
-                  width="20"
-                  height="20"
-                  color="#992545"
-                />
-              </label>
-            </div>
-          </div>
-          <div class="d-none d-md-block col-4" />
-          <CmwDropdown
-            key="sort-by"
-            size="sm"
-            :active="sorting"
-            position="right"
-            @update-trigger="handleUpdateSortTrigger"
-          >
-            <template #default>
-              <span>{{ $t('search.sortBy') }}</span>
-            </template>
-            <template #children>
-              <CmwSelect
-                position="right"
-                :options="[{
-                             label: $t('search.highestPrice'),
-                             value: JSON.stringify({ field: 'price', direction: 'desc' }),
-                           },
-                           {
-                             label: $t('search.lowestPrice'),
-                             value: JSON.stringify({ field: 'price', direction: 'asc' }),
-                           },
-                           {
-                             label: $t('search.mostAwarded'),
-                             value: JSON.stringify({ field: 'awardcount', direction: 'desc' }),
-                           },
-                           {
-                             label: $t('search.brandAsc'),
-                             value: JSON.stringify({ field: 'brandname', direction: 'asc' }),
-                           },
-                           {
-                             label: $t('search.brandDesc'),
-                             value: JSON.stringify({ field: 'brandname', direction: 'desc' }),
-                           },
-                ]"
-                @update-value="handleUpdateSortValue"
-              />
-            </template>
-          </CmwDropdown>
-        </div>
-        <div v-if="selectedLayout === 'list' && isDesktop">
-          <div
-            v-for="(result, idx) in mappedProducts"
-            :key="result.shopify_product_id"
-            class="cmw-mb-4"
-          >
-            <ProductBoxHorizontal :product="result" :position="idx + 1" />
-          </div>
-        </div>
-        <div
-          v-else class="cmw-grid cmw-grid-cols-1 cmw-gap-4 phone-md:(cmw-grid-cols-2 cmw-gap-2)
-         sm:(cmw-grid-cols-2 cmw-gap-3) lg:(cmw-grid-cols-3 cmw-gap-4) desktop-wide:cmw-grid-cols-4"
-        >
-          <div
-            v-for="(result, idx) in mappedProducts"
-            :key="`desktop${result.shopify_product_id}`"
-          >
-            <ProductBoxVertical :product="result" :position="idx + 1" />
-          </div>
-        </div>
-      </div>
-      <div v-else class="col-12">
-        <p class="lead mt-5">
-          {{ $t('search.noResultsAlert') }}
-        </p>
-        <div v-html="$t('search.noResultsMessage')" />
-      </div>
-    </div>
-
-    <!-- Pagination -->
-    <!-- Todo: Implement pagination as a component -->
-    <!--    <div class="cmw-grid cmw-grid-cols-[auto_auto_auto] cmw-items-center cmw-justify-center cmw-mt-8">
-      <SearchPagination :total-pages="total" :current-page="Number($route.query.page ?? 1)" />
-    </div> -->
-    <div class="cmw-grid cmw-grid-cols-[auto_auto_auto] cmw-items-center cmw-justify-center cmw-mt-8">
-      <div class="">
-        <Button
-          class="cmw-uppercase"
-          :aria-label="$t('common.cta.prevPage')"
-          :disabled="pagination.currentPage.toString() === '1'"
-          type="button" variant="text" @click.native="changePage(pagination.prevPage)"
-        >
-          <VueSvgIcon width="18" height="18" :data="require(`@/assets/svg/chevron-left.svg`)" />
-          <span class="<md:cmw-hidden">{{ $t('common.cta.prevPage') }}</span>
-        </Button>
-      </div>
-      <div class="cmw-flex">
-        <div v-for="n in pagination.pageNumbers" :key="n" class="cl">
-          <Button
-            :label="`${n}`" variant="text"
-            class="cmw-relative cmw-text-base cmw-px-3"
-            :class="{ 'cmw-text-primary cmw-font-bold after:(cmw-content-DEFAULT cmw-absolute cmw-bottom-0 cmw-h-1 cmw-bg-primary cmw-w-full)': pagination.currentPage === n }"
-            @click.native="changePage(n)"
-          />
-        </div>
-      </div>
-      <div class="">
-        <Button
-          class="cmw-uppercase"
-          :disabled="+pagination.currentPage >= pagination.totalPages"
-          :aria-label="$t('common.cta.nextPage')"
-          type="button" variant="text" @click.native="changePage(pagination.nextPage)"
-        >
-          <span class="<md:cmw-hidden">{{ $t('common.cta.nextPage') }}</span>
-          <VueSvgIcon width="18" height="18" :data="require(`@/assets/svg/chevron-right.svg`)" />
-        </Button>
-      </div>
-    </div>
+    <ProductsResultsList :results="results" :total="total" @update-sort-value="handleUpdateSortValue" />
+    <CategoriesPagination :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters" />
 
     <div v-if="seoData.pageFullDescription">
       <div
@@ -1089,9 +778,3 @@ export default {
     </div>
   </div>
 </template>
-
-<style scoped>
-.c-scrollbar::-webkit-scrollbar {
-  display:none;
-}
-</style>

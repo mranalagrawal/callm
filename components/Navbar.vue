@@ -209,7 +209,7 @@ export default {
 <template>
   <div
     ref="navbar"
-    class="cmw-fixed cmw-w-screen cmw-min-h-[135px] cmw-px-4 cmw-top-0 bg-white cmw-z-tooltip print:cmw-hidden"
+    class="cmw-fixed cmw-w-screen cmw-min-h-[135px] cmw-px-4 cmw-top-0 cmw-bg-white cmw-z-tooltip print:cmw-hidden"
   >
     <div
       class="
@@ -223,7 +223,7 @@ export default {
         <div class="cmw-flex cmw-gap-2 cmw-items-center">
           <button
             v-show="showMobileButton"
-            class="cmw-relative cmw-z-base d-lg-none"
+            class="cmw-relative cmw-z-base md:cmw-hidden"
             @click="toggleSidebar"
           >
             <VueSvgIcon
@@ -246,9 +246,9 @@ export default {
             />
           </NuxtLink>
 
-          <div class="cmw-flex cmw-items-center ml-auto d-lg-none">
+          <div class="cmw-flex cmw-items-center cmw-ml-auto md:cmw-hidden">
             <button
-              class="btn"
+              class="cmw-p-3"
               @click="toggleMobileLogin"
             >
               <VueSvgIcon
@@ -259,7 +259,7 @@ export default {
             </button>
             <NuxtLink
               :to="localePath('/cart')"
-              class="cmw-relative btn"
+              class="cmw-relative cmw-p-3"
             >
               <VueSvgIcon
                 :data="cartIcon"
@@ -315,7 +315,7 @@ export default {
                 <NuxtLink
                   v-for="item in data.gift_cards"
                   :key="item.id"
-                  class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-no-underline cmw-bg-primary-50) cmw-text-body"
+                  class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-bg-primary-50) cmw-text-body"
                   :to="localePath(`/${item.handle}`)"
                 >
                   <span v-html="bolder(item.name)" />
@@ -331,7 +331,7 @@ export default {
                 <NuxtLink
                   v-for="item in data.winelists"
                   :key="item.id"
-                  class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-no-underline cmw-bg-primary-50) cmw-text-body"
+                  class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-bg-primary-50) cmw-text-body"
                   :to="localePath(`/${item.handle}-V${item.id}.htm`)"
                 >
                   <span v-html="bolder(item.name)" />
@@ -349,7 +349,7 @@ export default {
                   <NuxtLink
                     v-for="item in data.categories"
                     :key="item.id"
-                    class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-no-underline cmw-bg-primary-50) cmw-text-body"
+                    class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-bg-primary-50) cmw-text-body"
                     :to="localePath(`/catalog?&categories=${item.id}`)"
                   >
                     <span v-html="bolder(item.name)" />
@@ -363,7 +363,7 @@ export default {
                   <NuxtLink
                     v-for="item in data.brands"
                     :key="item.id"
-                    class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-no-underline cmw-bg-primary-50) cmw-text-body"
+                    class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-bg-primary-50) cmw-text-body"
                     :to="localePath(`/winery/${item.handle}-B${item.id}.htm`)"
                   >
                     <span v-html="bolder(item.name)" />
@@ -377,7 +377,7 @@ export default {
                   <NuxtLink
                     v-for="item in data.products"
                     :key="item.id"
-                    class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-no-underline cmw-bg-primary-50) cmw-text-body"
+                    class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-bg-primary-50) cmw-text-body"
                     :to="localePath(`/${item.handle}-P${item.id}.htm`)"
                   >
                     <span v-html="bolder(item.name)" />
@@ -389,11 +389,11 @@ export default {
         </transition>
       </div>
 
-      <div v-if="isDesktop" class="d-none d-lg-block md:cmw-place-self-end">
+      <div v-if="isDesktop" class="md:cmw-place-self-end">
         <UserActions />
       </div>
     </div>
-    <div v-if="isDesktop" class="d-none d-lg-block c-megaMenu cmw-fixed cmw-left-0 cmw-w-full cmw-bg-white">
+    <div v-if="isDesktop" class="c-megaMenu cmw-fixed cmw-left-0 cmw-w-full cmw-bg-white">
       <div class="shadow-menu">
         <MegaMenu />
       </div>
@@ -419,7 +419,7 @@ export default {
           <VueSvgIcon :data="closeIcon" color="#E6362E" width="30" height="auto" />
         </Button>
         <div v-if="!user">
-          <div class="cmw-h3 cmw-text-center text-dark-primary mt-5 font-weight-bold">
+          <div class="cmw-h3 cmw-text-center cmw-mt-5">
             {{ $t("navbar.user.signIn") }}
           </div>
           <div class="cmw-px-2">
@@ -437,7 +437,7 @@ export default {
         </div>
         <div
           v-else
-          class="mt-5"
+          class="cmw-mt-5"
         >
           <UserMenu />
         </div>
@@ -464,7 +464,7 @@ export default {
 
 @media screen and (max-width: 768px) {
   .totalItems {
-    top: -2px;
+    top: 2px;
     right: 0;
   }
 }

@@ -77,7 +77,7 @@ export default {
   <div>
     <div class="cmw-flex cmw-gap-4 cmw-pt-4">
       <div class="cmw-relative">
-        <label class="sr-only" for="input-field-min">Minimum Value</label>
+        <label class="cmw-sr-only" for="input-field-min">Minimum Value</label>
         <input
           id="input-field-min" v-model="minValue" type="text" name="min" placeholder="min value"
           class="cmw-px-4 cmw-text-gray-dark cmw-py-3 cmw-w-full cmw-bg-transparent cmw-border cmw-border-gray-light
@@ -87,7 +87,7 @@ export default {
         <span class="cmw-transform cmw-absolute cmw-top-1/2 cmw-right-4 cmw-translate-y-[-50%] cmw-text-primary" v-text="currencySymbol" />
       </div>
       <div class="cmw-relative">
-        <label class="sr-only" for="input-field-min">Maximum Value</label>
+        <label class="cmw-sr-only" for="input-field-min">Maximum Value</label>
         <input
           id="input-field-max" v-model="maxValue" type="text" name="max" :max="maxValueTotal" placeholder="max value"
           class="cmw-px-4 cmw-text-gray-dark cmw-py-3 cmw-w-full cmw-bg-transparent cmw-border cmw-border-gray-light
@@ -103,9 +103,9 @@ export default {
         <div class="cmw-bg-primary cmw-h-full" :style="{ flex: 1 }" />
         <div class="cmw-bg-primary-100 cmw-h-px" :style="{ width: `calc(100% - ${maxWidth}%)` }" />
       </div>
-      <label class="sr-only" for="range-min">minimum Value</label>
+      <label class="cmw-sr-only" for="range-min">minimum Value</label>
       <input id="range-min" v-model="minValue" type="range" :min="minValueTotal" :max="maxValueTotal" @input="handleInputRange">
-      <label class="sr-only" for="range-max">maximum Value</label>
+      <label class="cmw-sr-only" for="range-max">maximum Value</label>
       <input id="range-max" v-model="maxValue" type="range" :min="minValueTotal" :max="maxValueTotal" @input="handleInputRange">
     </div>
     <div class="cmw-flex cmw-justify-between cmw-text-xs cmw-text-primary-100 cmw-mt-2">

@@ -109,7 +109,6 @@ export default defineComponent({
             <NuxtLink
               class="
               cmw-block cmw-pt-8 cmw-w-full cmw-self-start cmw-leading-none cmw-mr-auto cmw-h1 cmw-text-white
-              hover:(cmw-text-white cmw-no-underline)
               md:cmw-self-end"
               :to="localePath(link)"
             >

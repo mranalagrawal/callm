@@ -44,7 +44,11 @@ export default {
 
     const isOnFavourite = computed(() => wishlistArr.value.includes(props.product.source_id))
     const isOnSale = computed(() => props.product.availableFeatures.includes('isInPromotion'))
-    const finalPrice = computed(() => props.product.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0)
+    const finalPrice = computed(() => {
+      if (!props.product.priceLists[$config.SALECHANNEL])
+        return 0
+      return props.product.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0
+    })
     const gtmProductData = computed(() => ({
       ...props.product.gtmProductData,
       price: finalPrice.value,
@@ -210,7 +214,7 @@ export default {
       <div class="c-productBox__title">
         <div class="cmw-mx-4 cmw-mt-4 cmw-min-h-[4.6em]">
           <button
-            class="cmw-text-body cmw-text-left hover:(cmw-text-primary-400 cmw-no-underline)"
+            class="cmw-text-body cmw-text-left hover:(cmw-text-primary-400)"
             @click="handleProductCLick"
             v-text="product.title"
           />
