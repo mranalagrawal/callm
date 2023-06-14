@@ -184,7 +184,7 @@ export default defineComponent({
               key_as_string: aggregation.key,
               doc_count: aggregation.doc_count,
               value: JSON.stringify({ id: aggregation.key.split('|')[0], keyword: el }),
-              label: `${aggregation.key.split('|')[1]} <span class="cmw-font-light cmw-text-gray">(${aggregation.doc_count})</span>`,
+              label: `${aggregation.key.split('|')[1]} <span class="font-light text-gray">(${aggregation.doc_count})</span>`,
               selected: props.inputParameters && props.inputParameters[el] && props.inputParameters[el] === `${aggregation.key}`,
             }
           },
@@ -206,7 +206,7 @@ export default defineComponent({
               key_as_string: `${aggregation.key}|${aggregation.name.buckets[0].key}`,
               doc_count: aggregation.doc_count,
               value: JSON.stringify({ id: aggregation.key, keyword: el }),
-              label: `${aggregation.name.buckets[0].key} <span class="cmw-font-light cmw-text-gray">(${aggregation.doc_count})</span>`,
+              label: `${aggregation.name.buckets[0].key} <span class="font-light text-gray">(${aggregation.doc_count})</span>`,
               simpleLabel: aggregation.name.buckets[0].key,
               selected: props.inputParameters && props.inputParameters[el] && props.inputParameters[el] === `${aggregation.key}`,
             }
@@ -280,9 +280,9 @@ export default defineComponent({
 
 <template>
   <div
-    class="cmw-grid cmw-grid-cols-[auto_200px] cmw-items-start cmw-border-y cmw-border-gray-light cmw-py-1 cmw-transition-all"
+    class="grid grid-cols-[auto_200px] items-start border-y border-gray-light py-1 transition-all"
   >
-    <div class="cmw-flex cmw-flex-wrap cmw-min-h-[42px]">
+    <div class="flex flex-wrap min-h-[42px]">
       <CmwDropdown
         key="our-selections"
         size="sm"
@@ -331,7 +331,7 @@ export default defineComponent({
           {{ $t('search.price') }}
         </template>
         <template #children>
-          <div class="cmw-px-4 cmw-pb-4">
+          <div class="px-4 pb-4">
             <CmwRangeSlider
               :min="minPrice" :max="maxPrice" :min-value-total="minPriceTotal" :max-value-total="maxPriceTotal"
               @update-values="handleUpdateRangeValues"
@@ -341,14 +341,14 @@ export default defineComponent({
       </CmwDropdown>
     </div>
     <button
-      class="cmw-flex cmw-items-center cmw-ml-auto cmw-pt-3 cmw-text-xs hover:(cmw-text-primary)"
+      class="flex items-center ml-auto pt-3 text-xs hover:(text-primary)"
       @click="showMoreFilters = !showMoreFilters"
     >
       <span
-        class="cmw-overline-1 cmw-font-normal cmw-uppercase cmw-text-xs"
+        class="overline-1 font-normal uppercase text-xs"
         v-text="!showMoreFilters ? 'Show more' : 'Show less'"
       />
-      <VueSvgIcon :data="plusIcon" class="cmw-ml-2" color="#d94965" width="16" height="auto" />
+      <VueSvgIcon :data="plusIcon" class="ml-2" color="#d94965" width="16" height="auto" />
     </button>
   </div>
 </template>

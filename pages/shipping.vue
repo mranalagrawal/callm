@@ -46,7 +46,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="pageData.title" class="cmw-max-w-screen-xl cmw-mx-auto cmw-p-4 cmw-mt-5">
+  <div v-if="pageData.title" class="max-w-screen-xl mx-auto p-4 mt-5">
     <h1 v-text="pageData.title" />
     <LoadingImage
       v-if="pageData.image"
@@ -65,7 +65,7 @@ export default defineComponent({
         altText: pageData.image.alt,
       }"
     />
-    <div v-for="(section, i) in pageData.section" :key="i" class="cmw-mt-5">
+    <div v-for="(section, i) in pageData.section" :key="i" class="mt-5">
       <PrismicRichText :field="[section]" />
     </div>
   </div>

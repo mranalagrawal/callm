@@ -47,30 +47,30 @@ export default {
 </script>
 
 <template>
-  <div class="text-left cmw-p-4 cmw-grid cmw-text-sm cmw-auto-rows-auto cmw-gap-4 print:cmw-hidden">
-    <div class="cmw-grid cmw-grid-cols-[75px_auto_32px] cmw-grid-rows-auto md:(cmw-grid-cols-[75px_auto_100px_32px] cmw-grid-rows-1) cmw-items-center cmw-px-2">
-      <div class="cmw-order-1">
+  <div class="text-left p-4 grid text-sm auto-rows-auto gap-4 print:hidden">
+    <div class="grid grid-cols-[75px_auto_32px] grid-rows-auto md:(grid-cols-[75px_auto_100px_32px] grid-rows-1) items-center px-2">
+      <div class="order-1">
         <img
           :src="orderLineItem.variant.image.url"
           :alt="orderLineItem.variant.image.altText"
         >
       </div>
-      <div class="cmw-order-2 cmw-pr-4">
+      <div class="order-2 pr-4">
         <div>{{ orderLineItem.title }}</div>
-        <small class="cmw-text-gray-dark">{{ $t('profile.orders.card.quantity') }} {{ orderLineItem.quantity }}</small>
+        <small class="text-gray-dark">{{ $t('profile.orders.card.quantity') }} {{ orderLineItem.quantity }}</small>
       </div>
-      <div class="<md:(cmw-row-start-2 cmw-col-span-full cmw-place-self-end) md:(cmw-order-3 cmw-place-self-auto cmw-text-right cmw-pr-4)">
+      <div class="<md:(row-start-2 col-span-full place-self-end) md:(order-3 place-self-auto text-right pr-4)">
         <div
           v-if="isOnSale"
-          class="cmw-line-through cmw-text-gray cmw-text-sm"
+          class="line-through text-gray text-sm"
         >
           {{ $n(Number(orderLineItem.variant.compareAtPriceV2.amount), 'currency', getLocaleFromCurrencyCode(orderLineItem.variant.compareAtPriceV2.currencyCode)) }}
         </div>
-        <div class="cmw-font-bold">
+        <div class="font-bold">
           {{ $n(Number(orderLineItem.variant.price.amount), 'currency', getLocaleFromCurrencyCode(orderLineItem.variant.compareAtPriceV2.currencyCode)) }}
         </div>
       </div>
-      <div class="cmw-order-4">
+      <div class="order-4">
         <button
           type="button"
           :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"

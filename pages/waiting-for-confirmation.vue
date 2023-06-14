@@ -13,7 +13,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="cmw-max-w-screen-xl cmw-mx-auto cmw-p-4 cmw-mt-5">
+  <div class="max-w-screen-xl mx-auto p-4 mt-5">
     {{ $t('waitingForConfirmation') }}
   </div>
 </template>

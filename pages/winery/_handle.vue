@@ -95,35 +95,35 @@ export default {
 
 <template>
   <div class="">
-    <p v-if="$fetchState.pending" class="cmw-max-w-screen-xl cmw-mx-auto cmw-p-4">
+    <p v-if="$fetchState.pending" class="max-w-screen-xl mx-auto p-4">
       {{ $t("loading") }}
     </p>
     <template v-else>
       <div v-if="metaFields && brand.title">
-        <div v-if="metaFields.isPartner" class="cmw-relative">
+        <div v-if="metaFields.isPartner" class="relative">
           <img
-            class="cmw-absolute cmw-top-0 cmw-left-0 cmw-w-full cmw-h-500px"
+            class="absolute top-0 left-0 w-full h-500px"
             src="@/assets/images/bg-wave.png" alt="image"
           >
-          <div class="cmw-relative cmw-max-w-screen-xl cmw-mx-auto cmw-py-4 md:cmw-px-4">
-            <div class="cmw-px-4 lg:cmw-px-3 ">
-              <div class="c-ribbon cmw-flex cmw-items-center cmw-text-secondary cmw-mt-4">
+          <div class="relative max-w-screen-xl mx-auto py-4 md:px-4">
+            <div class="px-4 lg:px-3 ">
+              <div class="c-ribbon flex items-center text-secondary mt-4">
                 <VueSvgIcon class="c-ribbon__left" :data="require(`@/assets/svg/ribbon.svg`)" width="9" height="24" />
                 <span
-                  class="c-ribbon__content cmw-h-6 cmw-flex cmw-gap-1 cmw-items-center cmw-bg-secondary cmw-text-white cmw-px-2"
+                  class="c-ribbon__content h-6 flex gap-1 items-center bg-secondary text-white px-2"
                 >
                   <VueSvgIcon :data="require(`@/assets/svg/feature-cmw-favourite.svg`)" width="18" height="18" />
-                  <span class="cmw-text-xs cmw-leading-normal">{{ $t('product.recommendedByCallmewine') }}</span>
+                  <span class="text-xs leading-normal">{{ $t('product.recommendedByCallmewine') }}</span>
                 </span>
                 <VueSvgIcon class="c-ribbon__right" :data="require(`@/assets/svg/ribbon.svg`)" width="9" height="24" />
               </div>
-              <h1 v-if="brand" class="cmw-text-white" v-text="brand.title" />
-              <div class="cmw-h4 cmw-my-4 cmw-text-white" style="color: white !important;" v-text="metaFields.subtitle" />
+              <h1 v-if="brand" class="text-white" v-text="brand.title" />
+              <div class="h4 my-4 text-white" style="color: white !important;" v-text="metaFields.subtitle" />
             </div>
             <ClientOnly v-if="!!metaFields.images.length">
               <VueSlickCarousel
                 ref="partnerC1"
-                class="lg:cmw-pr-3"
+                class="lg:pr-3"
                 :as-nav-for="partnerC2"
                 :focus-on-select="true"
                 :dots="!isDesktop"
@@ -131,11 +131,11 @@ export default {
               >
                 <div
                   v-for="(image, idx) in metaFields.images" :key="image"
-                  class="lg:cmw-pl-3 cmw-w-full cmw-flex cmw-h-[410px]"
+                  class="lg:pl-3 w-full flex h-[410px]"
                 >
                   <LoadingImage
-                    class="cmw-select-none cmw-pointer-events-none cmw-flex md:cmw-rounded-sm cmw-w-full cmw-h-full cmw-overflow-hidden"
-                    img-classes="cmw-w-full cmw-object-cover cmw-object-center"
+                    class="select-none pointer-events-none flex md:rounded-sm w-full h-full overflow-hidden"
+                    img-classes="w-full object-cover object-center"
                     :thumbnail="{
                       url: `${image}&width=40&height=20`,
                       width: 40,
@@ -160,7 +160,7 @@ export default {
               <div v-if="metaFields.images.length > 1 && isDesktop" class="my-4">
                 <VueSlickCarousel
                   ref="partnerC2"
-                  class="lg:cmw-pr-3"
+                  class="lg:pr-3"
                   :as-nav-for="partnerC1"
                   :slides-to-show="5.5"
                   :infinite="false"
@@ -168,40 +168,40 @@ export default {
                 >
                   <div
                     v-for="(image, idx) in metaFields.images" :key="`thumb-${image}`"
-                    class="cmw-px-3 cmw-h-full cmw-flex"
+                    class="px-3 h-full flex"
                   >
                     <img
-                      class="cmw-select-none cmw-pointer-events-none cmw-flex cmw-rounded-sm cmw-h-full cmw-overflow-hidden"
+                      class="select-none pointer-events-none flex rounded-sm h-full overflow-hidden"
                       :src="image" :alt="`${brand.title} - ${idx}`"
                     >
                   </div>
                   <template #prevArrow>
-                    <div class="custom-arrow cmw-bg-white cmw-rounded-sm cmw-text-primary-400 cmw-flex">
+                    <div class="custom-arrow bg-white rounded-sm text-primary-400 flex">
                       <VueSvgIcon :data="require(`@/assets/svg/chevron-left.svg`)" width="20" height="20" />
                     </div>
                   </template>
                   <template #nextArrow>
-                    <div class="custom-arrow cmw-bg-white cmw-rounded-sm cmw-text-primary-400 cmw-flex">
+                    <div class="custom-arrow bg-white rounded-sm text-primary-400 flex">
                       <VueSvgIcon :data="require(`@/assets/svg/chevron-right.svg`)" width="20" height="20" />
                     </div>
                   </template>
                 </VueSlickCarousel>
               </div>
             </ClientOnly>
-            <div class="cmw-px-4 md:(cmw-grid cmw-gap-4 cmw-grid-cols-[minmax(auto,_60%)_minmax(auto,_40%)])">
+            <div class="px-4 md:(grid gap-4 grid-cols-[minmax(auto,_60%)_minmax(auto,_40%)])">
               <BrandInfo v-if="metaFields" :meta-fields="metaFields" />
               <CountryMap
                 v-if="metaFields && isDesktop" :logo="brand.image && brand.image.url || ''" :country="metaFields.country"
                 :region="metaFields.region"
               />
             </div>
-            <div class="cmw-px-4 md:cmw-order-3" v-html="stripHtmlAnchors(brand.contentHtml)" />
+            <div class="px-4 md:order-3" v-html="stripHtmlAnchors(brand.contentHtml)" />
           </div>
         </div>
-        <div v-else class="cmw-max-w-screen-xl cmw-mx-auto cmw-py-4">
-          <h1 v-if="brand" class="cmw-px-4 cmw-text-secondary" v-text="brand.title" />
-          <div class="cmw-px-4 cmw-h4 cmw-my-4 cmw-text-secondary" v-text="metaFields.subtitle" />
-          <div class="md:(cmw-grid cmw-gap-4 cmw-grid-cols-[minmax(auto,_60%)_minmax(auto,_40%)])">
+        <div v-else class="max-w-screen-xl mx-auto py-4">
+          <h1 v-if="brand" class="px-4 text-secondary" v-text="brand.title" />
+          <div class="px-4 h4 my-4 text-secondary" v-text="metaFields.subtitle" />
+          <div class="md:(grid gap-4 grid-cols-[minmax(auto,_60%)_minmax(auto,_40%)])">
             <div>
               <ClientOnly v-if="!!metaFields.images.length">
                 <VueSlickCarousel
@@ -213,10 +213,10 @@ export default {
                 >
                   <div
                     v-for="(image, idx) in metaFields.images" :key="image"
-                    class="lg:cmw-pl-3 cmw-h-full cmw-flex" :class="image"
+                    class="lg:pl-3 h-full flex" :class="image"
                   >
                     <LoadingImage
-                      class="cmw-select-none cmw-pointer-events-none cmw-flex md:cmw-rounded-sm cmw-h-full cmw-overflow-hidden"
+                      class="select-none pointer-events-none flex md:rounded-sm h-full overflow-hidden"
                       :thumbnail="{
                         url: `${image}&width=40&height=20`,
                         width: 40,
@@ -248,10 +248,10 @@ export default {
                   >
                     <div
                       v-for="(image, idx) in metaFields.images" :key="`thumb-${image}`"
-                      class="cmw-px-3 cmw-h-full cmw-flex"
+                      class="px-3 h-full flex"
                     >
                       <LoadingImage
-                        class="cmw-select-none cmw-pointer-events-none cmw-flex cmw-rounded-sm cmw-h-full cmw-overflow-hidden"
+                        class="select-none pointer-events-none flex rounded-sm h-full overflow-hidden"
                         :thumbnail="{
                           url: `${image}&width=40&height=20`,
                           width: 40,
@@ -267,44 +267,44 @@ export default {
                       />
                     </div>
                     <template #prevArrow>
-                      <div class="custom-arrow cmw-bg-white cmw-rounded-sm cmw-text-primary-400 cmw-flex">
+                      <div class="custom-arrow bg-white rounded-sm text-primary-400 flex">
                         <VueSvgIcon :data="require(`@/assets/svg/chevron-left.svg`)" width="20" height="20" />
                       </div>
                     </template>
                     <template #nextArrow>
-                      <div class="custom-arrow cmw-bg-white cmw-rounded-sm cmw-text-primary-400 cmw-flex">
+                      <div class="custom-arrow bg-white rounded-sm text-primary-400 flex">
                         <VueSvgIcon :data="require(`@/assets/svg/chevron-right.svg`)" width="20" height="20" />
                       </div>
                     </template>
                   </VueSlickCarousel>
                 </div>
               </ClientOnly>
-              <div v-if="isDesktop" class="md:cmw-order-3" v-html="stripHtmlAnchors(brand.contentHtml)" />
+              <div v-if="isDesktop" class="md:order-3" v-html="stripHtmlAnchors(brand.contentHtml)" />
             </div>
-            <div class="cmw-px-4">
+            <div class="px-4">
               <BrandInfo v-if="metaFields" :meta-fields="metaFields" />
               <CountryMap
                 v-if="metaFields && isDesktop" :logo="brand.image && brand.image.url || ''" :country="metaFields.country"
                 :region="metaFields.region"
               />
             </div>
-            <div v-if="brand && brand.image && brand.image.url" class="md:cmw-order-4">
+            <div v-if="brand && brand.image && brand.image.url" class="md:order-4">
               <!-- Note: on Nuxt 3 we could use Teleport o this component instead of having duplicates -->
               <CountryMap
                 v-if="metaFields && !isDesktop" :logo="brand.image && brand.image.url || ''" :country="metaFields.country"
                 :region="metaFields.region"
               />
             </div>
-            <div v-if="!isDesktop" class="cmw-px-4 md:cmw-order-3" v-html="stripHtmlAnchors(brand.contentHtml)" />
+            <div v-if="!isDesktop" class="px-4 md:order-3" v-html="stripHtmlAnchors(brand.contentHtml)" />
           </div>
         </div>
         <div v-if="brand && brand.title">
           <VendorProducts :vendor="brand.title" />
         </div>
       </div>
-      <div v-else class="cmw-max-w-screen-xl cmw-mx-auto cmw-p-4 cmw-text-center">
+      <div v-else class="max-w-screen-xl mx-auto p-4 text-center">
         <div v-text="$t('search.noResultsAlert')" />
-        <NuxtLink class="cmw-text-primary-400" :to="localePath('winery')">
+        <NuxtLink class="text-primary-400" :to="localePath('winery')">
           {{ $t('search.noBrands') }}
         </NuxtLink>
       </div>

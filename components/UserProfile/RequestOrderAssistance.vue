@@ -49,10 +49,10 @@ export default {
 <template>
   <ValidationObserver ref="formEl" slim>
     <form
-      class="sm:cmw-px-4 cmw-my-8"
+      class="sm:px-4 my-8"
       @submit.prevent="onSubmit"
     >
-      <div class="cmw-max-w-sm cmw-mx-auto">
+      <div class="max-w-sm mx-auto">
         <ValidationProvider
           v-slot="{ errors }"
           vid="message"
@@ -60,38 +60,38 @@ export default {
           name="message"
           slim
         >
-          <div class="cmw-relative">
+          <div class="relative">
             <textarea
               id="message"
               v-model="customerMessage"
               :placeholder="$t('profile.messagePlaceholder')"
               rows="4"
               class="
-              peer cmw-px-4 cmw-text-gray-dark cmw-py-3 cmw-w-full cmw-bg-transparent cmw-border cmw-border-gray-light
-              cmw-rounded cmw-transition-colors
-              hover:(cmw-border-gray)
-              focus:(cmw-outline-none cmw-border-gray-dark cmw-placeholder-gray-light)
-              autofill:(cmw-text-body cmw-border-info cmw-text-base)
-              disabled:(cmw-border-gray-light/70 cmw-cursor-not-allowed)
+              peer px-4 text-gray-dark py-3 w-full bg-transparent border border-gray-light
+              rounded transition-colors
+              hover:(border-gray)
+              focus:(outline-none border-gray-dark placeholder-gray-light)
+              autofill:(text-body border-info text-base)
+              disabled:(border-gray-light/70 cursor-not-allowed)
 "
-              :class="customerMessage ? 'cmw-placeholder-gray-light' : 'cmw-placeholder-transparent'"
+              :class="customerMessage ? 'placeholder-gray-light' : 'placeholder-transparent'"
             />
             <label
               for="message"
-              class="cmw-absolute cmw-m-0 cmw-left-4 cmw-transition-all cmw-select-none cmw-pointer-events-none cmw-truncate
-               peer-focus:(cmw-text-[0.775rem] cmw-px-2 cmw-top-[-0.4rem] cmw-bg-white cmw-w-auto)
-               peer-disabled:(cmw-text-gray-light/70) peer-focus:cmw-bg-white -cmw-bg-white"
+              class="absolute m-0 left-4 transition-all select-none pointer-events-none truncate
+               peer-focus:(text-[0.775rem] px-2 top-[-0.4rem] bg-white w-auto)
+               peer-disabled:(text-gray-light/70) peer-focus:bg-white -bg-white"
               :class="[
-                customerMessage ? `cmw-text-[0.775rem] cmw-px-2 cmw-top-[-0.4rem] cmw-bg-white cmw-w-auto` : 'cmw-top-[0.75rem] cmw-w-full cmw-pr-8',
-                !!errors.length ? 'cmw-text-error' : customerMessage ? 'cmw-text-secondary-800' : 'cmw-text-gray',
+                customerMessage ? `text-[0.775rem] px-2 top-[-0.4rem] bg-white w-auto` : 'top-[0.75rem] w-full pr-8',
+                !!errors.length ? 'text-error' : customerMessage ? 'text-secondary-800' : 'text-gray',
               ]"
             >{{ $t('profile.message') }}</label>
           </div>
-          <span v-if="!!errors.length" class="cmw-block cmw-text-sm cmw-text-error">{{ errors[0] }}</span>
+          <span v-if="!!errors.length" class="block text-sm text-error">{{ errors[0] }}</span>
         </validationprovider>
         <!-- Todo: Implement upload file plugin, this one is good https://github.com/lian-yue/vue-upload-component -->
       </div>
-      <div class="cmw-text-center cmw-mt-8 cmw-max-w-1/3 cmw-mx-auto">
+      <div class="text-center mt-8 max-w-1/3 mx-auto">
         <Button :label="$t('common.cta.send').toString()" type="submit" />
       </div>
     </form>

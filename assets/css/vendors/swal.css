@@ -35,11 +35,11 @@ body.swal2-shown {
 }
 
 .swal2-title {
-  @apply cmw-shadow cmw-text-body cmw-overflow-hidden;
+  @apply shadow text-body overflow-hidden;
 }
 
 .swal2-html-container {
-  @apply cmw-text-body cmw-text-center;
+  @apply text-body text-center;
 }
 
 .swal2-icon-content img {
@@ -48,7 +48,7 @@ body.swal2-shown {
 }
 
 .swal2-actions {
-  @apply cmw-grid cmw-grid-cols-2 cmw-gap-4 cmw-mt-6 !important;
+  @apply grid grid-cols-2 gap-4 mt-6 !important;
   width: min(100%, 20rem);
   margin-inline: auto;
 }
@@ -65,7 +65,7 @@ body.swal2-shown {
 /* @sweetalert2 Custom themes */
 
 .swal2-container {
-  @apply cmw-fixed cmw-z-amenadiel cmw-flex cmw-w-full cmw-h-full;
+  @apply fixed z-amenadiel flex w-full h-full;
   top: 0;
   right: 0;
   padding: 16px;
@@ -76,7 +76,7 @@ body.swal2-shown {
 
 
 .swal2-popup {
-  @apply cmw-shadow cmw-rounded;
+  @apply shadow rounded;
   width: min(100% - 2rem, 32rem);
   margin-inline: auto;
   padding: 2rem 1rem 1rem;
@@ -104,7 +104,7 @@ body.swal2-shown {
 }
 
 .swal2-toast .swal2-title, .swal2-toast .swal2-html-container {
-  @apply cmw-shadow cmw-text-gray-light cmw-text-left cmw-text-sm cmw-font-light;
+  @apply shadow text-gray-light text-left text-sm font-light;
 }
 
 .swal2-toast .swal2-actions {

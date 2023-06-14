@@ -62,20 +62,20 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="cmw-py-8 cmw-mt-4 cmw-bg-gray-lightest cmw-min-h-[200px]">
-    <PrismicRichText v-if="title" class="cmw-text-center" :field="title" />
+  <div class="py-8 mt-4 bg-gray-lightest min-h-[200px]">
+    <PrismicRichText v-if="title" class="text-center" :field="title" />
     <ClientOnly v-if="!!items.length">
       <VueSlickCarousel v-bind="settings" ref="c1" :dots="false" dots-class="c-carouselDots">
-        <div v-for="({ icon_code, label, link }, idx) in items" :key="generateKey(`${title}-${idx}`)" class="cmw-my-8">
+        <div v-for="({ icon_code, label, link }, idx) in items" :key="generateKey(`${title}-${idx}`)" class="my-8">
           <NuxtLink
             :to="link"
-            class="cmw-bg-cover cmw-bg-no-repeat cmw-bg-center cmw-text-white cmw-h-[88px] cmw-m-2 cmw-rounded-sm
-           cmw-flex cmw-gap-2 cmw-items-center cmw-justify-center hover:(cmw-shadow-elevation)"
+            class="bg-cover bg-no-repeat bg-center text-white h-[88px] m-2 rounded-sm
+           flex gap-2 items-center justify-center hover:(shadow-elevation)"
             :style="{ backgroundImage: `url('${bgCarousel}')` }"
           >
             <VueSvgIcon
               :data="require(`@/assets/svg/${getIconByFeature(icon_code)}.svg`)"
-              class="cmw-block cmw-flex-shrink-0"
+              class="block flex-shrink-0"
               width="40"
               height="auto"
             />

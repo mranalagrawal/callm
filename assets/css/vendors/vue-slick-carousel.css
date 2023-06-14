@@ -1,5 +1,5 @@
 .custom-arrow {
-  @apply cmw-shadow-md cmw-bg-white cmw-rounded-sm cmw-text-primary-400 cmw-flex;
+  @apply shadow-md bg-white rounded-sm text-primary-400 flex;
 }
 
 .custom-arrow.slick-prev:before, .custom-arrow.slick-next:before {

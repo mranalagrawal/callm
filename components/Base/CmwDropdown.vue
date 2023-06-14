@@ -37,10 +37,10 @@ export default defineComponent({
     const handleTriggerClick = () => emit('update-trigger', key)
 
     const getFontSize = () => ({
-      xs: 'cmw-text-xs cmw-overline-1 cmw-font-normal',
-      sm: 'cmw-text-xs cmw-overline-1 cmw-font-normal',
-      md: 'cmw-text-sm',
-      lg: 'cmw-text-sm',
+      xs: 'text-xs overline-1 font-normal',
+      sm: 'text-xs overline-1 font-normal',
+      md: 'text-sm',
+      lg: 'text-sm',
     })[props.size]
 
     return { isActive, searchTerm, chevronDownIcon, handleTriggerClick, getFontSize }
@@ -49,24 +49,24 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="cmw-relative" :class="isActive ? 'cmw-z-baseHigh' : 'cmw-z-base' ">
+  <div class="relative" :class="isActive ? 'z-baseHigh' : 'z-base' ">
     <button
       type="button"
-      class="cmw-inherit cmw-flex cmw-items-center cmw-gap-2 cmw-z-baseHigh cmw-p-3 cmw-rounded-t-sm cmw-uppercase cmw-font-light
-      hover:(cmw-text-primary)"
+      class="inherit flex items-center gap-2 z-baseHigh p-3 rounded-t-sm uppercase font-light
+      hover:(text-primary)"
       :class="[
-        isActive ? 'cmw-shadow-filter cmw-bg-white cmw-text-primary' : 'cmw-text-body',
+        isActive ? 'shadow-filter bg-white text-primary' : 'text-body',
         getFontSize(),
       ]"
       @click="handleTriggerClick"
     >
-      <slot class="cmw-text-inherit">
+      <slot class="text-inherit">
         {{ label }}
       </slot>
       <VueSvgIcon
-        class="cmw-transform cmw-transition-transform"
+        class="transform transition-transform"
         :color="isActive ? '#992545' : '#d94965'"
-        :class="isActive ? 'cmw-rotate-180' : 'cmw-rotate-0'"
+        :class="isActive ? 'rotate-180' : 'rotate-0'"
         width="18"
         height="18"
         :data="chevronDownIcon"
@@ -75,13 +75,13 @@ export default defineComponent({
     <transition>
       <div
         v-show="isActive"
-        class="cmw-absolute top-full cmw-z-base cmw-bg-white cmw-shadow-popover cmw-w-[310px] cmw-rounded-b-sm"
-        :class="[position === 'right' ? 'cmw-right-0 cmw-rounded-tl-sm' : 'cmw-left-0 cmw-rounded-tr-sm']"
+        class="absolute top-full z-base bg-white shadow-popover w-[310px] rounded-b-sm"
+        :class="[position === 'right' ? 'right-0 rounded-tl-sm' : 'left-0 rounded-tr-sm']"
       >
         <!-- List Items -->
         <slot name="children" />
-        <div v-if="footerLabel" class="cmw-bg-gray-lightest cmw-rounded-b-sm">
-          <Button class="cmw-mr-auto cmw-w-max" variant="text" :label="footerLabel" @click.native="onFooterClick" />
+        <div v-if="footerLabel" class="bg-gray-lightest rounded-b-sm">
+          <Button class="mr-auto w-max" variant="text" :label="footerLabel" @click.native="onFooterClick" />
         </div>
       </div>
     </transition>

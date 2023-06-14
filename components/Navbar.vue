@@ -146,7 +146,7 @@ export default {
       const regexValue = new RegExp(`(${this.search})`, 'ig')
       return text.replace(
         regexValue,
-        '<span class=\'font-weight-bold\'>$1</span>',
+        '<span class=\'font-bold\'>$1</span>',
       )
     },
     toggleMobileLogin() {
@@ -209,21 +209,21 @@ export default {
 <template>
   <div
     ref="navbar"
-    class="cmw-fixed cmw-w-screen cmw-min-h-[135px] cmw-px-4 cmw-top-0 cmw-bg-white cmw-z-tooltip print:cmw-hidden"
+    class="fixed w-screen min-h-[135px] px-4 top-0 bg-white z-tooltip print:hidden"
   >
     <div
       class="
-    cmw-max-w-screen-xl cmw-mx-auto cmw-grid cmw-grid-cols-1 cmw-gap-3 cmw-min-h-[109px] cmw-items-center
-    lg:cmw-grid-cols-[25%_40%_35%] 2xl:cmw-grid-cols-[25%_48%_32%]"
+    max-w-screen-xl mx-auto grid grid-cols-1 gap-3 min-h-[109px] items-center
+    lg:grid-cols-[25%_40%_35%] 2xl:grid-cols-[25%_48%_32%]"
     >
       <div
         ref="menuBarRef"
         class="bg-white"
       >
-        <div class="cmw-flex cmw-gap-2 cmw-items-center">
+        <div class="flex gap-2 items-center">
           <button
             v-show="showMobileButton"
-            class="cmw-relative cmw-z-base md:cmw-hidden"
+            class="relative z-base md:hidden"
             @click="toggleSidebar"
           >
             <VueSvgIcon
@@ -234,7 +234,7 @@ export default {
           </button>
 
           <NuxtLink
-            class="cmw-flex cmw-max-w-150px md:cmw-max-w-250px"
+            class="flex max-w-150px md:max-w-250px"
             :aria-label="$t('enums.accessibility.labels.GO_TO_HOME_PAGE')"
             :to="localePath('/')"
           >
@@ -246,9 +246,9 @@ export default {
             />
           </NuxtLink>
 
-          <div class="cmw-flex cmw-items-center cmw-ml-auto md:cmw-hidden">
+          <div class="flex items-center ml-auto md:hidden">
             <button
-              class="cmw-p-3"
+              class="p-3"
               @click="toggleMobileLogin"
             >
               <VueSvgIcon
@@ -259,7 +259,7 @@ export default {
             </button>
             <NuxtLink
               :to="localePath('/cart')"
-              class="cmw-relative cmw-p-3"
+              class="relative p-3"
             >
               <VueSvgIcon
                 :data="cartIcon"
@@ -272,16 +272,16 @@ export default {
         </div>
       </div>
 
-      <div class="cmw-relative cmw-z-base">
+      <div class="relative z-base">
         <!-- Note: Since we are handling submit with Vue methods we don't need the name attribute in the search field -->
         <input
           id="search-term"
           v-model="search"
           type="search"
           class="
-               c-searchInput -hasIcon cmw-px-4 cmw-text-gray-dark cmw-py-3 cmw-w-full cmw-bg-transparent cmw-border cmw-border-gray-light cmw-rounded
-               hover:(cmw-border-gray)
-               focus:(cmw-outline-none cmw-border-gray-dark)"
+               c-searchInput -hasIcon px-4 text-gray-dark py-3 w-full bg-transparent border border-gray-light rounded
+               hover:(border-gray)
+               focus:(outline-none border-gray-dark)"
           :placeholder="$t('navbar.search')"
           @input="suggest"
           @blur="handleBlur"
@@ -291,7 +291,7 @@ export default {
           :icon="searchIcon"
           :aria-label="$t('enums.accessibility.role.TRIGGER_SEARCH')"
           size="sm"
-          class="cmw-transform cmw-absolute cmw-top-1/2 cmw-right-0 cmw-translate-y-[-50%] cmw-translate-x-[-30%]"
+          class="transform absolute top-1/2 right-0 translate-y-[-50%] translate-x-[-30%]"
           @click.native="startSearch"
         />
         <transition
@@ -301,21 +301,21 @@ export default {
         >
           <div
             v-if="search && data && showSearchSuggestions"
-            class="cmw-absolute cmw-w-full cmw-z-100 cmw-transform
-            cmw-transition-transform-opacity cmw-translate-x-0 cmw-translate-y-full cmw-bottom-0 cmw-left-0
+            class="absolute w-full z-100 transform
+            transition-transform-opacity translate-x-0 translate-y-full bottom-0 left-0
             "
           >
             <!-- {{ data }} -->
 
-            <div class="cmw-bg-white cmw-max-h-[70vh] cmw-rounded-lg cmw-shadow-popover cmw-overflow-hidden cmw-mt-2">
+            <div class="bg-white max-h-[70vh] rounded-lg shadow-popover overflow-hidden mt-2">
               <div v-if="data.gift_cards && data.gift_cards.length > 0">
-                <p class="cmw-overline-2 cmw-uppercase cmw-text-secondary-400 cmw-py-2 cmw-px-3 cmw-m-0">
+                <p class="overline-2 uppercase text-secondary-400 py-2 px-3 m-0">
                   {{ $t("search.giftCards") }}
                 </p>
                 <NuxtLink
                   v-for="item in data.gift_cards"
                   :key="item.id"
-                  class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-bg-primary-50) cmw-text-body"
+                  class="body-1 block py-2 px-3 hover:(bg-primary-50) text-body"
                   :to="localePath(`/${item.handle}`)"
                 >
                   <span v-html="bolder(item.name)" />
@@ -323,15 +323,15 @@ export default {
               </div>
               <div
                 v-if="data.winelists && data.winelists.length > 0"
-                class="cmw-max-h-[70vh] cmw-overflow-y-auto"
+                class="max-h-[70vh] overflow-y-auto"
               >
-                <p class="cmw-overline-2 cmw-uppercase cmw-text-secondary-400 cmw-py-2 cmw-px-3 cmw-mb-0 cmw-mt-2">
+                <p class="overline-2 uppercase text-secondary-400 py-2 px-3 mb-0 mt-2">
                   {{ $t("search.winelists") }}
                 </p>
                 <NuxtLink
                   v-for="item in data.winelists"
                   :key="item.id"
-                  class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-bg-primary-50) cmw-text-body"
+                  class="body-1 block py-2 px-3 hover:(bg-primary-50) text-body"
                   :to="localePath(`/${item.handle}-V${item.id}.htm`)"
                 >
                   <span v-html="bolder(item.name)" />
@@ -343,13 +343,13 @@ export default {
                 class="pt-3"
               >
                 <div v-if="data.categories && data.categories.length > 0">
-                  <p class="cmw-overline-2 cmw-uppercase cmw-text-secondary-400 cmw-py-2 cmw-px-3 cmw-m-0">
+                  <p class="overline-2 uppercase text-secondary-400 py-2 px-3 m-0">
                     {{ $t("search.categories") }}
                   </p>
                   <NuxtLink
                     v-for="item in data.categories"
                     :key="item.id"
-                    class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-bg-primary-50) cmw-text-body"
+                    class="body-1 block py-2 px-3 hover:(bg-primary-50) text-body"
                     :to="localePath(`/catalog?&categories=${item.id}`)"
                   >
                     <span v-html="bolder(item.name)" />
@@ -357,13 +357,13 @@ export default {
                 </div>
 
                 <div v-if="data.brands && data.brands.length > 0">
-                  <p class="cmw-overline-2 cmw-uppercase cmw-text-secondary-400 cmw-py-2 cmw-px-3 cmw-m-0">
+                  <p class="overline-2 uppercase text-secondary-400 py-2 px-3 m-0">
                     {{ $t("search.brands") }}
                   </p>
                   <NuxtLink
                     v-for="item in data.brands"
                     :key="item.id"
-                    class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-bg-primary-50) cmw-text-body"
+                    class="body-1 block py-2 px-3 hover:(bg-primary-50) text-body"
                     :to="localePath(`/winery/${item.handle}-B${item.id}.htm`)"
                   >
                     <span v-html="bolder(item.name)" />
@@ -371,13 +371,13 @@ export default {
                 </div>
 
                 <div v-if="data.products && data.products.length > 0">
-                  <p class="cmw-overline-2 cmw-uppercase cmw-text-secondary-400 cmw-py-2 cmw-px-3 cmw-m-0">
+                  <p class="overline-2 uppercase text-secondary-400 py-2 px-3 m-0">
                     {{ $t("search.products") }}
                   </p>
                   <NuxtLink
                     v-for="item in data.products"
                     :key="item.id"
-                    class="cmw-body-1 cmw-block cmw-py-2 cmw-px-3 hover:(cmw-bg-primary-50) cmw-text-body"
+                    class="body-1 block py-2 px-3 hover:(bg-primary-50) text-body"
                     :to="localePath(`/${item.handle}-P${item.id}.htm`)"
                   >
                     <span v-html="bolder(item.name)" />
@@ -389,11 +389,11 @@ export default {
         </transition>
       </div>
 
-      <div v-if="isDesktop" class="md:cmw-place-self-end">
+      <div v-if="isDesktop" class="md:place-self-end">
         <UserActions />
       </div>
     </div>
-    <div v-if="isDesktop" class="c-megaMenu cmw-fixed cmw-left-0 cmw-w-full cmw-bg-white">
+    <div v-if="isDesktop" class="c-megaMenu fixed left-0 w-full bg-white">
       <div class="shadow-menu">
         <MegaMenu />
       </div>
@@ -401,16 +401,16 @@ export default {
 
     <div v-if="!isDesktop && !!data.length" class="">
       <transition name="menu-mobile">
-        <div v-show="isSidebarOpen" class="cmw-absolute cmw-left-0 cmw-w-full cmw-z-base" :style="{ top: sideBarTop }">
+        <div v-show="isSidebarOpen" class="absolute left-0 w-full z-base" :style="{ top: sideBarTop }">
           <MenuMobile :menu="data" @close-sidebar="toggleSidebar" />
         </div>
       </transition>
     </div>
     <transition name="menu-mobile">
-      <div v-if="mobileLogin" class="cmw-fixed cmw-w-screen cmw-top-0 cmw-left-0 cmw-h-screen cmw-bg-white cmw-z-amenadiel cmw-pt-$cmw-top-banner-height">
+      <div v-if="mobileLogin" class="fixed w-screen top-0 left-0 h-screen bg-white z-amenadiel pt-$top-banner-height">
         <Button
           variant="text"
-          class="cmw-gap-2 cmw-pl-2 cmw-pr-3 cmw-py-2 cmw-justify-between"
+          class="gap-2 pl-2 pr-3 py-2 justify-between"
           :aria-label="$t('enums.accessibility.role.MODAL_CLOSE')"
           @click.native="toggleMobileLogin"
         >
@@ -419,17 +419,17 @@ export default {
           <VueSvgIcon :data="closeIcon" color="#E6362E" width="30" height="auto" />
         </Button>
         <div v-if="!user">
-          <div class="cmw-h3 cmw-text-center cmw-mt-5">
+          <div class="h3 text-center mt-5">
             {{ $t("navbar.user.signIn") }}
           </div>
-          <div class="cmw-px-2">
+          <div class="px-2">
             <LoginForm width="340px" />
           </div>
-          <div class="cmw-bg-gray-lightest cmw-p-2 cmw-text-center">
+          <div class="bg-gray-lightest p-2 text-center">
             {{ $t("navbar.user.notRegisteredYet") }}
             <NuxtLink
               to="/login"
-              class="cmw-uppercase cmw-text-primary-400"
+              class="uppercase text-primary-400"
             >
               {{ $t("navbar.user.register") }}
             </NuxtLink>
@@ -437,7 +437,7 @@ export default {
         </div>
         <div
           v-else
-          class="cmw-mt-5"
+          class="mt-5"
         >
           <UserMenu />
         </div>

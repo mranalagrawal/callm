@@ -54,7 +54,7 @@ export default {
       <HomeSelections />
     </LazyHydrate>
 
-    <div class="<md:cmw-hidden">
+    <div class="<md:hidden">
       <HomeSlider />
     </div>
 

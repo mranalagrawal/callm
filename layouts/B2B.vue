@@ -11,7 +11,6 @@ import { lookUpLocale } from '~/plugins/vee-validate'
 import { useCustomer } from '~/store/customer'
 
 export default {
-  name: 'IndexPage',
   components: {
     LazyHydrate,
     TheFooter: () => import('../components/TheFooter.vue'),

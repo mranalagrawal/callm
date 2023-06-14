@@ -8,7 +8,10 @@ import { generateKey } from '~/utilities/strings'
 export default {
   components: { ThirdLevel },
   setup() {
-    const { localeLocation, $cmwRepo } = useContext()
+    const {
+      localeLocation,
+      $cmwRepo,
+    } = useContext()
     const router = useRouter()
     const megaMenu = ref(null)
     const selectedItem = ref(null)
@@ -19,7 +22,13 @@ export default {
 
     const onTab = item => selectedItem.value = item
 
-    return { $cmwRepo, megaMenu, selectedItem, handleClick, onTab }
+    return {
+      $cmwRepo,
+      megaMenu,
+      selectedItem,
+      handleClick,
+      onTab,
+    }
   },
   data: () => ({
     promoTagIcon,
@@ -51,7 +60,10 @@ export default {
             .filter(x => x.secondlevelname === el.name)
             .sort((a, b) => a.third_level_position - b.third_level_position)
 
-          return { ...el, items: temp }
+          return {
+            ...el,
+            items: temp,
+          }
         })
 
         return {
@@ -73,17 +85,17 @@ export default {
 
 <template>
   <div @mouseleave="onTab(null)">
-    <div ref="megaMenu" class="cmw-flex cmw-items-center">
-      <div class="cmw-max-w-screen-xl cmw-mx-auto cmw-flex cmw-items-center cmw-justify-evenly cmw-w-full">
+    <div ref="megaMenu" class="flex items-center">
+      <div class="max-w-screen-xl mx-auto flex items-center justify-evenly w-full">
         <div
           v-for="(firstLevel, i) in data"
           :key="i"
-          class="cmw-text-center cmw-text-uppercase cmw-py-2"
+          class="text-center text-uppercase py-2"
           @mouseenter="onTab(firstLevel)"
         >
           <button
-            class="cmw-w-max cmw-text-xs cmw-w-max desktop-wide:cmw-text-sm cmw-uppercase hover:(cmw-text-primary cmw-font-bold)"
-            :class="firstLevel.isPromotionTab ? 'cmw-text-primary-400' : 'cmw-text-body'"
+            class="w-max text-xs w-max desktop-wide:text-sm uppercase hover:(text-primary font-bold)"
+            :class="firstLevel.isPromotionTab ? 'text-primary-400' : 'text-body'"
             @click="handleClick(`/${firstLevel.link}`)"
           >
             <VueSvgIcon
@@ -91,7 +103,7 @@ export default {
               :data="promoTagIcon"
               width="26"
               height="26"
-              class="cmw-inline"
+              class="inline"
             />
             {{ firstLevel.name }}
           </button>
@@ -102,27 +114,28 @@ export default {
       <transition>
         <div
           v-if="selectedItem && !selectedItem.display_as_cards"
-          class="cmw-grid cmw-grid-cols-[1fr_minmax(100px,_1332px)_1fr] cmw-bg-white cmw-min-h-[300px] cmw-border-t cmw-border-t-gray-light"
+          class="grid grid-cols-[1fr_minmax(100px,_1332px)_1fr] bg-white min-h-[300px] border-t border-t-gray-light"
           @mouseleave="onTab(null)"
         >
-          <div class="cmw-bg-gray-lightest" />
-          <div class="cmw-col-start-2 cmw-flex">
+          <div class="bg-gray-lightest" />
+          <div class="col-start-2 flex">
             <div
               v-for="(secondLevel, i) in selectedItem.items"
               :key="generateKey(`${secondLevel.name}-${i}`)"
-              class="cmw-flex-1 cmw-flex cmw-flex-col cmw-px-4"
+              class="flex-1 flex flex-col px-4"
               :class="[
-                { 'cmw-border-r cmw-border-r-gray-light': (i + 1) < selectedItem.items.length },
-                { 'cmw-bg-gray-lightest': (i === 0) },
+                { 'border-r border-r-gray-light': (i + 1) < selectedItem.items.length },
+                { 'bg-gray-lightest': (i === 0) },
               ]"
             >
-              <p class="cmw-overline-2 cmw-uppercase cmw-text-secondary-700 cmw-font-semibold cmw-pt-4">
+              <p class="overline-2 uppercase text-secondary-700 font-semibold pt-4">
                 {{ secondLevel.name }}
               </p>
-              <div class="cmw-flex cmw-flex-col cmw-h-full">
+              <div class="flex flex-col h-full">
                 <ThirdLevel
                   v-for="(thirdLevel, i) in secondLevel.items"
-                  :key="generateKey(`${thirdLevel.third_level_name}-${i}`)" :third-level="thirdLevel" @close-banner="onTab(null)"
+                  :key="generateKey(`${thirdLevel.third_level_name}-${i}`)" :third-level="thirdLevel"
+                  @close-banner="onTab(null)"
                 />
               </div>
             </div>
@@ -133,21 +146,17 @@ export default {
       <transition>
         <div
           v-if="selectedItem && selectedItem.display_as_cards"
-          class="cmw-grid cmw-grid-cols-[minmax(100px,_1332px)] cmw-justify-center"
+          class="grid grid-cols-[minmax(100px,_1332px)] justify-center"
           @mouseleave="onTab(null)"
         >
           <div v-for="(secondLevel, i) in selectedItem.items" :key="generateKey(`${secondLevel.name}-as-card-${i}`)">
             <div>
-              <p class="cmw-overline-2 cmw-uppercase cmw-text-secondary-700 cmw-font-semibold cmw-p-8">
+              <p class="overline-2 uppercase text-secondary-700 font-semibold pt-8">
                 {{ secondLevel.name }}
               </p>
             </div>
-            <div class="cmw-grid cmw-gap-4 md:cmw-grid-cols-2 lg:cmw-grid-cols-3 xl:cmw-grid-cols-4">
-              <div
-                v-for="(thirdLevel, j) in secondLevel.items"
-                :key="j"
-                class=""
-              >
+            <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <div v-for="(thirdLevel, j) in secondLevel.items" :key="j">
                 <ThirdLevel :third-level="thirdLevel" @close-banner="onTab(null)" />
               </div>
             </div>

@@ -32,20 +32,20 @@ export default {
 <template>
   <div
     class="
-      c-lapel cmw-relative cmw-flex cmw-items-center cmw-gap-1 cmw-px-2 cmw-bg-secondary-800 cmw-text-white cmw-h-$lapel-height
-      before:(cmw-content-DEFAULT cmw-absolute cmw-top-0 cmw-left-$lapel-edge-left cmw-w-$lapel-edge-width cmw-h-$lapel-height)
-      after:(cmw-content-DEFAULT cmw-absolute cmw-top-0 cmw-left-[calc(100%_-_1px)] cmw-w-$lapel-edge-width cmw-h-$lapel-height)
+      c-lapel relative flex items-center gap-1 px-2 bg-secondary-800 text-white h-$lapel-height
+      before:(content-DEFAULT absolute top-0 left-$lapel-edge-left w-$lapel-edge-width h-$lapel-height)
+      after:(content-DEFAULT absolute top-0 left-[calc(100%_-_1px)] w-$lapel-edge-width h-$lapel-height)
 "
     :class="getVariant()"
   >
     <VueSvgIcon
       :data="icon"
-      class="cmw-block !cmw-fill-white cmw-w-$lapel-swg-width"
+      class="block !fill-white w-$lapel-swg-width"
       width="var(--lapel-swg-width)"
       height="auto"
     />
     <span
-      class="c-lapel__label cmw-overline-2 cmw-font-medium cmw-uppercase"
+      class="c-lapel__label overline-2 font-medium uppercase"
       v-text="label || $t('product.promoLabel')"
     />
   </div>

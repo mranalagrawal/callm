@@ -29,26 +29,26 @@ export default defineComponent({
   },
   setup(props) {
     const getSize = () => ({
-      xs: 'cmw-text-xs cmw-rounded-sm cmw-px-3 cmw-py-1 md:(cmw-px-4 cmw-py-[0.4rem])',
-      sm: 'cmw-text-sm',
-      md: 'cmw-text-base',
-      lg: 'cmw-text-base',
+      xs: 'text-xs rounded-sm px-3 py-1 md:(px-4 py-[0.4rem])',
+      sm: 'text-sm',
+      md: 'text-base',
+      lg: 'text-base',
     })[props.size] || props.size
 
     const getSpacing = () => ({
-      'default': 'cmw-btn-base-spacing',
-      'default-inverse': 'cmw-btn-base-spacing',
-      'ghost': 'cmw-btn-base-spacing',
-      'ghost-inverse': 'cmw-btn-base-spacing',
-      'text': 'cmw-px-1 cmw-py-2 md:(cmw-py-[0.8rem])',
+      'default': 'btn-base-spacing',
+      'default-inverse': 'btn-base-spacing',
+      'ghost': 'btn-base-spacing',
+      'ghost-inverse': 'btn-base-spacing',
+      'text': 'px-1 py-2 md:(py-[0.8rem])',
     })[props.variant]
 
     const getVariant = () => ({
-      'default': 'cmw-btn-default disabled:(cmw-bg-gray-light)',
-      'default-inverse': 'cmw-font-secondary cmw-font-bold cmw-border-transparent cmw-bg-white cmw-text-primary-400 cmw-uppercase',
-      'ghost': 'cmw-border-primary-400 cmw-text-primary-400 cmw-font-bold cmw-uppercase hover:(cmw-bg-primary-50 cmw-text-primary-400)',
-      'ghost-inverse': 'cmw-border-white cmw-text-white cmw-font-bold cmw-uppercase hover:(cmw-bg-primary-50 cmw-text-primary-400)',
-      'text': 'cmw-btn-text',
+      'default': 'btn-default disabled:(bg-gray-light)',
+      'default-inverse': 'font-secondary font-bold border-transparent bg-white text-primary-400 uppercase',
+      'ghost': 'border-primary-400 bg-white text-primary-400 font-bold uppercase hover:(bg-primary-50)',
+      'ghost-inverse': 'border-white text-white font-bold uppercase hover:(bg-primary-50 text-primary-400)',
+      'text': 'btn-text',
     })[props.variant]
 
     return { getSpacing, getVariant, getSize }
@@ -62,7 +62,7 @@ export default defineComponent({
     :type="$attrs.type || !$props.to ? 'button' : ''"
     :to="$props.to"
     v-bind="$attrs"
-    class="cmw-btn-base disabled:(cmw-text-gray cmw-cursor-not-allowed)"
+    class="btn-base disabled:(text-gray cursor-not-allowed)"
     :class="[getVariant(), getSize(), getSpacing()]"
   >
     <slot>{{ $props.label }}</slot>

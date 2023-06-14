@@ -171,16 +171,16 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="cmw-mt-4 cmw-max-w-screen-xl cmw-mx-auto <md:cmw-px-4">
-    <div v-if="$fetchState.error" class="cmw-relative cmw-text-center cmw-mt-12">
-      <div class="md:(cmw-grid cmw-grid-cols-2 cmw-items-center)">
+  <div class="mt-4 max-w-screen-xl mx-auto <md:px-4">
+    <div v-if="$fetchState.error" class="relative text-center mt-12">
+      <div class="md:(grid grid-cols-2 items-center)">
         <img
-          class="cmw-w-3/4 cmw-mx-auto" src="https://cdn.shopify.com/s/files/1/0668/1860/5335/files/wine-stain.png?width=900"
+          class="w-3/4 mx-auto" src="https://cdn.shopify.com/s/files/1/0668/1860/5335/files/wine-stain.png?width=900"
           alt="empty-bottles"
         >
-        <div class="cmw-text-left">
-          <h2 class="cmw-h1 cmw-text-secondary" v-text="$t('notFoundTitle')" />
-          <p class="cmw-mb-8 md:cmw-w-3/5" v-text="$t('notFoundLine')" />
+        <div class="text-left">
+          <h2 class="h1 text-secondary" v-text="$t('notFoundTitle')" />
+          <p class="mb-8 md:w-3/5" v-text="$t('notFoundLine')" />
         </div>
       </div>
     </div>
@@ -188,55 +188,55 @@ export default defineComponent({
       <div v-if="product.title">
         <TheBreadcrumbs v-if="product.breadcrumbs" :breadcrumbs="product.breadcrumbs" />
 
-        <div class="md:(cmw-grid cmw-grid-cols-[40%_60%] cmw-max-h-[550px] cmw-my-4)">
+        <div class="md:(grid grid-cols-[40%_60%] max-h-[550px] my-4)">
           <!-- Image Section -->
-          <div class="cmw-relative">
+          <div class="relative">
             <LoadingImage
-              class="cmw-h-full"
-              img-classes="cmw-max-h-[350px] md:cmw-max-h-[550px] cmw-mx-auto cmw-object-contain"
+              class="h-full"
+              img-classes="max-h-[350px] md:max-h-[550px] mx-auto object-contain"
               :thumbnail="product.image.thumbnail"
               :source="product.image.source"
             />
           </div>
           <!-- Content Section -->
-          <div class="cmw-flex cmw-flex-col">
-            <h1 class="cmw-text-secondary <md:cmw-pt-8" v-text="product.title" />
+          <div class="flex flex-col">
+            <h1 class="text-secondary <md:pt-8" v-text="product.title" />
 
             <div v-html="strippedContent" />
             <div>
-              <div class="cmw-py-4 cmw-h4" v-text="$t('search.chooseGiftCard')" />
-              <div class="cmw-items-center cmw-mr-auto cmw-gap-2 cmw-flex">
+              <div class="py-4 h4" v-text="$t('search.chooseGiftCard')" />
+              <div class="items-center mr-auto gap-2 flex">
                 <div
                   v-for="variant in product.variants"
                   :key="variant.id"
-                  class="cmw-relative"
+                  class="relative"
                 >
                   <input
                     :id="variant.id"
                     v-model="giftCardVariantSelected"
                     :aria-label="`select ${variant.title}`"
-                    class="peer cmw-appearance-none cmw-absolute cmw-w-full cmw-h-full cmw-z-dante"
+                    class="peer appearance-none absolute w-full h-full z-dante"
                     type="radio"
                     name="layout"
                     :value="variant"
                   >
                   <label
                     :for="variant.id"
-                    class="cmw-btn-base cmw-btn-base-spacing cmw-text-sm cmw-cursor-pointer cmw-border-primary-400 cmw-text-primary-400 cmw-font-bold cmw-uppercase
-                     hover:(cmw-bg-primary-50)"
-                    :class="{ 'cmw-bg-primary-400': variant.id === giftCardVariantSelected.id }"
+                    class="btn-base btn-base-spacing text-sm cursor-pointer border-primary-400 text-primary-400 font-bold uppercase
+                     hover:(bg-primary-50)"
+                    :class="{ 'bg-primary-400': variant.id === giftCardVariantSelected.id }"
                   >
                     <i18n-n
-                      class="cmw-flex cmw-items-end cmw-leading-none"
-                      :class="{ 'cmw-text-white': variant.id === giftCardVariantSelected.id }"
+                      class="flex items-end leading-none"
+                      :class="{ 'text-white': variant.id === giftCardVariantSelected.id }"
                       :value="Number(variant.price.amount)" :format="{ key: 'currency' }"
                       :locale="getLocaleFromCurrencyCode(variant.price.currencyCode)"
                     >
                       <template #currency="slotProps">
-                        <span class="cmw-text-sm md:cmw-text-base">{{ slotProps.currency }}</span>
+                        <span class="text-sm md:text-base">{{ slotProps.currency }}</span>
                       </template>
                       <template #integer="slotProps">
-                        <span class="cmw-text-2xl">{{ slotProps.integer }}</span>
+                        <span class="text-2xl">{{ slotProps.integer }}</span>
                       </template>
                       <template #group="slotProps">
                         <span>{{ slotProps.group }}</span>
@@ -251,70 +251,70 @@ export default defineComponent({
             </div>
             <div
               class="
-            <md:(cmw-fixed cmw-bottom-0 cmw-left-0 cmw-w-full cmw-bg-white cmw-z-content cmw-shadow-elevation cmw-px-3 cmw-py-4)
-            cmw-mt-auto cmw-flex cmw-items-end
-            md:cmw-mb-8
+            <md:(fixed bottom-0 left-0 w-full bg-white z-content shadow-elevation px-3 py-4)
+            mt-auto flex items-end
+            md:mb-8
 "
             >
               <i18n-n
                 v-if="giftCardVariantSelected.id"
-                class="cmw-inline-block" :value="Number(giftCardVariantSelected.price.amount)"
+                class="inline-block" :value="Number(giftCardVariantSelected.price.amount)"
                 :format="{ key: 'currency' }"
                 :locale="getLocaleFromCurrencyCode(giftCardVariantSelected.price.currencyCode)"
               >
                 <template #currency="slotProps">
-                  <span class="cmw-text-sm md:cmw-text-base">{{ slotProps.currency }}</span>
+                  <span class="text-sm md:text-base">{{ slotProps.currency }}</span>
                 </template>
                 <template #integer="slotProps">
-                  <span class="cmw-h1 cmw-font-bold !cmw-leading-none">{{ slotProps.integer }}</span>
+                  <span class="h1 font-bold !leading-none">{{ slotProps.integer }}</span>
                 </template>
                 <template #group="slotProps">
-                  <span class="cmw-h1 cmw-font-bold !cmw-leading-none">{{ slotProps.group }}</span>
+                  <span class="h1 font-bold !leading-none">{{ slotProps.group }}</span>
                 </template>
                 <template #fraction="slotProps">
-                  <span class="cmw-text-sm md:cmw-text-base">{{ slotProps.fraction }}</span>
+                  <span class="text-sm md:text-base">{{ slotProps.fraction }}</span>
                 </template>
               </i18n-n>
-              <div class="cmw-ml-auto cmw-mr-4">
+              <div class="ml-auto mr-4">
                 <div class="">
-                  <div v-if="product.availableForSale" class="cmw-relative">
+                  <div v-if="product.availableForSale" class="relative">
                     <Button
-                      class="cmw-gap-2 cmw-pl-2 cmw-pr-3 cmw-py-2"
+                      class="gap-2 pl-2 pr-3 py-2"
                       :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
                       :disabled="!giftCardVariantSelected.id"
                       @click.native="addToUserCart"
                     >
                       <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
-                      <span class="cmw-text-sm" v-text="$t('product.addToCart')" />
+                      <span class="text-sm" v-text="$t('product.addToCart')" />
                     </Button>
                     <Badge
                       v-show="cartQuantity && !isOpen"
-                      class="cmw-absolute cmw-top-0 cmw-left-full cmw-transform cmw-translate-x-[-50%] cmw-translate-y-[-50%]"
+                      class="absolute top-0 left-full transform translate-x-[-50%] translate-y-[-50%]"
                       bg-color="primary-400" :qty="cartQuantity"
                     />
                     <div
                       v-show="isOpen"
-                      class="cmw-absolute cmw-grid cmw-grid-cols-[50px_auto_50px] cmw-items-center cmw-w-full cmw-h-[50px] cmw-top-0 cmw-left-0"
+                      class="absolute grid grid-cols-[50px_auto_50px] items-center w-full h-[50px] top-0 left-0"
                       @mouseleave="isOpen = false"
                     >
                       <button
-                        class="cmw-flex cmw-transition-colors cmw-w-[50px] cmw-h-[50px] cmw-bg-primary-400 cmw-rounded-l hover:(cmw-bg-primary)"
+                        class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l hover:(bg-primary)"
                         :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
                         @click="removeFromUserCart"
                       >
-                        <VueSvgIcon class="cmw-m-auto" :data="subtractIcon" width="14" height="14" color="white" />
+                        <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="white" />
                       </button>
-                      <div class="cmw-flex cmw-h-[40px] cmw-bg-primary-400 cmw-text-white text-center">
-                        <span class="cmw-m-auto cmw-text-sm">{{ cartQuantity }}</span>
+                      <div class="flex h-[40px] bg-primary-400 text-white text-center">
+                        <span class="m-auto text-sm">{{ cartQuantity }}</span>
                       </div>
                       <button
-                        class="cmw-flex cmw-transition-colors cmw-w-[50px] cmw-h-[50px] cmw-bg-primary-400 cmw-rounded-r
-                        hover:(cmw-bg-primary)
-                        disabled:(cmw-bg-primary-100 cmw-cursor-not-allowed)"
+                        class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-r
+                        hover:(bg-primary)
+                        disabled:(bg-primary-100 cursor-not-allowed)"
                         :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
                         @click="addToUserCart"
                       >
-                        <VueSvgIcon class="cmw-m-auto" :data="addIcon" width="14" height="14" color="white" />
+                        <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
                       </button>
                     </div>
                   </div>

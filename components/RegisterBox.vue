@@ -98,7 +98,7 @@ export default {
 <template>
   <div>
     <ValidationObserver v-slot="{ handleSubmit }" slim>
-      <form class="px-4 pt-3 py-2 w-75 mx-auto" @submit.prevent="handleSubmit(onSubmit)">
+      <form class="px-4 pt-3 py-2 w-3/4 mx-auto" @submit.prevent="handleSubmit(onSubmit)">
         <InputField
           v-model="form.firstName"
           name="register-user-firstname" :label="$t('firstName')"
@@ -130,7 +130,7 @@ export default {
 
         <p
           v-if="new Date(now) - new Date(form.age) < 568036800000"
-          class="text-danger font-weight-bold small mt-2"
+          class="text-danger font-bold small mt-2"
         >
           Devi essere maggiorenne per poterti registrare al sito.
         </p>
@@ -154,7 +154,7 @@ export default {
         </CmwCheckbox>
 
         <Button
-          class="sm:cmw-max-w-330px cmw-mt-8"
+          class="sm:max-w-330px mt-8"
           type="submit"
           :disabled="isSubmitting || !(new Date(now) - new Date(form.age) > 568036800000)"
           :label="$t('navbar.user.register')"

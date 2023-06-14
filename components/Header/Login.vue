@@ -69,7 +69,7 @@ export default {
 
 <template>
   <div>
-    <div class="cmw-border-t-4 cmw-border-t-primary-900 cmw-py-4 cmw-px-6">
+    <div class="border-t-4 border-t-primary-900 py-4 px-6">
       <template v-if="!customer.id">
         <ValidationObserver v-slot="{ handleSubmit }" slim>
           <form
@@ -98,13 +98,13 @@ export default {
             />
             <p
               v-if="message"
-              class="cmw-text-sm cmw-text-error mt-3"
+              class="text-sm text-error mt-3"
             >
               {{ message }}
             </p>
 
             <Button
-              class="cmw-mt-8"
+              class="mt-8"
               type="submit"
               :disabled="isSubmitting"
               :label="$t('navbar.user.signIn').toString()"
@@ -112,7 +112,7 @@ export default {
 
             <NuxtLink
               to="/recover"
-              class="cmw-block cmw-w-max cmw-my-3 cmw-mx-auto cmw-text-primary-400"
+              class="block w-max my-3 mx-auto text-primary-400"
             >
               {{ $t("navbar.user.forgotPassword") }}
             </NuxtLink>
@@ -120,12 +120,12 @@ export default {
         </ValidationObserver>
       </template>
       <template v-else>
-        <nav class="cmw-min-w-[425px]">
+        <nav class="min-w-[425px]">
           <NuxtLink
             v-for="({ to, label }) in $options.userNavigation"
             :key="to"
             :to="localePath(to)"
-            class="cmw-block cmw-mb-4 cmw-w-max cmw-text-body hover:(cmw-text-primary cmw-font-bold)"
+            class="block mb-4 w-max text-body hover:(text-primary font-bold)"
           >
             {{ $t(label) }}
           </NuxtLink>
@@ -142,12 +142,12 @@ export default {
     </div>
     <div
       v-if="!customer.id"
-      class="cmw-min-w-[425px] cmw-bg-gray-lightest cmw-py-4 cmw-flex cmw-justify-center cmw-gap-4 cmw-text-sm cmw-px-8 cmw-w-max"
+      class="min-w-[425px] bg-gray-lightest py-4 flex justify-center gap-4 text-sm px-8 w-max"
     >
       <div>{{ $t("navbar.user.notRegisteredYet") }}</div>
       <NuxtLink
         :to="localePath('/login')"
-        class="text-uppercase cmw-text-primary-400"
+        class="text-uppercase text-primary-400"
       >
         {{ $t("navbar.user.register") }}
       </NuxtLink>

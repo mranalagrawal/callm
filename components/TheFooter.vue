@@ -112,35 +112,35 @@ export default defineComponent({
 </script>
 
 <template>
-  <footer class="cmw-bg-gray-light print:cmw-hidden">
-    <div v-if="!!footerData.length && $config.STORE !== 'CMW_UK'" class="md:cmw-px-4">
-      <div class="cmw-h2 cmw-text-center cmw-my-4 cmw-pt-4">
+  <footer class="bg-gray-light print:hidden">
+    <div v-if="!!footerData.length && $config.STORE !== 'CMW_UK'" class="md:px-4">
+      <div class="h2 text-center my-4 pt-4">
         {{ $t('footer.explore') }}
       </div>
       <div v-if="!isDesktop">
         <div v-for="item in footerData" :key="item.id">
           <NuxtLink
             :to="localePath(item?.primary?.link || '/')"
-            class="cmw-text-uppercase"
+            class="text-uppercase"
           >
             {{ item?.primary?.title }}
           </NuxtLink>
           <hr>
         </div>
       </div>
-      <div v-else class="cmw-flex">
+      <div v-else class="flex">
         <div v-for="item in footerData" :key="item.id">
           <NuxtLink
             :to="localePath(item?.primary?.link || '/')"
             style="color: #176a62"
-            class="cmw-block cmw-text-uppercase cmw-pb-8"
+            class="block text-uppercase pb-8"
           >
             {{ item?.primary?.title }}
           </NuxtLink>
           <p
             v-for="link in item.items"
             :key="`inner_${link.name}`"
-            class="cmw-pb-0"
+            class="pb-0"
           >
             <NuxtLink :to="localePath(link?.link || '/')">
               {{ link?.name }}
@@ -152,15 +152,15 @@ export default defineComponent({
 
     <div
       v-if="footerInfoData"
-      class="cmw-bg-secondary cmw-text-secondary-100 cmw-p-4 cmw-mt-4"
+      class="bg-secondary text-secondary-100 p-4 mt-4"
     >
-      <div class="cmw-max-w-screen-xl cmw-mx-auto cmw-py-4 cmw-px-4 cmw-mt-4">
-        <div v-if="$config.STORE === 'CMW'" class="cmw-flex cmw-justify-end">
+      <div class="max-w-screen-xl mx-auto py-4 px-4 mt-4">
+        <div v-if="$config.STORE === 'CMW'" class="flex justify-end">
           <NuxtLink
-            class="cmw-uppercase cmw-text-white cmw-text-sm mr-3"
+            class="uppercase text-white text-sm mr-3"
             :to="switchLocalePath(themeConfig[$config.STORE].defaultLocale)"
             :class="
-              $i18n.locale === themeConfig[$config.STORE].defaultLocale ? 'font-weight-bold' : ''
+              $i18n.locale === themeConfig[$config.STORE].defaultLocale ? 'font-bold' : ''
             "
           >
             {{ themeConfig[$config.STORE].defaultLocale }}
@@ -168,50 +168,50 @@ export default defineComponent({
 
           <NuxtLink
             v-if="themeConfig[$config.STORE].defaultLocale !== 'en'"
-            class="text-uppercase cmw-text-white cmw-text-sm mr-3"
+            class="text-uppercase text-white text-sm mr-3"
             :to="switchLocalePath('en')"
-            :class="$i18n.locale === 'en' ? 'font-weight-bold' : ''"
+            :class="$i18n.locale === 'en' ? 'font-bold' : ''"
           >
             EN
           </NuxtLink>
           <NuxtLink
             v-else
-            class="cmw-uppercase cmw-text-white cmw-text-sm cmw-mr-3"
+            class="uppercase text-white text-sm mr-3"
             :to="switchLocalePath('it')"
-            :class="$i18n.locale === 'it' ? 'font-weight-bold' : ''"
+            :class="$i18n.locale === 'it' ? 'font-bold' : ''"
           >
             IT
           </NuxtLink>
         </div>
         <div>
           <VueSvgIcon :data="logo" color="white" width="180" height="auto" />
-          <p class="cmw-mt-2 cmw-text-sm cmw-text-secondary-100" v-text="footerInfoData.description" />
+          <p class="mt-2 text-sm text-secondary-100" v-text="footerInfoData.description" />
         </div>
-        <div class="cmw-grid cmw-gap-8 cmw-mt-4 md:cmw-grid-cols-2">
+        <div class="grid gap-8 mt-4 md:grid-cols-2">
           <div>
-            <VueSvgIcon :data="emailIcon" class="cmw-mr-2" color="white" width="30" height="30" />
-            <span class="cmw-text-secondary-100 cmw-text-sm">{{ $t('newsletter.label') }}</span>
-            <p class="cmw-text-secondary-100">
+            <VueSvgIcon :data="emailIcon" class="mr-2" color="white" width="30" height="30" />
+            <span class="text-secondary-100 text-sm">{{ $t('newsletter.label') }}</span>
+            <p class="text-secondary-100">
               {{ footerInfoData.newsletter_cta }}
             </p>
-            <form class="cmw-mb-4" @submit.prevent="handleSubmit">
-              <div class="cmw-flex cmw-gap-2 cmw-items-stretch cmw-p-2 cmw-border cmw-border-gray-light cmw-rounded-sm">
+            <form class="mb-4" @submit.prevent="handleSubmit">
+              <div class="flex gap-2 items-stretch p-2 border border-gray-light rounded-sm">
                 <input
                   v-model="email"
                   aria-label="enter email"
                   type="email"
-                  class="cmw-flex-1 cmw-bg-transparent cmw-text-white"
+                  class="flex-1 bg-transparent text-white"
                   required
                 >
                 <Button
                   size="xs"
                   type="submit"
-                  class="cmw-w-max cmw-ml-auto cmw-justify-end"
+                  class="w-max ml-auto justify-end"
                   variant="default-inverse"
                   :label="$t('common.cta.subscribe')"
                 />
               </div>
-              <div class="cmw-mt-3">
+              <div class="mt-3">
                 <div class="custom-checkbox">
                   <input
                     id="customCheck1"
@@ -221,12 +221,12 @@ export default defineComponent({
                     required
                   >
                   <label
-                    class="custom-control-label cmw-text-sm cmw-pl-3"
+                    class="custom-control-label text-sm pl-3"
                     for="customCheck1"
                   >{{ footerInfoData.first_check }}
-                    <NuxtLink :to="localePath('/privacy')" class="cmw-text-white">Privacy Policy</NuxtLink></label>
+                    <NuxtLink :to="localePath('/privacy')" class="text-white">Privacy Policy</NuxtLink></label>
                 </div>
-                <div v-show="newsletter" class="cmw-mt-3">
+                <div v-show="newsletter" class="mt-3">
                   <div class="custom-checkbox">
                     <input
                       id="customCheck2"
@@ -235,75 +235,75 @@ export default defineComponent({
                       class="custom-control-input"
                     >
                     <label
-                      class="custom-control-label cmw-relative cmw-text-sm cmw-pl-3"
+                      class="custom-control-label relative text-sm pl-3"
                       for="customCheck2"
                     >{{ footerInfoData.second_check }}
-                      <NuxtLink :to="localePath('/privacy')" class="cmw-text-white">Privacy Policy</NuxtLink></label>
+                      <NuxtLink :to="localePath('/privacy')" class="text-white">Privacy Policy</NuxtLink></label>
                   </div>
                 </div>
               </div>
             </form>
           </div>
-          <div class="cmw-grid cmw-gap-4 md:cmw-grid-cols-3 cmw-text-sm">
-            <div class="cmw-flex cmw-flex-col cmw-gap-2">
-              <div class="cmw-h5 cmw-text-secondary-100 cmw-mb-4">
+          <div class="grid gap-4 md:grid-cols-3 text-sm">
+            <div class="flex flex-col gap-2">
+              <div class="h5 text-secondary-100 mb-4">
                 {{ $t('footer.company') }}
               </div>
               <NuxtLink
                 :to="localePath('/about-us')"
-                class="cmw-block  cmw-text-white"
+                class="block  text-white"
               >
                 {{ $t('footer.who') }}
               </NuxtLink>
             </div>
-            <div class="cmw-flex cmw-flex-col cmw-gap-2">
-              <div class="cmw-h5 cmw-text-secondary-100 cmw-mb-4">
+            <div class="flex flex-col gap-2">
+              <div class="h5 text-secondary-100 mb-4">
                 {{ $t('footer.services') }}
               </div>
               <NuxtLink
                 :to="localePath('/restaurants-wineshops')"
-                class="cmw-block  cmw-text-white"
+                class="block  text-white"
               >
                 {{ $t('footer.restaurantsAndWineshops') }}
               </NuxtLink>
             </div>
-            <div class="cmw-flex cmw-flex-col cmw-gap-2">
-              <div class="cmw-h5 cmw-text-secondary-100 cmw-mb-4">
+            <div class="flex flex-col gap-2">
+              <div class="h5 text-secondary-100 mb-4">
                 {{ $t('footer.support') }}
               </div>
               <NuxtLink
                 :to="localePath('/shipping')"
-                class="cmw-block  cmw-text-white"
+                class="block  text-white"
               >
                 {{ $t('footer.shipping') }}
               </NuxtLink>
               <NuxtLink
                 :to="localePath('/payments')"
-                class="cmw-block  cmw-text-white"
+                class="block  text-white"
               >
                 {{ $t('footer.payments') }}
               </NuxtLink>
               <NuxtLink
                 :to="localePath('/terms-of-sales')"
-                class="cmw-block  cmw-text-white"
+                class="block  text-white"
               >
                 {{ $t('footer.termsOfSales') }}
               </NuxtLink>
               <NuxtLink
                 :to="localePath('/privacy')"
-                class="cmw-block  cmw-text-white"
+                class="block  text-white"
               >
                 Privacy policy
               </NuxtLink>
               <NuxtLink
                 :to="localePath('/cookie')"
-                class="cmw-block  cmw-text-white"
+                class="block  text-white"
               >
                 Cookie policy
               </NuxtLink>
               <NuxtLink
                 :to="localePath('/contact')"
-                class="cmw-block  cmw-text-white"
+                class="block  text-white"
               >
                 {{ $t('footer.contacts') }}
               </NuxtLink>
@@ -312,15 +312,15 @@ export default defineComponent({
         </div>
         <FooterSocials />
 
-        <hr class="cmw-bg-secondary-800 cmw-my-4 cmw-border-0 cmw-h-px">
+        <hr class="bg-secondary-800 my-4 border-0 h-px">
 
-        <div class="md:cmw-flex cmw-text-center cmw-justify-center">
-          <div class="cmw-flex cmw-gap-2 cmw-items-center cmw-justify-center">
+        <div class="md:flex text-center justify-center">
+          <div class="flex gap-2 items-center justify-center">
             <VueSvgIcon :data="walletIcon" color="white" width="30" height="30" />
             <span>{{ $t('footer.paymentMethods') }}</span>
           </div>
           <div
-            class="cmw-grid cmw-grid-cols-3 md:cmw-grid-cols-6 cmw-justify-items-center cmw-items-center cmw-content-center cmw-px-8 cmw-py-4"
+            class="grid grid-cols-3 md:grid-cols-6 justify-items-center items-center content-center px-8 py-4"
           >
             <img
               src="https://cdn.shopify.com/s/files/1/0578/7497/2719/files/american-express.png?v=1677682511&format=webp"
@@ -356,8 +356,8 @@ export default defineComponent({
           </div>
         </div>
 
-        <hr class="cmw-bg-secondary-800 cmw-my-4 cmw-border-0 cmw-h-px">
-        <div class="cmw-text-center cmw-mt-4 cmw-text-xs cmw-text-secondary-100 cmw-px-4">
+        <hr class="bg-secondary-800 my-4 border-0 h-px">
+        <div class="text-center mt-4 text-xs text-secondary-100 px-4">
           {{ footerInfoData.info }}
         </div>
       </div>

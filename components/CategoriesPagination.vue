@@ -97,36 +97,36 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="cmw-grid cmw-grid-cols-[auto_auto_auto] cmw-items-center cmw-justify-center cmw-mt-8">
+  <div class="grid grid-cols-[auto_auto_auto] items-center justify-center mt-8">
     <div class="">
       <Button
-        class="cmw-uppercase"
+        class="uppercase"
         :aria-label="$t('common.cta.prevPage')"
         :disabled="pagination.currentPage.toString() === '1'"
         type="button" variant="text" @click.native="changePage(Number(pagination.prevPage))"
       >
         <VueSvgIcon width="18" height="18" :data="chevronLeftIcon" />
-        <span class="<md:cmw-hidden">{{ $t('common.cta.prevPage') }}</span>
+        <span class="<md:hidden">{{ $t('common.cta.prevPage') }}</span>
       </Button>
     </div>
-    <div class="cmw-flex">
+    <div class="flex">
       <div v-for="n in pagination.pageNumbers" :key="n" class="cl">
         <Button
           :label="`${n}`" variant="text"
-          class="cmw-relative cmw-text-base cmw-px-3"
-          :class="{ 'cmw-text-primary cmw-font-bold after:(cmw-content-DEFAULT cmw-absolute cmw-bottom-0 cmw-h-1 cmw-bg-primary cmw-w-full)': pagination.currentPage === n }"
+          class="relative text-base px-3"
+          :class="{ 'text-primary font-bold after:(content-DEFAULT absolute bottom-0 h-1 bg-primary w-full)': pagination.currentPage === n }"
           @click.native="changePage(n)"
         />
       </div>
     </div>
     <div class="">
       <Button
-        class="cmw-uppercase"
+        class="uppercase"
         :disabled="+pagination.currentPage >= pagination.totalPages"
         :aria-label="$t('common.cta.nextPage')"
         type="button" variant="text" @click.native="changePage(Number(pagination.nextPage))"
       >
-        <span class="<md:cmw-hidden">{{ $t('common.cta.nextPage') }}</span>
+        <span class="<md:hidden">{{ $t('common.cta.nextPage') }}</span>
         <VueSvgIcon width="18" height="18" :data="chevronRightIcon" />
       </Button>
     </div>

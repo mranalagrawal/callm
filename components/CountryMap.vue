@@ -47,15 +47,15 @@ export default {
 </script>
 
 <template>
-  <div class="cmw-w-full cmw-relative cmw-h-400px cmw-my-8">
-    <div class="cmw-flex cmw-h-400px md:(cmw-max-w-[60%] cmw-mx-auto)">
+  <div class="w-full relative h-400px my-8">
+    <div class="flex h-400px md:(max-w-[60%] mx-auto)">
       <VueSvgIcon
         v-if="country && currentMap" ref="mapRef"
-        class="!cmw-h-full cmw-max-h-360px cmw-my-auto"
+        class="!h-full max-h-360px my-auto"
         :data="require(`@/assets/svg/maps/${currentMap}`)" width="100%" original
       />
     </div>
     <!-- Todo: Handle width dynamically based on logo's orientation -->
-    <img v-if="logo" :src="logo" :alt="logo" class="cmw-absolute cmw-top-4 cmw-right-4 cmw-max-w-[100px]">
+    <img v-if="logo" :src="logo" :alt="logo" class="absolute top-4 right-4 max-w-[100px]">
   </div>
 </template>

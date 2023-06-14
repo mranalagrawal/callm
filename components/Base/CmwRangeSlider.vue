@@ -75,40 +75,40 @@ export default {
 
 <template>
   <div>
-    <div class="cmw-flex cmw-gap-4 cmw-pt-4">
-      <div class="cmw-relative">
-        <label class="cmw-sr-only" for="input-field-min">Minimum Value</label>
+    <div class="flex gap-4 pt-4">
+      <div class="relative">
+        <label class="sr-only" for="input-field-min">Minimum Value</label>
         <input
           id="input-field-min" v-model="minValue" type="text" name="min" placeholder="min value"
-          class="cmw-px-4 cmw-text-gray-dark cmw-py-3 cmw-w-full cmw-bg-transparent cmw-border cmw-border-gray-light
-              cmw-placeholder-transparent cmw-rounded"
+          class="px-4 text-gray-dark py-3 w-full bg-transparent border border-gray-light
+              placeholder-transparent rounded"
           @input="handleInput"
         >
-        <span class="cmw-transform cmw-absolute cmw-top-1/2 cmw-right-4 cmw-translate-y-[-50%] cmw-text-primary" v-text="currencySymbol" />
+        <span class="transform absolute top-1/2 right-4 translate-y-[-50%] text-primary" v-text="currencySymbol" />
       </div>
-      <div class="cmw-relative">
-        <label class="cmw-sr-only" for="input-field-min">Maximum Value</label>
+      <div class="relative">
+        <label class="sr-only" for="input-field-min">Maximum Value</label>
         <input
           id="input-field-max" v-model="maxValue" type="text" name="max" :max="maxValueTotal" placeholder="max value"
-          class="cmw-px-4 cmw-text-gray-dark cmw-py-3 cmw-w-full cmw-bg-transparent cmw-border cmw-border-gray-light
-              cmw-placeholder-transparent cmw-rounded"
+          class="px-4 text-gray-dark py-3 w-full bg-transparent border border-gray-light
+              placeholder-transparent rounded"
           @input="handleInput"
         >
-        <span class="cmw-transform cmw-absolute cmw-top-1/2 cmw-right-4 cmw-translate-y-[-50%] cmw-text-primary" v-text="currencySymbol" />
+        <span class="transform absolute top-1/2 right-4 translate-y-[-50%] text-primary" v-text="currencySymbol" />
       </div>
     </div>
     <div class="wrap wrap--2x dots">
-      <div class="cmw-absolute cmw-transform cmw-translate-y-[-50%] cmw-w-full cmw-top-1/2 cmw-flex cmw-justify-between cmw-items-center cmw-h-[3px]">
-        <div class="cmw-bg-primary-100 cmw-h-px" :style="{ width: `${minWidth}%` }" />
-        <div class="cmw-bg-primary cmw-h-full" :style="{ flex: 1 }" />
-        <div class="cmw-bg-primary-100 cmw-h-px" :style="{ width: `calc(100% - ${maxWidth}%)` }" />
+      <div class="absolute transform translate-y-[-50%] w-full top-1/2 flex justify-between items-center h-[3px]">
+        <div class="bg-primary-100 h-px" :style="{ width: `${minWidth}%` }" />
+        <div class="bg-primary h-full" :style="{ flex: 1 }" />
+        <div class="bg-primary-100 h-px" :style="{ width: `calc(100% - ${maxWidth}%)` }" />
       </div>
-      <label class="cmw-sr-only" for="range-min">minimum Value</label>
+      <label class="sr-only" for="range-min">minimum Value</label>
       <input id="range-min" v-model="minValue" type="range" :min="minValueTotal" :max="maxValueTotal" @input="handleInputRange">
-      <label class="cmw-sr-only" for="range-max">maximum Value</label>
+      <label class="sr-only" for="range-max">maximum Value</label>
       <input id="range-max" v-model="maxValue" type="range" :min="minValueTotal" :max="maxValueTotal" @input="handleInputRange">
     </div>
-    <div class="cmw-flex cmw-justify-between cmw-text-xs cmw-text-primary-100 cmw-mt-2">
+    <div class="flex justify-between text-xs text-primary-100 mt-2">
       <span v-text="minValueTotal" />
       <span v-text="maxValueTotal" />
     </div>

@@ -80,23 +80,23 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="cmw-mt-2">
+  <div class="mt-2">
     <div v-if="mappedProducts.length > 0" class="">
-      <div class="cmw-flex cmw-gap-2 cmw-items-center cmw-justify-between cmw-mb-8">
+      <div class="flex gap-2 items-center justify-between mb-8">
         <div>
           <strong>{{ total }}</strong> <span>{{ $t('search.results') }}</span>
         </div>
-        <div class="cmw-hidden cmw-items-center cmw-mr-auto cmw-gap-2 lg:cmw-flex">
+        <div class="hidden items-center mr-auto gap-2 lg:flex">
           <div
             v-for="layout in availableLayouts"
             :key="layout"
-            class="cmw-relative"
+            class="relative"
           >
             <input
               :id="layout"
               v-model="selectedLayout"
               :aria-label="`select ${layout}`"
-              class="peer cmw-appearance-none cmw-absolute cmw-w-full cmw-h-full cmw-z-dante"
+              class="peer appearance-none absolute w-full h-full z-dante"
               type="radio"
               name="layout"
               :value="layout"
@@ -104,11 +104,11 @@ export default defineComponent({
             <label
               :for="layout"
               class="
-              cmw-flex cmw-rounded-sm cmw-shadow cmw-p-[0.40rem] cmw-mb-0 cmw-bg-white cmw-cursor-pointer
-              peer-checked:(cmw-bg-gray-lightest cmw-shadow-none)"
+              flex rounded-sm shadow p-[0.40rem] mb-0 bg-white cursor-pointer
+              peer-checked:(bg-gray-lightest shadow-none)"
             >
               <VueSvgIcon
-                class="cmw-m-auto"
+                class="m-auto"
                 :data="require(`@/assets/svg/layout-${layout}.svg`)"
                 width="20"
                 height="20"
@@ -160,14 +160,14 @@ export default defineComponent({
         <div
           v-for="(result, idx) in mappedProducts"
           :key="result.shopify_product_id"
-          class="cmw-mb-4"
+          class="mb-4"
         >
           <ProductBoxHorizontal :product="result" :position="idx + 1" />
         </div>
       </div>
       <div
-        v-else class="cmw-grid cmw-grid-cols-1 cmw-gap-4 phone-md:(cmw-grid-cols-2 cmw-gap-2)
-         sm:(cmw-grid-cols-2 cmw-gap-3) lg:(cmw-grid-cols-3 cmw-gap-4) desktop-wide:cmw-grid-cols-4"
+        v-else class="grid grid-cols-1 gap-4 phone-md:(grid-cols-2 gap-2)
+         sm:(grid-cols-2 gap-3) lg:(grid-cols-3 gap-4) desktop-wide:grid-cols-4"
       >
         <div
           v-for="(result, idx) in mappedProducts"
@@ -178,7 +178,7 @@ export default defineComponent({
       </div>
     </div>
     <div v-else>
-      <p class="cmw-text-lg cmw-font-light cmw-mt-5">
+      <p class="text-lg font-light mt-5">
         {{ $t('search.noResultsAlert') }}
       </p>
       <div v-html="$t('search.noResultsMessage')" />

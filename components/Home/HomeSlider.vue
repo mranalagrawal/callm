@@ -64,8 +64,8 @@ export default {
 </script>
 
 <template>
-  <div ref="wrapperEl" class="cmw-my-5">
-    <h2 class="cmw-text-center" v-text="title" />
+  <div ref="wrapperEl" class="my-5">
+    <h2 class="text-center" v-text="title" />
 
     <ClientOnly v-if="!!slides.length" placeholder="Loading...">
       <carousel-3d
@@ -75,7 +75,7 @@ export default {
         :autoplay="true"
         :autoplay-timeout="3000"
         :clickable="true"
-        class="cmw-relative"
+        class="relative"
       >
         <slide
           v-for="(slide, i) in slides"
@@ -84,20 +84,20 @@ export default {
           style="border-radius: 10px; border: none"
         >
           <div
-            class="cmw-relative cmw-h-full cmw-w-full cmw-p-4 cmw-text-white slide-content"
+            class="relative h-full w-full p-4 text-white slide-content"
             :style="{
               background: `url(${mask}),url('${slide.image.url}')`,
             }"
           >
-            <NuxtLink :to="slide.link" class="cmw-block cmw-h3 cmw-mt-4 cmw-max-w-[30%]">
-              <span class="cmw-text-white">{{ slide.title }}</span>
+            <NuxtLink :to="slide.link" class="block h3 mt-4 max-w-[30%]">
+              <span class="text-white">{{ slide.title }}</span>
             </NuxtLink>
 
-            <Button :to="slide.link" variant="ghost-inverse" class="cmw-w-max cmw-absolute cmw-bottom-6">
+            <Button :to="slide.link" variant="ghost-inverse" class="w-max absolute bottom-6">
               {{ slide.cta }}
             </Button>
           </div>
-          <div class="cmw-w-full loader" />
+          <div class="w-full loader" />
         </slide>
       </carousel-3d>
     </ClientOnly>
