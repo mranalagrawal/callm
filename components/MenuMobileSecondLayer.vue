@@ -39,7 +39,7 @@ export default {
 
 <template>
   <div class="w-full bg-white">
-    <div class="overflow-auto max-h-[calc(100vh_-_var(--top-banner-height))] bg-white js-scroll">
+    <div class="overflow-auto max-h-[calc(100vh_-_var(--cmw-top-banner-height))] bg-white js-scroll">
       <!-- Sticky Header -->
       <div class="sticky bg-white z-base flex gap-2 justify-between items-center top-0 left-0 pt-2 px-4">
         <ButtonIcon :icon="chevronLeftIcon" variant="icon" :size="22" @click.native="closeSidebar(false)" />

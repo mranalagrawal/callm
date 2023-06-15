@@ -22,7 +22,7 @@ export default defineComponent({
 
 <template>
   <div
-    class="print:hidden w-screen px-4 flex items-center justify-center h-$top-banner-height text-center
+    class="print:hidden w-screen px-4 flex items-center justify-center h-$cmw-top-banner-height text-center
      bg-secondary fixed top-0 left-0 z-1050 text-white uppercase py-1
      overline-1 md:overline-2"
   >

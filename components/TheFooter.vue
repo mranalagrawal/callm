@@ -357,10 +357,6 @@ export default defineComponent({
         </div>
 
         <hr class="bg-secondary-800 my-4 border-0 h-px">
-        <NuxtLink to="/etna-bianco-graci-2016-P7265.htm">
-          t
-        </NuxtLink>
-        <hr class="bg-secondary-800 my-4 border-0 h-px">
         <div class="text-center mt-4 text-xs text-secondary-100 px-4">
           {{ footerInfoData.info }}
         </div>

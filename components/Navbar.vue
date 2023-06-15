@@ -407,7 +407,7 @@ export default {
       </transition>
     </div>
     <transition name="menu-mobile">
-      <div v-if="mobileLogin" class="fixed w-screen top-0 left-0 h-screen bg-white z-amenadiel pt-$top-banner-height">
+      <div v-if="mobileLogin" class="fixed w-screen top-0 left-0 h-screen bg-white z-amenadiel pt-$cmw-top-banner-height">
         <Button
           variant="text"
           class="gap-2 pl-2 pr-3 py-2 justify-between"
