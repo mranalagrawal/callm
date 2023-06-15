@@ -51,7 +51,7 @@ export default {
       </button>
     </div>
     <transition name="menu-mobile-second-level" @after-enter="handleAfterEnter">
-      <div v-if="!!Object.keys(activeItem).length" class="fixed top-0 left-0 w-full z-amenadiel pt-$top-banner-height">
+      <div v-if="!!Object.keys(activeItem).length" class="fixed top-0 left-0 w-full z-amenadiel pt-$cmw-top-banner-height">
         <MenuMobileSecondLayer :menu="activeItem" @close-sidebar="closeSidebar" />
       </div>
     </transition>
