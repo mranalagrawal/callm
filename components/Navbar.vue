@@ -30,20 +30,20 @@ export default {
     }
 
     return {
-      isDesktop,
-      customer,
-      navbar,
-      menuBarRef,
-      showMobileButton,
-      logo,
       cartIcon,
-      closeIcon,
-      menuIcon,
-      userIcon,
-      searchIcon,
-      heartIcon,
       chevronLeftIcon,
+      closeIcon,
+      customer,
       handleShowMobileButton,
+      heartIcon,
+      isDesktop,
+      logo,
+      menuBarRef,
+      menuIcon,
+      navbar,
+      searchIcon,
+      showMobileButton,
+      userIcon,
     }
   },
   data() {
@@ -149,6 +149,10 @@ export default {
         '<span class=\'font-bold\'>$1</span>',
       )
     },
+    handleGoToLogin() {
+      this.mobileLogin = false
+      this.$router.push(this.localeLocation('/login'))
+    },
     toggleMobileLogin() {
       this.mobileLogin = !this.mobileLogin
     },
@@ -160,12 +164,6 @@ export default {
       this.sideBarTop = `${this.$refs.menuBarRef.getBoundingClientRect().bottom}px`
       this.isMobileMenuOpen = this.isSidebarOpen = !this.isSidebarOpen
       this.lockBody()
-    },
-    showSidebar() {
-      this.$refs.sidebar.show()
-    },
-    hideSidebar() {
-      this.$refs.sidebar.hide()
     },
     async suggest() {
       this.showSearchSuggestions = true
@@ -415,7 +413,7 @@ export default {
           @click.native="toggleMobileLogin"
         >
           <VueSvgIcon :data="chevronLeftIcon" color="#E6362E" width="30" height="auto" />
-          <span>{{ customer.firstName ? customer.firstName.split(" ")[0] : "Account" }}</span>
+          <span class="truncate max-w-100px">{{ customer.firstName ? customer.firstName : "Account" }}</span>
           <VueSvgIcon :data="closeIcon" color="#E6362E" width="30" height="auto" />
         </Button>
         <div v-if="!user">
@@ -423,16 +421,17 @@ export default {
             {{ $t("navbar.user.signIn") }}
           </div>
           <div class="px-2">
-            <LoginForm width="340px" />
+            <LoginForm />
           </div>
-          <div class="bg-gray-lightest p-2 text-center">
+          <div class="bg-gray-lightest p-2 text-center flex items-center justify-center">
             {{ $t("navbar.user.notRegisteredYet") }}
-            <NuxtLink
-              to="/login"
-              class="uppercase text-primary-400"
+            <Button
+              variant="text"
+              class="w-max uppercase text-primary-400"
+              @click.native="handleGoToLogin"
             >
               {{ $t("navbar.user.register") }}
-            </NuxtLink>
+            </Button>
           </div>
         </div>
         <div

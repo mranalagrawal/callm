@@ -52,7 +52,7 @@ export default {
     slim
   >
     <form
-      class="px-4 pt-3 pb-2 mx-auto"
+      class="px-4 pt-3 pb-2 md:w-3/4 mx-auto"
       @submit.prevent="handleSubmit(onSubmit)"
     >
       <InputField

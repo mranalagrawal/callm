@@ -11,9 +11,17 @@ export default {
   name: 'UserActions',
   setup() {
     const customerStore = useCustomer()
-    const { customer, favoritesCount } = storeToRefs(customerStore)
+    const {
+      customer,
+      favoritesCount,
+    } = storeToRefs(customerStore)
 
-    return { customerStore, customer, favoritesCount, getLocaleFromCurrencyCode }
+    return {
+      customerStore,
+      customer,
+      favoritesCount,
+      getLocaleFromCurrencyCode,
+    }
   },
   data() {
     return {
@@ -55,6 +63,7 @@ export default {
       setTimeout(() => {
         if (this.hoveringComponent)
           return
+
         if (!this.hoveringComponent && !this.hoveringAction)
           this.currentComponent = false
       }, 150)
@@ -111,12 +120,8 @@ export default {
             width="32px"
             height="32px"
           />
-          <span class="block my-0 font-light text-sm">
-            {{
-              customer.id
-                ? customer.firstName.split(" ")[0]
-                : $t("navbar.user.signIn")
-            }}
+          <span class="block my-0 font-light text-sm truncate max-w-100px">
+            {{ customer.id ? customer.firstName : $t('navbar.user.signIn') }}
           </span>
         </span>
       </button>
@@ -130,7 +135,8 @@ export default {
           <span v-if="cartItems">
             <span class="block text-xxs text-left mb-1">{{ $t('cartTotal') }}</span>
             <i18n-n
-              class="flex items-end leading-none" :value="Number(cartTotalAmountObj.value)" :format="{ key: 'currency' }"
+              class="flex items-end leading-none" :value="Number(cartTotalAmountObj.value)"
+              :format="{ key: 'currency' }"
               :locale="getLocaleFromCurrencyCode($config.STORE === 'CMW_UK' ? 'GBP' : 'EUR')"
             >
               <template #currency="slotProps">
@@ -158,7 +164,7 @@ export default {
               v-if="!cartItems"
               class="block my-0 font-light text-sm"
             >
-              {{ $t("cart") }}
+              {{ $t('cart') }}
             </span>
             <Badge
               v-if="cartItems"
