@@ -109,9 +109,9 @@ export default {
       logout: 'Logout',
       signIn: 'Sign in',
       register: 'Register',
-      notRegisteredYet: 'Don\'t have a profile yet?',
-      alreadyRegistered: 'I already have an account',
-      forgotPassword: 'Did you forget your password?',
+      notRegisteredYet: 'Vous n\'avez pas encore de profil ?',
+      alreadyRegistered: 'Je ai déjà un compte',
+      forgotPassword: 'Avez-vous oublié votre mot de passe?',
     },
   },
   profile: {
