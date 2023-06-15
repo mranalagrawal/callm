@@ -66,55 +66,55 @@ export default defineComponent({
 
 <template>
   <div
-    class="c-cartLineItem cmw-mx-3 cmw-bg-white cmw-py-4 cmw-border-b cmw-border-b-gray-light"
+    class="c-cartLineItem mx-3 bg-white py-4 border-b border-b-gray-light"
   >
     <div class="c-cartLineItem__image">
-      <img class="cmw-w-[min(100%,_46px)] cmw-m-inline-auto" :src="item.image" :alt="item.image">
+      <img class="w-[min(100%,_46px)] m-inline-auto" :src="item.image" :alt="item.image">
     </div>
     <div class="c-cartLineItem__description">
-      <p class="cmw-text-sm cmw-font-bold">
+      <p class="text-sm font-bold">
         {{ item.title }}
       </p>
     </div>
     <div class="c-cartLineItem__quantity">
-      <div class="cmw-grid cmw-grid-cols-[32px_40px_32px] cmw-h-[32px] cmw-items-center">
+      <div class="grid grid-cols-[32px_40px_32px] h-[32px] items-center">
         <button
-          class="cmw-flex cmw-transition-colors cmw-w-full cmw-h-full cmw-bg-white cmw-rounded-sm cmw-border-2 cmw-border-primary
-            disabled:(cmw-border-gray-light cmw-opacity-50 cmw-cursor-not-allowed)"
+          class="flex transition-colors w-full h-full bg-white rounded-sm border-2 border-primary
+            disabled:(border-gray-light opacity-50 cursor-not-allowed)"
           :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
           @click="decreaseQuantity"
         >
-          <VueSvgIcon class="cmw-m-auto" :data="subtractIcon" width="14" height="14" color="#992545" />
+          <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="#992545" />
         </button>
-        <span class="cmw-text-center">{{ userCartQuantity }}</span>
+        <span class="text-center">{{ userCartQuantity }}</span>
         <button
-          class="cmw-flex cmw-transition-colors cmw-w-full cmw-h-full cmw-bg-white cmw-rounded-sm cmw-border-2 cmw-border-primary
-               disabled:(cmw-border-gray-light cmw-opacity-50 cmw-cursor-not-allowed)"
+          class="flex transition-colors w-full h-full bg-white rounded-sm border-2 border-primary
+               disabled:(border-gray-light opacity-50 cursor-not-allowed)"
           :disabled="!canAddMore"
           :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
           @click="increaseQuantity"
         >
-          <VueSvgIcon class="cmw-m-auto" :data="addIcon" width="14" height="14" color="#992545" />
+          <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="#992545" />
         </button>
       </div>
     </div>
     <div class="c-cartLineItem__price">
       <div
         v-if="item.singleAmount !== item.singleAmountFullPrice"
-        class="cmw-text-sm cmw-text-right cmw-text-gray"
+        class="text-sm text-right text-gray"
         style="text-decoration: line-through"
       >
         {{ (item.quantity * item.singleAmountFullPrice).toFixed(2) }}
         {{ $config.STORE === 'CMW_UK' ? '£' : '€' }}
       </div>
 
-      <div class="cmw-font-bold cmw-text-lg cmw-text-right">
+      <div class="font-bold text-lg text-right">
         {{ (item.quantity * item.singleAmount).toFixed(2) }}
         {{ $config.STORE === 'CMW_UK' ? '£' : '€' }}
       </div>
     </div>
-    <div class="c-cartLineItem__cta cmw-absolute md:cmw-relative cmw-top-0 cmw-right-0">
-      <ButtonIcon class="cmw-m-auto" :icon="deleteIcon" variant="icon" :size="28" @click.native="removeLine" />
+    <div class="c-cartLineItem__cta absolute md:relative top-0 right-0">
+      <ButtonIcon class="m-auto" :icon="deleteIcon" variant="icon" :size="28" @click.native="removeLine" />
     </div>
   </div>
 </template>

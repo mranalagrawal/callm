@@ -1,13 +1,15 @@
 import type { Plugin } from '@nuxt/types'
+import { storeToRefs } from 'pinia'
 import type { TISO639, TSalesChannel, TStores } from '~/config/themeConfig'
 import themeConfig from '~/config/themeConfig'
+import { useCustomer } from '~/store/customer'
 import type { IMoneyV2 } from '~/types/common-objects'
 import type { IBaseProductMapped, IGiftCardMapped, IProductBreadcrumbs, IProductMapped, TProductFeatures } from '~/types/product'
 import { pick } from '~/utilities/arrays'
 import { getCountryFromStore } from '~/utilities/currency'
 import { cleanUrl } from '~/utilities/strings'
 
-type ObjType<T> = {
+export type ObjType<T> = {
   [key in KeyType]: T;
 }
 
@@ -53,6 +55,8 @@ declare module 'vuex/types/index' {
 }
 
 const productMapping: Plugin = ({ $config, i18n }, inject) => {
+  const customerStore = useCustomer()
+  const { getCustomerType } = storeToRefs(customerStore)
   const store: TStores = $config.STORE || 'CMW_UK'
   const sale_channel: TSalesChannel = themeConfig[store]?.salesChannel || 'cmw_uk_b2c'
   const lang: TISO639 = i18n.locale as TISO639
@@ -156,7 +160,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
             favourite: p._source.favourite ? 'yes' : 'no',
             artisanal: p._source.artisanal ? 'yes' : 'no',
             rarewine: p._source.rarewine ? 'yes' : 'no',
-            // price: finalPrice.value, We have no access to pinia here
+            price: priceLists[sale_channel] && priceLists[sale_channel][getCustomerType.value], // We have no access to pinia here
             compare_at_price: Number(compareAtPrice.amount),
             stock_status: p._source.quantity[store] > 0 ? 'in_stock' : 'out_of_stock',
             quantity: 1,
@@ -230,7 +234,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
             favourite: details.favourite ? 'yes' : 'no',
             artisanal: details.artisanal ? 'yes' : 'no',
             rarewine: details.rarewine ? 'yes' : 'no',
-            // price: priceLists[sale_channel][getCustomerType.value], We have no access to pinia here
+            price: priceLists[sale_channel] && priceLists[sale_channel][getCustomerType.value],
             compare_at_price: Number(compareAtPrice.amount),
             stock_status: p.totalInventory > 0 ? 'in_stock' : 'out_of_stock',
             quantity: 1,

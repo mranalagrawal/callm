@@ -106,7 +106,7 @@ export default {
 
 <template>
   <div>
-    <div class="c-filterBar cmw-flex cmw-items-center cmw-justify-between cmw-px-4">
+    <div class="c-filterBar flex items-center justify-between px-4">
       <div>
         <!--        <CmwSelect
           v-model="selectedSort"
@@ -116,16 +116,16 @@ export default {
           <span>{{ selectedLabel }}</span>
         </CmwSelect> -->
       </div>
-      <div class="cmw-hidden cmw-items-center cmw-gap-2 lg:cmw-flex">
+      <div class="hidden items-center gap-2 lg:flex">
         <div
           v-for="layout in availableLayouts"
           :key="layout"
-          class="cmw-relative"
+          class="relative"
         >
           <input
             :id="layout"
             v-model="selectedLayout"
-            class="peer cmw-appearance-none cmw-absolute cmw-w-full cmw-h-full cmw-z-dante"
+            class="peer appearance-none absolute w-full h-full z-dante"
             type="radio"
             name="layout"
             :value="layout"
@@ -133,11 +133,11 @@ export default {
           <label
             :for="layout"
             class="
-              cmw-flex cmw-rounded-sm cmw-shadow cmw-p-[0.40rem] cmw-mb-0 cmw-bg-white cmw-cursor-pointer
-              peer-checked:(cmw-bg-gray-lightest cmw-shadow-none)"
+              flex rounded-sm shadow p-[0.40rem] mb-0 bg-white cursor-pointer
+              peer-checked:(bg-gray-lightest shadow-none)"
           >
             <VueSvgIcon
-              class="cmw-m-auto"
+              class="m-auto"
               :data="require(`@/assets/svg/layout-${layout}.svg`)"
               width="20"
               height="20"
@@ -157,21 +157,21 @@ export default {
     <div v-else>
       <div
         v-if="!!customerProducts.length"
-        class="cmw-p-4"
+        class="p-4"
       >
         <template v-if="selectedLayout === 'list' && isDesktop">
           <div
             v-for="product in customerProducts"
             :key="product.id"
-            class="cmw-mb-4"
+            class="mb-4"
           >
             <ProductBoxHorizontal :product="product" :is-desktop="isDesktop" />
           </div>
         </template>
         <template v-else>
           <div
-            class="cmw-grid cmw-grid-cols-1 cmw-gap-4 phone-md:(cmw-grid-cols-2 cmw-gap-2)
-          sm:(cmw-grid-cols-2 cmw-gap-3) lg:(cmw-grid-cols-3 cmw-gap-4) desktop-wide:cmw-grid-cols-4"
+            class="grid grid-cols-1 gap-4 phone-md:(grid-cols-2 gap-2)
+          sm:(grid-cols-2 gap-3) lg:(grid-cols-3 gap-4) desktop-wide:grid-cols-4"
           >
             <ProductBoxVertical
               v-for="product in customerProducts"

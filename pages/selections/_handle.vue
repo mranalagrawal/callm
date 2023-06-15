@@ -111,10 +111,10 @@ export default {
 </script>
 
 <template>
-  <div class="cmw-max-w-screen-xl cmw-mx-auto cmw-py-4 cmw-px-4">
-    <nav class="cmw-flex cmw-items-center cmw-gap-2 cmw-text-sm cmw-pt-1.875rem cmw-mt-2 cmw-mb-6 cmw-px-4">
+  <div class="max-w-screen-xl mx-auto py-4 px-4">
+    <nav class="flex items-center gap-2 text-sm pt-1.875rem mt-2 mb-6 px-4">
       <NuxtLink
-        class="cmw-text-primary-400"
+        class="text-primary-400"
         :to="localePath('/')"
       >
         {{ $t('home') }}
@@ -124,7 +124,7 @@ export default {
         width="12"
         height="12"
       />
-      <span class="cmw-text-gray-dark">{{ params.handle }}</span>
+      <span class="text-gray-dark">{{ params.handle }}</span>
     </nav>
 
     <h1>{{ collectionRef.title }}</h1>
@@ -132,17 +132,17 @@ export default {
     <div v-html="collectionRef.descriptionHtml" />
 
     <div v-if="!!sorted.length">
-      <div class="cmw-hidden cmw-items-center cmw-gap-2 lg:cmw-flex">
+      <div class="hidden items-center gap-2 lg:flex">
         <!-- Todo: Implement availableLayouts when we can use the newest product box -->
         <!--        <div
           v-for="layout in availableLayouts"
           :key="layout"
-          class="cmw-relative"
+          class="relative"
         >
           <input
             :id="layout"
             v-model="selectedLayout"
-            class="peer cmw-appearance-none cmw-absolute cmw-w-full cmw-h-full cmw-z-dante"
+            class="peer appearance-none absolute w-full h-full z-dante"
             type="radio"
             name="layout"
             :value="layout"
@@ -150,11 +150,11 @@ export default {
           <label
             :for="layout"
             class="
-              cmw-flex cmw-rounded-sm cmw-shadow cmw-p-[0.40rem] cmw-mb-0 cmw-bg-white cmw-cursor-pointer
-              peer-checked:(cmw-bg-gray-lightest cmw-shadow-none)"
+              flex rounded-sm shadow p-[0.40rem] mb-0 bg-white cursor-pointer
+              peer-checked:(bg-gray-lightest shadow-none)"
           >
             <VueSvgIcon
-              class="cmw-m-auto"
+              class="m-auto"
               :data="require(`@/assets/svg/layout-${layout}.svg`)"
               width="20"
               height="20"
@@ -162,7 +162,7 @@ export default {
             />
           </label>
         </div> -->
-        <div class="cmw-p-4 cmw-ml-auto">
+        <div class="p-4 ml-auto">
           <CmwDropdown
             key="sort-by"
             size="sm"
@@ -182,8 +182,8 @@ export default {
         </div>
       </div>
       <div
-        class="cmw-grid cmw-grid-cols-1 cmw-gap-4 phone-md:(cmw-grid-cols-2 cmw-gap-2)
-         sm:(cmw-grid-cols-2 cmw-gap-3) lg:(cmw-grid-cols-3 cmw-gap-4) desktop-wide:cmw-grid-cols-4"
+        class="grid grid-cols-1 gap-4 phone-md:(grid-cols-2 gap-2)
+         sm:(grid-cols-2 gap-3) lg:(grid-cols-3 gap-4) desktop-wide:grid-cols-4"
       >
         <!-- Todo: Implement horizontal product box <ProductCardHorizontal :product="product" /> -->
         <ProductBoxVertical v-for="product in sorted" :key="product.id" :product="product" />

@@ -48,25 +48,27 @@ export default {
     <component :is="homeBanner" />
     <HomeBoxes />
     <!-- Note: LazyHydrate is not working as expected on carousels -->
-    <FeaturedProducts />
+    <ClientOnly>
+      <FeaturedProducts />
+    </ClientOnly>
 
-    <LazyHydrate v-if="$config.STORE !== 'WILDVIGNERON'" :when-visible="{ rootMargin: '100px' }">
+    <LazyHydrate :when-visible="{ rootMargin: '100px' }">
       <HomeSelections />
     </LazyHydrate>
 
-    <div v-if="$config.STORE !== 'WILDVIGNERON'">
-      <div class="d-none d-md-block">
-        <HomeSlider />
-      </div>
-
-      <HomePartners />
+    <div class="<md:hidden">
+      <HomeSlider />
     </div>
 
-    <LazyHomeLast />
+    <HomePartners />
 
-    <HomeProductors />
+    <ClientOnly>
+      <LazyHomeLast />
+    </ClientOnly>
 
-    <LazyHydrate v-if="$config.STORE !== 'WILDVIGNERON'" :when-visible="{ rootMargin: '100px' }">
+    <HomeProducers />
+
+    <LazyHydrate :when-visible="{ rootMargin: '100px' }">
       <HomeCta />
     </LazyHydrate>
   </div>

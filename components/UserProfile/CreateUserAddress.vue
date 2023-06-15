@@ -104,10 +104,10 @@ export default {
 <template>
   <ValidationObserver ref="formEl" slim>
     <form
-      class="sm:cmw-px-4"
+      class="sm:px-4"
       @submit.prevent="onSubmit"
     >
-      <div class="cmw-grid cmw-gap-x-4 sm:cmw-grid-cols-2">
+      <div class="grid gap-x-4 sm:grid-cols-2">
         <InputField
           v-model="form.firstName"
           type="text"
@@ -144,7 +144,7 @@ export default {
           :placeholder="$t('civic').toString()"
           rules="required"
         />
-        <div class="cmw-grid cmw-grid-cols-2 cmw-gap-4">
+        <div class="grid grid-cols-2 gap-4">
           <InputField
             v-model="form.zip"
             type="text"
@@ -163,10 +163,10 @@ export default {
           :placeholder="$t('phonePlaceholder').toString()"
           :rules="{ required: !!form.phone, max: 13, min: 9, regex: /^[+]\d{8,13}$/ }"
         />
-        <div class="cmw-text-sm cmw-self-center cmw-mt-4 sm:cmw-mt-8">
+        <div class="text-sm self-center mt-4 sm:mt-8">
           {{ $t('phoneNote') }}
         </div>
-        <div class="cmw-col-span-full">
+        <div class="col-span-full">
           <InputField
             v-model="form.address2"
             type="test"
@@ -177,7 +177,7 @@ export default {
           />
         </div>
       </div>
-      <div class="cmw-flex cmw-items-center cmw-justify-between cmw-mt-8">
+      <div class="flex items-center justify-between mt-8">
         <div>
           <!-- Note: v-model is not working as expected, we need to handle change here FTM -->
           <CmwCheckbox id="set-as-default" v-model="setAsDefault" @change="setAsDefault = !setAsDefault">
@@ -186,7 +186,7 @@ export default {
             </template>
           </CmwCheckbox>
         </div>
-        <Button class="cmw-w-max" :label="$t('common.cta.addAddress').toString()" type="submit" />
+        <Button class="w-max" :label="$t('common.cta.addAddress').toString()" type="submit" />
       </div>
     </form>
   </ValidationObserver>
@@ -194,14 +194,14 @@ export default {
 
 <style scoped>
 select::-internal-input-suggested {
-  @apply cmw-text-base cmw-text-gray-dark;
+  @apply text-base text-gray-dark;
 }
 
 select:-webkit-autofill ~ label {
-  @apply cmw-bg-gray-lightest;
+  @apply bg-gray-lightest;
 }
 
 select:-webkit-autofill ~ label {
-  @apply cmw-text-[0.775rem] cmw-px-2 cmw-top-[-0.4rem];
+  @apply text-[0.775rem] px-2 top-[-0.4rem];
 }
 </style>

@@ -1,0 +1,20 @@
+query getPage(
+  $lang: LanguageCode!
+  $handle: String!
+) @inContext(language: $lang) {
+  page(handle: $handle) {
+    body
+    id
+    title
+    rewriteUrl: metafield(namespace: "custom", key: "rewrite_url") {
+      value
+    }
+    filters: metafield(namespace: "custom", key: "filters") {
+      value
+    }
+    shortDescription: metafield(namespace: "custom", key: "short_description") {
+      value
+    }
+  }
+}
+

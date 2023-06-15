@@ -121,10 +121,10 @@ export default {
 <template>
   <ValidationObserver ref="formEl" slim>
     <form
-      class="sm:cmw-px-4"
+      class="sm:px-4"
       @submit.prevent="onSubmit"
     >
-      <div class="cmw-grid cmw-gap-x-4 sm:cmw-grid-cols-2">
+      <div class="grid gap-x-4 sm:grid-cols-2">
         <InputField
           v-model="editingAddress.firstName"
           type="text"
@@ -161,7 +161,7 @@ export default {
           :placeholder="$t('civic').toString()"
           rules="required"
         />
-        <div class="cmw-grid cmw-grid-cols-2 cmw-gap-4">
+        <div class="grid grid-cols-2 gap-4">
           <InputField
             v-model="editingAddress.zip"
             type="text"
@@ -180,10 +180,10 @@ export default {
           :placeholder="$t('phonePlaceholder').toString()"
           :rules="{ required: !!editingAddress.phone, max: 13, min: 9, regex: /^[+]\d{8,13}$/ }"
         />
-        <div class="cmw-text-sm cmw-self-center cmw-mt-4 sm:cmw-mt-8">
+        <div class="text-sm self-center mt-4 sm:mt-8">
           {{ $t('phoneNote') }}
         </div>
-        <div class="cmw-col-span-full">
+        <div class="col-span-full">
           <InputField
             v-model="editingAddress.address2"
             type="text"
@@ -198,7 +198,7 @@ export default {
                 tag="span"
               >
                 <span
-                  class="<md:cmw-hidden"
+                  class="<md:hidden"
                   v-text="$t('noteDesktop')"
                 />
               </i18n>
@@ -206,7 +206,7 @@ export default {
           </InputField>
         </div>
       </div>
-      <div class="cmw-flex cmw-items-center cmw-justify-between cmw-mt-8">
+      <div class="flex items-center justify-between mt-8">
         <div>
           <CmwChip v-if="isDefaultAddress" :icon="bookmarkIcon" color="secondary" :label="$t('profile.defaultAddress').toUpperCase()" />
           <!-- Note: v-model is not working as expected, we need to handle change here FTM -->
@@ -216,7 +216,7 @@ export default {
             </template>
           </CmwCheckbox>
         </div>
-        <Button class="cmw-w-max" :label="$t('common.cta.confirm').toString()" type="submit" />
+        <Button class="w-max" :label="$t('common.cta.confirm').toString()" type="submit" />
       </div>
     </form>
   </ValidationObserver>

@@ -15,7 +15,7 @@ export default {
 </script>
 
 <template>
-  <table class="cmw-w-full">
+  <table class="w-full">
     <tbody>
       <tr v-if="region && country">
         <th scope="row" v-text="$t('product.region')" />

@@ -30,11 +30,11 @@ export const SweetAlertConfirm = Swal.mixin({
     + '</div>',
   customClass: {
     title: 'h3',
-    htmlContainer: 'cmw-text-body',
-    actions: 'cmw-grid cmw-grid-cols-2 cmw-gap-4 cmw-w-3/4',
-    confirmButton: 'cmw-btn-base cmw-btn-default',
-    denyButton: 'cmw-btn-base cmw-btn-text',
-    cancelButton: 'cmw-btn-base cmw-btn-text',
+    htmlContainer: 'text-body',
+    actions: 'grid grid-cols-2 gap-4 w-3/4',
+    confirmButton: 'btn-base btn-default',
+    denyButton: 'btn-base btn-text',
+    cancelButton: 'btn-base btn-text',
     loader: 'cmw',
   },
 })
@@ -52,6 +52,6 @@ export const SweetAlertToast = Swal.mixin({
   timer: 2500,
   background: 'rgba(0, 0, 0, 0.85)',
   customClass: {
-    htmlContainer: 'cmw-text-gray-lightest',
+    htmlContainer: 'text-gray-lightest',
   },
 })

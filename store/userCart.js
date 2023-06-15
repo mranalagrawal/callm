@@ -43,7 +43,7 @@ export const mutations = {
       },
     })
 
-    if (typeof window !== 'undefined' && window.google_tag_manager[this.app.$config.gtm.id])
+    if (typeof window !== 'undefined' && window.google_tag_manager && window.google_tag_manager[this.app.$config.gtm.id])
       window.google_tag_manager[this.app.$config.gtm.id].dataLayer.set('ecommerce', undefined)
   },
   removeProduct(state, entry) {
@@ -70,7 +70,7 @@ export const mutations = {
       },
     })
 
-    if (typeof window !== 'undefined' && window.google_tag_manager[this.app.$config.gtm.id])
+    if (typeof window !== 'undefined' && window.google_tag_manager && window.google_tag_manager[this.app.$config.gtm.id])
       window.google_tag_manager[this.app.$config.gtm.id].dataLayer.set('ecommerce', undefined)
   },
 
@@ -90,7 +90,7 @@ export const mutations = {
       },
     })
 
-    if (typeof window !== 'undefined' && window.google_tag_manager[this.app.$config.gtm.id])
+    if (typeof window !== 'undefined' && window.google_tag_manager && window.google_tag_manager[this.app.$config.gtm.id])
       window.google_tag_manager[this.app.$config.gtm.id].dataLayer.set('ecommerce', undefined)
   },
 

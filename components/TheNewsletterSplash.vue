@@ -77,19 +77,19 @@ export default defineComponent({
 
 <template>
   <div>
-    <div class="cmw-text-center">
+    <div class="text-center">
       <VueSvgIcon
-        class="cmw-text-center"
+        class="text-center"
         :data="logo"
         width="200"
         height="auto"
         original
       />
     </div>
-    <p class="cmw-text-sm cmw-px-4 cmw-text-center" v-text="$t('newsletter.splash.headline')" />
-    <div class="cmw-h4" v-text="$t('newsletter.splash.offer')" />
+    <p class="text-sm px-4 text-center" v-text="$t('newsletter.splash.headline')" />
+    <div class="h4" v-text="$t('newsletter.splash.offer')" />
 
-    <div class="cmw-grid cmw-grid-cols-[1fr_3fr] cmw-px-4">
+    <div class="grid grid-cols-[1fr_3fr] px-4">
       <div class="c">
         <!-- Todo: use an image from shopify -->
         <img :src="bannerSplashNewsletter" alt="alt-text">
@@ -97,7 +97,7 @@ export default defineComponent({
       <div class="c">
         <ValidationObserver ref="formEl" slim>
           <form
-            class="sm:cmw-px-4 cmw-my-8"
+            class="sm:px-4 my-8"
             @submit.prevent="onSubmit"
           >
             <InputField
@@ -118,12 +118,12 @@ export default defineComponent({
             >
               <template #label>
                 <i18n
-                  class="cmw-block cmw-text-xs"
+                  class="block text-xs"
                   path="newsletter.splash.acceptMarketing"
                   tag="span"
                 >
                   <span
-                    class="cmw-font-sans cmw-text-primary-400 cmw-tracking-normal"
+                    class="font-sans text-primary-400 tracking-normal"
                     v-text="$t('newsletter.splash.privacyPolicy')"
                   />
                 </i18n>
@@ -138,27 +138,27 @@ export default defineComponent({
             >
               <template #label>
                 <i18n
-                  class="cmw-block cmw-text-xs"
+                  class="block text-xs"
                   path="newsletter.splash.profiling"
                   tag="span"
                 >
                   <span
-                    class="cmw-font-sans cmw-text-primary-400 cmw-tracking-normal"
+                    class="font-sans text-primary-400 tracking-normal"
                     v-text="$t('newsletter.splash.privacyPolicy')"
                   />
                 </i18n>
               </template>
             </CmwCheckbox>
-            <Button class="cmw-w-max cmw-ml-auto cmw-my-4" size="sm" :label="$t('common.cta.subscribe')" type="submit" />
+            <Button class="w-max ml-auto my-4" size="sm" :label="$t('common.cta.subscribe')" type="submit" />
           </form>
         </ValidationObserver>
 
         <i18n
-          class="cmw-block cmw-text-xs"
+          class="block text-xs"
           path="newsletter.splash.readMore"
           tag="span"
         >
-          <NuxtLink to="/privacy" class="cmw-text-xs cmw-text-primary hover:(cmw-text-primary)">
+          <NuxtLink to="/privacy" class="text-xs text-primary hover:(text-primary)">
             {{ $t('newsletter.splash.privacyPolicy') }}
           </NuxtLink>
         </i18n>

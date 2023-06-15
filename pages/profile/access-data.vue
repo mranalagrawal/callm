@@ -67,19 +67,19 @@ export default {
     <p v-if="$fetchState.pending" class="px-4">
       {{ $t("loading") }}
     </p>
-    <div v-else class="md:(cmw-mt-9 cmw-max-w-10/12)">
-      <div class="cmw-px-4 cmw-h4 cmw-font-semibold" v-text="$t('profile.accessData')" />
-      <div class="cmw-grid sm:cmw-grid-cols-2 cmw-gap-4 cmw-p-4">
+    <div v-else class="md:(mt-9 max-w-10/12)">
+      <div class="px-4 h4 font-semibold" v-text="$t('profile.accessData')" />
+      <div class="grid sm:grid-cols-2 gap-4 p-4">
         <div>
           <div
-            class="cmw-h-full cmw-flex cmw-items-center cmw-font-sans cmw-rounded-sm cmw-border cmw-border-gray-light
-           hover:cmw-shadow-elevation"
+            class="h-full flex items-center font-sans rounded-sm border border-gray-light
+           hover:shadow-elevation"
           >
-            <div class="cmw-pl-4 cmw-py-8">
-              <div class="cmw-overline-2 cmw-uppercase cmw-text-secondary-700" v-text="$t('email')" />
-              <div class="cmw-font-sans" v-text="customer.email" />
+            <div class="pl-4 py-8">
+              <div class="overline-2 uppercase text-secondary-700" v-text="$t('email')" />
+              <div class="font-sans" v-text="customer.email" />
             </div>
-            <div class="cmw-ml-auto cmw-mt-auto cmw-mb-3 cmw-mr-3">
+            <div class="ml-auto mt-auto mb-3 mr-3">
               <ButtonIcon
                 :icon="editIcon" variant="icon" @click.native="openEditEmailSplash"
               />
@@ -88,16 +88,16 @@ export default {
         </div>
         <div>
           <div
-            class="cmw-h-full cmw-flex cmw-items-center cmw-font-sans cmw-rounded-sm cmw-border cmw-border-gray-light
-           hover:cmw-shadow-elevation"
+            class="h-full flex items-center font-sans rounded-sm border border-gray-light
+           hover:shadow-elevation"
           >
-            <div class="cmw-pl-4 cmw-py-8">
-              <div class="cmw-overline-2 cmw-uppercase cmw-text-secondary-700" v-text="$t('password')" />
-              <div class="cmw-font-sans">
+            <div class="pl-4 py-8">
+              <div class="overline-2 uppercase text-secondary-700" v-text="$t('password')" />
+              <div class="font-sans">
                 ***********
               </div>
             </div>
-            <div class="cmw-ml-auto cmw-mt-auto cmw-mb-3 cmw-mr-3">
+            <div class="ml-auto mt-auto mb-3 mr-3">
               <ButtonIcon
                 :icon="editIcon" variant="icon" @click.native="openEditPasswordSplash"
               />
@@ -105,31 +105,31 @@ export default {
           </div>
         </div>
       </div>
-      <div class="cmw-px-4 cmw-h4 cmw-font-semibold cmw-mt-10" v-text="$t('profile.personalData')" />
-      <div class="cmw-p-4">
+      <div class="px-4 h4 font-semibold mt-10" v-text="$t('profile.personalData')" />
+      <div class="p-4">
         <div
-          class="cmw-h-full cmw-flex cmw-items-center cmw-font-sans cmw-rounded-sm cmw-border cmw-border-gray-light
-           hover:cmw-shadow-elevation"
+          class="h-full flex items-center font-sans rounded-sm border border-gray-light
+           hover:shadow-elevation"
         >
-          <div class="cmw-grid sm:cmw-grid-cols-2 desktop:cmw-grid-cols-4 cmw-flex-1">
-            <div class="cmw-pl-4 cmw-pt-8 cmw-pb-2 sm:cmw-py-8">
-              <div class="cmw-overline-2 cmw-uppercase cmw-text-secondary-700" v-text="$t('firstName')" />
-              <div class="cmw-font-sans" v-text="customer.firstName" />
+          <div class="grid sm:grid-cols-2 desktop:grid-cols-4 flex-1">
+            <div class="pl-4 pt-8 pb-2 sm:py-8">
+              <div class="overline-2 uppercase text-secondary-700" v-text="$t('firstName')" />
+              <div class="font-sans" v-text="customer.firstName" />
             </div>
-            <div class="cmw-pl-4 cmw-py-2 sm:cmw-py-8">
-              <div class="cmw-overline-2 cmw-uppercase cmw-text-secondary-700" v-text="$t('lastName')" />
-              <div class="cmw-font-sans" v-text="customer.lastName" />
+            <div class="pl-4 py-2 sm:py-8">
+              <div class="overline-2 uppercase text-secondary-700" v-text="$t('lastName')" />
+              <div class="font-sans" v-text="customer.lastName" />
             </div>
-            <div class="cmw-pl-4 cmw-py-2 sm:cmw-py-8">
-              <div class="cmw-overline-2 cmw-uppercase cmw-text-secondary-700" v-text="$t('phone')" />
-              <div class="cmw-font-sans" v-text="customer.phone" />
+            <div class="pl-4 py-2 sm:py-8">
+              <div class="overline-2 uppercase text-secondary-700" v-text="$t('phone')" />
+              <div class="font-sans" v-text="customer.phone" />
             </div>
-            <div class="cmw-pl-4 cmw-pt-2 cmw-pb-8 sm:cmw-py-8">
-              <div class="cmw-overline-2 cmw-uppercase cmw-text-secondary-700" v-text="$t('newsletter.label')" />
-              <div class="cmw-font-sans" v-text="$t(customer.acceptsMarketing ? 'newsletter.subscribed' : 'newsletter.unsubscribed')" />
+            <div class="pl-4 pt-2 pb-8 sm:py-8">
+              <div class="overline-2 uppercase text-secondary-700" v-text="$t('newsletter.label')" />
+              <div class="font-sans" v-text="$t(customer.acceptsMarketing ? 'newsletter.subscribed' : 'newsletter.unsubscribed')" />
             </div>
           </div>
-          <div class="cmw-ml-auto cmw-mt-auto cmw-mb-3 cmw-mr-3">
+          <div class="ml-auto mt-auto mb-3 mr-3">
             <ButtonIcon
               :icon="editIcon" variant="icon" @click.native="openEditDataSplash"
             />

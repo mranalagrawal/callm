@@ -32,33 +32,33 @@ export default {
     :vid="id"
     :rules="$attrs.required || { required: { allowFalse: !isRequired } }"
     :name="id"
-    class="cmw-block cmw-text-left"
+    class="block text-left"
     slim
   >
-    <div class="cmw-flex cmw-gap-6 cmw-my-6 cmw-text-left">
-      <div class="cmw-relative cmw-flex cmw-items-start cmw-gap-2">
-        <span class="cmw-w-[22px] cmw-h-[22px] cmw-flex-shrink-0" />
+    <div class="flex gap-6 my-6 text-left">
+      <div class="relative flex items-start gap-2">
+        <span class="w-[22px] h-[22px] flex-shrink-0" />
         <input
           v-bind="$attrs"
           :id="`${id}-checkbox`"
           :value="checked"
           :checked="checked"
           type="checkbox"
-          class="ripple peer cmw-absolute cmw-block cmw-appearance-none cmw-flex-[0_0_26px] cmw-w-[26px] cmw-h-[26px]
-           cmw-rounded-full cmw-top-[-2px] cmw-left-[-2px] cmw-bg-center
+          class="ripple peer absolute block appearance-none flex-[0_0_26px] w-[26px] h-[26px]
+           rounded-full top-[-2px] left-[-2px] bg-center
            [@supports(-webkit-touch-callout:none)]:scale-[4] default:ring-2 checked:outline-4"
           :name="id"
           @change="handleChange($event.target.checked)"
         >
-        <span class="cmw-absolute cmw-flex cmw-text-primary-400 cmw-w-[22px] cmw-h-[22px] cmw-top-0 cmw-left-0 cmw-pointer-events-none">
+        <span class="absolute flex text-primary-400 w-[22px] h-[22px] top-0 left-0 pointer-events-none">
           <VueSvgIcon :data="($attrs.checked || checked) ? checkboxIcon : checkboxBlankIcon" width="22" height="22" />
         </span>
-        <label :for="`${id}-checkbox`" class="cmw-m-0">
+        <label :for="`${id}-checkbox`" class="m-0">
           <slot name="label" />
         </label>
       </div>
     </div>
-    <span v-if="!!errors.length" class="cmw-block cmw-relative cmw-top-[-1rem] cmw-text-sm cmw-text-error cmw-pl-[30px]" v-text="errors[0]" />
+    <span v-if="!!errors.length" class="block relative top-[-1rem] text-sm text-error pl-[30px]" v-text="errors[0]" />
   </ValidationProvider>
 </template>
 

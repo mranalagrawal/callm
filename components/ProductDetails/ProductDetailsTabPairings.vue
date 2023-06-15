@@ -19,20 +19,19 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="cmw-mt-6">
+  <div class="mt-6">
     <h3 class="mb-5">
       {{ $t('product.pairings') }}
     </h3>
 
-    <div v-if="productDetailsFoodPairings.length" class="row">
+    <div v-if="productDetailsFoodPairings.length" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       <div
         v-for="pairing in productDetailsFoodPairings"
         :key="generateKey(`food-pairing-${pairing.id}`)"
-        class="col-6 col-md-4 col-lg-3"
       >
         <img
           :src="pairing.image"
-          class="img-fluid"
+          class="w-full rounded"
           style="border-radius: 10px"
           alt="alt text"
         >

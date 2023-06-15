@@ -91,32 +91,31 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="slides.length" class="cmw-relative">
-    <SsrCarousel ref="carousel" :key="slides.length" :show-arrows="isDesktopWide" show-dots class="cmw-relative">
+  <div v-if="slides.length" class="relative">
+    <SsrCarousel ref="carousel" :key="slides.length" :show-arrows="isDesktopWide" show-dots class="relative">
       <div
-        v-for="({ text, cta, image, link }) in slides" :key="generateKey(text)" class="slide cmw-relative cmw-w-full cmw-h-[505px] cmw-overflow-hidden"
+        v-for="({ text, cta, image, link }) in slides" :key="generateKey(text)" class="slide relative w-full h-[505px] overflow-hidden"
         @click="handleMobileClick(link)"
       >
         <div
-          class="cmw-absolute cmw-top-0 cmw-left-0 cmw-w-full cmw-h-full cmw-bg-cover cmw-bg-center"
+          class="absolute top-0 left-0 w-full h-full bg-cover bg-center"
           :style="`backgroundImage: url('${showDesktopImage ? image.url : image.mobile.url}')`"
         />
         <div
-          class="c-carouselWrapper cmw-relative cmw-z-base cmw-grid cmw-justify-stretch cmw-h-full md:cmw-justify-center"
+          class="c-carouselWrapper relative z-base grid justify-stretch h-full md:justify-center"
         >
           <div />
-          <div class="cmw-grid cmw-grid-rows-2 md:(cmw-w-[min(100%,_30vw)]) xl:(cmw-w-[min(100%,_20vw)] cmw-justify-center)">
+          <div class="grid grid-rows-2 md:(w-[min(100%,_30vw)]) xl:(w-[min(100%,_20vw)] justify-center)">
             <NuxtLink
               class="
-              cmw-block cmw-pt-8 cmw-w-full cmw-self-start cmw-leading-none cmw-mr-auto cmw-h1 cmw-text-white
-              hover:(cmw-text-white cmw-no-underline)
-              md:cmw-self-end"
+              block pt-8 w-full self-start leading-none mr-auto h1 text-white
+              md:self-end"
               :to="localePath(link)"
             >
               {{ text }}
             </NuxtLink>
             <Button
-              class="cmw-hidden cmw-w-max cmw-self-end cmw-mt-8 cmw-py-2 cmw-text-shadow-none md:(cmw-block cmw-self-start)"
+              class="hidden w-max self-end mt-8 py-2 text-shadow-none md:(block self-start)"
               variant="default-inverse" :to="localePath(link)" :label="cta"
             />
           </div>
@@ -124,19 +123,19 @@ export default defineComponent({
         </div>
       </div>
       <template #back-arrow>
-        <span class="cmw-absolute cmw-w-12 cmw-h-12 cmw-bg-white cmw-rounded-sm cmw-flex cmw-left-20 cmw-top-2/5 cmw-translate-y-[-50%]">
-          <VueSvgIcon :data="chevronLeftIcon" color="#992545" width="20" height="20" class="cmw-m-auto" />
+        <span class="absolute w-12 h-12 bg-white rounded-sm flex left-20 top-2/5 translate-y-[-50%]">
+          <VueSvgIcon :data="chevronLeftIcon" color="#992545" width="20" height="20" class="m-auto" />
         </span>
       </template>
       <template #next-arrow>
-        <span class="cmw-absolute cmw-w-12 cmw-h-12 cmw-bg-white cmw-rounded-sm cmw-flex cmw-right-20 cmw-top-2/5 cmw-translate-y-[-50%]">
-          <VueSvgIcon :data="chevronRightIcon" color="#992545" width="20" height="20" class="cmw-m-auto" />
+        <span class="absolute w-12 h-12 bg-white rounded-sm flex right-20 top-2/5 translate-y-[-50%]">
+          <VueSvgIcon :data="chevronRightIcon" color="#992545" width="20" height="20" class="m-auto" />
         </span>
       </template>
     </SsrCarousel>
-    <div class="cmw-absolute cmw-left-0 cmw-bottom-[-2px] cmw-w-full cmw-h-auto">
+    <div class="absolute left-0 bottom-[-2px] w-full h-auto">
       <VueSvgIcon
-        class="cmw-m-auto"
+        class="m-auto"
         :data="showDesktopImage
           ? carouselCurveDesktop : carouselCurveMobile"
         width="100%"

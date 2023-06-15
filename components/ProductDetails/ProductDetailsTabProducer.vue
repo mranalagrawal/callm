@@ -20,83 +20,90 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="cmw-mt-6">
+  <div class="mt-6">
     <div v-if="brand">
-      <div v-if="brandMetaFields.isPartner" class="ribbon cmw-flex cmw-items-center">
+      <div v-if="brandMetaFields.isPartner" class="ribbon flex items-center">
         <!-- TODO: This will use the new lapel component -->
         <VueSvgIcon
           :data="favouriteIcon"
           class="svg-favourite"
           width="20" height="auto"
         />
-        <span class="small !cmw-top-0">{{
+        <span class="text-sm !top-0">{{
           $t('product.recommendedByCallmewine')
         }}</span>
       </div>
-      <h3 class="cmw-text-primary-400">
+      <h3 class="text-primary-400">
         {{ brand.title }}
       </h3>
-      <div class="row">
-        <div class="col-12 col-md-8">
-          <div class="row py-3 bg-light">
-            <div class="col-6 font-weight-bold">
-              {{ $t('product.mainWines') }}
-            </div>
-            <div class="col-6" />
-          </div>
-          <div class="row py-3">
-            <div class="col-6 font-weight-bold">
-              {{ $t('product.foundation') }}
-            </div>
-            <div class="col-6">
-              {{ brandMetaFields.year }}
-            </div>
-          </div>
-          <div class="row py-3 bg-light">
-            <div class="col-6 font-weight-bold">
-              {{ $t('product.vineyardHectares') }}
-            </div>
-            <div class="col-6">
-              {{ brandMetaFields.hectares }}
-            </div>
-          </div>
-          <div class="row py-3">
-            <div class="col-6 font-weight-bold">
-              {{ $t('product.ownGrapes') }}
-            </div>
-            <div class="col-6">
-              {{ brandMetaFields.ownedGrapes }} %
-            </div>
-          </div>
-          <div class="row py-3 bg-light">
-            <div class="col-6 font-weight-bold">
-              {{ $t('product.annualProduction') }}
-            </div>
-            <div class="col-6">
-              {{ brandMetaFields.annualProduction }}
-            </div>
-          </div>
-          <div class="row py-3">
-            <div class="col-6 font-weight-bold">
-              {{ $t('product.winemaker') }}
-            </div>
-            <div class="col-6" />
-          </div>
-          <div class="row py-3 bg-light">
-            <div class="col-6 font-weight-bold">
-              {{ $t('product.address') }}
-            </div>
-            <div class="col-6">
-              {{ brandMetaFields.address }}
-            </div>
-          </div>
-        </div>
-        <div class="col-12 col-md-4">
-          <img :src="brand.image.url" alt="">
-        </div>
+      <div class="grid gap-4 md:grid-cols-[8fr_4fr]">
+        <table class="w-full">
+          <tbody>
+            <tr>
+              <th scope="row" v-text="$t('product.mainWines')" />
+              <td />
+            </tr>
+            <tr>
+              <th scope="row" v-text="$t('product.foundation')" />
+              <td v-text="brandMetaFields.year" />
+            </tr>
+            <tr>
+              <th scope="row" v-text="$t('product.vineyardHectares')" />
+              <td v-text="brandMetaFields.hectares" />
+            </tr>
+            <tr>
+              <th scope="row" v-text="$t('product.ownGrapes')" />
+              <td v-text="brandMetaFields.ownedGrapes" />
+            </tr>
+            <tr>
+              <th scope="row" v-text="$t('product.annualProduction')" />
+              <td v-text="brandMetaFields.annualProduction" />
+            </tr>
+            <tr>
+              <th scope="row" v-text="$t('product.winemaker')" />
+              <td />
+            </tr>
+            <tr>
+              <th scope="row" v-text="$t('product.address')" />
+              <td>{{ brandMetaFields.address }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <img :src="brand.image.url" alt="">
       </div>
-      <!-- <img :src="search.image.url" alt="" />
-      <div v-html="search.contentHtml"></div> -->
     </div>
   </div>
 </template>
+
+<style scoped>
+td,
+th {
+  border: 1px solid transparent;
+  padding: 10px;
+}
+
+td {
+  text-align: left;
+}
+
+tr:nth-child(odd) {
+  background-color: theme('colors.gray.lightest');
+}
+
+th[scope='col'] {
+  font-weight: bold;
+}
+
+th[scope='row'] {
+  font-weight: bold;
+}
+
+table {
+  align-self: baseline;
+  border-collapse: collapse;
+  border: 2px solid transparent;
+  letter-spacing: 1px;
+  font-family: sans-serif;
+  font-size: 0.8rem;
+}
+</style>

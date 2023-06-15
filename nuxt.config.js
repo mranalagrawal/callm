@@ -173,9 +173,6 @@ function storeLocales(store) {
     CMW_DE: [
       { code: 'de', iso: 'de-DE', file: 'de.js', dir: 'ltr' },
     ],
-    WILDVIGNERON: [
-      { code: 'en', iso: 'en-GB', file: 'en.js', dir: 'ltr' },
-    ],
   }
 
   return obj[store]
@@ -223,18 +220,6 @@ const SITEMAP = {
       exclude: ['/product/**', '/search/**', '/profile', '/profile/**', '/catalog', '/privacy', '/terms-of-sales', '/cookie', '/cart', '/gift-cards', '/login', '/preview', '/recover', '/thank-you', '/winery'],
     },
   ],
-  WILDVIGNERON: [
-    {
-      path: '/sitemap-it.xml',
-      routes: ['about-us', 'cookie'],
-      lastmod: '2017-06-31',
-      gzip: true,
-    }, {
-      path: '/folder/sitemap-bar.xml',
-      routes: ['bar/1', 'bar/2'],
-      exclude: ['/**'],
-    },
-  ],
 }
 
 const TITLE = {
@@ -243,7 +228,6 @@ const TITLE = {
   CMW_UK: 'Callmewine UK',
   CMW_FR: 'Callmewine FR',
   CMW_DE: 'Callmewine DE',
-  WILDVIGNERON: 'Wild Vigneron',
 }
 
 export default {
@@ -268,7 +252,6 @@ export default {
   },
 
   css: [
-    '@/assets/scss/main.scss',
     '@yzfe/svgicon/lib/svgicon.css',
     '@assets/css/vue-transitions.css',
     '@assets/css/layers/base.pcss',
@@ -327,7 +310,6 @@ export default {
     ['@nuxtjs/robots'],
     ['@nuxt/http'],
     '@nuxtjs/dayjs',
-    'bootstrap-vue/nuxt',
     '@nuxtjs/style-resources',
     ['@nuxtjs/i18n'],
     'cookie-universal-nuxt',
@@ -488,12 +470,6 @@ export default {
       // sessions when an error occurs.
       replaysOnErrorSampleRate: 1.0,
     },
-  },
-
-  bootstrapVue: {
-    bootstrapCSS: false,
-    bootstrapVueCSS: false,
-    icons: false,
   },
 
   router: {

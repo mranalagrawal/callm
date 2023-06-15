@@ -1,0 +1,26 @@
+#  Shopify merchants can create pages to hold static HTML content. Each Page object represents a custom page on the online store.
+type Page {
+#  The description of the page, complete with HTML formatting.
+  body: HTML!
+#  Summary of the page body.
+  bodySummary: String!
+#  The timestamp of the page creation.
+  createdAt: DateTime!
+#  A human-friendly unique string for the page automatically generated from its title.
+  handle: String!
+#  A globally-unique ID.
+  id: ID!
+#  Returns a metafield found by namespace and key.
+  metafield(namespace:String!,key:String!): Metafield
+#  metafield: Metafield
+#  The metafields associated with the resource matching the supplied list of namespaces and keys.
+  metafields: [Metafield]!
+#  The URL used for viewing the resource on the shop's Online Store. Returns null if the resource is currently not published to the Online Store sales channel.
+  onlineStoreUrl: URL
+#  The page's SEO information.
+  seo: SEO
+#  The title of the page.
+  title: String!
+#  The timestamp of the latest page update.
+  updatedAt: DateTime!
+}

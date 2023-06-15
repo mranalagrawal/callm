@@ -24,10 +24,10 @@ export default {
     })[props.size] || props.size
 
     const getVariant = () => ({
-      'filled': 'cmw-bg-primary-400 cmw-text-white cmw-rounded-sm hover:(cmw-bg-primary)',
-      'ghost': 'cmw-bg-white cmw-text-primary-400 cmw-rounded-sm cmw-border-2 cmw-border-primary-400 hover:(cmw-border-primary)',
-      'icon': 'cmw-text-primary-400 cmw-rounded-full',
-      'icon-primary': 'cmw-text-primary cmw-rounded-full',
+      'filled': 'bg-primary-400 text-white rounded-sm hover:(bg-primary)',
+      'ghost': 'bg-white text-primary-400 rounded-sm border-2 border-primary-400 hover:(border-primary)',
+      'icon': 'text-primary-400 rounded-full',
+      'icon-primary': 'text-primary rounded-full',
     })[props.variant]
 
     return { getSize, getVariant }
@@ -38,10 +38,10 @@ export default {
 <template>
   <button
     type="button"
-    class="ripple cmw-flex cmw-p-1"
+    class="ripple flex p-1"
     :class="[getVariant(), `-${variant}`]"
   >
-    <VueSvgIcon class="cmw-m-auto" :data="icon" :width="getSize()" height="auto" />
+    <VueSvgIcon class="m-auto" :data="icon" :width="getSize()" height="auto" />
   </button>
 </template>
 

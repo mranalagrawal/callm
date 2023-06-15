@@ -10,15 +10,15 @@ export default {
 </script>
 
 <template>
-  <NuxtLink class="hover:(cmw-no-underline)" :to="localePath(`/winery/${brand.handle}-B${brand.brandId}.htm`)">
+  <NuxtLink :to="localePath(`/winery/${brand.handle}-B${brand.brandId}.htm`)">
     <div
-      class="cmw-font-sans cmw-border cmw-border-gray-light cmw-rounded-sm cmw-border-gray-light cmw-overflow-hidden cmw-h-full
-    hover:cmw-shadow-elevation"
+      class="font-sans border border-gray-light rounded-sm border-gray-light overflow-hidden h-full
+    hover:shadow-elevation"
     >
-      <div class="c-brand__contentContainer cmw-h-full cmw-flex cmw-text-body hover:(cmw-text-body cmw-no-underline)">
-        <div class="c-brand__content cmw-p-4">
+      <div class="c-brand__contentContainer h-full flex text-body">
+        <div class="c-brand__content p-4">
           <LoadingImage
-            img-classes="c-brand__contentImg cmw-mx-auto"
+            img-classes="c-brand__contentImg mx-auto"
             :thumbnail="{
               url: brand.url ? `${brand.url}?&width=20&height=12` : 'https://picsum.photos/id/75/20/12',
               width: 20,
@@ -33,9 +33,9 @@ export default {
             }"
           />
           <div>
-            <div class="cmw-font-bold cmw-text-xl cmw-mt-4" v-text="brand.name" />
+            <div class="font-bold text-xl mt-4" v-text="brand.name" />
             <div v-text="brand.subtitle" />
-            <div class="cmw-text-secondary-700" v-text="brand.region" />
+            <div class="text-secondary-700" v-text="brand.region" />
           </div>
         </div>
       </div>

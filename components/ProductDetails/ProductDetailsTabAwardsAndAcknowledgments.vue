@@ -25,13 +25,13 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="cmw-mt-6">
+  <div class="mt-6">
     <table
       v-if="productDetails.awards.length > 0"
       class="table table-striped"
     >
       <thead>
-        <tr class="bg-dark-primary cmw-text-white">
+        <tr class="bg-dark-primary text-white">
           <th style="border-radius: 15px 0 0 0" scope="col">
             {{ $t('product.guide') }}
           </th>

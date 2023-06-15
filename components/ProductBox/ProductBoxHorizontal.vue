@@ -162,72 +162,72 @@ export default {
 <template>
   <div
     v-if="product.shopify_product_id"
-    class="cmw-relative cmw-transition cmw-transition-box-shadow cmw-bg-white cmw-rounded-sm cmw-border cmw-border-gray-light cmw-p-2 cmw-grid cmw-grid-cols-[220px_auto_320px]
-hover:cmw-shadow-elevation"
+    class="relative transition transition-box-shadow bg-white rounded-sm border border-gray-light p-2 grid grid-cols-[220px_auto_320px]
+hover:shadow-elevation"
     :data-sku="product.sku"
   >
     <!-- Image Section -->
-    <div class="cmw-relative cmw-p-2">
+    <div class="relative p-2">
       <ClientOnly>
-        <button class="cmw-block cmw-mx-auto" @click="handleProductCLick">
+        <button class="block mx-auto" @click="handleProductCLick">
           <LoadingImage
-            class="cmw-filter hover:cmw-contrast-150 cmw-mx-auto cmw-mt-4"
-            img-classes="cmw-w-full cmw-h-auto"
-            :class="{ 'cmw-opacity-50': !product.availableForSale }"
+            class="filter hover:contrast-150 mx-auto mt-4"
+            img-classes="w-full h-auto"
+            :class="{ 'opacity-50': !product.availableForSale }"
             :thumbnail="product.image.thumbnail"
             :source="product.image.source"
             wrapper="span"
           />
         </button>
       </ClientOnly>
-      <div class="cmw-absolute cmw-top-4 cmw-left-2 cmw-flex cmw-flex-col cmw-gap-y-1">
+      <div class="absolute top-4 left-2 flex flex-col gap-y-1">
         <!-- Todo: create a global tooltip that change position base on mouse position -->
         <ProductBoxFeature v-for="feature in product.availableFeatures" :key="feature" :feature="feature" />
       </div>
       <ButtonIcon
         :icon="isOnFavourite ? heartFullIcon : heartIcon"
-        class="cmw-absolute cmw-top-4 cmw-right-2" :variant="isOnFavourite ? 'icon-primary' : 'icon'"
+        class="absolute top-4 right-2" :variant="isOnFavourite ? 'icon-primary' : 'icon'"
         :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
         @click.native="handleWishlistClick"
       />
     </div>
     <!-- Content Section -->
-    <div class="cmw-p-2">
-      <div class="h4 cmw-mt-4">
+    <div class="p-2">
+      <div class="h4 mt-4">
         <button
-          class="cmw-text-body cmw-text-left hover:(cmw-text-primary-400 cmw-no-underline)"
+          class="text-body text-left hover:(text-primary-400)"
           @click="handleProductCLick"
         >
           {{ product.title }}
         </button>
       </div>
       <!-- <div>TODO: RATING STARS </div> -->
-      <div class="cmw-flex cmw-gap-3 cmw-my-8">
+      <div class="flex gap-3 my-8">
         <div
           v-for="(award, i) in product.awards.slice(0, 4)"
           :key="`${award.id}-${i}`"
-          class="cmw-flex cmw-gap-1 cmw-items-center cmw-pr-1.5"
-          :class="{ 'cmw-border-r cmw-border-r-gray': ((i + 1) < product.awards.length) }"
+          class="flex gap-1 items-center pr-1.5"
+          :class="{ 'border-r border-r-gray': ((i + 1) < product.awards.length) }"
         >
           <ProductBoxAward :award="award" />
         </div>
       </div>
       <div
-        class="cmw-grid cmw-gap-x-8 cmw-gap-y-2 cmw-my-8 cmw-grid-cols-[auto_1fr] cmw-text-sm"
-        :class="{ 'cmw-opacity-50': !product.availableForSale }"
+        class="grid gap-x-8 gap-y-2 my-8 grid-cols-[auto_1fr] text-sm"
+        :class="{ 'opacity-50': !product.availableForSale }"
       >
         <div
-          class="cmw-font-bold"
+          class="font-bold"
           v-text="$t('product.vines')"
         />
         <div>{{ product.tbd.grapes }}</div>
         <div
-          class="cmw-font-bold"
+          class="font-bold"
           v-text="$t('product.region')"
         />
         <div>{{ product.tbd.regionName }}</div>
         <div
-          class="cmw-font-bold"
+          class="font-bold"
           v-text="$t('product.format')"
         />
         <div>{{ product.tbd.size }}</div>
@@ -236,113 +236,113 @@ hover:cmw-shadow-elevation"
       <!-- <div>{{ product.description }}</div>
       <div>{{ product.descriptionHtml }}</div> -->
       <div
-        class="c-productBox__desc cmw-mb-4 cmw-line-clamp-6"
-        :class="{ 'cmw-opacity-50': !product.availableForSale }"
+        class="c-productBox__desc mb-4 line-clamp-6"
+        :class="{ 'opacity-50': !product.availableForSale }"
         v-html="stripHtml(product.tbd.description)"
       />
     </div>
     <!-- CTA Section -->
-    <div class="cmw-relative cmw-flex">
-      <div class="cmw-m-auto cmw-text-center cmw-w-full px-4">
+    <div class="relative flex">
+      <div class="m-auto text-center w-full px-4">
         <p
           v-if="!!product.quantityAvailable && product.quantityAvailable < 6"
-          class="cmw-overline-2 cmw-text-success cmw-font-medium cmw-text-center cmw-uppercase"
+          class="overline-2 text-success font-medium text-center uppercase"
           v-text="$t('product.available', { quantity: product.quantityAvailable })"
         />
 
         <span
           v-if="isOnSale"
-          class="cmw-line-through cmw-text-gray cmw-text-sm cmw-mr-3"
+          class="line-through text-gray text-sm mr-3"
         >
           {{ $n(Number(product.compareAtPrice.amount), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode)) }}
         </span>
         <i18n-n
           v-if="finalPrice"
-          class="cmw-inline-block cmw-mb-3" :value="finalPrice" :format="{ key: 'currency' }"
+          class="inline-block mb-3" :value="finalPrice" :format="{ key: 'currency' }"
           :locale="getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode)"
         >
           <template #currency="slotProps">
-            <span class="cmw-text-sm md:cmw-text-base">{{ slotProps.currency }}</span>
+            <span class="text-sm md:text-base">{{ slotProps.currency }}</span>
           </template>
           <template #integer="slotProps">
-            <span class="cmw-h1 cmw-font-bold">{{ slotProps.integer }}</span>
+            <span class="h1 font-bold">{{ slotProps.integer }}</span>
           </template>
           <template #group="slotProps">
-            <span class="cmw-h1 cmw-font-bold">{{ slotProps.group }}</span>
+            <span class="h1 font-bold">{{ slotProps.group }}</span>
           </template>
           <template #fraction="slotProps">
-            <span class="cmw-text-sm md:cmw-text-base">{{ slotProps.fraction }}</span>
+            <span class="text-sm md:text-base">{{ slotProps.fraction }}</span>
           </template>
         </i18n-n>
-        <div v-if="product.availableForSale" class="cmw-relative">
+        <div v-if="product.availableForSale" class="relative">
           <Button
-            class="cmw-gap-2 cmw-pl-2 cmw-pr-3 cmw-py-2"
+            class="gap-2 pl-2 pr-3 py-2"
             :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
             @click.native="addToUserCart"
           >
             <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
-            <span class="cmw-text-sm" v-text="$t('product.addToCart')" />
+            <span class="text-sm" v-text="$t('product.addToCart')" />
           </Button>
           <Badge
             v-show="cartQuantity && !isOpen"
-            class="cmw-absolute cmw-top-0 cmw-left-full cmw-transform cmw-translate-x-[-50%] cmw-translate-y-[-50%]"
+            class="absolute top-0 left-full transform translate-x-[-50%] translate-y-[-50%]"
             bg-color="primary-400" :qty="cartQuantity"
           />
           <div
             v-show="isOpen"
-            class="cmw-absolute cmw-grid cmw-grid-cols-[50px_auto_50px] cmw-items-center cmw-w-full cmw-h-[50px] cmw-top-0 cmw-left-0"
+            class="absolute grid grid-cols-[50px_auto_50px] items-center w-full h-[50px] top-0 left-0"
             @mouseleave="isOpen = false"
           >
             <button
-              class="cmw-flex cmw-transition-colors cmw-w-[50px] cmw-h-[50px] cmw-bg-primary-400 cmw-rounded-l hover:(cmw-bg-primary)"
+              class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l hover:(bg-primary)"
               :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
               @click="removeFromUserCart"
             >
-              <VueSvgIcon class="cmw-m-auto" :data="subtractIcon" width="14" height="14" color="white" />
+              <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="white" />
             </button>
-            <div class="cmw-flex cmw-h-[40px] cmw-bg-primary-400 cmw-text-white text-center">
-              <span class="cmw-m-auto cmw-text-sm">{{ cartQuantity }}</span>
+            <div class="flex h-[40px] bg-primary-400 text-white text-center">
+              <span class="m-auto text-sm">{{ cartQuantity }}</span>
             </div>
             <button
-              class="cmw-flex cmw-transition-colors cmw-w-[50px] cmw-h-[50px] cmw-bg-primary-400 cmw-rounded-r
-               hover:(cmw-bg-primary)
-               disabled:(cmw-bg-primary-100 cmw-cursor-not-allowed)"
+              class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-r
+               hover:(bg-primary)
+               disabled:(bg-primary-100 cursor-not-allowed)"
               :disabled="!canAddMore"
               :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
               @click="addToUserCart"
             >
-              <VueSvgIcon class="cmw-m-auto" :data="addIcon" width="14" height="14" color="white" />
+              <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
             </button>
           </div>
           <!-- Clarify: In case the user is not logged we could just ask for his email in the SweetAlert confirm and also invite the user to log  -->
           <!-- Clarify: Shall we open a SweetAlert confirmation modal first? or just send the email?  -->
           <!-- Todo: Implement send email functionality on Backend -->
           <!--
-          <Button v-else variant="ghost" class="cmw-gap-2 cmw-pl-2 cmw-pr-3 cmw-py-2" @click.native="() => {}">
+          <Button v-else variant="ghost" class="gap-2 pl-2 pr-3 py-2" @click.native="() => {}">
             <VueSvgIcon :data="emailIcon" width="30" height="auto" />
-            <span class="cmw-text-sm" v-text="$t('product.notifyMe')" />
+            <span class="text-sm" v-text="$t('product.notifyMe')" />
           </Button>
            -->
         </div>
         <div v-else>
           <Button
             variant="ghost"
-            class="cmw-gap-2 cmw-pl-2 cmw-pr-3 cmw-py-2"
+            class="gap-2 pl-2 pr-3 py-2"
             :aria-label="$t('enums.accessibility.role.MODAL_OPEN')"
             @click.native="handleShowRequestModal(product.details.feId)"
           >
             <VueSvgIcon :data="emailIcon" width="30" height="auto" />
-            <span class="cmw-text-sm" v-text="$t('common.cta.notifyMe')" />
+            <span class="text-sm" v-text="$t('common.cta.notifyMe')" />
           </Button>
         </div>
       </div>
-      <div class="cmw-absolute cmw-transform cmw-top-px cmw-left-1/2 cmw-translate-x-[-50%] cmw-translate-y-[-50%]">
+      <div class="absolute transform top-px left-1/2 translate-x-[-50%] translate-y-[-50%]">
         <CardLapel v-if="isOnSale" />
       </div>
     </div>
     <div
       v-if="!product.availableForSale"
-      class="cmw-absolute cmw-transform cmw-bg-black/70 cmw-rounded cmw-top-1/2 cmw-left-12 cmw-translate-y-[-50%] cmw-py-4 cmw-px-24 cmw-overline-2 cmw-uppercase cmw-text-white"
+      class="absolute transform bg-black/70 rounded top-1/2 left-12 translate-y-[-50%] py-4 px-24 overline-2 uppercase text-white"
       v-text="$t('product.notAvailable2')"
     />
   </div>

@@ -15,15 +15,15 @@ export default {
   },
   computed: {
     getNumberColor() {
-      return this.$props.bgColor === 'white' ? 'cmw-text-primary' : 'cmw-text-white'
+      return this.$props.bgColor === 'white' ? 'text-primary' : 'text-white'
     },
   },
   methods: {
     getBgColor() {
       return ({
-        'primary': 'cmw-bg-primary-400',
-        'primary-400': 'cmw-bg-primary',
-        'white': 'cmw-bg-white',
+        'primary': 'bg-primary-400',
+        'primary-400': 'bg-primary',
+        'white': 'bg-white',
       })[this.$props.bgColor]
     },
   },
@@ -32,9 +32,9 @@ export default {
 
 <template>
   <span
-    class="cmw-flex cmw-w-22px cmw-h-22px cmw-text-xxs cmw-border-2 cmw-border-white cmw-rounded-full cmw-transition-colors"
+    class="flex w-22px h-22px text-xxs border-2 border-white rounded-full transition-colors"
     :class="[getBgColor(), getNumberColor]"
   >
-    <span class="cmw-m-auto">{{ $props.qty }}</span>
+    <span class="m-auto">{{ $props.qty }}</span>
   </span>
 </template>

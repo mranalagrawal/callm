@@ -160,8 +160,8 @@ export default {
 </script>
 
 <template>
-  <div class="cmw-font-sans">
-    <div class="cmw-max-w-screen-xl cmw-mx-auto cmw-py-4 cmw-px-4 cmw-min-h-[600px]">
+  <div class="font-sans">
+    <div class="max-w-screen-xl mx-auto py-4 px-4 min-h-[600px]">
       <TheBreadcrumbs
         :breadcrumbs="[
           { handle: '/', label: $t('home'), to: '/' },
@@ -171,21 +171,21 @@ export default {
 
       <ClientOnly>
         <div v-if="userCart && userCart.length > 0">
-          <h1 class="cmw-h2 cmw-my-4" v-text="$t('cartDetails')" />
-          <div class="cmw-grid md:(cmw-gap-8 cmw-grid-cols-[8fr_4fr]) cmw-my-4">
+          <h1 class="h2 my-4" v-text="$t('cartDetails')" />
+          <div class="grid md:(gap-8 grid-cols-[8fr_4fr]) my-4">
             <div class="">
-              <div class="cmw-flex cmw-items-center cmw-justify-between cmw-border-b cmw-border-b-gray cmw-mt-4">
+              <div class="flex items-center justify-between border-b border-b-gray mt-4">
                 <small><strong v-text="cartTotalQuantity" />
                   <span>{{ $tc('profile.orders.card.goods', cartTotalQuantity) }}</span>
                 </small>
-                <Button class="cmw-w-max cmw-ml-auto" variant="text" :label="$t('common.cta.emptyCart')" @click.native="emptyCart" />
+                <Button class="w-max ml-auto" variant="text" :label="$t('common.cta.emptyCart')" @click.native="emptyCart" />
               </div>
               <CartLine v-for="(item, i) in userCart" :key="item.id" :item="item" :is-last="(i + 1) >= userCart.length" />
-              <div class="cmw-my-4">
-                <p class="cmw-text-sm cmw-mt-2">
+              <div class="my-4">
+                <p class="text-sm mt-2">
                   {{ $t('continueShopping') }}
                   <NuxtLink
-                    class="cmw-font-bold cmw-text-primary-400 hover:(cmw-text-primary-400 cmw-no-underline)"
+                    class="font-bold text-primary-400"
                     :to="localePath('/')"
                   >
                     {{ $t('common.cta.continueShopping') }}
@@ -194,22 +194,22 @@ export default {
               </div>
             </div>
             <div>
-              <div class="cmw-text-center cmw-my-2 cmw-overline-2 cmw-uppercase cmw-text-secondary-700">
+              <div class="text-center my-2 overline-2 uppercase text-secondary-700">
                 {{
                   cartTotalAmount < shipping.threshold ? shipping.threshold_not_reached : shipping.threshold_reached
                 }}
               </div>
-              <div class="shadow mx-auto cmw-border cmw-border-gray-light cmw-rounded cmw-overflow-hidden">
-                <div class="cmw-p-4">
-                  <div class="cmw-h5">
+              <div class="shadow mx-auto border border-gray-light rounded overflow-hidden">
+                <div class="p-4">
+                  <div class="h5">
                     {{ $t('cartTotal') }}
                     <span class="float-right">{{
                       $n(Number(cartTotalAmountObj.value), 'currency', getLocaleFromCurrencyCode($config.STORE === "CMW_UK" ? "GBP" : "EUR"))
                     }}</span>
                   </div>
                   <hr>
-                  <p class="cmw-text-sm cmw-text-gray-darkest" v-html="$t('discountCode')" />
-                  <p class="cmw-text-sm cmw-text-gray-darkest" v-html="$t('shippingCost')" />
+                  <p class="text-sm text-gray-darkest" v-html="$t('discountCode')" />
+                  <p class="text-sm text-gray-darkest" v-html="$t('shippingCost')" />
                   <Button
                     type="button" variant="default"
                     @click.native="checkout()"
@@ -222,12 +222,12 @@ export default {
           </div>
         </div>
         <div v-else>
-          <h1 class="cmw-h2 cmw-my-4" v-text="$t('navbar.cart.empty')" />
-          <div class="cmw-text-center cmw-my-12">
+          <h1 class="h2 my-4" v-text="$t('navbar.cart.empty')" />
+          <div class="text-center my-12">
             <VueSvgIcon :data="require(`@/assets/svg/cart-empty.svg`)" width="200" height="200" original />
           </div>
-          <div class="cmw-mt-8">
-            <Button :to="localePath('/')" class="cmw-w-max cmw-mx-auto" :label="$t('common.cta.continueShopping')" />
+          <div class="mt-8">
+            <Button :to="localePath('/')" class="w-max mx-auto" :label="$t('common.cta.continueShopping')" />
           </div>
         </div>
       </ClientOnly>

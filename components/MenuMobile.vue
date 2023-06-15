@@ -31,27 +31,27 @@ export default {
 </script>
 
 <template>
-  <div class="cmw-w-full cmw-bg-white">
-    <div class="cmw-shadow cmw-h-[3px]" />
-    <div class="cmw-overflow-auto cmw-h-screen">
+  <div class="w-full bg-white">
+    <div class="shadow h-[3px]" />
+    <div class="overflow-auto h-screen">
       <button
         v-for="(item) in menu"
         :key="item.name.toLowerCase().replaceAll(' ', '-')"
-        class="cmw-relative cmw-flex cmw-justify-between cmw-items-center cmw-w-full cmw-py-4 cmw-px-2"
+        class="relative flex justify-between items-center w-full py-4 px-2"
         @click="activeItem = item"
       >
-        <span class="cmw-uppercase cmw-text-sm cmw-font-light cmw-tracking-wide">{{ item.name }}</span>
+        <span class="uppercase text-sm font-light tracking-wide">{{ item.name }}</span>
         <VueSvgIcon
           :data="require(`@/assets/svg/chevron-right.svg`)"
           width="16"
           height="16"
           color="#d94965"
         />
-        <span class="cmw-absolute cmw-w-[calc(100%_-_1rem)] cmw-left-2 cmw-bottom-0 cmw-h-px cmw-bg-gray-light" />
+        <span class="absolute w-[calc(100%_-_1rem)] left-2 bottom-0 h-px bg-gray-light" />
       </button>
     </div>
     <transition name="menu-mobile-second-level" @after-enter="handleAfterEnter">
-      <div v-if="!!Object.keys(activeItem).length" class="cmw-fixed cmw-top-0 cmw-left-0 cmw-w-full cmw-z-amenadiel cmw-pt-$cmw-top-banner-height">
+      <div v-if="!!Object.keys(activeItem).length" class="fixed top-0 left-0 w-full z-amenadiel pt-$top-banner-height">
         <MenuMobileSecondLayer :menu="activeItem" @close-sidebar="closeSidebar" />
       </div>
     </transition>

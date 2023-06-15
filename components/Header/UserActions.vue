@@ -70,48 +70,48 @@ export default {
 </script>
 
 <template>
-  <div class="cmw-relative">
-    <div class="position-relative d-flex">
+  <div class="relative">
+    <div class="relative flex">
       <NuxtLink
         v-if="customer.id"
         :to="localePath('/profile/wishlist')"
-        class="peer cmw-transition-colors cmw-rounded cmw-py-4 cmw-px-8 cmw-bg-white cmw-text-center cmw-text-body hover:(cmw-bg-primary-900 cmw-text-white cmw-no-underline)"
+        class="peer transition-colors rounded py-4 px-8 bg-white text-center text-body hover:(bg-primary-900 text-white)"
         @mouseenter="hoveringColor = 'white'"
         @mouseleave="hoveringColor = 'primary-400'"
       >
-        <span class="cmw-relative">
+        <span class="relative">
           <VueSvgIcon
-            class="cmw-block"
+            class="block"
             :data="heartIcon"
             width="32px"
             height="32px"
           />
           <span
-            class="cmw-block cmw-my-0 cmw-font-light cmw-text-sm"
+            class="block my-0 font-light text-sm"
             v-text="$t('navbar.favorites')"
           />
           <Badge
             v-if="favoritesCount"
             :qty="favoritesCount"
             :bg-color="hoveringColor"
-            class="cmw-transform cmw-absolute cmw-top-[-6px] cmw-right-[-4px]"
+            class="transform absolute top-[-6px] right-[-4px]"
           />
         </span>
       </NuxtLink>
       <button
-        class="cmw-transition-colors cmw-rounded-t cmw-py-4 cmw-px-8 cmw-bg-white hover:(cmw-bg-primary-900 cmw-text-white)"
-        :class="{ 'cmw-bg-primary-900 cmw-text-white': currentComponent === 'login' }"
+        class="transition-colors rounded-t py-4 px-8 bg-white hover:(bg-primary-900 text-white)"
+        :class="{ 'bg-primary-900 text-white': currentComponent === 'login' }"
         @mouseenter="handleUserActionMouseEnter('login')"
         @mouseleave="handleUserActionMouseLeave"
       >
         <span>
           <VueSvgIcon
-            class="cmw-block"
+            class="block"
             :data="userIcon"
             width="32px"
             height="32px"
           />
-          <span class="cmw-block cmw-my-0 cmw-font-light cmw-text-sm">
+          <span class="block my-0 font-light text-sm">
             {{
               customer.id
                 ? customer.firstName.split(" ")[0]
@@ -121,23 +121,23 @@ export default {
         </span>
       </button>
       <button
-        class="cmw-transition-colors cmw-rounded-t cmw-py-4 cmw-px-8 cmw-bg-white hover:(cmw-bg-primary-900 cmw-text-white)"
-        :class="currentComponent === 'cart' ? 'cmw-bg-primary-900 cmw-text-white' : ''"
+        class="transition-colors rounded-t py-4 px-8 bg-white hover:(bg-primary-900 text-white)"
+        :class="currentComponent === 'cart' ? 'bg-primary-900 text-white' : ''"
         @mouseenter="handleUserActionMouseEnter('cart')"
         @mouseleave="handleUserActionMouseLeave"
       >
-        <span class="cmw-flex cmw-gap-1 cmw-items-center">
+        <span class="flex gap-1 items-center">
           <span v-if="cartItems">
-            <span class="cmw-block cmw-text-xxs cmw-text-left cmw-mb-1">{{ $t('cartTotal') }}</span>
+            <span class="block text-xxs text-left mb-1">{{ $t('cartTotal') }}</span>
             <i18n-n
-              class="cmw-flex cmw-items-end cmw-leading-none" :value="Number(cartTotalAmountObj.value)" :format="{ key: 'currency' }"
+              class="flex items-end leading-none" :value="Number(cartTotalAmountObj.value)" :format="{ key: 'currency' }"
               :locale="getLocaleFromCurrencyCode($config.STORE === 'CMW_UK' ? 'GBP' : 'EUR')"
             >
               <template #currency="slotProps">
-                <span class="cmw-text-sm md:cmw-text-base">{{ slotProps.currency }}</span>
+                <span class="text-sm md:text-base">{{ slotProps.currency }}</span>
               </template>
               <template #integer="slotProps">
-                <span class="cmw-text-2xl">{{ slotProps.integer }}</span>
+                <span class="text-2xl">{{ slotProps.integer }}</span>
               </template>
               <template #group="slotProps">
                 <span>{{ slotProps.group }}</span>
@@ -147,16 +147,16 @@ export default {
               </template>
             </i18n-n>
           </span>
-          <span class="cmw-relative">
+          <span class="relative">
             <VueSvgIcon
-              class="cmw-block"
+              class="block"
               :data="cartIcon"
               width="32px"
               height="32px"
             />
             <span
               v-if="!cartItems"
-              class="cmw-block cmw-my-0 cmw-font-light cmw-text-sm"
+              class="block my-0 font-light text-sm"
             >
               {{ $t("cart") }}
             </span>
@@ -164,7 +164,7 @@ export default {
               v-if="cartItems"
               :qty="cartItems"
               :bg-color="currentComponent === 'cart' ? 'white' : 'primary-400'"
-              class="cmw- transform cmw-absolute cmw-top-[-10px] cmw-right-[-10px]"
+              class="transform absolute top-[-10px] right-[-10px]"
             />
           </span>
         </span>
@@ -179,9 +179,9 @@ export default {
         v-if="currentComponent"
         :key="currentComponent"
         class="
-        cmw-absolute cmw-transform cmw-rounded-b cmw-transition-transform-opacity cmw-bottom-0 cmw-right-0 cmw-bg-white cmw-w-auto cmw-translate-x-0 cmw-translate-y-full
-        cmw-overflow-hidden cmw-z-base cmw-shadow"
-        :class="currentComponent === 'cart' ? 'cmw-rounded-tl' : 'cmw-rounded-t'"
+        absolute transform rounded-b transition-transform-opacity bottom-0 right-0 bg-white w-auto translate-x-0 translate-y-full
+        overflow-hidden z-base shadow"
+        :class="currentComponent === 'cart' ? 'rounded-tl' : 'rounded-t'"
       >
         <div
           @mouseleave="handleMouseAction(false)"

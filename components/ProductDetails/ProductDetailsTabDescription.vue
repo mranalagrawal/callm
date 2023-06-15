@@ -17,7 +17,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="cmw-mt-6">
+  <div class="mt-6">
     <div v-html="product?.descriptionHtml" />
   </div>
 </template>

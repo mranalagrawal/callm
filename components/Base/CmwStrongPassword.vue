@@ -68,9 +68,9 @@ export default {
 
     const getTheme = () => {
       return ({
-        light: 'cmw-bg-white',
-        gray: 'cmw-bg-gray-lightest',
-        dark: 'cmw-bg-black',
+        light: 'bg-white',
+        gray: 'bg-gray-lightest',
+        dark: 'bg-black',
       })[props.theme]
     }
 
@@ -80,7 +80,7 @@ export default {
 </script>
 
 <template>
-  <div class="cmw-relative">
+  <div class="relative">
     <ValidationProvider
       v-slot="{ errors }"
       :vid="name"
@@ -88,20 +88,20 @@ export default {
       :name="name"
       slim
     >
-      <div class="cmw-mt-8">
-        <div class="cmw-relative">
+      <div class="mt-8">
+        <div class="relative">
           <input
             v-bind="[$attrs]"
             :id="name"
             :value="value"
-            class="peer cmw-px-4 cmw-text-gray-dark cmw-py-3 cmw-w-full cmw-bg-transparent cmw-border cmw-border-gray-light
-              cmw-placeholder-transparent cmw-rounded cmw-transition-colors
-              hover:(cmw-border-gray)
-              focus:(cmw-outline-none cmw-border-gray-dark)
-              autofill:(cmw-text-body cmw-border-info cmw-text-base)
-              disabled:(cmw-border-gray-light/70 cmw-cursor-not-allowed)"
+            class="peer px-4 text-gray-dark py-3 w-full bg-transparent border border-gray-light
+              placeholder-transparent rounded transition-colors
+              hover:(border-gray)
+              focus:(outline-none border-gray-dark)
+              autofill:(text-body border-info text-base)
+              disabled:(border-gray-light/70 cursor-not-allowed)"
             :class="[
-              { 'cmw-border-error': !!errors.length },
+              { 'border-error': !!errors.length },
               `is-${theme}`,
               { '-filled': value },
             ]"
@@ -115,84 +115,84 @@ export default {
           >
           <label
             :for="name"
-            class="cmw-absolute cmw-m-0 cmw-left-4 cmw-transition-all cmw-select-none cmw-pointer-events-none cmw-truncate
-          peer-focus:(cmw-top-[-0.4rem] cmw-text-[0.775rem] cmw-px-2 cmw-w-auto)
-          peer-disabled:(cmw-text-gray-light/70)"
+            class="absolute m-0 left-4 transition-all select-none pointer-events-none truncate
+          peer-focus:(top-[-0.4rem] text-[0.775rem] px-2 w-auto)
+          peer-disabled:(text-gray-light/70)"
             :class="[
-              { 'cmw-sr-only': hideLabel },
+              { 'sr-only': hideLabel },
               `peer-focus:${getTheme()}`,
-              value ? `cmw-text-[0.775rem] cmw-px-2 cmw-top-[-0.4rem] ${getTheme()} cmw-w-auto` : 'cmw-top-[0.75rem] cmw-w-full cmw-pr-8',
-              !!errors.length ? 'cmw-text-error' : value ? 'cmw-text-secondary-800' : 'cmw-text-gray',
+              value ? `text-[0.775rem] px-2 top-[-0.4rem] ${getTheme()} w-auto` : 'top-[0.75rem] w-full pr-8',
+              !!errors.length ? 'text-error' : value ? 'text-secondary-800' : 'text-gray',
               `-${theme}`,
             ]"
           >{{ $t('password').toString() }}</label>
 
           <button
             type="button"
-            class="cmw-transform cmw-absolute cmw-top-1/2 cmw-right-0 cmw-translate-y-[-50%] cmw-translate-x-[-50%]"
+            class="transform absolute top-1/2 right-0 translate-y-[-50%] translate-x-[-50%]"
             @click="() => passwordIsVisible = !passwordIsVisible"
           >
             <VueSvgIcon :data="passwordIsVisible ? eyeHideIcon : eyeShowIcon" color="#E6362E" width="30px" height="30px" />
           </button>
         </div>
-        <span v-if="!!errors.length" class="cmw-block cmw-text-sm cmw-text-error">{{ errors[0] }}</span>
+        <span v-if="!!errors.length" class="block text-sm text-error">{{ errors[0] }}</span>
       </div>
     </ValidationProvider>
     <transition name="slideFade" mode="out-in">
       <div
-        v-if="showPasswordToast" class="cmw-absolute cmw-w-full cmw-z-100 cmw-transform
-           cmw-transition-transform-opacity cmw-translate-x-0 cmw-translate-y-full cmw-bottom-0 cmw-left-0"
+        v-if="showPasswordToast" class="absolute w-full z-100 transform
+           transition-transform-opacity translate-x-0 translate-y-full bottom-0 left-0"
       >
         <div
           class="
-            cmw-rounded-lg cmw-bg-white cmw-shadow-popover cmw-py-4 cmw-px-6 cmw-mt-8 cmw-relative
-            before:(cmw-content-DEFAULT cmw-absolute cmw-w-0 cmw-h-0 cmw-top-[-0.5rem] cmw-left-[1.75rem])
-            before:(cmw-border-l-[0.75rem] cmw-border-l-transparent)
-            before:(cmw-border-r-[0.75rem] cmw-border-r-transparent)
-            before:(cmw-border-b-[0.5rem] cmw-border-b-white)
+            rounded-lg bg-white shadow-popover py-4 px-6 mt-8 relative
+            before:(content-DEFAULT absolute w-0 h-0 top-[-0.5rem] left-[1.75rem])
+            before:(border-l-[0.75rem] border-l-transparent)
+            before:(border-r-[0.75rem] border-r-transparent)
+            before:(border-b-[0.5rem] border-b-white)
 "
         >
           <p>{{ $t('validations.password.title') }}</p>
           <!-- Note: Maybe we can simplify this with a v-for -->
-          <ul class="cmw-py-4">
-            <li class="cmw-flex cmw-items-center cmw-gap-2" :class="{ 'cmw-text-success': passwordValidation.min }">
+          <ul class="py-4">
+            <li class="flex items-center gap-2" :class="{ 'text-success': passwordValidation.min }">
               <VueSvgIcon width="18" height="18" :data="require(`@/assets/svg/checkmark.svg`)" />
               <span v-text="$t('validations.password.min')" />
             </li>
             <li
-              class="cmw-flex cmw-items-center cmw-gap-2"
-              :class="{ 'cmw-text-success': passwordValidation.oneNumber }"
+              class="flex items-center gap-2"
+              :class="{ 'text-success': passwordValidation.oneNumber }"
             >
               <VueSvgIcon width="18" height="18" :data="require(`@/assets/svg/checkmark.svg`)" />
               <span v-text="$t('validations.password.oneNumber')" />
             </li>
             <li
-              class="cmw-flex cmw-items-center cmw-gap-2"
-              :class="{ 'cmw-text-success': passwordValidation.oneUpperCase }"
+              class="flex items-center gap-2"
+              :class="{ 'text-success': passwordValidation.oneUpperCase }"
             >
               <VueSvgIcon width="18" height="18" :data="require(`@/assets/svg/checkmark.svg`)" />
               <span v-text="$t('validations.password.oneUpperCase')" />
             </li>
             <li
-              class="cmw-flex cmw-items-center cmw-gap-2"
-              :class="{ 'cmw-text-success': passwordValidation.oneLowerCase }"
+              class="flex items-center gap-2"
+              :class="{ 'text-success': passwordValidation.oneLowerCase }"
             >
               <VueSvgIcon width="18" height="18" :data="require(`@/assets/svg/checkmark.svg`)" />
               <span v-text="$t('validations.password.oneLowerCase')" />
             </li>
             <li
-              class="cmw-flex cmw-items-center cmw-gap-2"
-              :class="{ 'cmw-text-success': passwordValidation.oneSpecialChar }"
+              class="flex items-center gap-2"
+              :class="{ 'text-success': passwordValidation.oneSpecialChar }"
             >
               <VueSvgIcon width="18" height="18" :data="require(`@/assets/svg/checkmark.svg`)" />
               <span v-text="$t('validations.password.oneSpecialChar')" />
             </li>
           </ul>
-          <p class="cmw-overline-2">
+          <p class="overline-2">
             {{ $t('validations.password.effectiveness') }}
           </p>
-          <div class="cmw-w-full cmw-h-2 cmw-bg-gray-lightest cmw-rounded-pill cmw-overflow-hidden">
-            <div class="cmw-h-2 cmw-transition-progress-bar" :style="barProgressStyle" />
+          <div class="w-full h-2 bg-gray-lightest rounded-pill overflow-hidden">
+            <div class="h-2 transition-progress-bar" :style="barProgressStyle" />
           </div>
         </div>
       </div>

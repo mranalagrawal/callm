@@ -61,7 +61,7 @@ export default {
 <template>
   <ValidationObserver v-slot="{ handleSubmit }" slim>
     <form
-      class="sm:cmw-px-4"
+      class="sm:px-4"
       @submit.prevent="handleSubmit(onSubmit)"
     >
       <div>
@@ -76,8 +76,8 @@ export default {
             {{ $t('privacyPolicy') }}
           </template>
         </CmwCheckbox>
-        <div class="cmw-flex cmw-items-center cmw-justify-center cmw-mt-8 cmw-mb-4">
-          <Button :disabled="isSubmitting" class="cmw-w-max" :label="$t('common.cta.notifyMe').toString()" type="submit" />
+        <div class="flex items-center justify-center mt-8 mb-4">
+          <Button :disabled="isSubmitting" class="w-max" :label="$t('common.cta.notifyMe').toString()" type="submit" />
         </div>
       </div>
     </form>

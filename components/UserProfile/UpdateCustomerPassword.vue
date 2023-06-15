@@ -43,10 +43,10 @@ export default {
     call customerAccessTokenCreate again, then customerUpdate, but this can be tedious and redundant
       since the user should be login anyhow and I think is better the way it is right now on production (without this old-password field) -->
     <form
-      class="sm:cmw-px-4 cmw-my-8"
+      class="sm:px-4 my-8"
       @submit.prevent="onSubmit"
     >
-      <div class="cmw-max-w-sm cmw-mx-auto cmw-mt-20 cmw-min-h-[30vh]">
+      <div class="max-w-sm mx-auto mt-20 min-h-[30vh]">
         <CmwStrongPassword v-model="password" autocomplete="new-password" :placeholder="$t('passwordPlaceholder').toString()" />
         <InputField
           v-model="confirmPassword"
@@ -60,7 +60,7 @@ export default {
           :click-icon="() => passwordIsVisible = !passwordIsVisible"
         />
       </div>
-      <div class="cmw-text-center cmw-mt-8 cmw-max-w-sm cmw-mx-auto">
+      <div class="text-center mt-8 max-w-sm mx-auto">
         <Button :label="$t('common.cta.confirm').toString()" type="submit" />
       </div>
     </form>

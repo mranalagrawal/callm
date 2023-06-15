@@ -40,10 +40,10 @@ export default {
 <template>
   <ValidationObserver ref="formEl" slim>
     <form
-      class="sm:cmw-px-4 cmw-my-8"
+      class="sm:px-4 my-8"
       @submit.prevent="onSubmit"
     >
-      <div class="cmw-max-w-sm cmw-mx-auto">
+      <div class="max-w-sm mx-auto">
         <InputField
           v-model="firstName"
           name="customer-edit-firstname"
@@ -73,7 +73,7 @@ export default {
           </CmwCheckbox>
         </div>
       </div>
-      <div class="cmw-text-center cmw-mt-8 cmw-max-w-sm cmw-mx-auto">
+      <div class="text-center mt-8 max-w-sm mx-auto">
         <Button :label="$t('common.cta.confirm').toString()" type="submit" />
       </div>
     </form>

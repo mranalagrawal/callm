@@ -23,20 +23,20 @@ export default {
 </script>
 
 <template>
-  <div class="cmw-font-sans" :class="{ 'cmw-mt-auto cmw-pt-4 cmw-pb-2': is_last_item }">
+  <div class="font-sans" :class="{ 'mt-auto pt-4 pb-2': is_last_item }">
     <div
-      v-if="!marketing_cta" class="cmw-py-1"
-      :class="[{ 'cmw-flex cmw-items-center cmw-border-b cmw-border-b-gray-light': selection }]"
+      v-if="!marketing_cta" class="py-1"
+      :class="[{ 'flex items-center border-b border-b-gray-light': selection }]"
     >
       <!-- Note: on Nuxt 3 this will be handle by the navigation instead so we can properly use <NuxtLink /> -->
-      <button class="hover:cmw-text-primary" @click="handleClick(third_level_link)">
+      <button class="hover:text-primary" @click="handleClick(third_level_link)">
         <VueSvgIcon
           v-if="selection"
           color="#E6362E"
           :data="require(`@/assets/svg/selections/${selection}.svg`)"
           width="20px"
         />
-        <span class="cmw-text-sm cmw-font-light" :class="{ 'cmw-text-primary-400': is_last_item || is_red }">{{ third_level_name }}</span>
+        <span class="text-sm font-light" :class="{ 'text-primary-400': is_last_item || is_red }">{{ third_level_name }}</span>
       </button>
     </div>
     <Card

@@ -81,8 +81,8 @@ export default {
 </script>
 
 <template>
-  <div class="cmw-gap-4 cmw-grid cmw-items-center cmw-justify-items-center md:(cmw- cmw-grid-cols-2 cmw-justify-between cmw-justify-items-stretch)">
-    <div class="cmw-flex cmw-gap-2">
+  <div class="gap-4 grid items-center justify-items-center md:( grid-cols-2 justify-between justify-items-stretch)">
+    <div class="flex gap-2">
       <a
         v-for="({ icon, url }) in socials[$config.STORE]" :key="icon" :href="url"
         :aria-label="$t(`enums.accessibility.labels.GO_TO_PAGE`, { url: icon })"
@@ -90,7 +90,7 @@ export default {
         <VueSvgIcon :data="require(`@/assets/svg/social-${icon}.svg`)" color="white" width="30" height="auto" />
       </a>
     </div>
-    <div v-if="$config.STORE === 'CMW'" class="cmw-grid cmw-max-w-300px cmw-grid-cols-2 cmw-gap-2 cmw-items-center cmw-justify-end md:cmw-ml-auto">
+    <div v-if="$config.STORE === 'CMW'" class="grid max-w-300px grid-cols-2 gap-2 items-center justify-end md:ml-auto">
       <a
         href="https://apps.apple.com/us/app/callmewine/id1545381296?itsct=apps_box_badge&amp;itscg=30200"
         style="display: inline-block; overflow: hidden; border-radius: 13px; width: 100%; height: auto;"

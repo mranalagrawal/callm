@@ -97,12 +97,12 @@ export default {
 </script>
 
 <template>
-  <div class="c-address cmw-h-full cmw-relative cmw-font-sans cmw-p-3 cmw-rounded-sm cmw-border cmw-border-gray-light hover:cmw-shadow-elevation">
-    <div class="cmw-flex cmw-items-baseline cmw-justify-between cmw-gap-4">
+  <div class="c-address h-full relative font-sans p-3 rounded-sm border border-gray-light hover:shadow-elevation">
+    <div class="flex items-baseline justify-between gap-4">
       <strong>{{ address.name }}</strong>
       <CmwChip v-if="isDefaultAddress" :icon="bookmarkIcon" variant="overline-2" color="secondary-400" :label="$t('profile.defaultAddress').toUpperCase()" />
     </div>
-    <div class="cmw-text-sm">
+    <div class="text-sm">
       <div>{{ address.address1 }}</div>
       <div>{{ address.address2 }}</div>
       <div>{{ address.city }}</div>
@@ -111,12 +111,12 @@ export default {
       <div>{{ address.formattedArea }}</div>
       <div>{{ address.phone }}</div>
     </div>
-    <div class="cmw-absolute cmw-bottom-0 cmw-right-0 cmw-mr-3 cmw-mb-3">
+    <div class="absolute bottom-0 right-0 mr-3 mb-3">
       <ButtonIcon
         v-if="isDefaultAddress"
         :icon="editIcon" variant="icon" @click.native="openEditAddressSplash"
       />
-      <div v-else class="cmw-relative">
+      <div v-else class="relative">
         <ButtonIcon
           :icon="moreVerticalIcon" variant="icon" @click.native="toggleMenu"
         />
@@ -124,36 +124,36 @@ export default {
           <div
             v-show="menuIsOpen"
             class="
-            cmw-absolute cmw-transform cmw-shadow cmw-bg-gray-lightest cmw-rounded-sm cmw-px-6 cmw-py-1 cmw-z-base cmw-w-max
-            cmw-bottom-0 cmw-right-0 cmw-translate-x-0 cmw-translate-y-full"
+            absolute transform shadow bg-gray-lightest rounded-sm px-6 py-1 z-base w-max
+            bottom-0 right-0 translate-x-0 translate-y-full"
           >
             <button
-              class="peer cmw-text-primary-400 cmw-flex cmw-items-center cmw-gap-1 cmw-py-2"
+              class="peer text-primary-400 flex items-center gap-1 py-2"
               @click="openEditAddressSplash"
             >
               <VueSvgIcon :data="editIcon" width="24" height="auto" />
-              <span class="cmw-text-body cmw-text-sm peer-hover:cmw-text-primary-400" v-text="$t('profile.editAddress')" />
+              <span class="text-body text-sm peer-hover:text-primary-400" v-text="$t('profile.editAddress')" />
             </button>
             <button
-              class="peer cmw-text-primary-400 cmw-flex cmw-items-center cmw-gap-1 cmw-py-2"
+              class="peer text-primary-400 flex items-center gap-1 py-2"
               @click="setAddressAsDefault"
             >
               <VueSvgIcon :data="bookmarkIcon" width="24" height="auto" />
-              <span class="cmw-text-body cmw-text-sm peer-hover:cmw-text-primary-400" v-text="$t('profile.setAsDefaultAddress')" />
+              <span class="text-body text-sm peer-hover:text-primary-400" v-text="$t('profile.setAsDefaultAddress')" />
             </button>
             <button
-              class="peer cmw-text-primary-400 cmw-flex cmw-items-center cmw-gap-1 cmw-py-2"
+              class="peer text-primary-400 flex items-center gap-1 py-2"
               @click="deleteCustomerAddress"
             >
               <VueSvgIcon :data="deleteIcon" width="24" height="auto" />
-              <span class="cmw-text-body cmw-text-sm peer-hover:cmw-text-primary-400" v-text="$t('profile.deleteAddress')" />
+              <span class="text-body text-sm peer-hover:text-primary-400" v-text="$t('profile.deleteAddress')" />
             </button>
           </div>
         </transition>
       </div>
     </div>
     <!-- Note: Lapel Idea -->
-    <!--    <div v-if="isDefaultAddress" class="c-address__lapel cmw-absolute cmw-top-$lapel-top cmw-right-10">
+    <!--    <div v-if="isDefaultAddress" class="c-address__lapel absolute top-$lapel-top right-10">
       <CardLapel :icon="bookmarkIcon" label="default" />
     </div> -->
   </div>

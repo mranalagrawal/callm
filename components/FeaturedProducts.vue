@@ -18,7 +18,7 @@ export default {
             products: collection.products.nodes.length && $productMapping.fromShopify(collection.products.nodes),
           }
         })
-        .catch((err: Error) => $handleApiErrors(`Catch getting Feature Products from Shopify: ${err}`))
+        .catch((err: Error) => $handleApiErrors(`Catch getting home-shelf-1 from Shopify: ${err}`))
     })
     return { collectionRef }
   },
@@ -28,9 +28,9 @@ export default {
 <template>
   <div class="container my-5">
     <CarouselProducts v-if="!!collectionRef.products.length" :products="collectionRef.products" :title="collectionRef.description" />
-    <div class="cmw-mt-5">
+    <div class="mt-5">
       <Button
-        class="cmw-w-[min(100%,_10rem)] cmw-m-inline-auto"
+        class="w-[min(100%,_10rem)] m-inline-auto"
         variant="ghost"
         :to="localePath(collectionRef.link?.value || '/catalog?favourite=true&page=1')"
       >

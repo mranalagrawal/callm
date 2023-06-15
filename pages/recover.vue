@@ -58,17 +58,14 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="cmw-px-4 cmw-grid cmw-grid-cols-[minmax(auto,_640px)] cmw-justify-center cmw-justify-items-center cmw-mt-20">
-    <div class="cmw-h3 cmw-mb-8" v-text="$t('recoverPwd.title')" />
-    <div class="cmw-text-center" v-text="$t('recoverPwd.paragraph')" />
+  <div class="grid grid-cols-[minmax(auto,_640px)] justify-center justify-items-center mt-20 px-4">
+    <div class="h3 mb-8" v-text="$t('recoverPwd.title')" />
+    <div class="text-center" v-text="$t('recoverPwd.paragraph')" />
     <ValidationObserver
       v-slot="{ handleSubmit, valid }"
       slim
     >
-      <form
-        class="cmw-w-full md:cmw-w-2/4"
-        @submit.prevent="handleSubmit(onSubmit)"
-      >
+      <form class="w-full md:w-2/4" @submit.prevent="handleSubmit(onSubmit)">
         <InputField
           v-model="form.email"
           type="email"
@@ -77,7 +74,7 @@ export default defineComponent({
         />
 
         <Button
-          class="cmw-mt-8"
+          class="mt-8"
           type="submit"
           :disabled="!form.email || !valid"
           :label="$t('common.cta.send')"

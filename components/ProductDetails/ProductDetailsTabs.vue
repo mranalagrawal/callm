@@ -64,35 +64,39 @@ export default defineComponent({
       ProductDetailsTabPairings: () => import('~/components/ProductDetails/ProductDetailsTabPairings.vue'),
     }
 
-    return { tabs, currentTab, componentMap }
+    return {
+      tabs,
+      currentTab,
+      componentMap,
+    }
   },
   methods: { generateKey },
 })
 </script>
 
 <template>
-  <div class="cmw-mt-6 md:(cmw-grid cmw-gap-4 cmw-grid-cols-[8fr_4fr])">
+  <div class="mt-6 md:(grid gap-4 grid-cols-[8fr_4fr])">
     <div>
       <div
-        class="c-navigationTab cmw-font-sans cmw-justify-between cmw-w-full cmw-flex cmw-no-wrap cmw-overflow-x-auto
-        cmw-border-b cmw-border-b-gray-dark cmw-mb-3 md:(cmw-mt-9 cmw-max-w-10/12)"
+        class="c-navigationTab font-sans justify-between w-full flex no-wrap overflow-x-auto
+        border-b border-b-gray-dark mb-3 md:(mt-9 max-w-10/12)"
       >
         <div
           v-for="({ label, component }) in tabs" :key="generateKey(component)"
-          class="cmw-relative cmw-py-2 cmw-flex-shrink-0 cmw-font-light cmw-text-sm
-                hover:(cmw-no-underline)
-                hover:after:(cmw-bg-primary cmw-text-primary cmw-w-full)
-                after:(cmw-content-DEFAULT cmw-transform cmw-absolute cmw-bottom-0 cmw-left-1/2 cmw-h-1 cmw-transition-progress-bar cmw-translate-x-[-50%])"
-          :class="component === currentTab ? 'after:(cmw-bg-primary cmw-text-primary cmw-w-full)' : 'after:(cmw-w-0 cmw-bg-primary-400)'"
+          class="relative py-2 flex-shrink-0 font-light text-sm
+                hover:after:(bg-primary text-primary w-full)
+                after:(content-DEFAULT transform absolute bottom-0 left-1/2 h-1 transition-progress-bar translate-x-[-50%])"
+          :class="component === currentTab ? 'after:(bg-primary text-primary w-full)' : 'after:(w-0 bg-primary-400)'"
         >
           <input
             :id="generateKey(component)"
-            v-model="currentTab" class="peer cmw-appearance-none cmw-absolute cmw-top-0 cmw-left-0 cmw-w-full cmw-h-full cmw-cursor-pointer"
+            v-model="currentTab"
+            class="peer appearance-none absolute top-0 left-0 w-full h-full cursor-pointer"
             :value="component" type="radio" name="component"
           >
           <label
             :for="generateKey(component)"
-            class="cmw-w-max cmw-px-4 hover:cmw-text-primary cmw-cursor-pointer cmw-text-gray-dark peer-checked:cmw-text-primary"
+            class="w-max px-4 hover:text-primary cursor-pointer text-gray-dark peer-checked:text-primary"
             v-text="label"
           />
         </div>
@@ -104,40 +108,23 @@ export default defineComponent({
         />
       </transition>
     </div>
-    <div class="cmw-block">
-      <div style="width: 80%" class="bg-light p-3 mx-auto cmw-rounded">
-        <h3 class="mb-5">
-          {{ $t('product.features') }}
-        </h3>
+    <div class="block">
+      <div style="width: 80%" class="bg-gray-lightest rounded p-3 mx-auto">
+        <h3 class="mb-5" v-text="$t('product.features')" />
 
         <div v-if="productDetails.denomination[$i18n.locale]">
-          <p class="font-weight-bold mb-0">
-            {{ $t('product.denomination') }}
-          </p>
-          <p class="mb-4">
-            {{ productDetails.denomination[$i18n.locale] }}
-          </p>
+          <p class="font-bold mb-0" v-text="$t('product.denomination')" />
+          <p class="mb-4" v-text="productDetails.denomination[$i18n.locale]" />
           <hr>
         </div>
         <div v-if="productDetails.grapes[$i18n.locale]">
-          <p class="font-weight-bold mb-0">
-            {{ $t('product.vines') }}
-          </p>
-          <p class="mb-4">
-            {{ productDetails.grapes[$i18n.locale] }}
-          </p>
+          <p class="font-bold mb-0" v-text="$t('product.vines')" />
+          <p class="mb-4" v-text="productDetails.grapes[$i18n.locale]" />
           <hr>
         </div>
 
-        <div
-          v-if="
-            productDetails.countryName[$i18n.locale]
-              || productDetails.countryRegionName
-          "
-        >
-          <p class="font-weight-bold mb-0">
-            {{ $t('product.region') }}
-          </p>
+        <div v-if="productDetails.countryName[$i18n.locale] || productDetails.countryRegionName">
+          <p class="font-bold mb-0" v-text="$t('product.region')" />
           <p class="mb-4">
             {{ productDetails.countryRegionName }}
             {{ productDetails.countryName[$i18n.locale] }}
@@ -145,48 +132,28 @@ export default defineComponent({
           <hr>
         </div>
         <div v-if="productDetails.alcoholContent">
-          <p class="font-weight-bold mb-0">
-            {{ $t('product.alcoholContent') }}
-          </p>
-          <p class="mb-4">
-            {{ productDetails.alcoholContent }}%
-          </p>
+          <p class="font-bold mb-0" v-text="$t('product.alcoholContent')" />
+          <p class="mb-4" v-text="`${productDetails.alcoholContent}%`" />
           <hr>
         </div>
         <div v-if="productDetails.size[$i18n.locale]">
-          <p class="font-weight-bold mb-0">
-            {{ $t('product.format') }}
-          </p>
-          <p class="mb-4">
-            {{ productDetails.size[$i18n.locale] }}
-          </p>
+          <p class="font-bold mb-0" v-text="$t('product.format')" />
+          <p class="mb-4" v-text="productDetails.size[$i18n.locale]" />
           <hr>
         </div>
         <div v-if="productDetails.winemaking[$i18n.locale]">
-          <p class="font-weight-bold mb-0">
-            {{ $t('product.vinification') }}
-          </p>
-          <p class="mb-4">
-            {{ productDetails.winemaking[$i18n.locale] }}
-          </p>
+          <p class="font-bold mb-0" v-text="$t('product.vinification')" />
+          <p class="mb-4" v-text="productDetails.winemaking[$i18n.locale]" />
           <hr>
         </div>
         <div v-if="productDetails.agingDescription[$i18n.locale]">
-          <p class="font-weight-bold mb-0">
-            {{ $t('product.refinement') }}
-          </p>
-          <p class="mb-4">
-            {{ productDetails.agingDescription[$i18n.locale] }}
-          </p>
+          <p class="font-bold mb-0" v-text="$t('product.refinement')" />
+          <p class="mb-4" v-text="productDetails.agingDescription[$i18n.locale]" />
           <hr>
         </div>
         <div v-if="productDetails.productInformations[$i18n.locale]">
-          <p class="font-weight-bold mb-0">
-            {{ $t('product.additionalNotes') }}
-          </p>
-          <p class="mb-4">
-            {{ productDetails.productInformations[$i18n.locale] }}
-          </p>
+          <p class="font-bold mb-0" v-text="$t('product.additionalNotes')" />
+          <p class="mb-4" v-text="productDetails.productInformations[$i18n.locale]" />
         </div>
       </div>
     </div>

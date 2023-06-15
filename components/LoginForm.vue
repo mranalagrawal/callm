@@ -83,7 +83,7 @@ export default {
       </Alert>
 
       <Button
-        class="sm:cmw-max-w-330px cmw-mt-8"
+        class="sm:max-w-330px mt-8"
         type="submit"
         :disabled="isSubmitting"
         :label="$t('navbar.user.signIn').toString()"
@@ -91,7 +91,7 @@ export default {
 
       <NuxtLink
         to="/recover"
-        class="cmw-block cmw-w-max cmw-my-3 cmw-text-primary-400 hover:(cmw-text-primary-400 cmw-no-underline)"
+        class="block w-max my-3 text-primary-400"
       >
         {{ $t("navbar.user.forgotPassword") }}
       </NuxtLink>

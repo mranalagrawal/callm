@@ -1,13 +1,16 @@
+import * as process from 'node:process'
 import { defineConfig } from 'windicss/helpers'
+
 import colors from 'windicss/colors'
 import plugin from 'windicss/plugin'
+import type { TStores } from './config/themeConfig'
 import themeConfig from './config/themeConfig'
 
-// noinspection JSUnusedGlobalSymbols
+const store: TStores = process.env.STORE as TStores
+
 export default defineConfig({
-  // Note: Added prefix to avoid conflicts with bootstrap classes, we can remove it later with find and replace
-  prefix: 'cmw-',
-  safelist: ['nuxt-link-exact-active', 'peer-focus:cmw-bg-white', 'peer-focus:cmw-bg-black', 'peer-focus:cmw-bg-gray-lightest',
+  attributify: true,
+  safelist: ['nuxt-link-exact-active', 'peer-focus:bg-white', 'peer-focus:bg-black', 'peer-focus:bg-gray-lightest',
     'btn-base', 'btn-base-spacing', 'btn-default', 'btn-text'],
   preflight: {
     alias: {
@@ -36,7 +39,7 @@ export default defineConfig({
       inherit: colors.inherit,
       current: colors.current,
       transparent: colors.transparent,
-      ...themeConfig[process.env.STORE].colors,
+      ...(themeConfig[store]?.colors ?? {}),
       white: colors.white,
       black: colors.black,
       gray: {
@@ -77,7 +80,7 @@ export default defineConfig({
     extend: {
       // https://windicss.org/utilities/general/typography.html#font-family
       fontFamily: {
-        ...themeConfig[process.env.STORE].fonts,
+        ...(themeConfig[store]?.fonts ?? {}),
         inherit: 'inherit',
         icon: ['"Material Symbols Outlined"', 'san-serif'],
       },
@@ -138,33 +141,29 @@ export default defineConfig({
   },
   shortcuts: {
     // Note: This compiles classes, instead, Alias uses single utilities
-    'nuxt-link-exact-active': 'underline',
+    'nuxt-link-exact-active': 'no-underline',
     'center-the-unknown': 'absolute transform top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
-    'body-1': 'cmw-font-normal cmw-text-sm cmw-text-black hover:cmw-text-black',
-    'overline-1': 'cmw-font-light cwm-tracking-wider tracking-wider cmw-text-xxs',
-    'overline-2': 'cmw-font-light cwm-tracking-widest tracking-widest cmw-text-xs',
-    'btn-base': 'cmw-font-secondary cmw-flex cmw-items-center cmw-justify-center cmw-w-full cmw-transition-colors cmw-rounded cmw-border-2',
-    'btn-base-spacing': 'cmw-px-6 cmw-py-2 md:(cmw-px-8 cmw-py-[0.8rem])',
-    'btn-default': 'cmw-font-secondary cmw-border-transparent cmw-bg-primary-400 cmw-text-white cmw-font-bold cmw-uppercase hover:(cmw-text-white cmw-no-underline)',
-    'btn-text': 'cmw-border-transparent cmw-text-primary-400 hover:(cmw-text-primary cmw-no-underline)',
+    'body-1': 'font-normal text-sm text-black hover:text-black',
+    'overline-1': 'font-light cwm-tracking-wider tracking-wider text-xxs',
+    'overline-2': 'font-light cwm-tracking-widest tracking-widest text-xs',
+    'btn-base': 'font-secondary flex items-center justify-center w-full transition-colors rounded border-2',
+    'btn-base-spacing': 'px-6 py-2 md:(px-8 py-[0.8rem])',
+    'btn-default': 'font-secondary border-transparent bg-primary-400 text-white font-bold uppercase',
+    'btn-text': 'border-transparent text-primary-400',
   },
   alias: {
     // Note: This compiles single utilities, we need to use it with a '*' es. class="*big-titles"
-    'nuxt-link-exact-active': 'underline',
+    'nuxt-link-exact-active': 'no-underline',
     'center-the-unknown': 'absolute transform top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
   },
   plugins: [
     require('windicss/plugin/line-clamp'),
-    plugin(({ addBase, addComponents, theme }) => {
+    plugin(({ addComponents }) => {
       const margins = {
         '.m-inline-auto': {
           'margin-inline': 'auto',
         },
       }
-      addBase({
-        'a': { textDecoration: 'underline', transition: 'color 300ms' },
-        'a:hover': { color: theme('colors.primary') },
-      })
       addComponents(margins)
     }),
   ],

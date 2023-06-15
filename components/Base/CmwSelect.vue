@@ -31,10 +31,10 @@ export default defineComponent({
     }
 
     const getFontSize = () => ({
-      xs: 'cmw-text-xs cmw-overline-1',
-      sm: 'cmw-text-xs cmw-overline-1',
-      md: 'cmw-text-sm',
-      lg: 'cmw-text-sm',
+      xs: 'text-xs overline-1',
+      sm: 'text-xs overline-1',
+      md: 'text-sm',
+      lg: 'text-sm',
     })[props.size]
 
     const useSearchField = computed(() => props.options.length > 10)
@@ -51,44 +51,44 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="cmw-relative">
+  <div class="relative">
     <div
-      class="cmw-z-base cmw-bg-white cmw-rounded-b-sm cmw-rounded-tr-sm"
+      class="z-base bg-white rounded-b-sm rounded-tr-sm"
       :class="[
-        isFullWidth ? 'cmw-w-full' : 'cmw-w-[310px]',
-        position === 'right' ? 'cmw-right-0 cmw-rounded-tl-sm' : 'cmw-left-0 cmw-rounded-tr-sm']
+        isFullWidth ? 'w-full' : 'w-[310px]',
+        position === 'right' ? 'right-0 rounded-tl-sm' : 'left-0 rounded-tr-sm']
       "
     >
       <div
         v-if="useSearchField"
-        class="cmw-relative cmw-p-4"
+        class="relative p-4"
       >
-        <div class="cmw-sticky cmw-top-0">
+        <div class="sticky top-0">
           <input
             :id="`search-term${key}`"
             v-model="searchTerm"
             type="search"
             class="
-               c-searchInput cmw-px-4 cmw-text-gray-dark cmw-py-2 cmw-w-full cmw-bg-transparent cmw-border cmw-border-gray-light cmw-rounded
-               hover:(cmw-border-gray)
-               focus:(cmw-outline-none cmw-border-gray-dark)"
+               c-searchInput px-4 text-gray-dark py-2 w-full bg-transparent border border-gray-light rounded
+               hover:(border-gray)
+               focus:(outline-none border-gray-dark)"
             :placeholder="$t('navbar.search')"
           >
         </div>
       </div>
       <!-- List Items -->
-      <div class="cmw-pt-1 cmw-max-h-[300px] cmw-overflow-auto">
+      <div class="pt-1 max-h-[300px] overflow-auto">
         <button
           v-for="(option) in filteredOptions"
           :key="option.value"
           type="button"
-          class="cmw-font-sans cmw-text-body  cmw-block cmw-w-full cmw-text-left cmw-text-sm cmw-py-3 cmw-pl-4 hover:cmw-bg-primary-50"
-          :class="{ 'cmw-bg-primary-50 cmw-font-medium': option.selected }"
+          class="font-sans text-body  block w-full text-left text-sm py-3 pl-4 hover:bg-primary-50"
+          :class="{ 'bg-primary-50 font-medium': option.selected }"
           @click="handleClick(option.value)"
         >
           <VueSvgIcon
             v-if="option.selected && !option.icon" :data="require(`@/assets/svg/checkmark.svg`)"
-            color="#d94965" class="cmw-mr-2"
+            color="#d94965" class="mr-2"
           />
           <VueSvgIcon
             v-if="option.icon" :data="require(`@/assets/svg/selections/${option.icon}.svg`)" color="#a3a3a3"

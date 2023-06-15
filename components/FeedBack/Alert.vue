@@ -15,10 +15,10 @@ export default {
   methods: {
     getColor() {
       return ({
-        error: 'cmw-bg-error/15 cmw-text-error cmw-text-error cmw-border cmw-border-error/25',
-        success: 'cmw-bg-success/15 cmw-text-success cmw-text-success cmw-border cmw-border-success/25',
-        info: 'cmw-bg-info/15 cmw-text-info cmw-text-info cmw-border cmw-border-info/25',
-        warning: 'cmw-bg-warning/15 cmw-text-warning cmw-text-warning cmw-border cmw-border-warning/25',
+        error: 'bg-error/15 text-error text-error border border-error/25',
+        success: 'bg-success/15 text-success text-success border border-success/25',
+        info: 'bg-info/15 text-info text-info border border-info/25',
+        warning: 'bg-warning/15 text-warning text-warning border border-warning/25',
       })[this.$props.severity]
     },
     getIcon() {
@@ -35,7 +35,7 @@ export default {
 
 <template>
   <div
-    class="cmw-rounded-sm cmw-p-2 cmw-text-sm cmw-my-4"
+    class="rounded-sm p-2 text-sm my-4"
     :class="getColor()"
   >
     <slot>

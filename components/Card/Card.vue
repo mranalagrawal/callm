@@ -26,15 +26,15 @@ export default {
   },
   computed: {
     getNumberColor() {
-      return this.$props.bgColor === 'white' ? 'cmw-text-primary' : 'cmw-text-white'
+      return this.$props.bgColor === 'white' ? 'text-primary' : 'text-white'
     },
   },
   methods: {
     getIconByFeature,
     getBgColor() {
       return ({
-        gray: 'cmw-bg-gray-lightest',
-        white: 'cmw-bg-white',
+        gray: 'bg-gray-lightest',
+        white: 'bg-white',
       })[this.$props.bgColor]
     },
   },
@@ -43,18 +43,18 @@ export default {
 
 <template>
   <button
-    class="cmw-w-full cmw-max-w-450px cmw-grid cmw-grid-cols-[90px_auto_40px] cmw-items-center cmw-rounded cmw-border cmw-border-gray cmw-min-h-[98px] cmw-text-left cmw-mb-4"
+    class="w-full max-w-450px grid grid-cols-[90px_auto_40px] items-center rounded border border-gray min-h-[98px] text-left mb-4"
     :class="[getBgColor()]"
   >
-    <span class="cmw-h-full cmw-bg-cover cmw-bg-center cmw-rounded-tl cmw-rounded-bl cmw-overflow-hidden" :style="`backgroundImage: url('${bgUrl}')`" />
-    <span class="cmw-block cmw-p-2 cmw-overflow-hidden" :class="{ 'cmw-col-start-2 cmw-col-end-[-1]': !icon }">
-      <span v-if="title" class="cmw-block cmw-overline-2 cmw-font-medium cmw-truncate cmw-mb-1" v-text="title" />
-      <span v-if="subtitle" class="cmw-block cmw-line-clamp-2 cmw-leading-snug cmw-text-primary-400 cmw-text-sm" v-text="subtitle" />
+    <span class="h-full bg-cover bg-center rounded-tl rounded-bl overflow-hidden" :style="`backgroundImage: url('${bgUrl}')`" />
+    <span class="block p-2 overflow-hidden" :class="{ 'col-start-2 col-end-[-1]': !icon }">
+      <span v-if="title" class="block overline-2 font-medium truncate mb-1" v-text="title" />
+      <span v-if="subtitle" class="block line-clamp-2 leading-snug text-primary-400 text-sm" v-text="subtitle" />
     </span>
-    <span v-if="icon" class="cmw-justify-self-end cmw-self-start cmw-p-2 cmw-text-gray">
+    <span v-if="icon" class="justify-self-end self-start p-2 text-gray">
       <VueSvgIcon
         :data="require(`@/assets/svg/${getIconByFeature(icon)}.svg`)"
-        class="cmw-block"
+        class="block"
         width="22"
         height="auto"
       />
