@@ -1,8 +1,10 @@
-<script>
-import { computed, onMounted, ref, useContext } from '@nuxtjs/composition-api'
+<script lang="ts">
+import { computed, defineComponent, onMounted, ref, useContext } from '@nuxtjs/composition-api'
+import type { TStores } from '~/config/themeConfig'
 import themeConfig from '~/config/themeConfig'
+import { generateKey } from '~/utilities/strings'
 
-export default {
+export default defineComponent({
   props: {
     logo: {
       type: String,
@@ -15,9 +17,9 @@ export default {
     },
   },
   setup(props) {
-    const mapRef = ref(null)
+    const mapRef = ref<HTMLDivElement | null>(null)
     const { $config } = useContext()
-    const getMap = country => ({
+    const getMap = (country: string) => ({
       belgio: 'belgium.svg',
       be: 'belgium.svg',
       belgium: 'belgium.svg',
@@ -28,13 +30,18 @@ export default {
       francia: 'france.svg',
     })[country]
 
-    const currentMap = computed(() => getMap(props.country.toLowerCase()))
+    const currentMap = computed(() => props.country && getMap(props.country.toLowerCase()))
 
     const paintRegion = () => {
-      const region = mapRef.value && mapRef.value.querySelector(`[aria-valuetext='${props.region.toLowerCase()}']`)
+      if (!mapRef.value || !props.region)
+        return
 
-      if (region)
-        region.setAttribute('fill', themeConfig[$config.STORE].colors.primary.DEFAULT)
+      const region = mapRef.value.querySelector(`[aria-valuetext='${generateKey(props.region)}']`)
+
+      if (region instanceof Element) {
+        const store: TStores = $config.STORE || 'CMW_UK'
+        region.setAttribute('fill', themeConfig[store]?.colors.primary.DEFAULT)
+      }
     }
 
     onMounted(() => {
@@ -43,7 +50,7 @@ export default {
 
     return { mapRef, getMap, currentMap }
   },
-}
+})
 </script>
 
 <template>
