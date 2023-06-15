@@ -48,7 +48,9 @@ export default {
     <component :is="homeBanner" />
     <HomeBoxes />
     <!-- Note: LazyHydrate is not working as expected on carousels -->
-    <FeaturedProducts />
+    <ClientOnly>
+      <FeaturedProducts />
+    </ClientOnly>
 
     <LazyHydrate :when-visible="{ rootMargin: '100px' }">
       <HomeSelections />
@@ -60,7 +62,9 @@ export default {
 
     <HomePartners />
 
-    <LazyHomeLast />
+    <ClientOnly>
+      <LazyHomeLast />
+    </ClientOnly>
 
     <HomeProducers />
 

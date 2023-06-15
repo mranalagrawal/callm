@@ -19,7 +19,7 @@ export default {
           }
         })
         .catch((err: Error) => {
-          $handleApiErrors(`Catch getting Home Last Products from Shopify: ${err}`)
+          $handleApiErrors(`Catch getting home-shelf-2 from Shopify: ${err}`)
         })
     })
     return { fetch, collectionRef }

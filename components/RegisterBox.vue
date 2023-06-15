@@ -76,7 +76,7 @@ export default {
             }).then(() => {})
           }
         }
-      }).catch((err: Error) => $handleApiErrors(`Catch getting Feature Products from Shopify: ${err}`))
+      }).catch((err: Error) => $handleApiErrors(`Catch on GqlCustomerCreate from Shopify: ${err}`))
 
       isSubmitting.value = false
     }

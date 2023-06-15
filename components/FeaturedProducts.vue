@@ -18,7 +18,7 @@ export default {
             products: collection.products.nodes.length && $productMapping.fromShopify(collection.products.nodes),
           }
         })
-        .catch((err: Error) => $handleApiErrors(`Catch getting Feature Products from Shopify: ${err}`))
+        .catch((err: Error) => $handleApiErrors(`Catch getting home-shelf-1 from Shopify: ${err}`))
     })
     return { collectionRef }
   },
