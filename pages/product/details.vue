@@ -99,7 +99,6 @@ export default defineComponent({
         query: `tag:P${route.value.params.id}`,
       })
         .then(async ({ products = { nodes: [] } }) => {
-          console.log(products)
           if (!!products.nodes.length && products.nodes[0].handle) {
             product.value = await $productMapping.fromShopify([products.nodes[0]])[0]
 
