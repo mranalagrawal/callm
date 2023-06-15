@@ -98,7 +98,7 @@ export default {
 <template>
   <div>
     <ValidationObserver v-slot="{ handleSubmit }" slim>
-      <form class="px-4 pt-3 py-2 w-3/4 mx-auto" @submit.prevent="handleSubmit(onSubmit)">
+      <form class="px-4 pt-3 py-2 md:w-3/4 mx-auto" @submit.prevent="handleSubmit(onSubmit)">
         <InputField
           v-model="form.firstName"
           name="register-user-firstname" :label="$t('firstName')"
