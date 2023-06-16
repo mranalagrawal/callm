@@ -10,6 +10,7 @@ query getProducts(
       descriptionHtml
       handle
       id
+      isGiftCard
       featuredImage { altText, height, url, width }
       seo { description, title }
       tags
@@ -25,7 +26,7 @@ query getProducts(
       variants(first: 1) {
         nodes {
           id
-          compareAtPriceV2 { amount, currencyCode }
+          compareAtPrice { amount, currencyCode }
           price { amount, currencyCode }
           quantityAvailable
           sku

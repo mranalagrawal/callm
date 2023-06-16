@@ -1,49 +1,57 @@
-<script>
+<script lang="ts">
+import type { PropType } from '@nuxtjs/composition-api'
+import { computed, defineComponent } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-// noinspection ES6UnusedImports
 import heartIcon from '~/assets/svg/heart.svg'
 import heartFullIcon from '~/assets/svg/heart-full.svg'
+import type { ILineItem } from '~/types/order'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { useCustomer } from '~/store/customer'
-import { isObject, regexRules } from '~/utilities/validators'
+import { regexRules } from '~/utilities/validators'
 
-export default {
-  name: 'OrderCardProductRow',
+export default defineComponent({
   props: {
-    /** @Type: {LineItemType.LineItem} */
     orderLineItem: {
+      type: Object as PropType<ILineItem>,
       required: true,
-      validator(value) {
-        return isObject(value)
-      },
     },
   },
-  setup() {
+  setup(props) {
     const customerStore = useCustomer()
     const { wishlistArr } = storeToRefs(customerStore)
     const { handleWishlist } = customerStore
 
-    return { wishlistArr, handleWishlist, heartIcon, heartFullIcon }
-  },
-  computed: {
-    isOnSale() {
-      return Number(this.orderLineItem.variant.compareAtPriceV2.amount) > Number(this.orderLineItem.variant.price.amount)
-    },
-    backofficeId() {
+    const isOnSale = computed(() => {
+      // Note: for gift cards compareAtPrice sometimes is null, so we need to check
+      if (!props.orderLineItem.variant.compareAtPrice)
+        return false
+
+      return Number(props.orderLineItem.originalTotalPrice.amount) > Number(props.orderLineItem.discountedTotalPrice.amount)
+    })
+
+    const backofficeId = computed<string>(() => {
       // Get the proper tag 🤦🏻
-      return this.orderLineItem.variant.product.tags.find(tag => new RegExp(regexRules('isProduct')).test(tag))
-    },
-    isOnFavourite() {
-      return this.wishlistArr.includes(this.backofficeId)
-    },
+      return props.orderLineItem.variant.product.tags.length
+        ? props.orderLineItem.variant.product.tags.find((tag: string) => new RegExp(regexRules('isProduct')).test(tag))
+        : 'probably-a-gift-card'
+    })
+
+    const isOnFavourite = computed(() => wishlistArr.value.includes(backofficeId.value as never)) // Todo: Remove assertion when typing customerStore
+    return {
+      backofficeId,
+      handleWishlist,
+      heartFullIcon,
+      heartIcon,
+      isOnFavourite,
+      isOnSale,
+      wishlistArr,
+    }
   },
   methods: {
     regexRules,
-    getLocaleFromCurrencyCode(code) {
-      return getLocaleFromCurrencyCode(code)
-    },
+    getLocaleFromCurrencyCode,
   },
-}
+})
 </script>
 
 <template>
@@ -64,14 +72,15 @@ export default {
           v-if="isOnSale"
           class="line-through text-gray text-sm"
         >
-          {{ $n(Number(orderLineItem.variant.compareAtPriceV2.amount), 'currency', getLocaleFromCurrencyCode(orderLineItem.variant.compareAtPriceV2.currencyCode)) }}
+          {{ $n(Number(orderLineItem.originalTotalPrice.amount), 'currency', getLocaleFromCurrencyCode(orderLineItem.originalTotalPrice.currencyCode)) }}
         </div>
         <div class="font-bold">
-          {{ $n(Number(orderLineItem.variant.price.amount), 'currency', getLocaleFromCurrencyCode(orderLineItem.variant.compareAtPriceV2.currencyCode)) }}
+          {{ $n(Number(orderLineItem.discountedTotalPrice.amount), 'currency', getLocaleFromCurrencyCode(orderLineItem.discountedTotalPrice.currencyCode)) }}
         </div>
       </div>
       <div class="order-4">
         <button
+          v-if="backofficeId !== 'probably-a-gift-card'"
           type="button"
           :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
           @click="handleWishlist({ id: orderLineItem.variant.product.tags.find(tag => new RegExp(regexRules('isProduct')).test(tag)).replace('P', ''), isOnFavourite })"
@@ -85,6 +94,6 @@ export default {
         </button>
       </div>
     </div>
-    <hr>
+    <hr class="border-gray-light">
   </div>
 </template>

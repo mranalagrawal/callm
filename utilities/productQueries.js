@@ -10,7 +10,7 @@ const productRecommendations = id => `query {
             variants(first: 10) {
                 nodes {
                     id
-                    compareAtPriceV2 {
+                    compareAtPrice {
                         amount
                         currencyCode
                     }
@@ -41,7 +41,7 @@ const queryProductsByVendor = vendor => `query {
                 variants(first: 10) {
                     nodes {
                         id
-                        compareAtPriceV2 {
+                        compareAtPrice {
                             amount
                             currencyCode
                         }

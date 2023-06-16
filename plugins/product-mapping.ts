@@ -183,7 +183,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
 
       products = arr.map((p: Record<string, any>) => {
         const details = JSON.parse(p.details.value)
-        const compareAtPrice = p.variants.nodes[0].compareAtPriceV2
+        const compareAtPrice = p.variants.nodes[0].compareAtPrice
         const id = details.feId
         const shopify_product_id = p.id
         const shopify_product_variant_id = p.variants.nodes[0].id
@@ -258,7 +258,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
         title: v.title,
         description: v.description || null,
         price: { ...v.price },
-        compareAtPrice: v.compareAtPriceV2,
+        compareAtPrice: v.compareAtPrice,
       })) || []
 
       const details = JSON.parse(product.details.value)

@@ -150,7 +150,7 @@ export default {
       this.flashMessage.show({
         status: '',
         message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title}` }),
-        icon: this.product.image.source.url,
+        icon: image,
         iconClass: 'bg-transparent ',
         time: 8000,
         blockClass: 'add-product-notification',

@@ -145,7 +145,7 @@ export default defineComponent({
           ? parseFloat(this.giftCardVariantSelected.compareAtPrice.amount)
           : parseFloat(this.giftCardVariantSelected.price.amount),
         tag: this.giftCardVariantSelected.tags || [],
-        image: this.product.image.thumbnail.url,
+        image: this.product.image.source.url,
         title: this.giftCardVariantSelected.title,
         totalInventory: 999, // TODO da discutere
         gtmProductData: { giftCard: this.giftCardVariantSelected.price.amount },
@@ -154,7 +154,7 @@ export default defineComponent({
       this.flashMessage.show({
         status: '',
         message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title} ${this.giftCardVariantSelected.title}` }),
-        icon: this.product.image.thumbnail.url,
+        icon: this.product.image.source.url,
         iconClass: 'bg-transparent ',
         time: 8000,
         blockClass: 'add-product-notification',

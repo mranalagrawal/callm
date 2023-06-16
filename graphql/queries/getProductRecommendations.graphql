@@ -21,7 +21,7 @@ query getProductRecommendations(
     variants(first: 1) {
       nodes {
         id
-        compareAtPriceV2 { amount, currencyCode }
+        compareAtPrice { amount, currencyCode }
         price { amount, currencyCode }
         quantityAvailable
         sku

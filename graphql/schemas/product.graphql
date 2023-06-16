@@ -97,7 +97,7 @@ type ProductConnectionNodes {
 type ProductVariant {
   availableForSale: Boolean!
   barcode: String
-  compareAtPriceV2: MoneyV2
+  compareAtPrice: MoneyV2
   currentlyNotInStock: Boolean!
   id: ID!
   image: Image

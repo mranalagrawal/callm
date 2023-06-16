@@ -1,12 +1,27 @@
+#  Requires unauthenticated_read_product_listings access scope.
+#  Represents a single line in an order. There is one line item for each distinct product variant.
 type OrderLineItem {
-  currentQuantity: Int
-  customAttributes: [String!]! # Todo: [Attribute!]!
-  discountAllocations: String # Todo: [DiscountAllocation!]!
-  discountedTotalPrice: MoneyV2
-  originalTotalPrice: MoneyV2
+#  The number of entries associated to the line item minus the items that have been removed.
+  currentQuantity: Int!
+#  List of custom attributes associated to the line item.
+  customAttributes: [Attribute!]!
+#  The discounts that have been allocated onto the order line item by discount applications.
+  discountAllocations: [DiscountAllocation!]!
+#  The total price of the line item, including discounts, and displayed in the presentment currency.
+  discountedTotalPrice: MoneyV2!
+#  The total price of the line item, not including any discounts. The total price is calculated using the original unit price multiplied by the quantity, and it is displayed in the presentment currency.
+  originalTotalPrice: MoneyV2!
+#  The number of products variants associated to the line item.
   quantity: Int!
+#  The title of the product combined with title of the variant.
   title: String!
+#  The product variant object associated to the line item.
   variant: ProductVariant
+}
+
+type OrderDiscountApplicationsConnection {
+  edges: [CustomerOrderDiscountApplicationEdge]
+  nodes: [DiscountApplication!]!
 }
 
 type OrderLineItemConnection {
@@ -16,4 +31,8 @@ type OrderLineItemConnection {
 
 type CustomerOrderLineItemEdge {
   node: OrderLineItem
+}
+
+type CustomerOrderDiscountApplicationEdge {
+  node: DiscountApplication
 }
