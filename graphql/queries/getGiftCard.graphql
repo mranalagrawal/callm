@@ -28,7 +28,7 @@ query getGiftCard(
                 amount,
                 currencyCode
             }
-            compareAtPriceV2 {
+            compareAtPrice {
                 amount,
                 currencyCode
             }

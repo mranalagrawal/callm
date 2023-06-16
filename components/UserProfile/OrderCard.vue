@@ -4,13 +4,17 @@ import OrderReceiptPrint from '~/components/UserProfile/OrderReceiptPrint.vue'
 
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 import OrderCardSummary from '~/components/UserProfile/OrderCardSummary.vue'
-import OrderCardProductRow from '~/components/UserProfile/OrderCardProductRow.vue'
+import OrderCardLineItem from '~/components/UserProfile/OrderCardLineItem.vue'
 import { isObject } from '~/utilities/validators'
 import { useSplash } from '~/store/splash'
 import { useCustomerOrders } from '~/store/customerOrders.ts'
 
 export default {
-  components: { OrderReceiptPrint, OrderCardProductRow, OrderCardSummary },
+  components: {
+    OrderReceiptPrint,
+    OrderCardLineItem,
+    OrderCardSummary,
+  },
   props: {
     /** @Type: {OrderType.Order} */
     order: {
@@ -26,11 +30,17 @@ export default {
   },
   emits: ['update-order-id'],
   setup(props) {
-    const { i18n, $config } = useContext()
+    const {
+      i18n,
+      $config,
+    } = useContext()
     const splash = useSplash()
     const customerOrders = useCustomerOrders()
 
-    const orderLineItems = computed(() => props.order?.lineItems && props.order.lineItems.nodes?.map(node => node))
+    const orderLineItems = computed(() => {
+      const lineItems = props.order?.lineItems && props.order.lineItems.nodes?.map(node => node)
+      return lineItems.filter(lineItem => Number(lineItem.discountedTotalPrice.amount) > 0)
+    })
     const isActive = computed(() => props.activeOrder === props.order.orderNumber)
 
     const handleRequestAssistance = () => {
@@ -62,7 +72,12 @@ export default {
       window.print()
     }
 
-    return { orderLineItems, isActive, handlePrint, handleRequestAssistance }
+    return {
+      orderLineItems,
+      isActive,
+      handlePrint,
+      handleRequestAssistance,
+    }
   },
   computed: {
     totalItems() {
@@ -86,25 +101,32 @@ export default {
       return getLocaleFromCurrencyCode(code)
     },
     async handleReorderProducts() {
-      this.order.lineItems.nodes
+      this.orderLineItems
         .forEach((el) => {
-          const productVariantId = el.variant.id
-          const amount = Number(el.variant.product.variants.nodes[0].price)
-          const amountFullPrice = Number(
-            el.variant.product.variants.nodes[0].compareAtPriceV2.amount,
-          )
+          const id = el.variant.id
+          const amount = el.variant.product.isGiftCard
+            ? Number(el.variant.price.amount)
+            : Number(el.variant.product.variants.nodes[0].compareAtPrice.amount)
+          const amountFullPrice = el.variant.product.isGiftCard
+            ? Number(el.variant.price.amount)
+            : Number(
+              el.variant.product.variants.nodes[0].price.amount,
+            )
           const tag = el.variant.product.tags
-          const image = el.variant.product.images.nodes[0].url
+          const image = el.variant.product.featuredImage.url
 
           const title = el.title
-          this.$store.commit('userCart/addProduct', {
-            productVariantId,
-            singleAmount: amount,
-            singleAmountFullPrice: amountFullPrice,
-            tag,
-            image,
-            title,
-          })
+
+          if (!el.variant.product.isGiftCard) {
+            this.$store.commit('userCart/addProduct', {
+              id,
+              singleAmount: amount,
+              singleAmountFullPrice: amountFullPrice,
+              tag,
+              image,
+              title,
+            })
+          }
         })
     },
     handleClick(id) {
@@ -323,12 +345,13 @@ export default {
             </div>
           </div>
           <OrderReceiptPrint :order="order" />
-          <hr class="print:hidden mx-4">
+          <hr class="print:hidden mx-4 border-gray-light">
           <!-- Products Section -->
-          <OrderCardProductRow
+          <OrderCardLineItem
             v-for="lineItem in orderLineItems"
             :key="`${lineItem.variant.sku}-${lineItem.originalTotalPrice.amount}`"
             :order-line-item="lineItem"
+            :discount-applications="order.discountApplications"
           />
           <!-- Total Section -->
           <div class="grid grid-cols-2 justify-between px-6 mb-8 md:(px-0 mr-18 ml-75px) print:hidden">

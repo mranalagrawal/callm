@@ -283,12 +283,12 @@ export default defineComponent({
       const id = this.product.shopify_product_variant_id
       const amount = this.finalPrice
       const amountFullPrice = Number(
-        this.productVariant.compareAtPriceV2.amount,
+        this.productVariant.compareAtPrice.amount,
       )
 
-      /* data.variants.nodes[0].compareAtPriceV2 */
+      /* data.variants.nodes[0].compareAtPrice */
       const tag = this.product.tags
-      const image = this.product.image.thumbnail.url
+      const image = this.product.image.source.url
       const title = this.product.title
       this.$store.commit('userCart/addProduct', {
         id,
@@ -303,8 +303,8 @@ export default defineComponent({
       this.flashMessage.show({
         status: '',
         message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title}` }),
-        icon: this.product.image.thumbnail.url,
-        iconClass: 'bg-transparent ',
+        icon: image,
+        iconClass: 'bg-transparent',
         time: 8000,
         blockClass: 'add-product-notification',
       })
@@ -400,15 +400,15 @@ export default defineComponent({
                 >
                   <span class="line-through text-gray text-sm">
                     {{
-                      $n(Number(productVariant.compareAtPriceV2.amount),
+                      $n(Number(productVariant.compareAtPrice.amount),
                          'currency',
-                         getLocaleFromCurrencyCode(productVariant.compareAtPriceV2.currencyCode))
+                         getLocaleFromCurrencyCode(productVariant.compareAtPrice.currencyCode))
                     }}
                   </span>
                   <CmwChip
                     color="secondary"
                     shape="rounded"
-                    :label="`-${getPercent(finalPrice, productVariant.compareAtPriceV2.amount)}%`"
+                    :label="`-${getPercent(finalPrice, productVariant.compareAtPrice.amount)}%`"
                   />
                 </div>
                 <i18n-n
