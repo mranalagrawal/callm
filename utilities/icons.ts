@@ -7,7 +7,35 @@ export function getIconAsImg(icon = 'success') {
   })[icon]
 }
 
-export function getIconByFeature(key) {
+type DEPRECATED_FEATURES =
+  | 'favourite'
+  | 'isnew'
+  | 'isInPromotion'
+  | 'inpromotion'
+  | 'foreveryday'
+  | 'togift'
+  | 'unusualvariety'
+  | 'rarewine'
+  | 'artisanal'
+  | 'natural'
+  | 'organic'
+  | 'topsale'
+
+type FEATURES =
+  | 'AWARDS'
+  | 'FAVOURITE'
+  | 'IS_NEW'
+  | 'IN_PROMOTION'
+  | 'FOR_EVERYDAY'
+  | 'TO_GIFT'
+  | 'UNUSUAL_VARIETY'
+  | 'RARE_WINE'
+  | 'ARTISANAL'
+  | 'NATURAL'
+  | 'ORGANIC'
+  | 'TOP_SALE'
+
+export function getIconByFeature(key: DEPRECATED_FEATURES | FEATURES): string {
   // TODO: use enum definitions everywhere and create an Icon viewer for marketing
   return ({
     AWARDS: 'awards',
@@ -35,4 +63,23 @@ export function getIconByFeature(key) {
     topsale: 'feature-best-seller',
     TOP_SALE: 'feature-best-seller',
   })[key] || 'feature-cmw-favourite'
+}
+
+export function getAwardIconById(id: string): string {
+  return ({
+    1: 'vitae-ais',
+    2: 'bibenda',
+    3: 'espresso',
+    4: 'veronelli',
+    5: 'slowine',
+    6: 'robert-parker',
+    7: 'wine-spectator',
+    8: 'james-suckling',
+    9: 'gambero-rosso',
+    10: 'wine-enthusiast',
+    11: 'luca-maroni',
+    14: 'decanter',
+    15: 'antonio-galloni',
+    20: 'hacette',
+  })[id] || 'decanter'
 }

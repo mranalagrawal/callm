@@ -23,6 +23,9 @@ query getProducts(
       breadcrumbs: metafield(namespace: "custom", key: "breadcrumbs") {
         value
       }
+      bundle: metafield(namespace: "custom", key: "bundle") {
+        value
+      }
       variants(first: 1) {
         nodes {
           id

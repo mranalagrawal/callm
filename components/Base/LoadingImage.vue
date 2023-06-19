@@ -29,7 +29,7 @@ export default {
         })
 
         image.addEventListener('error', () => {
-          $sentry.captureException(new Error(`Missing Image ${image}`))
+          // $sentry.captureException(new Error(`Missing Image ${image}`))
         })
 
         image.src = image.dataset.src

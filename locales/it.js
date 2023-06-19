@@ -339,4 +339,7 @@ export default {
   waitingForConfirmation: {
     msg: 'Grazie per aver inviato i tuoi dati, un nostro operatore ti contatterà quanto prima',
   },
+  bundle: {
+    whatIsInTheBox: 'I prodotti che riceverai:',
+  },
 }

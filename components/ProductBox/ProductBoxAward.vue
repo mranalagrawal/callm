@@ -1,19 +1,15 @@
-<script>
-import { ref } from '@nuxtjs/composition-api'
+<script lang="ts">
+import type { PropType } from '@nuxtjs/composition-api'
+import { defineComponent, ref } from '@nuxtjs/composition-api'
 import closeIcon from '~/assets/svg/close.svg'
-// noinspection ES6UnusedImports
-import { isObject } from '~/utilities/validators'
+import type { IProductAward } from '~/types/product'
+import { getAwardIconById } from '~/utilities/icons'
 
-// noinspection JSUnusedGlobalSymbols
-export default {
-  name: 'ProductBoxAward',
+export default defineComponent({
   props: {
-    /** @Type: {AwardType.Award} */
     award: {
+      type: Object as PropType<IProductAward>,
       required: true,
-      validator(value) {
-        return isObject(value)
-      },
     },
   },
   setup() {
@@ -21,26 +17,9 @@ export default {
     const handleMouseEnter = () => show.value = true
     const handleMouseLeave = () => show.value = false
 
-    const getAwardIcon = (id = 1) => ({
-      1: 'vitae-ais',
-      2: 'bibenda',
-      3: 'espresso',
-      4: 'veronelli',
-      5: 'slowine',
-      6: 'robert-parker',
-      7: 'wine-spectator',
-      8: 'james-suckling',
-      9: 'gambero-rosso',
-      10: 'wine-enthusiast',
-      11: 'luca-maroni',
-      14: 'decanter',
-      15: 'antonio-galloni',
-      20: 'hacette',
-    })[id] || 'decanter'
-
-    return { handleMouseEnter, handleMouseLeave, show, closeIcon, getAwardIcon }
+    return { handleMouseEnter, handleMouseLeave, show, closeIcon, getAwardIconById }
   },
-}
+})
 </script>
 
 <template>
@@ -56,7 +35,7 @@ export default {
     <!-- Note: Why are we using number? we should have a unique code for awards es.(gambero-rosso) -->
     <!-- Note: Also, are these awards or guides? I see guida on Alkemy -->
     <VueSvgIcon
-      :data="require(`@/assets/svg/awards/award-${getAwardIcon(award.id)}.svg`)"
+      :data="require(`@/assets/svg/awards/award-${getAwardIconById(award.id.toString())}.svg`)"
       :title="`-@@-${award.id}-${award.title}`"
       width="20"
       height="20"
@@ -93,7 +72,7 @@ export default {
               data-before="❝ "
               data-after=" ❞"
               class="before:(content-[attr(data-before)] text-primary) after:(content-[attr(data-after)] text-primary)"
-            >{{ award.quote[$i18n.locale] }}</i>
+            >{{ award.quote }}</i>
           </div>
           <button class="absolute top-[-0.25rem] right-0 p-2 text-gray md:hidden" @click="handleMouseLeave">
             <VueSvgIcon :data="closeIcon" width="18" height="auto" />

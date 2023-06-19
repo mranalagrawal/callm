@@ -1,6 +1,15 @@
 import type { IMoneyV2 } from '~/types/common-objects'
 import type { TImage } from '~/types/types'
 
+export interface IProductAward {
+  id: string | number
+  maxValue: string | number
+  quote: string
+  title: string
+  value: string | number
+  year: string | number
+}
+
 export type TProductFeatures =
   | 'favourite'
   | 'isnew'
@@ -41,6 +50,7 @@ export interface IBaseProductMapped {
 }
 
 export interface IProductMapped extends IBaseProductMapped {
+  awards: IProductAward[]
   gtmProductData: any
   availableFeatures: TProductFeatures[]
   descriptionHtml: HTMLElement | string
