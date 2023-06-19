@@ -1,8 +1,7 @@
 <script lang="ts">
 import type { PropType } from '@nuxtjs/composition-api'
-import { computed, defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent } from '@nuxtjs/composition-api'
 import type { IProductMapped } from '~/types/product'
-import { getUniqueListBy } from '~/utilities/arrays'
 import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({
@@ -11,14 +10,6 @@ export default defineComponent({
       type: Object as PropType<IProductMapped>,
       required: false,
     },
-    productDetails: {
-      type: Object,
-      required: false,
-    },
-  },
-  setup(props) {
-    const productDetailsAwards = computed(() => props.productDetails && getUniqueListBy(props.productDetails.awards, 'id'))
-    return { productDetailsAwards }
   },
   methods: { generateKey },
 })
@@ -27,41 +18,44 @@ export default defineComponent({
 <template>
   <div class="mt-6">
     <table
-      v-if="productDetails.awards.length > 0"
-      class="table table-striped"
+      v-if="product?.awards.length > 0"
+      class="w-full table table-striped"
     >
       <thead>
-        <tr class="bg-dark-primary text-white">
-          <th style="border-radius: 15px 0 0 0" scope="col">
+        <tr class="text-white font-light">
+          <th scope="col" class="text-base bg-secondary font-light py-3 px-4 overline-2 uppercase text-left rounded-tl">
             {{ $t('product.guide') }}
           </th>
-          <th style="" scope="col">
+          <th scope="col" class="text-base bg-secondary font-light py-3 px-4 overline-2 uppercase">
             {{ $t('product.year') }}
           </th>
 
-          <th style="" scope="col">
+          <th scope="col" class="text-base bg-secondary font-light py-3 px-4 overline-2 uppercase">
             {{ $t('product.score') }}
           </th>
 
-          <th style="border-radius: 0px 15px 0px 0px" scope="col">
+          <th scope="col" class="text-base bg-secondary font-light py-3 px-4 overline-2 uppercase text-left rounded-tr">
             {{ $t('product.quote') }}
           </th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(award) in productDetailsAwards" :key="generateKey(`details-awards-${award.title}`)">
-          <td scope="row">
+        <tr
+          v-for="award in product?.awards" :key="generateKey(`details-awards-${award.title}`)"
+          class="odd:bg-gray-lightest"
+        >
+          <td scope="row" class="py-3 px-4">
             <strong>{{ award.title }}</strong>
           </td>
-          <td>{{ award.year }}</td>
-          <td>
+          <td class="text-center">
+            {{ award.year }}
+          </td>
+          <td class="text-center">
             <strong>{{ award.value }}</strong> /
             {{ award.maxValue }}
           </td>
-          <td>
-            <em>
-              {{ award.quote[$i18n.locale] }}
-            </em>
+          <td class="py-3 px-4">
+            <em v-text="award.quote" />
           </td>
         </tr>
       </tbody>

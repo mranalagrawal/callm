@@ -79,7 +79,7 @@ export default defineComponent({
     <div>
       <div
         class="c-navigationTab font-sans justify-between w-full flex no-wrap overflow-x-auto
-        border-b border-b-gray-dark mb-3 md:(mt-9 max-w-10/12)"
+        border-b border-b-gray-dark mb-3 md:(mt-9)"
       >
         <div
           v-for="({ label, component }) in tabs" :key="generateKey(component)"
@@ -109,18 +109,18 @@ export default defineComponent({
       </transition>
     </div>
     <div class="block">
-      <div style="width: 80%" class="bg-gray-lightest rounded p-3 mx-auto">
+      <div class="bg-gray-lightest rounded px-6 py-3 mx-auto">
         <h3 class="mb-5" v-text="$t('product.features')" />
 
         <div v-if="productDetails.denomination[$i18n.locale]">
           <p class="font-bold mb-0" v-text="$t('product.denomination')" />
           <p class="mb-4" v-text="productDetails.denomination[$i18n.locale]" />
-          <hr>
+          <hr class="border-gray-light">
         </div>
         <div v-if="productDetails.grapes[$i18n.locale]">
           <p class="font-bold mb-0" v-text="$t('product.vines')" />
           <p class="mb-4" v-text="productDetails.grapes[$i18n.locale]" />
-          <hr>
+          <hr class="border-gray-light">
         </div>
 
         <div v-if="productDetails.countryName[$i18n.locale] || productDetails.countryRegionName">
@@ -129,27 +129,27 @@ export default defineComponent({
             {{ productDetails.countryRegionName }}
             {{ productDetails.countryName[$i18n.locale] }}
           </p>
-          <hr>
+          <hr class="border-gray-light">
         </div>
         <div v-if="productDetails.alcoholContent">
           <p class="font-bold mb-0" v-text="$t('product.alcoholContent')" />
           <p class="mb-4" v-text="`${productDetails.alcoholContent}%`" />
-          <hr>
+          <hr class="border-gray-light">
         </div>
         <div v-if="productDetails.size[$i18n.locale]">
           <p class="font-bold mb-0" v-text="$t('product.format')" />
           <p class="mb-4" v-text="productDetails.size[$i18n.locale]" />
-          <hr>
+          <hr class="border-gray-light">
         </div>
         <div v-if="productDetails.winemaking[$i18n.locale]">
           <p class="font-bold mb-0" v-text="$t('product.vinification')" />
           <p class="mb-4" v-text="productDetails.winemaking[$i18n.locale]" />
-          <hr>
+          <hr class="border-gray-light">
         </div>
         <div v-if="productDetails.agingDescription[$i18n.locale]">
           <p class="font-bold mb-0" v-text="$t('product.refinement')" />
           <p class="mb-4" v-text="productDetails.agingDescription[$i18n.locale]" />
-          <hr>
+          <hr class="border-gray-light">
         </div>
         <div v-if="productDetails.productInformations[$i18n.locale]">
           <p class="font-bold mb-0" v-text="$t('product.additionalNotes')" />
