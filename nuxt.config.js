@@ -384,6 +384,20 @@ export default {
     lazy: true,
     langDir: 'locales/',
     parsePages: false,
+    pages: {
+      'winery/index': {
+        it: '/cantina',
+        en: '/winery',
+        fr: '/domaine',
+        de: '/weinkellerei',
+      },
+      'winery/_handle': {
+        it: '/cantina/:handle',
+        en: '/winery/:handle',
+        fr: '/domaine/:handle',
+        de: '/weinkellerei/:handle',
+      },
+    },
     vueI18n: {
       fallbackLocale: process.env.DEFAULT_LOCALE,
       numberFormats: {
@@ -473,7 +487,7 @@ export default {
   },
 
   router: {
-    middleware: ['category', 'auth-b2b'],
+    middleware: ['auth-b2b'],
     prefetchLinks: false,
     linkPrefetchedClass: 'nuxt-link-prefetched',
     extendRoutes(routes, resolve) {

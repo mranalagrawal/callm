@@ -5,6 +5,7 @@ import themeConfig from '~/config/themeConfig'
 import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({
+  name: 'CountryMap',
   props: {
     logo: {
       type: String,

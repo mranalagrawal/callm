@@ -5,7 +5,7 @@ export default {
     IN_PROMOTION: 'in promotion',
     FOR_EVERYDAY: 'for everyday',
     TO_GIFT: 'the perfect gift',
-    UNUSUAL_VARIETY: 'unusual (Out of this world?)',
+    UNUSUAL_VARIETY: 'unusual', // (Out of this world?)
     RARE_WINE: 'rare wine',
     ARTISANAL: 'artisanal',
     ORGANIC: 'organic',

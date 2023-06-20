@@ -1,23 +1,60 @@
-<script>
-import { computed, inject, onMounted, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api'
-import getArticles from '~/graphql/queries/getArticles'
+<script lang="ts">
+import {
+  computed,
+  defineComponent,
+  inject,
+  onMounted,
+  ref,
+  useContext,
+  useFetch, useMeta,
+  useRoute,
+} from '@nuxtjs/composition-api'
+import chevronLeftIcon from 'assets/svg/chevron-left.svg'
+import chevronRightIcon from 'assets/svg/chevron-right.svg'
+import ribbon from '~/assets/svg/ribbon.svg'
+import cmwFavouriteIcon from '~/assets/svg/feature-cmw-favourite.svg'
+import getArticles from '~/graphql/queries/getArticles.graphql'
 import { inRange } from '~/utilities/math'
 import { stripHtmlAnchors } from '~/utilities/strings'
 
-export default {
-  layout(context) {
-    return context.$config.STORE
+// Todo: define right types
+interface IMetaFields {
+  hrefLang: {}
+  images: never[]
+  isPartner: boolean
+  key: string
+  subtitle: string
+  country: string
+  region: string
+}
+
+interface IBrand {
+  handle: string
+  title: string
+  contentHtml: string
+  seo: {
+    description: string
+    title: string
+  }
+  image: {
+    url: string
+  }
+}
+
+export default defineComponent({
+  layout({ $config }) {
+    return $config.STORE
   },
   setup() {
-    const { $graphql, i18n, redirect, $cmwGtmUtils } = useContext()
+    const { $graphql, i18n, redirect, $cmwGtmUtils, localeLocation } = useContext()
     const route = useRoute()
     const isDesktop = inject('isDesktop')
     const partnerC1 = ref(null)
     const partnerC2 = ref(null)
-    const c1 = ref(null)
-    const c2 = ref(null)
-    const brand = ref({
-      handle: '',
+    const c1 = ref<any>(null)
+    const c2 = ref<any>(null)
+    const brand = ref<IBrand>({
+      handle: '/',
       title: '',
       contentHtml: '',
       seo: {
@@ -28,26 +65,37 @@ export default {
         url: '',
       },
     })
-    const metaFields = ref({
-      subtitle: '',
-      images: [],
+    const metaFields = ref<IMetaFields>({
       hrefLang: {},
+      images: [],
       isPartner: false,
+      key: '',
+      subtitle: '',
+      country: '',
+      region: '',
+    })
+
+    const query = computed(() => {
+      const pathParts = route.value?.path.split('-')
+      if (!pathParts)
+        return
+
+      return `tag:${pathParts.at(-1)?.replace('.htm', '') ?? ''}`
     })
 
     const { fetch } = useFetch(async () => {
       const { articles } = await $graphql.default.request(getArticles, {
         lang: i18n.locale.toUpperCase(),
         first: 1,
-        query: `tag:${route.value.path.split('-').at(-1).replace('.htm', '')}`, // route.value.params.handle,
+        query: query.value,
       })
 
       if (articles.nodes[0]) {
         brand.value = articles.nodes[0]
-        metaFields.value = articles.nodes[0].details && JSON.parse(articles.nodes[0].details.value)
+        metaFields.value = articles.nodes[0].details && JSON.parse(articles.nodes[0].details.value) as IMetaFields
 
-        if (route.value.params.handle !== `${brand.value.handle}-${metaFields.value.key}`)
-          return redirect(301, `/winery/${brand.value.handle}-${metaFields.value.key}.htm`)
+        if (route.value.params.handle !== `${brand!.value.handle}-${metaFields.value.key}.htm`)
+          return redirect(301, localeLocation(`/winery/${brand.value?.handle}-${metaFields.value?.key}.htm`) as unknown as string)
       }
     })
 
@@ -57,40 +105,44 @@ export default {
       process.browser && $cmwGtmUtils.pushPage('page')
     })
 
-    return {
-      isDesktop,
-      brand,
-      fetch,
-      metaFields,
-      partnerC1,
-      partnerC2,
-      c1,
-      c2,
-      currentC1Slide,
-      inRange,
-      stripHtmlAnchors,
-    }
-  },
-  head() {
-    return {
-      title: this.brand.seo.title,
+    useMeta(() => ({
+      title: brand.value?.seo?.title || '',
       meta: [
         {
           hid: 'description',
           name: 'description',
-          content: this.brand.seo.description,
+          content: brand.value?.seo?.description || '',
         },
       ],
-      link: this.metaFields.hrefLang
+      /* link: metaFields.value?.hrefLang
         && Object.keys(this.metaFields.hrefLang).length && Object.entries(this.metaFields.hrefLang).map(el => ({
         hid: `alternate-${el[0]}`,
         rel: 'alternate',
         href: el[1],
         hreflang: el[0],
-      })),
+      })), */
+    }))
+
+    return {
+      brand,
+      c1,
+      c2,
+      chevronLeftIcon,
+      chevronRightIcon,
+      cmwFavouriteIcon,
+      currentC1Slide,
+      fetch,
+      isDesktop,
+      metaFields,
+      partnerC1,
+      partnerC2,
+      ribbon,
+      stripHtmlAnchors,
     }
   },
-}
+  head: {},
+  methods: { inRange },
+})
 </script>
 
 <template>
@@ -108,17 +160,17 @@ export default {
           <div class="relative max-w-screen-xl mx-auto py-4 md:px-4">
             <div class="px-4 lg:px-3 ">
               <div class="c-ribbon flex items-center text-secondary mt-4">
-                <VueSvgIcon class="c-ribbon__left" :data="require(`@/assets/svg/ribbon.svg`)" width="9" height="24" />
+                <VueSvgIcon class="c-ribbon__left" :data="ribbon" width="9" height="24" />
                 <span
                   class="c-ribbon__content h-6 flex gap-1 items-center bg-secondary text-white px-2"
                 >
-                  <VueSvgIcon :data="require(`@/assets/svg/feature-cmw-favourite.svg`)" width="18" height="18" />
-                  <span class="text-xs leading-normal">{{ $t('product.recommendedByCallmewine') }}</span>
+                  <VueSvgIcon :data="cmwFavouriteIcon" width="18" height="18" />
+                  <span class="text-xs leading-normal" v-text="$t('product.recommendedByCallmewine')" />
                 </span>
-                <VueSvgIcon class="c-ribbon__right" :data="require(`@/assets/svg/ribbon.svg`)" width="9" height="24" />
+                <VueSvgIcon class="c-ribbon__right" :data="ribbon" width="9" height="24" />
               </div>
               <h1 v-if="brand" class="text-white" v-text="brand.title" />
-              <div class="h4 my-4 text-white" style="color: white !important;" v-text="metaFields.subtitle" />
+              <div class="h4 my-4 !text-white" v-text="metaFields.subtitle" />
             </div>
             <ClientOnly v-if="!!metaFields.images.length">
               <VueSlickCarousel
@@ -156,6 +208,12 @@ export default {
                     :class="{ '-sm': !inRange((page - currentC1Slide), -2, 2) }"
                   />
                 </template>
+                <template #prevArrow>
+                  <span />
+                </template>
+                <template #nextArrow>
+                  <span />
+                </template>
               </VueSlickCarousel>
               <div v-if="metaFields.images.length > 1 && isDesktop" class="my-4">
                 <VueSlickCarousel
@@ -176,13 +234,11 @@ export default {
                     >
                   </div>
                   <template #prevArrow>
-                    <div class="custom-arrow bg-white rounded-sm text-primary-400 flex">
-                      <VueSvgIcon :data="require(`@/assets/svg/chevron-left.svg`)" width="20" height="20" />
-                    </div>
+                    <span />
                   </template>
                   <template #nextArrow>
-                    <div class="custom-arrow bg-white rounded-sm text-primary-400 flex">
-                      <VueSvgIcon :data="require(`@/assets/svg/chevron-right.svg`)" width="20" height="20" />
+                    <div class="custom-arrow absolute transform -translate-y-1/2 top-1/2 !right-8">
+                      <VueSvgIcon :data="chevronRightIcon" width="20" height="20" />
                     </div>
                   </template>
                 </VueSlickCarousel>
@@ -237,6 +293,12 @@ export default {
                       :class="{ '-sm': !inRange((page - currentC1Slide), -2, 2) }"
                     />
                   </template>
+                  <template #prevArrow>
+                    <span />
+                  </template>
+                  <template #nextArrow>
+                    <span />
+                  </template>
                 </VueSlickCarousel>
                 <div v-if="metaFields.images.length > 1 && isDesktop" class="my-4">
                   <VueSlickCarousel
@@ -267,13 +329,11 @@ export default {
                       />
                     </div>
                     <template #prevArrow>
-                      <div class="custom-arrow bg-white rounded-sm text-primary-400 flex">
-                        <VueSvgIcon :data="require(`@/assets/svg/chevron-left.svg`)" width="20" height="20" />
-                      </div>
+                      <span />
                     </template>
                     <template #nextArrow>
-                      <div class="custom-arrow bg-white rounded-sm text-primary-400 flex">
-                        <VueSvgIcon :data="require(`@/assets/svg/chevron-right.svg`)" width="20" height="20" />
+                      <div class="custom-arrow absolute transform -translate-y-1/2 top-1/2 !right-8">
+                        <VueSvgIcon :data="chevronRightIcon" width="20" height="20" />
                       </div>
                     </template>
                   </VueSlickCarousel>
@@ -321,31 +381,6 @@ export default {
 
 .c-ribbon__right {
   transform: scaleX(-1);
-}
-
-::v-deep(.custom-arrow.slick-prev), ::v-deep(.custom-arrow.slick-next) {
-  display: flex;
-  width: 38px;
-  height: 38px;
-  background-color: white;
-  color: theme('colors.primary.400');
-  z-index: 1;
-}
-
-::v-deep(.custom-arrow.slick-prev) {
-  left: 20px;
-}
-
-::v-deep(.custom-arrow.slick-next) {
-  right: 20px;
-}
-
-::v-deep(.custom-arrow svg) {
-  margin: auto;
-}
-
-::v-deep(.slick-prev:before), ::v-deep(.slick-next:before) {
-  content: '';
 }
 
 ::v-deep(.slick-slide > div > div) {
