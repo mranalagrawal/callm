@@ -135,7 +135,7 @@ export const useCustomer = defineStore({
               this.$nuxt.$gtm.push({
                 event,
                 userType: themeConfig[this.$nuxt.$config.STORE].customerType,
-                userId: this.customer.id,
+                userId: this.customerId,
                 userFirstName: this.customer.firstName,
                 userLastName: this.customer.lastName,
                 userEmail: this.customer.email,
@@ -154,7 +154,7 @@ export const useCustomer = defineStore({
       this.$nuxt.$gtm.push({
         event: 'logout',
         userType: themeConfig[this.$nuxt.$config.STORE].customerType,
-        userId: this.customer.id,
+        userId: this.customerId,
         userFirstName: this.customer.firstName,
         userLastName: this.customer.lastName,
         userEmail: this.customer.email,
