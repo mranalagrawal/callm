@@ -10,7 +10,7 @@ import { SweetAlertToast } from '~/utilities/Swal'
 
 export default defineComponent({
   setup() {
-    const { i18n, $cmwRepo, $config, $recaptcha } = useContext()
+    const { i18n, $gtm, $cmwRepo, $config, $recaptcha } = useContext()
     const splash = useSplash()
     const { orders } = storeToRefs(useCustomerOrders())
     const { customer } = storeToRefs(useCustomer())
@@ -106,7 +106,6 @@ export default defineComponent({
 
       const { isValid } = await formEl.value.validateWithInfo()
       const token = await $recaptcha.execute('login')
-      // console.log('ReCaptcha token:', token)
 
       if (isValid && token) {
         const { status, message } = await $cmwRepo.orders.requestAssistance({
@@ -121,6 +120,13 @@ export default defineComponent({
         if (status === 200 && message === 'Ok') {
           splash.$reset()
           showForm.value = false
+
+          $gtm.push({
+            event: 'contact',
+            // leadId: 'missing, we need it from BE as in newsletter',
+            userEmail: customer.value.email || formData.value.email,
+          })
+
           SweetAlertToast.fire({
             icon: 'success',
             text: i18n.t('common.feedback.OK.requestAssistance'),
