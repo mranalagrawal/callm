@@ -338,4 +338,7 @@ export default {
   waitingForConfirmation: {
     msg: 'Thank you for sending your data, one of our operators will contact you as soon as possible',
   },
+  bundle: {
+    whatIsInTheBox: 'The products that you will receive:',
+  },
 }

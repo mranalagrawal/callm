@@ -56,9 +56,6 @@ export default defineComponent({
       return themeConfig
     },
   },
-  watch: {
-    '$i18n.locale': '$fetch',
-  },
   methods: {
     async handleSubmit() {
       await this.$cmw.$post('/customers/subscribe-nl', {

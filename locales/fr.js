@@ -337,4 +337,7 @@ export default {
   waitingForConfirmation: {
     msg: 'Vielen Dank für die Übermittlung Ihrer Daten. Einer unserer Mitarbeiter wird sich so schnell wie möglich mit Ihnen in Verbindung setzen',
   },
+  bundle: {
+    whatIsInTheBox: 'Produits de la Dégustation:',
+  },
 }

@@ -1,24 +1,23 @@
-<script>
-import { computed, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
+<script lang="ts">
+import type { Ref } from '@nuxtjs/composition-api'
+import { computed, defineComponent, inject, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+import type { TranslateResult } from 'vue-i18n'
 import { useFilters } from '~/store/filters'
-import { getUniqueListBy } from '~/utilities/arrays'
-import { useCustomerOrders } from '~/store/customerOrders.ts'
+import { useCustomerOrders } from '~/store/customerOrders'
 
-export default {
-  props: {
-    isDesktop: Boolean,
-  },
+export default defineComponent({
   setup() {
     const { i18n, $cmwGtmUtils, $productMapping } = useContext()
     const customerOrders = useCustomerOrders()
     const { orders } = storeToRefs(customerOrders)
+    const isDesktop = inject('isDesktop') as Ref<boolean>
 
     const filtersStore = useFilters()
     const { selectedLayout, availableLayouts } = storeToRefs(filtersStore)
 
     const selectedSort = ref('most-recent')
-    const sort = ref([
+    const sort = ref<{ label: TranslateResult; value: string }[]>([
       {
         label: i18n.t('common.filters.sort.mostRecent'),
         value: 'most-recent',
@@ -45,44 +44,42 @@ export default {
         value: 'nameDesc',
       },
     ]) // processed_at:>2022-12-01
-    const selectedLabel = computed(() => sort.value.find(period => period.value === selectedSort.value).label)
+    const selectedLabel = computed(() => {
+      const selectedItem = sort.value.find(period => period.value === selectedSort.value)
+      return selectedItem?.label
+    })
+
     const filteredSort = computed(() => sort.value.filter(s => s.value !== selectedSort.value))
 
-    const { fetch } = useFetch(async () => {
+    useFetch(async () => {
       await customerOrders.getOrders(`processed_at:>${selectedSort.value}`)
     })
 
-    const handleUpdateValue = (value) => {
+    /* const handleUpdateValue = (value) => {
       selectedSort.value = value
       fetch()
-    }
+    } */
 
     const customerProducts = computed(() => {
       // Note: there's an annoying warning but the page renders perfectly, https://github.com/nuxt-community/composition-api/issues/19
-      // on Nuxt 3 we will get nodes directly
       if (!orders.value)
         return []
 
-      let arr = orders.value
-        .map(el => el.lineItems.nodes)
-        .flat()
-        .map((el) => {
-          // Note: we can remove this product from the logic if we fix the wishlist
-          // const { __typename, product, ...rest } = el.node.variant
-          let result = {}
-          if (el?.variant?.product) {
-            const { __typename, ...rest } = el.variant.product
-            result = rest
-          } else {
-            result = {}
-          }
-          return (result)
-        }) || []
+      const uniqueProductIds = new Set()
+      const mappedProducts = []
 
-      arr = arr.filter(p => p.id)
-      arr = getUniqueListBy(arr, 'id')
-      arr = $productMapping.fromShopify(arr)
-      return arr
+      for (const order of orders.value) {
+        for (const lineItem of order.lineItems.nodes) {
+          const product = lineItem.variant.product
+
+          if (product.id && !product.isGiftCard && !uniqueProductIds.has(product.id)) {
+            uniqueProductIds.add(product.id)
+            mappedProducts.push(product)
+          }
+        }
+      }
+
+      return $productMapping.fromShopify(mappedProducts)
     })
 
     onMounted(() => {
@@ -90,18 +87,19 @@ export default {
     })
 
     return {
-      orders,
+      // handleUpdateValue,
       availableLayouts,
-      selectedLayout,
-      sort,
-      selectedSort,
-      selectedLabel,
-      filteredSort,
       customerProducts,
-      handleUpdateValue,
+      filteredSort,
+      isDesktop,
+      orders,
+      selectedLabel,
+      selectedLayout,
+      selectedSort,
+      sort,
     }
   },
-}
+})
 </script>
 
 <template>

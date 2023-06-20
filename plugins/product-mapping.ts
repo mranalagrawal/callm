@@ -5,7 +5,7 @@ import themeConfig from '~/config/themeConfig'
 import { useCustomer } from '~/store/customer'
 import type { IMoneyV2 } from '~/types/common-objects'
 import type { IBaseProductMapped, IGiftCardMapped, IProductBreadcrumbs, IProductMapped, TProductFeatures } from '~/types/product'
-import { pick } from '~/utilities/arrays'
+import { getUniqueListBy, pick } from '~/utilities/arrays'
 import { getCountryFromStore } from '~/utilities/currency'
 import { cleanUrl } from '~/utilities/strings'
 
@@ -105,20 +105,16 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
         const shopify_product_id = `gid://shopify/Product/${p._source.productId[store]}`
         const shopify_product_variant_id = `gid://shopify/ProductVariant/${p._source.variantId[store]}`
         const priceLists = p._source.pricelists
+        const productAwards = p._source.awards.map((award: Record<string, any>) => ({
+          ...award,
+          title: award[`name_${lang}`],
+          quote: award[`quote_${lang}`],
+        })) || []
 
         return ({
           availableFeatures: $productMapping.availableFeatures(p._source),
           availableForSale: p._source.quantity[store] > 0,
-          awards: p._source.awards.map((award: Record<string, any>) => ({
-            ...award,
-            title: award[`name_${lang}`],
-            quote: {
-              it: award.quote_it,
-              en: award.quote_en,
-              fr: award.quote_fr,
-              de: award.quote_de,
-            },
-          })) || [],
+          awards: getUniqueListBy(productAwards, 'id'),
           compareAtPrice,
           descriptionHtml: p._source.description,
           priceLists,
@@ -183,16 +179,23 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
 
       products = arr.map((p: Record<string, any>) => {
         const details = JSON.parse(p.details.value)
-        const compareAtPrice = p.variants.nodes[0].compareAtPriceV2
+        const bundle = JSON.parse(p.bundle?.value || '[]')
+        const compareAtPrice = p.variants.nodes[0].compareAtPrice
         const id = details.feId
         const shopify_product_id = p.id
         const shopify_product_variant_id = p.variants.nodes[0].id
         const priceLists = details.priceLists
+        const productAwards = details.awards.map((award: Record<string, any>) => ({
+          ...award,
+          title: award.title,
+          quote: award.quote[lang],
+        })) || []
 
         return ({
           availableFeatures: $productMapping.availableFeatures(details),
           availableForSale: p.availableForSale,
-          awards: details.awards,
+          awards: getUniqueListBy(productAwards, 'id'),
+          bundle,
           compareAtPrice,
           descriptionHtml: p.descriptionHtml,
           priceLists,
@@ -258,7 +261,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
         title: v.title,
         description: v.description || null,
         price: { ...v.price },
-        compareAtPrice: v.compareAtPriceV2,
+        compareAtPrice: v.compareAtPrice,
       })) || []
 
       const details = JSON.parse(product.details.value)

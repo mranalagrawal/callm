@@ -5,7 +5,7 @@
  * @typedef {object} ProductVariant
  * @property {boolean} availableForSale
  * @property {string} barcode
- * @property {string} compareAtPriceV2
+ * @property {string} compareAtPrice
  * @property {boolean} currentlyNotInStock
  * @property {string} id
  * @property {ImageType.Image} image

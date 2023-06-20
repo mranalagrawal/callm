@@ -45,7 +45,8 @@ export default defineComponent({
     const product = ref({
       source_id: '',
       availableFeatures: [],
-      details: '',
+      bundle: [],
+      details: {},
       featuredImage: { altText: '', height: 0, url: '', width: 0 },
       handle: '',
       id: '',
@@ -65,7 +66,6 @@ export default defineComponent({
       feId: '',
       hrefLang: {},
       shortDescription: '',
-      awards: [],
       priceLists: {},
       redirectSeoUrl: {},
       foodPairings: [],
@@ -112,7 +112,7 @@ export default defineComponent({
             if (route.value.params.pathMatch !== product.value.handle)
               return redirect(301, localeLocation(`/${product.value.handle}-${productDetails.value.key}.htm`))
 
-            if (!product.value.tags.find(tag => tag === 'active'))
+            if (product.value.tags.includes('not_active'))
               return redirect(301, localeLocation(`/${productDetails.value.redirectSeoUrl[i18n.locale]}`))
 
             // if (!productDetails.value.enabled)
@@ -254,6 +254,9 @@ export default defineComponent({
     ...mapState('userCart', {
       userCart: 'userCart',
     }),
+    isBundle() {
+      return !!this.product.bundle.length
+    },
     isOnCart() {
       return this.userCart.find(lineItem => lineItem.productVariantId === this.productVariant.id)
     },
@@ -283,12 +286,12 @@ export default defineComponent({
       const id = this.product.shopify_product_variant_id
       const amount = this.finalPrice
       const amountFullPrice = Number(
-        this.productVariant.compareAtPriceV2.amount,
+        this.productVariant.compareAtPrice.amount,
       )
 
-      /* data.variants.nodes[0].compareAtPriceV2 */
+      /* data.variants.nodes[0].compareAtPrice */
       const tag = this.product.tags
-      const image = this.product.image.thumbnail.url
+      const image = this.product.image.source.url
       const title = this.product.title
       this.$store.commit('userCart/addProduct', {
         id,
@@ -303,8 +306,8 @@ export default defineComponent({
       this.flashMessage.show({
         status: '',
         message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title}` }),
-        icon: this.product.image.thumbnail.url,
-        iconClass: 'bg-transparent ',
+        icon: image,
+        iconClass: 'bg-transparent',
         time: 8000,
         blockClass: 'add-product-notification',
       })
@@ -335,7 +338,7 @@ export default defineComponent({
     <template v-else>
       <div v-if="product.title && brandMetaFields">
         <TheBreadcrumbs v-if="!!productBreadcrumbs.length" :breadcrumbs="productBreadcrumbs" />
-        <div class="md:(grid grid-cols-[40%_60%] max-h-[550px] my-4)">
+        <div class="md:(grid grid-cols-[40%_60%] min-h-[550px] my-4)">
           <!-- Image Section -->
           <div class="relative">
             <LoadingImage
@@ -349,7 +352,7 @@ export default defineComponent({
             </div>
             <div class="absolute bottom-0 left-2">
               <div
-                v-for="(award, i) in productDetails.awards.slice(0, 4)"
+                v-for="(award, i) in product.awards.slice(0, 4)"
                 :key="`${award.id}-${i}`"
                 class="flex gap-1 items-center pr-1.5"
               >
@@ -364,6 +367,7 @@ export default defineComponent({
           <div class="flex flex-col">
             <h1 class="text-secondary <md:pt-8" v-text="product.title" />
             <NuxtLink
+              v-if="!isBundle"
               class="h3 w-max hover:text-primary-400"
               :to="localePath({ name: 'winery-handle', params: { handle: `${brand.handle}-${brandMetaFields.key}.htm` } })"
               prefetch
@@ -371,6 +375,14 @@ export default defineComponent({
               {{ product.vendor }}
             </NuxtLink>
             <div v-html="strippedContent" />
+            <div v-if="isBundle" class="mb-4">
+              <div class="h4 my-4" v-text="$t('bundle.whatIsInTheBox')" />
+              <ul class="my-4 text-sm">
+                <li v-for="({ product_name, quantity }) in product.bundle" :key="generateKey(product_name)">
+                  {{ quantity }} {{ product_name }}
+                </li>
+              </ul>
+            </div>
             <script
               v-if="$config.STORE === 'CMW_UK'"
               data-environment="production" src="https://osm.klarnaservices.com/lib.js"
@@ -390,7 +402,7 @@ export default defineComponent({
               class="
             <md:(fixed bottom-0 left-0 w-full bg-white z-content shadow-elevation px-3 py-4)
             mt-auto flex items-end
-            md:mb-8
+            md:my-8
 "
             >
               <div>
@@ -400,15 +412,15 @@ export default defineComponent({
                 >
                   <span class="line-through text-gray text-sm">
                     {{
-                      $n(Number(productVariant.compareAtPriceV2.amount),
+                      $n(Number(productVariant.compareAtPrice.amount),
                          'currency',
-                         getLocaleFromCurrencyCode(productVariant.compareAtPriceV2.currencyCode))
+                         getLocaleFromCurrencyCode(productVariant.compareAtPrice.currencyCode))
                     }}
                   </span>
                   <CmwChip
                     color="secondary"
                     shape="rounded"
-                    :label="`-${getPercent(finalPrice, productVariant.compareAtPriceV2.amount)}%`"
+                    :label="`-${getPercent(finalPrice, productVariant.compareAtPrice.amount)}%`"
                   />
                 </div>
                 <i18n-n

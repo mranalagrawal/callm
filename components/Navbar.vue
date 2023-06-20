@@ -207,7 +207,7 @@ export default {
 <template>
   <div
     ref="navbar"
-    class="fixed w-screen min-h-[135px] px-4 top-0 bg-white z-tooltip print:hidden"
+    class="fixed w-screen min-h-[135px] px-4 pb-4 top-0 bg-white z-tooltip print:hidden"
   >
     <div
       class="

@@ -56,16 +56,18 @@ query getCustomerOrders(
             title
             originalTotalPrice {
               amount
+              currencyCode
             }
             discountedTotalPrice {
               amount
+              currencyCode
             }
             variant {
               availableForSale
-              compareAtPriceV2 { amount, currencyCode }
+              compareAtPrice { amount, currencyCode }
               id
               price { amount, currencyCode }
-              compareAtPriceV2 { amount, currencyCode }
+              compareAtPrice { amount, currencyCode }
               image { altText, height, url, width }
               sku
               quantityAvailable
@@ -77,6 +79,7 @@ query getCustomerOrders(
                 descriptionHtml
                 handle
                 id
+                isGiftCard
                 featuredImage { altText, height, url, width }
                 seo { description, title }
                 tags
@@ -92,7 +95,7 @@ query getCustomerOrders(
                 variants(first: 1) {
                   nodes {
                     id
-                    compareAtPriceV2 { amount, currencyCode }
+                    compareAtPrice { amount, currencyCode }
                     price { amount, currencyCode }
                     quantityAvailable
                     sku

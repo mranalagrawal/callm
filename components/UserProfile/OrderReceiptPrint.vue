@@ -106,9 +106,9 @@ export default defineComponent({
           </td><!-- <td>{{ $orderItem->amount }}</td> -->
           <!-- Todo: Add isOnSaleLogic? Which price do we want to show here? -->
           <td class="text-right">
-            {{ $n(Number(lineItem.variant.compareAtPriceV2.amount),
+            {{ $n(Number(lineItem.discountedTotalPrice.amount),
                   'currency',
-                  getLocaleFromCurrencyCode(lineItem.variant.compareAtPriceV2.currencyCode),
+                  getLocaleFromCurrencyCode(lineItem.discountedTotalPrice.currencyCode),
             ) }}
           </td>
         </tr>

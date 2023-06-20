@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import themeConfig from '~/config/themeConfig'
 import { useCustomerOrders } from '~/store/customerOrders.ts'
-import { getIconAsImg } from '~/utilities/icons'
+import { getIconAsImg } from '~/utilities/icons.ts'
 import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
 import customerAccessTokenCreate from '~/graphql/mutations/authenticateUser'
 // import { useCustomerWishlist } from '@/store/customerWishlist'

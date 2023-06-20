@@ -14,10 +14,10 @@ export interface ICartLineItem {
 
 export interface ILineItem {
   currentQuantity: number
-  customAttributes: []
-  discountAllocations: string
-  discountedTotalPrice: string // MoneyV2!
-  originalTotalPrice: string // MoneyV2!
+  customAttributes: [] // [Attribute!]!
+  discountAllocations: [] // [DiscountAllocation!]!
+  discountedTotalPrice: IMoneyV2
+  originalTotalPrice: IMoneyV2
   quantity: number
   title: string
   variant: Record<string, any> // Todo: get right type

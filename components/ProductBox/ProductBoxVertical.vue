@@ -10,6 +10,7 @@ import emailIcon from 'assets/svg/email.svg'
 import { mapState } from 'vuex'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import { useCustomer } from '~/store/customer'
+import { generateKey } from '~/utilities/strings'
 import { isObject } from '~/utilities/validators'
 import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { SweetAlertToast } from '~/utilities/Swal'
@@ -115,6 +116,7 @@ export default {
     },
   },
   methods: {
+    generateKey,
     getLocaleFromCurrencyCode,
     getCountryFromStore,
     async addToUserCart() {
@@ -150,7 +152,7 @@ export default {
       this.flashMessage.show({
         status: '',
         message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title}` }),
-        icon: this.product.image.source.url,
+        icon: image,
         iconClass: 'bg-transparent ',
         time: 8000,
         blockClass: 'add-product-notification',
@@ -197,7 +199,7 @@ export default {
       <div class="c-productBox__awards place-self-end">
         <div
           v-for="(award, i) in product.awards.slice(0, 4)"
-          :key="`${award.id}-${i}`"
+          :key="generateKey(`${award.id}-${i}`)"
           class="flex gap-1 items-center pr-1.5"
         >
           <ProductBoxAward :award="award" />

@@ -67,7 +67,8 @@ type Order {
 #  The total cost of taxes.
   totalTax: MoneyV2
   # Connections
-  lineItems(first: Int, reverse: Boolean, query: String):OrderLineItemConnection
+  discountApplications(first: Int, reverse: Boolean):OrderDiscountApplicationsConnection
+  lineItems(first: Int, reverse: Boolean):OrderLineItemConnection
 }
 
 type OrderConnection {

@@ -452,7 +452,7 @@ export default {
     disabled: process.env.DEPLOY_ENV !== 'prod',
     config: {
       browserTracing: {
-        tracePropagationTargets: ['callmewine.co.uk'],
+        // tracePropagationTargets: ['callmewine.co.uk'],
       },
       vueOptions: {
         trackComponents: true,

@@ -32,6 +32,7 @@ interface FilterValue {
   label:String!
 }
 
+#Represents a generic custom attribute.
 interface Attribute {
 #  Key or name of the attribute.
   key: String!
