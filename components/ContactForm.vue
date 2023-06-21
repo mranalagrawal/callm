@@ -123,7 +123,7 @@ export default defineComponent({
 
           $gtm.push({
             event: 'contact',
-            // leadId: 'missing, we need it from BE as in newsletter',
+            leadId: `${Date.now()}`,
             userEmail: customer.value.email || formData.value.email,
           })
 
