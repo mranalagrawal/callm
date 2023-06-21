@@ -1,86 +1,91 @@
-<script>
-import { ref, useContext, useRouter } from '@nuxtjs/composition-api'
+<script lang="ts">
+import { defineComponent, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api'
 import promoTagIcon from 'assets/svg/promo-tag.svg'
-import ThirdLevel from './UI/ThirdLevel.vue'
+import ThirdLevel from '~/components/UI/ThirdLevel.vue'
 import prismicConfig from '~/config/prismicConfig'
+import type { TStores } from '~/config/themeConfig'
 import { generateKey } from '~/utilities/strings'
 
-export default {
+export default defineComponent({
+  name: 'MegaMenu',
   components: { ThirdLevel },
   setup() {
     const {
-      localeLocation,
       $cmwRepo,
     } = useContext()
-    const router = useRouter()
+    const route = useRoute()
     const megaMenu = ref(null)
-    const selectedItem = ref(null)
-    const handleClick = (to) => {
-      router.push(localeLocation(to))
-      selectedItem.value = null
-    }
+    const selectedItem = ref<Record<string, any> | null>(null)
+    const pageData = ref<any>()
 
-    const onTab = item => selectedItem.value = item
+    useFetch(async ({ $config, $cmwRepo, $handleApiErrors }) => {
+      await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.megaMenu })
+        .then(({ data }: Record<string, any>) => {
+          pageData.value = data.body
+            .map((firstLevel: {
+              items: any[]
+              primary: {
+                group_label: any
+                first_level_link: any
+                first_level_position: any
+                is_promotion_tab: any
+                display_as_cards: any
+              }
+            }) => {
+              const secondLevels = firstLevel.items.map((el) => {
+                return {
+                  name: el.secondlevelname,
+                  position: el.second_level_position,
+                }
+              })
+              const secondLevelsSet = [
+                ...new Set(secondLevels.map(el => JSON.stringify(el))),
+              ]
+                .map(el => JSON.parse(el))
+                .sort((a, b) => a.position - b.position)
+
+              const items = secondLevelsSet.map((el) => {
+                const temp = firstLevel.items
+                  .filter(x => x.secondlevelname === el.name)
+                  .sort((a, b) => a.third_level_position - b.third_level_position)
+
+                return {
+                  ...el,
+                  items: temp,
+                }
+              })
+
+              return {
+                name: firstLevel.primary.group_label,
+                link: firstLevel.primary.first_level_link,
+                position: firstLevel.primary.first_level_position,
+                isPromotionTab: firstLevel.primary.is_promotion_tab,
+                display_as_cards: firstLevel.primary.display_as_cards,
+                items,
+              }
+            })
+            .sort((a: { position: number }, b: { position: number }) => a.position - b.position)
+        })
+        .catch((err: Error) => {
+          $handleApiErrors(`Catch getting megaMenu data from prismic: ${err}`)
+        })
+    })
+
+    watch(() => route.value, () => selectedItem.value = null)
+
+    const onTab = (item: Record<string, any> | null) => selectedItem.value = item
 
     return {
       $cmwRepo,
       megaMenu,
-      selectedItem,
-      handleClick,
       onTab,
+      pageData,
+      promoTagIcon,
+      selectedItem,
     }
   },
-  data: () => ({
-    promoTagIcon,
-    selectedContent: null,
-    data: null,
-    promotions: null,
-    marketing: null,
-  }),
-  async fetch() {
-    const response = await this.$cmwRepo.prismic.getSingle({ page: prismicConfig[this.$config.STORE]?.components.megaMenu })
-    const data = response.data.body
-
-    const mapped = data
-      .map((firstLevel) => {
-        const secondLevels = firstLevel.items.map((el) => {
-          return {
-            name: el.secondlevelname,
-            position: el.second_level_position,
-          }
-        })
-        const secondLevelsSet = [
-          ...new Set(secondLevels.map(el => JSON.stringify(el))),
-        ]
-          .map(el => JSON.parse(el))
-          .sort((a, b) => a.position - b.position)
-
-        const items = secondLevelsSet.map((el) => {
-          const temp = firstLevel.items
-            .filter(x => x.secondlevelname === el.name)
-            .sort((a, b) => a.third_level_position - b.third_level_position)
-
-          return {
-            ...el,
-            items: temp,
-          }
-        })
-
-        return {
-          name: firstLevel.primary.group_label,
-          link: firstLevel.primary.first_level_link,
-          position: firstLevel.primary.first_level_position,
-          isPromotionTab: firstLevel.primary.is_promotion_tab,
-          display_as_cards: firstLevel.primary.display_as_cards,
-          items,
-        }
-      })
-      .sort((a, b) => a.position - b.position)
-
-    this.data = mapped
-  },
   methods: { generateKey },
-}
+})
 </script>
 
 <template>
@@ -88,15 +93,15 @@ export default {
     <div ref="megaMenu" class="flex items-center">
       <div class="max-w-screen-xl mx-auto flex items-center justify-evenly w-full">
         <div
-          v-for="(firstLevel, i) in data"
+          v-for="(firstLevel, i) in pageData"
           :key="i"
           class="text-center text-uppercase py-2"
           @mouseenter="onTab(firstLevel)"
         >
-          <button
+          <NuxtLink
             class="w-max text-xs w-max desktop-wide:text-sm uppercase hover:(text-primary font-bold)"
             :class="firstLevel.isPromotionTab ? 'text-primary-400' : 'text-body'"
-            @click="handleClick(`/${firstLevel.link}`)"
+            :to="localePath(`/${firstLevel.link}`)"
           >
             <VueSvgIcon
               v-if="firstLevel.isPromotionTab"
@@ -106,7 +111,7 @@ export default {
               class="inline"
             />
             {{ firstLevel.name }}
-          </button>
+          </NuxtLink>
         </div>
       </div>
     </div>

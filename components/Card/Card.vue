@@ -1,7 +1,10 @@
-<script>
+<script lang="ts">
+import { computed, defineComponent } from '@nuxtjs/composition-api'
+import type { PropType } from '@nuxtjs/composition-api'
+import type { DEPRECATED_FEATURES, FEATURES } from '@/utilities/icons'
 import { getIconByFeature } from '@/utilities/icons'
 
-export default {
+export default defineComponent({
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Card',
   props: {
@@ -12,37 +15,35 @@ export default {
       type: [String, Number],
     },
     icon: {
-      type: [String, Number],
+      type: String as PropType<DEPRECATED_FEATURES | FEATURES>,
     },
     bgUrl: {
       type: [String],
       required: true,
     },
     bgColor: {
-      type: String,
-      validator: prop => ['gray', 'white'].includes(prop),
+      type: String as PropType<'gray' | 'white'>,
       default: 'white',
     },
   },
-  computed: {
-    getNumberColor() {
-      return this.$props.bgColor === 'white' ? 'text-primary' : 'text-white'
-    },
+  setup(props) {
+    const getBgColor = () => ({
+      gray: 'bg-gray-lightest',
+      white: 'bg-white',
+    })[props.bgColor]
+
+    const getNumberColor = computed(() => props.bgColor === 'white' ? 'text-primary' : 'text-white')
+
+    return { getBgColor, getNumberColor }
   },
   methods: {
     getIconByFeature,
-    getBgColor() {
-      return ({
-        gray: 'bg-gray-lightest',
-        white: 'bg-white',
-      })[this.$props.bgColor]
-    },
   },
-}
+})
 </script>
 
 <template>
-  <button
+  <div
     class="w-full max-w-450px grid grid-cols-[90px_auto_40px] items-center rounded border border-gray min-h-[98px] text-left mb-4"
     :class="[getBgColor()]"
   >
@@ -59,5 +60,5 @@ export default {
         height="auto"
       />
     </span>
-  </button>
+  </div>
 </template>
