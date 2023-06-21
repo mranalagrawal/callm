@@ -7,7 +7,7 @@ export function getIconAsImg(icon = 'success') {
   })[icon]
 }
 
-type DEPRECATED_FEATURES =
+export type DEPRECATED_FEATURES =
   | 'favourite'
   | 'isnew'
   | 'isInPromotion'
@@ -21,7 +21,7 @@ type DEPRECATED_FEATURES =
   | 'organic'
   | 'topsale'
 
-type FEATURES =
+export type FEATURES =
   | 'AWARDS'
   | 'FAVOURITE'
   | 'IS_NEW'

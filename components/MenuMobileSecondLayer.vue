@@ -1,5 +1,5 @@
 <script>
-import { computed, useContext, useRouter } from '@nuxtjs/composition-api'
+import { computed } from '@nuxtjs/composition-api'
 import closeIcon from 'assets/svg/close.svg'
 import chevronLeftIcon from 'assets/svg/chevron-left.svg'
 import { generateKey } from '~/utilities/strings'
@@ -15,8 +15,6 @@ export default {
   },
   emits: ['close-sidebar'],
   setup(props, { emit }) {
-    const { localeLocation } = useContext()
-    const router = useRouter()
     const closeSidebar = (full = false) => {
       emit('close-sidebar', full)
     }
@@ -27,11 +25,7 @@ export default {
       isMarketing: item.items.every(i => !!i.marketing_cta),
     })))
 
-    const handleMarketingClick = (to) => {
-      router.push(localeLocation((to)))
-    }
-
-    return { mappedMenu, closeIcon, chevronLeftIcon, closeSidebar, handleMarketingClick }
+    return { mappedMenu, closeIcon, chevronLeftIcon, closeSidebar }
   },
   methods: { generateKey, getIconByFeature },
 }
@@ -97,10 +91,9 @@ export default {
               :key="generateKey(third_level_name || second_level_name || marketing_cta || 'missing')"
               class="relative"
             >
-              <Card
-                :bg-url="marketing_image.url" :title="third_level_name" :subtitle="marketing_cta" :icon="icon"
-                @click.native="handleMarketingClick(third_level_link)"
-              />
+              <NuxtLink :to="localePath(third_level_link)">
+                <Card :bg-url="marketing_image.url" :title="third_level_name" :subtitle="marketing_cta" :icon="icon" />
+              </NuxtLink>
             </div>
           </template>
           <template v-else>
