@@ -285,7 +285,7 @@ hover:shadow-elevation"
           </Button>
           <Badge
             v-show="cartQuantity && !isOpen"
-            class="absolute top-0 left-full transform translate-x-[-50%] translate-y-[-50%]"
+            class="absolute top-0 left-full transform -translate-x-1/2 -translate-y-1/2"
             bg-color="primary-400" :qty="cartQuantity"
           />
           <div
@@ -336,13 +336,13 @@ hover:shadow-elevation"
           </Button>
         </div>
       </div>
-      <div class="absolute transform top-px left-1/2 translate-x-[-50%] translate-y-[-50%]">
+      <div class="absolute transform top-px left-1/2 -translate-x-1/2 -translate-y-1/2">
         <CardLapel v-if="isOnSale" />
       </div>
     </div>
     <div
       v-if="!product.availableForSale"
-      class="absolute transform bg-black/70 rounded top-1/2 left-12 translate-y-[-50%] py-4 px-24 overline-2 uppercase text-white"
+      class="absolute transform bg-black/70 rounded top-1/2 left-12 -translate-y-1/2 py-4 px-24 overline-2 uppercase text-white"
       v-text="$t('product.notAvailable2')"
     />
   </div>

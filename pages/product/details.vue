@@ -465,7 +465,7 @@ export default defineComponent({
                     </Button>
                     <Badge
                       v-show="cartQuantity && !isOpen"
-                      class="absolute top-0 left-full transform translate-x-[-50%] translate-y-[-50%]"
+                      class="absolute top-0 left-full transform -translate-x-1/2 -translate-y-1/2"
                       bg-color="primary-400" :qty="cartQuantity"
                     />
                     <div

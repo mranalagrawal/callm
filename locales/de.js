@@ -202,6 +202,8 @@ export default {
   },
   search: {
     search: 'Suche',
+    showMore: 'Zeig mehr',
+    showLess: 'Zeige weniger',
     showFilters: 'Filter anzeigen',
     showResults: 'Zeige Ergebnisse ({count})',
     products: 'Produkte',

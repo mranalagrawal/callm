@@ -123,12 +123,12 @@ export default defineComponent({
         </div>
       </div>
       <template #back-arrow>
-        <span class="absolute w-12 h-12 bg-white rounded-sm flex left-20 top-2/5 translate-y-[-50%]">
+        <span class="absolute w-12 h-12 bg-white rounded-sm flex left-20 top-2/5 -translate-y-1/2">
           <VueSvgIcon :data="chevronLeftIcon" color="#992545" width="20" height="20" class="m-auto" />
         </span>
       </template>
       <template #next-arrow>
-        <span class="absolute w-12 h-12 bg-white rounded-sm flex right-20 top-2/5 translate-y-[-50%]">
+        <span class="absolute w-12 h-12 bg-white rounded-sm flex right-20 top-2/5 -translate-y-1/2">
           <VueSvgIcon :data="chevronRightIcon" color="#992545" width="20" height="20" class="m-auto" />
         </span>
       </template>

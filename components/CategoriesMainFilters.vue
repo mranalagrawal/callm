@@ -58,7 +58,7 @@ export default defineComponent({
 <template>
   <div class="c-scrollbar flex overflow-auto gap-4 my-8 md:(flex-wrap)">
     <Button
-      v-for="({ key, name, keyword }) in mainFilters" :key="key" variant="ghost" size="sm" class="flex-shrink-0 w-max"
+      v-for="({ key, name, keyword }) in mainFilters" :key="key" variant="ghost" size="xs" class="flex-shrink-0 w-max"
       @click.native="handleUpdateValue(JSON.stringify({ id: key, keyword }))"
     >
       {{ name }}

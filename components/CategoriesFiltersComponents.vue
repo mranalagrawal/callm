@@ -346,7 +346,7 @@ export default defineComponent({
     >
       <span
         class="overline-1 font-normal uppercase text-xs"
-        v-text="!showMoreFilters ? 'Show more' : 'Show less'"
+        v-text="!showMoreFilters ? $t('search.showMore') : $t('search.showLess')"
       />
       <VueSvgIcon :data="plusIcon" class="ml-2" color="#d94965" width="16" height="auto" />
     </button>

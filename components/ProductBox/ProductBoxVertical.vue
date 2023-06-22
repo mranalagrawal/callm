@@ -261,7 +261,7 @@ export default {
           />
           <Badge
             v-show="cartQuantity && !isOpen"
-            class="absolute top-0 left-full transform translate-x-[-50%] translate-y-[-50%]"
+            class="absolute top-0 left-full transform -translate-x-1/2 -translate-y-1/2"
             bg-color="primary-400" :qty="cartQuantity"
           />
           <div
@@ -306,7 +306,7 @@ export default {
     </div>
     <div
       v-if="!product.availableForSale && isHovering"
-      class="absolute transform bg-black/70 rounded top-1/3 left-1/2 translate-y-[-50%] translate-x-[-50%]
+      class="absolute transform bg-black/70 rounded top-1/3 left-1/2 -translate-y-1/2 -translate-x-1/2
        py-4 px-4 overline-2 uppercase text-white"
       v-text="$t('product.notAvailable2')"
     />

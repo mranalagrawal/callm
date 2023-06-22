@@ -84,7 +84,7 @@ export default {
               placeholder-transparent rounded"
           @input="handleInput"
         >
-        <span class="transform absolute top-1/2 right-4 translate-y-[-50%] text-primary" v-text="currencySymbol" />
+        <span class="transform absolute top-1/2 right-4 -translate-y-1/2 text-primary" v-text="currencySymbol" />
       </div>
       <div class="relative">
         <label class="sr-only" for="input-field-min">Maximum Value</label>
@@ -94,11 +94,11 @@ export default {
               placeholder-transparent rounded"
           @input="handleInput"
         >
-        <span class="transform absolute top-1/2 right-4 translate-y-[-50%] text-primary" v-text="currencySymbol" />
+        <span class="transform absolute top-1/2 right-4 -translate-y-1/2 text-primary" v-text="currencySymbol" />
       </div>
     </div>
     <div class="wrap wrap--2x dots">
-      <div class="absolute transform translate-y-[-50%] w-full top-1/2 flex justify-between items-center h-[3px]">
+      <div class="absolute transform -translate-y-1/2 w-full top-1/2 flex justify-between items-center h-[3px]">
         <div class="bg-primary-100 h-px" :style="{ width: `${minWidth}%` }" />
         <div class="bg-primary h-full" :style="{ flex: 1 }" />
         <div class="bg-primary-100 h-px" :style="{ width: `calc(100% - ${maxWidth}%)` }" />

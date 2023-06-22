@@ -209,11 +209,11 @@ export default {
 <template>
   <div
     ref="navbar"
-    class="fixed w-screen min-h-[135px] px-4 pb-4 top-0 bg-white z-tooltip print:hidden"
+    class="fixed w-screen min-h-[135px] px-4 pb-4 top-0 bg-white z-tooltip print:hidden md:pb-0"
   >
     <div
       class="
-    max-w-screen-xl mx-auto grid grid-cols-1 gap-3 min-h-[109px] items-center
+    max-w-screen-xl mx-auto grid grid-cols-1 gap-3 min-h-100px items-center pt-4
     lg:grid-cols-[25%_40%_35%] 2xl:grid-cols-[25%_48%_32%]"
     >
       <div
@@ -291,7 +291,7 @@ export default {
           :icon="searchIcon"
           :aria-label="$t('enums.accessibility.role.TRIGGER_SEARCH')"
           size="sm"
-          class="transform absolute top-1/2 right-0 translate-y-[-50%] translate-x-[-30%]"
+          class="transform absolute top-1/2 right-0 -translate-y-1/2 translate-x-[-30%]"
           @click.native="startSearch"
         />
         <transition
@@ -389,7 +389,7 @@ export default {
         </transition>
       </div>
 
-      <div v-if="isDesktop" class="md:place-self-end">
+      <div v-if="isDesktop" class="md:(place-self-end self-center)">
         <UserActions />
       </div>
     </div>

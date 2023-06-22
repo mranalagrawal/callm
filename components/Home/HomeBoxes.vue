@@ -48,7 +48,7 @@ export default defineComponent({
     >
       <div v-for="({ title, description, image }) in boxes" :key="generateKey(title)" class="h-full pt-8">
         <div class="relative rounded border border-gray-light px-4 text-center h-full pt-12 pb-2">
-          <div class="absolute flex bg-white transform left-1/2 top-0 translate-x-[-50%] translate-y-[-50%] px-2 w-[100px] h-[100px]">
+          <div class="absolute flex bg-white transform left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 px-2 w-[100px] h-[100px]">
             <img
               :src="image.url"
               class="m-auto w-full h-auto"
