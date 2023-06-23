@@ -349,9 +349,8 @@ export default {
 }
 
 .c-productBox__image ::v-deep(img) {
-  height: 320px;
-  width: auto;
-  margin: 0 auto;
+  width: min(100%, 165px);
+  margin-inline: auto;
 }
 
 .c-productBox__wishlist {
@@ -386,7 +385,7 @@ export default {
   }
 
   .c-productBox__image ::v-deep(img) {
-    height: 270px;
+    width: min(100%, 145px);
   }
 
   .c-productBox__wishlist button {
