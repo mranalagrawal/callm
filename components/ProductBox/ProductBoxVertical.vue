@@ -349,8 +349,9 @@ export default {
 }
 
 .c-productBox__image ::v-deep(img) {
-  width: min(100%, 165px);
+  width: auto;
   margin-inline: auto;
+  height: 300px;
 }
 
 .c-productBox__wishlist {
@@ -381,11 +382,11 @@ export default {
 /* We are handling this piece skipping mobile-first to reduce the amount of CSS  */
 @container product-box (max-width: 250px) {
   .c-productBox__image {
-    height: 270px;
+    height: 260px;
   }
 
   .c-productBox__image ::v-deep(img) {
-    width: min(100%, 145px);
+    height: 260px;
   }
 
   .c-productBox__wishlist button {
