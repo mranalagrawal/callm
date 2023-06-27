@@ -49,7 +49,7 @@ export default {
           v-for="address in addresses"
           :key="address.id"
           :address="address"
-          :is-default-address="address.id === defaultAddress.id" :is-desktop="isDesktop"
+          :is-default-address="address.id === defaultAddress?.id" :is-desktop="isDesktop"
         />
         <button
           class="
