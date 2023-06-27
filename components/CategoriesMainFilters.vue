@@ -57,12 +57,13 @@ export default defineComponent({
 
 <template>
   <div class="c-scrollbar flex overflow-auto gap-4 my-8 md:(flex-wrap)">
-    <Button
-      v-for="({ key, name, keyword }) in mainFilters" :key="key" variant="ghost" size="xs" class="flex-shrink-0 w-max"
+    <button
+      v-for="({ key, name, keyword }) in mainFilters" :key="key"
+      class="btn-base text-sm rounded-sm px-3 py-1 md:(px-4 py-[0.4rem]) flex-shrink-0 w-max border-primary-400 bg-white text-primary-400 hover:(bg-primary-50)"
       @click.native="handleUpdateValue(JSON.stringify({ id: key, keyword }))"
     >
       {{ name }}
-    </Button>
+    </button>
   </div>
 </template>
 
