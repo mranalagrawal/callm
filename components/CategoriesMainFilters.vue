@@ -60,7 +60,7 @@ export default defineComponent({
     <button
       v-for="({ key, name, keyword }) in mainFilters" :key="key"
       class="btn-base text-sm rounded-sm px-3 py-1 md:(px-4 py-[0.4rem]) flex-shrink-0 w-max border-primary-400 bg-white text-primary-400 hover:(bg-primary-50)"
-      @click.native="handleUpdateValue(JSON.stringify({ id: key, keyword }))"
+      @click="handleUpdateValue(JSON.stringify({ id: key, keyword }))"
     >
       {{ name }}
     </button>
