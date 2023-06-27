@@ -393,7 +393,7 @@ export default {
         <UserActions />
       </div>
     </div>
-    <div v-if="isDesktop" class="c-megaMenu fixed left-0 w-full bg-white">
+    <div class="c-megaMenu fixed left-0 w-full bg-white <md:hidden">
       <div class="shadow-menu">
         <MegaMenu />
       </div>
