@@ -30,6 +30,7 @@
     "@prismicio/slice-simulator-vue": "^0.2.3",
     "@smartweb/vue-flash-message": "^0.6.10",
     "@types/lodash.kebabcase": "^4.1.7",
+    "@types/lodash.debounce": "^4.0.7",
     "@yzfe/svgicon": "^1.1.0",
     "@yzfe/vue-svgicon": "^4.0.3",
     "cookie-universal-nuxt": "^2.2.2",
