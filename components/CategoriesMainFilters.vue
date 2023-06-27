@@ -37,12 +37,15 @@ export default defineComponent({
     }
 
     const mainFilters = computed(() => {
+      let finalFilters = []
       if (!hasMacrosSelected.value && !hasCategorySelected.value)
-        return aggMacros.value
+        finalFilters = aggMacros.value
       else if (hasMacrosSelected.value && !hasCategorySelected.value)
-        return aggCategories.value
+        finalFilters = aggCategories.value
       else
-        return aggCategories.value.filter((item: any) => `${item.key}` !== `${props.inputParameters.categories}`) // return 'this.aggCategories.filter(item => `${item.key}` !== `${this.inputParameters.categories}`)'
+        finalFilters = aggCategories.value.filter((item: any) => `${item.key}` !== `${props.inputParameters.categories}`) // return 'this.aggCategories.filter(item => `${item.key}` !== `${this.inputParameters.categories}`)'
+
+      return finalFilters.slice(0, 15)
     })
 
     return {
