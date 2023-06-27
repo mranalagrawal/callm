@@ -16,7 +16,7 @@ function debounce<T extends (...args: any[]) => any>(func: T, wait: number) {
 
 export default defineComponent({
   setup() {
-    const { $config, i18n } = useContext()
+    const { $config, i18n, $handleApiErrors } = useContext()
     const { ELASTIC_URL, STORE } = $config
     const store = STORE as TStores
     const storeConfigId = themeConfig[store]?.id || 2
@@ -42,7 +42,7 @@ export default defineComponent({
     const suggest = debounce(async () => {
       showSearchSuggestions.value = true
 
-      if (search.value?.length <= 4)
+      if (search.value.length <= 3)
         return
 
       await fetch(`${ELASTIC_URL}autocomplete/search/?stores=${storeConfigId}&locale=${i18n.locale}&search=${search.value}`)
@@ -50,7 +50,7 @@ export default defineComponent({
         .then((data) => {
           results.value = data
         })
-        .catch(() => console.log('OH MY GOD!'))
+        .catch((err: Error) => $handleApiErrors(`Catch getting autocomplete: ${err}`))
     }, 300)
 
     const handleBlur = () => {

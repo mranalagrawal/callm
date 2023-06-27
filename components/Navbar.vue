@@ -10,8 +10,6 @@ import cartIcon from '~/assets/svg/cart.svg'
 import closeIcon from '~/assets/svg/close.svg'
 import menuIcon from '~/assets/svg/menu.svg'
 import userIcon from '~/assets/svg/user.svg'
-import searchIcon from '~/assets/svg/search.svg'
-import heartIcon from '~/assets/svg/heart.svg'
 import LoginForm from '@/components/LoginForm.vue'
 import UserMenu from '@/components/UserMenu.vue'
 import UserActions from '@/components/Header/UserActions.vue'
@@ -35,14 +33,12 @@ export default {
       closeIcon,
       customer,
       handleShowMobileButton,
-      heartIcon,
       isDesktop,
       logo,
       logoB2b,
       menuBarRef,
       menuIcon,
       navbar,
-      searchIcon,
       showMobileButton,
       userIcon,
     }
@@ -53,7 +49,6 @@ export default {
       showUser: false,
       showCart: false,
       showSearchSuggestions: false,
-      search: '',
       visible: false,
       data: [],
       isMobileMenuOpen: false,
