@@ -179,6 +179,8 @@ export default {
     setNewPersonalData: 'Set new personal data',
     message: 'Message',
     messagePlaceholder: 'Bonjour, je voudrais une mise à jour sur l\'état de mon envoi, merci.',
+    ratingMessage: 'Ma note (non visible par les autres utilisateurs)',
+    ratingDescriptionPlaceholder: 'Ex. Excellent vin bio.',
     requestAssistanceTitle: 'Demander de l\'aide pour la commande n° {orderId}',
     requestAssistanceSubtitle: 'Envoyez-nous un message et, si nécessaire, joignez la documentation en votre possession. Nous vous répondrons dès que possible.',
     newPassword: 'New password',

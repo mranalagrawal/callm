@@ -53,17 +53,16 @@ export default {
         id: props.product.id,
         isOnFavourite: isOnFavourite.value,
         gtmProductData: gtmProductData.value,
-        rating: null,
       })
     }
 
-    const handleStarClick = (score = null) => {
+    const handleStarAndCustomerCommentClick = ({ score = null, description = '' }) => {
       handleWishlist({
         id: props.product.id,
         isOnFavourite: false,
         gtmProductData: gtmProductData.value,
-        rating: null,
         score,
+        description,
       })
     }
 
@@ -99,7 +98,7 @@ export default {
       handleHeartClick,
       handleProductCLick,
       handleShowRequestModal,
-      handleStarClick,
+      handleStarAndCustomerCommentClick,
       handleWishlist,
       heartFullIcon,
       heartIcon,
@@ -218,7 +217,7 @@ hover:shadow-elevation"
           {{ product.title }}
         </button>
       </div>
-      <ProductUserRating v-if="customerId" :product-id="`${product.details.feId}`" @click-star="handleStarClick" />
+      <ProductUserRating v-if="customerId" :product-id="`${product.details.feId}`" @click-star="handleStarAndCustomerCommentClick" />
       <div class="flex gap-3 my-8">
         <div
           v-for="(award, i) in product.awards.slice(0, 4)"
@@ -257,6 +256,7 @@ hover:shadow-elevation"
         :class="{ 'opacity-50': !product.availableForSale }"
         v-html="stripHtml(product.tbd.description)"
       />
+      <ProductUserRatingDescription :product-id="`${product.details.feId}`" @submit-comment="handleStarAndCustomerCommentClick" />
     </div>
     <!-- CTA Section -->
     <div class="relative flex">
