@@ -214,12 +214,13 @@ export default {
         />
       </div>
       <div class="c-productBox__title">
-        <div class="min-h-[4.6em] mx-4 mt-4">
+        <div class="mx-4 mt-1">
           <button
             class="transition-colors text-body text-left hover:(text-primary-400)"
             @click="handleProductCLick"
-            v-text="product.title"
-          />
+          >
+            <span class="line-clamp-2">{{ product.title }}</span>
+          </button>
         </div>
       </div>
       <div class="c-productBox__price justify-self-start self-end">
@@ -322,7 +323,7 @@ export default {
 
 .c-productBox__grid {
   grid-template-columns: 60px auto auto 60px;
-  grid-template-rows: auto auto auto 110px;
+  grid-template-rows: auto auto 72px 62px;
   grid-template-areas:
   "features image image wishlist"
   "awards image image wishlist"
