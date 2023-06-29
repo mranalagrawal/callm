@@ -2,6 +2,7 @@ export default {
   cta: {
     cancel: 'Stornieren',
     confirm: 'Bestätigung',
+    save: 'Speichern',
     send: 'Einreichen',
     requestAssistance: 'Bitte um Unterstützung',
     reorderProducts: 'Produkte nachbestellen',

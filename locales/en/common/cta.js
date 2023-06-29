@@ -3,6 +3,7 @@ export default {
     addAddress: 'add address',
     apply: 'Apply',
     cancel: 'Cancel',
+    save: 'Save',
     confirm: 'Confirm',
     continueShopping: 'Continue shopping',
     emptyCart: 'Empty Cart',

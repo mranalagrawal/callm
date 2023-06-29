@@ -2,6 +2,7 @@ export default {
   cta: {
     cancel: 'Annulla',
     confirm: 'Conferma',
+    save: 'Salva',
     send: 'Invia',
     requestAssistance: 'Richiesta di assistenza',
     reorderProducts: 'Riordina Prodotti',

@@ -180,6 +180,8 @@ export default {
     setNewPersonalData: 'Legen Sie neue persönliche Daten fest',
     message: 'Nachricht',
     messagePlaceholder: 'Guten Morgen, ich hätte gerne ein Update zu meinem Sendungsstatus, danke.',
+    ratingMessage: 'Meine Bewertung (für andere Benutzer nicht sichtbar)',
+    ratingDescriptionPlaceholder: 'Bsp. Ausgezeichneter Bio-Wein.',
     requestAssistanceTitle: 'Unterstützung für Bestellung Nr. {orderId} anfordern',
     requestAssistanceSubtitle: 'Senden Sie uns eine Nachricht und fügen Sie ggf. die in Ihrem Besitz befindlichen Unterlagen bei. Wir werden so schnell wie möglich antworten.',
     newPassword: 'Neues Passwort',

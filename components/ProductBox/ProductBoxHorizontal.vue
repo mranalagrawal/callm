@@ -33,7 +33,7 @@ export default {
   setup(props) {
     const { $config, localeLocation, $gtm, $cmwGtmUtils } = useContext()
     const customerStore = useCustomer()
-    const { wishlistArr, getCustomerType } = storeToRefs(customerStore)
+    const { wishlistArr, getCustomerType, customerId } = storeToRefs(customerStore)
     const { handleWishlist } = customerStore
     const { handleShowRequestModal } = useShowRequestModal()
     const route = useRoute()
@@ -48,8 +48,22 @@ export default {
       ...props.product.gtmProductData,
       price: finalPrice.value,
     }))
-    const handleWishlistClick = () => {
-      handleWishlist({ id: props.product.id, isOnFavourite: isOnFavourite.value, gtmProductData: gtmProductData.value })
+    const handleHeartClick = () => {
+      handleWishlist({
+        id: props.product.id,
+        isOnFavourite: isOnFavourite.value,
+        gtmProductData: gtmProductData.value,
+      })
+    }
+
+    const handleStarAndCustomerCommentClick = ({ score = null, description = '' }) => {
+      handleWishlist({
+        id: props.product.id,
+        isOnFavourite: false,
+        gtmProductData: gtmProductData.value,
+        score,
+        description,
+      })
     }
 
     const handleProductCLick = async (position = '') => {
@@ -74,23 +88,25 @@ export default {
     }
 
     return {
-      wishlistArr,
-      isOnFavourite,
-      isOnSale,
-      getCustomerType,
-      heartIcon,
-      heartFullIcon,
-      cartIcon,
-      emailIcon,
-      gtmProductData,
       addIcon,
-      subtractIcon,
-      isOpen,
+      cartIcon,
+      customerId,
+      emailIcon,
       finalPrice,
-      handleWishlist,
-      handleWishlistClick,
+      getCustomerType,
+      gtmProductData,
+      handleHeartClick,
       handleProductCLick,
       handleShowRequestModal,
+      handleStarAndCustomerCommentClick,
+      handleWishlist,
+      heartFullIcon,
+      heartIcon,
+      isOnFavourite,
+      isOnSale,
+      isOpen,
+      subtractIcon,
+      wishlistArr,
     }
   },
   computed: {
@@ -188,7 +204,7 @@ hover:shadow-elevation"
         :icon="isOnFavourite ? heartFullIcon : heartIcon"
         class="absolute top-4 right-2" :variant="isOnFavourite ? 'icon-primary' : 'icon'"
         :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
-        @click.native="handleWishlistClick"
+        @click.native="handleHeartClick"
       />
     </div>
     <!-- Content Section -->
@@ -201,7 +217,7 @@ hover:shadow-elevation"
           {{ product.title }}
         </button>
       </div>
-      <!-- <div>TODO: RATING STARS </div> -->
+      <ProductUserRating v-if="customerId" :product-id="`${product.details.feId}`" @click-star="handleStarAndCustomerCommentClick" />
       <div class="flex gap-3 my-8">
         <div
           v-for="(award, i) in product.awards.slice(0, 4)"
@@ -240,6 +256,7 @@ hover:shadow-elevation"
         :class="{ 'opacity-50': !product.availableForSale }"
         v-html="stripHtml(product.tbd.description)"
       />
+      <ProductUserRatingDescription :product-id="`${product.details.feId}`" @submit-comment="handleStarAndCustomerCommentClick" />
     </div>
     <!-- CTA Section -->
     <div class="relative flex">

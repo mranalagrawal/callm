@@ -180,6 +180,8 @@ export default {
     setNewPersonalData: 'Set new personal data',
     message: 'Message',
     messagePlaceholder: 'Good morning, I would like an update on my shipment status, thank you.',
+    ratingMessage: 'My rating (not visible to other users)',
+    ratingDescriptionPlaceholder: 'Ex. Excellent organic wine.',
     requestAssistanceTitle: 'Request assistance for order No. {orderId}',
     requestAssistanceSubtitle: 'Send us a message and, if necessary, attach the documentation in your possession. We will reply as soon as possible.',
     newPassword: 'New password',

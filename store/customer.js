@@ -38,6 +38,7 @@ export const useCustomer = defineStore({
     //  we need to reduce the extra objects and relay on the state,
     //  I believe there is an issue with deep watch, for some reason getters are not updating accordingly
     wishlistArr: [],
+    customerWishlistProducts: [],
     /** @type: {InputObjects.CustomerUpdateInput} */
     editingCustomer: {
       acceptsMarketing: false,
@@ -129,6 +130,15 @@ export const useCustomer = defineStore({
               wishlistArr: (customer.wishlist && customer.wishlist.value) ? setCustomerWishlist(customer.wishlist.value) : [],
             })
 
+            const customerAccessToken = this.$nuxt.$cookieHelpers.getToken()
+            await this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
+            await this.$nuxt.$cmw.$get(`/wishlists?shopifyCustomerId=${customer.id.substring(`${customer.id}`.lastIndexOf('/') + 1)}`)
+              .then(({ data }) => {
+                this.$patch({
+                  customerWishlistProducts: data.elements,
+                })
+              })
+
             if (event) {
               await this.$nuxt.$cmwGtmUtils.resetDatalayerFields()
 
@@ -178,6 +188,8 @@ export const useCustomer = defineStore({
       await this.$nuxt.$cmw.$post('/wishlists', {
         shopifyCustomerId,
         productFeId: args.id,
+        score: args.score || 0,
+        description: args.description,
       }).then(async () => {
         await this.getCustomer().then(async () => {
           SweetAlertToast.fire({
