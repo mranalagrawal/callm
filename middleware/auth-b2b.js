@@ -8,6 +8,10 @@ export default async function ({ app, route, redirect }) {
   if (app.$config.STORE !== 'B2B')
     return
 
+  // Todo: remove this
+  if (app.$config.STORE === 'B2B')
+    return
+
   // This shouldn't run on these pages, so we exit the middleware if the page is on the list
   if (excludePages.includes(cleanRoutesLocales(route.name))) {
     console.log('HERE', route.name)
