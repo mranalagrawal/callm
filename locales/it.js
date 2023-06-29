@@ -342,6 +342,7 @@ export default {
   },
   waitingForConfirmation: {
     msg: 'Grazie per aver inviato i tuoi dati, un nostro operatore ti contatterà quanto prima',
+    alreadyApproved: 'Sei già approvato, puoi cercare in tutto il nostro sito.',
   },
   bundle: {
     whatIsInTheBox: 'I prodotti che riceverai:',

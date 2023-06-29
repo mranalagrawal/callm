@@ -198,7 +198,7 @@ export default {
             />
           </NuxtLink>
 
-          <div class="flex items-center ml-auto md:hidden">
+          <div class="flex items-center ml-auto lg:hidden">
             <button
               class="p-3"
               @click="toggleMobileLogin"

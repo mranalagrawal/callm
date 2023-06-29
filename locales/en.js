@@ -340,7 +340,8 @@ export default {
     },
   },
   waitingForConfirmation: {
-    msg: 'Thank you for sending your data, one of our operators will contact you as soon as possible',
+    msg: 'Thank you for sending your data, one of our operators will contact you as soon as possible.',
+    alreadyApproved: 'You are already approved, you can search in our entire site.',
   },
   bundle: {
     whatIsInTheBox: 'The products that you will receive:',

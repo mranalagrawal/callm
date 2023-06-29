@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import themeConfig from '~/config/themeConfig'
 import { useCustomerOrders } from '~/store/customerOrders.ts'
 import { getIconAsImg } from '~/utilities/icons.ts'
+import { djb2Hash } from '~/utilities/strings'
 import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
 import customerAccessTokenCreate from '~/graphql/mutations/authenticateUser'
 // import { useCustomerWishlist } from '@/store/customerWishlist'
@@ -32,11 +33,11 @@ export const useCustomer = defineStore({
       phone: '',
       orders_count: '',
       total_spent: '',
-      validated: false,
     },
     // FixMe: on Nuxt 3 or using GraphQl local storage properly we shouldn't need this,
     //  we need to reduce the extra objects and relay on the state,
     //  I believe there is an issue with deep watch, for some reason getters are not updating accordingly
+    approved: false,
     wishlistArr: [],
     customerWishlistProducts: [],
     /** @type: {InputObjects.CustomerUpdateInput} */
@@ -125,10 +126,19 @@ export const useCustomer = defineStore({
               token: this.$nuxt.$cookieHelpers.getToken(),
               customer,
             })
+
+            const approved = (customer.approved && customer.approved.value) ? JSON.parse(customer.approved.value) : false
+
             this.$patch({
               customer,
               wishlistArr: (customer.wishlist && customer.wishlist.value) ? setCustomerWishlist(customer.wishlist.value) : [],
+              approved,
             })
+
+            if (this.$nuxt.$config.STORE === 'B2B' && approved) {
+              const hashedValue = djb2Hash(this.$nuxt.$cookieHelpers.getToken())
+              this.$nuxt.$cookies.set('b2b-approved', hashedValue)
+            }
 
             const customerAccessToken = this.$nuxt.$cookieHelpers.getToken()
             await this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
@@ -136,6 +146,12 @@ export const useCustomer = defineStore({
               .then(({ data }) => {
                 this.$patch({
                   customerWishlistProducts: data.elements,
+                })
+              })
+              .catch(() => {
+                SweetAlertToast.fire({
+                  icon: 'error',
+                  text: this.$nuxt.app.i18n.t('common.feedback.KO.unknown'),
                 })
               })
 
@@ -175,6 +191,7 @@ export const useCustomer = defineStore({
       this.$reset()
       customerOrders.$reset()
       this.$nuxt.$cookies.remove('newsletter')
+      this.$nuxt.$cookies.remove('b2b-approved')
       this.$nuxt.$graphql.default.setHeader('authorization', '')
       this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', undefined)
       window.google_tag_manager[this.$nuxt.app.$config.gtm.id] && window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.reset()

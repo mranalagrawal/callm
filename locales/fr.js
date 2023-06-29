@@ -339,7 +339,8 @@ export default {
     },
   },
   waitingForConfirmation: {
-    msg: 'Vielen Dank für die Übermittlung Ihrer Daten. Einer unserer Mitarbeiter wird sich so schnell wie möglich mit Ihnen in Verbindung setzen',
+    msg: 'Merci d\'avoir envoyé vos données, un de nos opérateurs vous contactera dans les plus brefs délais.',
+    alreadyApproved: 'Vous êtes déjà approuvé, vous pouvez effectuer une recherche dans tout notre site.',
   },
   bundle: {
     whatIsInTheBox: 'Produits de la Dégustation:',

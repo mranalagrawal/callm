@@ -13,8 +13,8 @@ type Customer {
   id: ID!
   lastIncompleteCheckout: String # Todo: Checkout
   lastName: String
-  metafield: String # Todo: Metafield
-  metafields: String # Todo: Metafield[]
+  metafield(namespace:String!,key:String!): Metafield
+  metafields: [Metafield]!
   numberOfOrders: String # Todo: UnsignedInt64!
   phone: String
   tags: [String!]!

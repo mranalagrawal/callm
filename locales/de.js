@@ -340,7 +340,8 @@ export default {
     },
   },
   waitingForConfirmation: {
-    msg: 'Grazie per aver inviato i tuoi dati, un nostro operatore ti contatterà quanto prima',
+    msg: 'Vielen Dank für die Übermittlung Ihrer Daten. Einer unserer Mitarbeiter wird sich so schnell wie möglich mit Ihnen in Verbindung setzen.',
+    alreadyApproved: 'Sie sind bereits zugelassen und können auf unserer gesamten Website suchen.',
   },
   bundle: {
     whatIsInTheBox: 'Produkte der Degustationskasse:',
