@@ -22,13 +22,13 @@ export const useCustomerAddresses = defineStore({
       await this.$nuxt.$cmwRepo.addresses.setAddressAsDefault(addressId)
         .then(({ customer, customerUserErrors }) => {
           if (!customerUserErrors.length) {
-            const { protocol, pathname } = new URL(customer.defaultAddress.id)
+            const { protocol, pathname } = new URL(customer.defaultAddress?.id)
 
             const newAddresses = this.addresses.map((address) => {
               if (address.id.includes(`${protocol}${pathname}`)) {
                 return {
                   ...address,
-                  id: customer.defaultAddress.id,
+                  id: customer.defaultAddress?.id,
                 }
               } else {
                 return address

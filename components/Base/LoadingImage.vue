@@ -1,5 +1,5 @@
 <script>
-import { onMounted, ref, useContext } from '@nuxtjs/composition-api'
+import { onMounted, ref } from '@nuxtjs/composition-api'
 
 export default {
   props: {
@@ -12,7 +12,7 @@ export default {
     wrapper: { type: String, default: 'div' },
   },
   setup(props) {
-    const { $sentry } = useContext()
+    // const { $sentry } = useContext()
     const el = ref(null)
     const imgEl = ref(null)
     const imageIsLoaded = ref(false)

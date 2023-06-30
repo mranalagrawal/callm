@@ -1,6 +1,16 @@
 import type { IMoneyV2 } from '~/types/common-objects'
 import type { TImage } from '~/types/types'
 
+export interface IProductRating {
+  description: string | null
+  id: number
+  productFeId: number
+  productId: number
+  score: number | null
+  shopifyCustomerId: number
+  shopifyStoreId: number
+}
+
 export interface IProductAward {
   id: string | number
   maxValue: string | number

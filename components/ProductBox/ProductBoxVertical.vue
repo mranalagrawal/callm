@@ -214,12 +214,13 @@ export default {
         />
       </div>
       <div class="c-productBox__title">
-        <div class="min-h-[4.6em] mx-4 mt-4">
+        <div class="mx-4 mt-1">
           <button
             class="transition-colors text-body text-left hover:(text-primary-400)"
             @click="handleProductCLick"
-            v-text="product.title"
-          />
+          >
+            <span class="line-clamp-2">{{ product.title }}</span>
+          </button>
         </div>
       </div>
       <div class="c-productBox__price justify-self-start self-end">
@@ -261,7 +262,7 @@ export default {
           />
           <Badge
             v-show="cartQuantity && !isOpen"
-            class="absolute top-0 left-full transform translate-x-[-50%] translate-y-[-50%]"
+            class="absolute top-0 left-full transform -translate-x-1/2 -translate-y-1/2"
             bg-color="primary-400" :qty="cartQuantity"
           />
           <div
@@ -306,7 +307,7 @@ export default {
     </div>
     <div
       v-if="!product.availableForSale && isHovering"
-      class="absolute transform bg-black/70 rounded top-1/3 left-1/2 translate-y-[-50%] translate-x-[-50%]
+      class="absolute transform bg-black/70 rounded top-1/3 left-1/2 -translate-y-1/2 -translate-x-1/2
        py-4 px-4 overline-2 uppercase text-white"
       v-text="$t('product.notAvailable2')"
     />
@@ -322,7 +323,7 @@ export default {
 
 .c-productBox__grid {
   grid-template-columns: 60px auto auto 60px;
-  grid-template-rows: auto auto auto 110px;
+  grid-template-rows: auto auto 72px 62px;
   grid-template-areas:
   "features image image wishlist"
   "awards image image wishlist"
@@ -349,9 +350,9 @@ export default {
 }
 
 .c-productBox__image ::v-deep(img) {
-  height: 320px;
   width: auto;
-  margin: 0 auto;
+  margin-inline: auto;
+  height: 300px;
 }
 
 .c-productBox__wishlist {
@@ -382,11 +383,11 @@ export default {
 /* We are handling this piece skipping mobile-first to reduce the amount of CSS  */
 @container product-box (max-width: 250px) {
   .c-productBox__image {
-    height: 270px;
+    height: 260px;
   }
 
   .c-productBox__image ::v-deep(img) {
-    height: 270px;
+    height: 260px;
   }
 
   .c-productBox__wishlist button {

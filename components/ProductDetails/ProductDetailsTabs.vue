@@ -85,7 +85,7 @@ export default defineComponent({
           v-for="({ label, component }) in tabs" :key="generateKey(component)"
           class="relative py-2 flex-shrink-0 font-light text-sm
                 hover:after:(bg-primary text-primary w-full)
-                after:(content-DEFAULT transform absolute bottom-0 left-1/2 h-1 transition-progress-bar translate-x-[-50%])"
+                after:(content-DEFAULT transform absolute bottom-0 left-1/2 h-1 transition-progress-bar -translate-x-1/2)"
           :class="component === currentTab ? 'after:(bg-primary text-primary w-full)' : 'after:(w-0 bg-primary-400)'"
         >
           <input

@@ -37,12 +37,15 @@ export default defineComponent({
     }
 
     const mainFilters = computed(() => {
+      let finalFilters = []
       if (!hasMacrosSelected.value && !hasCategorySelected.value)
-        return aggMacros.value
+        finalFilters = aggMacros.value
       else if (hasMacrosSelected.value && !hasCategorySelected.value)
-        return aggCategories.value
+        finalFilters = aggCategories.value
       else
-        return aggCategories.value.filter((item: any) => `${item.key}` !== `${props.inputParameters.categories}`) // return 'this.aggCategories.filter(item => `${item.key}` !== `${this.inputParameters.categories}`)'
+        finalFilters = aggCategories.value.filter((item: any) => `${item.key}` !== `${props.inputParameters.categories}`) // return 'this.aggCategories.filter(item => `${item.key}` !== `${this.inputParameters.categories}`)'
+
+      return finalFilters.slice(0, 15)
     })
 
     return {
@@ -57,12 +60,13 @@ export default defineComponent({
 
 <template>
   <div class="c-scrollbar flex overflow-auto gap-4 my-8 md:(flex-wrap)">
-    <Button
-      v-for="({ key, name, keyword }) in mainFilters" :key="key" variant="ghost" size="sm" class="flex-shrink-0 w-max"
-      @click.native="handleUpdateValue(JSON.stringify({ id: key, keyword }))"
+    <button
+      v-for="({ key, name, keyword }) in mainFilters" :key="key"
+      class="btn-base text-sm rounded-sm px-3 py-1 md:(px-4 py-[0.4rem]) flex-shrink-0 w-max border-primary-400 bg-white text-primary-400 hover:(bg-primary-50)"
+      @click="handleUpdateValue(JSON.stringify({ id: key, keyword }))"
     >
       {{ name }}
-    </Button>
+    </button>
   </div>
 </template>
 

@@ -84,7 +84,7 @@ export default {
       <NuxtLink
         v-if="customer.id"
         :to="localePath('/profile/wishlist')"
-        class="peer transition-colors rounded py-4 px-8 bg-white text-center text-body hover:(bg-primary-900 text-white)"
+        class="peer transition-colors rounded py-3 px-6 bg-white text-center text-body hover:(bg-primary-900 text-white)"
         @mouseenter="hoveringColor = 'white'"
         @mouseleave="hoveringColor = 'primary-400'"
       >
@@ -108,7 +108,7 @@ export default {
         </span>
       </NuxtLink>
       <button
-        class="transition-colors rounded-t py-4 px-8 bg-white hover:(bg-primary-900 text-white)"
+        class="transition-colors rounded-t py-3 px-6 bg-white hover:(bg-primary-900 text-white)"
         :class="{ 'bg-primary-900 text-white': currentComponent === 'login' }"
         @mouseenter="handleUserActionMouseEnter('login')"
         @mouseleave="handleUserActionMouseLeave"

@@ -127,14 +127,21 @@ export default {
       ? this.inputParameters.search
       : ''
 
-    const query = new URLSearchParams(this.inputParameters).toString()
+    const urlSearchParams = new URLSearchParams(this.inputParameters)
+    const queryToString = urlSearchParams.toString()
 
     // We don't wanna know ...🫣
-    const changedCategories = [1, 2, 3, 4, 54, 57, 64, 66, 75, 78, 87, 95, 97, 99, 104, 106, 109]
+    const changedCategories = ['1', '2', '3', '4', '54', '57', '64', '66', '75', '78', '87', '95', '97', '99', '104', '106', '109']
 
-    if (changedCategories.some(n => query.includes(`categories=${n}`))) {
-      const matched = changedCategories.find(n => query.includes(`categories=${n}`))
-      return this.redirect(301, this.localeLocation(`${this.$route.fullPath.replaceAll(`-C${matched}`, `-M${matched}`)}`))
+    if (urlSearchParams.has('categories')) {
+      const category = urlSearchParams.get('categories')
+      const matched = changedCategories.includes(category)
+
+      if (matched) {
+        const newPath = this.$route.fullPath.replaceAll(`-C${category}`, `-M${category}`)
+        const newLocation = this.localeLocation(newPath)
+        return this.redirect(301, newLocation)
+      }
     }
 
     let sel = '&'
@@ -152,8 +159,8 @@ export default {
       this.$i18n.locale
     }&`
 
-    const searchResult = await fetch(`${elastic_url}${query}${sel}`)
-    let seo = await fetch(`${this.$config.ELASTIC_URL}product-list/seo?stores=${themeConfig[this.$config.STORE].id}&locale=${this.$i18n.locale}&${query}${sel}`)
+    const searchResult = await fetch(`${elastic_url}${queryToString}${sel}`)
+    let seo = await fetch(`${this.$config.ELASTIC_URL}product-list/seo?stores=${themeConfig[this.$config.STORE].id}&locale=${this.$i18n.locale}&${queryToString}${sel}`)
     seo = await seo.json()
 
     if (seo) {

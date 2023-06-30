@@ -180,6 +180,8 @@ export default {
     setNewPersonalData: 'Set new personal data',
     message: 'Message',
     messagePlaceholder: 'Good morning, I would like an update on my shipment status, thank you.',
+    ratingMessage: 'My rating (not visible to other users)',
+    ratingDescriptionPlaceholder: 'Ex. Excellent organic wine.',
     requestAssistanceTitle: 'Request assistance for order No. {orderId}',
     requestAssistanceSubtitle: 'Send us a message and, if necessary, attach the documentation in your possession. We will reply as soon as possible.',
     newPassword: 'New password',
@@ -202,6 +204,8 @@ export default {
   },
   search: {
     search: 'Search',
+    showMore: 'Show more',
+    showLess: 'Show less',
     showFilters: 'Show filters',
     showResults: 'Show Results ({count})',
     products: 'Products',
@@ -336,7 +340,8 @@ export default {
     },
   },
   waitingForConfirmation: {
-    msg: 'Thank you for sending your data, one of our operators will contact you as soon as possible',
+    msg: 'Thank you for sending your data, one of our operators will contact you as soon as possible.',
+    alreadyApproved: 'You are already approved, you can search in our entire site.',
   },
   bundle: {
     whatIsInTheBox: 'The products that you will receive:',

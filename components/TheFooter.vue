@@ -193,7 +193,9 @@ export default defineComponent({
             </p>
             <form class="mb-4" @submit.prevent="handleSubmit">
               <div class="flex gap-2 items-stretch p-2 border border-gray-light rounded-sm">
+                <label for="newsletter-email" class="sr-only">newsletter-email</label>
                 <input
+                  id="newsletter-email"
                   v-model="email"
                   aria-label="enter email"
                   type="email"

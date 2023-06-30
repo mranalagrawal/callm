@@ -1,102 +1,107 @@
-<script>
-import { ref, useContext, useRouter } from '@nuxtjs/composition-api'
+<script lang="ts">
+import { defineComponent, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api'
 import promoTagIcon from 'assets/svg/promo-tag.svg'
-import ThirdLevel from './UI/ThirdLevel.vue'
+import ThirdLevel from '~/components/UI/ThirdLevel.vue'
 import prismicConfig from '~/config/prismicConfig'
+import type { TStores } from '~/config/themeConfig'
 import { generateKey } from '~/utilities/strings'
 
-export default {
+export default defineComponent({
+  name: 'MegaMenu',
   components: { ThirdLevel },
   setup() {
     const {
-      localeLocation,
       $cmwRepo,
     } = useContext()
-    const router = useRouter()
+    const route = useRoute()
     const megaMenu = ref(null)
-    const selectedItem = ref(null)
-    const handleClick = (to) => {
-      router.push(localeLocation(to))
-      selectedItem.value = null
-    }
+    const selectedItem = ref<string>('')
+    const pageData = ref<any>()
 
-    const onTab = item => selectedItem.value = item
+    useFetch(async ({ $config, $cmwRepo, $handleApiErrors }) => {
+      await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.megaMenu })
+        .then(({ data }: Record<string, any>) => {
+          pageData.value = data.body
+            .map((firstLevel: {
+              items: any[]
+              primary: {
+                group_label: any
+                first_level_link: any
+                first_level_position: any
+                is_promotion_tab: any
+                display_as_cards: any
+              }
+            }) => {
+              const secondLevels = firstLevel.items.map((el) => {
+                return {
+                  name: el.secondlevelname,
+                  position: el.second_level_position,
+                }
+              })
+              const secondLevelsSet = [
+                ...new Set(secondLevels.map(el => JSON.stringify(el))),
+              ]
+                .map(el => JSON.parse(el))
+                .sort((a, b) => a.position - b.position)
+
+              const items = secondLevelsSet.map((el) => {
+                const temp = firstLevel.items
+                  .filter(x => x.secondlevelname === el.name)
+                  .sort((a, b) => a.third_level_position - b.third_level_position)
+
+                return {
+                  ...el,
+                  items: temp,
+                }
+              })
+
+              return {
+                name: firstLevel.primary.group_label,
+                link: firstLevel.primary.first_level_link,
+                position: firstLevel.primary.first_level_position,
+                isPromotionTab: firstLevel.primary.is_promotion_tab,
+                display_as_cards: firstLevel.primary.display_as_cards,
+                items,
+              }
+            })
+            .sort((a: { position: number }, b: { position: number }) => a.position - b.position)
+        })
+        .catch((err: Error) => {
+          $handleApiErrors(`Catch getting megaMenu data from prismic: ${err}`)
+        })
+    })
+
+    watch(() => route.value, () => selectedItem.value = '')
+
+    const onTab = (item: string) => selectedItem.value = item
 
     return {
       $cmwRepo,
       megaMenu,
-      selectedItem,
-      handleClick,
       onTab,
+      pageData,
+      promoTagIcon,
+      selectedItem,
     }
   },
-  data: () => ({
-    promoTagIcon,
-    selectedContent: null,
-    data: null,
-    promotions: null,
-    marketing: null,
-  }),
-  async fetch() {
-    const response = await this.$cmwRepo.prismic.getSingle({ page: prismicConfig[this.$config.STORE]?.components.megaMenu })
-    const data = response.data.body
-
-    const mapped = data
-      .map((firstLevel) => {
-        const secondLevels = firstLevel.items.map((el) => {
-          return {
-            name: el.secondlevelname,
-            position: el.second_level_position,
-          }
-        })
-        const secondLevelsSet = [
-          ...new Set(secondLevels.map(el => JSON.stringify(el))),
-        ]
-          .map(el => JSON.parse(el))
-          .sort((a, b) => a.position - b.position)
-
-        const items = secondLevelsSet.map((el) => {
-          const temp = firstLevel.items
-            .filter(x => x.secondlevelname === el.name)
-            .sort((a, b) => a.third_level_position - b.third_level_position)
-
-          return {
-            ...el,
-            items: temp,
-          }
-        })
-
-        return {
-          name: firstLevel.primary.group_label,
-          link: firstLevel.primary.first_level_link,
-          position: firstLevel.primary.first_level_position,
-          isPromotionTab: firstLevel.primary.is_promotion_tab,
-          display_as_cards: firstLevel.primary.display_as_cards,
-          items,
-        }
-      })
-      .sort((a, b) => a.position - b.position)
-
-    this.data = mapped
-  },
   methods: { generateKey },
-}
+})
 </script>
 
 <template>
-  <div @mouseleave="onTab(null)">
+  <div @mouseleave="onTab('')">
     <div ref="megaMenu" class="flex items-center">
       <div class="max-w-screen-xl mx-auto flex items-center justify-evenly w-full">
         <div
-          v-for="(firstLevel, i) in data"
+          v-for="(firstLevel, i) in pageData"
           :key="i"
           class="text-center text-uppercase py-2"
-          @mouseenter="onTab(firstLevel)"
+          @mouseenter="onTab(firstLevel.name)"
         >
-          <button
+          <NuxtLink
             class="w-max text-xs w-max desktop-wide:text-sm uppercase hover:(text-primary font-bold)"
             :class="firstLevel.isPromotionTab ? 'text-primary-400' : 'text-body'"
-            @click="handleClick(`/${firstLevel.link}`)"
+            :to="localePath(`/${firstLevel.link}`)"
           >
             <VueSvgIcon
               v-if="firstLevel.isPromotionTab"
@@ -106,63 +111,57 @@ export default {
               class="inline"
             />
             {{ firstLevel.name }}
-          </button>
+          </NuxtLink>
         </div>
       </div>
     </div>
-    <div>
-      <transition>
+    <div class="relative">
+      <div
+        v-for="items in pageData" :key="generateKey(items.name)" class="absolute top-0 left-0 w-full"
+        :class="selectedItem === items.name ? 'visible' : 'invisible'"
+      >
         <div
-          v-if="selectedItem && !selectedItem.display_as_cards"
-          class="grid grid-cols-[1fr_minmax(100px,_1332px)_1fr] bg-white min-h-[300px] border-t border-t-gray-light"
-          @mouseleave="onTab(null)"
+          v-if="items.display_as_cards"
+          class="grid grid-cols-[minmax(100px,_1332px)] justify-center bg-white"
+        >
+          <div v-for="(secondLevel, i) in items.items" :key="generateKey(`${secondLevel.name}-as-card-${i}`)">
+            <div>
+              <p class="overline-2 uppercase text-secondary-700 font-semibold pt-8" v-text="secondLevel.name" />
+            </div>
+            <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <div v-for="(thirdLevel, j) in secondLevel.items" :key="j">
+                <ThirdLevel :third-level="thirdLevel" @close-banner="onTab('')" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          v-else class="grid grid-cols-[1fr_minmax(100px,_1332px)_1fr] bg-white min-h-[300px] border-t border-t-gray-light"
+          @mouseleave="onTab('')"
         >
           <div class="bg-gray-lightest" />
           <div class="col-start-2 flex">
             <div
-              v-for="(secondLevel, i) in selectedItem.items"
+              v-for="(secondLevel, i) in items.items"
               :key="generateKey(`${secondLevel.name}-${i}`)"
               class="flex-1 flex flex-col px-4"
               :class="[
-                { 'border-r border-r-gray-light': (i + 1) < selectedItem.items.length },
+                { 'border-r border-r-gray-light': (i + 1) < items.items.length },
                 { 'bg-gray-lightest': (i === 0) },
               ]"
             >
-              <p class="overline-2 uppercase text-secondary-700 font-semibold pt-4">
-                {{ secondLevel.name }}
-              </p>
+              <p class="overline-2 uppercase text-secondary-700 font-semibold pt-4" v-text="secondLevel.name" />
               <div class="flex flex-col h-full">
                 <ThirdLevel
-                  v-for="(thirdLevel, i) in secondLevel.items"
-                  :key="generateKey(`${thirdLevel.third_level_name}-${i}`)" :third-level="thirdLevel"
-                  @close-banner="onTab(null)"
+                  v-for="(thirdLevel, idx) in secondLevel.items"
+                  :key="generateKey(`${thirdLevel.third_level_name}-${idx}`)" :third-level="thirdLevel"
+                  @close-banner="onTab('')"
                 />
               </div>
             </div>
           </div>
-          <div />
         </div>
-      </transition>
-      <transition>
-        <div
-          v-if="selectedItem && selectedItem.display_as_cards"
-          class="grid grid-cols-[minmax(100px,_1332px)] justify-center"
-          @mouseleave="onTab(null)"
-        >
-          <div v-for="(secondLevel, i) in selectedItem.items" :key="generateKey(`${secondLevel.name}-as-card-${i}`)">
-            <div>
-              <p class="overline-2 uppercase text-secondary-700 font-semibold pt-8">
-                {{ secondLevel.name }}
-              </p>
-            </div>
-            <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              <div v-for="(thirdLevel, j) in secondLevel.items" :key="j">
-                <ThirdLevel :third-level="thirdLevel" @close-banner="onTab(null)" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </transition>
+      </div>
     </div>
   </div>
 </template>

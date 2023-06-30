@@ -95,7 +95,7 @@ export default defineComponent({
         metaFields.value = articles.nodes[0].details && JSON.parse(articles.nodes[0].details.value) as IMetaFields
 
         if (route.value.params.handle !== `${brand!.value.handle}-${metaFields.value.key}.htm`)
-          return redirect(301, localeLocation(`/winery/${brand.value?.handle}-${metaFields.value?.key}.htm`) as unknown as string)
+          return redirect(301, localeLocation(`/winery/${brand.value?.handle.trim()}-${metaFields.value?.key}.htm`) as unknown as string)
       }
     })
 

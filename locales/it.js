@@ -180,6 +180,8 @@ export default {
     setNewPersonalData: 'Imposta dati personali',
     message: 'Messaggio',
     messagePlaceholder: 'Buon giorno, vorrei un aggiornamento sul mio stato della spedizione, grazie.',
+    ratingMessage: 'La mia valutazione (non visibile agli altri utenti)',
+    ratingDescriptionPlaceholder: 'Es. Vino eccellente biologico.',
     requestAssistanceTitle: 'Richiedi assistenza per l\'ordine N° {orderId}',
     requestAssistanceSubtitle: 'Inviaci un messagio e se necessario allega la documentazione in tuo possesso. Ti risponderemo prima possibile.',
     newPassword: 'Nuova password',
@@ -202,6 +204,8 @@ export default {
   },
   search: {
     search: 'Cerca',
+    showMore: 'Mostra di più',
+    showLess: 'Mostra meno',
     showFilters: 'Mostra filtri',
     showResults: 'Mostra risultati ({count})',
     products: 'Prodotti',
@@ -338,6 +342,7 @@ export default {
   },
   waitingForConfirmation: {
     msg: 'Grazie per aver inviato i tuoi dati, un nostro operatore ti contatterà quanto prima',
+    alreadyApproved: 'Sei già approvato, puoi cercare in tutto il nostro sito.',
   },
   bundle: {
     whatIsInTheBox: 'I prodotti che riceverai:',

@@ -11,6 +11,9 @@ query getCustomer($customerAccessToken: String!, $lang: LanguageCode!)
     wishlist: metafield(namespace: "custom", key: "wishlist") {
       value
     }
+    approved: metafield(namespace: "custom", key: "b2b_approved") {
+      value
+    }
     addresses(first: 30) {
       edges {
         node {

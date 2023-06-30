@@ -58,7 +58,7 @@ export default {
             <option v-for="option in options" :key="option.value" :value="option.value" v-text="option.label" />
           </select>
           <div
-            class="absolute transform right-2 top-1/2 translate-y-[-50%] pointer-events-none"
+            class="absolute transform right-2 top-1/2 -translate-y-1/2 pointer-events-none"
             :class="$attrs.disabled ? 'text-body/50' : 'text-primary-400'"
           >
             <VueSvgIcon

@@ -62,12 +62,12 @@ export default {
       <div
         v-if="show"
         class="
-        absolute w-max transform rounded-sm translate-x-0 translate-y-[-50%]
+        absolute w-max transform rounded-sm translate-x-0 -translate-y-1/2
         top-1/2 left-[110%] z-tooltip"
       >
         <div
           class="relative bg-gray-lightest border border-gray-lightest rounded-sm py-3 px-3 pr-8 shadow-lg text-xs
-          before:(content-DEFAULT transform absolute w-0 h-0 top-1/2 left-0 translate-x-[-100%] translate-y-[-50%])
+          before:(content-DEFAULT transform absolute w-0 h-0 top-1/2 left-0 translate-x-[-100%] -translate-y-1/2)
           before:(border-[0.75rem_0.5rem_0.75rem_0] border-transparent border-r-gray-lightest)"
         >
           <div

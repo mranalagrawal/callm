@@ -3,15 +3,13 @@ import { inject, ref } from '@nuxtjs/composition-api'
 import { is } from 'vee-validate/dist/rules'
 import { mapGetters } from 'vuex'
 import chevronLeftIcon from 'assets/svg/chevron-left.svg'
-import themeConfig from '~/config/themeConfig'
 import { useCustomer } from '~/store/customer'
 import logo from '~/assets/svg/logo-call-me-wine.svg'
+import logoB2b from '~/assets/svg/logo-call-me-wine-b2b.svg'
 import cartIcon from '~/assets/svg/cart.svg'
 import closeIcon from '~/assets/svg/close.svg'
 import menuIcon from '~/assets/svg/menu.svg'
 import userIcon from '~/assets/svg/user.svg'
-import searchIcon from '~/assets/svg/search.svg'
-import heartIcon from '~/assets/svg/heart.svg'
 import LoginForm from '@/components/LoginForm.vue'
 import UserMenu from '@/components/UserMenu.vue'
 import UserActions from '@/components/Header/UserActions.vue'
@@ -35,13 +33,12 @@ export default {
       closeIcon,
       customer,
       handleShowMobileButton,
-      heartIcon,
       isDesktop,
       logo,
+      logoB2b,
       menuBarRef,
       menuIcon,
       navbar,
-      searchIcon,
       showMobileButton,
       userIcon,
     }
@@ -52,7 +49,6 @@ export default {
       showUser: false,
       showCart: false,
       showSearchSuggestions: false,
-      search: '',
       visible: false,
       data: [],
       isMobileMenuOpen: false,
@@ -142,13 +138,6 @@ export default {
     },
   },
   methods: {
-    bolder(text) {
-      const regexValue = new RegExp(`(${this.search})`, 'ig')
-      return text.replace(
-        regexValue,
-        '<span class=\'font-bold\'>$1</span>',
-      )
-    },
     handleGoToLogin() {
       this.mobileLogin = false
       this.$router.push(this.localeLocation('/login'))
@@ -165,41 +154,6 @@ export default {
       this.isMobileMenuOpen = this.isSidebarOpen = !this.isSidebarOpen
       this.lockBody()
     },
-    async suggest() {
-      this.showSearchSuggestions = true
-      const elastic_url = this.$config.ELASTIC_URL
-
-      if (this.search && this.search.length >= 3) {
-        const result = await fetch(
-          `${elastic_url
-          }autocomplete/search/?stores=${themeConfig[this.$config.STORE].id}&locale=${
-          this.$i18n.locale
-          }&search=${
-          this.search}`,
-        )
-        this.data = await result.json()
-      }
-    },
-    switchToCart() {
-      this.showUser = false
-      this.showCart = true
-    },
-    switchToUser() {
-      this.showCart = false
-      this.showUser = true
-    },
-    startSearch() {
-      if (!this.search)
-        return
-
-      this.$router.push({
-        path: '/catalog',
-        query: { search: this.search },
-      })
-    },
-    handleBlur() {
-      this.showSearchSuggestions = false
-    },
   },
 }
 </script>
@@ -207,11 +161,11 @@ export default {
 <template>
   <div
     ref="navbar"
-    class="fixed w-screen min-h-[135px] px-4 pb-4 top-0 bg-white z-tooltip print:hidden"
+    class="fixed w-screen min-h-[135px] px-4 pb-4 top-0 bg-white z-tooltip print:hidden md:pb-0"
   >
     <div
       class="
-    max-w-screen-xl mx-auto grid grid-cols-1 gap-3 min-h-[109px] items-center
+    max-w-screen-xl mx-auto grid grid-cols-1 gap-3 min-h-100px items-center pt-4
     lg:grid-cols-[25%_40%_35%] 2xl:grid-cols-[25%_48%_32%]"
     >
       <div
@@ -237,14 +191,14 @@ export default {
             :to="localePath('/')"
           >
             <VueSvgIcon
-              :data="logo"
+              :data="$config.STORE === 'B2B' ? logoB2b : logo"
               width="100%"
               height="auto"
               original
             />
           </NuxtLink>
 
-          <div class="flex items-center ml-auto md:hidden">
+          <div class="flex items-center ml-auto lg:hidden">
             <button
               class="p-3"
               @click="toggleMobileLogin"
@@ -270,128 +224,13 @@ export default {
         </div>
       </div>
 
-      <div class="relative z-base">
-        <!-- Note: Since we are handling submit with Vue methods we don't need the name attribute in the search field -->
-        <input
-          id="search-term"
-          v-model="search"
-          type="search"
-          class="
-               c-searchInput -hasIcon px-4 text-gray-dark py-3 w-full bg-transparent border border-gray-light rounded
-               hover:(border-gray)
-               focus:(outline-none border-gray-dark)"
-          :placeholder="$t('navbar.search')"
-          @input="suggest"
-          @blur="handleBlur"
-          @keyup.enter="startSearch"
-        >
-        <ButtonIcon
-          :icon="searchIcon"
-          :aria-label="$t('enums.accessibility.role.TRIGGER_SEARCH')"
-          size="sm"
-          class="transform absolute top-1/2 right-0 translate-y-[-50%] translate-x-[-30%]"
-          @click.native="startSearch"
-        />
-        <transition
-          keep-alive
-          name="slideFade"
-          mode="out-in"
-        >
-          <div
-            v-if="search && data && showSearchSuggestions"
-            class="absolute w-full z-100 transform
-            transition-transform-opacity translate-x-0 translate-y-full bottom-0 left-0
-            "
-          >
-            <!-- {{ data }} -->
+      <SearchBar />
 
-            <div class="bg-white max-h-[70vh] rounded-lg shadow-popover overflow-hidden mt-2">
-              <div v-if="data.gift_cards && data.gift_cards.length > 0">
-                <p class="overline-2 uppercase text-secondary-400 py-2 px-3 m-0">
-                  {{ $t("search.giftCards") }}
-                </p>
-                <NuxtLink
-                  v-for="item in data.gift_cards"
-                  :key="item.id"
-                  class="body-1 block py-2 px-3 hover:(bg-primary-50) text-body"
-                  :to="localePath(`/${item.handle}`)"
-                >
-                  <span v-html="bolder(item.name)" />
-                </NuxtLink>
-              </div>
-              <div
-                v-if="data.winelists && data.winelists.length > 0"
-                class="max-h-[70vh] overflow-y-auto"
-              >
-                <p class="overline-2 uppercase text-secondary-400 py-2 px-3 mb-0 mt-2">
-                  {{ $t("search.winelists") }}
-                </p>
-                <NuxtLink
-                  v-for="item in data.winelists"
-                  :key="item.id"
-                  class="body-1 block py-2 px-3 hover:(bg-primary-50) text-body"
-                  :to="localePath(`/${item.handle}-V${item.id}.htm`)"
-                >
-                  <span v-html="bolder(item.name)" />
-                </NuxtLink>
-              </div>
-
-              <div
-                v-if="data"
-                class="pt-3"
-              >
-                <div v-if="data.categories && data.categories.length > 0">
-                  <p class="overline-2 uppercase text-secondary-400 py-2 px-3 m-0">
-                    {{ $t("search.categories") }}
-                  </p>
-                  <NuxtLink
-                    v-for="item in data.categories"
-                    :key="item.id"
-                    class="body-1 block py-2 px-3 hover:(bg-primary-50) text-body"
-                    :to="localePath(`/catalog?&categories=${item.id}`)"
-                  >
-                    <span v-html="bolder(item.name)" />
-                  </NuxtLink>
-                </div>
-
-                <div v-if="data.brands && data.brands.length > 0">
-                  <p class="overline-2 uppercase text-secondary-400 py-2 px-3 m-0">
-                    {{ $t("search.brands") }}
-                  </p>
-                  <NuxtLink
-                    v-for="item in data.brands"
-                    :key="item.id"
-                    class="body-1 block py-2 px-3 hover:(bg-primary-50) text-body"
-                    :to="localePath(`/winery/${item.handle}-B${item.id}.htm`)"
-                  >
-                    <span v-html="bolder(item.name)" />
-                  </NuxtLink>
-                </div>
-
-                <div v-if="data.products && data.products.length > 0">
-                  <p class="overline-2 uppercase text-secondary-400 py-2 px-3 m-0">
-                    {{ $t("search.products") }}
-                  </p>
-                  <NuxtLink
-                    v-for="item in data.products"
-                    :key="item.id"
-                    class="body-1 block py-2 px-3 hover:(bg-primary-50) text-body"
-                    :to="localePath(`/${item.handle}-P${item.id}.htm`)"
-                  >
-                    <span v-html="bolder(item.name)" />
-                  </NuxtLink>
-                </div>
-              </div>
-            </div>
-          </div>
-        </transition>
-      </div>
-
-      <div v-if="isDesktop" class="md:place-self-end">
+      <div v-if="isDesktop" class="md:(place-self-end self-center)">
         <UserActions />
       </div>
     </div>
-    <div v-if="isDesktop" class="c-megaMenu fixed left-0 w-full bg-white">
+    <div class="c-megaMenu fixed left-0 w-full bg-white <md:hidden">
       <div class="shadow-menu">
         <MegaMenu />
       </div>

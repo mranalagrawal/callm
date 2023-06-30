@@ -179,6 +179,8 @@ export default {
     setNewPersonalData: 'Set new personal data',
     message: 'Message',
     messagePlaceholder: 'Bonjour, je voudrais une mise à jour sur l\'état de mon envoi, merci.',
+    ratingMessage: 'Ma note (non visible par les autres utilisateurs)',
+    ratingDescriptionPlaceholder: 'Ex. Excellent vin bio.',
     requestAssistanceTitle: 'Demander de l\'aide pour la commande n° {orderId}',
     requestAssistanceSubtitle: 'Envoyez-nous un message et, si nécessaire, joignez la documentation en votre possession. Nous vous répondrons dès que possible.',
     newPassword: 'New password',
@@ -201,6 +203,8 @@ export default {
   },
   search: {
     search: 'Search',
+    showMore: 'Montre plus',
+    showLess: 'Montrer moins',
     showFilters: 'Show filters',
     showResults: 'Show Results ({count})',
     products: 'Products',
@@ -335,7 +339,8 @@ export default {
     },
   },
   waitingForConfirmation: {
-    msg: 'Vielen Dank für die Übermittlung Ihrer Daten. Einer unserer Mitarbeiter wird sich so schnell wie möglich mit Ihnen in Verbindung setzen',
+    msg: 'Merci d\'avoir envoyé vos données, un de nos opérateurs vous contactera dans les plus brefs délais.',
+    alreadyApproved: 'Vous êtes déjà approuvé, vous pouvez effectuer une recherche dans tout notre site.',
   },
   bundle: {
     whatIsInTheBox: 'Produits de la Dégustation:',
