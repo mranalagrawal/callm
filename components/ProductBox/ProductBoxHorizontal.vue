@@ -14,6 +14,8 @@ import { useCustomer } from '~/store/customer'
 import { isObject } from '~/utilities/validators'
 import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { SweetAlertToast } from '~/utilities/Swal'
+import { useShopifyCart } from '~/store/shopifyCart'
+
 // noinspection JSUnusedGlobalSymbols
 export default {
   name: 'ProductBoxHorizontal',
@@ -33,6 +35,7 @@ export default {
   setup(props) {
     const { $config, localeLocation, $gtm, $cmwGtmUtils } = useContext()
     const customerStore = useCustomer()
+    const shopifyCart = useShopifyCart()
     const { wishlistArr, getCustomerType, customerId } = storeToRefs(customerStore)
     const { handleWishlist } = customerStore
     const { handleShowRequestModal } = useShowRequestModal()
@@ -98,6 +101,7 @@ export default {
       handleHeartClick,
       handleProductCLick,
       handleShowRequestModal,
+      shopifyCart,
       handleStarAndCustomerCommentClick,
       handleWishlist,
       heartFullIcon,
@@ -114,7 +118,10 @@ export default {
       userCart: 'userCart',
     }),
     isOnCart() {
-      return this.userCart.find(lineItem => lineItem.productVariantId === this.product.shopify_product_variant_id)
+      const product = this.shopifyCart?.shopifyCart?.lines?.edges.find(el => el.node.merchandise.id === this.product.shopify_product_variant_id)
+      if (product)
+        return product.node
+      return null
     },
     cartQuantity() {
       return this.isOnCart ? this.isOnCart.quantity : 0
@@ -138,38 +145,43 @@ export default {
         return
       }
 
-      const totalInventory = this.product.quantityAvailable
-      const id = this.product.shopify_product_variant_id
-      const amount = this.finalPrice
-      const amountFullPrice = Number(this.product.compareAtPrice.amount)
-      const tag = this.product.tags
-      const image = this.product.image.source.url
-      const title = this.product.title
+      const shopifyCart = this.shopifyCart
 
-      this.$store.commit('userCart/addProduct', {
-        id,
-        singleAmount: amount,
-        singleAmountFullPrice: amountFullPrice,
-        tag,
-        image,
-        title,
-        totalInventory,
-        gtmProductData: this.gtmProductData,
-      })
+      // if cart doesnt' exists, create it
+      if (!shopifyCart.shopifyCart) {
+        const newCart = await this.shopifyCart.createShopifyCart()
+        shopifyCart.shopifyCart = newCart
+        this.$cookies.set('cartId', shopifyCart.shopifyCart.id)
+      }
+
+      // prepare cart lines
+      const lines = {
+        merchandiseId: this.product.shopify_product_variant_id,
+        quantity: 1,
+      }
+
+      // add product to cart
+      const updated = await this.shopifyCart.addProductToCart(lines)
+      shopifyCart.shopifyCart = updated
 
       this.flashMessage.show({
         status: '',
         message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title}` }),
-        icon: image,
+        icon: this.product.image.source.url,
         iconClass: 'bg-transparent ',
         time: 8000,
         blockClass: 'add-product-notification',
       })
     },
     async removeFromUserCart() {
-      this.$store.commit('userCart/removeProduct', {
-        id: this.product.shopify_product_variant_id,
-      })
+      if (this.cartQuantity === 0)
+        return
+
+      const lineId = this.shopifyCart.shopifyCart.lines.edges.find(el => el.node.merchandise.id === this.product.shopify_product_variant_id).node.id
+
+      const updated = await this.shopifyCart.updateItemInCart(lineId, this.cartQuantity - 1)
+      const shopifyCart = this.shopifyCart
+      shopifyCart.shopifyCart = updated
     },
   },
 }

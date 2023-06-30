@@ -10,6 +10,7 @@ export interface ICartLineItem {
   totalInventory: string | number
   singleAmount: string | number
   singleAmountFullPrice: string | number
+  merchandise: object
 }
 
 export interface ILineItem {

@@ -1,7 +1,8 @@
-<script lang="ts">
+<script>
 import { localeChanged, localize } from 'vee-validate'
 import { onMounted, provide, readonly, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
 import LazyHydrate from 'vue-lazy-hydration'
+
 import TopBar from '../components/TopBar.vue'
 import Navbar from '../components/Navbar.vue'
 import useScreenSize from '~/components/composables/useScreenSize'
@@ -9,6 +10,7 @@ import useNewsletterSplash from '~/components/composables/useNewsletterSplash'
 
 import { lookUpLocale } from '~/plugins/vee-validate'
 import { useCustomer } from '~/store/customer'
+import { useShopifyCart } from '~/store/shopifyCart'
 
 export default {
   components: {
@@ -18,8 +20,9 @@ export default {
     Navbar,
   },
   setup() {
-    const { i18n } = useContext()
+    const { i18n, $cookies } = useContext()
     const customerStore = useCustomer()
+    const shopifyCart = useShopifyCart()
     const { handleNewsletterSplash } = useNewsletterSplash()
     const {
       isTablet,
@@ -36,13 +39,16 @@ export default {
     useFetch(async ({ $cookieHelpers }) => {
       localize(i18n.locale, lookUpLocale(i18n.locale))
       localeChanged()
-
       const accessToken = $cookieHelpers.getToken()
       accessToken && await customerStore.getCustomer()
+
+      const cartId = $cookies.get('cartId')
+      cartId && await shopifyCart.getShopifyCart(cartId)
     })
 
     onMounted(() => {
       handleNewsletterSplash()
+      console.log($cookies.get('cartId'), '$cookies.get)');
     })
 
     useMeta(() => ({
@@ -50,11 +56,10 @@ export default {
         {
           hid: 'description',
           name: 'description',
-          content: i18n.t('head.description') as string,
+          content: i18n.t('head.description'),
         },
       ],
     }))
-
     return { isTablet, isDesktop, isDesktopWide, hasBeenSet, handleNewsletterSplash }
   },
   head: {},

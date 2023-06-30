@@ -1,7 +1,7 @@
 query getProducts(
   $lang: LanguageCode!
-  $first: Int = 10,
-  $reverse: Boolean = false,
+  $first: Int = 10
+  $reverse: Boolean = false
   $query: String = "tag:undefined"
 ) @inContext(language: $lang) {
   products(first: $first, reverse: $reverse, query: $query) {
@@ -11,8 +11,16 @@ query getProducts(
       handle
       id
       isGiftCard
-      featuredImage { altText, height, url, width }
-      seo { description, title }
+      featuredImage {
+        altText
+        height
+        url
+        width
+      }
+      seo {
+        description
+        title
+      }
       tags
       title
       vendor
@@ -29,8 +37,14 @@ query getProducts(
       variants(first: 1) {
         nodes {
           id
-          compareAtPrice { amount, currencyCode }
-          price { amount, currencyCode }
+          compareAtPrice {
+            amount
+            currencyCode
+          }
+          price {
+            amount
+            currencyCode
+          }
           quantityAvailable
           sku
         }
@@ -38,4 +52,3 @@ query getProducts(
     }
   }
 }
-

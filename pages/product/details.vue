@@ -25,6 +25,7 @@ import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import favouriteIcon from '~/assets/svg/selections/favourite.svg'
 import getArticles from '~/graphql/queries/getArticles'
 import { generateKey } from '~/utilities/strings'
+import { useShopifyCart } from '~/store/shopifyCart'
 
 export default defineComponent({
   layout({ $config }) {
@@ -35,6 +36,10 @@ export default defineComponent({
     const customerStore = useCustomer()
     const recentProductsStore = useRecentProductsStore()
     const { recentProducts } = storeToRefs(recentProductsStore)
+
+    const shopifyCartV = useShopifyCart()
+    const { shopifyCart } = storeToRefs(shopifyCartV)
+    const { getCartLines, createShopifyCart, addProductToCart, updateItemInCart } = shopifyCartV
 
     const { customer, wishlistArr, customerId, getCustomerType } = storeToRefs(customerStore)
 
@@ -220,6 +225,11 @@ export default defineComponent({
     }))
 
     return {
+      shopifyCart,
+      getCartLines,
+      createShopifyCart,
+      addProductToCart,
+      updateItemInCart,
       customer,
       product,
       productVariant,
@@ -258,7 +268,10 @@ export default defineComponent({
       return !!this.product.bundle.length
     },
     isOnCart() {
-      return this.userCart.find(lineItem => lineItem.productVariantId === this.productVariant.id)
+      const product = this.shopifyCart?.lines?.edges.find(el => el.node.merchandise.id === this.product.shopify_product_variant_id)
+      if (product)
+        return product.node
+      return null
     },
     cartQuantity() {
       return this.isOnCart ? this.isOnCart.quantity : 0
@@ -281,41 +294,40 @@ export default defineComponent({
         })
         return
       }
+      const shopifyCart = this.shopifyCart
 
-      const totalInventory = this.product.quantityAvailable
-      const id = this.product.shopify_product_variant_id
-      const amount = this.finalPrice
-      const amountFullPrice = Number(
-        this.productVariant.compareAtPrice.amount,
-      )
+      // if cart doesnt' exists, create it
+      if (!shopifyCart) {
+        const newCart = await this.createShopifyCart()
+        this.shopifyCart = newCart
+        this.$cookies.set('cartId', this.shopifyCart.id)
+      }
 
-      /* data.variants.nodes[0].compareAtPrice */
-      const tag = this.product.tags
-      const image = this.product.image.source.url
-      const title = this.product.title
-      this.$store.commit('userCart/addProduct', {
-        id,
-        singleAmount: amount,
-        singleAmountFullPrice: amountFullPrice,
-        tag,
-        image,
-        title,
-        totalInventory,
-        gtmProductData: this.gtmProductData,
-      })
+      // prepare cart lines
+      const lines = {
+        merchandiseId: this.product.shopify_product_variant_id,
+        quantity: 1,
+      }
+
+      // add product to cart
+      const updated = await this.addProductToCart(lines)
+      this.shopifyCart = updated
       this.flashMessage.show({
         status: '',
         message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title}` }),
-        icon: image,
+        icon: this.product.image.source.url,
         iconClass: 'bg-transparent',
         time: 8000,
         blockClass: 'add-product-notification',
       })
     },
     async removeFromUserCart() {
-      this.$store.commit('userCart/removeProduct', {
-        id: this.product.shopify_product_variant_id,
-      })
+      if (this.cartQuantity === 0)
+        return
+
+      const lineId = this.shopifyCart.lines.edges.find(el => el.node.merchandise.id === this.product.shopify_product_variant_id).node.id
+      const updated = await this.updateItemInCart(lineId, this.cartQuantity - 1)
+      this.shopifyCart = updated
     },
   },
 })
