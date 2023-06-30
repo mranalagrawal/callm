@@ -1,18 +1,18 @@
-<script>
+<script lang="ts">
 import { localeChanged, localize } from 'vee-validate'
-import { onMounted, provide, readonly, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
+import { defineComponent, onMounted, provide, readonly, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
 import LazyHydrate from 'vue-lazy-hydration'
 
-import TopBar from '../components/TopBar.vue'
-import Navbar from '../components/Navbar.vue'
 import useScreenSize from '~/components/composables/useScreenSize'
 import useNewsletterSplash from '~/components/composables/useNewsletterSplash'
+import Navbar from '~/components/Navbar.vue'
+import TopBar from '~/components/TopBar.vue'
 
 import { lookUpLocale } from '~/plugins/vee-validate'
 import { useCustomer } from '~/store/customer'
 import { useShopifyCart } from '~/store/shopifyCart'
 
-export default {
+export default defineComponent({
   components: {
     LazyHydrate,
     TheFooter: () => import('../components/TheFooter.vue'),
@@ -48,7 +48,6 @@ export default {
 
     onMounted(() => {
       handleNewsletterSplash()
-      console.log($cookies.get('cartId'), '$cookies.get)');
     })
 
     useMeta(() => ({
@@ -56,14 +55,14 @@ export default {
         {
           hid: 'description',
           name: 'description',
-          content: i18n.t('head.description'),
+          content: i18n.t('head.description') as string,
         },
       ],
     }))
     return { isTablet, isDesktop, isDesktopWide, hasBeenSet, handleNewsletterSplash }
   },
   head: {},
-}
+})
 </script>
 
 <template>
