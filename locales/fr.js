@@ -76,7 +76,8 @@ export default {
     'I agree to receive newsletters and promotional communications from Callmewine, as required by the Privacy Policy.',
   footer: {
     company: 'The Company',
-    who: 'Who we are',
+    who: 'Qui nous sommes',
+    sustainability: 'Durabilité',
     services: 'offered services',
     restaurantsAndWineshops: 'restaurants and wineshops',
     support: 'Support',
