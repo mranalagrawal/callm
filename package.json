@@ -1,6 +1,6 @@
 {
   "name": "callmewine-frontend",
-  "version": "1.13.7",
+  "version": "1.14.0",
   "private": true,
   "engines": {
     "node": ">=16.0.0 <17.0.0"
