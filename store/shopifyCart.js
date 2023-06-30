@@ -111,6 +111,4 @@ export const useShopifyCart = defineStore({
       }
     },
   },
-
-  persist: true,
 })
