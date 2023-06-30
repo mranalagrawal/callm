@@ -1,64 +1,63 @@
-<script lang="ts">
+<script>
 import { defineComponent } from '@nuxtjs/composition-api'
-import type { PropType } from '@nuxtjs/composition-api'
 import deleteIcon from 'assets/svg/delete.svg'
 import addIcon from 'assets/svg/add.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
-import type { ICartLineItem } from '~/types/order'
+import { useShopifyCart } from '~/store/shopifyCart'
 
 export default defineComponent({
   props: {
     item: {
-      type: Object as PropType<ICartLineItem>,
+      type: Object,
       required: true,
     },
     isLast: Boolean,
   },
   setup() {
-    return {
-      deleteIcon,
-      addIcon,
-      subtractIcon,
-    }
+    const shopifyCart = useShopifyCart()
+    return { shopifyCart, deleteIcon, addIcon, subtractIcon }
+  },
+  data() {
+    return { quantity: this.item.quantity }
   },
   computed: {
-    userCartQuantity() {
-      const isInCart = this.$store.state.userCart.userCart.find((el: { productVariantId: (string | undefined)[] }) =>
-        el.productVariantId?.includes(this.item?.productVariantId),
-      )
-
-      return isInCart ? isInCart.quantity : 0
+    cartQuantity() {
+      return this.item.quantity
     },
     canAddMore() {
-      return Number(this.item.totalInventory) - this.userCartQuantity > 0
+      return this.item.merchandise.product.totalInventory - this.cartQuantity > 0
+    },
+    finalPrice() {
+      return this.shopifyCart.getFinalPrice(this.item)
     },
   },
   methods: {
     async increaseQuantity() {
-      if (this.item.totalInventory === this.userCartQuantity)
+      if (!this.canAddMore)
         return
 
-      this.$store.commit('userCart/addProduct', {
+      const lines = {
+        merchandiseId: this.item.merchandise.id,
+        quantity: 1,
+      }
+      const updated = await this.shopifyCart.addProductToCart(lines)
+      this.shopifyCart.shopifyCart = updated
+
+      /* this.$store.commit('userCart/addProduct', {
         id: this.item.productVariantId,
         gtmProductData: this.item.gtmProductData || {},
-      })
+      }) */
     },
     async decreaseQuantity() {
-      this.$store.commit('userCart/removeProduct', {
-        id: this.item.productVariantId,
-        gtmProductData: this.item.gtmProductData || {},
-      })
+      if (this.item.quantity === 0)
+        return
+
+      const updated = await this.shopifyCart.updateItemInCart(this.item.id, this.item.quantity - 1)
+      this.shopifyCart.shopifyCart = updated
     },
     async removeLine() {
-      this.$store.commit('userCart/removeLine', {
-        id: this.item.productVariantId,
-        gtmProductData: !this.item.gtmProductData
-          ? {}
-          : {
-              ...this.item.gtmProductData,
-              quantity: this.item.quantity,
-            },
-      })
+      const updated = await this.shopifyCart.updateItemInCart(this.item.id, 0)
+      this.shopifyCart.shopifyCart = updated
     },
   },
 })
@@ -69,11 +68,11 @@ export default defineComponent({
     class="c-cartLineItem mx-3 bg-white py-4 border-b border-b-gray-light"
   >
     <div class="c-cartLineItem__image">
-      <img class="w-[min(100%,_46px)] m-inline-auto" :src="item.image" :alt="item.image">
+      <img :src="item.merchandise.product.images.nodes[0].url" alt="" style="height: 50px">
     </div>
     <div class="c-cartLineItem__description">
       <p class="text-sm font-bold">
-        {{ item.title }}
+        {{ item.merchandise.product.title }}
       </p>
     </div>
     <div class="c-cartLineItem__quantity">
@@ -86,7 +85,7 @@ export default defineComponent({
         >
           <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="#992545" />
         </button>
-        <span class="text-center">{{ userCartQuantity }}</span>
+        <span class="text-center">{{ item.quantity }}</span>
         <button
           class="flex transition-colors w-full h-full bg-white rounded-sm border-2 border-primary
                disabled:(border-gray-light opacity-50 cursor-not-allowed)"
@@ -100,16 +99,16 @@ export default defineComponent({
     </div>
     <div class="c-cartLineItem__price">
       <div
-        v-if="item.singleAmount !== item.singleAmountFullPrice"
+        v-if="finalPrice !== +item.merchandise.price.amount"
         class="text-sm text-right text-gray"
         style="text-decoration: line-through"
       >
-        {{ (item.quantity * item.singleAmountFullPrice).toFixed(2) }}
+        {{ (item.quantity * +item.merchandise.price.amount).toFixed(2) }}
         {{ $config.STORE === 'CMW_UK' ? '£' : '€' }}
       </div>
 
       <div class="font-bold text-lg text-right">
-        {{ (item.quantity * item.singleAmount).toFixed(2) }}
+        {{ (item.quantity * finalPrice).toFixed(2) }}
         {{ $config.STORE === 'CMW_UK' ? '£' : '€' }}
       </div>
     </div>

@@ -6,6 +6,7 @@ import userIcon from '~/assets/svg/user.svg'
 import cartIcon from '~/assets/svg/cart.svg'
 import { useCustomer } from '~/store/customer'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
+import { useShopifyCart } from '~/store/shopifyCart'
 
 export default {
   name: 'UserActions',
@@ -15,12 +16,14 @@ export default {
       customer,
       favoritesCount,
     } = storeToRefs(customerStore)
+    const shopifyCart = useShopifyCart()
 
     return {
-      customerStore,
       customer,
+      customerStore,
       favoritesCount,
       getLocaleFromCurrencyCode,
+      shopifyCart,
     }
   },
   data() {
@@ -40,6 +43,13 @@ export default {
       cartTotalAmount: 'userCart/getCartTotalAmount',
       cartTotalAmountObj: 'userCart/cartTotalAmountObj',
     }),
+    itemsInCart() {
+      return this.shopifyCart.shopifyCart && this.shopifyCart.shopifyCart.totalQuantity
+    },
+    cartTotal() {
+      const cartLines = this.shopifyCart.getCartLines()
+      return cartLines.reduce((t, n) => t + n.quantity * n.price, 0)
+    },
   },
   methods: {
     handleUserActionMouseEnter(key) {
@@ -132,10 +142,10 @@ export default {
         @mouseleave="handleUserActionMouseLeave"
       >
         <span class="flex gap-1 items-center">
-          <span v-if="cartItems">
+          <span v-if="itemsInCart">
             <span class="block text-xxs text-left mb-1">{{ $t('cartTotal') }}</span>
             <i18n-n
-              class="flex items-end leading-none" :value="Number(cartTotalAmountObj.value)"
+              class="flex items-end leading-none" :value="Number(cartTotal)"
               :format="{ key: 'currency' }"
               :locale="getLocaleFromCurrencyCode($config.STORE === 'CMW_UK' ? 'GBP' : 'EUR')"
             >
@@ -161,14 +171,14 @@ export default {
               height="32px"
             />
             <span
-              v-if="!cartItems"
+              v-if="!itemsInCart"
               class="block my-0 font-light text-sm"
             >
               {{ $t('cart') }}
             </span>
             <Badge
-              v-if="cartItems"
-              :qty="cartItems"
+              v-if="itemsInCart"
+              :qty="itemsInCart"
               :bg-color="currentComponent === 'cart' ? 'white' : 'primary-400'"
               class="transform absolute top-[-10px] right-[-10px]"
             />
