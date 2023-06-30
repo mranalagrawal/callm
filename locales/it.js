@@ -77,6 +77,7 @@ export default {
   footer: {
     company: 'L\'Azienda',
     who: 'Chi siamo',
+    sustainability: 'Sostenibilità',
     services: 'Servizi offerti',
     restaurantsAndWineshops: 'Ristoranti e Vinerie',
     support: 'Supporto',

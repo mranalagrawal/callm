@@ -250,9 +250,15 @@ export default defineComponent({
               </div>
               <NuxtLink
                 :to="localePath('/about-us')"
-                class="block  text-white"
+                class="block text-white"
               >
                 {{ $t('footer.who') }}
+              </NuxtLink>
+              <NuxtLink
+                :to="localePath('/about-us')"
+                class="block text-white"
+              >
+                {{ $t('footer.sustainability') }}
               </NuxtLink>
             </div>
             <div class="flex flex-col gap-2">
