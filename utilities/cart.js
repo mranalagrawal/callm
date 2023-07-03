@@ -85,7 +85,7 @@ export const createCart = async (domain, access_token, user) => {
   const buyer = user
     ? {
         buyerIdentity: {
-          countryCode: 'UK',
+          countryCode: 'GB',
           customerAccessToken: user.token,
         },
       }
