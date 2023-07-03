@@ -22,7 +22,7 @@ query getProductRecommendations(
       nodes {
         id
         compareAtPrice { amount, currencyCode }
-        price
+        price { amount, currencyCode }
         quantityAvailable
         sku
       }
