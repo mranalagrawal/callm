@@ -1,10 +1,9 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
 import { generateHeadHreflang } from '@/utilities/arrays'
-import prismicConfig from '~/config/prismicConfig'
-import type { TStores } from '~/config/themeConfig'
 import { initialPageData } from '~/types/prismic'
 import type { IPrismicPageData } from '~/types/prismic'
+import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({
   layout({ $config }) {
@@ -14,17 +13,17 @@ export default defineComponent({
     const { $cmwGtmUtils } = useContext()
 
     const hrefLang = {
-      'it': 'https://www.callmewine.com/privacy.html',
-      'en': 'https://www.callmewine.com/en/privacy.html',
-      'fr': 'https://www.callmewine.fr/politique-de-confidentialite.html',
-      'de': 'https://www.callmewine.de/privacy.html',
-      'en-gb': 'https://callmewine.co.uk/privacy',
+      'it': 'https://www.callmewine.com/sostenibilita.html',
+      'en': 'https://www.callmewine.com/en/shipping.html',
+      'fr': 'https://www.callmewine.fr/livraisons.html',
+      'de': 'https://www.callmewine.de/lieferung.html',
+      'en-gb': 'https://callmewine.co.uk/shipping',
     }
 
     const pageData = ref<IPrismicPageData>(initialPageData)
 
-    useFetch(async ({ $config, $cmwRepo }) => {
-      pageData.value = await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.privacyPage })
+    useFetch(async ({ $cmwRepo }) => {
+      pageData.value = await $cmwRepo.prismic.getSingle({ page: 'sustainability' })
     })
 
     onMounted(() => {
@@ -38,6 +37,7 @@ export default defineComponent({
     return { pageData }
   },
   head: {},
+  methods: { generateKey },
 })
 </script>
 
@@ -64,5 +64,15 @@ export default defineComponent({
     <div v-for="(section, i) in pageData.section" :key="i" class="mt-5">
       <PrismicRichText :field="[section]" />
     </div>
+    <div class="grid gap-4 md:(grid-cols-2 justify-items-center) my-8">
+      <template v-for="item in pageData.body?.[0].items">
+        <PrismicImage :key="generateKey(item.image.url)" :field="item.image" />
+        <div :key="generateKey(item.section_subtitle)">
+          <PrismicRichText :field="item.section_subtitle" />
+          <PrismicRichText :field="item.section_text" />
+        </div>
+      </template>
+    </div>
+    <PrismicRichText :field="pageData['last-text']" />
   </div>
 </template>

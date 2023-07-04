@@ -9,7 +9,7 @@ export default defineComponent({
   setup() {
     const carousel = ref(null)
 
-    const boxes = ref([])
+    const boxes = ref<Record<string, any>[]>([])
     const responsive = [
       {
         minWidth: 0,
@@ -25,12 +25,11 @@ export default defineComponent({
       },
     ]
 
-    const { fetch } = useFetch(async ({ $config, $cmwRepo, $handleApiErrors }) => {
+    const { fetch } = useFetch(async ({ $config, $cmwRepo }) => {
       await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.homeBoxes })
-        .then(({ data }) => {
-          boxes.value = data.box
+        .then((data) => {
+          boxes.value = data.box as Record<string, any>[]
         })
-        .catch((err: Error) => $handleApiErrors(`Catch getting homeBoxes from prismic: ${err}`))
     })
 
     return { carousel, responsive, fetch, boxes }

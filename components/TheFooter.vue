@@ -4,32 +4,27 @@ import logo from 'assets/svg/logo-call-me-wine.svg'
 import walletIcon from 'assets/svg/wallet.svg'
 import emailIcon from 'assets/svg/email.svg'
 import themeConfig from '~/config/themeConfig'
+import type { IPrismicPageData } from '~/types/prismic'
 import { SweetAlertToast } from '~/utilities/Swal'
 
 export default defineComponent({
   setup() {
     const isDesktop = inject('isDesktop')
-    const footerData = ref([])
-    const footerInfoData = ref({
-      description: '',
-      newsletter_cta: '',
-      first_check: '',
-      second_check: '',
-      info: '',
-    })
+    const footerData = ref<Record<string, any>[]>([])
+    const footerInfoData = ref<IPrismicPageData>({})
 
     useFetch(async ({
       $cmwRepo,
       $handleApiErrors,
     }) => {
       await $cmwRepo.prismic.getSingle({ page: 'footer' })
-        .then(({ data }) => {
-          footerData.value = data
+        .then((data) => {
+          footerData.value = data.body as Record<string, any>[]
         })
         .catch((err: Error) => $handleApiErrors(`Catch getting contact us data from prismic: ${err}`))
 
       await $cmwRepo.prismic.getSingle({ page: 'footer-info' })
-        .then(({ data }) => {
+        .then((data) => {
           footerInfoData.value = data
         })
         .catch((err: Error) => $handleApiErrors(`Catch getting contact us data from prismic: ${err}`))
@@ -109,43 +104,43 @@ export default defineComponent({
 </script>
 
 <template>
-  <footer class="bg-gray-light print:hidden">
-    <div v-if="!!footerData.length && $config.STORE !== 'CMW_UK'" class="md:px-4">
-      <div class="h2 text-center my-4 pt-4">
-        {{ $t('footer.explore') }}
-      </div>
-      <div v-if="!isDesktop">
-        <div v-for="item in footerData" :key="item.id">
-          <NuxtLink
-            :to="localePath(item?.primary?.link || '/')"
-            class="text-uppercase"
-          >
-            {{ item?.primary?.title }}
-          </NuxtLink>
-          <hr>
+  <footer class="bg-gray-lightest print:hidden">
+    <ClientOnly>
+      <div v-if="!!footerData.length && $config.STORE !== 'CMW_UK'" class="md:px-4">
+        <div class="h2 text-center pt-20 pb-8">
+          {{ $t('footer.explore') }}
         </div>
-      </div>
-      <div v-else class="flex">
-        <div v-for="item in footerData" :key="item.id">
-          <NuxtLink
-            :to="localePath(item?.primary?.link || '/')"
-            style="color: #176a62"
-            class="block text-uppercase pb-8"
-          >
-            {{ item?.primary?.title }}
-          </NuxtLink>
-          <p
-            v-for="link in item.items"
-            :key="`inner_${link.name}`"
-            class="pb-0"
-          >
-            <NuxtLink :to="localePath(link?.link || '/')">
-              {{ link?.name }}
+        <div v-if="!isDesktop">
+          <div v-for="item in footerData" :key="item.id">
+            <NuxtLink
+              :to="localePath(item?.primary?.link || '/')"
+              class="block overline-2 text-secondary-700 text-uppercase text-sm px-4 py-2"
+            >
+              {{ item?.primary?.title }}
             </NuxtLink>
-          </p>
+          </div>
+        </div>
+        <div v-else class="w-full flex justify-between">
+          <div v-for="item in footerData" :key="item.id">
+            <NuxtLink
+              :to="localePath(item?.primary?.link || '/')"
+              class="block overline-2 text-secondary-700 text-uppercase text-sm pb-8"
+            >
+              {{ item?.primary?.title }}
+            </NuxtLink>
+            <p
+              v-for="link in item.items"
+              :key="`inner_${link.name}`"
+              class="pb-0"
+            >
+              <NuxtLink :to="localePath(link?.link || '/')">
+                {{ link?.name }}
+              </NuxtLink>
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+    </ClientOnly>
 
     <div
       v-if="footerInfoData"
@@ -250,9 +245,15 @@ export default defineComponent({
               </div>
               <NuxtLink
                 :to="localePath('/about-us')"
-                class="block  text-white"
+                class="block text-white"
               >
                 {{ $t('footer.who') }}
+              </NuxtLink>
+              <NuxtLink
+                :to="localePath('/sustainability')"
+                class="block text-white"
+              >
+                {{ $t('footer.sustainability') }}
               </NuxtLink>
             </div>
             <div class="flex flex-col gap-2">

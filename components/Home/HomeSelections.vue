@@ -46,13 +46,15 @@ export default defineComponent({
       ],
     }
 
-    useFetch(async ({ $config, $cmwRepo, $handleApiErrors }) => {
+    useFetch(async ({ $config, $cmwRepo }) => {
       await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.selections })
-        .then(({ data }) => {
+        .then((data) => {
+          if (!data.body || !Object.keys(data.body).length)
+            return
+
           items.value = data.body[0].items.concat(data.body[0].items).concat(data.body[0].items)
           title.value = data.body[0].primary.title
         })
-        .catch((err: Error) => $handleApiErrors(`Catch getting Selections data from prismic: ${err}`))
     })
     return { c1, currentC1Slide, items, title, settings, bgCarousel }
   },

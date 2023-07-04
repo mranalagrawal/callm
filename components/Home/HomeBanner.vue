@@ -38,18 +38,17 @@ export default defineComponent({
     const isDesktopWide = inject('isDesktopWide') as Ref<boolean>
     const hasBeenSet = inject('hasBeenSet') as Ref<boolean>
 
-    const { fetch } = useFetch(async ({ $config, $cmwRepo, $handleApiErrors }) => {
+    const { fetch } = useFetch(async ({ $config, $cmwRepo }) => {
       await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.homeCarousel })
-        .then(({ data }) => {
+        .then((data) => {
           if (!process.browser) {
             OS.value = getMobileOperatingSystem(req.headers['user-agent'])
             $cookies.set('iOS', getMobileOperatingSystem(req.headers['user-agent']))
           }
 
           isBrowser.value = process?.browser
-          slides.value = data.body[0].items
+          slides.value = data.body && data.body[0].items
         })
-        .catch((err: Error) => $handleApiErrors(`Catch getting slides from prismic: ${err}`))
     })
 
     const handleMobileClick = (link: RawLocation) => {
