@@ -18,36 +18,27 @@ export default defineComponent({
     const selectedItem = ref<string>('')
     const pageData = ref<any>()
 
-    useFetch(async ({ $config, $cmwRepo, $handleApiErrors }) => {
+    useFetch(async ({ $config, $cmwRepo }) => {
       await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.megaMenu })
-        .then(({ data }: Record<string, any>) => {
-          pageData.value = data.body
-            .map((firstLevel: {
-              items: any[]
-              primary: {
-                group_label: any
-                first_level_link: any
-                first_level_position: any
-                is_promotion_tab: any
-                display_as_cards: any
-              }
-            }) => {
-              const secondLevels = firstLevel.items.map((el) => {
+        .then((data) => {
+          pageData.value = data.body && data.body
+            .map((firstLevel) => {
+              const secondLevels = firstLevel.items.map((el: { secondlevelname: any; second_level_position: any }) => {
                 return {
                   name: el.secondlevelname,
                   position: el.second_level_position,
                 }
               })
               const secondLevelsSet = [
-                ...new Set(secondLevels.map(el => JSON.stringify(el))),
+                ...new Set(secondLevels.map((el: any) => JSON.stringify(el))),
               ]
-                .map(el => JSON.parse(el))
+                .map(el => JSON.parse(el as string))
                 .sort((a, b) => a.position - b.position)
 
               const items = secondLevelsSet.map((el) => {
                 const temp = firstLevel.items
-                  .filter(x => x.secondlevelname === el.name)
-                  .sort((a, b) => a.third_level_position - b.third_level_position)
+                  .filter((x: { secondlevelname: any }) => x.secondlevelname === el.name)
+                  .sort((a: { third_level_position: number }, b: { third_level_position: number }) => a.third_level_position - b.third_level_position)
 
                 return {
                   ...el,
@@ -65,9 +56,6 @@ export default defineComponent({
               }
             })
             .sort((a: { position: number }, b: { position: number }) => a.position - b.position)
-        })
-        .catch((err: Error) => {
-          $handleApiErrors(`Catch getting megaMenu data from prismic: ${err}`)
         })
     })
 

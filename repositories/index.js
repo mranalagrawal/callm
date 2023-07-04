@@ -2,7 +2,7 @@ import AddressesRepository from '~/repositories/AddressesRepository'
 import CountriesRepository from '~/repositories/CountriesRepository'
 import CustomerRepository from '~/repositories/CustomerRepository'
 import OrdersRepository from '~/repositories/OrdersRepository'
-import PrismicRepository from '~/repositories/PrismicRepository'
+import PrismicRepository from '~/repositories/PrismicRepository.ts'
 import ProductsRepository from '~/repositories/ProductsRepository'
 import ShopifyPagesRepository from '~/repositories/ShopifyPagesRepository'
 

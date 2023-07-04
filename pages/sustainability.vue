@@ -3,6 +3,7 @@ import { defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '
 import { generateHeadHreflang } from '@/utilities/arrays'
 import { initialPageData } from '~/types/prismic'
 import type { IPrismicPageData } from '~/types/prismic'
+import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({
   layout({ $config }) {
@@ -21,12 +22,8 @@ export default defineComponent({
 
     const pageData = ref<IPrismicPageData>(initialPageData)
 
-    useFetch(async ({ $cmwRepo, $handleApiErrors }) => {
-      await $cmwRepo.prismic.getSingle({ page: 'sustainability' })
-        .then(({ data }) => {
-          pageData.value = data
-        })
-        .catch((err: Error) => $handleApiErrors(`Catch getting contact us data from prismic: ${err}`))
+    useFetch(async ({ $cmwRepo }) => {
+      pageData.value = await $cmwRepo.prismic.getSingle({ page: 'sustainability' })
     })
 
     onMounted(() => {
@@ -40,6 +37,7 @@ export default defineComponent({
     return { pageData }
   },
   head: {},
+  methods: { generateKey },
 })
 </script>
 
@@ -68,8 +66,8 @@ export default defineComponent({
     </div>
     <div class="grid gap-4 md:(grid-cols-2 justify-items-center) my-8">
       <template v-for="item in pageData.body?.[0].items">
-        <PrismicImage :key="item.image.url" :field="item.image" />
-        <div :key="item.section_subtitle">
+        <PrismicImage :key="generateKey(item.image.url)" :field="item.image" />
+        <div :key="generateKey(item.section_subtitle)">
           <PrismicRichText :field="item.section_subtitle" />
           <PrismicRichText :field="item.section_text" />
         </div>

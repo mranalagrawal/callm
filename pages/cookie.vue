@@ -22,15 +22,14 @@ export default defineComponent({
     }
 
     const pageData = ref<IPrismicPageData>(initialPageData)
-    const sectionContent = ref({ section: [] })
+    const sectionContent = ref<IPrismicPageData['section']>({ section: [] })
 
-    const { fetch } = useFetch(async ({ $config, $cmwRepo, $handleApiErrors }) => {
+    const { fetch } = useFetch(async ({ $config, $cmwRepo }) => {
       await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.cookiePage })
-        .then(({ data }) => {
+        .then((data) => {
           pageData.value = data
           sectionContent.value = data.section[0] ? data.section : []
         })
-        .catch((err: Error) => $handleApiErrors(`Catch getting cookies data from prismic: ${err}`))
     })
 
     onMounted(() => {

@@ -26,7 +26,7 @@ export default defineComponent({
 
     const { fetch } = useFetch(async ({ $config, $cmwRepo, $handleApiErrors }) => {
       await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.aboutUs })
-        .then(({ data }) => {
+        .then((data) => {
           pageData.value = data
           sectionContent.value = data.section[0] ? data.section[0].section_content : []
         })
