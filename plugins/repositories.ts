@@ -1,5 +1,6 @@
 import type { Plugin } from '@nuxt/types'
 import createRepository from '~/repositories'
+import type { IPrismicPageData } from '~/types/prismic'
 
 interface ICmwRepo {
   shopifyPages: {
@@ -10,7 +11,7 @@ interface ICmwRepo {
   customer: any
   orders: any
   prismic: {
-    getSingle({ page = '' }): Promise<Record<string, any>>
+    getSingle({ page = '' }): Promise<IPrismicPageData>
   }
   products: any
 }

@@ -10,7 +10,6 @@ export const mutations = {
       el => el.productVariantId === entry.id,
     )
 
-    console.log(entry.image)
     // se c'è già
     if (product) {
       product.quantity = product.quantity + 1

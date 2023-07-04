@@ -4,6 +4,7 @@ import { generateHeadHreflang } from '@/utilities/arrays'
 import prismicConfig from '~/config/prismicConfig'
 import type { TStores } from '~/config/themeConfig'
 import type { IPrismicPageData } from '~/types/prismic'
+import { initialPageData } from '~/types/prismic'
 
 export default defineComponent({
   layout({ $config }) {
@@ -20,27 +21,10 @@ export default defineComponent({
       'en-gb': 'https://callmewine.co.uk/contact',
     }
 
-    const pageData = ref<IPrismicPageData>({
-      title: '',
-      image: {
-        alt: '',
-        dimensions: {
-          height: 0,
-          width: 0,
-        },
-        url: '',
-      },
-      section: [],
-    })
+    const pageData = ref<IPrismicPageData>(initialPageData)
 
-    useFetch(async ({ $config, $cmwRepo, $handleApiErrors }) => {
-      await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.contactPage })
-        .then(({ data }: Record<string, any>) => {
-          pageData.value = data
-        })
-        .catch((err: Error) => {
-          $handleApiErrors(`Catch getting contact us data from prismic: ${err}`)
-        })
+    useFetch(async ({ $config, $cmwRepo }) => {
+      pageData.value = await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.contactPage })
     })
 
     onMounted(() => {
