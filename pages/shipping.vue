@@ -23,12 +23,8 @@ export default defineComponent({
 
     const pageData = ref<IPrismicPageData>(initialPageData)
 
-    useFetch(async ({ $config, $cmwRepo, $handleApiErrors }) => {
-      await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.shippingPage })
-        .then(({ data }) => {
-          pageData.value = data
-        })
-        .catch((err: Error) => $handleApiErrors(`Catch getting contact us data from prismic: ${err}`))
+    useFetch(async ({ $config, $cmwRepo }) => {
+      pageData.value = await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.shippingPage })
     })
 
     onMounted(() => {

@@ -9,6 +9,22 @@ export interface IPrismicPageData {
     url: string
   }
   section: Record<string, any>
+  body?: Record<string, any>[]
+  box?: Record<string, any>[]
+  text?: Record<string, any>[]
+  description?: string
+  newsletter_cta?: string
+  first_check?: string
+  second_check?: string
+  info?: string
+  subtitle?: string
+  cta_button?: string
+  cta_link?: string
+  shown?: string
+  hidden?: string
+  productor?: Record<string, any>[]
+  featured?: Record<string, any>[]
+  label?: string
 }
 
 export const initialPageData: IPrismicPageData = {

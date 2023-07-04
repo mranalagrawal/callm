@@ -7,12 +7,11 @@ export default defineComponent({
   setup() {
     const headline = ref('')
 
-    useFetch(async ({ $config, $cmwRepo, $handleApiErrors }) => {
+    useFetch(async ({ $config, $cmwRepo }) => {
       await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.topbar })
-        .then(({ data }) => {
+        .then((data) => {
           headline.value = data.text[0].text
         })
-        .catch((err: Error) => $handleApiErrors(`Catch getting TopBar data from prismic: ${err}`))
     })
 
     return { headline }

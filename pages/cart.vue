@@ -10,7 +10,6 @@ import { useShopifyCart } from '~/store/shopifyCart'
 
 export default {
   components: { CartLine },
-  /* middleware: "auth", */
   layout(context) {
     return context.$config.STORE
   },
@@ -21,12 +20,8 @@ export default {
     const { shopifyCart } = storeToRefs(shopifyCartV)
     const { getCartLines } = shopifyCartV
 
-    const { fetch } = useFetch(async ({ $config, $cmwRepo, $handleApiErrors }) => {
-      await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE]?.components.shipping })
-        .then(({ data }) => {
-          shipping.value = data
-        })
-        .catch(err => $handleApiErrors(`Catch getting shipping from prismic: ${err}`))
+    const { fetch } = useFetch(async ({ $config, $cmwRepo }) => {
+      shipping.value = await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE]?.components.shipping })
     })
 
     onMounted(() => {

@@ -3,7 +3,7 @@ import { defineComponent, ref, useFetch } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   setup() {
-    const slides = ref([])
+    const slides = ref<Record<string, any>[]>([])
     const title = ref('')
 
     const settingsTop = {
@@ -77,20 +77,14 @@ export default defineComponent({
       ],
     }
 
-    const { fetch } = useFetch(async ({
-      $cmwRepo,
-      $handleApiErrors,
-    }) => {
+    const { fetch } = useFetch(async ({ $cmwRepo }) => {
       await $cmwRepo.prismic.getSingle({ page: 'productors' })
-        .then(({ data }) => {
-          const {
-            productor,
-            label,
-          } = data
-          slides.value = productor.concat(productor)
-          title.value = label
+        .then((data) => {
+          const { productor, label } = data
+
+          slides.value = productor?.concat(productor) || []
+          title.value = label as string
         })
-        .catch((err: Error) => $handleApiErrors(`Catch getting home producers slides from prismic: ${err}`))
     })
     return {
       fetch,

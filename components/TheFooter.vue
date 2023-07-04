@@ -4,32 +4,27 @@ import logo from 'assets/svg/logo-call-me-wine.svg'
 import walletIcon from 'assets/svg/wallet.svg'
 import emailIcon from 'assets/svg/email.svg'
 import themeConfig from '~/config/themeConfig'
+import type { IPrismicPageData } from '~/types/prismic'
 import { SweetAlertToast } from '~/utilities/Swal'
 
 export default defineComponent({
   setup() {
     const isDesktop = inject('isDesktop')
-    const footerData = ref([])
-    const footerInfoData = ref({
-      description: '',
-      newsletter_cta: '',
-      first_check: '',
-      second_check: '',
-      info: '',
-    })
+    const footerData = ref<Record<string, any>[]>([])
+    const footerInfoData = ref<IPrismicPageData>({})
 
     useFetch(async ({
       $cmwRepo,
       $handleApiErrors,
     }) => {
       await $cmwRepo.prismic.getSingle({ page: 'footer' })
-        .then(({ data }) => {
-          footerData.value = data.body
+        .then((data) => {
+          footerData.value = data.body as Record<string, any>[]
         })
         .catch((err: Error) => $handleApiErrors(`Catch getting contact us data from prismic: ${err}`))
 
       await $cmwRepo.prismic.getSingle({ page: 'footer-info' })
-        .then(({ data }) => {
+        .then((data) => {
           footerInfoData.value = data
         })
         .catch((err: Error) => $handleApiErrors(`Catch getting contact us data from prismic: ${err}`))
@@ -250,9 +245,15 @@ export default defineComponent({
               </div>
               <NuxtLink
                 :to="localePath('/about-us')"
-                class="block  text-white"
+                class="block text-white"
               >
                 {{ $t('footer.who') }}
+              </NuxtLink>
+              <NuxtLink
+                :to="localePath('/sustainability')"
+                class="block text-white"
+              >
+                {{ $t('footer.sustainability') }}
               </NuxtLink>
             </div>
             <div class="flex flex-col gap-2">
