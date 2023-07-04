@@ -10,6 +10,9 @@ export default defineComponent({
     useFetch(async ({ $config, $cmwRepo }) => {
       await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.topbar })
         .then((data) => {
+          if (!data.text?.length)
+            return
+
           headline.value = data.text[0].text
         })
     })

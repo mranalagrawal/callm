@@ -4,6 +4,7 @@ import logo from 'assets/svg/logo-call-me-wine.svg'
 import walletIcon from 'assets/svg/wallet.svg'
 import emailIcon from 'assets/svg/email.svg'
 import themeConfig from '~/config/themeConfig'
+import { initialPageData } from '~/types/prismic'
 import type { IPrismicPageData } from '~/types/prismic'
 import { SweetAlertToast } from '~/utilities/Swal'
 
@@ -11,7 +12,7 @@ export default defineComponent({
   setup() {
     const isDesktop = inject('isDesktop')
     const footerData = ref<Record<string, any>[]>([])
-    const footerInfoData = ref<IPrismicPageData>({})
+    const footerInfoData = ref<IPrismicPageData>(initialPageData)
 
     useFetch(async ({
       $cmwRepo,
