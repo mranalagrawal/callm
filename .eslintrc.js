@@ -19,6 +19,8 @@ module.exports = {
     'camelcase': 0,
     'no-console': ['warn', { allow: ['warn', 'error'] }],
     /* VUE ESLINT RULES */
+    'vue/no-v-for-template-key': 'error',
+    'vue/no-v-for-template-key-on-child': 'off',
     'vue/no-v-text-v-html-on-component': 'warn',
     'vue/no-deprecated-v-on-native-modifier': 'warn',
     'vue/script-setup-uses-vars': 'error',

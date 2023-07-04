@@ -255,7 +255,7 @@ export default defineComponent({
                 {{ $t('footer.who') }}
               </NuxtLink>
               <NuxtLink
-                :to="localePath('/about-us')"
+                :to="localePath('/sustainability')"
                 class="block text-white"
               >
                 {{ $t('footer.sustainability') }}

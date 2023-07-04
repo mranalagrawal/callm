@@ -9,6 +9,7 @@ export interface IPrismicPageData {
     url: string
   }
   section: Record<string, any>
+  body?: Record<string, any>[]
 }
 
 export const initialPageData: IPrismicPageData = {
@@ -22,4 +23,5 @@ export const initialPageData: IPrismicPageData = {
     url: '',
   },
   section: [],
+  body: [],
 }
