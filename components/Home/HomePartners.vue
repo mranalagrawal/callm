@@ -32,6 +32,7 @@ export default defineComponent({
     <div class="h2 text-center py-4" v-text="label" />
     <div class="grid gap-4 md:(grid-cols-[8fr_4fr])">
       <div
+        v-if="pageData[0]?.content"
         class="partners-first h-[400px] p-6 text-white flex flex-col justify-end"
         :style="{
           backgroundImage: `url(${mask_left}),url('${pageData[0].content.image.url}')`,
@@ -52,6 +53,7 @@ export default defineComponent({
         />
       </div>
       <div
+        v-if="pageData[1]?.content"
         class="partners-last h-[400px] p-6 text-white flex flex-col justify-end"
         :style="{
           backgroundImage: `url(${mask}), url('${pageData[1].content.image.url}')`,
@@ -59,7 +61,7 @@ export default defineComponent({
       >
         <div class="w-3/4">
           <h3 class="font-bold mb-8">
-            <NuxtLink class="text-white" :to="pageData[0].content.cta_link">
+            <NuxtLink class="text-white" :to="pageData[1].content.cta_link">
               {{ pageData[1].content.main_text }}
             </NuxtLink>
           </h3>

@@ -268,7 +268,7 @@ hover:shadow-elevation"
         :class="{ 'opacity-50': !product.availableForSale }"
         v-html="stripHtml(product.tbd.description)"
       />
-      <ProductUserRatingDescription :product-id="`${product.details.feId}`" @submit-comment="handleStarAndCustomerCommentClick" />
+      <ProductUserRatingDescription v-if="customerId" :product-id="`${product.details.feId}`" @submit-comment="handleStarAndCustomerCommentClick" />
     </div>
     <!-- CTA Section -->
     <div class="relative flex">

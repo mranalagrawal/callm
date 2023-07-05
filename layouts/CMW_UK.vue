@@ -22,7 +22,7 @@ export default defineComponent({
   setup() {
     const { i18n, $cookies } = useContext()
     const customerStore = useCustomer()
-    const shopifyCart = useShopifyCart()
+    const { getShopifyCart } = useShopifyCart()
     const { handleNewsletterSplash } = useNewsletterSplash()
     const {
       isTablet,
@@ -39,11 +39,12 @@ export default defineComponent({
     useFetch(async ({ $cookieHelpers }) => {
       localize(i18n.locale, lookUpLocale(i18n.locale))
       localeChanged()
+
       const accessToken = $cookieHelpers.getToken()
       accessToken && await customerStore.getCustomer()
 
       const cartId = $cookies.get('cartId')
-      cartId && await shopifyCart.getShopifyCart(cartId)
+      cartId && await getShopifyCart(cartId)
     })
 
     onMounted(() => {
@@ -59,6 +60,7 @@ export default defineComponent({
         },
       ],
     }))
+
     return { isTablet, isDesktop, isDesktopWide, hasBeenSet, handleNewsletterSplash }
   },
   head: {},

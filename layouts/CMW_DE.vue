@@ -22,7 +22,7 @@ export default defineComponent({
   setup() {
     const { i18n, $cookies } = useContext()
     const customerStore = useCustomer()
-    const shopifyCart = useShopifyCart()
+    const { getShopifyCart } = useShopifyCart()
     const { handleNewsletterSplash } = useNewsletterSplash()
     const {
       isTablet,
@@ -44,7 +44,7 @@ export default defineComponent({
       accessToken && await customerStore.getCustomer()
 
       const cartId = $cookies.get('cartId')
-      cartId && await shopifyCart.getShopifyCart(cartId)
+      cartId && await getShopifyCart(cartId)
     })
 
     onMounted(() => {

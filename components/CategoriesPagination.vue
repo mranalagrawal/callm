@@ -5,7 +5,7 @@ import {
   onMounted,
   ref,
   useRoute,
-  useRouter, watchEffect,
+  watchEffect,
 } from '@nuxtjs/composition-api'
 import chevronLeftIcon from 'assets/svg/chevron-left.svg'
 import chevronRightIcon from 'assets/svg/chevron-right.svg'
@@ -29,9 +29,8 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
-    // const { i18n } = useContext()
-    const router = useRouter()
+  emits: ['change-page'],
+  setup(props, { emit }) {
     const route = useRoute()
     const pageData = ref({})
     const currentPage = ref({})
@@ -64,15 +63,7 @@ export default defineComponent({
     }
 
     const changePage = (page: number | string) => {
-      const query = {
-        ...props.inputParameters,
-        page: `${page}`,
-      }
-
-      router.push({
-        path: '/catalog',
-        query,
-      })
+      emit('change-page', page)
     }
 
     onMounted(() => setPages(props.totalPages))

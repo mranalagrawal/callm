@@ -1,36 +1,39 @@
-<script>
+<script lang="ts">
+import { defineComponent } from '@nuxtjs/composition-api'
+import type { PropType } from '@nuxtjs/composition-api'
+
 // import promoTagIcon from 'assets/svg/promo-tag.svg'
 import closeIcon from 'assets/svg/close.svg'
+import type { TranslateResult } from 'vue-i18n'
+import type { TColors, TShapes } from '~/types/types'
 
-// noinspection JSUnusedGlobalSymbols
-export default {
+export default defineComponent({
   name: 'CmwChip',
   props: {
     icon: {
       type: Object,
     },
     label: {
-      type: String,
+      type: String as PropType<TranslateResult>,
       required: true,
     },
     onDelete: {
       type: Function,
     },
     color: {
-      type: String,
-      validator: prop => ['primary', 'secondary', 'secondary-400'].includes(prop),
+      type: String as PropType<TColors>,
       default: 'primary',
     },
     shape: {
-      validator: prop => ['rounded', 'pill'].includes(prop),
+      type: String as PropType<TShapes>,
       default: 'pill',
     },
     variant: {
-      validator: prop => ['overline-1', 'overline-2', 'default'].includes(prop),
+      validator: (prop: string) => ['overline-1', 'overline-2', 'default'].includes(prop),
       default: 'default',
     },
     size: {
-      validator: prop => ['xs', 'sm', 'md'].includes(prop),
+      validator: (prop: string) => ['xs', 'sm', 'md'].includes(prop),
       default: 'md',
     },
   },
@@ -60,7 +63,7 @@ export default {
 
     return { closeIcon, getColor, getShape, getVariant, getSize }
   },
-}
+})
 </script>
 
 <template>

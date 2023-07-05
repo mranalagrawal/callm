@@ -13,7 +13,7 @@ export default {
     prevPage: 'Pagina Precedente',
     nextPage: 'Pagina successiva',
     goToCheckout: 'Vai alla cassa',
-    apply: 'Avvisami quando arriva',
+    apply: 'Applicare',
     notifyMe: 'Notify me when it arrives',
     readMore: 'Leggi tutto',
     subscribe: 'iscrivimi',

@@ -1,4 +1,4 @@
-interface MailingAddress {
+type MailingAddress {
   address1: String
   address2: String
   city: String

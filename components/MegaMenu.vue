@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api'
+import { defineComponent, ref, useFetch, useRoute, watch } from '@nuxtjs/composition-api'
 import promoTagIcon from 'assets/svg/promo-tag.svg'
 import ThirdLevel from '~/components/UI/ThirdLevel.vue'
 import prismicConfig from '~/config/prismicConfig'
@@ -10,9 +10,6 @@ export default defineComponent({
   name: 'MegaMenu',
   components: { ThirdLevel },
   setup() {
-    const {
-      $cmwRepo,
-    } = useContext()
     const route = useRoute()
     const megaMenu = ref(null)
     const selectedItem = ref<string>('')
@@ -64,7 +61,6 @@ export default defineComponent({
     const onTab = (item: string) => selectedItem.value = item
 
     return {
-      $cmwRepo,
       megaMenu,
       onTab,
       pageData,

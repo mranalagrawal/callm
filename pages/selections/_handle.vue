@@ -1,12 +1,15 @@
-<script>
-import { computed, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
+<script lang="ts">
+import { computed, defineComponent, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+import chevronRightIcon from 'assets/svg/chevron-right.svg'
 import { useCustomer } from '@/store/customer'
+import type { ICollection } from '~/types/collection'
+import { initialCollectionData } from '~/types/collection'
+import type { IProductMapped } from '~/types/product'
 import { sortArrayByName, sortArrayByNumber } from '~/utilities/arrays'
-import getCollection from '~/graphql/queries/getCollection'
 import { useFilters } from '~/store/filters'
 
-export default {
+export default defineComponent({
   layout({ $config }) {
     return $config.STORE
   },
@@ -19,21 +22,8 @@ export default {
     const filtersStore = useFilters()
     const { selectedLayout, availableLayouts } = storeToRefs(filtersStore)
 
-    const collectionRef = ref({
-      descriptionHtml: '',
-      image: {
-        altText: '',
-        height: '',
-        id: '',
-        url: '',
-        width: '',
-      },
-      title: '',
-      products: {
-        nodes: [],
-      },
-    })
-    const sorted = ref([])
+    const collectionRef = ref<ICollection>(initialCollectionData)
+    const sorted = ref<IProductMapped[]>([])
     const selectedFilter = ref(JSON.stringify({ order: 'title', sort: 'asc' }))
     const periods = ref([
       {
@@ -54,8 +44,9 @@ export default {
       },
     ])
 
-    const selectedLabel = computed(() => periods.value.find(period => period.value === selectedFilter.value).label)
-    const handleUpdateValue = (value) => {
+    const selectedLabel = computed(() => periods.value.find(period => period.value === selectedFilter.value)?.label)
+
+    const handleUpdateValue = (value: string) => {
       selectedFilter.value = value
 
       const { order, sort } = JSON.parse(value)
@@ -66,23 +57,17 @@ export default {
       sorting.value = false
     }
 
-    const { fetch } = useFetch(async ({ $config, $graphql, $productMapping, $handleApiErrors }) => {
-      await $graphql.default.request(getCollection, {
-        lang: i18n.locale.toUpperCase(),
-        handle: params.value.handle,
-      })
-        .then(({ collection }) => {
+    useFetch(async ({ $config, $cmwRepo }) => {
+      await $cmwRepo.products.getCollectionsByHandle({ handle: params.value.handle })
+        .then((collection: ICollection) => {
           collectionRef.value = collection
 
-          sorted.value = $productMapping.fromShopify(collection.products.nodes)
+          sorted.value = collection.products
           sorted.value = sorted.value.map(p => ({
             ...p,
             sortPrice: Number(p.priceLists[$config.SALECHANNEL][getCustomerType.value]),
           }))
           sorted.value = sortArrayByName(sorted.value, 'title', 'asc')
-        })
-        .catch((err) => {
-          $handleApiErrors(`Catch getting getCollection Products from Shopify: ${err}`)
         })
     })
 
@@ -93,21 +78,21 @@ export default {
     })
 
     return {
-      sorting,
-      fetch,
-      selectedFilter,
-      selectedLabel,
-      periods,
-      params,
-      collectionRef,
-      sorted,
-      selectedLayout,
       availableLayouts,
+      chevronRightIcon,
+      collectionRef,
       handleUpdateTrigger,
       handleUpdateValue,
+      params,
+      periods,
+      selectedFilter,
+      selectedLabel,
+      selectedLayout,
+      sorted,
+      sorting,
     }
   },
-}
+})
 </script>
 
 <template>
@@ -120,7 +105,7 @@ export default {
         {{ $t('home') }}
       </NuxtLink>
       <VueSvgIcon
-        :data="require(`@/assets/svg/chevron-right.svg`)"
+        :data="chevronRightIcon"
         width="12"
         height="12"
       />

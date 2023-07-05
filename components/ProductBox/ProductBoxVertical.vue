@@ -1,32 +1,28 @@
-<!-- eslint-disable curly -->
 <script>
-import { computed, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api'
-import { storeToRefs } from 'pinia'
-import heartIcon from 'assets/svg/heart.svg'
-import heartFullIcon from 'assets/svg/heart-full.svg'
-import cartIcon from 'assets/svg/cart.svg'
+// import type { PropType } from '@nuxtjs/composition-api'
+// import type { RawLocation } from 'vue-router'
+// import type { IProductMapped } from '~/types/product'
+import { computed, defineComponent, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api'
 import addIcon from 'assets/svg/add.svg'
-import subtractIcon from 'assets/svg/subtract.svg'
+import cartIcon from 'assets/svg/cart.svg'
 import emailIcon from 'assets/svg/email.svg'
-import { mapState } from 'vuex'
+import heartFullIcon from 'assets/svg/heart-full.svg'
+import heartIcon from 'assets/svg/heart.svg'
+import subtractIcon from 'assets/svg/subtract.svg'
+import { storeToRefs } from 'pinia'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import { useCustomer } from '~/store/customer'
-import { generateKey } from '~/utilities/strings'
-import { isObject } from '~/utilities/validators'
-import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
-import { SweetAlertToast } from '~/utilities/Swal'
 import { useShopifyCart } from '~/store/shopifyCart'
+import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
+import { generateKey } from '~/utilities/strings'
+import { SweetAlertToast } from '~/utilities/Swal'
 
-// noinspection JSUnusedGlobalSymbols
-export default {
+export default defineComponent({
   name: 'ProductBoxVertical',
   props: {
-    /** @Type: {ProductVariantType.ProductVariant} */
     product: {
       required: true,
-      validator(value) {
-        return isObject(value)
-      },
+      type: Object, // as PropType<IProductMapped>,
     },
     position: {
       type: [String, Number],
@@ -34,11 +30,13 @@ export default {
     },
   },
   setup(props) {
-    const { $config, localeLocation, $gtm, $cmwGtmUtils, $cookies } = useContext()
-    const customerStore = useCustomer()
+    const { $config, localeLocation, $gtm, $cmwGtmUtils } = useContext()
     const shopifyCart = useShopifyCart()
-    const { wishlistArr, getCustomerType } = storeToRefs(customerStore)
-    const { handleWishlist } = customerStore
+    const { wishlistArr, getCustomerType } = storeToRefs(useCustomer())
+    // TODO: Fix me
+    // const { shopifyCart } = storeToRefs(useShopifyCart())
+    // const { addProductToCart, getShopifyCart, createShopifyCart, updateItemInCart } = useShopifyCart()
+    const { handleWishlist } = useCustomer()
     const { handleShowRequestModal } = useShowRequestModal()
     const router = useRouter()
     const route = useRoute()
@@ -55,8 +53,14 @@ export default {
       return props.product.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0
     })
 
-    const access_token = computed(() => $config.STOREFRONT_ACCESS_TOKEN)
-    const domain = computed(() => $config.DOMAIN)
+    /* const isOnCart = computed(() => {
+      // const product = shopifyCart.value?.lines?.edges.find(el => el.node.merchandise.id === product.value.shopify_product_variant_id)
+      const product = { node: { quantity: 10 } }
+      if (product)
+        return product.node
+      return null
+    }) */
+
     const gtmProductData = computed(() => ({
       ...props.product.gtmProductData,
       price: finalPrice.value,
@@ -71,7 +75,7 @@ export default {
       $gtm.push({
         event: 'productClick',
         ecommerce: {
-          currencyCode: $nuxt.$config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
+          currencyCode: $config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
           click: {
             actionField: { list: $cmwGtmUtils.getActionField(route.value) },
             products: [{
@@ -87,35 +91,37 @@ export default {
     }
 
     return {
-      wishlistArr,
-      isOnFavourite,
-      isOnSale,
-      getCustomerType,
-      heartIcon,
-      heartFullIcon,
-      cartIcon,
-      emailIcon,
-      gtmProductData,
+      // addProductToCart,
       addIcon,
-      subtractIcon,
-      isOpen,
-      showRequestModal,
-      isHovering,
+      cartIcon,
+      // createShopifyCart,
+      emailIcon,
       finalPrice,
-      handleWishlist,
-      handleWishlistClick,
+      getCustomerType,
+      // getShopifyCart,
+      gtmProductData,
       handleProductCLick,
       handleShowRequestModal,
-      access_token,
-      domain,
+      handleWishlist,
+      handleWishlistClick,
+      heartFullIcon,
+      heartIcon,
+      isHovering,
+      // isOnCart,
+      isOnFavourite,
+      isOnSale,
+      isOpen,
       shopifyCart,
-      $cookies,
+      showRequestModal,
+      subtractIcon,
+      // updateItemInCart,
+      wishlistArr,
     }
   },
   computed: {
-    ...mapState('userCart', {
-      userCart: 'userCart',
-    }),
+    // ...mapState('userCart', {
+    //   userCart: 'userCart',
+    // }),
     /* ...mapState('shopifyCart', {
       shopifyCart: 'shopifyCart',
     }), */
@@ -185,7 +191,7 @@ export default {
       shopifyCart.shopifyCart = updated
     },
   },
-}
+})
 </script>
 
 <template>

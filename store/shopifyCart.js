@@ -1,8 +1,8 @@
-import { defineStore } from 'pinia'
 import { useContext } from '@nuxtjs/composition-api'
+import { defineStore } from 'pinia'
 import { useCustomer } from './customer'
-import createCart from '~/graphql/mutations/createCart'
 import addProductToCart from '~/graphql/mutations/addProductToCart'
+import createCart from '~/graphql/mutations/createCart'
 import updateItemInCart from '~/graphql/mutations/updateItemInCart'
 import getCart from '~/graphql/queries/getCart'
 import { getCountryFromStore } from '~/utilities/currency'
@@ -12,8 +12,6 @@ export const useShopifyCart = defineStore({
   state: () => ({
     shopifyCart: null,
   }),
-
-  getters: {},
 
   actions: {
     async createShopifyCart() {
@@ -38,9 +36,8 @@ export const useShopifyCart = defineStore({
         })
         .then(data => data.cartCreate.cart)
 
-      const final = await data
-
-      return final
+      // this.$patch({ shopifyCart: data }) TODO: fix here
+      return await data
     },
 
     async addProductToCart(lines) {
@@ -98,12 +95,10 @@ export const useShopifyCart = defineStore({
         $config.SALECHANNEL
       ][customerType]
     },
-    async getShopifyCart(cartId) {
+    async getShopifyCart(id) {
       try {
         const data = await this.$nuxt.$graphql.default
-          .request(getCart, {
-            id: cartId,
-          })
+          .request(getCart, { id })
           .then(data => data.cart)
         this.$patch({ shopifyCart: data })
       } catch (e) {

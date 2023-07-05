@@ -97,21 +97,36 @@ enum DiscountApplicationAllocationMethod {
   ONE
 }
 
-#The lines on the order to which the discount is applied, of the type defined by the discount application's targetType. For example, the value ENTITLED, combined with a targetType of LINE_ITEM, applies the discount on all line items that are entitled to the discount. The value ALL, combined with a targetType of SHIPPING_LINE, applies the discount on all shipping lines.
+# The lines on the order to which the discount is applied, of the type defined by the discount application's targetType. For example, the value ENTITLED, combined with a targetType of LINE_ITEM, applies the discount on all line items that are entitled to the discount. The value ALL, combined with a targetType of SHIPPING_LINE, applies the discount on all shipping lines.
 enum DiscountApplicationTargetSelection {
-  #The discount is allocated onto all the lines.
+  # The discount is allocated onto all the lines.
   ALL
-  #The discount is allocated onto only the lines that it's entitled for.
+  # The discount is allocated onto only the lines that it's entitled for.
   ENTITLED
-  #The discount is allocated onto explicitly chosen lines.
+  # The discount is allocated onto explicitly chosen lines.
   EXPLICIT
 }
 
-#The type of line (i.e. line item or shipping line) on an order that the discount is applicable towards.
+# The type of line (i.e. line item or shipping line) on an order that the discount is applicable towards.
 enum DiscountApplicationTargetType {
-#The discount applies onto line items.
-LINE_ITEM
-#The discount applies onto shipping lines.
-SHIPPING_LINE
+  # The discount applies onto line items.
+  LINE_ITEM
+  # The discount applies onto shipping lines.
+  SHIPPING_LINE
 }
 
+# List of different delivery method types.
+enum DeliveryMethodType {
+  # Local Delivery.
+  LOCAL
+  # None.
+  NONE
+  # Shipping to a Pickup Point.
+  PICKUP_POINT
+  # Local Pickup.
+  PICK_UP
+  # Retail.
+  RETAIL
+  # Shipping.
+  SHIPPING
+}

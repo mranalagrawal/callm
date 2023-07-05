@@ -10,9 +10,6 @@ export default defineComponent({
   middleware({ $config, redirect, localeLocation }) {
     if ($config.STORE !== 'B2B')
       return redirect(localeLocation('/login') as unknown as string)
-
-    const { approved } = storeToRefs(useCustomer())
-    console.log(approved.value)
   },
   setup() {
     const { approved } = storeToRefs(useCustomer())
