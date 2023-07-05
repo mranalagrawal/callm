@@ -2,13 +2,14 @@
 import { computed, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import { useRecentProductsStore } from '@/store/recent'
+import type { IProductMapped } from '~/types/product'
 
 export default {
   setup() {
     const recentProductsStore = useRecentProductsStore()
     const { recentProducts } = storeToRefs(recentProductsStore)
     const { $cmwRepo } = useContext()
-    const productsRef = ref<Record<string, any>[]>([])
+    const productsRef = ref<IProductMapped[]>([])
     const query = computed(() => `tag:active AND ${recentProducts.value.join(' OR ')}`)
 
     const { fetch } = useFetch(async ({ $productMapping, $handleApiErrors }) => {

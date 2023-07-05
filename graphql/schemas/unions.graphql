@@ -1,1 +1,4 @@
 union PricingValue = MoneyV2 | PricingPercentageValue
+#A delivery address of the buyer that is interacting with the cart.
+union DeliveryAddress = MailingAddress
+union Merchandise = ProductVariant

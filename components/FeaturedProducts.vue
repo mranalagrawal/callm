@@ -1,24 +1,13 @@
 <script lang="ts">
 import { ref, useFetch } from '@nuxtjs/composition-api'
-import getCollection from '@/graphql/queries/getCollection.graphql'
 import type { ICollection } from '~/types/collection'
 import { initialCollectionData } from '~/types/collection'
 
 export default {
   setup() {
     const collectionRef = ref<ICollection>(initialCollectionData)
-    useFetch(async ({ $i18n, $graphql, $productMapping, $handleApiErrors }) => {
-      await $graphql.default.request(getCollection, {
-        lang: $i18n.locale.toUpperCase(),
-        handle: 'home-shelf-1',
-      })
-        .then(({ collection }) => {
-          collectionRef.value = {
-            ...collection,
-            products: collection.products.nodes.length && $productMapping.fromShopify(collection.products.nodes),
-          }
-        })
-        .catch((err: Error) => $handleApiErrors(`Catch getting home-shelf-1 from Shopify: ${err}`))
+    useFetch(async ({ $cmwRepo }) => {
+      collectionRef.value = await $cmwRepo.products.getCollectionsByHandle({ handle: 'home-shelf-1' })
     })
     return { collectionRef }
   },
@@ -27,7 +16,7 @@ export default {
 
 <template>
   <div class="container my-5">
-    <CarouselProducts v-if="!!collectionRef.products.length" :products="collectionRef.products" :title="collectionRef.description" />
+    <CarouselProducts v-if="!!collectionRef.products?.length" :products="collectionRef.products" :title="collectionRef.description" />
     <div class="mt-5">
       <Button
         class="w-[min(100%,_10rem)] m-inline-auto"

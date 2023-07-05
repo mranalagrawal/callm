@@ -413,16 +413,16 @@ export default {
 
   methods: {
     getLocaleFromCurrencyCode,
-    handleOnFooterClick() {
+    handleOnFooterClick({ price_from = '', price_to = '' }) {
       this.cmwActiveSelect = ''
       this.showMobileFilters = false
       this.$router.push({
         path: '/catalog',
         query: {
           ...this.$route.query,
-          price_from: this.minPrice,
-          price_to: this.maxPrice,
-          page: 1,
+          price_from, // : this.minPrice,
+          price_to, // : this.maxPrice,
+          page: '1',
         },
       })
     },
@@ -544,47 +544,14 @@ export default {
         v-if="Object.keys(aggregations).length"
         :key="JSON.stringify(inputParameters) || 'categories-filters-components'"
         :aggregations="aggregations" :input-parameters="inputParameters"
+        @update-value-selections="handleUpdateValueSelections"
+        @update-value="handleUpdateValue"
+        @handle-on-footer-click="handleOnFooterClick"
       />
-      <!-- selectedFilters -->
-      <div class="flex justify-between items-center">
-        <div>
-          <div
-            v-if="(activeSelections && activeSelections.length > 0) || Object.values(view).filter((el) => el != null).length > 0"
-          >
-            <div v-if="!!activeSelections.length || !!Object.keys(view).length" class="my-4 flex gap-2">
-              <!-- selections -->
-              <template v-if="!!activeSelections?.length">
-                <CmwChip
-                  v-for="item in activeSelections" :key="item" size="xs"
-                  :label="$t(`selections.${item}`)" :on-delete="() => removeSelectionFromQuery(item)"
-                />
-              </template>
-              <!-- other filters -->
-
-              <template v-if="!!Object.keys(view).length">
-                <CmwChip
-                  v-for="(item) in Object.entries(view).filter(
-                    (el) => el[1] !== null,
-                  )" :key="item[1].name" size="xs"
-                  :label="item[1].name" :on-delete="() => removeSelectionFromQuery(item[1].field)"
-                />
-              </template>
-            </div>
-          </div>
-        </div>
-        <div v-if="!!activeSelections.length || Object.values(view).some(v => v !== null)">
-          <Button
-            variant="text"
-            size="sm"
-            class=""
-            @click.native="resetFilter"
-          >
-            <span class="text-body flex items-center gap-1">
-              <VueSvgIcon :data="require(`@/assets/svg/close.svg`)" width="14" height="14" />
-              {{ $t('search.removeAll') }}</span>
-          </Button>
-        </div>
-      </div>
+      <CategoriesActiveSelections
+        :input-parameters="inputParameters" :view="view"
+        @remove-selection-from-query="removeSelectionFromQuery" @reset-filter="resetFilter"
+      />
       <p v-html="seoData.pageDescription" />
     </div>
     <ProductsResultsList :results="results" :total="total" @update-sort-value="handleUpdateSortValue" />

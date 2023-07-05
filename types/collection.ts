@@ -1,3 +1,4 @@
+import type { IProductMapped } from '~/types/product'
 import type { TImage } from '~/types/types'
 
 export interface ICollection {
@@ -15,7 +16,7 @@ export interface ICollection {
   // # Connections
   // products(first: Int, reverse: Boolean): ProductConnection
   link: { value: '' }
-  products: []
+  products: IProductMapped[]
 
 }
 

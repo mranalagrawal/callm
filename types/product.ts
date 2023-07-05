@@ -53,24 +53,28 @@ export interface IBaseProductMapped {
   availableForSale: boolean
   id: string | number
   image: IProductImage
+  quantityAvailable: number
   shopify_product_id: string | number
   shopify_product_variant_id: string | number
-  quantityAvailable: number
   title: string
 }
 
 export interface IProductMapped extends IBaseProductMapped {
-  awards: IProductAward[]
-  gtmProductData: any
-  availableFeatures: TProductFeatures[]
-  descriptionHtml: HTMLElement | string
-  sku: string
-  // awards: []
   // availableForSale: boolean
-  // compareAtPrice: IMoneyV2
+  // awards: []
   // handle: []
   // shopify_product_id: string
   // shopify_product_variant_id: string
+  availableFeatures: TProductFeatures[]
+  awards: IProductAward[]
+  compareAtPrice: IMoneyV2
+  descriptionHtml: HTMLElement | string
+  details: Record<string, any> // Todo: type this
+  gtmProductData: any
+  priceLists: Record<string, any>
+  sku: string
+  source_id: string | number
+  url: string
 }
 
 interface IGiftCardVariantMapped extends IBaseProductMapped {

@@ -2,7 +2,7 @@
 import {
   defineComponent,
   inject, provide, readonly,
-  ref,
+  ref, useContext,
   useFetch,
   useRoute,
   useRouter,
@@ -10,6 +10,7 @@ import {
 import chevronLeftIcon from 'assets/svg/chevron-left.svg'
 import chevronRightIcon from 'assets/svg/chevron-right.svg'
 import filterIcon from 'assets/svg/filter.svg'
+import type { RawLocation } from 'vue-router'
 import type { TStores } from '~/config/themeConfig'
 import themeConfig from '~/config/themeConfig'
 import { shopifyRichTexttoHTML } from '~/utilities/shopify'
@@ -23,7 +24,7 @@ export default defineComponent({
     return $config.STORE
   },
   setup() {
-    // const { i18n } = useContext()
+    const { localeLocation } = useContext()
     const router = useRouter()
     const route = useRoute()
     const pageData = ref({})
@@ -80,6 +81,20 @@ export default defineComponent({
       })
     }
 
+    const handleOnFooterClick = ({ price_from = '', price_to = '' }) => {
+      cmwActiveSelect.value = ''
+      showMobileFilters.value = false
+      router.push(localeLocation({
+        path: '/catalog',
+        query: {
+          ...route.value.query,
+          price_from,
+          price_to,
+          page: '1',
+        },
+      }) as RawLocation)
+    }
+
     const sortBy = (field: any, direction: any) => {
       const query = {
         ...inputParameters.value,
@@ -101,7 +116,7 @@ export default defineComponent({
     const { fetch } = useFetch(async ({ $config, $cmw, $cmwRepo, $handleApiErrors, $route, $i18n }) => {
       await $cmwRepo.shopifyPages.getPageByHandle({ handle: $route.params.handle })
         .then(async ({ page }) => {
-          if (!Object.keys(page).length)
+          if (!page || !Object.keys(page).length)
             return
 
           const store = $config.STORE as TStores || 'CMW_UK'
@@ -131,7 +146,7 @@ export default defineComponent({
             return redirect(301, localeLocation(`${$route.fullPath.replaceAll(`-C${matched}`, `-M${matched}`)}`))
           } */
         })
-        .catch((err: Error) => $handleApiErrors(`Catch getting pageData from shopify: ${err}`))
+        .catch((err: Error) => $handleApiErrors(`Catch getting getPageByHandle from shopify: ${err}`))
     })
 
     return {
@@ -142,6 +157,7 @@ export default defineComponent({
       currentPage,
       fetch,
       filterIcon,
+      handleOnFooterClick,
       handleUpdateSortValue,
       handleUpdateTrigger,
       handleUpdateValue,
@@ -159,34 +175,47 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="Object.keys(pageData).length" class="max-w-screen-xl mx-auto py-4 px-4 mt-4">
-    <h1 class="h3" v-text="pageData.title" />
-    <CategoriesMainFilters
-      v-if="Object.keys(inputParameters).length && Object.keys(aggregationsRef).length"
-      :aggregations="aggregationsRef" :input-parameters="inputParameters"
-      @item-clicked="handleUpdateValue"
-    />
-
-    <div v-if="isDesktop">
-      <!-- Filter Components -->
-      <CategoriesFiltersComponents
+  <div class="max-w-screen-xl mx-auto py-4 px-4 mt-4">
+    <template v-if="!!results.length && Object.keys(pageData).length">
+      <h1 class="h3" v-text="pageData.title" />
+      <CategoriesMainFilters
         v-if="Object.keys(inputParameters).length && Object.keys(aggregationsRef).length"
         :aggregations="aggregationsRef" :input-parameters="inputParameters"
+        @item-clicked="handleUpdateValue"
       />
+
+      <div v-if="isDesktop">
+        <!-- Filter Components -->
+        <CategoriesFiltersComponents
+          v-if="Object.keys(inputParameters).length && Object.keys(aggregationsRef).length"
+          :aggregations="aggregationsRef" :input-parameters="inputParameters"
+          @update-value-selections="handleUpdateValueSelections"
+          @update-value="handleUpdateValue"
+          @handle-on-footer-click="handleOnFooterClick"
+        />
+      </div>
+      <div v-html="shortDescription" />
+      <ProductsResultsList :results="results" :total="total" @update-sort-value="handleUpdateSortValue" />
+      <CategoriesPagination :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters" />
+      <div class="py-12" v-html="pageData?.body" />
+      <div v-if="!isDesktop" class="sticky bottom-8 w-[min(100%,_14rem)] m-inline-auto">
+        <Button @click.native="showMobileFilters = !showMobileFilters">
+          <VueSvgIcon width="28" height="28" :data="filterIcon" />
+          <span class="ml-2">{{ $t('search.showFilters') }}</span>
+        </Button>
+      </div>
+      <CategoriesFiltersComponentsMobile
+        v-if="!isDesktop && showMobileFilters && Object.keys(inputParameters).length && Object.keys(aggregationsRef).length"
+        :aggregations="aggregationsRef" :input-parameters="inputParameters"
+        @update-value-selections="handleUpdateValueSelections"
+        @update-value="handleUpdateValue"
+      />
+    </template>
+    <div v-else>
+      <p class="text-lg font-light mt-5">
+        {{ $t('search.noResultsAlert') }}
+      </p>
+      <div v-html="$t('search.noResultsMessage')" />
     </div>
-    <div v-html="shortDescription" />
-    <ProductsResultsList :results="results" :total="total" @update-sort-value="handleUpdateSortValue" />
-    <CategoriesPagination :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters" />
-    <div class="py-12" v-html="pageData?.body" />
-    <div v-if="!isDesktop" class="sticky bottom-8 w-[min(100%,_14rem)] m-inline-auto">
-      <Button @click.native="showMobileFilters = !showMobileFilters">
-        <VueSvgIcon width="28" height="28" :data="filterIcon" />
-        <span class="ml-2">{{ $t('search.showFilters') }}</span>
-      </Button>
-    </div>
-    <CategoriesFiltersComponentsMobile
-      v-if="!isDesktop && showMobileFilters && Object.keys(inputParameters).length && Object.keys(aggregationsRef).length"
-      :aggregations="aggregationsRef" :input-parameters="inputParameters"
-    />
   </div>
 </template>
