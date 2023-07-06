@@ -36,27 +36,18 @@ export default defineComponent({
       if (!this.canAddMore)
         return
 
-      const lines = {
-        merchandiseId: this.item.merchandise.id,
-        quantity: 1,
-      }
-      const updated = await this.shopifyCart.addProductToCart(lines)
+      const updated = await this.shopifyCart.addProductToCart(this.item, true)
       this.shopifyCart.shopifyCart = updated
-
-      /* this.$store.commit('userCart/addProduct', {
-        id: this.item.productVariantId,
-        gtmProductData: this.item.gtmProductData || {},
-      }) */
     },
     async decreaseQuantity() {
       if (this.item.quantity === 0)
         return
 
-      const updated = await this.shopifyCart.updateItemInCart(this.item.id, this.item.quantity - 1)
+      const updated = await this.shopifyCart.updateItemInCart(this.item, this.item.quantity - 1, true)
       this.shopifyCart.shopifyCart = updated
     },
     async removeLine() {
-      const updated = await this.shopifyCart.updateItemInCart(this.item.id, 0)
+      const updated = await this.shopifyCart.updateItemInCart(this.item, 0, true)
       this.shopifyCart.shopifyCart = updated
     },
   },

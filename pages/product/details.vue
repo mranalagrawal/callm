@@ -323,14 +323,8 @@ export default defineComponent({
         this.$cookies.set('cartId', this.shopifyCart.id)
       }
 
-      // prepare cart lines
-      const lines = {
-        merchandiseId: this.product.shopify_product_variant_id,
-        quantity: 1,
-      }
-
       // add product to cart
-      const updated = await this.addProductToCart(lines)
+      const updated = await this.addProductToCart(this.product)
       this.shopifyCart = updated
       this.flashMessage.show({
         status: '',
@@ -345,8 +339,7 @@ export default defineComponent({
       if (this.cartQuantity === 0)
         return
 
-      const lineId = this.shopifyCart.lines.edges.find(el => el.node.merchandise.id === this.product.shopify_product_variant_id).node.id
-      const updated = await this.updateItemInCart(lineId, this.cartQuantity - 1)
+      const updated = await this.updateItemInCart(this.product, this.cartQuantity - 1)
       this.shopifyCart = updated
     },
   },
