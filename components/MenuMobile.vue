@@ -26,10 +26,10 @@ export default defineComponent({
       }
     }
 
-    const handleAfterEnter = (target: { querySelector: (arg0: string) => any }) => {
+    /* const handleAfterEnter = (target: { querySelector: (arg0: string) => any }) => {
       const scrollableEl = target.querySelector('.js-scroll')
       scrollableEl && scrollableEl.scrollTo({ left: 0, top: 0, behavior: 'smooth' })
-    }
+    } */
 
     const mappedMenu = computed(() => props.menu?.map(menu => ({
       ...menu,
@@ -48,7 +48,7 @@ export default defineComponent({
       chevronRightIcon,
       closeIcon,
       closeSidebar,
-      handleAfterEnter,
+      // handleAfterEnter,
       mappedMenu,
     }
   },
