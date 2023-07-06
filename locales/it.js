@@ -60,6 +60,10 @@ export default {
     subscribed: 'sottoscritto',
     unsubscribed: 'non iscritto',
     headline: 'Newsletter con promozioni è novità su tutto il catalogo di Callmewine',
+    frequency: {
+      DAILY: 'Giornaliera',
+      WEEKLY: 'Settimanale',
+    },
     splash: {
       headline: 'Iscriviti alla nostra Newsletter per ricevere ogni giorno sconti, promozioni e novità!',
       offer: 'Subito per te uno sconto del 5% sul tuo primo ordine!',

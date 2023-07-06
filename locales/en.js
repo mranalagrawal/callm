@@ -60,6 +60,10 @@ export default {
     subscribed: 'subscribed',
     unsubscribed: 'unsubscribed',
     headline: 'Newsletter with promotions and news on the entire Callmewine catalogue',
+    frequency: {
+      DAILY: 'Daily',
+      WEEKLY: 'Weekly',
+    },
     splash: {
       headline: 'Subscribe to our newsletter to receive discounts, promotions and news every day!',
       offer: 'Immediately for you a 5% discount on your first order!',
