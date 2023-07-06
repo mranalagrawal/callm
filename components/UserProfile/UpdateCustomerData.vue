@@ -17,9 +17,6 @@ export default defineComponent({
     const { customerUpdateData } = customerStore
     const { acceptsMarketing, firstName, lastName, phone } = toRefs(editingCustomer.value)
 
-    // DAILY|WEEKLY per IT DE FR UK
-    // B2B per B2B
-    // NOT_ACTIVE → serve a eliminare(svuotare) il metadato
     const frequencies = [
       {
         uuid: 'DAILY',

@@ -32,6 +32,9 @@ export default defineComponent({
     return $config.STORE
   },
   setup() {
+    if (process.client)
+      window.scrollTo(0, 0)
+
     const { i18n, $config, $graphql, $cmwRepo, error, redirect, localeLocation, $cmwGtmUtils, $productMapping } = useContext()
     const customerStore = useCustomer()
     const recentProductsStore = useRecentProductsStore()
