@@ -351,4 +351,5 @@ export default {
   bundle: {
     whatIsInTheBox: 'The products that you will receive:',
   },
+  productDescriptionTab: '{productTitle} DESCRIPTION',
 }

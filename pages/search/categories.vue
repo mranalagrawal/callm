@@ -1,15 +1,25 @@
-<script>
-import { computed, onMounted, useContext, useRoute, watch } from '@nuxtjs/composition-api'
+<script lang="ts">
+import {
+  computed, defineComponent,
+  onMounted,
+  ref,
+  useContext,
+  useFetch,
+  useMeta,
+  useRoute,
+  watch,
+} from '@nuxtjs/composition-api'
 
-export default {
-  layout(context) {
-    return context.$config.STORE
+export default defineComponent({
+  layout({ $config }) {
+    return $config.STORE
   },
   setup() {
+    const { req } = useContext()
     const route = useRoute()
     const { $cmwGtmUtils } = useContext()
 
-    const filtersObj = key => ({
+    const filtersObj = (key: string): string => ({
       V: 'winelists',
       C: 'categories',
       R: 'regions',
@@ -18,18 +28,34 @@ export default {
       N: 'countries',
       M: 'macros',
       null: 'selections',
-    })[key]
+    })[key] || ''
 
+    const canonicalUrl = ref('')
     const { filter_key_1, filter_key_2, filter_id_1, filter_id_2 } = route.value.params
 
     /* Merge all url parameters */
-    const inputParameters = computed(() => ({
+    const inputParameters = computed<Record<string, any>>(() => ({
       ...route.value.query,
       ...((filter_key_1 && filter_id_1) && { [filtersObj(filter_key_1)]: filter_id_1 }),
       ...((filter_key_2 && filter_id_2) && { [filtersObj(filter_key_2)]: filter_id_2 }),
     }))
 
     const isSearchPage = computed(() => Object.keys(inputParameters.value).includes('search'))
+
+    useFetch(() => {
+      if (process.server)
+        canonicalUrl.value = `https://${req?.headers.host}${req?.url}`
+
+      if (process.client && typeof window !== 'undefined')
+        canonicalUrl.value = window.location?.href
+    })
+
+    useMeta(() => ({
+      link: [{
+        rel: 'canonical',
+        href: canonicalUrl.value,
+      }],
+    }))
 
     watch(() => inputParameters.value, () => {
       process.browser && $cmwGtmUtils.pushPage(isSearchPage.value ? 'searchresult' : 'list')
@@ -38,9 +64,14 @@ export default {
       process.browser && $cmwGtmUtils.pushPage(isSearchPage.value ? 'searchresult' : 'list')
     })
 
-    return { inputParameters, filtersObj }
+    return {
+      canonicalUrl,
+      filtersObj,
+      inputParameters,
+    }
   },
-}
+  head: {},
+})
 </script>
 
 <template>

@@ -10,14 +10,14 @@ export default defineComponent({
       required: false,
     },
   },
-  setup() {
-    return { }
-  },
 })
 </script>
 
 <template>
   <div class="mt-6">
+    <div class="h2">
+      {{ $t('productDescriptionTab', { productTitle: product?.title }) }}
+    </div>
     <div v-html="product?.descriptionHtml" />
   </div>
 </template>
