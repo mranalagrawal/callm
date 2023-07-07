@@ -107,7 +107,7 @@ export default defineComponent({
         <VueSlickCarousel v-if="!!slides.length" v-bind="settingsTop" class="py-4">
           <div v-for="productor in slides" :key="productor.name">
             <nuxt-link
-              :to="productor.link"
+              :to="localePath({ name: 'winery-handle', params: { handle: `${productor.link}.htm` } })"
               class="flex bg-white mx-2 p-1 border border-gray-light rounded-sm border-gray-light shadow-elevation"
             >
               <img
@@ -122,7 +122,7 @@ export default defineComponent({
         <VueSlickCarousel v-if="!!slides.length" v-bind="settingsBottom" class="py-4">
           <div v-for="productor in slides" :key="productor.name">
             <nuxt-link
-              :to="productor.link"
+              :to="localePath({ name: 'winery-handle', params: { handle: `${productor.link}.htm` } })"
               class="flex bg-white mx-2 p-1 border border-gray-light rounded-sm border-gray-light shadow-elevation"
             >
               <img
