@@ -351,4 +351,5 @@ export default {
   bundle: {
     whatIsInTheBox: 'Produkte der Degustationskasse:',
   },
+  productDescriptionTab: 'BESCHREIBUNG DES {productTitle}',
 }

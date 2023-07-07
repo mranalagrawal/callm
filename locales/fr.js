@@ -350,4 +350,5 @@ export default {
   bundle: {
     whatIsInTheBox: 'Produits de la Dégustation:',
   },
+  productDescriptionTab: 'DESCRIPTION DU {productTitle}',
 }

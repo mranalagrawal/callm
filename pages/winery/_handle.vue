@@ -6,7 +6,8 @@ import {
   onMounted,
   ref,
   useContext,
-  useFetch, useMeta,
+  useFetch,
+  useMeta,
   useRoute,
 } from '@nuxtjs/composition-api'
 import chevronLeftIcon from 'assets/svg/chevron-left.svg'
@@ -46,7 +47,7 @@ export default defineComponent({
     return $config.STORE
   },
   setup() {
-    const { $graphql, i18n, redirect, $cmwGtmUtils, localeLocation } = useContext()
+    const { $graphql, i18n, redirect, $cmwGtmUtils, localeLocation, req } = useContext()
     const route = useRoute()
     const isDesktop = inject('isDesktop')
     const partnerC1 = ref(null)
@@ -75,6 +76,7 @@ export default defineComponent({
       region: '',
     })
 
+    const canonicalUrl = ref('')
     const query = computed(() => {
       const pathParts = route.value?.path.split('-')
       if (!pathParts)
@@ -84,6 +86,12 @@ export default defineComponent({
     })
 
     const { fetch } = useFetch(async () => {
+      if (process.server)
+        canonicalUrl.value = `https://${req?.headers.host}${req?.url}`
+
+      if (process.client && typeof window !== 'undefined')
+        canonicalUrl.value = window.location?.href
+
       const { articles } = await $graphql.default.request(getArticles, {
         lang: i18n.locale.toUpperCase(),
         first: 1,
@@ -114,16 +122,14 @@ export default defineComponent({
           content: brand.value?.seo?.description || '',
         },
       ],
-      /* link: metaFields.value?.hrefLang
-        && Object.keys(this.metaFields.hrefLang).length && Object.entries(this.metaFields.hrefLang).map(el => ({
-        hid: `alternate-${el[0]}`,
-        rel: 'alternate',
-        href: el[1],
-        hreflang: el[0],
-      })), */
+      link: [{
+        rel: 'canonical',
+        href: canonicalUrl.value,
+      }],
     }))
 
     return {
+      canonicalUrl,
       brand,
       c1,
       c2,
