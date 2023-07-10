@@ -86,11 +86,15 @@ export default defineComponent({
     })
 
     const { fetch } = useFetch(async () => {
-      if (process.server)
-        canonicalUrl.value = `https://${req?.headers.host}${req?.url}`
+      if (process.server && req?.headers && req?.url)
+        canonicalUrl.value = `https://${req.headers.host}${encodeURIComponent(req.url)}`
 
-      if (process.client && typeof window !== 'undefined')
-        canonicalUrl.value = window.location?.href
+      if (process.client && typeof window !== 'undefined') {
+        const { origin, pathname, search } = window.location
+        const encodedPath = pathname ? encodeURIComponent(pathname) : ''
+        const encodedSearch = search ? encodeURIComponent(search) : ''
+        canonicalUrl.value = `${origin}${encodedPath}${encodedSearch}`
+      }
 
       const { articles } = await $graphql.default.request(getArticles, {
         lang: i18n.locale.toUpperCase(),
