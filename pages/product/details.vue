@@ -24,6 +24,7 @@ import { useCustomer } from '@/store/customer'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import favouriteIcon from '~/assets/svg/selections/favourite.svg'
 import getArticles from '~/graphql/queries/getArticles'
+import { useCustomerOrders } from '~/store/customerOrders'
 import { generateKey } from '~/utilities/strings'
 import { useShopifyCart } from '~/store/shopifyCart'
 
@@ -35,7 +36,7 @@ export default defineComponent({
     if (process.client)
       window.scrollTo(0, 0)
 
-    const { i18n, $config, $graphql, $cmwRepo, error, redirect, localeLocation, $cmwGtmUtils, $productMapping } = useContext()
+    const { i18n, $config, $graphql, $cmwRepo, error, redirect, localeLocation, $cmwGtmUtils, $productMapping, $dayjs } = useContext()
     const customerStore = useCustomer()
     const recentProductsStore = useRecentProductsStore()
     const { recentProducts } = storeToRefs(recentProductsStore)
@@ -45,6 +46,9 @@ export default defineComponent({
     const { getCartLines, createShopifyCart, addProductToCart, updateItemInCart } = shopifyCartV
 
     const { customer, wishlistArr, customerId, getCustomerType } = storeToRefs(customerStore)
+
+    const customerOrders = useCustomerOrders()
+    const { getCanOrder } = customerOrders
 
     const { handleWishlist } = customerStore
     const route = useRoute()
@@ -99,6 +103,9 @@ export default defineComponent({
       },
     })
 
+    const canBuy = ref(false)
+    const amountMax = ref(null)
+
     const { handleShowRequestModal } = useShowRequestModal()
 
     useFetch(async ({ $sentry }) => {
@@ -143,6 +150,11 @@ export default defineComponent({
               brand.value = articles.nodes[0]
               brandMetaFields.value = articles.nodes[0].details && JSON.parse(articles.nodes[0].details.value)
             }
+
+            amountMax.value = productDetails.value.amountMax[$config.SALECHANNEL]
+            // product limited and user not logged
+            const query = `processed_at:>${$dayjs().subtract(4, 'weeks').format('YYYY-MM-DD')}`
+            canBuy.value = await getCanOrder(productVariant.value.id, amountMax.value, query)
           } else {
             return error({ statusCode: 404, message: 'No results' })
           }
@@ -167,6 +179,8 @@ export default defineComponent({
 
       return 'No description available.'
     })
+
+    /* const amountMax = computed(() => productDetails.value.amountMax[$config.SALECHANNEL]) */
 
     const finalPrice = computed(() => {
       if (!productDetails.value.feId)
@@ -228,38 +242,41 @@ export default defineComponent({
     }))
 
     return {
-      shopifyCart,
-      getCartLines,
-      createShopifyCart,
-      addProductToCart,
-      updateItemInCart,
-      customer,
-      product,
-      productVariant,
-      productDetails,
-      productBreadcrumbs,
-      isOnSale,
-      isOnFavourite,
-      gtmProductData,
-      finalPrice,
-      strippedContent,
-      wishlistArr,
-      brandMetaFields,
-      brand,
-      isOpen,
-      cartIcon,
       addIcon,
-      subtractIcon,
-      heartIcon,
-      heartFullIcon,
-      favouriteIcon,
-      emailIcon,
-      showRequestModal,
+      addProductToCart,
+      amountMax,
+      brand,
+      brandMetaFields,
+      canBuy,
+      cartIcon,
+      createShopifyCart,
+      customer,
       customerId,
-      getCustomerType,
-      handleWishlist,
-      handleShowRequestModal,
+      emailIcon,
+      favouriteIcon,
+      finalPrice,
       generateMetaLink,
+      getCanOrder,
+      getCartLines,
+      getCustomerType,
+      gtmProductData,
+      handleShowRequestModal,
+      handleWishlist,
+      heartFullIcon,
+      heartIcon,
+      isOnFavourite,
+      isOnSale,
+      isOpen,
+      product,
+      productBreadcrumbs,
+      productDetails,
+      productVariant,
+      shopifyCart,
+      showRequestModal,
+      strippedContent,
+      subtractIcon,
+      updateItemInCart,
+      wishlistArr,
     }
   },
   head: {},
@@ -460,54 +477,106 @@ export default defineComponent({
               </div>
               <div class="ml-auto mr-4">
                 <div class="">
-                  <p
-                    v-if="product.quantityAvailable > 0" class="text-success text-center"
-                    :class="{ hidden: product.quantityAvailable > 6 }"
-                  >
-                    {{ $t('product.available', { quantity: product.quantityAvailable }) }}
-                  </p>
-                  <p v-else class="text-primary-400">
-                    {{ $t('product.notAvailable') }}
-                  </p>
+                  <div v-if="!amountMax">
+                    <p
+                      v-if="product.quantityAvailable > 0" class="text-success text-center"
+                      :class="{ hidden: product.quantityAvailable > 6 }"
+                    >
+                      {{ $t('product.available', { quantity: product.quantityAvailable }) }}
+                    </p>
+                    <p v-else class="text-primary-400">
+                      {{ $t('product.notAvailable') }}
+                    </p>
+                  </div>
                   <div v-if="product.availableForSale" class="relative">
-                    <Button
-                      class="gap-2 pl-2 pr-3 py-2"
-                      :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
-                      @click.native="addToUserCart"
-                    >
-                      <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
-                      <span class="text-sm" v-text="$t('product.addToCart')" />
-                    </Button>
-                    <Badge
-                      v-show="cartQuantity && !isOpen"
-                      class="absolute top-0 left-full transform -translate-x-1/2 -translate-y-1/2"
-                      bg-color="primary-400" :qty="cartQuantity"
-                    />
-                    <div
-                      v-show="isOpen"
-                      class="absolute grid grid-cols-[50px_auto_50px] items-center w-full h-[50px] top-0 left-0"
-                      @mouseleave="isOpen = false"
-                    >
-                      <button
-                        class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l hover:(bg-primary)"
-                        :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
-                        @click="removeFromUserCart"
+                    <div v-if="!amountMax">
+                      <Button
+                        class="gap-2 pl-2 pr-3 py-2"
+                        :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
+                        @click.native="addToUserCart"
                       >
-                        <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="white" />
-                      </button>
-                      <div class="flex h-[40px] bg-primary-400 text-white text-center">
-                        <span class="m-auto text-sm">{{ cartQuantity }}</span>
+                        <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
+                        <span class="text-sm" v-text="$t('product.addToCart')" />
+                      </Button>
+                      <Badge
+                        v-show="cartQuantity && !isOpen"
+                        class="absolute top-0 left-full transform -translate-x-1/2 -translate-y-1/2"
+                        bg-color="primary-400" :qty="cartQuantity"
+                      />
+                      <div
+                        v-show="isOpen"
+                        class="absolute grid grid-cols-[50px_auto_50px] items-center w-full h-[50px] top-0 left-0"
+                        @mouseleave="isOpen = false"
+                      >
+                        <button
+                          class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l hover:(bg-primary)"
+                          :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
+                          @click="removeFromUserCart"
+                        >
+                          <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="white" />
+                        </button>
+                        <div class="flex h-[40px] bg-primary-400 text-white text-center">
+                          <span class="m-auto text-sm">{{ cartQuantity }}</span>
+                        </div>
+                        <button
+                          class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-r
+                          hover:(bg-primary)
+                          disabled:(bg-primary-100 cursor-not-allowed)"
+                          :disabled="!canAddMore"
+                          :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
+                          @click="addToUserCart"
+                        >
+                          <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
+                        </button>
                       </div>
-                      <button
-                        class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-r
-                        hover:(bg-primary)
-                        disabled:(bg-primary-100 cursor-not-allowed)"
-                        :disabled="!canAddMore"
-                        :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
-                        @click="addToUserCart"
-                      >
-                        <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
-                      </button>
+                    </div>
+                    <div v-else>
+                      <div v-if="customerId">
+                        <div v-if="canBuy">
+                          <Button
+                            class="gap-2 pl-2 pr-3 py-2"
+                            :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
+                            @click.native="addToUserCart"
+                          >
+                            <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
+                            <span class="text-sm" v-text="$t('product.addToCart')" />
+                          </Button>
+                          <Badge
+                            v-show="cartQuantity && !isOpen"
+                            class="absolute top-0 left-full transform -translate-x-1/2 -translate-y-1/2"
+                            bg-color="primary-400" :qty="cartQuantity"
+                          />
+                          <div
+                            v-show="isOpen"
+                            class="absolute grid grid-cols-[50px_auto_50px] items-center w-full h-[50px] top-0 left-0"
+                            @mouseleave="isOpen = false"
+                          >
+                            <button
+                              class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l hover:(bg-primary)"
+                              :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
+                              @click="removeFromUserCart"
+                            >
+                              <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="white" />
+                            </button>
+                            <div class="flex h-[40px] bg-primary-400 text-white text-center">
+                              <span class="m-auto text-sm">{{ cartQuantity }}</span>
+                            </div>
+                            <button
+                              class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-r
+                              hover:(bg-primary)
+                              disabled:(bg-primary-100 cursor-not-allowed)"
+                              :disabled="!canAddMore"
+                              :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
+                              @click="addToUserCart"
+                            >
+                              <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
+                            </button>
+                          </div>
+                        </div>
+                        <div v-else>
+                          {{ $t('common.feedback.KO.maxQuantityReached') }}
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div v-else>

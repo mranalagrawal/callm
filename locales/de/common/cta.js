@@ -17,5 +17,6 @@ export default {
     notifyMe: 'Benachrichtigen Sie mich, wenn es ankommt',
     readMore: 'Lesen Sie alles',
     subscribe: 'melden Sie mich an',
+    cannot_order: '',
   },
 }

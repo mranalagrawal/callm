@@ -17,5 +17,6 @@ export default {
     notifyMe: 'Notify me when it arrives',
     readMore: 'Leggi tutto',
     subscribe: 'iscrivimi',
+    cannot_order: 'Acquistabile solo da utenti registrati',
   },
 }
