@@ -5,6 +5,7 @@ import heartIcon from 'assets/svg/heart.svg'
 import heartFullIcon from 'assets/svg/heart-full.svg'
 import cartIcon from 'assets/svg/cart.svg'
 import addIcon from 'assets/svg/add.svg'
+import closeIcon from 'assets/svg/close.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
 import emailIcon from 'assets/svg/email.svg'
 import { mapState } from 'vuex'
@@ -15,6 +16,7 @@ import { isObject } from '~/utilities/validators'
 import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { SweetAlertToast } from '~/utilities/Swal'
 import { useShopifyCart } from '~/store/shopifyCart'
+import { useCustomerOrders } from '~/store/customerOrders.ts'
 
 // noinspection JSUnusedGlobalSymbols
 export default {
@@ -33,8 +35,11 @@ export default {
     },
   },
   setup(props) {
-    const { $config, localeLocation, $gtm, $cmwGtmUtils } = useContext()
+    const { $config, localeLocation, $gtm, $cmwGtmUtils, $dayjs } = useContext()
     const customerStore = useCustomer()
+    const customerOrders = useCustomerOrders()
+    const { getCanOrder } = storeToRefs(customerOrders)
+
     const shopifyCart = useShopifyCart()
     const { wishlistArr, getCustomerType, customerId } = storeToRefs(customerStore)
     const { handleWishlist } = customerStore
@@ -90,11 +95,22 @@ export default {
       router.push(localeLocation(props.product.url))
     }
 
+    const amountMax = computed(() => props.product.details.amountMax[$config.SALECHANNEL])
+
+    const canOrder = computed(() => {
+      // product is limited and user is not logged
+      if (amountMax && !customerId)
+        return false
+
+      return true
+    })
+
     return {
       addIcon,
       cartIcon,
       customerId,
       emailIcon,
+      closeIcon,
       finalPrice,
       getCustomerType,
       gtmProductData,
@@ -111,6 +127,9 @@ export default {
       isOpen,
       subtractIcon,
       wishlistArr,
+      amountMax,
+      canOrder,
+      getCanOrder,
     }
   },
   computed: {
@@ -143,6 +162,23 @@ export default {
           text: this.$i18n.t('common.feedback.KO.addToCartReachLimit'),
         })
         return
+      }
+
+      // check for logged user and product has amountMax...
+      if (this.amountMax && this.customerId) {
+        // ... and can order amountMax
+        const amountMax = this.amountMax
+        const variantId = this.product.shopify_product_variant_id
+        const query = `processed_at:>${this.$dayjs().subtract(4, 'weeks').format('YYYY-MM-DD')}`
+        const canOrder = await this.getCanOrder(variantId, amountMax, query)
+
+        if (!canOrder) {
+          await SweetAlertToast.fire({
+            icon: 'warning',
+            text: this.$i18n.t('common.feedback.KO.maxQuantityReached'),
+          })
+          return
+        }
       }
 
       const shopifyCart = this.shopifyCart
@@ -304,45 +340,46 @@ hover:shadow-elevation"
           </template>
         </i18n-n>
         <div v-if="product.availableForSale" class="relative">
-          <Button
-            class="gap-2 pl-2 pr-3 py-2"
-            :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
-            @click.native="addToUserCart"
-          >
-            <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
-            <span class="text-sm" v-text="$t('product.addToCart')" />
-          </Button>
-          <Badge
-            v-show="cartQuantity && !isOpen"
-            class="absolute top-0 left-full transform -translate-x-1/2 -translate-y-1/2"
-            bg-color="primary-400" :qty="cartQuantity"
-          />
-          <div
-            v-show="isOpen"
-            class="absolute grid grid-cols-[50px_auto_50px] items-center w-full h-[50px] top-0 left-0"
-            @mouseleave="isOpen = false"
-          >
-            <button
-              class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l hover:(bg-primary)"
-              :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
-              @click="removeFromUserCart"
+          <div v-if="canOrder">
+            <Button
+              class="gap-2 pl-2 pr-3 py-2"
+              :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
+              @click.native="addToUserCart"
             >
-              <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="white" />
-            </button>
-            <div class="flex h-[40px] bg-primary-400 text-white text-center">
-              <span class="m-auto text-sm">{{ cartQuantity }}</span>
+              <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
+              <span class="text-sm" v-text="$t('product.addToCart')" />
+            </Button>
+            <Badge
+              v-show="cartQuantity && !isOpen"
+              class="absolute top-0 left-full transform -translate-x-1/2 -translate-y-1/2"
+              bg-color="primary-400" :qty="cartQuantity"
+            />
+            <div
+              v-show="isOpen"
+              class="absolute grid grid-cols-[50px_auto_50px] items-center w-full h-[50px] top-0 left-0"
+              @mouseleave="isOpen = false"
+            >
+              <button
+                class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l hover:(bg-primary)"
+                :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
+                @click="removeFromUserCart"
+              >
+                <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="white" />
+              </button>
+              <div class="flex h-[40px] bg-primary-400 text-white text-center">
+                <span class="m-auto text-sm">{{ cartQuantity }}</span>
+              </div>
+              <button
+                class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-r
+                hover:(bg-primary)
+                disabled:(bg-primary-100 cursor-not-allowed)"
+                :disabled="!canAddMore"
+                :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
+                @click="addToUserCart"
+              >
+                <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
+              </button>
             </div>
-            <button
-              class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-r
-               hover:(bg-primary)
-               disabled:(bg-primary-100 cursor-not-allowed)"
-              :disabled="!canAddMore"
-              :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
-              @click="addToUserCart"
-            >
-              <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
-            </button>
-          </div>
           <!-- Clarify: In case the user is not logged we could just ask for his email in the SweetAlert confirm and also invite the user to log  -->
           <!-- Clarify: Shall we open a SweetAlert confirmation modal first? or just send the email?  -->
           <!-- Todo: Implement send email functionality on Backend -->
@@ -352,6 +389,15 @@ hover:shadow-elevation"
             <span class="text-sm" v-text="$t('product.notifyMe')" />
           </Button>
            -->
+          </div>
+          <div v-else>
+            <Button
+              variant="ghost"
+              class="gap-2 pl-2 pr-3 py-4"
+            >
+              <span class="text-xs" v-text="$t('common.cta.cannot_order')" />
+            </Button>
+          </div>
         </div>
         <div v-else>
           <Button

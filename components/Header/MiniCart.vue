@@ -137,7 +137,7 @@ export default {
             <div
               class="text-secondary-700 flex items-center justify-center gap-2 text-sm uppercase pb-4"
             >
-            <VueSvgIcon :data="cartTotal < shipping.threshold ? deliveryIcon : checkCircularIcon" width="24" height="24" />
+              <VueSvgIcon :data="cartTotal < shipping.threshold ? deliveryIcon : checkCircularIcon" width="24" height="24" />
               <span>{{ cartTotal < shipping.threshold ? shipping.threshold_not_reached : shipping.threshold_reached }}</span>
             </div>
             <div class="px-4">
