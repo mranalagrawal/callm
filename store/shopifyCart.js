@@ -40,8 +40,34 @@ export const useShopifyCart = defineStore({
       return await data
     },
 
-    async addProductToCart(lines) {
+    // Fix me: need workaround for cartline
+    async addProductToCart(product, fromCartLine = false) {
       const cartId = this.shopifyCart.id
+
+      let lines
+      if (fromCartLine) {
+        lines = {
+          merchandiseId: product.merchandise.id,
+          quantity: 1,
+          attributes: [
+            {
+              key: 'gtmProductData',
+              value: product.attributes.find(el => el.key === 'gtmProductData').value,
+            },
+          ],
+        }
+      } else {
+        lines = {
+          merchandiseId: product.shopify_product_variant_id,
+          quantity: 1,
+          attributes: [
+            {
+              key: 'gtmProductData',
+              value: JSON.stringify(product.gtmProductData),
+            },
+          ],
+        }
+      }
 
       const variables = {
         cartId,
@@ -51,23 +77,68 @@ export const useShopifyCart = defineStore({
         .request(addProductToCart, variables)
         .then(data => data)
 
+      this.$nuxt.$gtm.push({
+        event: 'addToCart',
+        ecommerce: {
+          currencyCode: this.$nuxt.$config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
+          add: {
+            products: !fromCartLine ? [product.gtmProductData] : [JSON.parse(product.attributes.find(el => el.key === 'gtmProductData').value)],
+          },
+        },
+      })
+
       return data.cartLinesAdd.cart
     },
-    async updateItemInCart(lineId, quantity) {
+    async updateItemInCart(product, quantity, fromCartLine = false) {
       const cartId = this.shopifyCart.id
 
-      const variables = {
-        cartId,
-        lines: [
+      let lines
+      if (fromCartLine) {
+        lines = [
+          {
+            id: product.id,
+            quantity,
+            attributes: [
+              {
+                key: 'gtmProductData',
+                value: product.attributes.find(el => el.key === 'gtmProductData').value,
+              },
+            ],
+          },
+        ]
+      } else {
+        const lineId = this.shopifyCart.lines.edges.find(el => el.node.merchandise.id === product.shopify_product_variant_id).node.id
+        lines = [
           {
             id: lineId,
             quantity,
+            attributes: [
+              {
+                key: 'gtmProductData',
+                value: JSON.stringify(product.gtmProductData),
+              },
+            ],
           },
-        ],
+        ]
+      }
+
+      const variables = {
+        cartId,
+        lines,
       }
       const data = await this.$nuxt.$graphql.default
         .request(updateItemInCart, variables)
         .then(data => data)
+
+      this.$nuxt.$gtm.push({
+        event: 'removeFromCart',
+        ecommerce: {
+          currencyCode: this.$nuxt.$config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
+          add: {
+            products: !fromCartLine ? [product.gtmProductData] : [JSON.parse(product.attributes.find(el => el.key === 'gtmProductData').value)],
+          },
+        },
+      })
 
       return data.cartLinesUpdate.cart
     },
