@@ -40,8 +40,10 @@ export const useCustomerOrders = defineStore({
               t += n.quantity
               return t
             }, 0)
-          console.log(previousOrderQuantity, amountMax)
-          return previousOrderQuantity < amountMax
+          return {
+            canOrder: previousOrderQuantity < amountMax,
+            orderableQuantity: amountMax - previousOrderQuantity,
+          }
         })
         .catch((err: Error) => this.$nuxt.$handleApiErrors(`Catch on getCanOrder from Shopify: ${err}`))
     },

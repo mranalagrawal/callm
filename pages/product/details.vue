@@ -105,6 +105,7 @@ export default defineComponent({
 
     const canBuy = ref(false)
     const amountMax = ref(null)
+    const canOrderQuantity = ref(null)
 
     const { handleShowRequestModal } = useShowRequestModal()
 
@@ -154,7 +155,10 @@ export default defineComponent({
             amountMax.value = productDetails.value.amountMax[$config.SALECHANNEL]
             // product limited and user not logged
             const query = `processed_at:>${$dayjs().subtract(4, 'weeks').format('YYYY-MM-DD')}`
-            canBuy.value = await getCanOrder(productVariant.value.id, amountMax.value, query)
+
+            const { canOrder, orderableQuantity } = await getCanOrder(productVariant.value.id, amountMax.value, query)
+            canBuy.value = canOrder
+            canOrderQuantity.value = orderableQuantity
           } else {
             return error({ statusCode: 404, message: 'No results' })
           }
@@ -248,6 +252,7 @@ export default defineComponent({
       brand,
       brandMetaFields,
       canBuy,
+      canOrderQuantity,
       cartIcon,
       createShopifyCart,
       customer,
@@ -321,6 +326,14 @@ export default defineComponent({
         const newCart = await this.createShopifyCart()
         this.shopifyCart = newCart
         this.$cookies.set('cartId', this.shopifyCart.id)
+      }
+
+      if (this.cartQuantity === this.canOrderQuantity) {
+        await SweetAlertToast.fire({
+          icon: 'warning',
+          text: this.$i18n.t('common.feedback.KO.maxQuantityReached'),
+        })
+        return
       }
 
       // add product to cart

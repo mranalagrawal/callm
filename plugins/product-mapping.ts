@@ -125,7 +125,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
           source_id: `P${id}`,
           shopify_product_id,
           shopify_product_variant_id,
-          tags: [`P${id}`],
+          tags: [`P${id}`, p._source.type],
           title: p._source.name_t[lang],
           url: `/${p._source.handle_t[lang]}-P${p._source.feId}.htm`,
           vendor: p._source.brandname,
@@ -162,8 +162,8 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
             quantity: 1,
           },
           seo: {
-            description: p._source.seo.description,
-            title: p._source.seo.title,
+            description: p._source.seoDescription[lang],
+            title: p._source.seoTitle[lang],
           },
           sku: p._source.sku,
           tbd: {

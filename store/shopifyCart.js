@@ -54,6 +54,10 @@ export const useShopifyCart = defineStore({
               key: 'gtmProductData',
               value: product.attributes.find(el => el.key === 'gtmProductData').value,
             },
+            {
+              key: 'bundle',
+              value: product.attributes.find(el => el.key === 'bundle').value,
+            },
           ],
         }
       } else {
@@ -64,6 +68,10 @@ export const useShopifyCart = defineStore({
             {
               key: 'gtmProductData',
               value: JSON.stringify(product.gtmProductData),
+            },
+            {
+              key: 'bundle',
+              value: product.tags.includes('BUNDLE').toString(),
             },
           ],
         }
@@ -103,6 +111,10 @@ export const useShopifyCart = defineStore({
                 key: 'gtmProductData',
                 value: product.attributes.find(el => el.key === 'gtmProductData').value,
               },
+              {
+                key: 'bundle',
+                value: product.attributes.find(el => el.key === 'bundle').value,
+              },
             ],
           },
         ]
@@ -116,6 +128,10 @@ export const useShopifyCart = defineStore({
               {
                 key: 'gtmProductData',
                 value: JSON.stringify(product.gtmProductData),
+              },
+              {
+                key: 'bundle',
+                value: product.tags.includes('BUNDLE').toString(),
               },
             ],
           },

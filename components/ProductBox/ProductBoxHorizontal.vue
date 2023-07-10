@@ -99,7 +99,7 @@ export default {
 
     const canOrder = computed(() => {
       // product is limited and user is not logged
-      if (amountMax && !customerId)
+      if (amountMax.value && !customerId.value)
         return false
 
       return true
@@ -170,9 +170,10 @@ export default {
         const amountMax = this.amountMax
         const variantId = this.product.shopify_product_variant_id
         const query = `processed_at:>${this.$dayjs().subtract(4, 'weeks').format('YYYY-MM-DD')}`
-        const canOrder = await this.getCanOrder(variantId, amountMax, query)
 
-        if (!canOrder) {
+        const { canOrder, orderableQuantity } = await this.getCanOrder(variantId, amountMax, query)
+
+        if (!canOrder || (orderableQuantity === this.cartQuantity)) {
           await SweetAlertToast.fire({
             icon: 'warning',
             text: this.$i18n.t('common.feedback.KO.maxQuantityReached'),

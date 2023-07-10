@@ -5,6 +5,7 @@
 import { computed, defineComponent, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api'
 import addIcon from 'assets/svg/add.svg'
 import cartIcon from 'assets/svg/cart.svg'
+import closeIcon from 'assets/svg/close.svg'
 import emailIcon from 'assets/svg/email.svg'
 import heartFullIcon from 'assets/svg/heart-full.svg'
 import heartIcon from 'assets/svg/heart.svg'
@@ -63,7 +64,7 @@ export default defineComponent({
 
     const canOrder = computed(() => {
       // product is limited and user is not logged
-      if (amountMax && !customerId)
+      if (amountMax.value && !customerId.value)
         return false
 
       return true
@@ -111,6 +112,7 @@ export default defineComponent({
       addIcon,
       canOrder,
       cartIcon,
+      closeIcon,
       emailIcon,
       finalPrice,
       getCanOrder,
@@ -132,6 +134,9 @@ export default defineComponent({
       showRequestModal,
       subtractIcon,
       wishlistArr,
+      amountMax,
+      customerId,
+      show,
     }
   },
   computed: {
@@ -176,9 +181,10 @@ export default defineComponent({
         const amountMax = this.amountMax
         const variantId = this.product.shopify_product_variant_id
         const query = `processed_at:>${this.$dayjs().subtract(4, 'weeks').format('YYYY-MM-DD')}`
-        const canOrder = await this.getCanOrder(variantId, amountMax, query)
 
-        if (!canOrder) {
+        const { canOrder, orderableQuantity } = await this.getCanOrder(variantId, amountMax, query)
+
+        if (!canOrder || (orderableQuantity === this.cartQuantity)) {
           await SweetAlertToast.fire({
             icon: 'warning',
             text: this.$i18n.t('common.feedback.KO.maxQuantityReached'),

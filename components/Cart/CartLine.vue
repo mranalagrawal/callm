@@ -1,9 +1,12 @@
 <script>
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent, useContext } from '@nuxtjs/composition-api'
 import deleteIcon from 'assets/svg/delete.svg'
 import addIcon from 'assets/svg/add.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
 import { useShopifyCart } from '~/store/shopifyCart'
+import { useCustomerOrders } from '~/store/customerOrders.ts'
+import { SweetAlertToast } from '~/utilities/Swal'
+import { useCustomer } from '~/store/customer'
 
 export default defineComponent({
   props: {
@@ -15,7 +18,15 @@ export default defineComponent({
   },
   setup() {
     const shopifyCart = useShopifyCart()
-    return { shopifyCart, deleteIcon, addIcon, subtractIcon }
+    const customerStore = useCustomer()
+
+    const { customerId } = customerStore
+
+    const customerOrders = useCustomerOrders()
+    const { getCanOrder } = customerOrders
+
+    const { $dayjs } = useContext()
+    return { shopifyCart, deleteIcon, addIcon, subtractIcon, customerId, $dayjs, getCanOrder }
   },
   data() {
     return { quantity: this.item.quantity }
@@ -35,6 +46,19 @@ export default defineComponent({
     async increaseQuantity() {
       if (!this.canAddMore)
         return
+
+      const amountMax = JSON.parse(this.item.merchandise.product.details.value).amountMax[this.$config.SALECHANNEL]
+      const variantId = this.item.merchandise.id
+      const query = `processed_at:>${this.$dayjs().subtract(4, 'weeks').format('YYYY-MM-DD')}`
+      const { orderableQuantity } = await this.getCanOrder(variantId, amountMax, query)
+
+      if (this.cartQuantity === orderableQuantity) {
+        await SweetAlertToast.fire({
+          icon: 'warning',
+          text: this.$i18n.t('common.feedback.KO.maxQuantityReached'),
+        })
+        return
+      }
 
       const updated = await this.shopifyCart.addProductToCart(this.item, true)
       this.shopifyCart.shopifyCart = updated
