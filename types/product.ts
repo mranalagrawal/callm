@@ -72,6 +72,7 @@ export interface IProductMapped extends IBaseProductMapped {
   details: Record<string, any> // Todo: type this
   gtmProductData: any
   priceLists: Record<string, any>
+  seo: IProductSeo
   sku: string
   source_id: string | number
   url: string

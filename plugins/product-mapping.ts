@@ -161,6 +161,10 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
             stock_status: p._source.quantity[store] > 0 ? 'in_stock' : 'out_of_stock',
             quantity: 1,
           },
+          seo: {
+            description: p._source.seo.description,
+            title: p._source.seo.title,
+          },
           sku: p._source.sku,
           tbd: {
             description: p._source.description,
@@ -241,6 +245,10 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
             compare_at_price: Number(compareAtPrice.amount),
             stock_status: p.totalInventory > 0 ? 'in_stock' : 'out_of_stock',
             quantity: 1,
+          },
+          seo: {
+            description: p.seo.description,
+            title: p.seo.title,
           },
           sku: p.variants.nodes[0].sku,
           tbd: {
