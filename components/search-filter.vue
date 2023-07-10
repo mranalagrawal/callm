@@ -1,5 +1,5 @@
 <script>
-import { inject, ref, useContext, watchEffect } from '@nuxtjs/composition-api'
+import { defineComponent, inject, ref, useContext, watchEffect } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import Loader from '@/components/UI/Loader.vue'
 import closeIcon from '~/assets/svg/close.svg'
@@ -9,7 +9,7 @@ import { useFilters } from '~/store/filters'
 import { getLocaleFromCurrencyCode } from '@/utilities/currency'
 import themeConfig from '~/config/themeConfig'
 
-export default {
+export default defineComponent({
   components: { Loader },
   scrollToTop: true,
   props: ['inputParameters'],
@@ -41,6 +41,7 @@ export default {
   },
   data() {
     return {
+      canonicalUrl: '',
       cmwActiveSelect: '',
       minPrice: 0,
       maxPrice: 0,
@@ -331,6 +332,19 @@ export default {
       = priceFrom
       || Math.round(+search.aggregations.min_price['agg-min-price'].value)
 
+    const hasBrand = urlSearchParams.has('brands')
+
+    if (hasBrand) {
+      const brandId = `B${urlSearchParams.get('brands')}`
+
+      if (process.client && typeof window !== 'undefined') {
+        const { origin, search } = window.location
+        const encodedPath = `${encodeURIComponent(this.view.brands.name.replace(' ', '-'))}-${brandId}.htm`
+        const encodedSearch = search ? encodeURIComponent(search) : ''
+        this.canonicalUrl = `${origin}/${encodedPath}${encodedSearch}`
+      }
+    }
+
     this.loading = false
   },
   head() {
@@ -343,6 +357,10 @@ export default {
           content: this.seoData?.seoDescription || this.seoTitleReplace,
         },
       ],
+      link: [{
+        rel: 'canonical',
+        href: this.canonicalUrl ? this.canonicalUrl : '',
+      }],
     }
   },
   allSelections: [
@@ -512,7 +530,7 @@ export default {
       })
     },
   },
-}
+})
 </script>
 
 <template>
@@ -557,19 +575,24 @@ export default {
     <ProductsResultsList :results="results" :total="total" @update-sort-value="handleUpdateSortValue" />
     <CategoriesPagination :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters" />
 
-    <div v-if="seoData.pageFullDescription">
-      <div
-        class="relative overflow-hidden pb-8"
-        :class="showPageFullDescription
-          ? 'h-full'
-          : 'h-[200px] after:(content-DEFAULT absolute w-full h-1/2 bottom-0 left-0 bg-gradient-to-b from-transparent to-white)'"
-        v-html="seoData.pageFullDescription"
-      />
-      <Button v-if="!showPageFullDescription" class="justify-end pb-8" variant="text" @click.native="showPageFullDescription = true">
-        <span class="mr-2">{{ $t('common.cta.readMore') }}</span>
-        <VueSvgIcon width="18" height="18" :data="require(`@/assets/svg/chevron-down.svg`)" />
-      </Button>
-    </div>
+    <ClientOnly>
+      <div>
+        <div
+          class="relative overflow-hidden pb-8"
+          :class="showPageFullDescription
+            ? 'h-full'
+            : 'h-[200px] after:(content-DEFAULT absolute w-full h-1/2 bottom-0 left-0 bg-gradient-to-b from-transparent to-white)'"
+          v-html="seoData?.pageFullDescription ? seoData.pageFullDescription : ''"
+        />
+        <Button
+          v-if="!showPageFullDescription" class="justify-end pb-8" variant="text"
+          @click.native="showPageFullDescription = true"
+        >
+          <span class="mr-2">{{ $t('common.cta.readMore') }}</span>
+          <VueSvgIcon width="18" height="18" :data="require(`@/assets/svg/chevron-down.svg`)" />
+        </Button>
+      </div>
+    </ClientOnly>
     <Loader v-if="loading" />
 
     <div v-if="!isDesktop" class="sticky bottom-8 w-[min(100%,_14rem)] m-inline-auto">
