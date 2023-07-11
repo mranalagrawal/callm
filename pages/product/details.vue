@@ -153,12 +153,16 @@ export default defineComponent({
             }
 
             amountMax.value = productDetails.value.amountMax[$config.SALECHANNEL]
-            // product limited and user not logged
-            const query = `processed_at:>${$dayjs().subtract(4, 'weeks').format('YYYY-MM-DD')}`
-
-            const { canOrder, orderableQuantity } = await getCanOrder(productVariant.value.id, amountMax.value, query)
-            canBuy.value = canOrder
-            canOrderQuantity.value = orderableQuantity
+            if (customerId.value) {
+              // product limited and user not logged
+              const query = `processed_at:>${$dayjs().subtract(4, 'weeks').format('YYYY-MM-DD')}`
+              const { canOrder, orderableQuantity } = await getCanOrder(productVariant.value.id, amountMax.value, query)
+              canBuy.value = canOrder
+              canOrderQuantity.value = orderableQuantity
+            } else {
+              canBuy.value = false
+              canOrderQuantity.value = 0
+            }
           } else {
             return error({ statusCode: 404, message: 'No results' })
           }
