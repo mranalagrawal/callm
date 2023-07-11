@@ -1,7 +1,7 @@
 <script lang="ts">
 import { localeChanged, localize } from 'vee-validate'
 import { defineComponent, onMounted, provide, readonly, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
-import LazyHydrate from 'vue-lazy-hydration'
+// import LazyHydrate from 'vue-lazy-hydration'
 
 import useScreenSize from '~/components/composables/useScreenSize'
 import useNewsletterSplash from '~/components/composables/useNewsletterSplash'
@@ -14,7 +14,7 @@ import { useShopifyCart } from '~/store/shopifyCart'
 
 export default defineComponent({
   components: {
-    LazyHydrate,
+    // LazyHydrate,
     TheFooter: () => import('../components/TheFooter.vue'),
     TopBar,
     Navbar,
@@ -74,13 +74,13 @@ export default defineComponent({
 
     <nuxt class="cmw-main" />
 
-    <LazyHydrate :when-visible="{ rootMargin: '100px' }">
-      <TheFooter style="position: relative; top: 120px" />
-    </LazyHydrate>
+    <!--    <LazyHydrate :when-visible="{ rootMargin: '100px' }"> -->
+    <TheFooter />
+    <!--    </LazyHydrate> -->
 
-    <client-only>
+    <ClientOnly>
       <FlashMessage position="right top" />
-    </client-only>
+    </ClientOnly>
     <!-- Todo: lazy load this component -->
     <CmwSplash />
   </div>
