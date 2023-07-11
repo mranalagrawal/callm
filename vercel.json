@@ -74,5 +74,14 @@
         }
       ]
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/blog",
+      "destination": "https://blog-stage.callmewine.com/"
+    },{
+      "source": "/blog/:match*",
+      "destination": "https://blog-stage.callmewine.com/:match*/"
+    }
   ]
 }
