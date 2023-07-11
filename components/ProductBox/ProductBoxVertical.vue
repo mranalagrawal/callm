@@ -354,7 +354,7 @@ export default defineComponent({
           </div>
           <div v-else class="relative" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
             <ButtonIcon
-              class="mr-4 mb-4 relative"
+              class=""
               :icon="closeIcon"
               disabled
             />

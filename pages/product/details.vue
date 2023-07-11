@@ -583,8 +583,17 @@ export default defineComponent({
                           {{ $t('common.feedback.KO.maxQuantityReached') }}
                         </div>
                       </div>
+                      <div v-else>
+                        <Button
+                          variant="ghost"
+                          class="gap-2 pl-2 pr-3 py-4"
+                        >
+                          <span class="text-xs" v-text="$t('common.cta.cannot_order')" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
+
                   <div v-else>
                     <Button
                       variant="ghost"
