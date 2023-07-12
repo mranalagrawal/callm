@@ -1,14 +1,5 @@
 <script>
-import {
-  computed,
-  defineComponent,
-  ref,
-  useContext,
-  useFetch,
-  useMeta,
-  useRoute,
-  watch,
-} from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref, useContext, useFetch, useMeta, useRoute, watch } from '@nuxtjs/composition-api'
 import addIcon from 'assets/svg/add.svg'
 import cartIcon from 'assets/svg/cart.svg'
 import emailIcon from 'assets/svg/email.svg'
@@ -16,7 +7,6 @@ import heartFullIcon from 'assets/svg/heart-full.svg'
 import heartIcon from 'assets/svg/heart.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
 import { storeToRefs } from 'pinia'
-import { mapState } from 'vuex'
 import { SweetAlertToast } from '@/utilities/Swal'
 import { getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
 import { useRecentProductsStore } from '@/store/recent'
@@ -25,8 +15,8 @@ import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import favouriteIcon from '~/assets/svg/selections/favourite.svg'
 import getArticles from '~/graphql/queries/getArticles'
 import { useCustomerOrders } from '~/store/customerOrders'
-import { generateKey } from '~/utilities/strings'
 import { useShopifyCart } from '~/store/shopifyCart'
+import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({
   layout({ $config }) {
@@ -36,14 +26,17 @@ export default defineComponent({
     if (process.client)
       window.scrollTo(0, 0)
 
-    const { i18n, $config, $graphql, $cmwRepo, error, redirect, localeLocation, $cmwGtmUtils, $productMapping, $dayjs } = useContext()
+    const {
+      i18n, $config, $graphql, $cmwRepo, error, redirect, localeLocation, $cmwGtmUtils,
+      $productMapping, req,
+    } = useContext()
     const customerStore = useCustomer()
     const recentProductsStore = useRecentProductsStore()
     const { recentProducts } = storeToRefs(recentProductsStore)
 
-    const shopifyCartV = useShopifyCart()
-    const { shopifyCart } = storeToRefs(shopifyCartV)
-    const { getCartLines, createShopifyCart, addProductToCart, updateItemInCart } = shopifyCartV
+    const shopifyCartStore = useShopifyCart()
+    const { shopifyCart } = storeToRefs(shopifyCartStore)
+    const { getCartLines, createShopifyCart, addProductToCart, updateItemInCart } = shopifyCartStore
 
     const { customer, wishlistArr, customerId, getCustomerType } = storeToRefs(customerStore)
 
@@ -103,9 +96,7 @@ export default defineComponent({
       },
     })
 
-    const canBuy = ref(false)
-    const amountMax = ref(null)
-    const canOrderQuantity = ref(null)
+    const canonicalUrl = ref('')
 
     const { handleShowRequestModal } = useShowRequestModal()
 
@@ -115,6 +106,16 @@ export default defineComponent({
         query: `tag:P${route.value.params.id}`,
       })
         .then(async ({ products = { nodes: [] } }) => {
+          if (process.server && req?.headers && req?.url)
+            canonicalUrl.value = `https://${req.headers.host}${encodeURIComponent(req.url)}`
+
+          if (process.client && typeof window !== 'undefined') {
+            const { origin, pathname, search } = window.location
+            const encodedPath = pathname ? encodeURIComponent(pathname) : ''
+            const encodedSearch = search ? encodeURIComponent(search) : ''
+            canonicalUrl.value = `${origin}${encodedPath}${encodedSearch}`
+          }
+
           if (!!products.nodes.length && products.nodes[0].handle) {
             product.value = await $productMapping.fromShopify([products.nodes[0]])[0]
 
@@ -125,6 +126,7 @@ export default defineComponent({
               ? []
               : $productMapping.breadcrumbs(productBreadcrumbs.value[i18n.locale])
 
+            console.log(productDetails.value.canonical)
             if (route.value.params.pathMatch !== product.value.handle)
               return redirect(301, localeLocation(`/${product.value.handle}-${productDetails.value.key}.htm`))
 
@@ -151,18 +153,6 @@ export default defineComponent({
               brand.value = articles.nodes[0]
               brandMetaFields.value = articles.nodes[0].details && JSON.parse(articles.nodes[0].details.value)
             }
-
-            amountMax.value = productDetails.value.amountMax[$config.SALECHANNEL]
-            if (customerId.value) {
-              // product limited and user not logged
-              const query = `processed_at:>${$dayjs().subtract(4, 'weeks').format('YYYY-MM-DD')}`
-              const { canOrder, orderableQuantity } = await getCanOrder(productVariant.value.id, amountMax.value, query)
-              canBuy.value = canOrder
-              canOrderQuantity.value = orderableQuantity
-            } else {
-              canBuy.value = false
-              canOrderQuantity.value = 0
-            }
           } else {
             return error({ statusCode: 404, message: 'No results' })
           }
@@ -188,7 +178,24 @@ export default defineComponent({
       return 'No description available.'
     })
 
-    /* const amountMax = computed(() => productDetails.value.amountMax[$config.SALECHANNEL]) */
+    const amountMax = computed(() => (product.value.details.amountMax[$config.SALECHANNEL]
+      && product.value.details.amountMax[$config.SALECHANNEL] > product.value.quantityAvailable)
+      ? product.value.details.amountMax[$config.SALECHANNEL]
+      : product.value.quantityAvailable,
+    )
+
+    const isOnCart = computed(() => {
+      const productIncart = shopifyCart.value?.lines?.edges.find(el => el.node.merchandise.id === product.value.shopify_product_variant_id)
+      if (productIncart)
+        return productIncart.node
+      return null
+    })
+
+    const cartQuantity = computed(() => isOnCart.value ? isOnCart.value.quantity : 0)
+
+    const canAddMore = computed(() => (amountMax.value - cartQuantity.value) > 0)
+
+    const isBundle = computed(() => !!product.value.bundle.length)
 
     const finalPrice = computed(() => {
       if (!productDetails.value.feId)
@@ -217,7 +224,7 @@ export default defineComponent({
         ...hrefLangArr,
         {
           rel: 'canonical',
-          href: productDetails.value.canonical,
+          href: canonicalUrl.value,
         },
       ]
     }
@@ -255,9 +262,9 @@ export default defineComponent({
       amountMax,
       brand,
       brandMetaFields,
-      canBuy,
-      canOrderQuantity,
+      canAddMore,
       cartIcon,
+      cartQuantity,
       createShopifyCart,
       customer,
       customerId,
@@ -273,6 +280,8 @@ export default defineComponent({
       handleWishlist,
       heartFullIcon,
       heartIcon,
+      isBundle,
+      isOnCart,
       isOnFavourite,
       isOnSale,
       isOpen,
@@ -289,26 +298,6 @@ export default defineComponent({
     }
   },
   head: {},
-  computed: {
-    ...mapState('userCart', {
-      userCart: 'userCart',
-    }),
-    isBundle() {
-      return !!this.product.bundle.length
-    },
-    isOnCart() {
-      const product = this.shopifyCart?.lines?.edges.find(el => el.node.merchandise.id === this.product.shopify_product_variant_id)
-      if (product)
-        return product.node
-      return null
-    },
-    cartQuantity() {
-      return this.isOnCart ? this.isOnCart.quantity : 0
-    },
-    canAddMore() {
-      return this.product.quantityAvailable - this.cartQuantity > 0
-    },
-  },
   methods: {
     generateKey,
     getPercent,
@@ -327,22 +316,12 @@ export default defineComponent({
 
       // if cart doesnt' exists, create it
       if (!shopifyCart) {
-        const newCart = await this.createShopifyCart()
-        this.shopifyCart = newCart
+        this.shopifyCart = await this.createShopifyCart()
         this.$cookies.set('cartId', this.shopifyCart.id)
       }
 
-      if (this.cartQuantity === this.canOrderQuantity) {
-        await SweetAlertToast.fire({
-          icon: 'warning',
-          text: this.$i18n.t('common.feedback.KO.maxQuantityReached'),
-        })
-        return
-      }
-
       // add product to cart
-      const updated = await this.addProductToCart(this.product)
-      this.shopifyCart = updated
+      this.shopifyCart = await this.addProductToCart(this.product)
       this.flashMessage.show({
         status: '',
         message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title}` }),
@@ -356,8 +335,7 @@ export default defineComponent({
       if (this.cartQuantity === 0)
         return
 
-      const updated = await this.updateItemInCart(this.product, this.cartQuantity - 1)
-      this.shopifyCart = updated
+      this.shopifyCart = await this.updateItemInCart(this.product, this.cartQuantity - 1)
     },
   },
 })
@@ -541,59 +519,44 @@ export default defineComponent({
                       </div>
                     </div>
                     <div v-else>
-                      <div v-if="customerId">
-                        <div v-if="canBuy">
-                          <Button
-                            class="gap-2 pl-2 pr-3 py-2"
-                            :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
-                            @click.native="addToUserCart"
-                          >
-                            <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
-                            <span class="text-sm" v-text="$t('product.addToCart')" />
-                          </Button>
-                          <Badge
-                            v-show="cartQuantity && !isOpen"
-                            class="absolute top-0 left-full transform -translate-x-1/2 -translate-y-1/2"
-                            bg-color="primary-400" :qty="cartQuantity"
-                          />
-                          <div
-                            v-show="isOpen"
-                            class="absolute grid grid-cols-[50px_auto_50px] items-center w-full h-[50px] top-0 left-0"
-                            @mouseleave="isOpen = false"
-                          >
-                            <button
-                              class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l hover:(bg-primary)"
-                              :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
-                              @click="removeFromUserCart"
-                            >
-                              <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="white" />
-                            </button>
-                            <div class="flex h-[40px] bg-primary-400 text-white text-center">
-                              <span class="m-auto text-sm">{{ cartQuantity }}</span>
-                            </div>
-                            <button
-                              class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-r
+                      <Button
+                        class="gap-2 pl-2 pr-3 py-2"
+                        :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
+                        @click.native="addToUserCart"
+                      >
+                        <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
+                        <span class="text-sm" v-text="$t('product.addToCart')" />
+                      </Button>
+                      <Badge
+                        v-show="cartQuantity && !isOpen"
+                        class="absolute top-0 left-full transform -translate-x-1/2 -translate-y-1/2"
+                        bg-color="primary-400" :qty="cartQuantity"
+                      />
+                      <div
+                        v-show="isOpen"
+                        class="absolute grid grid-cols-[50px_auto_50px] items-center w-full h-[50px] top-0 left-0"
+                        @mouseleave="isOpen = false"
+                      >
+                        <button
+                          class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l hover:(bg-primary)"
+                          :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
+                          @click="removeFromUserCart"
+                        >
+                          <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="white" />
+                        </button>
+                        <div class="flex h-[40px] bg-primary-400 text-white text-center">
+                          <span class="m-auto text-sm">{{ cartQuantity }}</span>
+                        </div>
+                        <button
+                          class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-r
                               hover:(bg-primary)
                               disabled:(bg-primary-100 cursor-not-allowed)"
-                              :disabled="!canAddMore"
-                              :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
-                              @click="addToUserCart"
-                            >
-                              <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
-                            </button>
-                          </div>
-                        </div>
-                        <div v-else>
-                          {{ $t('common.feedback.KO.maxQuantityReached') }}
-                        </div>
-                      </div>
-                      <div v-else>
-                        <Button
-                          variant="ghost"
-                          class="gap-2 pl-2 pr-3 py-4"
+                          :disabled="!canAddMore"
+                          :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
+                          @click="addToUserCart"
                         >
-                          <span class="text-xs" v-text="$t('common.cta.cannot_order')" />
-                        </Button>
+                          <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
+                        </button>
                       </div>
                     </div>
                   </div>

@@ -13,11 +13,11 @@ import subtractIcon from 'assets/svg/subtract.svg'
 import { storeToRefs } from 'pinia'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import { useCustomer } from '~/store/customer'
+import { useCustomerOrders } from '~/store/customerOrders.ts'
 import { useShopifyCart } from '~/store/shopifyCart'
 import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { generateKey } from '~/utilities/strings'
 import { SweetAlertToast } from '~/utilities/Swal'
-import { useCustomerOrders } from '~/store/customerOrders.ts'
 
 export default defineComponent({
   name: 'ProductBoxVertical',
@@ -60,15 +60,22 @@ export default defineComponent({
       return props.product.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0
     })
 
-    const amountMax = computed(() => props.product.details.amountMax[$config.SALECHANNEL])
+    const amountMax = computed(() => (props.product.details.amountMax[$config.SALECHANNEL]
+        && props.product.details.amountMax[$config.SALECHANNEL] > props.product.quantityAvailable)
+      ? props.product.details.amountMax[$config.SALECHANNEL]
+      : props.product.quantityAvailable,
+    )
 
-    const canOrder = computed(() => {
-      // product is limited and user is not logged
-      if (amountMax.value && !customerId.value)
-        return false
-
-      return true
+    const isOnCart = computed(() => {
+      const product = shopifyCart?.shopifyCart?.lines?.edges.find(el => el.node.merchandise.id === props.product.shopify_product_variant_id)
+      if (product)
+        return product.node
+      return null
     })
+
+    const cartQuantity = computed(() => isOnCart.value ? isOnCart.value.quantity : 0)
+
+    const canAddMore = computed(() => (amountMax.value - cartQuantity.value) > 0)
 
     const gtmProductData = computed(() => ({
       ...props.product.gtmProductData,
@@ -99,27 +106,19 @@ export default defineComponent({
       router.push(localeLocation(props.product.url))
     }
 
-    const show = ref(false)
-    const handleMouseEnter = () => show.value = true
-    const handleMouseLeave = () => show.value = false
-
     return {
-      // addProductToCart,
-      // createShopifyCart,
-      // getShopifyCart,
-      // isOnCart,
-      // updateItemInCart,
       addIcon,
-      canOrder,
+      amountMax,
+      canAddMore,
       cartIcon,
+      cartQuantity,
       closeIcon,
+      customerId,
       emailIcon,
       finalPrice,
       getCanOrder,
       getCustomerType,
       gtmProductData,
-      handleMouseEnter,
-      handleMouseLeave,
       handleProductCLick,
       handleShowRequestModal,
       handleWishlist,
@@ -127,6 +126,7 @@ export default defineComponent({
       heartFullIcon,
       heartIcon,
       isHovering,
+      isOnCart,
       isOnFavourite,
       isOnSale,
       isOpen,
@@ -134,30 +134,7 @@ export default defineComponent({
       showRequestModal,
       subtractIcon,
       wishlistArr,
-      amountMax,
-      customerId,
-      show,
     }
-  },
-  computed: {
-    // ...mapState('userCart', {
-    //   userCart: 'userCart',
-    // }),
-    /* ...mapState('shopifyCart', {
-      shopifyCart: 'shopifyCart',
-    }), */
-    isOnCart() {
-      const product = this.shopifyCart?.shopifyCart?.lines?.edges.find(el => el.node.merchandise.id === this.product.shopify_product_variant_id)
-      if (product)
-        return product.node
-      return null
-    },
-    cartQuantity() {
-      return this.isOnCart ? this.isOnCart.quantity : 0
-    },
-    canAddMore() {
-      return this.product.quantityAvailable - this.cartQuantity > 0
-    },
   },
   methods: {
     generateKey,
@@ -175,35 +152,15 @@ export default defineComponent({
         return
       }
 
-      // check for logged user and product has amountMax...
-      if (this.amountMax && this.customerId) {
-        // ... and can order amountMax
-        const amountMax = this.amountMax
-        const variantId = this.product.shopify_product_variant_id
-        const query = `processed_at:>${this.$dayjs().subtract(4, 'weeks').format('YYYY-MM-DD')}`
-
-        const { canOrder, orderableQuantity } = await this.getCanOrder(variantId, amountMax, query)
-
-        if (!canOrder || (orderableQuantity === this.cartQuantity)) {
-          await SweetAlertToast.fire({
-            icon: 'warning',
-            text: this.$i18n.t('common.feedback.KO.maxQuantityReached'),
-          })
-          return
-        }
-      }
-
       const shopifyCart = this.shopifyCart
 
       if (!shopifyCart.shopifyCart) {
-        const newCart = await this.shopifyCart.createShopifyCart()
-        shopifyCart.shopifyCart = newCart
+        shopifyCart.shopifyCart = await this.shopifyCart.createShopifyCart()
         this.$cookies.set('cartId', shopifyCart.shopifyCart.id)
       }
 
       // add product to cart
-      const updated = await this.shopifyCart.addProductToCart(this.product)
-      shopifyCart.shopifyCart = updated
+      shopifyCart.shopifyCart = await this.shopifyCart.addProductToCart(this.product)
 
       this.flashMessage.show({
         status: '',
@@ -314,55 +271,41 @@ export default defineComponent({
       </div>
       <div class="c-productBox__cart place-self-end">
         <div v-if="product.availableForSale" class="mr-4 mb-4 relative">
-          <div v-if="canOrder">
-            <ButtonIcon
-              :icon="cartIcon"
-              :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
-              @click.native="addToUserCart"
-            />
-            <Badge
-              v-show="cartQuantity && !isOpen"
-              class="absolute top-0 left-full transform -translate-x-1/2 -translate-y-1/2"
-              bg-color="primary-400" :qty="cartQuantity"
-            />
-            <div
-              v-show="isOpen"
-              class="absolute w-full h-[120px] bottom-0 left-0"
-              @mouseleave="isOpen = false"
-            >
-              <button
-                class="flex transition-colors w-[40px] h-[40px] bg-primary-400 rounded-t-sm
+          <ButtonIcon
+            :icon="cartIcon"
+            :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
+            @click.native="addToUserCart"
+          />
+          <Badge
+            v-show="cartQuantity && !isOpen"
+            class="absolute top-0 left-full transform -translate-x-1/2 -translate-y-1/2"
+            bg-color="primary-400" :qty="cartQuantity"
+          />
+          <div
+            v-show="isOpen"
+            class="absolute w-full h-[120px] bottom-0 left-0"
+            @mouseleave="isOpen = false"
+          >
+            <button
+              class="flex transition-colors w-[40px] h-[40px] bg-primary-400 rounded-t-sm
                  hover:(bg-primary)
                  disabled:(bg-primary-100 cursor-not-allowed)"
-                :disabled="!canAddMore"
-                :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
-                @click="addToUserCart"
-              >
-                <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
-              </button>
-              <div class="flex w-[40px] h-[40px] bg-primary-400 text-white text-center">
-                <span class="m-auto text-sm">{{ cartQuantity }}</span>
-              </div>
-              <button
-                class="flex transition-colors w-[40px] h-[40px] bg-primary-400 rounded-b-sm hover:(bg-primary)"
-                :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
-                @click="removeFromUserCart"
-              >
-                <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="white" />
-              </button>
+              :disabled="!canAddMore"
+              :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
+              @click="addToUserCart"
+            >
+              <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
+            </button>
+            <div class="flex w-[40px] h-[40px] bg-primary-400 text-white text-center">
+              <span class="m-auto text-sm">{{ cartQuantity }}</span>
             </div>
-          </div>
-          <div v-else class="relative" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
-            <ButtonIcon
-              class=""
-              :icon="closeIcon"
-              disabled
-            />
-            <div v-if="show" class="absolute w-max transform rounded-sm -translate-x-10 translate-y-0 bottom-full mb-2 right-0">
-              <div class="relative bg-gray-lightest rounded-sm py-3 pl-3 pr-8 shadow-lg text-xs ">
-                {{ $t('common.cta.cannot_order') }}
-              </div>
-            </div>
+            <button
+              class="flex transition-colors w-[40px] h-[40px] bg-primary-400 rounded-b-sm hover:(bg-primary)"
+              :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
+              @click="removeFromUserCart"
+            >
+              <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="white" />
+            </button>
           </div>
         </div>
         <div v-else>

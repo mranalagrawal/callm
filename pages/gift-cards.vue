@@ -13,18 +13,21 @@ import heartIcon from 'assets/svg/heart.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
 import emailIcon from 'assets/svg/email.svg'
 import { storeToRefs } from 'pinia'
-import { mapState } from 'vuex'
+import { useShopifyCart } from '~/store/shopifyCart'
 import { generateKey } from '~/utilities/strings'
 import { getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
 import { useCustomer } from '@/store/customer'
+import { SweetAlertToast } from '~/utilities/Swal'
 
 export default defineComponent({
   layout({ $config }) {
     return $config.STORE
   },
   setup() {
-    const { $config, $cmwGtmUtils } = useContext()
+    const { $config, $cmwGtmUtils, req } = useContext()
     const customerStore = useCustomer()
+    const shopifyCartStore = useShopifyCart()
+    const { shopifyCart } = storeToRefs(shopifyCartStore)
     const { customer, customerId, getCustomerType } = storeToRefs(customerStore)
     const isOpen = ref(false)
     const product = ref({})
@@ -40,19 +43,42 @@ export default defineComponent({
       redirectSeoUrl: {},
     })
     const giftCardVariantSelected = ref({ id: '' }) // set a default?
+    const canonicalUrl = ref('')
+
+    const amountMax = ref(50)
+
+    const isOnCart = computed(() => {
+      const productIncart = shopifyCart.value?.lines?.edges.find(el => el.node.merchandise.id === product.value.shopify_product_variant_id)
+      if (productIncart)
+        return productIncart.node
+      return null
+    })
+
+    const cartQuantity = computed(() => isOnCart.value ? isOnCart.value.quantity : 0)
+
+    const canAddMore = computed(() => ((amountMax.value - cartQuantity.value) > 0))
 
     useFetch(async ({ $cmwRepo, $productMapping, $handleApiErrors }) => {
       await $cmwRepo.products.getGiftCardByHandle({
         handle: 'gift-cards', // or by route $route.value.name,
       })
         .then(({ product: shopifyProduct }) => {
-          product.value = $productMapping.giftCard(shopifyProduct) // set product.value here ?
+          if (process.server && req?.headers && req?.url)
+            canonicalUrl.value = `https://${req.headers.host}${encodeURIComponent(req.url)}`
+
+          if (process.client && typeof window !== 'undefined') {
+            const { origin, pathname, search } = window.location
+            const encodedPath = pathname ? encodeURIComponent(pathname) : ''
+            const encodedSearch = search ? encodeURIComponent(search) : ''
+            canonicalUrl.value = `${origin}${encodedPath}${encodedSearch}`
+          }
+          product.value = shopifyProduct && $productMapping.giftCard(shopifyProduct) // set product.value here ?
         })
         .catch(err => $handleApiErrors(`Something went wrong getting gift card from Shopify ${err}`))
     })
 
     const strippedContent = computed(() => {
-      if (product.value.description) {
+      if (product.value?.description) {
         // TODO - move in string.js utilities
         return product.value.description
           .replace('href', '')
@@ -90,47 +116,43 @@ export default defineComponent({
     })
 
     useMeta(() => ({
-      title: product?.value?.seo?.title,
+      title: product?.value?.seo?.title || '',
       meta: [
         {
           hid: 'description',
           name: 'description',
-          content: product?.value?.seo?.description,
+          content: product?.value?.seo?.description || '',
         },
       ],
-      link: product.value.href,
+      link: {
+        rel: 'canonical',
+        href: canonicalUrl.value,
+      },
     }))
     return {
-      customer,
-      product,
-      productVariant,
-      productDetails,
-      giftCardVariantSelected,
-      strippedContent,
-      isOpen,
-      cartIcon,
       addIcon,
-      subtractIcon,
-      heartIcon,
-      heartFullIcon,
-      emailIcon,
+      amountMax,
+      canAddMore,
+      cartIcon,
+      cartQuantity,
+      customer,
       customerId,
-      getCustomerType,
+      emailIcon,
       generateMetaLink,
+      getCustomerType,
+      giftCardVariantSelected,
+      heartFullIcon,
+      heartIcon,
+      isOnCart,
+      isOpen,
+      product,
+      productDetails,
+      productVariant,
+      strippedContent,
+      subtractIcon,
     }
   },
   head: {},
-  computed: {
-    ...mapState('userCart', {
-      userCart: 'userCart',
-    }),
-    isOnCart() {
-      return this.userCart.find(lineItem => lineItem.productVariantId === this.giftCardVariantSelected.id)
-    },
-    cartQuantity() {
-      return this.isOnCart ? this.isOnCart.quantity : 0
-    },
-  },
   methods: {
     generateKey,
     getPercent,
@@ -138,7 +160,35 @@ export default defineComponent({
     async addToUserCart() {
       this.isOpen = true
 
-      this.$store.commit('userCart/addProduct', {
+      // check for availability
+      if (!this.canAddMore) {
+        await SweetAlertToast.fire({
+          icon: 'warning',
+          text: this.$i18n.t('common.feedback.KO.addToCartReachLimit'),
+        })
+        return
+      }
+
+      const shopifyCart = this.shopifyCart
+
+      if (!shopifyCart) {
+        shopifyCart.shopifyCart = await this.shopifyCart.createShopifyCart()
+        this.$cookies.set('cartId', shopifyCart.shopifyCart.id)
+      }
+
+      // add product to cart
+      shopifyCart.shopifyCart = await this.shopifyCart.addProductToCart(this.product)
+
+      this.flashMessage.show({
+        status: '',
+        message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product?.title}` }),
+        icon: this.product.image.source.url,
+        iconClass: 'bg-transparent ',
+        time: 8000,
+        blockClass: 'add-product-notification',
+      })
+
+      /* this.$store.commit('userCart/addProduct', {
         id: this.giftCardVariantSelected.id,
         singleAmount: parseFloat(this.giftCardVariantSelected.price.amount),
         singleAmountFullPrice: (this.giftCardVariantSelected.compareAtPrice)
@@ -158,7 +208,7 @@ export default defineComponent({
         iconClass: 'bg-transparent ',
         time: 8000,
         blockClass: 'add-product-notification',
-      })
+      }) */
     },
     async removeFromUserCart() {
       this.$store.commit('userCart/removeProduct', {
@@ -185,7 +235,7 @@ export default defineComponent({
       </div>
     </div>
     <template v-else>
-      <div v-if="product.title">
+      <div v-if="product?.title">
         <TheBreadcrumbs v-if="product.breadcrumbs" :breadcrumbs="product.breadcrumbs" />
 
         <div class="md:(grid grid-cols-[40%_60%] max-h-[550px] my-4)">

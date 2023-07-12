@@ -36,7 +36,7 @@ export const useShopifyCart = defineStore({
         })
         .then(data => data.cartCreate.cart)
 
-      // this.$patch({ shopifyCart: data }) TODO: fix here
+      this.$patch({ shopifyCart: data }) // TODO: fix here
       return await data
     },
 
@@ -150,7 +150,7 @@ export const useShopifyCart = defineStore({
         event: 'removeFromCart',
         ecommerce: {
           currencyCode: this.$nuxt.$config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
-          add: {
+          remove: {
             products: !fromCartLine ? [product.gtmProductData] : [JSON.parse(product.attributes.find(el => el.key === 'gtmProductData').value)],
           },
         },
