@@ -1,6 +1,5 @@
 <script>
 import LazyHydrate from 'vue-lazy-hydration'
-import prismicConfig from '~/config/prismicConfig'
 
 export default {
   name: 'IndexPage',
@@ -17,7 +16,7 @@ export default {
   },
   data() {
     return {
-      homeBanner: prismicConfig[this.$config.STORE].components.homeBanner,
+      homeBanner: 'HomeBanner',
       links: {
         'en-gb': 'https://www.callmewine.co.uk',
         'it': 'https://www.callmewine.com',
