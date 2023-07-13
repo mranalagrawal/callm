@@ -463,7 +463,7 @@ export default {
 
   sentry: {
     dsn: 'https://8976f88cc7254b248b330a78ba72a074@o1240128.ingest.sentry.io/4504560369008640',
-    disabled: process.env.DEPLOY_ENV !== 'prod',
+    disabled: process.env.DEPLOY_ENV !== 'prod' || (process.env.STORE !== 'CMW' && process.env.DEPLOY_ENV !== 'staging'),
     config: {
       browserTracing: {
         // tracePropagationTargets: ['callmewine.co.uk'],
