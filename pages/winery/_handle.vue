@@ -47,7 +47,7 @@ export default defineComponent({
     return $config.STORE
   },
   setup() {
-    const { $graphql, i18n, redirect, $cmwGtmUtils, localeLocation, req } = useContext()
+    const { $graphql, i18n, redirect, $cmwGtmUtils, localePath, req } = useContext()
     const route = useRoute()
     const isDesktop = inject('isDesktop')
     const partnerC1 = ref(null)
@@ -107,7 +107,7 @@ export default defineComponent({
         metaFields.value = articles.nodes[0].details && JSON.parse(articles.nodes[0].details.value) as IMetaFields
 
         if (route.value.params.handle !== `${brand!.value.handle}-${metaFields.value.key}.htm`)
-          return redirect(301, localeLocation(`/winery/${brand.value?.handle.trim()}-${metaFields.value?.key}.htm`) as unknown as string)
+          return redirect(301, localePath({ name: 'winery-handle', params: { handle: `${brand.value?.handle.trim()}-${metaFields.value?.key}.htm` } }))
       }
     })
 
