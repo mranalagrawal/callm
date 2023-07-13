@@ -431,6 +431,15 @@ export default defineComponent({
 
   methods: {
     getLocaleFromCurrencyCode,
+    changePage(page) {
+      const query = Object.assign({}, this.inputParameters)
+      query.page = page
+
+      this.$router.push({
+        path: 'catalog',
+        query,
+      })
+    },
     handleOnFooterClick({ price_from = '', price_to = '' }) {
       this.cmwActiveSelect = ''
       this.showMobileFilters = false
@@ -573,7 +582,7 @@ export default defineComponent({
       <p v-html="seoData.pageDescription" />
     </div>
     <ProductsResultsList :results="results" :total="total" @update-sort-value="handleUpdateSortValue" />
-    <CategoriesPagination :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters" />
+    <CategoriesPagination :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters" @change-page="changePage" />
 
     <ClientOnly>
       <div>
