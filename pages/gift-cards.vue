@@ -28,6 +28,9 @@ export default defineComponent({
     const customerStore = useCustomer()
     const shopifyCartStore = useShopifyCart()
     const { shopifyCart } = storeToRefs(shopifyCartStore)
+
+    const { createShopifyCart, addProductToCart } = shopifyCartStore
+
     const { customer, customerId, getCustomerType } = storeToRefs(customerStore)
     const isOpen = ref(false)
     const product = ref({})
@@ -54,6 +57,23 @@ export default defineComponent({
       return null
     })
 
+    // prepare/map object expected by shopifyCart store
+    const giftCardVariantSelectedProduct = computed(() => {
+      if (product.value.variants && giftCardVariantSelected.value.id) {
+        // retrieve variant info from product giftcard
+        const variant = product.value.variants.find((v) => v.id === giftCardVariantSelected.value.id)
+        if (variant) {
+          return {
+            shopify_product_variant_id: variant.id,
+            gtmProductData: null, // bisogna prepararla?
+            tags: [], // la variant in teoria non ha i tags, metto quelli del prodotto?
+          }
+        }
+      }
+
+      return null
+    })
+
     const cartQuantity = computed(() => isOnCart.value ? isOnCart.value.quantity : 0)
 
     const canAddMore = computed(() => ((amountMax.value - cartQuantity.value) > 0))
@@ -72,6 +92,7 @@ export default defineComponent({
             const encodedSearch = search ? encodeURIComponent(search) : ''
             canonicalUrl.value = `${origin}${encodedPath}${encodedSearch}`
           }
+
           product.value = shopifyProduct && $productMapping.giftCard(shopifyProduct) // set product.value here ?
         })
         .catch(err => $handleApiErrors(`Something went wrong getting gift card from Shopify ${err}`))
@@ -150,6 +171,10 @@ export default defineComponent({
       productVariant,
       strippedContent,
       subtractIcon,
+      shopifyCart,
+      createShopifyCart,
+      addProductToCart,
+      giftCardVariantSelectedProduct,
     }
   },
   head: {},
@@ -169,24 +194,22 @@ export default defineComponent({
         return
       }
 
-      const shopifyCart = this.shopifyCart
-
-      if (!shopifyCart) {
-        shopifyCart.shopifyCart = await this.shopifyCart.createShopifyCart()
-        this.$cookies.set('cartId', shopifyCart.shopifyCart.id)
+      if (!this.shopifyCart) {
+        const newShopifyCart = await this.createShopifyCart()
+        this.$cookies.set('cartId', newShopifyCart.id)
       }
 
       // add product to cart
-      shopifyCart.shopifyCart = await this.shopifyCart.addProductToCart(this.product)
+      this.shopifyCart = await this.addProductToCart(this.giftCardVariantSelectedProduct)
 
       this.flashMessage.show({
         status: '',
-        message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product?.title}` }),
+        message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title} ${this.giftCardVariantSelected.title}` }),
         icon: this.product.image.source.url,
         iconClass: 'bg-transparent ',
         time: 8000,
         blockClass: 'add-product-notification',
-      })
+      }) 
 
       /* this.$store.commit('userCart/addProduct', {
         id: this.giftCardVariantSelected.id,

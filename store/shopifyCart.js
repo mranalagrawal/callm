@@ -67,11 +67,11 @@ export const useShopifyCart = defineStore({
           attributes: [
             {
               key: 'gtmProductData',
-              value: JSON.stringify(product.gtmProductData),
+              value: product.gtmProductData ? JSON.stringify(product.gtmProductData) : 'false',
             },
             {
               key: 'bundle',
-              value: product.tags.includes('BUNDLE').toString(),
+              value: (product.tags) ? product.tags.includes('BUNDLE').toString() : 'false',
             },
           ],
         }
@@ -81,6 +81,7 @@ export const useShopifyCart = defineStore({
         cartId,
         lines,
       }
+
       const data = await this.$nuxt.$graphql.default
         .request(addProductToCart, variables)
         .then(data => data)
@@ -165,10 +166,14 @@ export const useShopifyCart = defineStore({
       const customerType = customerStore.getCustomerType
 
       return this.shopifyCart.lines.edges.map((edge) => {
+        const price = (edge.node.merchandise.product.details.value?.priceLists)
+          ? JSON.parse(edge.node.merchandise.product.details.value)
+            .priceLists[$config.SALECHANNEL][customerType]
+          : edge.node.merchandise.price.amount
+
         return {
           quantity: edge.node.quantity,
-          price: JSON.parse(edge.node.merchandise.product.details.value)
-            .priceLists[$config.SALECHANNEL][customerType],
+          price,
           cartLineId: edge.node.id,
         }
       })
@@ -178,9 +183,9 @@ export const useShopifyCart = defineStore({
       const customerStore = useCustomer()
       const customerType = customerStore.getCustomerType
 
-      return JSON.parse(item.merchandise.product.details.value).priceLists[
-        $config.SALECHANNEL
-      ][customerType]
+      return (item.merchandise.product.details.value?.priceLists)
+        ? JSON.parse(item.merchandise.product.details.value).priceLists[$config.SALECHANNEL][customerType]
+        : item.merchandise.price.amount // default prezzo di shopify, usato nelle gift card
     },
     async getShopifyCart(id) {
       try {
