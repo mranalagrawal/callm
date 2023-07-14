@@ -36,6 +36,7 @@ mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
                   currencyCode
                 }
                 product {
+                  isGiftCard
                   id
                   title
                   description

@@ -89,6 +89,7 @@ export interface IGiftCardMapped extends IBaseProductMapped {
   href: string
   seo: IProductSeo
   variants: IGiftCardVariantMapped[]
+  tags: string[]
 }
 // export interface TProductAward {
 //   id: number

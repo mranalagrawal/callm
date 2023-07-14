@@ -1,7 +1,7 @@
 <script>
-import { inject, ref } from '@nuxtjs/composition-api'
+import { defineComponent, inject, ref } from '@nuxtjs/composition-api'
+import { storeToRefs } from 'pinia'
 import { is } from 'vee-validate/dist/rules'
-import { mapGetters } from 'vuex'
 import chevronLeftIcon from 'assets/svg/chevron-left.svg'
 import { useCustomer } from '~/store/customer'
 import logo from '~/assets/svg/logo-call-me-wine.svg'
@@ -13,11 +13,14 @@ import userIcon from '~/assets/svg/user.svg'
 import LoginForm from '@/components/LoginForm.vue'
 import UserMenu from '@/components/UserMenu.vue'
 import UserActions from '@/components/Header/UserActions.vue'
+import { useShopifyCart } from '~/store/shopifyCart'
 
-export default {
+export default defineComponent({
   components: { UserActions, LoginForm, UserMenu },
   setup() {
     const customer = useCustomer()
+    const shopifyCartStore = useShopifyCart()
+    const { shopifyCart, cartTotal, cartTotalQuantity } = storeToRefs(useShopifyCart())
     const navbar = ref(null)
     const menuBarRef = ref(null)
     const showMobileButton = ref(true)
@@ -29,6 +32,8 @@ export default {
 
     return {
       cartIcon,
+      cartTotal,
+      cartTotalQuantity,
       chevronLeftIcon,
       closeIcon,
       customer,
@@ -39,6 +44,8 @@ export default {
       menuBarRef,
       menuIcon,
       navbar,
+      shopifyCart,
+      shopifyCartStore,
       showMobileButton,
       userIcon,
     }
@@ -106,10 +113,6 @@ export default {
     is() {
       return is
     },
-    ...mapGetters({
-      cartTotalAmount: 'userCart/getCartTotalAmount',
-      cartTotalQuantity: 'userCart/cartTotalQuantity',
-    }),
     user() {
       return this.$store.state.user.user
     },
@@ -155,7 +158,7 @@ export default {
       this.lockBody()
     },
   },
-}
+})
 </script>
 
 <template>

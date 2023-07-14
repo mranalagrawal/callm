@@ -1,22 +1,16 @@
 <script>
-import {
-  computed,
-  defineComponent, onMounted,
-  ref, useContext,
-  useFetch,
-  useMeta,
-} from '@nuxtjs/composition-api'
+import { computed, defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
 import addIcon from 'assets/svg/add.svg'
 import cartIcon from 'assets/svg/cart.svg'
+import emailIcon from 'assets/svg/email.svg'
 import heartFullIcon from 'assets/svg/heart-full.svg'
 import heartIcon from 'assets/svg/heart.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
-import emailIcon from 'assets/svg/email.svg'
 import { storeToRefs } from 'pinia'
-import { useShopifyCart } from '~/store/shopifyCart'
-import { generateKey } from '~/utilities/strings'
 import { getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
 import { useCustomer } from '@/store/customer'
+import { useShopifyCart } from '~/store/shopifyCart'
+import { generateKey } from '~/utilities/strings'
 import { SweetAlertToast } from '~/utilities/Swal'
 
 export default defineComponent({
@@ -29,7 +23,7 @@ export default defineComponent({
     const shopifyCartStore = useShopifyCart()
     const { shopifyCart } = storeToRefs(shopifyCartStore)
 
-    const { createShopifyCart, addProductToCart } = shopifyCartStore
+    const { createShopifyCart, addProductToCart, updateItemInCart } = shopifyCartStore
 
     const { customer, customerId, getCustomerType } = storeToRefs(customerStore)
     const isOpen = ref(false)
@@ -51,26 +45,9 @@ export default defineComponent({
     const amountMax = ref(50)
 
     const isOnCart = computed(() => {
-      const productIncart = shopifyCart.value?.lines?.edges.find(el => el.node.merchandise.id === product.value.shopify_product_variant_id)
+      const productIncart = shopifyCart.value?.lines?.edges.find(el => el.node.merchandise.id === giftCardVariantSelected.value.id)
       if (productIncart)
         return productIncart.node
-      return null
-    })
-
-    // prepare/map object expected by shopifyCart store
-    const giftCardVariantSelectedProduct = computed(() => {
-      if (product.value.variants && giftCardVariantSelected.value.id) {
-        // retrieve variant info from product giftcard
-        const variant = product.value.variants.find((v) => v.id === giftCardVariantSelected.value.id)
-        if (variant) {
-          return {
-            shopify_product_variant_id: variant.id,
-            gtmProductData: null, // bisogna prepararla?
-            tags: [], // la variant in teoria non ha i tags, metto quelli del prodotto?
-          }
-        }
-      }
-
       return null
     })
 
@@ -152,10 +129,12 @@ export default defineComponent({
     }))
     return {
       addIcon,
+      addProductToCart,
       amountMax,
       canAddMore,
       cartIcon,
       cartQuantity,
+      createShopifyCart,
       customer,
       customerId,
       emailIcon,
@@ -169,12 +148,10 @@ export default defineComponent({
       product,
       productDetails,
       productVariant,
+      shopifyCart,
       strippedContent,
       subtractIcon,
-      shopifyCart,
-      createShopifyCart,
-      addProductToCart,
-      giftCardVariantSelectedProduct,
+      updateItemInCart,
     }
   },
   head: {},
@@ -194,13 +171,18 @@ export default defineComponent({
         return
       }
 
-      if (!this.shopifyCart) {
-        const newShopifyCart = await this.createShopifyCart()
-        this.$cookies.set('cartId', newShopifyCart.id)
+      if (!this.shopifyCart)
+        await this.createShopifyCart()
+
+      const giftCardProduct = {
+        ...this.product,
+        merchandise: { id: this.giftCardVariantSelected.id },
+        shopify_product_variant_id: this.giftCardVariantSelected.id,
+        gtmProductData: { giftCard: this.giftCardVariantSelected.price.amount },
       }
 
       // add product to cart
-      this.shopifyCart = await this.addProductToCart(this.giftCardVariantSelectedProduct)
+      this.shopifyCart = await this.addProductToCart(giftCardProduct)
 
       this.flashMessage.show({
         status: '',
@@ -209,35 +191,21 @@ export default defineComponent({
         iconClass: 'bg-transparent ',
         time: 8000,
         blockClass: 'add-product-notification',
-      }) 
-
-      /* this.$store.commit('userCart/addProduct', {
-        id: this.giftCardVariantSelected.id,
-        singleAmount: parseFloat(this.giftCardVariantSelected.price.amount),
-        singleAmountFullPrice: (this.giftCardVariantSelected.compareAtPrice)
-          ? parseFloat(this.giftCardVariantSelected.compareAtPrice.amount)
-          : parseFloat(this.giftCardVariantSelected.price.amount),
-        tag: this.giftCardVariantSelected.tags || [],
-        image: this.product.image.source.url,
-        title: this.giftCardVariantSelected.title,
-        totalInventory: 999, // TODO da discutere
-        gtmProductData: { giftCard: this.giftCardVariantSelected.price.amount },
       })
-
-      this.flashMessage.show({
-        status: '',
-        message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title} ${this.giftCardVariantSelected.title}` }),
-        icon: this.product.image.source.url,
-        iconClass: 'bg-transparent ',
-        time: 8000,
-        blockClass: 'add-product-notification',
-      }) */
     },
+
     async removeFromUserCart() {
-      this.$store.commit('userCart/removeProduct', {
-        id: this.giftCardVariantSelected.id,
+      if (this.cartQuantity === 0)
+        return
+
+      const giftCardProduct = {
+        ...this.product,
+        merchandise: { id: this.giftCardVariantSelected.id },
+        shopify_product_variant_id: this.giftCardVariantSelected.id,
         gtmProductData: { giftCard: this.giftCardVariantSelected.price.amount },
-      })
+      }
+
+      this.shopifyCart = await this.updateItemInCart(giftCardProduct, this.cartQuantity - 1)
     },
   },
 })

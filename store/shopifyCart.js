@@ -1,5 +1,5 @@
 import { useContext } from '@nuxtjs/composition-api'
-import { defineStore } from 'pinia'
+import { defineStore, storeToRefs } from 'pinia'
 import { useCustomer } from './customer'
 import addProductToCart from '~/graphql/mutations/addProductToCart'
 import createCart from '~/graphql/mutations/createCart'
@@ -11,7 +11,30 @@ export const useShopifyCart = defineStore({
   id: 'shopifyCart',
   state: () => ({
     shopifyCart: null,
+    salesChannel: process.env.SALECHANNEL,
   }),
+
+  getters: {
+    cartTotalQuantity: state => state.shopifyCart?.totalQuantity || 0,
+    cartTotal: (state) => {
+      let cartLines = []
+      const { getCustomerType } = storeToRefs(useCustomer())
+
+      if (!state.shopifyCart?.lines?.edges?.length)
+        return cartLines
+
+      cartLines = state.shopifyCart.lines.edges?.map(edge => ({
+        quantity: edge.node.quantity,
+        price: !edge.node.merchandise.product.isGiftCard
+          ? JSON.parse(edge.node.merchandise.product.details.value)
+            .priceLists[state.salesChannel][getCustomerType.value]
+          : edge.node.merchandise.price.amount,
+        cartLineId: edge.node.id,
+      }))
+
+      return cartLines.reduce((t, n) => t + n.quantity * n.price, 0)
+    },
+  },
 
   actions: {
     async createShopifyCart() {
@@ -36,11 +59,12 @@ export const useShopifyCart = defineStore({
         })
         .then(data => data.cartCreate.cart)
 
+      this.$nuxt.$cookies.set('cartId', data.id)
       this.$patch({ shopifyCart: data }) // TODO: fix here
       return await data
     },
 
-    // Fix me: need workaround for cartline
+    // Fix me: need workaround for cart line
     async addProductToCart(product, fromCartLine = false) {
       const cartId = this.shopifyCart.id
 
@@ -160,32 +184,14 @@ export const useShopifyCart = defineStore({
       return data.cartLinesUpdate.cart
     },
 
-    getCartLines() {
-      const { $config } = useContext()
-      const customerStore = useCustomer()
-      const customerType = customerStore.getCustomerType
-
-      return this.shopifyCart.lines.edges.map((edge) => {
-        const price = (edge.node.merchandise.product.details.value?.priceLists)
-          ? JSON.parse(edge.node.merchandise.product.details.value)
-            .priceLists[$config.SALECHANNEL][customerType]
-          : edge.node.merchandise.price.amount
-
-        return {
-          quantity: edge.node.quantity,
-          price,
-          cartLineId: edge.node.id,
-        }
-      })
-    },
     getFinalPrice(item) {
       const { $config } = useContext()
       const customerStore = useCustomer()
       const customerType = customerStore.getCustomerType
 
-      return (item.merchandise.product.details.value?.priceLists)
+      return !item.merchandise.product.isGiftCard
         ? JSON.parse(item.merchandise.product.details.value).priceLists[$config.SALECHANNEL][customerType]
-        : item.merchandise.price.amount // default prezzo di shopify, usato nelle gift card
+        : item.merchandise.price.amount
     },
     async getShopifyCart(id) {
       try {

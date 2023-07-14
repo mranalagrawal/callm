@@ -1,11 +1,13 @@
 <script>
-import { defineComponent, useContext } from '@nuxtjs/composition-api'
-import deleteIcon from 'assets/svg/delete.svg'
+import { computed, defineComponent } from '@nuxtjs/composition-api'
 import addIcon from 'assets/svg/add.svg'
+import deleteIcon from 'assets/svg/delete.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
-import { useShopifyCart } from '~/store/shopifyCart'
-import { useCustomerOrders } from '~/store/customerOrders.ts'
+import { storeToRefs } from 'pinia'
 import { useCustomer } from '~/store/customer'
+import { useCustomerOrders } from '~/store/customerOrders.ts'
+import { useShopifyCart } from '~/store/shopifyCart'
+import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 
 export default defineComponent({
   props: {
@@ -15,33 +17,44 @@ export default defineComponent({
     },
     isLast: Boolean,
   },
-  setup() {
-    const shopifyCart = useShopifyCart()
+  setup(props) {
     const customerStore = useCustomer()
-
-    const { customerId } = customerStore
-
     const customerOrders = useCustomerOrders()
-    const { getCanOrder } = customerOrders
 
-    const { $dayjs } = useContext()
-    return { shopifyCart, deleteIcon, addIcon, subtractIcon, customerId, $dayjs, getCanOrder }
-  },
-  data() {
-    return { quantity: this.item.quantity }
-  },
-  computed: {
-    cartQuantity() {
-      return this.item.quantity
-    },
-    canAddMore() {
-      return this.item.merchandise.product.totalInventory - this.cartQuantity > 0
-    },
-    finalPrice() {
-      return this.shopifyCart.getFinalPrice(this.item)
-    },
+    const { customerId } = storeToRefs(customerStore)
+    const { getCanOrder } = customerOrders
+    const { shopifyCart } = storeToRefs(useShopifyCart())
+    const {
+      addProductToCart,
+      getFinalPrice,
+      updateItemInCart,
+    } = useShopifyCart()
+
+    const finalPrice = getFinalPrice(props.item)
+
+    const cartQuantity = computed(() => props.item.quantity)
+    const canAddMore = computed(() => props.item.merchandise.product.isGiftCard
+      || props.item.merchandise.product.totalInventory - cartQuantity.value > 0)
+    const isOnSale = computed(() => finalPrice < +props.item.merchandise.price.amount)
+
+    return {
+      addIcon,
+      addProductToCart,
+      canAddMore,
+      cartQuantity,
+      customerId,
+      deleteIcon,
+      finalPrice,
+      getCanOrder,
+      getFinalPrice,
+      isOnSale,
+      shopifyCart,
+      subtractIcon,
+      updateItemInCart,
+    }
   },
   methods: {
+    getLocaleFromCurrencyCode,
     async increaseQuantity() {
       if (!this.canAddMore)
         return
@@ -59,19 +72,16 @@ export default defineComponent({
         return
       } */
 
-      const updated = await this.shopifyCart.addProductToCart(this.item, true)
-      this.shopifyCart.shopifyCart = updated
+      this.shopifyCart = await this.addProductToCart(this.item, true)
     },
     async decreaseQuantity() {
       if (this.item.quantity === 0)
         return
 
-      const updated = await this.shopifyCart.updateItemInCart(this.item, this.item.quantity - 1, true)
-      this.shopifyCart.shopifyCart = updated
+      this.shopifyCart = await this.updateItemInCart(this.item, this.item.quantity - 1, true)
     },
     async removeLine() {
-      const updated = await this.shopifyCart.updateItemInCart(this.item, 0, true)
-      this.shopifyCart.shopifyCart = updated
+      this.shopifyCart = await this.updateItemInCart(this.item, 0, true)
     },
   },
 })
@@ -112,19 +122,32 @@ export default defineComponent({
       </div>
     </div>
     <div class="c-cartLineItem__price">
-      <div
-        v-if="finalPrice !== +item.merchandise.price.amount"
-        class="text-sm text-right text-gray"
-        style="text-decoration: line-through"
+      <span
+        v-if="isOnSale"
+        class="block line-through text-gray text-sm text-right"
       >
-        {{ (item.quantity * +item.merchandise.price.amount).toFixed(2) }}
-        {{ $config.STORE === 'CMW_UK' ? '£' : '€' }}
-      </div>
-
-      <div class="font-bold text-lg text-right">
-        {{ (item.quantity * finalPrice).toFixed(2) }}
-        {{ $config.STORE === 'CMW_UK' ? '£' : '€' }}
-      </div>
+        {{
+          $n(Number(item.quantity * +item.merchandise.price.amount), 'currency', getLocaleFromCurrencyCode(item.merchandise.price.currencyCode))
+        }}
+      </span>
+      <i18n-n
+        v-if="finalPrice"
+        class="block text-right" :value="item.quantity * finalPrice" :format="{ key: 'currency' }"
+        :locale="getLocaleFromCurrencyCode(item.merchandise.price.currencyCode)"
+      >
+        <template #currency="slotProps">
+          <span class="text-lg font-bold !leading-none">{{ slotProps.currency }}</span>
+        </template>
+        <template #integer="slotProps">
+          <span class="text-lg font-bold !leading-none">{{ slotProps.integer }}</span>
+        </template>
+        <template #group="slotProps">
+          <span class="text-lg font-bold !leading-none">{{ slotProps.group }}</span>
+        </template>
+        <template #fraction="slotProps">
+          <span class="text-lg font-bold !leading-none">{{ slotProps.fraction }}</span>
+        </template>
+      </i18n-n>
     </div>
     <div class="c-cartLineItem__cta absolute md:relative top-0 right-0">
       <ButtonIcon class="m-auto" :icon="deleteIcon" variant="icon" :size="28" @click.native="removeLine" />

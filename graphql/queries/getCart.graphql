@@ -37,6 +37,7 @@ query getCart($id: ID!){
                   currencyCode
                 }
                 product {
+                  isGiftCard
                   id
                   title
                   description
@@ -67,6 +68,6 @@ query getCart($id: ID!){
             }
           }
         }
-      }  
+      }
   }
 }

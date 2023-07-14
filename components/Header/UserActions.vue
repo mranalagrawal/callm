@@ -1,5 +1,4 @@
 <script>
-import { mapGetters } from 'vuex'
 import { storeToRefs } from 'pinia'
 import heartIcon from '~/assets/svg/heart.svg'
 import userIcon from '~/assets/svg/user.svg'
@@ -16,14 +15,17 @@ export default {
       customer,
       favoritesCount,
     } = storeToRefs(customerStore)
-    const shopifyCart = useShopifyCart()
+    const shopifyCartStore = useShopifyCart()
+    const { cartTotal, cartTotalQuantity } = storeToRefs(useShopifyCart())
 
     return {
+      cartTotal,
+      cartTotalQuantity,
       customer,
       customerStore,
       favoritesCount,
       getLocaleFromCurrencyCode,
-      shopifyCart,
+      shopifyCartStore,
     }
   },
   data() {
@@ -36,20 +38,6 @@ export default {
       hoveringAction: false,
       hoveringColor: 'primary-400',
     }
-  },
-  computed: {
-    ...mapGetters({
-      cartItems: 'userCart/cartItems',
-      cartTotalAmount: 'userCart/getCartTotalAmount',
-      cartTotalAmountObj: 'userCart/cartTotalAmountObj',
-    }),
-    itemsInCart() {
-      return this.shopifyCart.shopifyCart && this.shopifyCart.shopifyCart.totalQuantity
-    },
-    cartTotal() {
-      const cartLines = this.shopifyCart.getCartLines()
-      return cartLines.reduce((t, n) => t + n.quantity * n.price, 0)
-    },
   },
   methods: {
     handleUserActionMouseEnter(key) {
@@ -142,7 +130,7 @@ export default {
         @mouseleave="handleUserActionMouseLeave"
       >
         <span class="flex gap-1 items-center">
-          <span v-if="itemsInCart">
+          <span v-if="cartTotalQuantity">
             <span class="block text-xxs text-left mb-1">{{ $t('cartTotal') }}</span>
             <i18n-n
               class="flex items-end leading-none" :value="Number(cartTotal)"
@@ -171,14 +159,14 @@ export default {
               height="32px"
             />
             <span
-              v-if="!itemsInCart"
+              v-if="!cartTotalQuantity"
               class="block my-0 font-light text-sm"
             >
               {{ $t('cart') }}
             </span>
             <Badge
-              v-if="itemsInCart"
-              :qty="itemsInCart"
+              v-if="cartTotalQuantity"
+              :qty="cartTotalQuantity"
               :bg-color="currentComponent === 'cart' ? 'white' : 'primary-400'"
               class="transform absolute top-[-10px] right-[-10px]"
             />

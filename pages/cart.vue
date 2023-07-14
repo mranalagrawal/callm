@@ -2,6 +2,7 @@
 import { onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import CartLine from '../components/Cart/CartLine.vue'
+import { generateKey } from '~/utilities/strings'
 import prismicConfig from '~/config/prismicConfig'
 
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
@@ -14,11 +15,9 @@ export default {
     return context.$config.STORE
   },
   setup() {
-    const { $config, store, $cmwGtmUtils } = useContext()
+    const { $config, $cmwGtmUtils } = useContext()
     const shipping = ref({})
-    const shopifyCartV = useShopifyCart()
-    const { shopifyCart } = storeToRefs(shopifyCartV)
-    const { getCartLines } = shopifyCartV
+    const { shopifyCart, cartTotal } = storeToRefs(useShopifyCart())
 
     const { fetch } = useFetch(async ({ $config, $cmwRepo }) => {
       shipping.value = await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE]?.components.shipping })
@@ -34,28 +33,28 @@ export default {
             actionField: {
               step: '0',
             },
-            products: store.state.userCart.userCart.map(p => p.gtmProductData),
+            products: [], // FixMe: fix this, store.state.userCart.userCart.map(p => p.gtmProductData),
           },
         },
       })
     })
 
-    return { fetch, shipping, getLocaleFromCurrencyCode, shopifyCart, getCartLines }
+    return {
+      cartTotal,
+      fetch,
+      getLocaleFromCurrencyCode,
+      shipping,
+      shopifyCart,
+    }
   },
   computed: {
     cart() {
       return this.shopifyCart ? this.shopifyCart : null
     },
-    cartTotal() {
-      if (!this.shopifyCart)
-        return 0
-
-      const cartLines = this.getCartLines()
-      return cartLines.reduce((t, n) => t + n.quantity * n.price, 0)
-    },
   },
 
   methods: {
+    generateKey,
     emptyCart() {
       SweetAlertConfirm.fire({
         icon: 'warning',
@@ -131,7 +130,7 @@ export default {
                 </small>
                 <Button class="w-max ml-auto" variant="text" :label="$t('common.cta.emptyCart')" @click.native="emptyCart" />
               </div>
-              <div v-for="item in cart.lines.edges" :key="item.id">
+              <div v-for="item in cart.lines.edges" :key="generateKey(`cart-${item.node.id}`)">
                 <CartLine :item="item.node" />
               </div>
               <div class="my-4">

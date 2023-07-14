@@ -36,6 +36,7 @@ mutation cartCreate {
                   currencyCode
                 }
                 product {
+                  isGiftCard
                   id
                   title
                   description

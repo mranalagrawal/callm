@@ -36,7 +36,7 @@ export default defineComponent({
 
     const shopifyCartStore = useShopifyCart()
     const { shopifyCart } = storeToRefs(shopifyCartStore)
-    const { getCartLines, createShopifyCart, addProductToCart, updateItemInCart } = shopifyCartStore
+    const { createShopifyCart, addProductToCart, updateItemInCart } = shopifyCartStore
 
     const { customer, wishlistArr, customerId, getCustomerType } = storeToRefs(customerStore)
 
@@ -273,7 +273,6 @@ export default defineComponent({
       finalPrice,
       generateMetaLink,
       getCanOrder,
-      getCartLines,
       getCustomerType,
       gtmProductData,
       handleShowRequestModal,

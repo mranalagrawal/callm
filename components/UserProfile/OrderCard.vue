@@ -101,7 +101,8 @@ export default {
       return getLocaleFromCurrencyCode(code)
     },
     async handleReorderProducts() {
-      this.orderLineItems
+      // Todo: fix this
+      /* this.orderLineItems
         .forEach((el) => {
           const id = el.variant.id
           const amount = el.variant.product.isGiftCard
@@ -127,7 +128,7 @@ export default {
               title,
             })
           }
-        })
+        }) */
     },
     handleClick(id) {
       this.$emit('update-order-id', id)

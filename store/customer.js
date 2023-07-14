@@ -16,6 +16,7 @@ function setCustomerWishlist(value) {
 
 // Note: Backend should use enums here 'GOLD' | 'B2B' | 'MAIN', this way we could simplify this to an array
 const availableUsers = {
+  LIST_GOLD: 'gold',
   list_gold: 'gold',
   list_b2b: 'b2b',
   main: 'main',

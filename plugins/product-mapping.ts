@@ -270,6 +270,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
         description: v.description || null,
         price: { ...v.price },
         compareAtPrice: v.compareAtPrice,
+        quantityAvailable: v.quantityAvailable,
       })) || []
 
       const details = JSON.parse(product.details.value)
@@ -300,6 +301,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
         variants: getGiftCardVariants(),
         breadcrumbs: Object.keys(breadcrumbs).length ? $productMapping.breadcrumbs(breadcrumbs[lang]) : [],
         href: '', // TODO
+        tags: [],
         seo: {
           description: product.seo.description,
           title: product.seo.title,

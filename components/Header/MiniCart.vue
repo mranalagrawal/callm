@@ -1,10 +1,11 @@
 <script>
-import deliveryIcon from 'assets/svg/delivery.svg'
 import checkCircularIcon from 'assets/svg/check-circular.svg'
-import { mapGetters } from 'vuex'
+import deliveryIcon from 'assets/svg/delivery.svg'
+import { storeToRefs } from 'pinia'
 import locales from '../../locales-mapper'
 import documents from '../../prismic-mapper'
 import { useShopifyCart } from '~/store/shopifyCart'
+import { generateKey } from '~/utilities/strings'
 
 export default {
   name: 'HeaderMiniCart',
@@ -14,8 +15,11 @@ export default {
     },
   },
   setup() {
-    const shopifyCart = useShopifyCart()
-    return { shopifyCart }
+    const { shopifyCart, cartTotal } = storeToRefs(useShopifyCart())
+    return {
+      cartTotal,
+      shopifyCart,
+    }
   },
   data() {
     return {
@@ -37,22 +41,11 @@ export default {
         lang,
       },
     )
-    const shipping = response.data
-    this.shipping = shipping
+    this.shipping = response.data
   },
   computed: {
-    ...mapGetters({
-      cartTotalAmount: 'userCart/getCartTotalAmount',
-    }),
-    cart() {
-      return this.shopifyCart.shopifyCart
-    },
-    cartTotal() {
-      const cartLines = this.shopifyCart.getCartLines()
-      return cartLines.reduce((t, n) => t + n.quantity * n.price, 0)
-    },
     checkoutUrl() {
-      let baseUrl = `${this.cart.checkoutUrl}/?`
+      let baseUrl = `${this.shopifyCart.checkoutUrl}/?`
 
       this.$store.state.user.user.customer.email
       && (baseUrl += `&checkout[email]=${this.$store.state.user.user.customer.email}`)
@@ -86,14 +79,15 @@ export default {
   },
 
   methods: {
+    generateKey,
     async checkout() {
       if (!this.$store.state.user.user) {
         // crea checkoutUrl
-        window.location = this.shopifyCart.shopifyCart.checkoutUrl
+        window.location = this.shopifyCart.checkoutUrl
         return
       }
       // crea checkoutUrl
-      let checkoutUrl = `${this.shopifyCart.shopifyCart.checkoutUrl}/?`
+      let checkoutUrl = `${this.shopifyCart.checkoutUrl}/?`
       this.$store.state.user.user.customer.email
       && (checkoutUrl += `&checkout[email]=${this.$store.state.user.user.customer.email}`)
 
@@ -133,7 +127,7 @@ export default {
     <div class="border-t-4 border-t-primary-900 pt-4">
       <div>
         <div v-if="shipping">
-          <div v-if="cart && cart.totalQuantity > 0" class="min-w-[640px]">
+          <div v-if="shopifyCart && shopifyCart.totalQuantity > 0" class="min-w-[640px]">
             <div
               class="text-secondary-700 flex items-center justify-center gap-2 text-sm uppercase pb-4"
             >
@@ -144,7 +138,7 @@ export default {
               <hr class="border-gray-light">
             </div>
             <div class="max-h-[360px] overflow-y-auto overflow-x-hidden">
-              <div v-for="item in cart.lines.edges" :key="item.id">
+              <div v-for="item in shopifyCart.lines.edges" :key="generateKey(`mini-cart-${item.node.id}`)">
                 <CartLine :item="item.node" />
               </div>
             </div>
