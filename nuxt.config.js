@@ -595,14 +595,14 @@ export default {
   },
 
   publicRuntimeConfig: {
+    STORE: process.env.STORE,
+    DEPLOY_ENV: process.env.DEPLOY_ENV,
     DOMAIN: process.env.DOMAIN,
     STOREFRONT_ACCESS_TOKEN: process.env.STOREFRONT_ACCESS_TOKEN,
     ELASTIC_URL: process.env.ELASTIC_URL,
     CMW_API: process.env.CMW_API,
     CMW_API_KEY: process.env.CMW_API_KEY,
-    STORE: process.env.STORE,
     SALECHANNEL: process.env.SALECHANNEL,
-    DEPLOY_ENV: process.env.DEPLOY_ENV,
     gtm: {
       id: process.env.GOOGLE_TAG_MANAGER_ID,
     },

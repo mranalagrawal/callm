@@ -9,7 +9,6 @@ export type TPrismicComponents =
   | 'conditionsPage'
   | 'footer'
   | 'homeCarousel'
-  | 'homeBanner'
   | 'homeBoxes'
   | 'megaMenu'
   | 'producers'
@@ -47,7 +46,6 @@ const defaultPrismicComponents: TPrismicComponentsMap = {
   contactPage: 'contact_us',
   footer: 'footer',
   homeCarousel: 'home-carousel',
-  homeBanner: 'HomeBanner',
   megaMenu: 'mega-menu-test',
   partners: 'partners',
   topbar: 'topbar',
