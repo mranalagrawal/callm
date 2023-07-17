@@ -78,10 +78,10 @@ export default defineComponent({
       if (this.item.quantity === 0)
         return
 
-      this.shopifyCart = await this.updateItemInCart(this.item, this.item.quantity - 1, true)
+      await this.updateItemInCart(this.item, this.item.quantity - 1, true)
     },
     async removeLine() {
-      this.shopifyCart = await this.updateItemInCart(this.item, 0, true)
+      await this.updateItemInCart(this.item, 0, true)
     },
   },
 })

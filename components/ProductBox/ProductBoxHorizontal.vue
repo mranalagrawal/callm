@@ -1,24 +1,24 @@
 <script>
-import { computed, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api'
-import { storeToRefs } from 'pinia'
-import heartIcon from 'assets/svg/heart.svg'
-import heartFullIcon from 'assets/svg/heart-full.svg'
-import cartIcon from 'assets/svg/cart.svg'
+import { computed, defineComponent, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api'
 import addIcon from 'assets/svg/add.svg'
+import cartIcon from 'assets/svg/cart.svg'
 import closeIcon from 'assets/svg/close.svg'
-import subtractIcon from 'assets/svg/subtract.svg'
 import emailIcon from 'assets/svg/email.svg'
-import { stripHtml } from '~/utilities/strings'
+import heartFullIcon from 'assets/svg/heart-full.svg'
+import heartIcon from 'assets/svg/heart.svg'
+import subtractIcon from 'assets/svg/subtract.svg'
+import { storeToRefs } from 'pinia'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import { useCustomer } from '~/store/customer'
-import { isObject } from '~/utilities/validators'
-import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
-import { SweetAlertToast } from '~/utilities/Swal'
-import { useShopifyCart } from '~/store/shopifyCart'
 import { useCustomerOrders } from '~/store/customerOrders.ts'
+import { useShopifyCart } from '~/store/shopifyCart'
+import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
+import { stripHtml } from '~/utilities/strings'
+import { SweetAlertToast } from '~/utilities/Swal'
+import { isObject } from '~/utilities/validators'
 
 // noinspection JSUnusedGlobalSymbols
-export default {
+export default defineComponent({
   name: 'ProductBoxHorizontal',
   props: {
     /** @Type: {ProductVariantType.ProductVariant} */
@@ -34,12 +34,12 @@ export default {
     },
   },
   setup(props) {
-    const { $config, localeLocation, $gtm, $cmwGtmUtils, $dayjs } = useContext()
+    const { $config, localeLocation, $gtm, $cmwGtmUtils } = useContext()
     const customerStore = useCustomer()
     const customerOrders = useCustomerOrders()
     const { getCanOrder } = storeToRefs(customerOrders)
-
-    const shopifyCart = useShopifyCart()
+    const { shopifyCart } = storeToRefs(useShopifyCart())
+    const { addProductToCart, createShopifyCart, updateItemInCart } = useShopifyCart()
     const { wishlistArr, getCustomerType, customerId } = storeToRefs(customerStore)
     const { handleWishlist } = customerStore
     const { handleShowRequestModal } = useShowRequestModal()
@@ -97,7 +97,7 @@ export default {
     const amountMax = computed(() => props.product.details.amountMax[$config.SALECHANNEL])
 
     const isOnCart = computed(() => {
-      const product = shopifyCart?.shopifyCart?.lines?.edges.find(el => el.node.merchandise.id === props.product.shopify_product_variant_id)
+      const product = shopifyCart.value?.lines?.edges.find(el => el.node.merchandise.id === props.product.shopify_product_variant_id)
       if (product)
         return product.node
       return null
@@ -109,11 +109,13 @@ export default {
 
     return {
       addIcon,
+      addProductToCart,
       amountMax,
       canAddMore,
       cartIcon,
       cartQuantity,
       closeIcon,
+      createShopifyCart,
       customerId,
       emailIcon,
       finalPrice,
@@ -132,6 +134,7 @@ export default {
       isOpen,
       shopifyCart,
       subtractIcon,
+      updateItemInCart,
       wishlistArr,
     }
   },
@@ -150,36 +153,10 @@ export default {
         return
       }
 
-      // check for logged user and product has amountMax...
-      /* if (this.amountMax && this.customerId) {
-        // ... and can order amountMax
-        const amountMax = this.amountMax
-        const variantId = this.product.shopify_product_variant_id
-        const query = `processed_at:>${this.$dayjs().subtract(4, 'weeks').format('YYYY-MM-DD')}`
+      if (!this.shopifyCart)
+        await this.createShopifyCart()
 
-        const { canOrder, orderableQuantity } = await this.getCanOrder(variantId, amountMax, query)
-
-        if (!canOrder || (orderableQuantity === this.cartQuantity)) {
-          await SweetAlertToast.fire({
-            icon: 'warning',
-            text: this.$i18n.t('common.feedback.KO.maxQuantityReached'),
-          })
-          return
-        }
-      } */
-
-      const shopifyCart = this.shopifyCart
-
-      // if cart doesnt' exists, create it
-      if (!shopifyCart.shopifyCart) {
-        const newCart = await this.shopifyCart.createShopifyCart()
-        shopifyCart.shopifyCart = newCart
-        this.$cookies.set('cartId', shopifyCart.shopifyCart.id)
-      }
-
-      // add product to cart
-      const updated = await this.shopifyCart.addProductToCart(this.product)
-      shopifyCart.shopifyCart = updated
+      await this.addProductToCart(this.product)
 
       this.flashMessage.show({
         status: '',
@@ -194,12 +171,10 @@ export default {
       if (this.cartQuantity === 0)
         return
 
-      const updated = await this.shopifyCart.updateItemInCart(this.product, this.cartQuantity - 1)
-      const shopifyCart = this.shopifyCart
-      shopifyCart.shopifyCart = updated
+      await this.updateItemInCart(this.product, this.cartQuantity - 1)
     },
   },
-}
+})
 </script>
 
 <template>

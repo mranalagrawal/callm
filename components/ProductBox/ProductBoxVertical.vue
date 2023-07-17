@@ -38,11 +38,8 @@ export default defineComponent({
 
     const customerOrders = useCustomerOrders()
     const { getCanOrder } = storeToRefs(customerOrders)
-
-    const shopifyCart = useShopifyCart()
-    // TODO: Fix me
-    // const { shopifyCart } = storeToRefs(useShopifyCart())
-    const { addProductToCart, updateItemInCart } = useShopifyCart()
+    const { shopifyCart } = storeToRefs(useShopifyCart())
+    const { addProductToCart, createShopifyCart, updateItemInCart } = useShopifyCart()
     const { handleWishlist } = customerStore
     const { handleShowRequestModal } = useShowRequestModal()
     const router = useRouter()
@@ -114,6 +111,7 @@ export default defineComponent({
       cartIcon,
       cartQuantity,
       closeIcon,
+      createShopifyCart,
       customerId,
       emailIcon,
       finalPrice,
@@ -154,14 +152,9 @@ export default defineComponent({
         return
       }
 
-      const shopifyCart = this.shopifyCart
+      if (!this.shopifyCart)
+        await this.createShopifyCart()
 
-      if (!shopifyCart.shopifyCart) {
-        shopifyCart.shopifyCart = await this.shopifyCart.createShopifyCart()
-        this.$cookies.set('cartId', shopifyCart.shopifyCart.id)
-      }
-
-      // add product to cart
       await this.addProductToCart(this.product)
 
       this.flashMessage.show({

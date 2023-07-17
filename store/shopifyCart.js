@@ -61,7 +61,6 @@ export const useShopifyCart = defineStore({
 
       this.$nuxt.$cookies.set('cartId', data.id)
       this.$patch({ shopifyCart: data }) // TODO: fix here
-      return await data
     },
 
     // Fix me: need workaround for cart line
@@ -120,9 +119,12 @@ export const useShopifyCart = defineStore({
         },
       })
 
+      if (typeof window !== 'undefined' && window.google_tag_manager && window.google_tag_manager[this.$nuxt.app.$config.gtm.id])
+        window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.set('ecommerce', undefined)
+
       this.$patch({ shopifyCart: data.cartLinesAdd.cart })
-      return data.cartLinesAdd.cart
     },
+
     async updateItemInCart(product, quantity, fromCartLine = false) {
       const cartId = this.shopifyCart.id
 
@@ -182,8 +184,10 @@ export const useShopifyCart = defineStore({
         },
       })
 
+      if (typeof window !== 'undefined' && window.google_tag_manager && window.google_tag_manager[this.$nuxt.app.$config.gtm.id])
+        window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.set('ecommerce', undefined)
+
       this.$patch({ shopifyCart: data.cartLinesUpdate.cart })
-      return data.cartLinesUpdate.cart
     },
 
     getFinalPrice(item) {
