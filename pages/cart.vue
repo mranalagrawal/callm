@@ -27,9 +27,13 @@ export default {
       const products = shopifyCart.value?.lines?.nodes?.map(
         (node) => {
           const gtmProductData = node.attributes.find(v => v.key === 'gtmProductData')
-          const productDataObject = gtmProductData?.value ?? null
-
-          return JSON.parse(productDataObject)
+          const productDataJson = gtmProductData?.value ?? null
+          return productDataJson
+            ? {
+                ...JSON.parse(productDataJson),
+                quantity: node.quantity,
+              }
+            : {}
         },
       )
 
