@@ -25,6 +25,42 @@ query getCart($id: ID!){
         }
       }
       lines(first: 10) {
+        nodes {
+          id
+          quantity
+          merchandise {
+            ... on ProductVariant {
+              id
+              price {
+                amount
+                currencyCode
+              }
+              product {
+                isGiftCard
+                id
+                title
+                description
+                tags
+                totalInventory
+                details: metafield(namespace: "custom", key: "details") {
+                  value
+                }
+                compareAtPriceRange {
+                  maxVariantPrice {
+                    amount
+                  }
+                  minVariantPrice {
+                    amount
+                  }
+                }
+              }
+            }
+          }
+          attributes {
+            key
+            value
+          }
+        }
         edges {
           node {
             id
@@ -52,11 +88,6 @@ query getCart($id: ID!){
                     }
                     minVariantPrice {
                       amount
-                    }
-                  }
-                  images(first: 1) {
-                    nodes {
-                      url
                     }
                   }
                 }

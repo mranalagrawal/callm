@@ -174,15 +174,8 @@ export default defineComponent({
       if (!this.shopifyCart)
         await this.createShopifyCart()
 
-      const giftCardProduct = {
-        ...this.product,
-        merchandise: { id: this.giftCardVariantSelected.id },
-        shopify_product_variant_id: this.giftCardVariantSelected.id,
-        gtmProductData: { giftCard: this.giftCardVariantSelected.price.amount },
-      }
-
       // add product to cart
-      this.shopifyCart = await this.addProductToCart(giftCardProduct)
+      this.shopifyCart = await this.addProductToCart(this.giftCardVariantSelected)
 
       this.flashMessage.show({
         status: '',
@@ -198,14 +191,7 @@ export default defineComponent({
       if (this.cartQuantity === 0)
         return
 
-      const giftCardProduct = {
-        ...this.product,
-        merchandise: { id: this.giftCardVariantSelected.id },
-        shopify_product_variant_id: this.giftCardVariantSelected.id,
-        gtmProductData: { giftCard: this.giftCardVariantSelected.price.amount },
-      }
-
-      this.shopifyCart = await this.updateItemInCart(giftCardProduct, this.cartQuantity - 1)
+      this.shopifyCart = await this.updateItemInCart(this.giftCardVariantSelected, this.cartQuantity - 1)
     },
   },
 })

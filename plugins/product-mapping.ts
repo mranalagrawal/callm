@@ -266,11 +266,14 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
     giftCard(product): IGiftCardMapped {
       const getGiftCardVariants = () => product.variants.nodes.map((v: any) => ({
         id: v.id,
+        shopify_product_variant_id: v.id,
         title: v.title,
         description: v.description || null,
         price: { ...v.price },
         compareAtPrice: v.compareAtPrice,
         quantityAvailable: v.quantityAvailable,
+        gtmProductData: { giftCard: v.price.amount },
+        tags: [],
       })) || []
 
       const details = JSON.parse(product.details.value)

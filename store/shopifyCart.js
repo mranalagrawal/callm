@@ -120,6 +120,7 @@ export const useShopifyCart = defineStore({
         },
       })
 
+      this.$patch({ shopifyCart: data.cartLinesAdd.cart })
       return data.cartLinesAdd.cart
     },
     async updateItemInCart(product, quantity, fromCartLine = false) {
@@ -181,6 +182,7 @@ export const useShopifyCart = defineStore({
         },
       })
 
+      this.$patch({ shopifyCart: data.cartLinesUpdate.cart })
       return data.cartLinesUpdate.cart
     },
 
@@ -198,6 +200,7 @@ export const useShopifyCart = defineStore({
         const data = await this.$nuxt.$graphql.default
           .request(getCart, { id })
           .then(data => data.cart)
+
         this.$patch({ shopifyCart: data })
       } catch (e) {
         throw new Error('Invalid cart id')

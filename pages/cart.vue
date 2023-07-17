@@ -2,12 +2,12 @@
 import { onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import CartLine from '../components/Cart/CartLine.vue'
-import { generateKey } from '~/utilities/strings'
 import prismicConfig from '~/config/prismicConfig'
+import { useShopifyCart } from '~/store/shopifyCart'
 
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
+import { generateKey } from '~/utilities/strings'
 import { SweetAlertConfirm } from '~/utilities/Swal'
-import { useShopifyCart } from '~/store/shopifyCart'
 
 export default {
   components: { CartLine },
@@ -24,6 +24,15 @@ export default {
     })
 
     onMounted(() => {
+      const products = shopifyCart.value?.lines?.nodes?.map(
+        (node) => {
+          const gtmProductData = node.attributes.find(v => v.key === 'gtmProductData')
+          const productDataObject = gtmProductData?.value ?? null
+
+          return JSON.parse(productDataObject)
+        },
+      )
+
       process.browser && $cmwGtmUtils.pushPage('product', {
         event: 'cartView',
         pageType: 'cart',
@@ -33,7 +42,7 @@ export default {
             actionField: {
               step: '0',
             },
-            products: [], // FixMe: fix this, store.state.userCart.userCart.map(p => p.gtmProductData),
+            products,
           },
         },
       })
