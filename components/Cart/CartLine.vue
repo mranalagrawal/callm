@@ -1,29 +1,33 @@
-<script>
+<script lang="ts">
+import type { PropType } from '@nuxtjs/composition-api'
 import { computed, defineComponent } from '@nuxtjs/composition-api'
 import addIcon from 'assets/svg/add.svg'
 import deleteIcon from 'assets/svg/delete.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
 import { storeToRefs } from 'pinia'
 import { useCustomer } from '~/store/customer'
-import { useCustomerOrders } from '~/store/customerOrders.ts'
+import { useCustomerOrders } from '~/store/customerOrders'
 import { useShopifyCart } from '~/store/shopifyCart'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
+
+// Todo: name and fix this interface based on shopify
+interface ICartLineItem {
+  merchandise: any
+  quantity: any
+}
 
 export default defineComponent({
   props: {
     item: {
-      type: Object,
+      type: Object as PropType<ICartLineItem>,
       required: true,
     },
     isLast: Boolean,
   },
   setup(props) {
-    const customerStore = useCustomer()
-    const customerOrders = useCustomerOrders()
-
-    const { customerId } = storeToRefs(customerStore)
-    const { getCanOrder } = customerOrders
+    const { customerId } = storeToRefs(useCustomer())
     const { shopifyCart } = storeToRefs(useShopifyCart())
+    const { getCanOrder } = useCustomerOrders()
     const {
       addProductToCart,
       getFinalPrice,
@@ -37,16 +41,32 @@ export default defineComponent({
       || props.item.merchandise.product.totalInventory - cartQuantity.value > 0)
     const isOnSale = computed(() => finalPrice < +props.item.merchandise.price.amount)
 
+    const increaseQuantity = async () => {
+      if (!canAddMore.value)
+        return
+
+      await addProductToCart(props.item, true)
+    }
+
+    const decreaseQuantity = async () => {
+      if (props.item.quantity === 0)
+        return
+
+      await updateItemInCart(props.item, props.item.quantity - 1, true)
+    }
+
     return {
       addIcon,
       addProductToCart,
       canAddMore,
       cartQuantity,
       customerId,
+      decreaseQuantity,
       deleteIcon,
       finalPrice,
       getCanOrder,
       getFinalPrice,
+      increaseQuantity,
       isOnSale,
       shopifyCart,
       subtractIcon,
@@ -55,34 +75,6 @@ export default defineComponent({
   },
   methods: {
     getLocaleFromCurrencyCode,
-    async increaseQuantity() {
-      if (!this.canAddMore)
-        return
-
-      // const amountMax = JSON.parse(this.item.merchandise.product.details.value).amountMax[this.$config.SALECHANNEL]
-      // const variantId = this.item.merchandise.id
-      // const query = `processed_at:>${this.$dayjs().subtract(4, 'weeks').format('YYYY-MM-DD')}`
-      // const { orderableQuantity } = await this.getCanOrder(variantId, amountMax, query)
-
-      /* if (this.cartQuantity === orderableQuantity) {
-        await SweetAlertToast.fire({
-          icon: 'warning',
-          text: this.$i18n.t('common.feedback.KO.maxQuantityReached'),
-        })
-        return
-      } */
-
-      this.shopifyCart = await this.addProductToCart(this.item, true)
-    },
-    async decreaseQuantity() {
-      if (this.item.quantity === 0)
-        return
-
-      await this.updateItemInCart(this.item, this.item.quantity - 1, true)
-    },
-    async removeLine() {
-      await this.updateItemInCart(this.item, 0, true)
-    },
   },
 })
 </script>
@@ -150,7 +142,7 @@ export default defineComponent({
       </i18n-n>
     </div>
     <div class="c-cartLineItem__cta absolute md:relative top-0 right-0">
-      <ButtonIcon class="m-auto" :icon="deleteIcon" variant="icon" :size="28" @click.native="removeLine" />
+      <ButtonIcon class="m-auto" :icon="deleteIcon" variant="icon" :size="28" @click.native="updateItemInCart(item, 0, true)" />
     </div>
   </div>
 </template>
