@@ -15,9 +15,7 @@ export default defineComponent({
 
 <template>
   <div class="mt-6">
-    <div class="h2">
-      {{ $t('productDescriptionTab', { productTitle: product?.title }) }}
-    </div>
+    <h2 class="h2" v-text="$t('productDescriptionTab', { productTitle: product?.title })" />
     <div v-html="product?.descriptionHtml" />
   </div>
 </template>
