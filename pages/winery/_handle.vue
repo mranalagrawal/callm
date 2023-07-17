@@ -85,17 +85,21 @@ export default defineComponent({
       return `tag:${pathParts.at(-1)?.replace('.htm', '') ?? ''}`
     })
 
+    if (process.server && req?.headers && req?.url)
+      canonicalUrl.value = `https://${req.headers.host}${req.url}`
+
+    if (process.client && typeof window !== 'undefined') {
+      const {
+        origin,
+        pathname,
+        search,
+      } = window.location
+      const encodedPath = pathname || ''
+      const encodedSearch = search || ''
+      canonicalUrl.value = `${origin}${encodedPath}${encodedSearch}`
+    }
+
     const { fetch } = useFetch(async () => {
-      if (process.server && req?.headers && req?.url)
-        canonicalUrl.value = `https://${req.headers.host}${encodeURIComponent(req.url)}`
-
-      if (process.client && typeof window !== 'undefined') {
-        const { origin, pathname, search } = window.location
-        const encodedPath = pathname ? encodeURIComponent(pathname) : ''
-        const encodedSearch = search ? encodeURIComponent(search) : ''
-        canonicalUrl.value = `${origin}${encodedPath}${encodedSearch}`
-      }
-
       const { articles } = await $graphql.default.request(getArticles, {
         lang: i18n.locale.toUpperCase(),
         first: 1,
@@ -126,10 +130,12 @@ export default defineComponent({
           content: brand.value?.seo?.description || '',
         },
       ],
-      link: [{
-        rel: 'canonical',
-        href: canonicalUrl.value,
-      }],
+      link: !canonicalUrl.value
+        ? []
+        : [{
+            rel: 'canonical',
+            href: canonicalUrl.value,
+          }],
     }))
 
     return {

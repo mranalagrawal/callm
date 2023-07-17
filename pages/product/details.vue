@@ -27,8 +27,16 @@ export default defineComponent({
       window.scrollTo(0, 0)
 
     const {
-      i18n, $config, $graphql, $cmwRepo, error, redirect, localeLocation, $cmwGtmUtils,
-      $productMapping, req,
+      i18n,
+      $config,
+      $graphql,
+      $cmwRepo,
+      error,
+      redirect,
+      localeLocation,
+      $cmwGtmUtils,
+      $productMapping,
+      req,
     } = useContext()
     const customerStore = useCustomer()
     const recentProductsStore = useRecentProductsStore()
@@ -36,9 +44,18 @@ export default defineComponent({
 
     const shopifyCartStore = useShopifyCart()
     const { shopifyCart } = storeToRefs(shopifyCartStore)
-    const { createShopifyCart, addProductToCart, updateItemInCart } = shopifyCartStore
+    const {
+      createShopifyCart,
+      addProductToCart,
+      updateItemInCart,
+    } = shopifyCartStore
 
-    const { customer, wishlistArr, customerId, getCustomerType } = storeToRefs(customerStore)
+    const {
+      customer,
+      wishlistArr,
+      customerId,
+      getCustomerType,
+    } = storeToRefs(customerStore)
 
     const customerOrders = useCustomerOrders()
     const { getCanOrder } = customerOrders
@@ -52,7 +69,12 @@ export default defineComponent({
       availableFeatures: [],
       bundle: [],
       details: {},
-      featuredImage: { altText: '', height: 0, url: '', width: 0 },
+      featuredImage: {
+        altText: '',
+        height: 0,
+        url: '',
+        width: 0,
+      },
       handle: '',
       id: '',
       variants: { nodes: [] },
@@ -98,6 +120,20 @@ export default defineComponent({
 
     const canonicalUrl = ref('')
 
+    if (process.server && req?.headers && req?.url)
+      canonicalUrl.value = `https://${req.headers.host}${req.url}`
+
+    if (process.client && typeof window !== 'undefined') {
+      const {
+        origin,
+        pathname,
+        search,
+      } = window.location
+      const encodedPath = pathname || ''
+      const encodedSearch = search || ''
+      canonicalUrl.value = `${origin}${encodedPath}${encodedSearch}`
+    }
+
     const { handleShowRequestModal } = useShowRequestModal()
 
     useFetch(async ({ $sentry }) => {
@@ -106,16 +142,6 @@ export default defineComponent({
         query: `tag:P${route.value.params.id}`,
       })
         .then(async ({ products = { nodes: [] } }) => {
-          if (process.server && req?.headers && req?.url)
-            canonicalUrl.value = `https://${req.headers.host}${encodeURIComponent(req.url)}`
-
-          if (process.client && typeof window !== 'undefined') {
-            const { origin, pathname, search } = window.location
-            const encodedPath = pathname ? encodeURIComponent(pathname) : ''
-            const encodedSearch = search ? encodeURIComponent(search) : ''
-            canonicalUrl.value = `${origin}${encodedPath}${encodedSearch}`
-          }
-
           if (!!products.nodes.length && products.nodes[0].handle) {
             product.value = await $productMapping.fromShopify([products.nodes[0]])[0]
 
@@ -126,7 +152,6 @@ export default defineComponent({
               ? []
               : $productMapping.breadcrumbs(productBreadcrumbs.value[i18n.locale])
 
-            console.log(productDetails.value.canonical)
             if (route.value.params.pathMatch !== product.value.handle)
               return redirect(301, localeLocation(`/${product.value.handle}-${productDetails.value.key}.htm`))
 
@@ -154,7 +179,10 @@ export default defineComponent({
               brandMetaFields.value = articles.nodes[0].details && JSON.parse(articles.nodes[0].details.value)
             }
           } else {
-            return error({ statusCode: 404, message: 'No results' })
+            return error({
+              statusCode: 404,
+              message: 'No results',
+            })
           }
         }).catch((err) => {
           $sentry.captureException(new Error(`Something went wrong ${err}`))
@@ -188,6 +216,7 @@ export default defineComponent({
       const productIncart = shopifyCart.value?.lines?.edges.find(el => el.node.merchandise.id === product.value.shopify_product_variant_id)
       if (productIncart)
         return productIncart.node
+
       return null
     })
 
@@ -200,6 +229,7 @@ export default defineComponent({
     const finalPrice = computed(() => {
       if (!productDetails.value.feId)
         return false
+
       return productDetails.value.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0
     })
 
@@ -222,10 +252,12 @@ export default defineComponent({
 
       return [
         ...hrefLangArr,
-        {
-          rel: 'canonical',
-          href: canonicalUrl.value,
-        },
+        !canonicalUrl.value
+          ? {}
+          : {
+              rel: 'canonical',
+              href: canonicalUrl.value,
+            },
       ]
     }
 
@@ -313,14 +345,13 @@ export default defineComponent({
       }
       const shopifyCart = this.shopifyCart
 
-      // if cart doesnt' exists, create it
       if (!shopifyCart) {
         this.shopifyCart = await this.createShopifyCart()
         this.$cookies.set('cartId', this.shopifyCart.id)
       }
 
-      // add product to cart
-      this.shopifyCart = await this.addProductToCart(this.product)
+      await this.addProductToCart(this.product)
+
       this.flashMessage.show({
         status: '',
         message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title}` }),
@@ -330,11 +361,12 @@ export default defineComponent({
         blockClass: 'add-product-notification',
       })
     },
+
     async removeFromUserCart() {
       if (this.cartQuantity === 0)
         return
 
-      this.shopifyCart = await this.updateItemInCart(this.product, this.cartQuantity - 1)
+      await this.updateItemInCart(this.product, this.cartQuantity - 1)
     },
   },
 })
@@ -367,7 +399,10 @@ export default defineComponent({
               :source="product.image.source"
             />
             <div class="absolute top-4 left-2">
-              <ProductBoxFeature v-for="feature in product.availableFeatures" :key="generateKey(`details-feature-${feature}`)" :feature="feature" />
+              <ProductBoxFeature
+                v-for="feature in product.availableFeatures"
+                :key="generateKey(`details-feature-${feature}`)" :feature="feature"
+              />
             </div>
             <div class="absolute bottom-0 left-2">
               <div
@@ -590,7 +625,10 @@ export default defineComponent({
           </div>
         </div>
 
-        <ProductDetailsTabs :product="product" :product-details="productDetails" :brand="brand" :brand-meta-fields="brandMetaFields" />
+        <ProductDetailsTabs
+          :product="product" :product-details="productDetails" :brand="brand"
+          :brand-meta-fields="brandMetaFields"
+        />
 
         <ClientOnly>
           <RecentProducts />

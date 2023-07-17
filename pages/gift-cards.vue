@@ -55,21 +55,25 @@ export default defineComponent({
 
     const canAddMore = computed(() => ((amountMax.value - cartQuantity.value) > 0))
 
+    if (process.server && req?.headers && req?.url)
+      canonicalUrl.value = `https://${req.headers.host}${req.url}`
+
+    if (process.client && typeof window !== 'undefined') {
+      const {
+        origin,
+        pathname,
+        search,
+      } = window.location
+      const encodedPath = pathname || ''
+      const encodedSearch = search || ''
+      canonicalUrl.value = `${origin}${encodedPath}${encodedSearch}`
+    }
+
     useFetch(async ({ $cmwRepo, $productMapping, $handleApiErrors }) => {
       await $cmwRepo.products.getGiftCardByHandle({
         handle: 'gift-cards', // or by route $route.value.name,
       })
         .then(({ product: shopifyProduct }) => {
-          if (process.server && req?.headers && req?.url)
-            canonicalUrl.value = `https://${req.headers.host}${encodeURIComponent(req.url)}`
-
-          if (process.client && typeof window !== 'undefined') {
-            const { origin, pathname, search } = window.location
-            const encodedPath = pathname ? encodeURIComponent(pathname) : ''
-            const encodedSearch = search ? encodeURIComponent(search) : ''
-            canonicalUrl.value = `${origin}${encodedPath}${encodedSearch}`
-          }
-
           product.value = shopifyProduct && $productMapping.giftCard(shopifyProduct) // set product.value here ?
         })
         .catch(err => $handleApiErrors(`Something went wrong getting gift card from Shopify ${err}`))
@@ -94,10 +98,12 @@ export default defineComponent({
       }))
       return [
         ...hrefLangArr,
-        {
-          rel: 'canonical',
-          href: productDetails.value.canonical,
-        },
+        !canonicalUrl.value
+          ? {}
+          : {
+              rel: 'canonical',
+              href: canonicalUrl.value,
+            },
       ]
     }
 

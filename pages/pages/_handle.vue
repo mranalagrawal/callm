@@ -40,6 +40,18 @@ export default defineComponent({
     provide('showMobileFilters', showMobileFilters)
     provide('total', readonly(total))
 
+    const changePage = (page: number | string) => {
+      const query: IQuery = {
+        ...inputParameters.value,
+        page: `${page}`,
+      }
+
+      router.push(localeLocation({
+        path: `/pages/${route.value.params.handle}`,
+        query,
+      }) as RawLocation)
+    }
+
     const handleUpdateTrigger = (key: string) => {
       cmwActiveSelect.value = cmwActiveSelect.value === key ? '' : key
     }
@@ -169,6 +181,7 @@ export default defineComponent({
       shortDescription,
       showMobileFilters,
       total,
+      changePage,
     }
   },
 })
@@ -196,7 +209,7 @@ export default defineComponent({
       </div>
       <div v-html="shortDescription" />
       <ProductsResultsList :results="results" :total="total" @update-sort-value="handleUpdateSortValue" />
-      <CategoriesPagination :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters" />
+      <CategoriesPagination :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters" @change-page="changePage" />
       <div class="py-12" v-html="pageData?.body" />
       <div v-if="!isDesktop" class="sticky bottom-8 w-[min(100%,_14rem)] m-inline-auto">
         <Button @click.native="showMobileFilters = !showMobileFilters">

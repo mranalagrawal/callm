@@ -244,7 +244,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
             price: priceLists[sale_channel] && priceLists[sale_channel][getCustomerType.value],
             compare_at_price: Number(compareAtPrice.amount),
             stock_status: p.totalInventory > 0 ? 'in_stock' : 'out_of_stock',
-            quantity: 1,
+            quantity: 1, // TODO: update when updating cart quantity
           },
           seo: {
             description: p.seo.description,
@@ -272,7 +272,25 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
         price: { ...v.price },
         compareAtPrice: v.compareAtPrice,
         quantityAvailable: v.quantityAvailable,
-        gtmProductData: { giftCard: v.price.amount },
+        gtmProductData: {
+          giftCard: v.price.amount,
+          artisanal: 'no',
+          brand: v.brand || 'callmewine',
+          category: 'Gift Cards',
+          compareAtPrice: v.compareAtPrice,
+          favourite: 'no',
+          id: v.id,
+          internal_id: product.id, // ultimi numeri di shopify id
+          name: v.title,
+          price: v.price.amount,
+          quantity: 1, // TODO: update when updating cart quantity
+          rarewine: 'no',
+          stock_id: '', // shopify_IT_7833612517596_43388993994972
+          stock_status: 'in_stock',
+          subcategory: '',
+          vintage: 'novintage',
+          winelist: '',
+        },
         tags: [],
       })) || []
 

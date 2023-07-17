@@ -4,7 +4,6 @@ import {
   onMounted,
   ref,
   useContext,
-  useFetch,
   useMeta,
   useRoute,
   watch,
@@ -42,23 +41,27 @@ export default defineComponent({
 
     const isSearchPage = computed(() => Object.keys(inputParameters.value).includes('search'))
 
-    useFetch(() => {
-      if (process.server && req?.headers && req?.url)
-        canonicalUrl.value = `https://${req.headers.host}${encodeURIComponent(req.url)}`
+    if (process.server && req?.headers && req?.url)
+      canonicalUrl.value = `https://${req.headers.host}${req.url}`
 
-      if (process.client && typeof window !== 'undefined') {
-        const { origin, pathname, search } = window.location
-        const encodedPath = pathname ? encodeURIComponent(pathname) : ''
-        const encodedSearch = search ? encodeURIComponent(search) : ''
-        canonicalUrl.value = `${origin}${encodedPath}${encodedSearch}`
-      }
-    })
+    if (process.client && typeof window !== 'undefined') {
+      const {
+        origin,
+        pathname,
+        search,
+      } = window.location
+      const encodedPath = pathname || ''
+      const encodedSearch = search || ''
+      canonicalUrl.value = `${origin}${encodedPath}${encodedSearch}`
+    }
 
     useMeta(() => ({
-      link: [{
-        rel: 'canonical',
-        href: canonicalUrl.value,
-      }],
+      link: !canonicalUrl.value
+        ? []
+        : [{
+            rel: 'canonical',
+            href: canonicalUrl.value,
+          }],
     }))
 
     watch(() => inputParameters.value, () => {
