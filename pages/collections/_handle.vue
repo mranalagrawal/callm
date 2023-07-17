@@ -203,18 +203,6 @@ export default defineComponent({
       }) as RawLocation)
     }
 
-    const changePage = (page: number | string) => {
-      const query: IQuery = {
-        ...inputParameters.value,
-        page: `${page}`,
-      }
-
-      router.push(localeLocation({
-        path: '/catalog',
-        query,
-      }) as RawLocation)
-    }
-
     const query = computed(() => new URLSearchParams(inputParameters.value).toString())
     const view = computed<IView>(() => {
       const views: IView = {}
@@ -318,7 +306,6 @@ export default defineComponent({
 
     return {
       aggregationsRef,
-      changePage,
       chevronLeftIcon,
       chevronRightIcon,
       cmwActiveSelect,
@@ -383,10 +370,7 @@ export default defineComponent({
     </div>
     <div v-html="shortDescription" />
     <ProductsResultsList :results="results" :total="total" @update-sort-value="handleUpdateSortValue" />
-    <CategoriesPagination
-      :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters"
-      @change-page="changePage"
-    />
+    <CategoriesPagination :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters" />
     <div class="py-12" v-html="pageData?.body" />
     <div v-if="!isDesktop" class="sticky bottom-8 w-[min(100%,_14rem)] m-inline-auto">
       <Button @click.native="showMobileFilters = !showMobileFilters">

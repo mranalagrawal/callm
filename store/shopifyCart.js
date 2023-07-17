@@ -11,7 +11,7 @@ export const useShopifyCart = defineStore({
   id: 'shopifyCart',
   state: () => ({
     shopifyCart: null,
-    salesChannel: process.env.SALECHANNEL,
+    salesChannel: process.env.SALECHANNEL, // FixMe: :)
   }),
 
   getters: {
@@ -60,7 +60,7 @@ export const useShopifyCart = defineStore({
         .then(data => data.cartCreate.cart)
 
       this.$nuxt.$cookies.set('cartId', data.id)
-      this.$patch({ shopifyCart: data }) // TODO: fix here
+      this.$patch({ shopifyCart: data })
     },
 
     // Fix me: need workaround for cart line
