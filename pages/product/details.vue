@@ -16,7 +16,7 @@ import favouriteIcon from '~/assets/svg/selections/favourite.svg'
 import getArticles from '~/graphql/queries/getArticles'
 import { useCustomerOrders } from '~/store/customerOrders'
 import { useShopifyCart } from '~/store/shopifyCart'
-import { generateKey } from '~/utilities/strings'
+import { generateKey, stripHtmlAnchors } from '~/utilities/strings'
 
 export default defineComponent({
   layout({ $config }) {
@@ -198,9 +198,15 @@ export default defineComponent({
 
     const strippedContent = computed(() => {
       if (productDetails.value.shortDescription[i18n.locale]) {
+        if ($config.SALECHANNEL === 'cmw_uk_b2c')
+          return stripHtmlAnchors(productDetails.value.shortDescription[i18n.locale])
+        else
+          return productDetails.value.shortDescription[i18n.locale]
+          /*
         return productDetails.value.shortDescription[i18n.locale]
           .replace('href', '')
           .replace('style', '')
+        */
       }
 
       return 'No description available.'
