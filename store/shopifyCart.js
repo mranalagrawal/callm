@@ -11,12 +11,12 @@ export const useShopifyCart = defineStore({
   id: 'shopifyCart',
   state: () => ({
     shopifyCart: null,
-    salesChannel: process.env.SALECHANNEL, // FixMe: :)
   }),
 
   getters: {
     cartTotalQuantity: state => state.shopifyCart?.totalQuantity || 0,
     cartTotal: (state) => {
+      const { $config } = useContext()
       let cartLines = []
       const { getCustomerType } = storeToRefs(useCustomer())
 
@@ -27,7 +27,7 @@ export const useShopifyCart = defineStore({
         quantity: edge.node.quantity,
         price: !edge.node.merchandise.product.isGiftCard
           ? JSON.parse(edge.node.merchandise.product.details.value)
-            .priceLists[state.salesChannel][getCustomerType.value]
+            .priceLists[$config.SALECHANNEL][getCustomerType.value]
           : edge.node.merchandise.price.amount,
         cartLineId: edge.node.id,
       }))
