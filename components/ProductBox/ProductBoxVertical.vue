@@ -75,6 +75,14 @@ export default defineComponent({
       ...props.product.gtmProductData,
       price: finalPrice.value,
     }))
+
+    const priceByLiter = computed(() => {
+      if ($config.STORE !== 'CMW_DE')
+        return 0
+      else
+        return ((finalPrice.value / props.product.milliliters) * 1000)
+    })
+
     const handleWishlistClick = () => {
       handleWishlist({ id: props.product.id, isOnFavourite: isOnFavourite.value, gtmProductData: gtmProductData.value })
     }
@@ -103,6 +111,7 @@ export default defineComponent({
     return {
       addIcon,
       cartLinesAdd,
+      priceByLiter,
       amountMax,
       canAddMore,
       cartIcon,
@@ -231,13 +240,17 @@ export default defineComponent({
       </div>
       <div class="c-productBox__price justify-self-start self-end">
         <div class="flex flex-col ml-4 mb-4">
-          <span
-            v-if="isOnSale"
-            class="line-through text-gray text-sm"
-          >
-            {{
-              $n(Number(product.compareAtPrice.amount), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode))
-            }}
+          <span class="flex gap-2">
+            <span
+              v-if="isOnSale"
+              class="line-through text-gray text-sm"
+            >
+              {{
+                $n(Number(product.compareAtPrice.amount), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode))
+              }}
+            </span>
+            <span v-if="$config.STORE === 'CMW_DE' && priceByLiter" class="text-sm">
+              {{ $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode)) }}/liter</span>
           </span>
           <i18n-n
             v-if="finalPrice"
@@ -257,6 +270,7 @@ export default defineComponent({
               <span class="text-sm md:text-base">{{ slotProps.fraction }}</span>
             </template>
           </i18n-n>
+          <small v-if="$config.STORE === 'CMW_DE'" class="text-gray">Inkl. MwSt. Und St.</small>
         </div>
       </div>
       <div class="c-productBox__cart place-self-end">

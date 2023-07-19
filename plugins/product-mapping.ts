@@ -112,6 +112,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
         })) || []
 
         return ({
+          milliliters: p._source.milliliters || 0,
           availableFeatures: $productMapping.availableFeatures(p._source),
           availableForSale: p._source.quantity[store] > 0,
           awards: getUniqueListBy(productAwards, 'id'),
@@ -198,6 +199,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
         })) || []
 
         return ({
+          milliliters: details?.milliliters || 0,
           availableFeatures: Object.keys(details).length ? $productMapping.availableFeatures(details) : [],
           availableForSale: p.availableForSale,
           awards: getUniqueListBy(productAwards, 'id'),

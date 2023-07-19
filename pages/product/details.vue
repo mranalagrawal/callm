@@ -237,6 +237,13 @@ export default defineComponent({
       return [...wishlistArr.value].includes(product.value.source_id)
     })
 
+    const priceByLiter = computed(() => {
+      if ($config.STORE !== 'CMW_DE')
+        return 0
+      else
+        return ((finalPrice.value / productDetails.value.milliliters) * 1000)
+    })
+
     const gtmProductData = computed(() => ({
       ...product.value.gtmProductData,
       price: finalPrice.value,
@@ -290,12 +297,12 @@ export default defineComponent({
 
     return {
       addIcon,
-      cartLinesAdd,
       amountMax,
       brand,
       brandMetaFields,
       canAddMore,
       cartIcon,
+      cartLinesAdd,
       cartQuantity,
       createShopifyCart,
       customer,
@@ -316,6 +323,7 @@ export default defineComponent({
       isOnFavourite,
       isOnSale,
       isOpen,
+      priceByLiter,
       product,
       productBreadcrumbs,
       productDetails,
@@ -496,6 +504,15 @@ export default defineComponent({
                     <span class="text-sm md:text-base">{{ slotProps.fraction }}</span>
                   </template>
                 </i18n-n>
+                <div>
+                  <span v-if="$config.STORE === 'CMW_DE' && priceByLiter" class="text-sm">
+                    {{
+                      $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode))
+                    }}/liter</span>
+                  <div v-if="$config.STORE === 'CMW_DE'" class="text-sm text-gray-dark">
+                    Inkl. MwSt. Und St.
+                  </div>
+                </div>
               </div>
               <div class="ml-auto mr-4">
                 <div class="">

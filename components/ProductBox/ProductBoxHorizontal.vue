@@ -50,7 +50,11 @@ export default defineComponent({
 
     const isOnFavourite = computed(() => wishlistArr.value.includes(props.product.source_id))
     const isOnSale = computed(() => props.product.availableFeatures.includes('isInPromotion'))
-    const finalPrice = computed(() => props.product.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0)
+    const finalPrice = computed(() => {
+      if (!props.product.priceLists || !props.product.priceLists[$config.SALECHANNEL])
+        return 0
+      return props.product.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0
+    })
     const gtmProductData = computed(() => ({
       ...props.product.gtmProductData,
       price: finalPrice.value,
@@ -94,7 +98,11 @@ export default defineComponent({
       router.push(localeLocation(props.product.url))
     }
 
-    const amountMax = computed(() => props.product.details.amountMax[$config.SALECHANNEL])
+    const amountMax = computed(() => (Object.keys(props.product.details).length && props.product.details.amountMax[$config.SALECHANNEL]
+      && props.product.details.amountMax[$config.SALECHANNEL] > props.product.quantityAvailable)
+      ? props.product.details.amountMax[$config.SALECHANNEL]
+      : props.product.quantityAvailable,
+    )
 
     const isOnCart = computed(() => {
       const product = shopifyCart.value?.lines?.edges.find(el => el.node.merchandise.id === props.product.shopify_product_variant_id)
@@ -107,12 +115,19 @@ export default defineComponent({
 
     const canAddMore = computed(() => (amountMax.value - cartQuantity.value) > 0)
 
+    const priceByLiter = computed(() => {
+      if ($config.STORE !== 'CMW_DE')
+        return 0
+      else
+        return ((finalPrice.value / props.product.milliliters) * 1000)
+    })
+
     return {
       addIcon,
-      cartLinesAdd,
       amountMax,
       canAddMore,
       cartIcon,
+      cartLinesAdd,
       cartQuantity,
       closeIcon,
       createShopifyCart,
@@ -132,6 +147,7 @@ export default defineComponent({
       isOnFavourite,
       isOnSale,
       isOpen,
+      priceByLiter,
       shopifyCart,
       subtractIcon,
       updateItemInCart,
@@ -353,6 +369,11 @@ hover:shadow-elevation"
             <VueSvgIcon :data="emailIcon" width="30" height="auto" />
             <span class="text-sm" v-text="$t('common.cta.notifyMe')" />
           </Button>
+        </div>
+        <div>
+          <span v-if="$config.STORE === 'CMW_DE' && priceByLiter" class="text-sm">
+            {{ $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode)) }}/liter</span>
+          <small v-if="$config.STORE === 'CMW_DE'" class="text-gray">Inkl. MwSt. Und St.</small>
         </div>
       </div>
       <div class="absolute transform top-px left-1/2 -translate-x-1/2 -translate-y-1/2">
