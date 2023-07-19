@@ -197,7 +197,7 @@ export default defineComponent({
           </div>
           <div class="grid gap-4 md:grid-cols-3 text-sm">
             <div class="flex flex-col gap-2">
-              <div class="h5 text-secondary-100 mb-4">
+              <div class="h5 !text-secondary-100 mb-4">
                 {{ $t('footer.company') }}
               </div>
               <NuxtLink
@@ -214,7 +214,7 @@ export default defineComponent({
               </NuxtLink>
             </div>
             <div class="flex flex-col gap-2">
-              <div class="h5 text-secondary-100 mb-4">
+              <div class="h5 !text-secondary-100 mb-4">
                 {{ $t('footer.services') }}
               </div>
               <NuxtLink
@@ -225,7 +225,7 @@ export default defineComponent({
               </NuxtLink>
             </div>
             <div class="flex flex-col gap-2">
-              <div class="h5 text-secondary-100 mb-4">
+              <div class="h5 !text-secondary-100 mb-4">
                 {{ $t('footer.support') }}
               </div>
               <NuxtLink
