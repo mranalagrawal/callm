@@ -354,6 +354,7 @@ export default defineComponent({
 
         <ClientOnly>
           <RecentProducts />
+          {{ product.shopify_product_id }}
           <RecommendedProducts v-if="product.shopify_product_id" :id="product.shopify_product_id" />
         </ClientOnly>
       </div>

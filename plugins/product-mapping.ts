@@ -184,21 +184,21 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
       let products = []
 
       products = arr.map((p: Record<string, any>) => {
-        const details = JSON.parse(p.details.value)
+        const details = p.details?.value ? JSON.parse(p.details.value) : {}
         const bundle = JSON.parse(p.bundle?.value || '[]')
         const compareAtPrice = p.variants.nodes[0].compareAtPrice
-        const id = details.feId
+        const id = details?.feId
         const shopify_product_id = p.id
         const shopify_product_variant_id = p.variants.nodes[0].id
-        const priceLists = details.priceLists
-        const productAwards = details.awards.map((award: Record<string, any>) => ({
+        const priceLists = details?.priceLists
+        const productAwards = details?.awards?.map((award: Record<string, any>) => ({
           ...award,
           title: award.title,
           quote: award.quote[lang],
         })) || []
 
         return ({
-          availableFeatures: $productMapping.availableFeatures(details),
+          availableFeatures: Object.keys(details).length ? $productMapping.availableFeatures(details) : [],
           availableForSale: p.availableForSale,
           awards: getUniqueListBy(productAwards, 'id'),
           bundle,
@@ -210,26 +210,26 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
           isGiftCard: p.isGiftCard,
           id,
           merchandiseId: shopify_product_variant_id,
-          handle: details.handle[lang],
+          handle: details?.handle && details?.handle[lang],
           source_id: `P${id}`,
           shopify_product_id,
           shopify_product_variant_id,
           tags: p.tags,
-          title: details.name[lang],
-          url: `/${details.handle[lang]}-${details.key}.htm`,
+          title: details?.name && details?.name[lang],
+          url: details?.handle && `/${details?.handle[lang]}-${details?.key}.htm`,
           vendor: p.vendor,
           image: {
             thumbnail: {
               url: p.featuredImage?.url ? `${p.featuredImage?.url}&width=20&height=36` : 'https://cdn.shopify.com/s/files/1/0578/7497/2719/files/no-product-image-400x400_6.png?v=1680253923&width=20&height=36',
               width: 20,
               height: 36,
-              altText: details.name[lang],
+              altText: details?.name && details?.name[lang],
             },
             source: {
               url: p.featuredImage?.url ? `${p.featuredImage?.url}&width=300&height=540` : 'https://cdn.shopify.com/s/files/1/0578/7497/2719/files/no-product-image-400x400_6.png?v=1680253923&width=300&height=540',
               width: 300,
               height: 540,
-              altText: details.name[lang],
+              altText: details?.name && details?.name[lang],
             },
           },
           gtmProductData: {
@@ -238,28 +238,28 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
             id,
             name: p.title.replaceAll('\'', ''),
             brand: p.vendor,
-            category: details.categoryName,
-            subcategory: details.subCategoryName,
-            winelist: details.wineListName,
-            vintage: details.vintage,
-            favourite: details.favourite ? 'yes' : 'no',
-            artisanal: details.artisanal ? 'yes' : 'no',
-            rarewine: details.rarewine ? 'yes' : 'no',
-            price: priceLists[sale_channel] && priceLists[sale_channel][getCustomerType.value],
+            category: details?.categoryName,
+            subcategory: details?.subCategoryName,
+            winelist: details?.wineListName,
+            vintage: details?.vintage,
+            favourite: details?.favourite ? 'yes' : 'no',
+            artisanal: details?.artisanal ? 'yes' : 'no',
+            rarewine: details?.rarewine ? 'yes' : 'no',
+            price: priceLists && priceLists[sale_channel] && priceLists[sale_channel][getCustomerType.value],
             compare_at_price: Number(compareAtPrice.amount),
             stock_status: p.totalInventory > 0 ? 'in_stock' : 'out_of_stock',
             quantity: 1, // TODO: update when updating cart quantity
           },
           seo: {
-            description: p.seo.description,
-            title: p.seo.title,
+            description: p.seo?.description,
+            title: p.seo?.title,
           },
           sku: p.variants.nodes[0].sku,
           tbd: {
-            description: details.shortDescription[lang],
-            grapes: details.grapes[lang],
-            regionName: details.regionName[lang],
-            size: details.size[lang],
+            description: details?.shortDescription && details?.shortDescription[lang],
+            grapes: details?.grapes && details?.grapes[lang],
+            regionName: details?.regionName && details?.regionName[lang],
+            size: details?.size && details?.size[lang],
           },
         })
       })

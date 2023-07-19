@@ -49,12 +49,12 @@ export default defineComponent({
     const isOnFavourite = computed(() => wishlistArr.value.includes(props.product.source_id))
     const isOnSale = computed(() => props.product.availableFeatures.includes('isInPromotion'))
     const finalPrice = computed(() => {
-      if (!props.product.priceLists[$config.SALECHANNEL])
+      if (!props.product.priceLists || !props.product.priceLists[$config.SALECHANNEL])
         return 0
       return props.product.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0
     })
 
-    const amountMax = computed(() => (props.product.details.amountMax[$config.SALECHANNEL]
+    const amountMax = computed(() => (Object.keys(props.product.details).length && props.product.details.amountMax[$config.SALECHANNEL]
         && props.product.details.amountMax[$config.SALECHANNEL] > props.product.quantityAvailable)
       ? props.product.details.amountMax[$config.SALECHANNEL]
       : props.product.quantityAvailable,

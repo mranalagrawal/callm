@@ -11,10 +11,8 @@ export default {
     const { id: idRef } = toRefs(props)
 
     const { fetch } = useFetch(async ({ $productMapping, $handleApiErrors }) => {
-      if (!idRef.value) {
-        productsRef.value = []
+      if (!idRef.value)
         return
-      }
 
       await $graphql.default.request(getProductRecommendations, {
         lang: i18n.locale.toUpperCase(),
