@@ -1,76 +1,11 @@
-query getCart($id: ID!){
-  cart(
-    id: $id
-  ) {
+mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
+  cartLinesAdd(cartId: $cartId, lines: $lines) {
+    cart {
       id
       updatedAt
       totalQuantity
       checkoutUrl
-      cost {
-        totalAmount {
-          amount
-          currencyCode
-        }
-        subtotalAmount {
-          amount
-          currencyCode
-        }
-        totalTaxAmount {
-          amount
-          currencyCode
-        }
-        totalDutyAmount {
-          amount
-          currencyCode
-        }
-      }
       lines(first: 10) {
-        nodes {
-          id
-          quantity
-          merchandise {
-            ... on ProductVariant {
-              id
-              price {
-                amount
-                currencyCode
-              }
-              product {
-                isGiftCard
-                id
-                title
-                description
-                tags
-                totalInventory
-                details: metafield(namespace: "custom", key: "details") {
-                  value
-                }
-                bundle: metafield(namespace: "custom", key: "bundle") {
-                  value
-                }
-                variants(first: 1) {
-                  nodes {
-                    id
-                    compareAtPrice {
-                      amount
-                      currencyCode
-                    }
-                    price {
-                      amount
-                      currencyCode
-                    }
-                    quantityAvailable
-                    sku
-                  }
-                }
-              }
-            }
-          }
-          attributes {
-            key
-            value
-          }
-        }
         edges {
           node {
             id
@@ -136,5 +71,10 @@ query getCart($id: ID!){
           }
         }
       }
+    }
+    userErrors {
+      field
+      message
+    }
   }
 }

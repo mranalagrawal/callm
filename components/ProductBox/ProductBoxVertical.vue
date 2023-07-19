@@ -33,14 +33,11 @@ export default defineComponent({
   },
   setup(props) {
     const { $config, localeLocation, $gtm, $cmwGtmUtils } = useContext()
-    const customerStore = useCustomer()
-    const { wishlistArr, getCustomerType, customerId } = storeToRefs(customerStore)
-
-    const customerOrders = useCustomerOrders()
-    const { getCanOrder } = storeToRefs(customerOrders)
+    const { wishlistArr, getCustomerType, customerId } = storeToRefs(useCustomer())
+    const { getCanOrder } = storeToRefs(useCustomerOrders())
     const { shopifyCart } = storeToRefs(useShopifyCart())
-    const { addProductToCart, createShopifyCart, updateItemInCart } = useShopifyCart()
-    const { handleWishlist } = customerStore
+    const { cartLinesAdd, createShopifyCart, updateItemInCart } = useShopifyCart()
+    const { handleWishlist } = useCustomer()
     const { handleShowRequestModal } = useShowRequestModal()
     const router = useRouter()
     const route = useRoute()
@@ -64,7 +61,7 @@ export default defineComponent({
     )
 
     const isOnCart = computed(() => {
-      const product = shopifyCart?.shopifyCart?.lines?.edges.find(el => el.node.merchandise.id === props.product.shopify_product_variant_id)
+      const product = shopifyCart.value?.lines?.edges.find(el => el.node.merchandise.id === props.product.shopify_product_variant_id)
       if (product)
         return product.node
       return null
@@ -105,7 +102,7 @@ export default defineComponent({
 
     return {
       addIcon,
-      addProductToCart,
+      cartLinesAdd,
       amountMax,
       canAddMore,
       cartIcon,
@@ -155,7 +152,7 @@ export default defineComponent({
       if (!this.shopifyCart)
         await this.createShopifyCart()
 
-      await this.addProductToCart(this.product)
+      await this.cartLinesAdd(this.product)
 
       this.flashMessage.show({
         status: '',

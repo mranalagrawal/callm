@@ -1,4 +1,5 @@
 <script>
+import { computed, useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import heartIcon from '~/assets/svg/heart.svg'
 import userIcon from '~/assets/svg/user.svg'
@@ -10,6 +11,7 @@ import { useShopifyCart } from '~/store/shopifyCart'
 export default {
   name: 'UserActions',
   setup() {
+    const { $config } = useContext()
     const customerStore = useCustomer()
     const {
       customer,
@@ -17,10 +19,12 @@ export default {
     } = storeToRefs(customerStore)
     const shopifyCartStore = useShopifyCart()
     const { cartTotal, cartTotalQuantity } = storeToRefs(useShopifyCart())
+    const computedCartTotal = computed(() => cartTotal.value($config.SALECHANNEL))
 
     return {
       cartTotal,
       cartTotalQuantity,
+      computedCartTotal,
       customer,
       customerStore,
       favoritesCount,
@@ -133,7 +137,7 @@ export default {
           <span v-if="cartTotalQuantity">
             <span class="block text-xxs text-left mb-1">{{ $t('cartTotal') }}</span>
             <i18n-n
-              class="flex items-end leading-none" :value="Number(cartTotal)"
+              class="flex items-end leading-none" :value="Number(computedCartTotal)"
               :format="{ key: 'currency' }"
               :locale="getLocaleFromCurrencyCode($config.STORE === 'CMW_UK' ? 'GBP' : 'EUR')"
             >

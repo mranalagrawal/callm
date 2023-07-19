@@ -1,5 +1,9 @@
 export default {
   accessibility: {
+    rel: {
+      next: 'Vorherige',
+      prev: 'Nächste',
+    },
     role: {
       TRIGGER_SEARCH: 'Suche auslösen',
       ADD_TO_CART: 'In der CartAdd des Warenkorb',

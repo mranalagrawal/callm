@@ -4,7 +4,7 @@ import type { TISO639, TSalesChannel, TStores } from '~/config/themeConfig'
 import themeConfig from '~/config/themeConfig'
 import { useCustomer } from '~/store/customer'
 import type { IMoneyV2 } from '~/types/common-objects'
-import type { IBaseProductMapped, IGiftCardMapped, IProductBreadcrumbs, IProductMapped, TProductFeatures } from '~/types/product'
+import type { IBaseProductMapped, IGiftCardMapped, IGiftCardVariantMapped, IProductBreadcrumbs, IProductMapped, TProductFeatures } from '~/types/product'
 import { getUniqueListBy, pick } from '~/utilities/arrays'
 import { getCountryFromStore } from '~/utilities/currency'
 import { cleanUrl } from '~/utilities/strings'
@@ -120,7 +120,9 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
           priceLists,
           quantityAvailable: p._source.quantity[store],
           details: p._source,
+          isGiftCard: p._source.isGiftCard,
           id,
+          merchandiseId: shopify_product_variant_id,
           handle: p._source.handle_t[lang],
           source_id: `P${id}`,
           shopify_product_id,
@@ -205,7 +207,9 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
           priceLists,
           quantityAvailable: p.totalInventory,
           details,
+          isGiftCard: p.isGiftCard,
           id,
+          merchandiseId: shopify_product_variant_id,
           handle: details.handle[lang],
           source_id: `P${id}`,
           shopify_product_id,
@@ -264,8 +268,10 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
     },
 
     giftCard(product): IGiftCardMapped {
-      const getGiftCardVariants = () => product.variants.nodes.map((v: any) => ({
+      const getGiftCardVariants = (): IGiftCardVariantMapped[] => product.variants.nodes.map((v: any) => ({
+        isGiftCard: product.isGiftCard,
         id: v.id,
+        merchandiseId: v.id,
         shopify_product_variant_id: v.id,
         title: v.title,
         description: v.description || null,
@@ -298,6 +304,8 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
       const breadcrumbs = JSON.parse(product.breadcrumbs.value)
 
       return {
+        merchandiseId: product.id,
+        isGiftCard: product.isGiftCard,
         id: product.id,
         shopify_product_id: product.id,
         shopify_product_variant_id: product.id,

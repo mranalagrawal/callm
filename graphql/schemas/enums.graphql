@@ -130,3 +130,23 @@ enum DeliveryMethodType {
   # Shipping.
   SHIPPING
 }
+
+# Possible error codes that can be returned by CartUserError.
+enum CartErrorCode {
+  # The input value is invalid.
+  INVALID
+  # Delivery group was not found in cart.
+  INVALID_DELIVERY_GROUP
+  # Delivery option was not valid.
+  INVALID_DELIVERY_OPTION
+  # Merchandise line was not found in cart.
+  INVALID_MERCHANDISE_LINE
+  # The metafields were not valid.
+  INVALID_METAFIELDS
+  # The input value should be less than the maximum value allowed.
+  LESS_THAN
+  # Missing discount code.
+  MISSING_DISCOUNT_CODE
+  # Missing note.
+  MISSING_NOTE
+}

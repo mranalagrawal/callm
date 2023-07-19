@@ -32,10 +32,18 @@ interface FilterValue {
   label:String!
 }
 
-#Represents a generic custom attribute.
+# Represents a generic custom attribute.
 interface Attribute {
-#  Key or name of the attribute.
+  # Key or name of the attribute.
   key: String!
-#  Value of the attribute.
+  # Value of the attribute.
+  value: String
+}
+
+#The input fields for an attribute.
+input AttributeInput {
+  # Key or name of the attribute.
+  key: String!
+  # Value of the attribute.
   value: String
 }

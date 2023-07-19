@@ -1,7 +1,8 @@
 import { useContext } from '@nuxtjs/composition-api'
-import { defineStore, storeToRefs } from 'pinia'
+import { defineStore } from 'pinia'
 import { useCustomer } from './customer'
-import addProductToCart from '~/graphql/mutations/addProductToCart'
+import { SweetAlertToast } from '~/utilities/Swal'
+import cartLinesAdd from '~/graphql/mutations/cartLinesAdd'
 import createCart from '~/graphql/mutations/createCart'
 import updateItemInCart from '~/graphql/mutations/updateItemInCart'
 import getCart from '~/graphql/queries/getCart'
@@ -16,23 +17,25 @@ export const useShopifyCart = defineStore({
   getters: {
     cartTotalQuantity: state => state.shopifyCart?.totalQuantity || 0,
     cartTotal: (state) => {
-      const { $config } = useContext()
-      let cartLines = []
-      const { getCustomerType } = storeToRefs(useCustomer())
+      return (salesChannel) => {
+        const customerStore = useCustomer()
 
-      if (!state.shopifyCart?.lines?.edges?.length)
-        return cartLines
+        let cartLines = []
 
-      cartLines = state.shopifyCart.lines.edges?.map(edge => ({
-        quantity: edge.node.quantity,
-        price: !edge.node.merchandise.product.isGiftCard
-          ? JSON.parse(edge.node.merchandise.product.details.value)
-            .priceLists[$config.SALECHANNEL][getCustomerType.value]
-          : edge.node.merchandise.price.amount,
-        cartLineId: edge.node.id,
-      }))
+        if (!state.shopifyCart?.lines?.edges?.length)
+          return cartLines
 
-      return cartLines.reduce((t, n) => t + n.quantity * n.price, 0)
+        cartLines = state.shopifyCart.lines.edges?.map(edge => ({
+          quantity: edge.node.quantity,
+          price: !edge.node.merchandise.product.isGiftCard
+            ? JSON.parse(edge.node.merchandise.product.details.value)
+              .priceLists[salesChannel][customerStore.getCustomerType]
+            : edge.node.merchandise.price.amount,
+          cartLineId: edge.node.id,
+        }))
+
+        return cartLines.reduce((t, n) => t + n.quantity * n.price, 0)
+      }
     },
   },
 
@@ -64,7 +67,7 @@ export const useShopifyCart = defineStore({
     },
 
     // Fix me: need workaround for cart line
-    async addProductToCart(product, fromCartLine = false) {
+    async cartLinesAdd(product, fromCartLine = false) {
       const cartId = this.shopifyCart.id
 
       let lines
@@ -105,24 +108,31 @@ export const useShopifyCart = defineStore({
         lines,
       }
 
-      const data = await this.$nuxt.$graphql.default
-        .request(addProductToCart, variables)
-        .then(data => data)
+      await this.$nuxt.$graphql.default
+        .request(cartLinesAdd, variables)
+        .then(({ cartLinesAdd: { cart, userErrors } }) => {
+          if (!userErrors.length) {
+            this.$nuxt.$gtm.push({
+              event: 'addToCart',
+              ecommerce: {
+                currencyCode: this.$nuxt.$config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
+                add: {
+                  products: !fromCartLine ? [product.gtmProductData] : [JSON.parse(product.attributes.find(el => el.key === 'gtmProductData').value)],
+                },
+              },
+            })
 
-      this.$nuxt.$gtm.push({
-        event: 'addToCart',
-        ecommerce: {
-          currencyCode: this.$nuxt.$config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
-          add: {
-            products: !fromCartLine ? [product.gtmProductData] : [JSON.parse(product.attributes.find(el => el.key === 'gtmProductData').value)],
-          },
-        },
-      })
+            if (typeof window !== 'undefined' && window.google_tag_manager && window.google_tag_manager[this.$nuxt.app.$config.gtm.id])
+              window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.set('ecommerce', undefined)
 
-      if (typeof window !== 'undefined' && window.google_tag_manager && window.google_tag_manager[this.$nuxt.app.$config.gtm.id])
-        window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.set('ecommerce', undefined)
-
-      this.$patch({ shopifyCart: data.cartLinesAdd.cart })
+            this.$patch({ shopifyCart: cart })
+          } else {
+            SweetAlertToast.fire({
+              icon: 'error',
+              text: userErrors[0].message,
+            })
+          }
+        })
     },
 
     async updateItemInCart(product, quantity, fromCartLine = false) {

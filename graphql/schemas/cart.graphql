@@ -122,7 +122,7 @@ type BaseCartLineConnection {
 }
 
 #A cart represents the merchandise that a buyer intends to purchase, and the estimated cost associated with the cart. Learn how to interact with a cart during a customer's session.
-type cart {
+type Cart {
   # An attribute associated with the cart.
   attribute: Attribute
   # The attributes associated with the cart. Attributes are represented as key-value pairs.

@@ -1,4 +1,5 @@
 <script>
+import { computed, useContext } from '@nuxtjs/composition-api'
 import checkCircularIcon from 'assets/svg/check-circular.svg'
 import deliveryIcon from 'assets/svg/delivery.svg'
 import { storeToRefs } from 'pinia'
@@ -15,9 +16,12 @@ export default {
     },
   },
   setup() {
+    const { $config } = useContext()
     const { shopifyCart, cartTotal } = storeToRefs(useShopifyCart())
+    const computedCartTotal = computed(() => cartTotal.value($config.SALECHANNEL))
     return {
       cartTotal,
+      computedCartTotal,
       shopifyCart,
     }
   },
@@ -131,8 +135,8 @@ export default {
             <div
               class="text-secondary-700 flex items-center justify-center gap-2 text-sm uppercase pb-4"
             >
-              <VueSvgIcon :data="cartTotal < shipping.threshold ? deliveryIcon : checkCircularIcon" width="24" height="24" />
-              <span>{{ cartTotal < shipping.threshold ? shipping.threshold_not_reached : shipping.threshold_reached }}</span>
+              <VueSvgIcon :data="computedCartTotal < shipping.threshold ? deliveryIcon : checkCircularIcon" width="24" height="24" />
+              <span>{{ computedCartTotal < shipping.threshold ? shipping.threshold_not_reached : shipping.threshold_reached }}</span>
             </div>
             <div class="px-4">
               <hr class="border-gray-light">

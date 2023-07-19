@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { PropType } from '@nuxtjs/composition-api'
-import { computed, defineComponent } from '@nuxtjs/composition-api'
+import { computed, defineComponent, toRefs } from '@nuxtjs/composition-api'
 import addIcon from 'assets/svg/add.svg'
 import deleteIcon from 'assets/svg/delete.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
@@ -8,13 +8,8 @@ import { storeToRefs } from 'pinia'
 import { useCustomer } from '~/store/customer'
 import { useCustomerOrders } from '~/store/customerOrders'
 import { useShopifyCart } from '~/store/shopifyCart'
+import type { ICartLineItem } from '~/types/order'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
-
-// Todo: name and fix this interface based on shopify
-interface ICartLineItem {
-  merchandise: any
-  quantity: any
-}
 
 export default defineComponent({
   props: {
@@ -28,8 +23,9 @@ export default defineComponent({
     const { customerId } = storeToRefs(useCustomer())
     const { shopifyCart } = storeToRefs(useShopifyCart())
     const { getCanOrder } = useCustomerOrders()
+    const { merchandise } = toRefs(props.item)
     const {
-      addProductToCart,
+      cartLinesAdd,
       getFinalPrice,
       updateItemInCart,
     } = useShopifyCart()
@@ -37,15 +33,15 @@ export default defineComponent({
     const finalPrice = getFinalPrice(props.item)
 
     const cartQuantity = computed(() => props.item.quantity)
-    const canAddMore = computed(() => props.item.merchandise.product.isGiftCard
-      || props.item.merchandise.product.totalInventory - cartQuantity.value > 0)
-    const isOnSale = computed(() => finalPrice < +props.item.merchandise.price.amount)
+    const canAddMore = computed(() => merchandise.value.product.isGiftCard
+      || merchandise.value.product.totalInventory - cartQuantity.value > 0)
+    const isOnSale = computed(() => finalPrice < +merchandise.value.price.amount)
 
     const increaseQuantity = async () => {
       if (!canAddMore.value)
         return
 
-      await addProductToCart(props.item, true)
+      await cartLinesAdd(props.item, true)
     }
 
     const decreaseQuantity = async () => {
@@ -57,7 +53,7 @@ export default defineComponent({
 
     return {
       addIcon,
-      addProductToCart,
+      cartLinesAdd,
       canAddMore,
       cartQuantity,
       customerId,

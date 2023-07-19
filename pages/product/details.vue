@@ -46,7 +46,7 @@ export default defineComponent({
     const { shopifyCart } = storeToRefs(shopifyCartStore)
     const {
       createShopifyCart,
-      addProductToCart,
+      cartLinesAdd,
       updateItemInCart,
     } = shopifyCartStore
 
@@ -290,7 +290,7 @@ export default defineComponent({
 
     return {
       addIcon,
-      addProductToCart,
+      cartLinesAdd,
       amountMax,
       brand,
       brandMetaFields,
@@ -350,7 +350,7 @@ export default defineComponent({
         this.$cookies.set('cartId', this.shopifyCart.id)
       }
 
-      await this.addProductToCart(this.product)
+      await this.cartLinesAdd(this.product)
 
       this.flashMessage.show({
         status: '',

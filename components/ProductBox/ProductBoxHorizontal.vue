@@ -39,7 +39,7 @@ export default defineComponent({
     const customerOrders = useCustomerOrders()
     const { getCanOrder } = storeToRefs(customerOrders)
     const { shopifyCart } = storeToRefs(useShopifyCart())
-    const { addProductToCart, createShopifyCart, updateItemInCart } = useShopifyCart()
+    const { cartLinesAdd, createShopifyCart, updateItemInCart } = useShopifyCart()
     const { wishlistArr, getCustomerType, customerId } = storeToRefs(customerStore)
     const { handleWishlist } = customerStore
     const { handleShowRequestModal } = useShowRequestModal()
@@ -109,7 +109,7 @@ export default defineComponent({
 
     return {
       addIcon,
-      addProductToCart,
+      cartLinesAdd,
       amountMax,
       canAddMore,
       cartIcon,
@@ -156,7 +156,7 @@ export default defineComponent({
       if (!this.shopifyCart)
         await this.createShopifyCart()
 
-      await this.addProductToCart(this.product)
+      await this.cartLinesAdd(this.product)
 
       this.flashMessage.show({
         status: '',

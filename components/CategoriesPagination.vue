@@ -119,7 +119,8 @@ export default defineComponent({
         :to="localeLocation({ path: basePath, query: getPageQuery(pagination.prevPage) })"
         class="btn-text text-sm uppercase"
         :class="{ 'text-gray cursor-not-allowed select-none': pagination.currentPage.toString() === '1' }"
-        :aria-label="$t('common.cta.nextPage')"
+        :aria-label="$t('common.cta.prevPage')"
+        :rel="$t('enums.accessibility.rel.prev')"
       >
         <VueSvgIcon width="18" height="18" :data="chevronLeftIcon" />
         <span class="<md:hidden">{{ $t('common.cta.prevPage') }}</span>
@@ -131,6 +132,7 @@ export default defineComponent({
           :to="localeLocation({ path: basePath, query: getPageQuery(n) })"
           class="relative btn-text text-base px-3 py-2 md:(py-[0.8rem])"
           :class="{ 'text-primary font-bold after:(content-DEFAULT absolute left-0 bottom-0 h-1 bg-primary w-full)': pagination.currentPage === n }"
+          :rel="$t(pagination.currentPage > n ? 'enums.accessibility.rel.prev' : 'enums.accessibility.rel.next')"
         >
           {{ n }}
         </NuxtLink>
@@ -143,6 +145,7 @@ export default defineComponent({
         class="btn-text text-sm uppercase"
         :class="{ 'text-gray cursor-not-allowed select-none': +pagination.currentPage >= pagination.totalPages }"
         :aria-label="$t('common.cta.nextPage')"
+        :rel="$t('enums.accessibility.rel.next')"
       >
         <span class="<md:hidden">{{ $t('common.cta.nextPage') }}</span>
         <VueSvgIcon width="18" height="18" :data="chevronRightIcon" />

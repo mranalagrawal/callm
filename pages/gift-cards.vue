@@ -19,13 +19,9 @@ export default defineComponent({
   },
   setup() {
     const { $config, $cmwGtmUtils, req } = useContext()
-    const customerStore = useCustomer()
-    const shopifyCartStore = useShopifyCart()
-    const { shopifyCart } = storeToRefs(shopifyCartStore)
-
-    const { createShopifyCart, addProductToCart, updateItemInCart } = shopifyCartStore
-
-    const { customer, customerId, getCustomerType } = storeToRefs(customerStore)
+    const { shopifyCart } = storeToRefs(useShopifyCart())
+    const { createShopifyCart, cartLinesAdd, updateItemInCart } = useShopifyCart()
+    const { customer, customerId, getCustomerType } = storeToRefs(useCustomer())
     const isOpen = ref(false)
     const product = ref({})
     const productVariant = ref()
@@ -135,7 +131,7 @@ export default defineComponent({
     }))
     return {
       addIcon,
-      addProductToCart,
+      cartLinesAdd,
       amountMax,
       canAddMore,
       cartIcon,
@@ -180,8 +176,7 @@ export default defineComponent({
       if (!this.shopifyCart)
         await this.createShopifyCart()
 
-      // add product to cart
-      this.shopifyCart = await this.addProductToCart(this.giftCardVariantSelected)
+      await this.cartLinesAdd(this.giftCardVariantSelected)
 
       this.flashMessage.show({
         status: '',
@@ -197,7 +192,7 @@ export default defineComponent({
       if (this.cartQuantity === 0)
         return
 
-      this.shopifyCart = await this.updateItemInCart(this.giftCardVariantSelected, this.cartQuantity - 1)
+      await this.updateItemInCart(this.giftCardVariantSelected, this.cartQuantity - 1)
     },
   },
 })
@@ -238,7 +233,7 @@ export default defineComponent({
             <div v-html="strippedContent" />
             <div>
               <div class="py-4 h4" v-text="$t('search.chooseGiftCard')" />
-              <div class="items-center mr-auto gap-2 flex">
+              <div class="items-center mr-auto gap-2 flex flex-wrap">
                 <div
                   v-for="variant in product.variants"
                   :key="variant.id"
@@ -359,7 +354,7 @@ export default defineComponent({
 
         <ClientOnly>
           <RecentProducts />
-          <RecommendedProducts :id="product.id" />
+          <RecommendedProducts :id="product.shopify_product_id" />
         </ClientOnly>
       </div>
     </template>

@@ -21,6 +21,7 @@ query getCollection($lang: LanguageCode!, $handle: String, $id: ID)
         availableForSale
         handle
         id
+        isGiftCard
         featuredImage {
           altText
           height

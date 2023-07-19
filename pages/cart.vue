@@ -1,5 +1,5 @@
 <script>
-import { onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
+import { computed, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import CartLine from '../components/Cart/CartLine.vue'
 import prismicConfig from '~/config/prismicConfig'
@@ -22,6 +22,8 @@ export default {
     const { fetch } = useFetch(async ({ $config, $cmwRepo }) => {
       shipping.value = await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE]?.components.shipping })
     })
+
+    const computedCartTotal = computed(() => cartTotal.value($config.SALECHANNEL))
 
     onMounted(() => {
       const products = shopifyCart.value?.lines?.nodes?.map(
@@ -54,6 +56,7 @@ export default {
 
     return {
       cartTotal,
+      computedCartTotal,
       fetch,
       getLocaleFromCurrencyCode,
       shipping,
@@ -133,13 +136,13 @@ export default {
       />
 
       <ClientOnly>
-        <div v-if="cart && cartTotal > 0">
+        <div v-if="cart && computedCartTotal > 0">
           <h1 class="h2 my-4" v-text="$t('cartDetails')" />
           <div class="grid md:(gap-8 grid-cols-[8fr_4fr]) my-4">
             <div class="">
               <div class="flex items-center justify-between border-b border-b-gray mt-4">
                 <small><strong v-text="cart.totalQuantity" />
-                  <span>{{ $tc('profile.orders.card.goods', cartTotal) }}</span>
+                  <span>{{ $tc('profile.orders.card.goods', computedCartTotal) }}</span>
                 </small>
                 <Button class="w-max ml-auto" variant="text" :label="$t('common.cta.emptyCart')" @click.native="emptyCart" />
               </div>
@@ -161,7 +164,7 @@ export default {
             <div>
               <div class="text-center my-2 overline-2 uppercase text-secondary-700">
                 {{
-                  cartTotal < shipping.threshold ? shipping.threshold_not_reached : shipping.threshold_reached
+                  computedCartTotal < shipping.threshold ? shipping.threshold_not_reached : shipping.threshold_reached
                 }}
               </div>
               <div class="shadow mx-auto border border-gray-light rounded overflow-hidden">
@@ -169,7 +172,7 @@ export default {
                   <div class="h5">
                     {{ $t('cartTotal') }}
                     <span class="float-right">{{
-                      $n(Number(cartTotal), 'currency', getLocaleFromCurrencyCode($config.STORE === "CMW_UK" ? "GBP" : "EUR"))
+                      $n(Number(computedCartTotal), 'currency', getLocaleFromCurrencyCode($config.STORE === "CMW_UK" ? "GBP" : "EUR"))
                     }}</span>
                   </div>
                   <hr>
