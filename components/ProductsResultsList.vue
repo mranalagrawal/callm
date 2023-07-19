@@ -16,6 +16,10 @@ export default defineComponent({
       type: [String, Number],
       required: true,
     },
+    loading: {
+      type: Boolean,
+      default: true,
+    },
   },
   emits: ['update-sort-value'],
   setup(props, { emit }) {
@@ -178,10 +182,12 @@ export default defineComponent({
       </div>
     </div>
     <div v-else>
-      <p class="text-lg font-light mt-5">
-        {{ $t('search.noResultsAlert') }}
-      </p>
-      <div v-html="$t('search.noResultsMessage')" />
+      <div v-if="!loading">
+        <p class="text-lg font-light mt-5">
+          {{ $t('search.noResultsAlert') }}
+        </p>
+        <div v-html="$t('search.noResultsMessage')" />
+      </div>
     </div>
   </div>
 </template>
