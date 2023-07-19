@@ -131,6 +131,14 @@ export default defineComponent({
             <CmwSelect
               position="right"
               :options="[{
+                           label: $t('search.highestPopularity'),
+                           value: JSON.stringify({ field: 'popularity', direction: 'desc' }),
+                         },
+                         {
+                           label: $t('search.lowestPopularity'),
+                           value: JSON.stringify({ field: 'popularity', direction: 'asc' }),
+                         },
+                         {
                            label: $t('search.highestPrice'),
                            value: JSON.stringify({ field: 'price', direction: 'desc' }),
                          },

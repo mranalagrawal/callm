@@ -254,6 +254,8 @@ export default {
       name: 'Name',
       price: 'Price',
     },
+    highestPopularity: 'Highest popularity',
+    lowestPopularity: 'Lowest popularity',
     highestPrice: 'Highest price',
     lowestPrice: 'Lowest price',
     mostAwarded: 'Most awarded',
