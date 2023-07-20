@@ -24,7 +24,7 @@ query getCart($id: ID!){
           currencyCode
         }
       }
-      lines(first: 10) {
+      lines(first: 50) {
         nodes {
           id
           quantity
