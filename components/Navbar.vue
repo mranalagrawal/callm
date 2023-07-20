@@ -2,6 +2,9 @@
 import { defineComponent, inject, ref, useContext, useFetch, useRoute, useRouter, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import type { RawLocation } from 'vue-router'
+import UserActions from '~/components/Header/UserActions.vue'
+import LoginForm from '~/components/LoginForm.vue'
+import UserMenu from '~/components/UserMenu.vue'
 import { useCustomer } from '~/store/customer'
 import { useShopifyCart } from '~/store/shopifyCart'
 import chevronLeftIcon from '~/assets/svg/chevron-left.svg'
@@ -13,6 +16,7 @@ import menuIcon from '~/assets/svg/menu.svg'
 import userIcon from '~/assets/svg/user.svg'
 
 export default defineComponent({
+  components: { UserActions, LoginForm, UserMenu },
   setup() {
     const { localeLocation } = useContext()
     const { customer } = storeToRefs(useCustomer())
