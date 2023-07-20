@@ -1,4 +1,7 @@
-query getCart($id: ID!){
+query getCart(
+  $lang: LanguageCode!
+  $id: ID!
+) @inContext(language: $lang) {
   cart(
     id: $id
   ) {
@@ -24,7 +27,7 @@ query getCart($id: ID!){
           currencyCode
         }
       }
-      lines(first: 50) {
+      lines(first: 20) {
         nodes {
           id
           quantity

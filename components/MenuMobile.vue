@@ -40,7 +40,7 @@ export default defineComponent({
       })),
     })))
 
-    watch(() => route.value, () => closeSidebar(false), { deep: true })
+    watch(() => route.value, () => closeSidebar(true), { deep: true })
 
     return {
       activeItem,

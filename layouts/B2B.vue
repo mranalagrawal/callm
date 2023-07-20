@@ -21,7 +21,7 @@ export default defineComponent({
   },
   setup() {
     const { i18n, $cookies } = useContext()
-    const customerStore = useCustomer()
+    const { getCustomer } = useCustomer()
     const { getShopifyCart } = useShopifyCart()
     const { handleNewsletterSplash } = useNewsletterSplash()
     const {
@@ -41,7 +41,7 @@ export default defineComponent({
       localeChanged()
 
       const accessToken = $cookieHelpers.getToken()
-      accessToken && await customerStore.getCustomer()
+      accessToken && await getCustomer()
 
       const cartId = $cookies.get('cartId')
       cartId && await getShopifyCart(cartId)

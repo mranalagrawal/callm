@@ -5,7 +5,6 @@ import { SweetAlertToast } from '~/utilities/Swal'
 import cartLinesAdd from '~/graphql/mutations/cartLinesAdd'
 import createCart from '~/graphql/mutations/createCart'
 import updateItemInCart from '~/graphql/mutations/updateItemInCart'
-import getCart from '~/graphql/queries/getCart'
 import { getCountryFromStore } from '~/utilities/currency'
 
 export const useShopifyCart = defineStore({
@@ -210,15 +209,8 @@ export const useShopifyCart = defineStore({
         : item.merchandise.price.amount
     },
     async getShopifyCart(id) {
-      try {
-        const data = await this.$nuxt.$graphql.default
-          .request(getCart, { id })
-          .then(data => data.cart)
-
-        this.$patch({ shopifyCart: data })
-      } catch (e) {
-        throw new Error('Invalid cart id')
-      }
+      await this.$nuxt.$cmwRepo.customer.getCart(id)
+        .then(({ cart }) => this.$patch({ shopifyCart: cart }))
     },
   },
 })

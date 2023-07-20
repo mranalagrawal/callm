@@ -1,34 +1,102 @@
-<script>
-import { defineComponent, inject, ref } from '@nuxtjs/composition-api'
+<script lang="ts">
+import { defineComponent, inject, ref, useContext, useFetch, useRoute, useRouter, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import { is } from 'vee-validate/dist/rules'
-import chevronLeftIcon from 'assets/svg/chevron-left.svg'
+import type { RawLocation } from 'vue-router'
 import { useCustomer } from '~/store/customer'
+import { useShopifyCart } from '~/store/shopifyCart'
+import chevronLeftIcon from '~/assets/svg/chevron-left.svg'
 import logo from '~/assets/svg/logo-call-me-wine.svg'
 import logoB2b from '~/assets/svg/logo-call-me-wine-b2b.svg'
 import cartIcon from '~/assets/svg/cart.svg'
 import closeIcon from '~/assets/svg/close.svg'
 import menuIcon from '~/assets/svg/menu.svg'
 import userIcon from '~/assets/svg/user.svg'
-import LoginForm from '@/components/LoginForm.vue'
-import UserMenu from '@/components/UserMenu.vue'
-import UserActions from '@/components/Header/UserActions.vue'
-import { useShopifyCart } from '~/store/shopifyCart'
 
 export default defineComponent({
-  components: { UserActions, LoginForm, UserMenu },
   setup() {
-    const customer = useCustomer()
-    const shopifyCartStore = useShopifyCart()
+    const { localeLocation } = useContext()
+    const { customer } = storeToRefs(useCustomer())
     const { shopifyCart, cartTotal, cartTotalQuantity } = storeToRefs(useShopifyCart())
-    const navbar = ref(null)
-    const menuBarRef = ref(null)
-    const showMobileButton = ref(true)
+    const router = useRouter()
+    const route = useRoute()
     const isDesktop = inject('isDesktop')
+    const navbar = ref(null)
+    const menuBarRef = ref<HTMLDivElement | null>(null)
+    const menuData = ref<Record<string, any>[]>([])
+    const showMobileButton = ref(true)
+    const isMobileMenuOpen = ref(false)
+    const isSidebarOpen = ref(false)
+    const mobileLogin = ref(false)
+    const sideBarTop = ref('')
 
-    const handleShowMobileButton = (val) => {
+    const handleShowMobileButton = (val: boolean) => {
       showMobileButton.value = val
     }
+
+    const lockBody = () => {
+      if (process.browser && document.body)
+        document.body.classList.toggle('lock-scroll', isMobileMenuOpen.value)
+    }
+
+    const toggleMobileLogin = () => {
+      mobileLogin.value = !mobileLogin.value
+    }
+
+    const toggleSidebar = () => {
+      sideBarTop.value = `${menuBarRef.value?.getBoundingClientRect().bottom}px`
+      isMobileMenuOpen.value = isSidebarOpen.value = !isSidebarOpen.value
+      lockBody()
+    }
+
+    const handleGoToLogin = () => {
+      mobileLogin.value = false
+      router.push(localeLocation('/login') as RawLocation)
+    }
+
+    useFetch(async ({ $cmwRepo }) => {
+      const megaMenu = await $cmwRepo.prismic.getSingle({ page: 'mega-menu-test' })
+
+      menuData.value = megaMenu?.body?.length
+        ? megaMenu.body.map((firstLevel) => {
+          const secondLevels = firstLevel.items.map((el: { secondlevelname: any; second_level_position: any }) => {
+            return {
+              name: el.secondlevelname,
+              position: el.second_level_position,
+            // isSelection: !!el.selection,
+            }
+          })
+
+          const secondLevelsSet = [
+            ...new Set(secondLevels.map((el: any) => JSON.stringify(el))),
+          ]
+            .map(el => JSON.parse(el as string))
+            .sort((a, b) => a.position - b.position)
+
+          const items = secondLevelsSet.map((el) => {
+            const temp = firstLevel.items
+              .filter((x: { secondlevelname: any }) => x.secondlevelname === el.name)
+              .sort((a: { third_level_position: number }, b: { third_level_position: number }) => a.third_level_position - b.third_level_position)
+            return { ...el, items: temp }
+          })
+
+          return {
+            name: firstLevel.primary.group_label,
+            link: firstLevel.primary.first_level_link,
+            position: firstLevel.primary.first_level_position,
+            items,
+          }
+        })
+          .sort((a, b) => a.position - b.position)
+        : []
+    })
+
+    watch(() => route.value, () => {
+      mobileLogin.value = false
+      isSidebarOpen.value = false
+      isMobileMenuOpen.value = false
+      showMobileButton.value = true
+      lockBody()
+    }, { deep: true })
 
     return {
       cartIcon,
@@ -37,119 +105,25 @@ export default defineComponent({
       chevronLeftIcon,
       closeIcon,
       customer,
+      handleGoToLogin,
       handleShowMobileButton,
       isDesktop,
+      isMobileMenuOpen,
+      isSidebarOpen,
       logo,
       logoB2b,
       menuBarRef,
+      menuData,
       menuIcon,
+      mobileLogin,
       navbar,
       shopifyCart,
-      shopifyCartStore,
       showMobileButton,
+      sideBarTop,
+      toggleMobileLogin,
+      toggleSidebar,
       userIcon,
     }
-  },
-  data() {
-    return {
-      sideBarTop: 0,
-      showUser: false,
-      showCart: false,
-      showSearchSuggestions: false,
-      visible: false,
-      data: [],
-      isMobileMenuOpen: false,
-      isSidebarOpen: false,
-      mobileLogin: false,
-    }
-  },
-  async fetch({ $cmwRepo, $handleApiErrors }) {
-    await $cmwRepo.prismic.getSingle({ page: 'mega-menu-test' })
-      .then((response) => {
-        const data = response.data.body
-
-        this.data = data
-          .map((firstLevel) => {
-            const secondLevels = firstLevel.items.map((el) => {
-              return {
-                name: el.secondlevelname,
-                position: el.second_level_position,
-                // isSelection: !!el.selection,
-              }
-            })
-
-            const secondLevelsSet = [
-              ...new Set(secondLevels.map(el => JSON.stringify(el))),
-            ]
-              .map(el => JSON.parse(el))
-              .sort((a, b) => a.position - b.position)
-
-            const items = secondLevelsSet.map((el) => {
-              const temp = firstLevel.items
-                .filter(x => x.secondlevelname === el.name)
-                .sort((a, b) => a.third_level_position - b.third_level_position)
-              return { ...el, items: temp }
-            })
-
-            return {
-              name: firstLevel.primary.group_label,
-              link: firstLevel.primary.first_level_link,
-              position: firstLevel.primary.first_level_position,
-              items,
-            }
-          })
-          .sort((a, b) => a.position - b.position)
-      })
-      .catch(err => $handleApiErrors(`Catch getting mega-menu-test data from prismic: ${err}`))
-  },
-  computed: {
-    is() {
-      return is
-    },
-    user() {
-      return this.$store.state.user.user
-    },
-  },
-  watch: {
-    $route() {
-      this.showUser = false
-      this.showCart = false
-      this.search = null
-      this.isSidebarOpen = false
-      this.isMobileMenuOpen = false
-      this.showMobileButton = true
-      this.lockBody()
-    },
-    cartTotalAmount(total) {
-      if (Number(total) > 50) {
-        setTimeout(() => {
-          this.flashMessage.show({
-            status: '',
-            message: 'Hai raggiunto la spedizione gratuita!',
-            time: 1000,
-            blockClass: 'free-shipping-notification',
-          })
-        }, 3000)
-      }
-    },
-  },
-  methods: {
-    handleGoToLogin() {
-      this.mobileLogin = false
-      this.$router.push(this.localeLocation('/login'))
-    },
-    toggleMobileLogin() {
-      this.mobileLogin = !this.mobileLogin
-    },
-    lockBody() {
-      if (process.browser && document.body)
-        document.body.classList.toggle('lock-scroll', this.isMobileMenuOpen)
-    },
-    toggleSidebar() {
-      this.sideBarTop = `${this.$refs.menuBarRef.getBoundingClientRect().bottom}px`
-      this.isMobileMenuOpen = this.isSidebarOpen = !this.isSidebarOpen
-      this.lockBody()
-    },
   },
 })
 </script>
@@ -232,10 +206,10 @@ export default defineComponent({
       </div>
     </div>
 
-    <div v-if="!isDesktop && !!data.length" class="">
+    <div v-if="!isDesktop && !!menuData.length" class="">
       <transition name="menu-mobile">
         <div v-show="isSidebarOpen" class="absolute left-0 w-full z-base" :style="{ top: sideBarTop }">
-          <MenuMobile :menu="data" @close-sidebar="toggleSidebar" />
+          <MenuMobile :menu="menuData" />
         </div>
       </transition>
     </div>
@@ -251,7 +225,7 @@ export default defineComponent({
           <span class="truncate max-w-100px">{{ customer.firstName ? customer.firstName : "Account" }}</span>
           <VueSvgIcon :data="closeIcon" color="#E6362E" width="30" height="auto" />
         </Button>
-        <div v-if="!user">
+        <div v-if="!customer.id">
           <div class="h3 text-center mt-5">
             {{ $t("navbar.user.signIn") }}
           </div>
