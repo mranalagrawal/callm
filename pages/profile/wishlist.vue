@@ -22,8 +22,12 @@ export default {
     const query = computed(() => wishlistArr.value.join(' OR '))
 
     const { fetch } = useFetch(async () => {
-      if (query.value)
-        await customerWishlist.getWishlistProducts({ query: `tag:active AND (${query.value})`, first: Number(wishlistArr.value.length) })
+      if (query.value) {
+        await customerWishlist.getWishlistProducts({
+          query: `tag:active AND (${query.value})`,
+          first: Number(wishlistArr.value.length) > 200 ? 200 : Number(wishlistArr.value.length),
+        })
+      }
     })
 
     watch(() => query.value, () => fetch())
