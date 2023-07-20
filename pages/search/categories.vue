@@ -13,6 +13,7 @@ export default defineComponent({
   layout({ $config }) {
     return $config.STORE
   },
+  // middleware: 'url-checker',
   setup() {
     const { req } = useContext()
     const route = useRoute()
@@ -26,17 +27,26 @@ export default defineComponent({
       B: 'brands',
       N: 'countries',
       M: 'macros',
+      A: 'vintages',
       null: 'selections',
     })[key] || ''
 
     const canonicalUrl = ref('')
-    const { filter_key_1, filter_key_2, filter_id_1, filter_id_2 } = route.value.params
+    const {
+      filter_key_1,
+      filter_key_2,
+      filter_key_3,
+      filter_id_1,
+      filter_id_2,
+      filter_id_3,
+    } = route.value.params
 
     /* Merge all url parameters */
     const inputParameters = computed<Record<string, any>>(() => ({
       ...route.value.query,
       ...((filter_key_1 && filter_id_1) && { [filtersObj(filter_key_1)]: filter_id_1 }),
       ...((filter_key_2 && filter_id_2) && { [filtersObj(filter_key_2)]: filter_id_2 }),
+      ...((filter_key_3 && filter_id_3) && { [filtersObj(filter_key_3)]: filter_id_3 }),
     }))
 
     const isSearchPage = computed(() => Object.keys(inputParameters.value).includes('search'))
