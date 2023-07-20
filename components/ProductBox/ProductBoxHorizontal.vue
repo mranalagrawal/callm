@@ -264,7 +264,9 @@ hover:shadow-elevation"
           class="font-bold"
           v-text="$t('product.format')"
         />
-        <div>{{ product.tbd.size }}</div>
+        <div v-if="product.tbd.size.length">
+          {{ product.tbd.size }}
+        </div>
       </div>
       <!-- Note: Why don't we use these fields from shopify? wouldn't be easier to handle locales? -->
       <!-- <div>{{ product.description }}</div>

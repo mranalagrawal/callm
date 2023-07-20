@@ -170,10 +170,10 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
           },
           sku: p._source.sku,
           tbd: {
-            description: p._source.description,
-            grapes: p._source.grapes,
-            regionName: p._source.regionname,
-            size: p._source.sizes[`identifier_${lang}`].split('|')[1],
+            description: p._source.description ?? '',
+            grapes: p._source.grapes ?? '',
+            regionName: p._source.regionname ?? '',
+            size: p._source.sizes?.length ? p._source.sizes[`identifier_${lang}`].split('|')[1] : [],
           },
         })
       })
