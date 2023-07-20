@@ -172,7 +172,7 @@ export default defineComponent({
                 v-for="item in results.brands"
                 :key="item.id"
                 class="body-1 block py-2 px-3 hover:(bg-primary-50) text-body"
-                :to="localePath({ name: 'winery-handle', params: { handle: `${item.handle}-B${item.id}.htm` } })"
+                :to="localePath({ name: 'winery-handle', params: { handle: `${item.handle.trim()}-B${item.id}.htm` } })"
               >
                 <span v-html="bolder(item.name)" />
               </NuxtLink>
