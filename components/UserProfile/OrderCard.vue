@@ -88,7 +88,6 @@ export default defineComponent({
 
         if (isOnCart) {
           const shopifyCartLine = shopifyCart.value.lines.nodes.find(shopifyCartLine => shopifyCartLine.merchandise.id === orderLine.variant.id)
-          console.warn(shopifyCartLine)
           // Todo: handle this in bulk, shopify accepts an array of lines, so, we can group all existing lines and later edit them in bulk
           // if the item is already on the cart then use the cartLineUpdate method
 
