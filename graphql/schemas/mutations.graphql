@@ -1,5 +1,7 @@
 type Mutation {
   cartLinesAdd(cartId: ID!, lines: [CartLineInput!]!): CartLinesAddPayload
+  cartLinesRemove(cartId: ID!, lineIds: [ID!]!): CartLinesRemovePayload
+  cartLinesUpdate(cartId: ID!, lines: [CartLineUpdateInput!]!): CartLinesUpdatePayload
   customerAccessTokenCreate(input: CustomerAccessTokenCreateInput): CustomerAccessTokenCreatePayload
   customerAddressCreate(address: MailingAddressInput, customerAccessToken: String!): CustomerAddressCreatePayload
   customerAddressDelete(id: ID!, customerAccessToken: String!): CustomerAddressDeletePayload

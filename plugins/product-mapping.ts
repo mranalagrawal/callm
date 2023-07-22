@@ -4,7 +4,7 @@ import type { TISO639, TSalesChannel, TStores } from '~/config/themeConfig'
 import themeConfig from '~/config/themeConfig'
 import { useCustomer } from '~/store/customer'
 import type { IMoneyV2 } from '~/types/common-objects'
-import type { IBaseProductMapped, IGiftCardMapped, IGiftCardVariantMapped, IProductBreadcrumbs, IProductMapped, TProductFeatures } from '~/types/product'
+import type { IBaseProductMapped, IGiftCardMapped, IGiftCardVariantMapped, IGtmProductData, IProductBreadcrumbs, IProductMapped, TProductFeatures } from '~/types/product'
 import { getUniqueListBy, pick } from '~/utilities/arrays'
 import { getCountryFromStore } from '~/utilities/currency'
 import { cleanUrl } from '~/utilities/strings'
@@ -29,6 +29,9 @@ interface IProductMapping {
   fromShopify<T extends KeyType>(
     arr: ObjType<T>[],
   ): IProductMapped[]
+  getGtmProductDataFromCartLine<T extends KeyType>(
+    cartLine: ObjType<T>,
+  ): IGtmProductData
 }
 
 declare module 'vue/types/vue' {
@@ -281,7 +284,6 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
         compareAtPrice: v.compareAtPrice,
         quantityAvailable: v.quantityAvailable,
         gtmProductData: {
-          giftCard: v.price.amount,
           artisanal: 'no',
           brand: v.brand || 'callmewine',
           category: 'Gift Cards',
@@ -338,6 +340,60 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
           title: product.seo.title,
         },
       }
+    },
+
+    getGtmProductDataFromCartLine<T extends KeyType>(cartLine: ObjType<T>): IGtmProductData {
+      let gtmProductData = {}
+      const p: Record<string, any> = cartLine
+
+      if (p.isGiftCard) {
+        gtmProductData = {
+          artisanal: 'no',
+          brand: 'callmewine',
+          category: 'Gift Cards',
+          compareAtPrice: p.compareAtPrice,
+          favourite: 'no',
+          id: p.id,
+          internal_id: p.id, // ultimi numeri di shopify id
+          name: p.title,
+          // price: p.price.amount,
+          quantity: 1, // TODO: update when updating cart quantity
+          rarewine: 'no',
+          stock_id: '', // shopify_IT_7833612517596_43388993994972
+          stock_status: 'in_stock',
+          subcategory: '',
+          vintage: 'novintage',
+          winelist: '',
+        }
+      } else {
+        const details = p.details?.value ? JSON.parse(p.details.value) : {}
+        const compareAtPrice = p.variants.nodes[0].compareAtPrice
+        const id = details?.feId
+        const shopify_product_id = p.id
+        const shopify_product_variant_id = p.variants.nodes[0].id
+        const priceLists = details?.priceLists
+
+        gtmProductData = {
+          internal_id: shopify_product_id.substring(`${shopify_product_id}`.lastIndexOf('/') + 1),
+          stock_id: `shopify_${getCountryFromStore(store)}_${shopify_product_id.substring(`${shopify_product_id}`.lastIndexOf('/') + 1)}_${shopify_product_variant_id.substring(`${shopify_product_variant_id}`.lastIndexOf('/') + 1)}`,
+          id,
+          name: p.title.replaceAll('\'', ''),
+          brand: p.vendor,
+          category: details?.categoryName,
+          subcategory: details?.subCategoryName,
+          winelist: details?.wineListName,
+          vintage: details?.vintage,
+          favourite: details?.favourite ? 'yes' : 'no',
+          artisanal: details?.artisanal ? 'yes' : 'no',
+          rarewine: details?.rarewine ? 'yes' : 'no',
+          price: priceLists && priceLists[sale_channel] && priceLists[sale_channel][getCustomerType.value],
+          compare_at_price: Number(compareAtPrice.amount),
+          stock_status: p.totalInventory > 0 ? 'in_stock' : 'out_of_stock',
+          quantity: 1, // TODO: update when updating cart quantity
+        }
+      }
+
+      return <IGtmProductData>gtmProductData
     },
   }
 

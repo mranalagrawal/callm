@@ -36,7 +36,7 @@ export default defineComponent({
     const { wishlistArr, getCustomerType, customerId } = storeToRefs(useCustomer())
     const { getCanOrder } = storeToRefs(useCustomerOrders())
     const { shopifyCart } = storeToRefs(useShopifyCart())
-    const { cartLinesAdd, createShopifyCart, updateItemInCart } = useShopifyCart()
+    const { cartLinesAdd, createShopifyCart, cartLinesUpdate } = useShopifyCart()
     const { handleWishlist } = useCustomer()
     const { handleShowRequestModal } = useShowRequestModal()
     const router = useRouter()
@@ -138,7 +138,7 @@ export default defineComponent({
       shopifyCart,
       showRequestModal,
       subtractIcon,
-      updateItemInCart,
+      cartLinesUpdate,
       wishlistArr,
     }
   },
@@ -161,22 +161,20 @@ export default defineComponent({
       if (!this.shopifyCart)
         await this.createShopifyCart()
 
-      await this.cartLinesAdd(this.product)
-
-      this.flashMessage.show({
+      await this.cartLinesAdd(this.product, false, () => this.flashMessage.show({
         status: '',
         message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title}` }),
         icon: this.product.image.source.url,
         iconClass: 'bg-transparent ',
         time: 8000,
         blockClass: 'add-product-notification',
-      })
+      }))
     },
     async removeFromUserCart() {
       if (this.cartQuantity === 0)
         return
 
-      await this.updateItemInCart(this.product, this.cartQuantity - 1)
+      await this.cartLinesUpdate(this.product, this.cartQuantity - 1)
     },
   },
 })

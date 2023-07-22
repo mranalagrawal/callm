@@ -36,12 +36,26 @@ input CustomerCreateInput {
 
 #The input fields to create a merchandise line on a cart.
 input CartLineInput {
-# An array of key-value pairs that contains additional information about the merchandise line.
+  # An array of key-value pairs that contains additional information about the merchandise line.
   attributes: [AttributeInput!]
-# The ID of the merchandise that the buyer intends to purchase.
+  # The ID of the merchandise that the buyer intends to purchase.
   merchandiseId: ID!
-#  The quantity of the merchandise.
+  # The quantity of the merchandise.
   quantity: Int
-#  The ID of the selling plan that the merchandise is being purchased with.
+  # The ID of the selling plan that the merchandise is being purchased with.
   sellingPlanId: ID
+}
+
+# The input fields to update a line item on a cart.
+input CartLineUpdateInput {
+  # An array of key-value pairs that contains additional information about the merchandise line.
+  attributes: [AttributeInput!]
+  # The ID of the merchandise line.
+  id: ID!
+  # The ID of the merchandise for the line item.
+  merchandiseId:ID
+  # The quantity of the line item.
+  quantity:Int
+  # The ID of the selling plan that the merchandise is being purchased with.
+  sellingPlanId:ID
 }

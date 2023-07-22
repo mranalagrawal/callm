@@ -1,5 +1,5 @@
 <script>
-import { computed, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import CartLine from '../components/Cart/CartLine.vue'
 import prismicConfig from '~/config/prismicConfig'
@@ -9,19 +9,32 @@ import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { generateKey } from '~/utilities/strings'
 import { SweetAlertConfirm } from '~/utilities/Swal'
 
-export default {
+export default defineComponent({
   components: { CartLine },
   layout(context) {
     return context.$config.STORE
   },
   setup() {
-    const { $config, $cmwGtmUtils } = useContext()
+    const { $cookies, $config, $cmwGtmUtils, i18n } = useContext()
     const shipping = ref({})
     const { shopifyCart, cartTotal } = storeToRefs(useShopifyCart())
 
     const { fetch } = useFetch(async ({ $config, $cmwRepo }) => {
       shipping.value = await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE]?.components.shipping })
     })
+
+    const emptyCart = () => {
+      SweetAlertConfirm.fire({
+        icon: 'warning',
+        text: i18n.t('common.confirm.deleteCart'),
+        cancelButtonText: i18n.t('common.cta.cancel'),
+        confirmButtonText: i18n.t('common.cta.confirm'),
+        preConfirm: () => {
+          $cookies.remove('cartId')
+          shopifyCart.value = null
+        },
+      })
+    }
 
     const computedCartTotal = computed(() => cartTotal.value($config.SALECHANNEL))
 
@@ -57,6 +70,7 @@ export default {
     return {
       cartTotal,
       computedCartTotal,
+      emptyCart,
       fetch,
       getLocaleFromCurrencyCode,
       shipping,
@@ -71,18 +85,6 @@ export default {
 
   methods: {
     generateKey,
-    emptyCart() {
-      SweetAlertConfirm.fire({
-        icon: 'warning',
-        text: this.$i18n.t('common.confirm.deleteCart'),
-        cancelButtonText: this.$t('common.cta.cancel'),
-        confirmButtonText: this.$t('common.cta.confirm'),
-        preConfirm: () => {
-          this.$cookies.set('cartId', '')
-          this.shopifyCart = null
-        },
-      })
-    },
     async checkout() {
       if (!this.$store.state.user.user) {
         // crea checkoutUrl
@@ -122,7 +124,7 @@ export default {
       window.location = checkoutUrl
     },
   },
-}
+})
 </script>
 
 <template>

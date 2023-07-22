@@ -4,7 +4,8 @@ import { useCustomer } from './customer'
 import { SweetAlertToast } from '~/utilities/Swal'
 import cartLinesAdd from '~/graphql/mutations/cartLinesAdd'
 import createCart from '~/graphql/mutations/createCart'
-import updateItemInCart from '~/graphql/mutations/updateItemInCart'
+import cartLinesRemove from '~/graphql/mutations/cartLinesRemove'
+import cartLinesUpdate from '~/graphql/mutations/cartLinesUpdate'
 import { getCountryFromStore } from '~/utilities/currency'
 
 export const useShopifyCart = defineStore({
@@ -66,9 +67,10 @@ export const useShopifyCart = defineStore({
     },
 
     // Fix me: need workaround for cart line
-    async cartLinesAdd(product, fromCartLine = false) {
+    async cartLinesAdd(product, fromCartLine = false, successCB = () => {}) {
       const cartId = this.shopifyCart.id
 
+      console.log(product)
       let lines
       if (fromCartLine) {
         lines = {
@@ -88,7 +90,7 @@ export const useShopifyCart = defineStore({
       } else {
         lines = {
           merchandiseId: product.shopify_product_variant_id,
-          quantity: 1,
+          quantity: product.quantity || 1,
           attributes: [
             {
               key: 'gtmProductData',
@@ -125,6 +127,42 @@ export const useShopifyCart = defineStore({
               window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.set('ecommerce', undefined)
 
             this.$patch({ shopifyCart: cart })
+            successCB()
+          } else {
+            this.$patch({ shopifyCart: cart })
+            SweetAlertToast.fire({
+              icon: 'error',
+              text: userErrors[0].message,
+            })
+          }
+        })
+    },
+
+    async cartLinesUpdateV2(lines = [], isRemoving = false) {
+      const cartId = this.shopifyCart.id
+
+      await this.$nuxt.$graphql.default
+        .request(cartLinesUpdate, {
+          cartId,
+          lines,
+        })
+        .then(({ cartLinesUpdate: { cart, userErrors } }) => {
+          if (!userErrors.length) {
+            // Success
+            this.$nuxt.$gtm.push({
+              event: isRemoving ? 'removeFromCart' : 'addToCart',
+              ecommerce: {
+                currencyCode: this.$nuxt.$config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
+                add: {
+                  products: [JSON.parse(lines[0].attributes.find(el => el.key === 'gtmProductData').value)],
+                },
+              },
+            })
+
+            if (typeof window !== 'undefined' && window.google_tag_manager && window.google_tag_manager[this.$nuxt.app.$config.gtm.id])
+              window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.set('ecommerce', undefined)
+
+            this.$patch({ shopifyCart: cart })
           } else {
             SweetAlertToast.fire({
               icon: 'error',
@@ -134,7 +172,7 @@ export const useShopifyCart = defineStore({
         })
     },
 
-    async updateItemInCart(product, quantity, fromCartLine = false) {
+    async cartLinesUpdate(product, quantity, fromCartLine = false) {
       const cartId = this.shopifyCart.id
 
       let lines
@@ -180,7 +218,7 @@ export const useShopifyCart = defineStore({
         lines,
       }
       const data = await this.$nuxt.$graphql.default
-        .request(updateItemInCart, variables)
+        .request(cartLinesUpdate, variables)
         .then(data => data)
 
       this.$nuxt.$gtm.push({
@@ -197,6 +235,27 @@ export const useShopifyCart = defineStore({
         window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.set('ecommerce', undefined)
 
       this.$patch({ shopifyCart: data.cartLinesUpdate.cart })
+    },
+
+    async cartLinesRemove(lineIds = []) {
+      const cartId = this.shopifyCart.id
+
+      await this.$nuxt.$graphql.default
+        .request(cartLinesRemove, {
+          cartId,
+          lineIds,
+        })
+        .then(({ cartLinesRemove: { cart, userErrors } }) => {
+          if (!userErrors.length) {
+            // Success
+            this.$patch({ shopifyCart: cart })
+          } else {
+            SweetAlertToast.fire({
+              icon: 'error',
+              text: userErrors[0].message,
+            })
+          }
+        })
     },
 
     getFinalPrice(item) {

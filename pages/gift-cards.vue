@@ -20,7 +20,7 @@ export default defineComponent({
   setup() {
     const { $config, $cmwGtmUtils, req } = useContext()
     const { shopifyCart } = storeToRefs(useShopifyCart())
-    const { createShopifyCart, cartLinesAdd, updateItemInCart } = useShopifyCart()
+    const { createShopifyCart, cartLinesAdd, cartLinesUpdate } = useShopifyCart()
     const { customer, customerId, getCustomerType } = storeToRefs(useCustomer())
     const isOpen = ref(false)
     const product = ref({})
@@ -153,7 +153,7 @@ export default defineComponent({
       shopifyCart,
       strippedContent,
       subtractIcon,
-      updateItemInCart,
+      cartLinesUpdate,
     }
   },
   head: {},
@@ -192,7 +192,7 @@ export default defineComponent({
       if (this.cartQuantity === 0)
         return
 
-      await this.updateItemInCart(this.giftCardVariantSelected, this.cartQuantity - 1)
+      await this.cartLinesUpdate(this.giftCardVariantSelected, this.cartQuantity - 1)
     },
   },
 })

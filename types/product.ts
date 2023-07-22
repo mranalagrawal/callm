@@ -1,6 +1,28 @@
 import type { IMoneyV2 } from '~/types/common-objects'
 import type { TImage } from '~/types/types'
 
+type TChoice = 'yes' | 'no'
+type TStock = 'in_stock' | 'out_of_stock'
+
+export interface IGtmProductData {
+  internal_id: string
+  stock_id: string
+  id: string
+  name: string
+  brand: string
+  category: string
+  subcategory: string
+  winelist: string
+  vintage: string
+  favourite: TChoice
+  artisanal: TChoice
+  rarewine: TChoice
+  price: string
+  compare_at_price: string
+  stock_status: TStock
+  quantity: number | string
+}
+
 export interface IProductRating {
   description: string | null
   id: number

@@ -1,29 +1,46 @@
-mutation cartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
-  cartLinesUpdate(cartId: $cartId, lines: $lines) {
+mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
+  cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
     cart {
       id
       updatedAt
       totalQuantity
       checkoutUrl
-      cost {
-        totalAmount {
-          amount
-          currencyCode
-        }
-        subtotalAmount {
-          amount
-          currencyCode
-        }
-        totalTaxAmount {
-          amount
-          currencyCode
-        }
-        totalDutyAmount {
-          amount
-          currencyCode
-        }
-      }
       lines(first: 10) {
+        nodes {
+          id
+          quantity
+          merchandise {
+            ... on ProductVariant {
+              id
+              price {
+                amount
+                currencyCode
+              }
+              product {
+                isGiftCard
+                id
+                title
+                description
+                tags
+                totalInventory
+                details: metafield(namespace: "custom", key: "details") {
+                  value
+                }
+                featuredImage {
+                  altText
+                  height
+                  id
+                  url
+                  width
+                }
+              }
+            }
+          }
+          attributes {
+            key
+            value
+          }
+        }
         edges {
           node {
             id
@@ -61,9 +78,7 @@ mutation cartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
             }
           }
         }
-
       }
-
     }
     userErrors {
       field

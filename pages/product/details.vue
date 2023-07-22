@@ -42,13 +42,8 @@ export default defineComponent({
     const recentProductsStore = useRecentProductsStore()
     const { recentProducts } = storeToRefs(recentProductsStore)
 
-    const shopifyCartStore = useShopifyCart()
-    const { shopifyCart } = storeToRefs(shopifyCartStore)
-    const {
-      createShopifyCart,
-      cartLinesAdd,
-      updateItemInCart,
-    } = shopifyCartStore
+    const { shopifyCart } = storeToRefs(useShopifyCart())
+    const { createShopifyCart, cartLinesAdd, cartLinesUpdate } = useShopifyCart()
 
     const {
       customer,
@@ -338,7 +333,7 @@ export default defineComponent({
       showRequestModal,
       strippedContent,
       subtractIcon,
-      updateItemInCart,
+      cartLinesUpdate,
       wishlistArr,
     }
   },
@@ -357,12 +352,9 @@ export default defineComponent({
         })
         return
       }
-      const shopifyCart = this.shopifyCart
 
-      if (!shopifyCart) {
-        this.shopifyCart = await this.createShopifyCart()
-        this.$cookies.set('cartId', this.shopifyCart.id)
-      }
+      if (!this.shopifyCart?.id)
+        await this.createShopifyCart()
 
       await this.cartLinesAdd(this.product)
 
@@ -380,7 +372,7 @@ export default defineComponent({
       if (this.cartQuantity === 0)
         return
 
-      await this.updateItemInCart(this.product, this.cartQuantity - 1)
+      await this.cartLinesUpdate(this.product, this.cartQuantity - 1)
     },
   },
 })

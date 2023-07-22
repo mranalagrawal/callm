@@ -27,7 +27,8 @@ export default defineComponent({
     const {
       cartLinesAdd,
       getFinalPrice,
-      updateItemInCart,
+      cartLinesRemove,
+      cartLinesUpdate,
     } = useShopifyCart()
 
     const finalPrice = getFinalPrice(props.item)
@@ -48,13 +49,15 @@ export default defineComponent({
       if (props.item.quantity === 0)
         return
 
-      await updateItemInCart(props.item, props.item.quantity - 1, true)
+      await cartLinesUpdate(props.item, props.item.quantity - 1, true)
     }
 
     return {
       addIcon,
-      cartLinesAdd,
       canAddMore,
+      cartLinesAdd,
+      cartLinesRemove,
+      cartLinesUpdate,
       cartQuantity,
       customerId,
       decreaseQuantity,
@@ -66,7 +69,6 @@ export default defineComponent({
       isOnSale,
       shopifyCart,
       subtractIcon,
-      updateItemInCart,
     }
   },
   methods: {
@@ -77,6 +79,7 @@ export default defineComponent({
 
 <template>
   <div
+    v-if="item?.quantity > 0"
     class="c-cartLineItem mx-3 bg-white py-4 border-b border-b-gray-light"
   >
     <div class="c-cartLineItem__image">
@@ -138,7 +141,7 @@ export default defineComponent({
       </i18n-n>
     </div>
     <div class="c-cartLineItem__cta absolute md:relative top-0 right-0">
-      <ButtonIcon class="m-auto" :icon="deleteIcon" variant="icon" :size="28" @click.native="updateItemInCart(item, 0, true)" />
+      <ButtonIcon class="m-auto" :icon="deleteIcon" variant="icon" :size="28" @click.native="cartLinesRemove([item.id])" />
     </div>
   </div>
 </template>

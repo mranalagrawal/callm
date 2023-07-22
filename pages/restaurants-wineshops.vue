@@ -1,8 +1,6 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
 import { generateHeadHreflang } from '@/utilities/arrays'
-import prismicConfig from '~/config/prismicConfig'
-import type { TStores } from '~/config/themeConfig'
 import { initialPageData } from '~/types/prismic'
 import type { IPrismicPageData } from '~/types/prismic'
 
@@ -23,12 +21,8 @@ export default defineComponent({
 
     const pageData = ref<IPrismicPageData>(initialPageData)
 
-    useFetch(async ({ $config, $cmwRepo, $handleApiErrors }) => {
-      await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.wineShops })
-        .then(({ data }: Record<string, any>) => {
-          pageData.value = data
-        })
-        .catch((err: Error) => $handleApiErrors(`Catch getting contact us data from prismic: ${err}`))
+    useFetch(async ({ $cmwRepo }) => {
+      pageData.value = await $cmwRepo.prismic.getSingle({ page: 'restaurants-wineshops' })
     })
 
     onMounted(() => {
@@ -46,7 +40,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="pageData.title" class="max-w-screen-xl mx-auto p-4 mt-5">
+  <div v-if="pageData?.title" class="max-w-screen-xl mx-auto p-4 mt-5">
     <h1 v-text="pageData.title" />
     <LoadingImage
       v-if="pageData.image"

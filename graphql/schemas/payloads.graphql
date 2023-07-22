@@ -44,3 +44,17 @@ type CartLinesAddPayload {
 # The list of errors that occurred from executing the mutation.
   userErrors: [CartUserError!]!
 }
+
+type CartLinesRemovePayload {
+# The updated cart.
+  cart: Cart
+# The list of errors that occurred from executing the mutation.
+  userErrors: [CartUserError!]!
+}
+
+type CartLinesUpdatePayload {
+# The updated cart.
+  cart: Cart
+# The list of errors that occurred from executing the mutation.
+  userErrors: [CartUserError!]!
+}
