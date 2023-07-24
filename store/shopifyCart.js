@@ -70,7 +70,6 @@ export const useShopifyCart = defineStore({
     async cartLinesAdd(product, fromCartLine = false, successCB = () => {}) {
       const cartId = this.shopifyCart.id
 
-      console.log(product)
       let lines
       if (fromCartLine) {
         lines = {
