@@ -42,7 +42,7 @@ export default {
   shippingCost: 'Les <strong>frais d\'expédition</strong> seront ajoutés à la caisse, après avoir choisi la méthode.',
   home: 'Maison',
   cartTotal: 'Total du panier\n',
-  createYourAccount: 'Create your account',
+  createYourAccount: 'Créez votre compte',
   city: 'Ville',
   civic: 'Adresse et numéro civique',
   zip: 'Cap',
