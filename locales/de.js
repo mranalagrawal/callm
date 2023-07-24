@@ -88,6 +88,7 @@ export default {
     sustainability: 'Nachhaltigkeit',
     services: 'Angebotene Dienstleistungen',
     restaurantsAndWineshops: 'Restaurants und Weinhandlungen',
+    giftCards: 'Geschenkgutschein',
     support: 'Die Unterstützung',
     shipping: 'Versand',
     payments: 'Zahlungen',

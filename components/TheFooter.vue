@@ -219,9 +219,15 @@ export default defineComponent({
               </div>
               <NuxtLink
                 :to="localePath('/restaurants-wineshops')"
-                class="block  text-white"
+                class="block text-white"
               >
                 {{ $t('footer.restaurantsAndWineshops') }}
+              </NuxtLink>
+              <NuxtLink
+                :to="localePath('/gift-cards')"
+                class="block text-white"
+              >
+                {{ $t('footer.giftCards') }}
               </NuxtLink>
             </div>
             <div class="flex flex-col gap-2">
@@ -230,37 +236,37 @@ export default defineComponent({
               </div>
               <NuxtLink
                 :to="localePath('/shipping')"
-                class="block  text-white"
+                class="block text-white"
               >
                 {{ $t('footer.shipping') }}
               </NuxtLink>
               <NuxtLink
                 :to="localePath('/payments')"
-                class="block  text-white"
+                class="block text-white"
               >
                 {{ $t('footer.payments') }}
               </NuxtLink>
               <NuxtLink
                 :to="localePath('/terms-of-sales')"
-                class="block  text-white"
+                class="block text-white"
               >
                 {{ $t('footer.termsOfSales') }}
               </NuxtLink>
               <NuxtLink
                 :to="localePath('/privacy')"
-                class="block  text-white"
+                class="block text-white"
               >
                 Privacy policy
               </NuxtLink>
               <NuxtLink
                 :to="localePath('/cookie')"
-                class="block  text-white"
+                class="block text-white"
               >
                 Cookie policy
               </NuxtLink>
               <NuxtLink
                 :to="localePath('/contact')"
-                class="block  text-white"
+                class="block text-white"
               >
                 {{ $t('footer.contacts') }}
               </NuxtLink>
