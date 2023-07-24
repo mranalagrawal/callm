@@ -190,7 +190,7 @@ export default defineComponent({
     @mouseenter="isHovering = true"
     @mouseleave="isHovering = false"
   >
-    <div class="c-productBox__grid grid h-full">
+    <div class="c-productBox__grid grid h-full" :class="`-${generateKey($config.STORE)}`">
       <div class="c-productBox__image">
         <ClientOnly>
           <button class="block mx-auto" @click="handleProductCLick">
@@ -347,6 +347,10 @@ export default defineComponent({
   "awards image image wishlist"
   "title title title title"
   "price price cart cart";
+}
+
+.c-productBox__grid.-cmw-de {
+  grid-template-rows: auto auto 72px 80px;
 }
 
 .c-productBox__features {
