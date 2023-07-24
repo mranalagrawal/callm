@@ -208,7 +208,7 @@ export default defineComponent({
     })
 
     const amountMax = computed(() => (product.value.details.amountMax[$config.SALECHANNEL]
-      && product.value.details.amountMax[$config.SALECHANNEL] > product.value.quantityAvailable)
+      && product.value.details.amountMax[$config.SALECHANNEL] <= product.value.quantityAvailable)
       ? product.value.details.amountMax[$config.SALECHANNEL]
       : product.value.quantityAvailable,
     )

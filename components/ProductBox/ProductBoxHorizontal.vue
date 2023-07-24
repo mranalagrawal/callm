@@ -99,7 +99,7 @@ export default defineComponent({
     }
 
     const amountMax = computed(() => (Object.keys(props.product.details).length && props.product.details.amountMax[$config.SALECHANNEL]
-      && props.product.details.amountMax[$config.SALECHANNEL] > props.product.quantityAvailable)
+      && props.product.details.amountMax[$config.SALECHANNEL] <= props.product.quantityAvailable)
       ? props.product.details.amountMax[$config.SALECHANNEL]
       : props.product.quantityAvailable,
     )
