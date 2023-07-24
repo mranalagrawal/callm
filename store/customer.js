@@ -183,7 +183,9 @@ export const useCustomer = defineStore({
             await SweetAlertToast.fire({ text: this.$nuxt.app.i18n.t('common.feedback.KO.login') })
           }
         })
-        .catch(() => SweetAlertToast.fire({ text: this.$nuxt.app.i18n.t('common.feedback.KO.login') }))
+        .catch(() => {
+          SweetAlertToast.fire({ text: this.$nuxt.app.i18n.t('common.feedback.KO.login') })
+        })
     },
     async logout() {
       const customerOrders = useCustomerOrders()
