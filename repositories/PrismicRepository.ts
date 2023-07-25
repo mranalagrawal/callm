@@ -20,4 +20,19 @@ export default ({ $config, $prismic, i18n, $handleApiErrors }: Context) => ({
       return initialPageData
     }
   },
+  async getByUID({ page = '', uid = '' }): Promise<IPrismicPageData> {
+    try {
+      const store = $config.STORE as TStores || 'CMW_UK'
+      const locale = i18n.locale as TISO639
+
+      const { data } = await $prismic.api.getByUID(page, uid, {
+        lang: prismicConfig[store]?.isoCode[locale],
+      })
+
+      return data
+    } catch (err) {
+      $handleApiErrors(`Catch getting page (${page}) with uid (${uid}) from Prismic: ${err}`)
+      return initialPageData
+    }
+  },
 })
