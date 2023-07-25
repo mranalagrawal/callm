@@ -70,7 +70,7 @@ export default defineComponent({
 
       for (const order of orders.value) {
         for (const lineItem of order.lineItems.nodes) {
-          const product = lineItem.variant.product
+          const product = lineItem.variant?.product || {}
 
           if (product.id && !product.isGiftCard && !uniqueProductIds.has(product.id)) {
             uniqueProductIds.add(product.id)

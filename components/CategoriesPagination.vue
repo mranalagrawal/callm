@@ -3,12 +3,17 @@ import type { PropType } from '@nuxtjs/composition-api'
 import {
   defineComponent,
   onMounted,
-  ref,
-  useRoute,
-  useRouter, watchEffect,
+  ref, useContext,
+  useRoute, useRouter,
+  watchEffect,
 } from '@nuxtjs/composition-api'
 import chevronLeftIcon from 'assets/svg/chevron-left.svg'
 import chevronRightIcon from 'assets/svg/chevron-right.svg'
+import type { RawLocation } from 'vue-router'
+
+interface IQuery {
+  [key: string]: string | undefined
+}
 
 interface IPagination {
   prevPage: number | null
@@ -28,11 +33,15 @@ export default defineComponent({
       type: Number,
       required: true,
     },
+    basePath: {
+      type: String,
+      default: 'catalog',
+    },
   },
   setup(props) {
-    // const { i18n } = useContext()
-    const router = useRouter()
+    const { localeLocation } = useContext()
     const route = useRoute()
+    const router = useRouter()
     const pageData = ref({})
     const currentPage = ref({})
     const shortDescription = ref('')
@@ -63,16 +72,21 @@ export default defineComponent({
         .filter(page => Math.abs(page - pagination.value.currentPage) < 4)
     }
 
+    const getPageQuery = (page: number | string | null): IQuery => ({
+      ...props.inputParameters,
+      page: `${page}`,
+    })
+
     const changePage = (page: number | string) => {
-      const query = {
+      const query: IQuery = {
         ...props.inputParameters,
         page: `${page}`,
       }
 
-      router.push({
-        path: '/catalog',
+      router.push(localeLocation({
+        path: props.basePath,
         query,
-      })
+      }) as RawLocation)
     }
 
     onMounted(() => setPages(props.totalPages))
@@ -85,6 +99,7 @@ export default defineComponent({
       chevronLeftIcon,
       chevronRightIcon,
       currentPage,
+      getPageQuery,
       pageData,
       pagination,
       results,
@@ -99,36 +114,42 @@ export default defineComponent({
 <template>
   <div class="grid grid-cols-[auto_auto_auto] items-center justify-center mt-8">
     <div class="">
-      <Button
-        class="uppercase"
+      <component
+        :is="pagination.currentPage.toString() === '1' ? 'span' : 'NuxtLink'"
+        :to="localeLocation({ path: basePath, query: getPageQuery(pagination.prevPage) })"
+        class="btn-text text-sm uppercase"
+        :class="{ 'text-gray cursor-not-allowed select-none': pagination.currentPage.toString() === '1' }"
         :aria-label="$t('common.cta.prevPage')"
-        :disabled="pagination.currentPage.toString() === '1'"
-        type="button" variant="text" @click.native="changePage(Number(pagination.prevPage))"
+        :rel="$t('enums.accessibility.rel.prev')"
       >
         <VueSvgIcon width="18" height="18" :data="chevronLeftIcon" />
         <span class="<md:hidden">{{ $t('common.cta.prevPage') }}</span>
-      </Button>
+      </component>
     </div>
     <div class="flex">
       <div v-for="n in pagination.pageNumbers" :key="n" class="cl">
-        <Button
-          :label="`${n}`" variant="text"
-          class="relative text-base px-3"
-          :class="{ 'text-primary font-bold after:(content-DEFAULT absolute bottom-0 h-1 bg-primary w-full)': pagination.currentPage === n }"
-          @click.native="changePage(n)"
-        />
+        <NuxtLink
+          :to="localeLocation({ path: basePath, query: getPageQuery(n) })"
+          class="relative btn-text text-base px-3 py-2 md:(py-[0.8rem])"
+          :class="{ 'text-primary font-bold after:(content-DEFAULT absolute left-0 bottom-0 h-1 bg-primary w-full)': pagination.currentPage === n }"
+          :rel="$t(pagination.currentPage > n ? 'enums.accessibility.rel.prev' : 'enums.accessibility.rel.next')"
+        >
+          {{ n }}
+        </NuxtLink>
       </div>
     </div>
     <div class="">
-      <Button
-        class="uppercase"
-        :disabled="+pagination.currentPage >= pagination.totalPages"
+      <component
+        :is="+pagination.currentPage >= pagination.totalPages ? 'span' : 'NuxtLink'"
+        :to="localeLocation({ path: basePath, query: getPageQuery(pagination.nextPage) })"
+        class="btn-text text-sm uppercase"
+        :class="{ 'text-gray cursor-not-allowed select-none': +pagination.currentPage >= pagination.totalPages }"
         :aria-label="$t('common.cta.nextPage')"
-        type="button" variant="text" @click.native="changePage(Number(pagination.nextPage))"
+        :rel="$t('enums.accessibility.rel.next')"
       >
         <span class="<md:hidden">{{ $t('common.cta.nextPage') }}</span>
         <VueSvgIcon width="18" height="18" :data="chevronRightIcon" />
-      </Button>
+      </component>
     </div>
   </div>
 </template>

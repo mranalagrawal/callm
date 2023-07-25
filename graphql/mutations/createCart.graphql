@@ -1,0 +1,71 @@
+mutation cartCreate {
+  cartCreate {
+    cart {
+      id
+      updatedAt
+      totalQuantity
+      checkoutUrl
+      cost {
+        totalAmount {
+          amount
+          currencyCode
+        }
+        subtotalAmount {
+          amount
+          currencyCode
+        }
+        totalTaxAmount {
+          amount
+          currencyCode
+        }
+        totalDutyAmount {
+          amount
+          currencyCode
+        }
+      }
+      lines(first: 10) {
+        edges {
+          node {
+            id
+            quantity
+            merchandise {
+              ... on ProductVariant {
+                id
+                price {
+                  amount
+                  currencyCode
+                }
+                product {
+                  isGiftCard
+                  id
+                  title
+                  description
+                  tags
+                  totalInventory
+                  details: metafield(namespace: "custom", key: "details") {
+                    value
+                  }
+                  featuredImage {
+                    altText
+                    height
+                    id
+                    url
+                    width
+                  }
+                }
+              }
+            }
+            attributes {
+              key
+              value
+            }
+          }
+        }
+      }
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}

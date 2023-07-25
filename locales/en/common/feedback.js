@@ -22,6 +22,7 @@ export default {
       customerUpdateData: 'It was not possible to update your personal data, please try again later',
       addToCartReachLimit: 'There\'s no more products available',
       newsletterSubscribed: 'You are already registered to our newsletter!',
+      maxQuantityReached: 'You have already purchased the maximum quantity for this product!',
     },
   },
 }

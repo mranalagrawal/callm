@@ -6,7 +6,8 @@ import {
   onMounted,
   ref,
   useContext,
-  useFetch, useMeta,
+  useFetch,
+  useMeta,
   useRoute,
 } from '@nuxtjs/composition-api'
 import chevronLeftIcon from 'assets/svg/chevron-left.svg'
@@ -46,7 +47,7 @@ export default defineComponent({
     return $config.STORE
   },
   setup() {
-    const { $graphql, i18n, redirect, $cmwGtmUtils, localeLocation } = useContext()
+    const { $graphql, i18n, redirect, $cmwGtmUtils, localePath, req } = useContext()
     const route = useRoute()
     const isDesktop = inject('isDesktop')
     const partnerC1 = ref(null)
@@ -75,6 +76,7 @@ export default defineComponent({
       region: '',
     })
 
+    const canonicalUrl = ref('')
     const query = computed(() => {
       const pathParts = route.value?.path.split('-')
       if (!pathParts)
@@ -82,6 +84,20 @@ export default defineComponent({
 
       return `tag:${pathParts.at(-1)?.replace('.htm', '') ?? ''}`
     })
+
+    if (process.server && req?.headers && req?.url)
+      canonicalUrl.value = `https://${req.headers.host}${req.url}`
+
+    if (process.client && typeof window !== 'undefined') {
+      const {
+        origin,
+        pathname,
+        search,
+      } = window.location
+      const encodedPath = pathname || ''
+      const encodedSearch = search || ''
+      canonicalUrl.value = `${origin}${encodedPath}${encodedSearch}`
+    }
 
     const { fetch } = useFetch(async () => {
       const { articles } = await $graphql.default.request(getArticles, {
@@ -95,7 +111,7 @@ export default defineComponent({
         metaFields.value = articles.nodes[0].details && JSON.parse(articles.nodes[0].details.value) as IMetaFields
 
         if (route.value.params.handle !== `${brand!.value.handle}-${metaFields.value.key}.htm`)
-          return redirect(301, localeLocation(`/winery/${brand.value?.handle.trim()}-${metaFields.value?.key}.htm`) as unknown as string)
+          return redirect(301, localePath({ name: 'winery-handle', params: { handle: `${brand.value?.handle.trim()}-${metaFields.value?.key}.htm` } }))
       }
     })
 
@@ -114,16 +130,16 @@ export default defineComponent({
           content: brand.value?.seo?.description || '',
         },
       ],
-      /* link: metaFields.value?.hrefLang
-        && Object.keys(this.metaFields.hrefLang).length && Object.entries(this.metaFields.hrefLang).map(el => ({
-        hid: `alternate-${el[0]}`,
-        rel: 'alternate',
-        href: el[1],
-        hreflang: el[0],
-      })), */
+      link: !canonicalUrl.value
+        ? []
+        : [{
+            rel: 'canonical',
+            href: canonicalUrl.value,
+          }],
     }))
 
     return {
+      canonicalUrl,
       brand,
       c1,
       c2,

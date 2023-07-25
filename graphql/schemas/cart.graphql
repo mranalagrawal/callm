@@ -1,0 +1,159 @@
+# The discounts that have been applied to the cart line.
+interface CartDiscountAllocation {
+  # The discounted amount that has been applied to the cart line.
+  discountedAmount: MoneyV2!
+}
+
+# Represents a cart line common fields.
+interface BaseCartLine {
+  # An attribute associated with the cart line.
+  attribute: Attribute
+  # The attributes associated with the cart line. Attributes are represented as key-value pairs.
+  attributes: [Attribute!]!
+  # The cost of the merchandise that the buyer will pay for at checkout. The costs are subject to change and changes will be reflected at checkout.
+  cost: CartLineCost!
+  # The discounts that have been applied to the cart line.
+  discountAllocations: [CartDiscountAllocation!]!
+  # A globally-unique ID.
+  id: ID!
+  # The merchandise that the buyer intends to purchase.
+  merchandise: Merchandise!
+  # The quantity of the merchandise that the customer intends to purchase.
+  quantity: Int!
+  # The selling plan associated with the cart line and the effect that each selling plan has on variants when they're purchased.
+  sellingPlanAllocation: SellingPlanAllocation
+}
+
+#Information about a delivery option.
+type CartDeliveryOption {
+  # The code of the delivery option.
+  code: String
+
+  # The method for the delivery option.
+  deliveryMethodType: DeliveryMethodType!
+
+  # The description of the delivery option.
+  description: String
+
+  # The estimated cost for the delivery option.
+  estimatedCost: MoneyV2!
+
+  # The unique identifier of the delivery option.
+  handle: String!
+
+  # The title of the delivery option.
+  title: String
+}
+
+#Represents information about the buyer that is interacting with the cart.
+type CartBuyerIdentity {
+  # The country where the buyer is located.
+  countryCode: CountryCode
+
+  # The customer account associated with the cart.
+  customer: Customer
+
+  # An ordered set of delivery addresses tied to the buyer that is interacting with the cart. The rank of the preferences is determined by the order of the addresses in the array. Preferences can be used to populate relevant fields in the checkout flow.
+  deliveryAddressPreferences: [DeliveryAddress!]!
+
+  # The email address of the buyer that is interacting with the cart.
+  email: String
+
+  # The phone number of the buyer that is interacting with the cart.
+  phone: String
+
+  # A set of wallet preferences tied to the buyer that is interacting with the cart. Preferences can be used to populate relevant payment fields in the checkout flow.
+  walletPreferences: [String!]!
+}
+
+# Information about the options available for one or more line items to be delivered to a specific address.
+type CartDeliveryGroup {
+  #  The destination address for the delivery group.
+  deliveryAddress: MailingAddress!
+  # The delivery options available for the delivery group.
+  deliveryOptions: [CartDeliveryOption!]!
+  # The ID for the delivery group.
+  id: ID!
+  # The selected delivery option for the delivery group.
+  selectedDeliveryOption: CartDeliveryOption
+
+  # Connections
+  # A list of cart lines for the delivery group.
+  cartLines: [BaseCartLine!]!
+}
+
+# The costs that the buyer will pay at checkout. The cart cost uses CartBuyerIdentity to determine international pricing.
+type CartCost {
+  #The estimated amount, before taxes and discounts, for the customer to pay at checkout. The checkout charge amount doesn't include any deferred payments that'll be paid at a later date. If the cart has no deferred payments, then the checkout charge amount is equivalent to subtotalAmount.
+  checkoutChargeAmount: MoneyV2!
+  #The amount, before taxes and cart-level discounts, for the customer to pay.
+  subtotalAmount: MoneyV2!
+  #Whether the subtotal amount is estimated.
+  subtotalAmountEstimated: Boolean!
+  #The total amount for the customer to pay.
+  totalAmount: MoneyV2!
+  #Whether the total amount is estimated.
+  totalAmountEstimated: Boolean!
+  #The duty amount for the customer to pay at checkout.
+  totalDutyAmount: MoneyV2
+  #Whether the total duty amount is estimated.
+  totalDutyAmountEstimated: Boolean!
+  #The tax amount for the customer to pay at checkout.
+  totalTaxAmount: MoneyV2
+  #Whether the total tax amount is estimated.
+  totalTaxAmountEstimated:Boolean!
+}
+
+# The discount codes applied to the cart.
+type CartDiscountCode{
+  # Whether the discount code is applicable to the cart's current contents.
+  applicable: Boolean!
+  # The code for the discount.
+  code: String!
+}
+
+type BaseCartLineConnectionConnectionEdge {
+  node: [BaseCartLine!]!
+}
+
+type BaseCartLineConnection {
+  edges: BaseCartLineConnectionConnectionEdge
+  nodes: [BaseCartLine!]!
+}
+
+#A cart represents the merchandise that a buyer intends to purchase, and the estimated cost associated with the cart. Learn how to interact with a cart during a customer's session.
+type Cart {
+  # An attribute associated with the cart.
+  attribute: Attribute
+  # The attributes associated with the cart. Attributes are represented as key-value pairs.
+  attributes: [Attribute!]!
+  # Information about the buyer that is interacting with the cart.
+  buyerIdentity: CartBuyerIdentity!
+  # The URL of the checkout for the cart.
+  checkoutUrl: URL!
+  # The estimated costs that the buyer will pay at checkout. The costs are subject to change and changes will be reflected at checkout. The cost field uses the buyerIdentity field to determine international pricing.
+  cost: CartCost!
+  # The date and time when the cart was created.
+  createdAt: DateTime!
+  # The discounts that have been applied to the entire cart.
+  discountAllocations: [CartDiscountAllocation!]!
+  # The case-insensitive discount codes that the customer added at checkout.
+  discountCodes: [CartDiscountCode!]!
+  # A globally-unique ID.
+  id: ID!
+  # Returns a metafield found by namespace and key.
+  metafield: Metafield
+  # The metafields associated with the resource matching the supplied list of namespaces and keys.
+  metafields: [Metafield]!
+  # A note that is associated with the cart. For example, the note can be a personalized message to the buyer.
+  note: String
+  # The total number of items in the cart.
+  totalQuantity: Int!
+  # The date and time when the cart was updated.
+  updatedAt: DateTime!
+  # Connections
+  #  The delivery groups available for the cart, based on the buyer identity default delivery address preference or the default address of the logged-in customer.
+  deliveryGroups(first: Int, reverse: Boolean):[CartDeliveryGroup!]!
+  # A list of lines containing information about the items the customer intends to purchase.
+  lines(first: Int, reverse: Boolean):BaseCartLineConnection
+}

@@ -1,10 +1,12 @@
 <script>
-import deliveryIcon from 'assets/svg/delivery.svg'
+import { computed, useContext } from '@nuxtjs/composition-api'
 import checkCircularIcon from 'assets/svg/check-circular.svg'
-import { mapGetters } from 'vuex'
+import deliveryIcon from 'assets/svg/delivery.svg'
+import { storeToRefs } from 'pinia'
 import locales from '../../locales-mapper'
 import documents from '../../prismic-mapper'
-import { addProductToCart, createCart } from '~/utilities/cart'
+import { useShopifyCart } from '~/store/shopifyCart'
+import { generateKey } from '~/utilities/strings'
 
 export default {
   name: 'HeaderMiniCart',
@@ -12,6 +14,16 @@ export default {
     show: {
       type: [Boolean],
     },
+  },
+  setup() {
+    const { $config } = useContext()
+    const { shopifyCart, cartTotal } = storeToRefs(useShopifyCart())
+    const computedCartTotal = computed(() => cartTotal.value($config.SALECHANNEL))
+    return {
+      cartTotal,
+      computedCartTotal,
+      shopifyCart,
+    }
   },
   data() {
     return {
@@ -21,15 +33,23 @@ export default {
       shipping: null,
     }
   },
+  async fetch() {
+    let lang = locales[this.$i18n.locale]
+
+    if (lang === 'en-gb' && this.$config.STORE === 'CMW')
+      lang = 'en-eu'
+
+    const response = await this.$prismic.api.getSingle(
+      documents[this.$config.STORE].shipping,
+      {
+        lang,
+      },
+    )
+    this.shipping = response.data
+  },
   computed: {
-    ...mapGetters({
-      cartTotalAmount: 'userCart/getCartTotalAmount',
-    }),
-    cart() {
-      return this.$store.state.cart.cart
-    },
     checkoutUrl() {
-      let baseUrl = `${this.cart.checkoutUrl}/?`
+      let baseUrl = `${this.shopifyCart.checkoutUrl}/?`
 
       this.$store.state.user.user.customer.email
       && (baseUrl += `&checkout[email]=${this.$store.state.user.user.customer.email}`)
@@ -61,62 +81,17 @@ export default {
       return baseUrl
     },
   },
-  async fetch() {
-    const userCart = this.$store.state.userCart.userCart
-    this.data = userCart
 
-    let lang = locales[this.$i18n.locale]
-    if (lang === 'en-gb' && this.$config.STORE === 'CMW')
-      lang = 'en-eu'
-
-    const response = await this.$prismic.api.getSingle(
-      documents[this.$config.STORE].shipping,
-      {
-        lang,
-      },
-    )
-    const shipping = response.data
-    this.shipping = shipping
-  },
   methods: {
+    generateKey,
     async checkout() {
-      // crea carrello su shop
-      const domain = this.$config.DOMAIN
-      const access_token = this.$config.STOREFRONT_ACCESS_TOKEN
-      const user = this.$store.state.user.user || 'test'
-      const cart = await createCart(domain, access_token, user)
-      const cartId = cart.id
-
-      // update in bulk del cart
-      const lines = this.$store.state.userCart.userCart.map((el) => {
-        return {
-          merchandiseId: el.productVariantId,
-          quantity: el.quantity,
-          attributes: [
-            {
-              key: 'bundle',
-              value: el.tag.includes('BUNDLE').toString(),
-            },
-          ],
-        }
-      })
-
-      const cartFilled = await addProductToCart(
-        domain,
-        access_token,
-        cartId,
-        lines,
-      )
-
       if (!this.$store.state.user.user) {
         // crea checkoutUrl
-        const checkoutUrl = `${cartFilled.checkoutUrl}/?`
-        window.location = checkoutUrl
+        window.location = this.shopifyCart.checkoutUrl
         return
       }
-
       // crea checkoutUrl
-      let checkoutUrl = `${cartFilled.checkoutUrl}/?`
+      let checkoutUrl = `${this.shopifyCart.checkoutUrl}/?`
       this.$store.state.user.user.customer.email
       && (checkoutUrl += `&checkout[email]=${this.$store.state.user.user.customer.email}`)
 
@@ -156,19 +131,19 @@ export default {
     <div class="border-t-4 border-t-primary-900 pt-4">
       <div>
         <div v-if="shipping">
-          <div v-if="data && data.length > 0" class="min-w-[640px]">
+          <div v-if="shopifyCart && shopifyCart.totalQuantity > 0" class="min-w-[640px]">
             <div
               class="text-secondary-700 flex items-center justify-center gap-2 text-sm uppercase pb-4"
             >
-              <VueSvgIcon :data="cartTotalAmount < shipping.threshold ? deliveryIcon : checkCircularIcon" width="24" height="24" />
-              <span>{{ cartTotalAmount < shipping.threshold ? shipping.threshold_not_reached : shipping.threshold_reached }}</span>
+              <VueSvgIcon :data="computedCartTotal < shipping.threshold ? deliveryIcon : checkCircularIcon" width="24" height="24" />
+              <span>{{ computedCartTotal < shipping.threshold ? shipping.threshold_not_reached : shipping.threshold_reached }}</span>
             </div>
             <div class="px-4">
               <hr class="border-gray-light">
             </div>
             <div class="max-h-[360px] overflow-y-auto overflow-x-hidden">
-              <div v-for="item in data" :key="item.id">
-                <CartLine :item="item" />
+              <div v-for="item in shopifyCart.lines.edges" :key="generateKey(`mini-cart-${item.node.id}`)">
+                <CartLine :item="item.node" />
               </div>
             </div>
             <div class="grid grid-cols-2 gap-4 bg-gray-lightest p-4">

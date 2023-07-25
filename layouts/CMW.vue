@@ -1,26 +1,28 @@
 <script lang="ts">
 import { localeChanged, localize } from 'vee-validate'
-import { onMounted, provide, readonly, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
-import LazyHydrate from 'vue-lazy-hydration'
-import TopBar from '../components/TopBar.vue'
-import Navbar from '../components/Navbar.vue'
+import { defineComponent, onMounted, provide, readonly, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
+// import LazyHydrate from 'vue-lazy-hydration'
+
 import useScreenSize from '~/components/composables/useScreenSize'
 import useNewsletterSplash from '~/components/composables/useNewsletterSplash'
+import Navbar from '~/components/Navbar.vue'
+import TopBar from '~/components/TopBar.vue'
 
 import { lookUpLocale } from '~/plugins/vee-validate'
 import { useCustomer } from '~/store/customer'
+import { useShopifyCart } from '~/store/shopifyCart'
 
-export default {
-  name: 'IndexPage',
+export default defineComponent({
   components: {
-    LazyHydrate,
+    // LazyHydrate,
     TheFooter: () => import('../components/TheFooter.vue'),
     TopBar,
     Navbar,
   },
   setup() {
-    const { i18n } = useContext()
-    const customerStore = useCustomer()
+    const { i18n, $cookies } = useContext()
+    const { getCustomer } = useCustomer()
+    const { getShopifyCart } = useShopifyCart()
     const { handleNewsletterSplash } = useNewsletterSplash()
     const {
       isTablet,
@@ -39,7 +41,10 @@ export default {
       localeChanged()
 
       const accessToken = $cookieHelpers.getToken()
-      accessToken && await customerStore.getCustomer()
+      accessToken && await getCustomer()
+
+      const cartId = $cookies.get('cartId')
+      cartId && await getShopifyCart(cartId)
     })
 
     onMounted(() => {
@@ -59,7 +64,7 @@ export default {
     return { isTablet, isDesktop, isDesktopWide, hasBeenSet, handleNewsletterSplash }
   },
   head: {},
-}
+})
 </script>
 
 <template>
@@ -69,13 +74,13 @@ export default {
 
     <nuxt class="cmw-main" />
 
-    <LazyHydrate :when-visible="{ rootMargin: '100px' }">
-      <TheFooter style="position: relative; top: 120px" />
-    </LazyHydrate>
+    <!--    <LazyHydrate :when-visible="{ rootMargin: '100px' }"> -->
+    <TheFooter />
+    <!--    </LazyHydrate> -->
 
-    <client-only>
+    <ClientOnly>
       <FlashMessage position="right top" />
-    </client-only>
+    </ClientOnly>
     <!-- Todo: lazy load this component -->
     <CmwSplash />
   </div>

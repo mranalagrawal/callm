@@ -3,7 +3,7 @@ import CountriesRepository from '~/repositories/CountriesRepository'
 import CustomerRepository from '~/repositories/CustomerRepository'
 import OrdersRepository from '~/repositories/OrdersRepository'
 import PrismicRepository from '~/repositories/PrismicRepository.ts'
-import ProductsRepository from '~/repositories/ProductsRepository'
+import ProductsRepository from '~/repositories/ProductsRepository.ts'
 import ShopifyPagesRepository from '~/repositories/ShopifyPagesRepository'
 
 export default ctx => ({

@@ -1,9 +1,9 @@
 /*@layer base {*/
-  /* Root settings */
-  :root {
-    --cmw-top-banner-height: 35px;
-    --cmw-header-height: 171px;
-  }
+/* Root settings */
+:root {
+  --cmw-top-banner-height: 35px;
+  --cmw-header-height: 171px;
+}
 
 @media (min-width: 768px) {
   :root {
@@ -19,129 +19,130 @@
   }
 }
 
-  /* ScrollBar styles */
-  ::-webkit-scrollbar {
-    width: 3px;
-  }
+/* ScrollBar styles */
+::-webkit-scrollbar {
+  width: 3px;
+}
 
-  ::-webkit-scrollbar-track {
-    background-color: theme("colors.gray.DEFAULT");
-    border-radius: 0;
-  }
+::-webkit-scrollbar-track {
+  background-color: theme("colors.gray.DEFAULT");
+  border-radius: 0;
+}
 
-  ::-webkit-scrollbar-thumb {
-    background-color: theme("colors.primary.DEFAULT");
-    border-radius: 2px;
-  }
+::-webkit-scrollbar-thumb {
+  background-color: theme("colors.primary.DEFAULT");
+  border-radius: 2px;
+}
 
-  html {
-    overflow-x: hidden;
-  }
+html {
+  overflow-x: hidden;
+}
 
-  body.lock-scroll {
-    position: fixed;
-    overflow-x: hidden;
-    overflow-y: scroll;
-  }
+body.lock-scroll {
+  position: fixed;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
 
-  #__layout {
-    width: 100vw;
-    min-height: 120vh;
-  }
+#__layout {
+  width: 100vw;
+  min-height: 120vh;
+}
 
-  a, a:link {
-    text-decoration: none;
-    @apply transition-colors;
-  }
+a, a:link {
+  text-decoration: none;
+  @apply transition-colors;
+}
 
-  /* Headings */
+/* Headings */
+h1, .h1 {
+  /*@apply cmw-text-3xl leading-tight tracking-0px font-bold md:cmw-text-5xl;*/
+  font-size: theme("fontSize.3xl");
+  line-height: theme("leading.tight");
+  letter-spacing: 0;
+  font-weight: bold;
+}
+
+h2, .h2 {
+  /*@apply cmw-text-2xl leading-tight tracking-0px font-bold md:cmw-text-4xl;*/
+  font-size: theme("fontSize.2xl");
+  line-height: theme("leading.tight");
+  letter-spacing: 0;
+  font-weight: bold;
+}
+
+h3, .h3 {
+  /*@apply cmw-text-xl leading-tight tracking-0px font-bold md:cmw-text-3xl;*/
+  font-size: theme("fontSize.xl");
+  line-height: theme("leading.tight");
+  letter-spacing: 0;
+  font-family: theme("fontFamily.sans"), serif;
+  font-weight: bold;
+}
+
+h4, .h4 {
+  /*@apply cmw-text-lg leading-tight tracking-0px font-bold md:cmw-text-xl;*/
+  font-size: theme("fontSize.lg");
+  line-height: theme("leading.tight");
+  letter-spacing: 0;
+  font-family: theme("fontFamily.sans"), serif;
+  font-weight: bold;
+}
+
+h5, .h5 {
+  /*@apply cmw-text-base leading-tight tracking-0px font-bold;*/
+  font-size: theme("fontSize.base");
+  line-height: theme("leading.tight");
+  letter-spacing: 0;
+  font-weight: bold;
+}
+
+p,
+h1, .h1,
+h2, .h2,
+h3, .h3,
+h4, .h4,
+h5, .h5 {
+  color: theme("colors.body");
+  margin-top: theme("spacing.2");
+  margin-bottom: theme("spacing.2");
+}
+
+p.-dark,
+h1.-dark, .h1.-dark,
+h2.-dark, .h2.-dark,
+h3.-dark, .h3.-dark,
+h4.-dark, .h4.-dark,
+h5.-dark, .h5.-dark {
+  color: theme("colors.white");
+}
+
+.inherit {
+  position: inherit;
+}
+
+.add-product-notification ._vue-flash-msg-body__title, .add-product-notification ._vue-flash-msg-body__text {
+  color: white;
+}
+
+@media screen and (min-width: 768px) {
   h1, .h1 {
-    /*@apply cmw-text-3xl leading-tight tracking-0px font-bold md:cmw-text-5xl;*/
-    font-size: theme("fontSize.3xl");
-    line-height: theme("leading.tight");
-    letter-spacing: 0;
-    font-family: theme("fontFamily.sans"), serif;
-    font-weight: bold;
+    font-size: theme("fontSize.5xl");
   }
 
   h2, .h2 {
-    /*@apply cmw-text-2xl leading-tight tracking-0px font-bold md:cmw-text-4xl;*/
-    font-size: theme("fontSize.2xl");
-    line-height: theme("leading.tight");
-    letter-spacing: 0;
-    font-family: theme("fontFamily.sans"), serif;
-    font-weight: bold;
-    color: theme("colors.body");
+    font-size: theme("fontSize.4xl");
   }
 
   h3, .h3 {
-    /*@apply cmw-text-xl leading-tight tracking-0px font-bold md:cmw-text-3xl;*/
-    font-size: theme("fontSize.xl");
-    line-height: theme("leading.tight");
-    letter-spacing: 0;
-    font-family: theme("fontFamily.sans"), serif;
-    font-weight: bold;
-    color: theme("colors.body");
+    font-size: theme("fontSize.3xl");
   }
 
   h4, .h4 {
-    /*@apply cmw-text-lg leading-tight tracking-0px font-bold md:cmw-text-xl;*/
-    font-size: theme("fontSize.lg");
-    line-height: theme("leading.tight");
-    letter-spacing: 0;
-    font-family: theme("fontFamily.sans"), serif;
-    font-weight: bold;
-    color: theme("colors.body");
+    font-size: theme("fontSize.xl");
   }
 
-  h5, .h5 {
-    /*@apply cmw-text-base leading-tight tracking-0px font-bold;*/
-    font-size: theme("fontSize.base");
-    line-height: theme("leading.tight");
-    letter-spacing: 0;
-    font-family: theme("fontFamily.sans"), serif;
-    font-weight: bold;
-  }
-
-  p,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5 {
-    font-family: theme("fontFamily.sans"), serif;
-    color: theme("colors.body");
-    /*@apply cmw-my-2;*/
-    margin-top: theme("spacing.2");
-    margin-bottom: theme("spacing.2");
-  }
-
-  .inherit {
-    position: inherit;
-  }
-
-  .add-product-notification ._vue-flash-msg-body__title, .add-product-notification ._vue-flash-msg-body__text {
-    color: white;
-  }
-
-  @media screen and (min-width:768px) {
-    h1, .h1 {
-      font-size: theme("fontSize.5xl");
-    }
-
-    h2, .h2 {
-      font-size: theme("fontSize.4xl");
-    }
-
-    h3, .h3 {
-      font-size: theme("fontSize.3xl");
-    }
-
-    h4, .h4 {
-      font-size: theme("fontSize.xl");
-    }
-
-  }
+}
 
 .c-searchInput::-webkit-search-cancel-button {
   position: relative;
@@ -171,7 +172,10 @@ input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px white inset;
-  &.is-gray { -webkit-box-shadow: 0 0 0 30px #F8F8F8 inset; }
+
+  &.is-gray {
+    -webkit-box-shadow: 0 0 0 30px #F8F8F8 inset;
+  }
 }
 
 input[type=date]::-webkit-calendar-picker-indicator {
@@ -194,4 +198,5 @@ input[type=date]::-webkit-calendar-picker-indicator {
     padding-top: theme("spacing.4");
   }
 }
+
 /*}*/

@@ -1,21 +1,24 @@
 <script>
-import { computed, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api'
-import { storeToRefs } from 'pinia'
-import heartIcon from 'assets/svg/heart.svg'
-import heartFullIcon from 'assets/svg/heart-full.svg'
-import cartIcon from 'assets/svg/cart.svg'
+import { computed, defineComponent, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api'
 import addIcon from 'assets/svg/add.svg'
-import subtractIcon from 'assets/svg/subtract.svg'
+import cartIcon from 'assets/svg/cart.svg'
+import closeIcon from 'assets/svg/close.svg'
 import emailIcon from 'assets/svg/email.svg'
-import { mapState } from 'vuex'
-import { stripHtml } from '~/utilities/strings'
+import heartFullIcon from 'assets/svg/heart-full.svg'
+import heartIcon from 'assets/svg/heart.svg'
+import subtractIcon from 'assets/svg/subtract.svg'
+import { storeToRefs } from 'pinia'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import { useCustomer } from '~/store/customer'
-import { isObject } from '~/utilities/validators'
+import { useCustomerOrders } from '~/store/customerOrders.ts'
+import { useShopifyCart } from '~/store/shopifyCart'
 import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
+import { stripHtml } from '~/utilities/strings'
 import { SweetAlertToast } from '~/utilities/Swal'
+import { isObject } from '~/utilities/validators'
+
 // noinspection JSUnusedGlobalSymbols
-export default {
+export default defineComponent({
   name: 'ProductBoxHorizontal',
   props: {
     /** @Type: {ProductVariantType.ProductVariant} */
@@ -33,6 +36,10 @@ export default {
   setup(props) {
     const { $config, localeLocation, $gtm, $cmwGtmUtils } = useContext()
     const customerStore = useCustomer()
+    const customerOrders = useCustomerOrders()
+    const { getCanOrder } = storeToRefs(customerOrders)
+    const { shopifyCart } = storeToRefs(useShopifyCart())
+    const { cartLinesAdd, createShopifyCart, cartLinesUpdate } = useShopifyCart()
     const { wishlistArr, getCustomerType, customerId } = storeToRefs(customerStore)
     const { handleWishlist } = customerStore
     const { handleShowRequestModal } = useShowRequestModal()
@@ -43,7 +50,11 @@ export default {
 
     const isOnFavourite = computed(() => wishlistArr.value.includes(props.product.source_id))
     const isOnSale = computed(() => props.product.availableFeatures.includes('isInPromotion'))
-    const finalPrice = computed(() => props.product.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0)
+    const finalPrice = computed(() => {
+      if (!props.product.priceLists || !props.product.priceLists[$config.SALECHANNEL])
+        return 0
+      return props.product.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0
+    })
     const gtmProductData = computed(() => ({
       ...props.product.gtmProductData,
       price: finalPrice.value,
@@ -87,12 +98,43 @@ export default {
       router.push(localeLocation(props.product.url))
     }
 
+    const amountMax = computed(() => (Object.keys(props.product.details).length && props.product.details.amountMax[$config.SALECHANNEL]
+      && props.product.details.amountMax[$config.SALECHANNEL] <= props.product.quantityAvailable)
+      ? props.product.details.amountMax[$config.SALECHANNEL]
+      : props.product.quantityAvailable,
+    )
+
+    const isOnCart = computed(() => {
+      const product = shopifyCart.value?.lines?.edges.find(el => el.node.merchandise.id === props.product.shopify_product_variant_id)
+      if (product)
+        return product.node
+      return null
+    })
+
+    const cartQuantity = computed(() => isOnCart.value ? isOnCart.value.quantity : 0)
+
+    const canAddMore = computed(() => (amountMax.value - cartQuantity.value) > 0)
+
+    const priceByLiter = computed(() => {
+      if ($config.STORE !== 'CMW_DE')
+        return 0
+      else
+        return ((finalPrice.value / props.product.milliliters) * 1000)
+    })
+
     return {
       addIcon,
+      amountMax,
+      canAddMore,
       cartIcon,
+      cartLinesAdd,
+      cartQuantity,
+      closeIcon,
+      createShopifyCart,
       customerId,
       emailIcon,
       finalPrice,
+      getCanOrder,
       getCustomerType,
       gtmProductData,
       handleHeartClick,
@@ -105,23 +147,12 @@ export default {
       isOnFavourite,
       isOnSale,
       isOpen,
+      priceByLiter,
+      shopifyCart,
       subtractIcon,
+      cartLinesUpdate,
       wishlistArr,
     }
-  },
-  computed: {
-    ...mapState('userCart', {
-      userCart: 'userCart',
-    }),
-    isOnCart() {
-      return this.userCart.find(lineItem => lineItem.productVariantId === this.product.shopify_product_variant_id)
-    },
-    cartQuantity() {
-      return this.isOnCart ? this.isOnCart.quantity : 0
-    },
-    canAddMore() {
-      return this.product.quantityAvailable - this.cartQuantity > 0
-    },
   },
   methods: {
     stripHtml,
@@ -138,41 +169,26 @@ export default {
         return
       }
 
-      const totalInventory = this.product.quantityAvailable
-      const id = this.product.shopify_product_variant_id
-      const amount = this.finalPrice
-      const amountFullPrice = Number(this.product.compareAtPrice.amount)
-      const tag = this.product.tags
-      const image = this.product.image.source.url
-      const title = this.product.title
+      if (!this.shopifyCart)
+        await this.createShopifyCart()
 
-      this.$store.commit('userCart/addProduct', {
-        id,
-        singleAmount: amount,
-        singleAmountFullPrice: amountFullPrice,
-        tag,
-        image,
-        title,
-        totalInventory,
-        gtmProductData: this.gtmProductData,
-      })
-
-      this.flashMessage.show({
+      await this.cartLinesAdd(this.product, false, () => this.flashMessage.show({
         status: '',
         message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title}` }),
-        icon: image,
+        icon: this.product.image.source.url,
         iconClass: 'bg-transparent ',
         time: 8000,
         blockClass: 'add-product-notification',
-      })
+      }))
     },
     async removeFromUserCart() {
-      this.$store.commit('userCart/removeProduct', {
-        id: this.product.shopify_product_variant_id,
-      })
+      if (this.cartQuantity === 0)
+        return
+
+      await this.cartLinesUpdate(this.product, this.cartQuantity - 1)
     },
   },
-}
+})
 </script>
 
 <template>
@@ -246,7 +262,9 @@ hover:shadow-elevation"
           class="font-bold"
           v-text="$t('product.format')"
         />
-        <div>{{ product.tbd.size }}</div>
+        <div v-if="product.tbd.size.length">
+          {{ product.tbd.size }}
+        </div>
       </div>
       <!-- Note: Why don't we use these fields from shopify? wouldn't be easier to handle locales? -->
       <!-- <div>{{ product.description }}</div>
@@ -256,7 +274,7 @@ hover:shadow-elevation"
         :class="{ 'opacity-50': !product.availableForSale }"
         v-html="stripHtml(product.tbd.description)"
       />
-      <ProductUserRatingDescription :product-id="`${product.details.feId}`" @submit-comment="handleStarAndCustomerCommentClick" />
+      <ProductUserRatingDescription v-if="customerId" :product-id="`${product.details.feId}`" @submit-comment="handleStarAndCustomerCommentClick" />
     </div>
     <!-- CTA Section -->
     <div class="relative flex">
@@ -322,8 +340,8 @@ hover:shadow-elevation"
             </div>
             <button
               class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-r
-               hover:(bg-primary)
-               disabled:(bg-primary-100 cursor-not-allowed)"
+                hover:(bg-primary)
+                disabled:(bg-primary-100 cursor-not-allowed)"
               :disabled="!canAddMore"
               :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
               @click="addToUserCart"
@@ -351,6 +369,11 @@ hover:shadow-elevation"
             <VueSvgIcon :data="emailIcon" width="30" height="auto" />
             <span class="text-sm" v-text="$t('common.cta.notifyMe')" />
           </Button>
+        </div>
+        <div>
+          <span v-if="$config.STORE === 'CMW_DE' && priceByLiter" class="text-sm">
+            {{ $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode)) }}/liter</span>
+          <small v-if="$config.STORE === 'CMW_DE'" class="text-gray">Inkl. MwSt. Und St.</small>
         </div>
       </div>
       <div class="absolute transform top-px left-1/2 -translate-x-1/2 -translate-y-1/2">

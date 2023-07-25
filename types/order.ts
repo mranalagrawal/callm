@@ -2,6 +2,7 @@ import type { IMoneyV2 } from '~/types/common-objects'
 import type { IMailingAddress } from '~/types/mailingAddress'
 
 export interface ICartLineItem {
+  id: string
   gtmProductData: any
   image: string
   productVariantId: string
@@ -10,6 +11,7 @@ export interface ICartLineItem {
   totalInventory: string | number
   singleAmount: string | number
   singleAmountFullPrice: string | number
+  merchandise: Record<string, any>
 }
 
 export interface ILineItem {

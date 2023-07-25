@@ -16,7 +16,7 @@ export default ({ $config, $prismic, i18n, $handleApiErrors }: Context) => ({
 
       return data
     } catch (err) {
-      $handleApiErrors(`Catch getting page (${page}) from Shopify: ${err}`)
+      $handleApiErrors(`Catch getting page (${page}) from Prismic: ${err}`)
       return initialPageData
     }
   },

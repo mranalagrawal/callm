@@ -1,12 +1,12 @@
 <script>
 import { storeToRefs } from 'pinia'
-import { ref, useContext, useRouter } from '@nuxtjs/composition-api'
+import { defineComponent, ref, useContext, useRouter } from '@nuxtjs/composition-api'
 import eyeShowIcon from '~/assets/svg/eye-show.svg'
 import eyeHideIcon from '~/assets/svg/eye-hide.svg'
 import { useCustomer } from '~/store/customer'
 import Alert from '~/components/FeedBack/Alert.vue'
 
-export default {
+export default defineComponent({
   components: { Alert },
   props: {
     skipRedirect: { type: Boolean },
@@ -43,7 +43,7 @@ export default {
 
     return { customerStore, customer, form, passwordIsVisible, isSubmitting, eyeShowIcon, eyeHideIcon, message, onSubmit }
   },
-}
+})
 </script>
 
 <template>
@@ -59,8 +59,8 @@ export default {
         v-model="form.email"
         type="email"
         name="user-email"
-        label="Email"
-        placeholder="User email"
+        :label="$t('email')"
+        :placeholder="$t('emailPlaceholder')"
         rules="required|email"
       />
 
@@ -68,8 +68,8 @@ export default {
         v-model="form.password"
         :type="!passwordIsVisible ? 'password' : 'text'"
         name="user-password"
-        label="Password"
-        :placeholder="$t('passwordPlaceholder').toString()"
+        :label="$t('password')"
+        :placeholder="$t('passwordPlaceholder')"
         rules="required|min:4"
         :icon="passwordIsVisible ? eyeHideIcon : eyeShowIcon"
         :click-icon="() => passwordIsVisible = !passwordIsVisible"
@@ -86,7 +86,7 @@ export default {
         class="sm:max-w-330px mt-8"
         type="submit"
         :disabled="isSubmitting"
-        :label="$t('navbar.user.signIn').toString()"
+        :label="$t('navbar.user.signIn')"
       />
 
       <NuxtLink

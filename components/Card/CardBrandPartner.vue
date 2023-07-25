@@ -10,7 +10,7 @@ export default {
 </script>
 
 <template>
-  <NuxtLink :to="localePath(`/winery/${brand.handle}-B${brand.brandId}.htm`)">
+  <NuxtLink :to="localePath({ name: 'winery-handle', params: { handle: `${brand.handle}-B${brand.brandId}.htm` } })">
     <div
       class="c-brand font-sans border-2 border-primary-400 rounded-sm border-gray-light overflow-hidden h-full
     hover:shadow-elevation"
@@ -18,7 +18,7 @@ export default {
       <div class="c-brand__grid grid items-center text-body">
         <div class="c-brand__imgBox relative">
           <NuxtLink
-            :to="localePath(`/winery/${brand.handle}-B${brand.brandId}.htm`)"
+            :to="localePath({ name: 'winery-handle', params: { handle: `${brand.handle}-B${brand.brandId}.htm` } })"
             class="cnw-flex w-full h-full"
           >
             <LoadingImage

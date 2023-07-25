@@ -1,6 +1,6 @@
 {
   "name": "callmewine-frontend",
-  "version": "1.14.0",
+  "version": "1.15.0",
   "private": true,
   "engines": {
     "node": ">=16.0.0 <17.0.0"
@@ -8,6 +8,16 @@
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",
+    "dev:CMW": "nuxt --dotenv .env.stage.cmw",
+    "dev:B2B": "nuxt --dotenv .env.stage.b2b",
+    "dev:CMW_UK": "nuxt --dotenv .env.stage.cmw-uk",
+    "dev:CMW_DE": "nuxt --dotenv .env.stage.cmw-de",
+    "dev:CMW_FR": "nuxt --dotenv .env.stage.cmw-fr",
+    "build:prod:CMW": "nuxt build --dotenv .env.prod.cmw",
+    "build:prod:B2B": "nuxt build --dotenv .env.prod.b2b",
+    "build:prod:CMW_UK": "nuxt build --dotenv .env.prod.cmw-uk",
+    "build:prod:CMW_DE": "nuxt build --dotenv .env.prod.cmw-de",
+    "build:prod:CMW_FR": "nuxt build --dotenv .env.prod.cmw-fr",
     "start": "nuxt start",
     "generate": "nuxt generate",
     "slicemachine": "start-slicemachine",

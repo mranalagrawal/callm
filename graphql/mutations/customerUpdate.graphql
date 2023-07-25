@@ -4,12 +4,22 @@ mutation customerUpdate(
   $lang: LanguageCode!) @inContext(language: $lang) {
   customerUpdate(customer: $customer, customerAccessToken: $customerAccessToken) {
     customer {
-      acceptsMarketing
       id
-      email
       firstName
       lastName
+      acceptsMarketing
+      email
       phone
+      tags
+      wishlist: metafield(namespace: "custom", key: "wishlist") {
+        value
+      }
+      newsletterFrequency: metafield(namespace: "custom", key: "newsletter_frequency") {
+        value
+      }
+      approved: metafield(namespace: "custom", key: "b2b_approved") {
+        value
+      }
     }
     customerAccessToken {
       accessToken

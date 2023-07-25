@@ -6,7 +6,7 @@ query getCustomerOrders(
   customer(customerAccessToken: $customerAccessToken) {
     id
     firstName
-    orders(first: 10, reverse: true, query: $query) {
+    orders(first: 40, reverse: true, query: $query) {
       nodes {
         billingAddress {
           city
@@ -109,4 +109,3 @@ query getCustomerOrders(
     }
   }
 }
-

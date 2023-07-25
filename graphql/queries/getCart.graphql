@@ -1,0 +1,143 @@
+query getCart(
+  $lang: LanguageCode!
+  $id: ID!
+) @inContext(language: $lang) {
+  cart(
+    id: $id
+  ) {
+      id
+      updatedAt
+      totalQuantity
+      checkoutUrl
+      cost {
+        totalAmount {
+          amount
+          currencyCode
+        }
+        subtotalAmount {
+          amount
+          currencyCode
+        }
+        totalTaxAmount {
+          amount
+          currencyCode
+        }
+        totalDutyAmount {
+          amount
+          currencyCode
+        }
+      }
+      lines(first: 20) {
+        nodes {
+          id
+          quantity
+          merchandise {
+            ... on ProductVariant {
+              id
+              price {
+                amount
+                currencyCode
+              }
+              product {
+                isGiftCard
+                id
+                title
+                description
+                tags
+                totalInventory
+                details: metafield(namespace: "custom", key: "details") {
+                  value
+                }
+                bundle: metafield(namespace: "custom", key: "bundle") {
+                  value
+                }
+                variants(first: 1) {
+                  nodes {
+                    id
+                    compareAtPrice {
+                      amount
+                      currencyCode
+                    }
+                    price {
+                      amount
+                      currencyCode
+                    }
+                    quantityAvailable
+                    sku
+                  }
+                }
+              }
+            }
+          }
+          attributes {
+            key
+            value
+          }
+        }
+        edges {
+          node {
+            id
+            quantity
+            merchandise {
+              ... on ProductVariant {
+                id
+                price {
+                  amount
+                  currencyCode
+                }
+                product {
+                  availableForSale
+                  descriptionHtml
+                  handle
+                  id
+                  isGiftCard
+                  featuredImage {
+                    altText
+                    height
+                    url
+                    width
+                  }
+                  seo {
+                    description
+                    title
+                  }
+                  tags
+                  title
+                  vendor
+                  totalInventory
+                  details: metafield(namespace: "custom", key: "details") {
+                    value
+                  }
+                  breadcrumbs: metafield(namespace: "custom", key: "breadcrumbs") {
+                    value
+                  }
+                  bundle: metafield(namespace: "custom", key: "bundle") {
+                    value
+                  }
+                  variants(first: 1) {
+                    nodes {
+                      id
+                      compareAtPrice {
+                        amount
+                        currencyCode
+                      }
+                      price {
+                        amount
+                        currencyCode
+                      }
+                      quantityAvailable
+                      sku
+                    }
+                  }
+                }
+              }
+            }
+            attributes {
+              key
+              value
+            }
+          }
+        }
+      }
+  }
+}

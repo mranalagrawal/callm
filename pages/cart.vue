@@ -1,26 +1,57 @@
 <script>
-import { onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
-import { mapGetters } from 'vuex'
+import { computed, defineComponent, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
+import { storeToRefs } from 'pinia'
 import CartLine from '../components/Cart/CartLine.vue'
 import prismicConfig from '~/config/prismicConfig'
-import { addProductToCart, createCart, removeProductFromCart } from '~/utilities/cart'
+import { useShopifyCart } from '~/store/shopifyCart'
+
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
+import { generateKey } from '~/utilities/strings'
 import { SweetAlertConfirm } from '~/utilities/Swal'
 
-export default {
+export default defineComponent({
   components: { CartLine },
   layout(context) {
     return context.$config.STORE
   },
   setup() {
-    const { $config, store, $cmwGtmUtils } = useContext()
+    const { $cookies, $config, $cmwGtmUtils, i18n } = useContext()
     const shipping = ref({})
+    const { shopifyCart, cartTotal } = storeToRefs(useShopifyCart())
 
     const { fetch } = useFetch(async ({ $config, $cmwRepo }) => {
       shipping.value = await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE]?.components.shipping })
     })
 
+    const emptyCart = () => {
+      SweetAlertConfirm.fire({
+        icon: 'warning',
+        text: i18n.t('common.confirm.deleteCart'),
+        cancelButtonText: i18n.t('common.cta.cancel'),
+        confirmButtonText: i18n.t('common.cta.confirm'),
+        preConfirm: () => {
+          $cookies.remove('cartId')
+          shopifyCart.value = null
+        },
+      })
+    }
+
+    const computedCartTotal = computed(() => cartTotal.value($config.SALECHANNEL))
+
     onMounted(() => {
+      const products = shopifyCart.value?.lines?.nodes?.map(
+        (node) => {
+          const gtmProductData = node.attributes.find(v => v.key === 'gtmProductData')
+          const productDataJson = gtmProductData?.value ?? null
+          return productDataJson
+            ? {
+                ...JSON.parse(productDataJson),
+                quantity: node.quantity,
+              }
+            : {}
+        },
+      )
+
       process.browser && $cmwGtmUtils.pushPage('product', {
         event: 'cartView',
         pageType: 'cart',
@@ -30,128 +61,70 @@ export default {
             actionField: {
               step: '0',
             },
-            products: store.state.userCart.userCart.map(p => p.gtmProductData),
+            products,
           },
         },
       })
     })
 
-    return { fetch, shipping, getLocaleFromCurrencyCode }
+    return {
+      cartTotal,
+      computedCartTotal,
+      emptyCart,
+      fetch,
+      getLocaleFromCurrencyCode,
+      shipping,
+      shopifyCart,
+    }
   },
   computed: {
-    ...mapGetters({
-      cartTotalAmountObj: 'userCart/cartTotalAmountObj',
-      cartTotalAmount: 'userCart/getCartTotalAmount',
-    }),
     cart() {
-      return this.$store.state.cart.cart
-    },
-    userCart() {
-      return this.$store.state.userCart.userCart
-    },
-    cartTotalQuantity() {
-      const cart = this.$store.state.userCart.userCart
-      const total = cart.reduce((t, n) => t + n.quantity, 0)
-
-      return total
+      return this.shopifyCart ? this.shopifyCart : null
     },
   },
 
   methods: {
-    async remove(lineId) {
-      const domain = this.$config.DOMAIN
-      const access_token = this.$config.STOREFRONT_ACCESS_TOKEN
-      const cartId = this.$store.state.cart.cart.id
-
-      // remove from shopify
-      const cart = await removeProductFromCart(
-        domain,
-        access_token,
-        cartId,
-        lineId,
-      )
-
-      this.$store.commit('cart/setCart', cart)
-    },
-    emptyCart() {
-      SweetAlertConfirm.fire({
-        icon: 'warning',
-        text: this.$i18n.t('common.confirm.deleteCart'),
-        cancelButtonText: this.$t('common.cta.cancel'),
-        confirmButtonText: this.$t('common.cta.confirm'),
-        preConfirm: () => {
-          this.$store.commit('userCart/resetCart')
-        },
-      })
-    },
+    generateKey,
     async checkout() {
-      // crea carrello su shop
-      const domain = this.$config.DOMAIN
-      const access_token = this.$config.STOREFRONT_ACCESS_TOKEN
-      const user = this.$store.state.user.user || 'test'
-      const cart = await createCart(domain, access_token, user)
-      const cartId = cart.id
-
-      // update in bulk del cart
-      const lines = this.$store.state.userCart.userCart.map((el) => {
-        return {
-          merchandiseId: el.productVariantId,
-          quantity: el.quantity,
-          attributes: [
-            {
-              key: 'bundle',
-              value: el.tag.includes('BUNDLE').toString(),
-            },
-          ],
-        }
-      })
-
-      const cartFilled = await addProductToCart(
-        domain,
-        access_token,
-        cartId,
-        lines,
-      )
       if (!this.$store.state.user.user) {
-        window.location = `${cartFilled.checkoutUrl}/?`
+        // crea checkoutUrl
+        window.location = this.shopifyCart.checkoutUrl
         return
       }
-
       // crea checkoutUrl
-      let checkoutUrl = `${cartFilled.checkoutUrl}/?`
+      let checkoutUrl = `${this.shopifyCart.checkoutUrl}/?`
       this.$store.state.user.user.customer.email
-        && (checkoutUrl += `&checkout[email]=${this.$store.state.user.user.customer.email}`)
+      && (checkoutUrl += `&checkout[email]=${this.$store.state.user.user.customer.email}`)
 
       this.$store.state.user.user.customer.defaultAddress?.firstName
-        && (checkoutUrl += `&checkout[shipping_address][first_name]=${this.$store.state.user.user.customer.defaultAddress.firstName}`)
+      && (checkoutUrl += `&checkout[shipping_address][first_name]=${this.$store.state.user.user.customer.defaultAddress.firstName}`)
 
       this.$store.state.user.user.customer.defaultAddress?.lastName
-        && (checkoutUrl += `&checkout[shipping_address][last_name]=${this.$store.state.user.user.customer.defaultAddress.lastName}`)
+      && (checkoutUrl += `&checkout[shipping_address][last_name]=${this.$store.state.user.user.customer.defaultAddress.lastName}`)
 
       this.$store.state.user.user.customer.defaultAddress?.address1
-        && (checkoutUrl += `&checkout[shipping_address][address1]=${this.$store.state.user.user.customer.defaultAddress.address1}`)
+      && (checkoutUrl += `&checkout[shipping_address][address1]=${this.$store.state.user.user.customer.defaultAddress.address1}`)
 
       this.$store.state.user.user.customer.defaultAddress?.address2
-        && (checkoutUrl += `&checkout[shipping_address][address2]=${this.$store.state.user.user.customer.defaultAddress.address2}`)
+      && (checkoutUrl += `&checkout[shipping_address][address2]=${this.$store.state.user.user.customer.defaultAddress.address2}`)
 
       this.$store.state.user.user.customer.defaultAddress?.country
-        && (checkoutUrl += `&checkout[shipping_address][country]=${this.$store.state.user.user.customer.defaultAddress.country}`)
+      && (checkoutUrl += `&checkout[shipping_address][country]=${this.$store.state.user.user.customer.defaultAddress.country}`)
 
       this.$store.state.user.user.customer.defaultAddress?.province
-        && (checkoutUrl += `&checkout[shipping_address][province]=${this.$store.state.user.user.customer.defaultAddress.province}`)
+      && (checkoutUrl += `&checkout[shipping_address][province]=${this.$store.state.user.user.customer.defaultAddress.province}`)
 
       this.$store.state.user.user.customer.defaultAddress?.city
-        && (checkoutUrl += `&checkout[shipping_address][city]=${this.$store.state.user.user.customer.defaultAddress.city}`)
+      && (checkoutUrl += `&checkout[shipping_address][city]=${this.$store.state.user.user.customer.defaultAddress.city}`)
 
       this.$store.state.user.user.customer.defaultAddress?.zip
-        && (checkoutUrl += `&checkout[shipping_address][zip]=${this.$store.state.user.user.customer.defaultAddress.zip}`)
-
+      && (checkoutUrl += `&checkout[shipping_address][zip]=${this.$store.state.user.user.customer.defaultAddress.zip}`)
       // redirect al checkoutUrl
-      if (process.client)
-        window.location = checkoutUrl
+
+      window.location = checkoutUrl
     },
   },
-}
+})
 </script>
 
 <template>
@@ -165,17 +138,19 @@ export default {
       />
 
       <ClientOnly>
-        <div v-if="userCart && userCart.length > 0">
+        <div v-if="cart && computedCartTotal > 0">
           <h1 class="h2 my-4" v-text="$t('cartDetails')" />
           <div class="grid md:(gap-8 grid-cols-[8fr_4fr]) my-4">
             <div class="">
               <div class="flex items-center justify-between border-b border-b-gray mt-4">
-                <small><strong v-text="cartTotalQuantity" />
-                  <span>{{ $tc('profile.orders.card.goods', cartTotalQuantity) }}</span>
+                <small><strong v-text="cart.totalQuantity" />
+                  <span>{{ $tc('profile.orders.card.goods', computedCartTotal) }}</span>
                 </small>
                 <Button class="w-max ml-auto" variant="text" :label="$t('common.cta.emptyCart')" @click.native="emptyCart" />
               </div>
-              <CartLine v-for="(item, i) in userCart" :key="item.id" :item="item" :is-last="(i + 1) >= userCart.length" />
+              <div v-for="item in cart.lines.edges" :key="generateKey(`cart-${item.node.id}`)">
+                <CartLine :item="item.node" />
+              </div>
               <div class="my-4">
                 <p class="text-sm mt-2">
                   {{ $t('continueShopping') }}
@@ -191,7 +166,7 @@ export default {
             <div>
               <div class="text-center my-2 overline-2 uppercase text-secondary-700">
                 {{
-                  cartTotalAmount < shipping.threshold ? shipping.threshold_not_reached : shipping.threshold_reached
+                  computedCartTotal < shipping.threshold ? shipping.threshold_not_reached : shipping.threshold_reached
                 }}
               </div>
               <div class="shadow mx-auto border border-gray-light rounded overflow-hidden">
@@ -199,7 +174,7 @@ export default {
                   <div class="h5">
                     {{ $t('cartTotal') }}
                     <span class="float-right">{{
-                      $n(Number(cartTotalAmountObj.value), 'currency', getLocaleFromCurrencyCode($config.STORE === "CMW_UK" ? "GBP" : "EUR"))
+                      $n(Number(computedCartTotal), 'currency', getLocaleFromCurrencyCode($config.STORE === "CMW_UK" ? "GBP" : "EUR"))
                     }}</span>
                   </div>
                   <hr>

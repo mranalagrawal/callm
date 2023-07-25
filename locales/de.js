@@ -49,6 +49,9 @@ export default {
   province: 'Provinz',
   firstName: 'Vorname',
   lastName: 'Nachname',
+  businessName: 'Firmenname',
+  vatNumber: 'Umsatzsteuer-Identifikationsnummer',
+  businessType: 'Aktivitätsbereich',
   email: 'Email',
   emailPlaceholder: 'Benutzer Email',
   password: 'Password',
@@ -60,6 +63,10 @@ export default {
     subscribed: 'gezeichnet',
     unsubscribed: 'abgemeldet',
     headline: 'Newsletter mit Aktionen und Neuigkeiten zum gesamten Callmewine-Katalog',
+    frequency: {
+      DAILY: 'Täglich',
+      WEEKLY: 'Wöchentlich',
+    },
     splash: {
       headline: 'Abonnieren Sie unseren Newsletter, um täglich Rabatte, Aktionen und Neuigkeiten zu erhalten!',
       offer: 'Ab sofort für Sie 5% Rabatt auf Ihre erste Bestellung!',
@@ -76,17 +83,18 @@ export default {
   acceptMarketing:
     'Ich stimme zu, Newsletter und Werbemitteilungen von Callmewine zu erhalten, wie in der Datenschutzrichtlinie vorgeschrieben.',
   footer: {
-    company: 'Das Unternehmen',
-    who: 'Wer wir sind',
+    company: 'Die Firma',
+    who: 'Über uns',
     sustainability: 'Nachhaltigkeit',
-    services: 'Angebotene Dienstleistungen',
-    restaurantsAndWineshops: 'Restaurants und Weinhandlungen',
-    support: 'Die Unterstützung',
-    shipping: 'Versand',
-    payments: 'Zahlungen',
-    termsOfSales: 'Verkaufsbedingungen',
-    contacts: 'Kontakte',
-    explore: 'Entdecken Sie unseren Katalog',
+    services: 'Unsere Dienstleistungen',
+    restaurantsAndWineshops: 'Önothek und Restaurants',
+    giftCards: 'Geschenkgutschein',
+    support: 'Unterstützung',
+    shipping: 'Lieferungen',
+    payments: 'Zahlungsarten',
+    termsOfSales: 'AGB',
+    contacts: 'Kontaktseite',
+    explore: 'Entdecken Sie Unseren Katalog',
     paymentMethods: 'Zahlungsarten',
   },
   navbar: {
@@ -347,4 +355,5 @@ export default {
   bundle: {
     whatIsInTheBox: 'Produkte der Degustationskasse:',
   },
+  productDescriptionTab: 'BESCHREIBUNG DES {productTitle}',
 }

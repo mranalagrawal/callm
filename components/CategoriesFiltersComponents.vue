@@ -7,13 +7,13 @@ import {
   ref,
   useContext,
   useRoute,
-  useRouter,
+  // useRouter,
 } from '@nuxtjs/composition-api'
 import plusIcon from 'assets/svg/plus.svg'
 
-interface Query {
-  [key: string]: string | undefined
-}
+// interface Query {
+//   [key: string]: string | undefined
+// }
 
 interface IFilters {
   winelists: []
@@ -39,9 +39,10 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  emits: ['update-value-selections', 'update-value', 'handle-on-footer-click'],
+  setup(props, { emit }) {
     const { i18n } = useContext()
-    const router = useRouter()
+    // const router = useRouter()
     const route = useRoute()
     const showMoreFilters = ref(false)
     const isDesktop = inject('isDesktop') as Ref<boolean>
@@ -92,46 +93,22 @@ export default defineComponent({
 
     const handleUpdateValueSelections = (id: string | number) => {
       cmwActiveSelect.value = ''
-      // this.showMobileFilters = false
-      const query: Query = { ...props.inputParameters.value, ...route.value.query }
-
-      if (`${query[id]}` === 'true')
-        delete query[id]
-      else
-        query[id] = 'true'
-
-      if (id !== route.value.query[id])
-        query.page = '1'
-
-      router.push({
-        path: '/catalog',
-        query,
-      })
+      emit('update-value-selections', id)
     }
 
     const handleUpdateValue = (val: string) => {
       cmwActiveSelect.value = ''
-      // this.showMobileFilters = false
-      const { id, keyword } = JSON.parse(val)
-      const query = { ...props.inputParameters, ...route.value.query }
-
-      if (`${query[keyword]}` === id.toString())
-        delete query[keyword]
-      else query[keyword] = id
-
-      // if (id !== this.active)
-      //   query.page = 1
-
-      router.push({
-        path: '/catalog',
-        query,
-      })
+      emit('update-value', val)
     }
 
     const handleOnFooterClick = () => {
       cmwActiveSelect.value = ''
+      emit('handle-on-footer-click', {
+        price_from: minPrice.value.toString(),
+        price_to: maxPrice.value.toString(),
+      })
       // this.showMobileFilters = false
-      router.push({
+      /* router.push({
         path: '/catalog',
         query: {
           ...route.value.query,
@@ -139,7 +116,7 @@ export default defineComponent({
           price_to: maxPrice.value.toString(),
           page: '1',
         },
-      })
+      }) */
     }
 
     const handleUpdateRangeValues = ({ minValue, maxValue }: { minValue: number | string; maxValue: number | string }) => {

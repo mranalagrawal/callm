@@ -1,5 +1,9 @@
 export default {
   accessibility: {
+    rel: {
+      next: 'Precedente',
+      prev: 'Prossimo',
+    },
     role: {
       TRIGGER_SEARCH: 'Attiva ricerca',
       ADD_TO_CART: 'Aggiungi al carrello',

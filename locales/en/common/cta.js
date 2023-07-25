@@ -17,5 +17,6 @@ export default {
     requestAssistance: 'Request for assistance',
     send: 'Send',
     subscribe: 'sign me up',
+    cannot_order: 'Available only for registered users',
   },
 }

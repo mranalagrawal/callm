@@ -1,26 +1,35 @@
 <script>
-import { mapGetters } from 'vuex'
+import { computed, useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import heartIcon from '~/assets/svg/heart.svg'
 import userIcon from '~/assets/svg/user.svg'
 import cartIcon from '~/assets/svg/cart.svg'
 import { useCustomer } from '~/store/customer'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
+import { useShopifyCart } from '~/store/shopifyCart'
 
 export default {
   name: 'UserActions',
   setup() {
+    const { $config } = useContext()
     const customerStore = useCustomer()
     const {
       customer,
       favoritesCount,
     } = storeToRefs(customerStore)
+    const shopifyCartStore = useShopifyCart()
+    const { cartTotal, cartTotalQuantity } = storeToRefs(useShopifyCart())
+    const computedCartTotal = computed(() => cartTotal.value($config.SALECHANNEL))
 
     return {
-      customerStore,
+      cartTotal,
+      cartTotalQuantity,
+      computedCartTotal,
       customer,
+      customerStore,
       favoritesCount,
       getLocaleFromCurrencyCode,
+      shopifyCartStore,
     }
   },
   data() {
@@ -33,13 +42,6 @@ export default {
       hoveringAction: false,
       hoveringColor: 'primary-400',
     }
-  },
-  computed: {
-    ...mapGetters({
-      cartItems: 'userCart/cartItems',
-      cartTotalAmount: 'userCart/getCartTotalAmount',
-      cartTotalAmountObj: 'userCart/cartTotalAmountObj',
-    }),
   },
   methods: {
     handleUserActionMouseEnter(key) {
@@ -132,10 +134,10 @@ export default {
         @mouseleave="handleUserActionMouseLeave"
       >
         <span class="flex gap-1 items-center">
-          <span v-if="cartItems">
+          <span v-if="cartTotalQuantity">
             <span class="block text-xxs text-left mb-1">{{ $t('cartTotal') }}</span>
             <i18n-n
-              class="flex items-end leading-none" :value="Number(cartTotalAmountObj.value)"
+              class="flex items-end leading-none" :value="Number(computedCartTotal)"
               :format="{ key: 'currency' }"
               :locale="getLocaleFromCurrencyCode($config.STORE === 'CMW_UK' ? 'GBP' : 'EUR')"
             >
@@ -161,14 +163,14 @@ export default {
               height="32px"
             />
             <span
-              v-if="!cartItems"
+              v-if="!cartTotalQuantity"
               class="block my-0 font-light text-sm"
             >
               {{ $t('cart') }}
             </span>
             <Badge
-              v-if="cartItems"
-              :qty="cartItems"
+              v-if="cartTotalQuantity"
+              :qty="cartTotalQuantity"
               :bg-color="currentComponent === 'cart' ? 'white' : 'primary-400'"
               class="transform absolute top-[-10px] right-[-10px]"
             />

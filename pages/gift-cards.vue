@@ -1,31 +1,27 @@
 <script>
-import {
-  computed,
-  defineComponent, onMounted,
-  ref, useContext,
-  useFetch,
-  useMeta,
-} from '@nuxtjs/composition-api'
+import { computed, defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
 import addIcon from 'assets/svg/add.svg'
 import cartIcon from 'assets/svg/cart.svg'
+import emailIcon from 'assets/svg/email.svg'
 import heartFullIcon from 'assets/svg/heart-full.svg'
 import heartIcon from 'assets/svg/heart.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
-import emailIcon from 'assets/svg/email.svg'
 import { storeToRefs } from 'pinia'
-import { mapState } from 'vuex'
-import { generateKey } from '~/utilities/strings'
 import { getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
 import { useCustomer } from '@/store/customer'
+import { useShopifyCart } from '~/store/shopifyCart'
+import { generateKey } from '~/utilities/strings'
+import { SweetAlertToast } from '~/utilities/Swal'
 
 export default defineComponent({
   layout({ $config }) {
     return $config.STORE
   },
   setup() {
-    const { $config, $cmwGtmUtils } = useContext()
-    const customerStore = useCustomer()
-    const { customer, customerId, getCustomerType } = storeToRefs(customerStore)
+    const { $config, $cmwGtmUtils, req } = useContext()
+    const { shopifyCart } = storeToRefs(useShopifyCart())
+    const { createShopifyCart, cartLinesAdd, cartLinesUpdate } = useShopifyCart()
+    const { customer, customerId, getCustomerType } = storeToRefs(useCustomer())
     const isOpen = ref(false)
     const product = ref({})
     const productVariant = ref()
@@ -40,19 +36,47 @@ export default defineComponent({
       redirectSeoUrl: {},
     })
     const giftCardVariantSelected = ref({ id: '' }) // set a default?
+    const canonicalUrl = ref('')
+
+    const amountMax = ref(50)
+
+    const isOnCart = computed(() => {
+      const productIncart = shopifyCart.value?.lines?.edges.find(el => el.node.merchandise.id === giftCardVariantSelected.value.id)
+      if (productIncart)
+        return productIncart.node
+      return null
+    })
+
+    const cartQuantity = computed(() => isOnCart.value ? isOnCart.value.quantity : 0)
+
+    const canAddMore = computed(() => ((amountMax.value - cartQuantity.value) > 0))
+
+    if (process.server && req?.headers && req?.url)
+      canonicalUrl.value = `https://${req.headers.host}${req.url}`
+
+    if (process.client && typeof window !== 'undefined') {
+      const {
+        origin,
+        pathname,
+        search,
+      } = window.location
+      const encodedPath = pathname || ''
+      const encodedSearch = search || ''
+      canonicalUrl.value = `${origin}${encodedPath}${encodedSearch}`
+    }
 
     useFetch(async ({ $cmwRepo, $productMapping, $handleApiErrors }) => {
       await $cmwRepo.products.getGiftCardByHandle({
         handle: 'gift-cards', // or by route $route.value.name,
       })
         .then(({ product: shopifyProduct }) => {
-          product.value = $productMapping.giftCard(shopifyProduct) // set product.value here ?
+          product.value = shopifyProduct && $productMapping.giftCard(shopifyProduct) // set product.value here ?
         })
         .catch(err => $handleApiErrors(`Something went wrong getting gift card from Shopify ${err}`))
     })
 
     const strippedContent = computed(() => {
-      if (product.value.description) {
+      if (product.value?.description) {
         // TODO - move in string.js utilities
         return product.value.description
           .replace('href', '')
@@ -70,10 +94,12 @@ export default defineComponent({
       }))
       return [
         ...hrefLangArr,
-        {
-          rel: 'canonical',
-          href: productDetails.value.canonical,
-        },
+        !canonicalUrl.value
+          ? {}
+          : {
+              rel: 'canonical',
+              href: canonicalUrl.value,
+            },
       ]
     }
 
@@ -90,47 +116,47 @@ export default defineComponent({
     })
 
     useMeta(() => ({
-      title: product?.value?.seo?.title,
+      title: product?.value?.seo?.title || '',
       meta: [
         {
           hid: 'description',
           name: 'description',
-          content: product?.value?.seo?.description,
+          content: product?.value?.seo?.description || '',
         },
       ],
-      link: product.value.href,
+      link: {
+        rel: 'canonical',
+        href: canonicalUrl.value,
+      },
     }))
     return {
-      customer,
-      product,
-      productVariant,
-      productDetails,
-      giftCardVariantSelected,
-      strippedContent,
-      isOpen,
-      cartIcon,
       addIcon,
-      subtractIcon,
-      heartIcon,
-      heartFullIcon,
-      emailIcon,
+      cartLinesAdd,
+      amountMax,
+      canAddMore,
+      cartIcon,
+      cartQuantity,
+      createShopifyCart,
+      customer,
       customerId,
-      getCustomerType,
+      emailIcon,
       generateMetaLink,
+      getCustomerType,
+      giftCardVariantSelected,
+      heartFullIcon,
+      heartIcon,
+      isOnCart,
+      isOpen,
+      product,
+      productDetails,
+      productVariant,
+      shopifyCart,
+      strippedContent,
+      subtractIcon,
+      cartLinesUpdate,
     }
   },
   head: {},
-  computed: {
-    ...mapState('userCart', {
-      userCart: 'userCart',
-    }),
-    isOnCart() {
-      return this.userCart.find(lineItem => lineItem.productVariantId === this.giftCardVariantSelected.id)
-    },
-    cartQuantity() {
-      return this.isOnCart ? this.isOnCart.quantity : 0
-    },
-  },
   methods: {
     generateKey,
     getPercent,
@@ -138,18 +164,19 @@ export default defineComponent({
     async addToUserCart() {
       this.isOpen = true
 
-      this.$store.commit('userCart/addProduct', {
-        id: this.giftCardVariantSelected.id,
-        singleAmount: parseFloat(this.giftCardVariantSelected.price.amount),
-        singleAmountFullPrice: (this.giftCardVariantSelected.compareAtPrice)
-          ? parseFloat(this.giftCardVariantSelected.compareAtPrice.amount)
-          : parseFloat(this.giftCardVariantSelected.price.amount),
-        tag: this.giftCardVariantSelected.tags || [],
-        image: this.product.image.source.url,
-        title: this.giftCardVariantSelected.title,
-        totalInventory: 999, // TODO da discutere
-        gtmProductData: { giftCard: this.giftCardVariantSelected.price.amount },
-      })
+      // check for availability
+      if (!this.canAddMore) {
+        await SweetAlertToast.fire({
+          icon: 'warning',
+          text: this.$i18n.t('common.feedback.KO.addToCartReachLimit'),
+        })
+        return
+      }
+
+      if (!this.shopifyCart)
+        await this.createShopifyCart()
+
+      await this.cartLinesAdd(this.giftCardVariantSelected)
 
       this.flashMessage.show({
         status: '',
@@ -160,11 +187,12 @@ export default defineComponent({
         blockClass: 'add-product-notification',
       })
     },
+
     async removeFromUserCart() {
-      this.$store.commit('userCart/removeProduct', {
-        id: this.giftCardVariantSelected.id,
-        gtmProductData: { giftCard: this.giftCardVariantSelected.price.amount },
-      })
+      if (this.cartQuantity === 0)
+        return
+
+      await this.cartLinesUpdate(this.giftCardVariantSelected, this.cartQuantity - 1)
     },
   },
 })
@@ -185,7 +213,7 @@ export default defineComponent({
       </div>
     </div>
     <template v-else>
-      <div v-if="product.title">
+      <div v-if="product?.title">
         <TheBreadcrumbs v-if="product.breadcrumbs" :breadcrumbs="product.breadcrumbs" />
 
         <div class="md:(grid grid-cols-[40%_60%] max-h-[550px] my-4)">
@@ -205,7 +233,7 @@ export default defineComponent({
             <div v-html="strippedContent" />
             <div>
               <div class="py-4 h4" v-text="$t('search.chooseGiftCard')" />
-              <div class="items-center mr-auto gap-2 flex">
+              <div class="items-center mr-auto gap-2 flex flex-wrap">
                 <div
                   v-for="variant in product.variants"
                   :key="variant.id"
@@ -326,7 +354,7 @@ export default defineComponent({
 
         <ClientOnly>
           <RecentProducts />
-          <RecommendedProducts :id="product.id" />
+          <RecommendedProducts v-if="product.shopify_product_id" :id="product.shopify_product_id" />
         </ClientOnly>
       </div>
     </template>

@@ -14,9 +14,9 @@ import plusIcon from 'assets/svg/plus.svg'
 import closeIcon from '~/assets/svg/close.svg'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 
-interface Query {
-  [key: string]: string | undefined
-}
+// interface Query {
+//   [key: string]: string | undefined
+// }
 
 interface IFilters {
   winelists: []
@@ -42,7 +42,8 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  emits: ['update-value-selections', 'update-value'],
+  setup(props, { emit }) {
     const { i18n } = useContext()
     const router = useRouter()
     const route = useRoute()
@@ -99,44 +100,15 @@ export default defineComponent({
 
     const handleUpdateValueSelections = (id: string | number) => {
       cmwActiveSelect.value = ''
-      // this.showMobileFilters = false
-      const query: Query = { ...props.inputParameters.value, ...route.value.query }
-
-      if (`${query[id]}` === 'true')
-        delete query[id]
-      else
-        query[id] = 'true'
-
-      if (id !== route.value.query[id])
-        query.page = '1'
-
-      router.push({
-        path: '/catalog',
-        query,
-      })
+      emit('update-value-selections', id)
     }
 
     const handleUpdateValue = (val: string) => {
       cmwActiveSelect.value = ''
-      // this.showMobileFilters = false
-      const { id, keyword } = JSON.parse(val)
-      const query = { ...props.inputParameters, ...route.value.query }
-
-      if (`${query[keyword]}` === id.toString())
-        delete query[keyword]
-      else query[keyword] = id
-
-      // if (id !== this.active)
-      //   query.page = 1
-
-      router.push({
-        path: '/catalog',
-        query,
-      })
+      emit('update-value', val)
     }
 
     const handleOnFooterClick = () => {
-      console.log('HERE?')
       cmwActiveSelect.value = ''
       showMobileFilters.value = false
       router.push({

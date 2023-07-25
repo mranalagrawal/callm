@@ -34,4 +34,7 @@ const cleanUrl = (str = '') =>
     .replaceAll('callmewine.co.uk', '')
     .replaceAll('callmewine.com', ''))
 
-export { djb2Hash, stripHtml, stripHtmlAnchors, generateKey, cleanRoutesLocales, cleanUrl }
+const sleep = (ms: number) => new Promise(
+  resolve => setTimeout(resolve, ms))
+
+export { djb2Hash, stripHtml, stripHtmlAnchors, generateKey, cleanRoutesLocales, cleanUrl, sleep }

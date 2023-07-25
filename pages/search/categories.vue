@@ -1,15 +1,25 @@
-<script>
-import { computed, onMounted, useContext, useRoute, watch } from '@nuxtjs/composition-api'
+<script lang="ts">
+import {
+  computed, defineComponent,
+  onMounted,
+  ref,
+  useContext,
+  useMeta,
+  useRoute,
+  watch,
+} from '@nuxtjs/composition-api'
 
-export default {
-  layout(context) {
-    return context.$config.STORE
+export default defineComponent({
+  layout({ $config }) {
+    return $config.STORE
   },
+  // middleware: 'url-checker',
   setup() {
+    const { req } = useContext()
     const route = useRoute()
     const { $cmwGtmUtils } = useContext()
 
-    const filtersObj = key => ({
+    const filtersObj = (key: string): string => ({
       V: 'winelists',
       C: 'categories',
       R: 'regions',
@@ -17,19 +27,52 @@ export default {
       B: 'brands',
       N: 'countries',
       M: 'macros',
+      A: 'vintages',
       null: 'selections',
-    })[key]
+    })[key] || ''
 
-    const { filter_key_1, filter_key_2, filter_id_1, filter_id_2 } = route.value.params
+    const canonicalUrl = ref('')
+    const {
+      filter_key_1,
+      filter_key_2,
+      filter_key_3,
+      filter_id_1,
+      filter_id_2,
+      filter_id_3,
+    } = route.value.params
 
     /* Merge all url parameters */
-    const inputParameters = computed(() => ({
+    const inputParameters = computed<Record<string, any>>(() => ({
       ...route.value.query,
       ...((filter_key_1 && filter_id_1) && { [filtersObj(filter_key_1)]: filter_id_1 }),
       ...((filter_key_2 && filter_id_2) && { [filtersObj(filter_key_2)]: filter_id_2 }),
+      ...((filter_key_3 && filter_id_3) && { [filtersObj(filter_key_3)]: filter_id_3 }),
     }))
 
     const isSearchPage = computed(() => Object.keys(inputParameters.value).includes('search'))
+
+    if (process.server && req?.headers && req?.url)
+      canonicalUrl.value = `https://${req.headers.host}${req.url}`
+
+    if (process.client && typeof window !== 'undefined') {
+      const {
+        origin,
+        pathname,
+        search,
+      } = window.location
+      const encodedPath = pathname || ''
+      const encodedSearch = search || ''
+      canonicalUrl.value = `${origin}${encodedPath}${encodedSearch}`
+    }
+
+    useMeta(() => ({
+      link: !canonicalUrl.value
+        ? []
+        : [{
+            rel: 'canonical',
+            href: canonicalUrl.value,
+          }],
+    }))
 
     watch(() => inputParameters.value, () => {
       process.browser && $cmwGtmUtils.pushPage(isSearchPage.value ? 'searchresult' : 'list')
@@ -38,9 +81,14 @@ export default {
       process.browser && $cmwGtmUtils.pushPage(isSearchPage.value ? 'searchresult' : 'list')
     })
 
-    return { inputParameters, filtersObj }
+    return {
+      canonicalUrl,
+      filtersObj,
+      inputParameters,
+    }
   },
-}
+  head: {},
+})
 </script>
 
 <template>

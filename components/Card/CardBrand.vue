@@ -10,7 +10,7 @@ export default {
 </script>
 
 <template>
-  <NuxtLink :to="localePath(`/winery/${brand.handle}-B${brand.brandId}.htm`)">
+  <NuxtLink :to="localePath({ name: 'winery-handle', params: { handle: `${brand.handle}-B${brand.brandId}.htm` } })">
     <div
       class="font-sans border border-gray-light rounded-sm border-gray-light overflow-hidden h-full
     hover:shadow-elevation"

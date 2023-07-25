@@ -11,19 +11,12 @@ import { SweetAlertToast } from '~/utilities/Swal'
 export default defineComponent({
   setup() {
     const isDesktop = inject('isDesktop')
-    const footerData = ref<Record<string, any>[]>([])
     const footerInfoData = ref<IPrismicPageData>(initialPageData)
 
     useFetch(async ({
       $cmwRepo,
       $handleApiErrors,
     }) => {
-      await $cmwRepo.prismic.getSingle({ page: 'footer' })
-        .then((data) => {
-          footerData.value = data.body as Record<string, any>[]
-        })
-        .catch((err: Error) => $handleApiErrors(`Catch getting contact us data from prismic: ${err}`))
-
       await $cmwRepo.prismic.getSingle({ page: 'footer-info' })
         .then((data) => {
           footerInfoData.value = data
@@ -32,7 +25,6 @@ export default defineComponent({
     })
 
     return {
-      footerData,
       footerInfoData,
       isDesktop,
     }
@@ -106,43 +98,7 @@ export default defineComponent({
 
 <template>
   <footer class="bg-gray-lightest print:hidden">
-    <ClientOnly>
-      <div v-if="!!footerData.length && $config.STORE !== 'CMW_UK'" class="md:px-4">
-        <div class="h2 text-center pt-20 pb-8">
-          {{ $t('footer.explore') }}
-        </div>
-        <div v-if="!isDesktop">
-          <div v-for="item in footerData" :key="item.id">
-            <NuxtLink
-              :to="localePath(item?.primary?.link || '/')"
-              class="block overline-2 text-secondary-700 text-uppercase text-sm px-4 py-2"
-            >
-              {{ item?.primary?.title }}
-            </NuxtLink>
-          </div>
-        </div>
-        <div v-else class="w-full flex justify-between">
-          <div v-for="item in footerData" :key="item.id">
-            <NuxtLink
-              :to="localePath(item?.primary?.link || '/')"
-              class="block overline-2 text-secondary-700 text-uppercase text-sm pb-8"
-            >
-              {{ item?.primary?.title }}
-            </NuxtLink>
-            <p
-              v-for="link in item.items"
-              :key="`inner_${link.name}`"
-              class="pb-0"
-            >
-              <NuxtLink :to="localePath(link?.link || '/')">
-                {{ link?.name }}
-              </NuxtLink>
-            </p>
-          </div>
-        </div>
-      </div>
-    </ClientOnly>
-
+    <ThePreFooter v-if="$config.STORE !== 'CMW_UK'" />
     <div
       v-if="footerInfoData"
       class="bg-secondary text-secondary-100 p-4 mt-4"
@@ -241,7 +197,7 @@ export default defineComponent({
           </div>
           <div class="grid gap-4 md:grid-cols-3 text-sm">
             <div class="flex flex-col gap-2">
-              <div class="h5 text-secondary-100 mb-4">
+              <div class="h5 !text-secondary-100 mb-4">
                 {{ $t('footer.company') }}
               </div>
               <NuxtLink
@@ -258,53 +214,59 @@ export default defineComponent({
               </NuxtLink>
             </div>
             <div class="flex flex-col gap-2">
-              <div class="h5 text-secondary-100 mb-4">
+              <div class="h5 !text-secondary-100 mb-4">
                 {{ $t('footer.services') }}
               </div>
               <NuxtLink
                 :to="localePath('/restaurants-wineshops')"
-                class="block  text-white"
+                class="block text-white"
               >
                 {{ $t('footer.restaurantsAndWineshops') }}
               </NuxtLink>
+              <NuxtLink
+                :to="localePath('/gift-cards')"
+                class="block text-white"
+              >
+                {{ $t('footer.giftCards') }}
+              </NuxtLink>
             </div>
             <div class="flex flex-col gap-2">
-              <div class="h5 text-secondary-100 mb-4">
+              <div class="h5 !text-secondary-100 mb-4">
                 {{ $t('footer.support') }}
               </div>
               <NuxtLink
                 :to="localePath('/shipping')"
-                class="block  text-white"
+                class="block text-white"
               >
                 {{ $t('footer.shipping') }}
               </NuxtLink>
               <NuxtLink
                 :to="localePath('/payments')"
-                class="block  text-white"
+                class="block text-white"
               >
                 {{ $t('footer.payments') }}
               </NuxtLink>
               <NuxtLink
                 :to="localePath('/terms-of-sales')"
-                class="block  text-white"
+                class="block text-white"
               >
                 {{ $t('footer.termsOfSales') }}
               </NuxtLink>
               <NuxtLink
                 :to="localePath('/privacy')"
-                class="block  text-white"
+                class="block text-white"
               >
                 Privacy policy
               </NuxtLink>
               <NuxtLink
                 :to="localePath('/cookie')"
-                class="block  text-white"
+                class="block text-white"
               >
                 Cookie policy
               </NuxtLink>
               <NuxtLink
                 :to="localePath('/contact')"
-                class="block  text-white"
+                class="block text-white"
               >
                 {{ $t('footer.contacts') }}
               </NuxtLink>

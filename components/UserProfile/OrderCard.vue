@@ -1,6 +1,8 @@
 <script>
-import { computed, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
+import { storeToRefs } from 'pinia'
 import OrderReceiptPrint from '~/components/UserProfile/OrderReceiptPrint.vue'
+import { useShopifyCart } from '~/store/shopifyCart'
 
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 import OrderCardSummary from '~/components/UserProfile/OrderCardSummary.vue'
@@ -9,7 +11,7 @@ import { isObject } from '~/utilities/validators'
 import { useSplash } from '~/store/splash'
 import { useCustomerOrders } from '~/store/customerOrders.ts'
 
-export default {
+export default defineComponent({
   components: {
     OrderReceiptPrint,
     OrderCardLineItem,
@@ -33,9 +35,12 @@ export default {
     const {
       i18n,
       $config,
+      $productMapping,
     } = useContext()
     const splash = useSplash()
     const customerOrders = useCustomerOrders()
+    const { shopifyCart } = storeToRefs(useShopifyCart())
+    const { cartLinesAdd, cartLinesUpdateV2, createShopifyCart } = useShopifyCart()
 
     const orderLineItems = computed(() => {
       const lineItems = props.order?.lineItems && props.order.lineItems.nodes?.map(node => node)
@@ -62,7 +67,7 @@ export default {
       CMW_UK: 'Callmewine UK',
       CMW_FR: 'Callmewine FR',
       CMW_DE: 'Callmewine DE',
-    })[key]
+    })[key] || 'Callmewine'
 
     const handlePrint = () => {
       document.title = `cmw-${props.order.orderNumber}`
@@ -72,11 +77,63 @@ export default {
       window.print()
     }
 
+    const handleReorderProducts = async () => {
+      // If there's no cart create one
+      if (!shopifyCart.value?.id)
+        await createShopifyCart()
+
+      // Check every Item in orderLineItems,
+      for (const orderLine of orderLineItems.value) {
+        const isOnCart = shopifyCart.value.lines?.nodes?.some(shopifyCartLine => shopifyCartLine.merchandise.id === orderLine.variant.id)
+
+        if (isOnCart) {
+          const shopifyCartLine = shopifyCart.value.lines.nodes.find(shopifyCartLine => shopifyCartLine.merchandise.id === orderLine.variant.id)
+          // Todo: handle this in bulk, shopify accepts an array of lines, so, we can group all existing lines and later edit them in bulk
+          // if the item is already on the cart then use the cartLineUpdate method
+
+          // Fixme: there's a shopify bug using cartLinesUpdate when the user add more than 1 it creates 2 or more cartLines
+
+          const lines = [
+            {
+              attributes: [
+                {
+                  key: 'gtmProductData',
+                  value: shopifyCartLine.attributes.find(el => el.key === 'gtmProductData').value,
+                },
+                {
+                  key: 'bundle',
+                  value: shopifyCartLine.merchandise.product.tags.includes('BUNDLE').toString(),
+                },
+              ],
+              id: shopifyCartLine.id,
+              merchandiseId: orderLine.variant.id,
+              quantity: shopifyCartLine.quantity + orderLine.quantity,
+            },
+          ]
+
+          await cartLinesUpdateV2(lines)
+        } else {
+          // if it is not on cart use the addCartLine method
+          const gtmProductData = $productMapping.getGtmProductDataFromCartLine(orderLine.variant.product)
+          await cartLinesAdd({
+            shopify_product_variant_id: orderLine.variant.id,
+            quantity: orderLine.quantity,
+            gtmProductData,
+            tags: orderLine.variant.product.tags,
+          })
+        }
+      }
+    }
+
     return {
-      orderLineItems,
-      isActive,
+      cartLinesAdd,
+      cartLinesUpdateV2,
+      createShopifyCart,
       handlePrint,
+      handleReorderProducts,
       handleRequestAssistance,
+      isActive,
+      orderLineItems,
     }
   },
   computed: {
@@ -100,35 +157,6 @@ export default {
     getLocaleFromCurrencyCode(code) {
       return getLocaleFromCurrencyCode(code)
     },
-    async handleReorderProducts() {
-      this.orderLineItems
-        .forEach((el) => {
-          const id = el.variant.id
-          const amount = el.variant.product.isGiftCard
-            ? Number(el.variant.price.amount)
-            : Number(el.variant.product.variants.nodes[0].compareAtPrice.amount)
-          const amountFullPrice = el.variant.product.isGiftCard
-            ? Number(el.variant.price.amount)
-            : Number(
-              el.variant.product.variants.nodes[0].price.amount,
-            )
-          const tag = el.variant.product.tags
-          const image = el.variant.product.featuredImage.url
-
-          const title = el.title
-
-          if (!el.variant.product.isGiftCard) {
-            this.$store.commit('userCart/addProduct', {
-              id,
-              singleAmount: amount,
-              singleAmountFullPrice: amountFullPrice,
-              tag,
-              image,
-              title,
-            })
-          }
-        })
-    },
     handleClick(id) {
       this.$emit('update-order-id', id)
     },
@@ -147,7 +175,7 @@ export default {
       })
     },
   },
-}
+})
 </script>
 
 <template>

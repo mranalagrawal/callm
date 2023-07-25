@@ -16,6 +16,7 @@ function setCustomerWishlist(value) {
 
 // Note: Backend should use enums here 'GOLD' | 'B2B' | 'MAIN', this way we could simplify this to an array
 const availableUsers = {
+  LIST_GOLD: 'gold',
   list_gold: 'gold',
   list_b2b: 'b2b',
   main: 'main',
@@ -26,13 +27,19 @@ export const useCustomer = defineStore({
   state: () => ({
     customer: {
       acceptsMarketing: false,
+      email: '',
       firstName: '',
       id: '',
       lastName: '',
-      email: '',
-      phone: '',
+      newsletterFrequency: {
+        value: '',
+      },
       orders_count: '',
+      phone: '',
       total_spent: '',
+      wishlist: {
+        value: '',
+      },
     },
     // FixMe: on Nuxt 3 or using GraphQl local storage properly we shouldn't need this,
     //  we need to reduce the extra objects and relay on the state,
@@ -109,6 +116,9 @@ export const useCustomer = defineStore({
         .then(async ({ customer }) => {
           if (customer) {
             await customerOrders.getOrders('processed_at:>2010-01-01')
+            const customerAccessToken = this.$nuxt.$cookieHelpers.getToken()
+            this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
+
             await this.$nuxt.$cmw.$get(`/customers/${customer.id.substring(`${customer.id}`.lastIndexOf('/') + 1)}/user-info`)
               .then(({ data = {}, errors = [] }) => {
                 if (errors.length) {
@@ -140,8 +150,7 @@ export const useCustomer = defineStore({
               this.$nuxt.$cookies.set('b2b-approved', hashedValue)
             }
 
-            const customerAccessToken = this.$nuxt.$cookieHelpers.getToken()
-            await this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
+            this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
             await this.$nuxt.$cmw.$get(`/wishlists?shopifyCustomerId=${customer.id.substring(`${customer.id}`.lastIndexOf('/') + 1)}`)
               .then(({ data }) => {
                 this.$patch({
@@ -173,6 +182,9 @@ export const useCustomer = defineStore({
           } else {
             await SweetAlertToast.fire({ text: this.$nuxt.app.i18n.t('common.feedback.KO.login') })
           }
+        })
+        .catch(() => {
+          SweetAlertToast.fire({ text: this.$nuxt.app.i18n.t('common.feedback.KO.login') })
         })
     },
     async logout() {
@@ -237,7 +249,7 @@ export const useCustomer = defineStore({
     async removeFromWishlist(args) {
       const customerAccessToken = this.$nuxt.$cookieHelpers.getToken()
       const shopifyCustomerId = `${this.customer.id}`.substring(`${this.customer.id}`.lastIndexOf('/') + 1)
-      await this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
+      this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
       await this.$nuxt.$cmw.$put('/wishlists', {
         shopifyCustomerId,
         productFeId: args.id,

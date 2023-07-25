@@ -10,14 +10,12 @@ export default defineComponent({
       required: false,
     },
   },
-  setup() {
-    return { }
-  },
 })
 </script>
 
 <template>
   <div class="mt-6">
+    <h2 class="h2" v-text="$t('productDescriptionTab', { productTitle: product?.title })" />
     <div v-html="product?.descriptionHtml" />
   </div>
 </template>

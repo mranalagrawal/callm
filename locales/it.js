@@ -49,6 +49,9 @@ export default {
   province: 'Provincia',
   firstName: 'Nome',
   lastName: 'Cognome',
+  businessName: 'Ragione Sociale',
+  vatNumber: 'Partita IVA',
+  businessType: 'Settore attività',
   email: 'Email',
   emailPlaceholder: 'User email',
   password: 'Password',
@@ -60,6 +63,10 @@ export default {
     subscribed: 'sottoscritto',
     unsubscribed: 'non iscritto',
     headline: 'Newsletter con promozioni è novità su tutto il catalogo di Callmewine',
+    frequency: {
+      DAILY: 'Giornaliera',
+      WEEKLY: 'Settimanale',
+    },
     splash: {
       headline: 'Iscriviti alla nostra Newsletter per ricevere ogni giorno sconti, promozioni e novità!',
       offer: 'Subito per te uno sconto del 5% sul tuo primo ordine!',
@@ -76,17 +83,18 @@ export default {
     'Accetto di ricevere newsletter e comunicazioni promozionali da Callmewine, come previsto dalla Privacy Policy.',
   footer: {
     company: 'L\'Azienda',
-    who: 'Chi siamo',
+    who: 'Chi Siamo',
     sustainability: 'Sostenibilità',
-    services: 'Servizi offerti',
-    restaurantsAndWineshops: 'Ristoranti e Vinerie',
+    services: 'Servizi Offerti',
+    restaurantsAndWineshops: 'Enoteche e Ristoranti',
+    giftCards: 'Buoni Regalo',
     support: 'Supporto',
     shipping: 'Spedizioni',
     payments: 'Pagamenti',
-    termsOfSales: 'Condizioni di vendita',
+    termsOfSales: 'Condizioni di Vendita',
     contacts: 'Contatti',
-    explore: 'Esplora il catalogo',
-    paymentMethods: 'Metodi di pagamento',
+    explore: 'Esplora il Catalogo',
+    paymentMethods: 'Metodi di Pagamento',
   },
   navbar: {
     search: 'Cosa stai cercando?',
@@ -348,4 +356,5 @@ export default {
   bundle: {
     whatIsInTheBox: 'I prodotti che riceverai:',
   },
+  productDescriptionTab: 'DESCRIZIONE DEL {productTitle}',
 }

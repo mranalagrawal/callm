@@ -6,15 +6,17 @@ export default defineComponent({
     return $config.STORE
   },
   setup() {
-    const { $cmwGtmUtils } = useContext()
+    const { $cmwGtmUtils, $config } = useContext()
     const registerIsVisible = ref(false)
     const isDesktop = inject('isDesktop')
+
+    const isB2bStore = $config.STORE === 'B2B'
 
     onMounted(() => {
       process.browser && $cmwGtmUtils.pushPage('page')
     })
 
-    return { registerIsVisible, isDesktop }
+    return { registerIsVisible, isDesktop, isB2bStore }
   },
 })
 </script>
@@ -39,7 +41,8 @@ export default defineComponent({
       </div>
       <div v-else>
         <h3 class="text-center" v-text="$t('createYourAccount')" />
-        <RegisterBox />
+        <RegisterBox-B2b v-if="isB2bStore" />
+        <RegisterBox v-else />
       </div>
     </div>
     <div v-else class="hidden h-full md:(grid grid-cols-2)">
@@ -55,7 +58,8 @@ export default defineComponent({
       </div>
       <div class="bg-gray-lightest py-20">
         <h3 class="text-center" v-text="$t('createYourAccount')" />
-        <RegisterBox />
+        <RegisterBox-B2b v-if="isB2bStore" />
+        <RegisterBox v-else />
       </div>
     </div>
   </div>

@@ -1,22 +1,24 @@
-<script>
+<script lang="ts">
 import closeIcon from 'assets/svg/close.svg'
+import chevronRightIcon from 'assets/svg/chevron-right.svg'
 import chevronLeftIcon from 'assets/svg/chevron-left.svg'
-import { computed, ref } from '@nuxtjs/composition-api'
+import type { PropType } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref, useRoute, watch } from '@nuxtjs/composition-api'
 import { getIconByFeature } from '~/utilities/icons'
 import { generateKey } from '~/utilities/strings'
 
-export default {
-  components: { },
+export default defineComponent({
   props: {
     menu: {
-      type: [Array],
+      type: Array as PropType<Record<string, any>[]>,
       required: true,
     },
   },
   emits: ['close-sidebar'],
   setup(props, { emit }) {
+    const route = useRoute()
     const activeItem = ref({})
-    const closeSidebar = (full) => {
+    const closeSidebar = (full: any) => {
       activeItem.value = {}
       if (full) {
         setTimeout(() =>
@@ -24,31 +26,34 @@ export default {
       }
     }
 
-    const handleAfterEnter = (target) => {
+    /* const handleAfterEnter = (target: { querySelector: (arg0: string) => any }) => {
       const scrollableEl = target.querySelector('.js-scroll')
       scrollableEl && scrollableEl.scrollTo({ left: 0, top: 0, behavior: 'smooth' })
-    }
+    } */
 
     const mappedMenu = computed(() => props.menu?.map(menu => ({
       ...menu,
-      items: menu.items.map(item => ({
+      items: menu.items.map((item: { items: any[] }) => ({
         ...item,
         isSelection: item.items.every(i => !!i.selection),
         isMarketing: item.items.every(i => !!i.marketing_cta),
       })),
     })))
 
+    watch(() => route.value, () => closeSidebar(true), { deep: true })
+
     return {
       activeItem,
-      mappedMenu,
-      closeIcon,
       chevronLeftIcon,
+      chevronRightIcon,
+      closeIcon,
       closeSidebar,
-      handleAfterEnter,
+      // handleAfterEnter,
+      mappedMenu,
     }
   },
   methods: { getIconByFeature, generateKey },
-}
+})
 </script>
 
 <template>
@@ -63,7 +68,7 @@ export default {
       >
         <span class="uppercase text-sm font-light tracking-wide">{{ mappedMenuItem.name }}</span>
         <VueSvgIcon
-          :data="require(`@/assets/svg/chevron-right.svg`)"
+          :data="chevronRightIcon"
           width="16"
           height="16"
           color="#d94965"

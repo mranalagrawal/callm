@@ -103,7 +103,7 @@ localize({
       'user-email-navbar': 'E-mail',
       'user-email-newsletter': 'Email',
       'user-password-navbar': 'Mot de passe',
-      'register-user-firstname': 'Nom',
+      'register-user-firstname': 'Prénom',
       'register-user-lastname': 'Nom de famille',
       'register-user-email': 'E-E-mail',
       'new-password': 'Mot de passed',

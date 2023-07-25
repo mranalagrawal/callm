@@ -14,11 +14,38 @@ yarn install
 
 Start the development server on http://localhost:3000
 
-> Make sure you have a .env file with the proper environments, if you are unsure which environments you need, contact [developers@callmewine.com](mailto:developers@callmewine.com) for further advice.
+We split builds to make it easy when you need to switch from different Stores, this provides a better DX. There are 5 Stores:
 
-```bash
-yarn dev
+* CMW
+* B2B
+* CMW_DE
+* CMW_FR
+* CMW_UK
+
+The right env file will have this convention:
+
 ```
+.env.${environment}.${slugify(STORE)}
+``` 
+As a resul we will end up with something like this:
+
+```
+.env.stage.cmw-uk
+.env.prod.cmw-uk
+```
+
+> Make sure you have a valid .env file with the proper environments, if you are unsure which environments you need, contact [developers@callmewine.com](mailto:developers@callmewine.com) for further advice.
+
+Then you can run any command present on [package.json](package.json), for instance:
+```bash
+yarn dev:CMW_UK
+```
+or
+```bash
+yarn build:prod:CMW_UK
+```
+This one will simulate a prod environment that you can test running `yarn start` after the build has successfully completed.
+
 ### Production, Stage and Features Builds
 
 This is all handle on [Vercel](https://vercel.com/), everytime you push a feature or a Merge Request is approved and merged a new build starts happening on Vercel environments

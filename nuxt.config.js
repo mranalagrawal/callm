@@ -463,7 +463,7 @@ export default {
 
   sentry: {
     dsn: 'https://8976f88cc7254b248b330a78ba72a074@o1240128.ingest.sentry.io/4504560369008640',
-    disabled: process.env.DEPLOY_ENV !== 'prod',
+    disabled: process.env.DEPLOY_ENV !== 'prod' || (process.env.STORE !== 'CMW' && process.env.DEPLOY_ENV !== 'staging'),
     config: {
       browserTracing: {
         // tracePropagationTargets: ['callmewine.co.uk'],
@@ -487,7 +487,7 @@ export default {
   },
 
   router: {
-    middleware: ['auth-b2b'],
+    middleware: ['url-checker', 'auth-b2b'],
     prefetchLinks: false,
     linkPrefetchedClass: 'nuxt-link-prefetched',
     extendRoutes(routes, resolve) {
@@ -501,6 +501,12 @@ export default {
         {
           name: 'search-deep',
           path: '/(.*)-:filter_key_1(V|C|R|D|B|N|M):filter_id_1(\\d+):filter_key_2(V|C|R|D|B|N|M):filter_id_2(\\d+).htm/',
+          component: resolve(__dirname, 'pages/search/categories.vue'),
+          meta: { actionField: 'category' },
+        },
+        {
+          name: 'search-deep-deep',
+          path: '/(.*)-:filter_key_1(V|C|R|D|B|N|M):filter_id_1(\\d+):filter_key_2(V|C|R|D|B|N|M):filter_id_2(\\d+):filter_key_3(V|C|R|D|B|N|M|A):filter_id_3(\\d+).htm/',
           component: resolve(__dirname, 'pages/search/categories.vue'),
           meta: { actionField: 'category' },
         },
@@ -595,14 +601,14 @@ export default {
   },
 
   publicRuntimeConfig: {
+    STORE: process.env.STORE,
+    DEPLOY_ENV: process.env.DEPLOY_ENV,
     DOMAIN: process.env.DOMAIN,
     STOREFRONT_ACCESS_TOKEN: process.env.STOREFRONT_ACCESS_TOKEN,
     ELASTIC_URL: process.env.ELASTIC_URL,
     CMW_API: process.env.CMW_API,
     CMW_API_KEY: process.env.CMW_API_KEY,
-    STORE: process.env.STORE,
     SALECHANNEL: process.env.SALECHANNEL,
-    DEPLOY_ENV: process.env.DEPLOY_ENV,
     gtm: {
       id: process.env.GOOGLE_TAG_MANAGER_ID,
     },

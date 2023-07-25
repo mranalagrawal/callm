@@ -22,6 +22,7 @@ export default defineComponent({
 <template>
   <div class="max-w-screen-xl mx-auto py-8 px-4 mt-4">
     <div
+      v-if="componentData.image?.url"
       :style="{ backgroundImage: `linear-gradient(90deg,rgba(0,0,0,0) 10%,rgba(0,0,0,1), rgba(0,0,0,1)), url('${componentData.image.url}')` }"
       class="rounded-sm overflow-hidden pl-3/12 py-20"
     >

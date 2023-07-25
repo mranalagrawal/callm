@@ -1,6 +1,28 @@
 import type { IMoneyV2 } from '~/types/common-objects'
 import type { TImage } from '~/types/types'
 
+type TChoice = 'yes' | 'no'
+type TStock = 'in_stock' | 'out_of_stock'
+
+export interface IGtmProductData {
+  internal_id: string
+  stock_id: string
+  id: string
+  name: string
+  brand: string
+  category: string
+  subcategory: string
+  winelist: string
+  vintage: string
+  favourite: TChoice
+  artisanal: TChoice
+  rarewine: TChoice
+  price: string
+  compare_at_price: string
+  stock_status: TStock
+  quantity: number | string
+}
+
 export interface IProductRating {
   description: string | null
   id: number
@@ -53,27 +75,35 @@ export interface IBaseProductMapped {
   availableForSale: boolean
   id: string | number
   image: IProductImage
+  isGiftCard: boolean
+  merchandiseId: string
+  quantityAvailable: number
   shopify_product_id: string | number
   shopify_product_variant_id: string | number
-  quantityAvailable: number
+  tags: string[]
   title: string
 }
 
 export interface IProductMapped extends IBaseProductMapped {
-  awards: IProductAward[]
-  gtmProductData: any
-  availableFeatures: TProductFeatures[]
-  descriptionHtml: HTMLElement | string
-  sku: string
-  // awards: []
   // availableForSale: boolean
-  // compareAtPrice: IMoneyV2
+  // awards: []
   // handle: []
   // shopify_product_id: string
   // shopify_product_variant_id: string
+  availableFeatures: TProductFeatures[]
+  awards: IProductAward[]
+  compareAtPrice: IMoneyV2
+  descriptionHtml: HTMLElement | string
+  details: Record<string, any> // Todo: type this
+  gtmProductData: any
+  priceLists: Record<string, any>
+  seo: IProductSeo
+  sku: string
+  source_id: string | number
+  url: string
 }
 
-interface IGiftCardVariantMapped extends IBaseProductMapped {
+export interface IGiftCardVariantMapped extends IBaseProductMapped {
   compareAtPrice: IMoneyV2
   price: IMoneyV2
 }

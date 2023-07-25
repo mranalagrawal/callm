@@ -1,29 +1,30 @@
 <script>
-import { computed, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api'
-import { storeToRefs } from 'pinia'
-import heartIcon from 'assets/svg/heart.svg'
-import heartFullIcon from 'assets/svg/heart-full.svg'
-import cartIcon from 'assets/svg/cart.svg'
+// import type { PropType } from '@nuxtjs/composition-api'
+// import type { RawLocation } from 'vue-router'
+// import type { IProductMapped } from '~/types/product'
+import { computed, defineComponent, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api'
 import addIcon from 'assets/svg/add.svg'
-import subtractIcon from 'assets/svg/subtract.svg'
+import cartIcon from 'assets/svg/cart.svg'
+import closeIcon from 'assets/svg/close.svg'
 import emailIcon from 'assets/svg/email.svg'
-import { mapState } from 'vuex'
+import heartFullIcon from 'assets/svg/heart-full.svg'
+import heartIcon from 'assets/svg/heart.svg'
+import subtractIcon from 'assets/svg/subtract.svg'
+import { storeToRefs } from 'pinia'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import { useCustomer } from '~/store/customer'
-import { generateKey } from '~/utilities/strings'
-import { isObject } from '~/utilities/validators'
+import { useCustomerOrders } from '~/store/customerOrders.ts'
+import { useShopifyCart } from '~/store/shopifyCart'
 import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
+import { generateKey } from '~/utilities/strings'
 import { SweetAlertToast } from '~/utilities/Swal'
-// noinspection JSUnusedGlobalSymbols
-export default {
+
+export default defineComponent({
   name: 'ProductBoxVertical',
   props: {
-    /** @Type: {ProductVariantType.ProductVariant} */
     product: {
       required: true,
-      validator(value) {
-        return isObject(value)
-      },
+      type: Object, // as PropType<IProductMapped>,
     },
     position: {
       type: [String, Number],
@@ -32,9 +33,11 @@ export default {
   },
   setup(props) {
     const { $config, localeLocation, $gtm, $cmwGtmUtils } = useContext()
-    const customerStore = useCustomer()
-    const { wishlistArr, getCustomerType } = storeToRefs(customerStore)
-    const { handleWishlist } = customerStore
+    const { wishlistArr, getCustomerType, customerId } = storeToRefs(useCustomer())
+    const { getCanOrder } = storeToRefs(useCustomerOrders())
+    const { shopifyCart } = storeToRefs(useShopifyCart())
+    const { cartLinesAdd, createShopifyCart, cartLinesUpdate } = useShopifyCart()
+    const { handleWishlist } = useCustomer()
     const { handleShowRequestModal } = useShowRequestModal()
     const router = useRouter()
     const route = useRoute()
@@ -46,14 +49,40 @@ export default {
     const isOnFavourite = computed(() => wishlistArr.value.includes(props.product.source_id))
     const isOnSale = computed(() => props.product.availableFeatures.includes('isInPromotion'))
     const finalPrice = computed(() => {
-      if (!props.product.priceLists[$config.SALECHANNEL])
+      if (!props.product.priceLists || !props.product.priceLists[$config.SALECHANNEL])
         return 0
       return props.product.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0
     })
+
+    const amountMax = computed(() => (Object.keys(props.product.details).length && props.product.details.amountMax[$config.SALECHANNEL]
+        && props.product.details.amountMax[$config.SALECHANNEL] <= props.product.quantityAvailable)
+      ? props.product.details.amountMax[$config.SALECHANNEL]
+      : props.product.quantityAvailable,
+    )
+
+    const isOnCart = computed(() => {
+      const product = shopifyCart.value?.lines?.edges.find(el => el.node.merchandise.id === props.product.shopify_product_variant_id)
+      if (product)
+        return product.node
+      return null
+    })
+
+    const cartQuantity = computed(() => isOnCart.value ? isOnCart.value.quantity : 0)
+
+    const canAddMore = computed(() => (amountMax.value - cartQuantity.value) > 0)
+
     const gtmProductData = computed(() => ({
       ...props.product.gtmProductData,
       price: finalPrice.value,
     }))
+
+    const priceByLiter = computed(() => {
+      if ($config.STORE !== 'CMW_DE')
+        return 0
+      else
+        return ((finalPrice.value / props.product.milliliters) * 1000)
+    })
+
     const handleWishlistClick = () => {
       handleWishlist({ id: props.product.id, isOnFavourite: isOnFavourite.value, gtmProductData: gtmProductData.value })
     }
@@ -64,7 +93,7 @@ export default {
       $gtm.push({
         event: 'productClick',
         ecommerce: {
-          currencyCode: $nuxt.$config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
+          currencyCode: $config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
           click: {
             actionField: { list: $cmwGtmUtils.getActionField(route.value) },
             products: [{
@@ -80,40 +109,38 @@ export default {
     }
 
     return {
-      wishlistArr,
-      isOnFavourite,
-      isOnSale,
-      getCustomerType,
-      heartIcon,
-      heartFullIcon,
-      cartIcon,
-      emailIcon,
-      gtmProductData,
       addIcon,
-      subtractIcon,
-      isOpen,
-      showRequestModal,
-      isHovering,
+      cartLinesAdd,
+      priceByLiter,
+      amountMax,
+      canAddMore,
+      cartIcon,
+      cartQuantity,
+      closeIcon,
+      createShopifyCart,
+      customerId,
+      emailIcon,
       finalPrice,
-      handleWishlist,
-      handleWishlistClick,
+      getCanOrder,
+      getCustomerType,
+      gtmProductData,
       handleProductCLick,
       handleShowRequestModal,
+      handleWishlist,
+      handleWishlistClick,
+      heartFullIcon,
+      heartIcon,
+      isHovering,
+      isOnCart,
+      isOnFavourite,
+      isOnSale,
+      isOpen,
+      shopifyCart,
+      showRequestModal,
+      subtractIcon,
+      cartLinesUpdate,
+      wishlistArr,
     }
-  },
-  computed: {
-    ...mapState('userCart', {
-      userCart: 'userCart',
-    }),
-    isOnCart() {
-      return this.userCart.find(lineItem => lineItem.productVariantId === this.product.shopify_product_variant_id)
-    },
-    cartQuantity() {
-      return this.isOnCart ? this.isOnCart.quantity : 0
-    },
-    canAddMore() {
-      return this.product.quantityAvailable - this.cartQuantity > 0
-    },
   },
   methods: {
     generateKey,
@@ -122,6 +149,7 @@ export default {
     async addToUserCart() {
       this.isOpen = true
 
+      // check for availability
       if (!this.canAddMore) {
         await SweetAlertToast.fire({
           icon: 'warning',
@@ -130,41 +158,26 @@ export default {
         return
       }
 
-      const totalInventory = this.product.quantityAvailable
-      const id = this.product.shopify_product_variant_id
-      const amount = this.finalPrice
-      const amountFullPrice = Number(this.product.compareAtPrice.amount)
-      const tag = this.product.tags
-      const image = this.product.image.source.url
-      const title = this.product.title
+      if (!this.shopifyCart)
+        await this.createShopifyCart()
 
-      this.$store.commit('userCart/addProduct', {
-        id,
-        singleAmount: amount,
-        singleAmountFullPrice: amountFullPrice,
-        tag,
-        image,
-        title,
-        totalInventory,
-        gtmProductData: this.gtmProductData,
-      })
-
-      this.flashMessage.show({
+      await this.cartLinesAdd(this.product, false, () => this.flashMessage.show({
         status: '',
         message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title}` }),
-        icon: image,
+        icon: this.product.image.source.url,
         iconClass: 'bg-transparent ',
         time: 8000,
         blockClass: 'add-product-notification',
-      })
+      }))
     },
     async removeFromUserCart() {
-      this.$store.commit('userCart/removeProduct', {
-        id: this.product.shopify_product_variant_id,
-      })
+      if (this.cartQuantity === 0)
+        return
+
+      await this.cartLinesUpdate(this.product, this.cartQuantity - 1)
     },
   },
-}
+})
 </script>
 
 <template>
@@ -177,7 +190,7 @@ export default {
     @mouseenter="isHovering = true"
     @mouseleave="isHovering = false"
   >
-    <div class="c-productBox__grid grid h-full">
+    <div class="c-productBox__grid grid h-full" :class="`-${generateKey($config.STORE)}`">
       <div class="c-productBox__image">
         <ClientOnly>
           <button class="block mx-auto" @click="handleProductCLick">
@@ -225,13 +238,17 @@ export default {
       </div>
       <div class="c-productBox__price justify-self-start self-end">
         <div class="flex flex-col ml-4 mb-4">
-          <span
-            v-if="isOnSale"
-            class="line-through text-gray text-sm"
-          >
-            {{
-              $n(Number(product.compareAtPrice.amount), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode))
-            }}
+          <span class="flex gap-2">
+            <span
+              v-if="isOnSale"
+              class="line-through text-gray text-sm"
+            >
+              {{
+                $n(Number(product.compareAtPrice.amount), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode))
+              }}
+            </span>
+            <span v-if="$config.STORE === 'CMW_DE' && priceByLiter" class="text-sm">
+              {{ $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode)) }}/liter</span>
           </span>
           <i18n-n
             v-if="finalPrice"
@@ -251,6 +268,7 @@ export default {
               <span class="text-sm md:text-base">{{ slotProps.fraction }}</span>
             </template>
           </i18n-n>
+          <small v-if="$config.STORE === 'CMW_DE'" class="text-gray">Inkl. MwSt. Und St.</small>
         </div>
       </div>
       <div class="c-productBox__cart place-self-end">
@@ -272,8 +290,8 @@ export default {
           >
             <button
               class="flex transition-colors w-[40px] h-[40px] bg-primary-400 rounded-t-sm
-               hover:(bg-primary)
-               disabled:(bg-primary-100 cursor-not-allowed)"
+                 hover:(bg-primary)
+                 disabled:(bg-primary-100 cursor-not-allowed)"
               :disabled="!canAddMore"
               :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
               @click="addToUserCart"
@@ -329,6 +347,10 @@ export default {
   "awards image image wishlist"
   "title title title title"
   "price price cart cart";
+}
+
+.c-productBox__grid.-cmw-de {
+  grid-template-rows: auto auto 72px 80px;
 }
 
 .c-productBox__features {
