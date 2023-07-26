@@ -85,8 +85,16 @@ export default defineComponent({
       return `tag:${pathParts.at(-1)?.replace('.htm', '') ?? ''}`
     })
 
-    if (process.server && req?.headers && req?.url)
-      canonicalUrl.value = `https://${req.headers.host}${req.url}`
+    if (process.server && req?.headers && req?.url) {
+      const urlSearchParams = new URLSearchParams(req.url.slice(req.url.indexOf('?')))
+
+      urlSearchParams.delete('page')
+
+      const encodedPath = req?.url.split('?')[0] || ''
+      const encodedSearch = `?${urlSearchParams.toString()}`
+
+      canonicalUrl.value = `https://${req.headers.host}${encodedPath}${encodedSearch}`
+    }
 
     if (process.client && typeof window !== 'undefined') {
       const {
@@ -94,8 +102,12 @@ export default defineComponent({
         pathname,
         search,
       } = window.location
+
+      const urlSearchParams = new URLSearchParams(search)
+      urlSearchParams.delete('page')
+
       const encodedPath = pathname || ''
-      const encodedSearch = search || ''
+      const encodedSearch = urlSearchParams.toString()
       canonicalUrl.value = `${origin}${encodedPath}${encodedSearch}`
     }
 
