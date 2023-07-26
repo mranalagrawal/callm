@@ -19,12 +19,18 @@ import { inRange } from '~/utilities/math'
 import { stripHtmlAnchors } from '~/utilities/strings'
 
 // Todo: define right types
+interface ILocales {
+  de: string
+  en: string
+  fr: string
+  it: string
+}
 interface IMetaFields {
   hrefLang: {}
   images: never[]
   isPartner: boolean
   key: string
-  subtitle: string
+  subtitle: ILocales
   country: string
   region: string
 }
@@ -47,7 +53,7 @@ export default defineComponent({
     return $config.STORE
   },
   setup() {
-    const { $graphql, i18n, redirect, $cmwGtmUtils, localePath, req } = useContext()
+    const { i18n, redirect, $cmwGtmUtils, localePath, req } = useContext()
     const route = useRoute()
     const isDesktop = inject('isDesktop')
     const partnerC1 = ref(null)
@@ -71,7 +77,12 @@ export default defineComponent({
       images: [],
       isPartner: false,
       key: '',
-      subtitle: '',
+      subtitle: {
+        de: '',
+        en: '',
+        fr: '',
+        it: '',
+      },
       country: '',
       region: '',
     })
@@ -111,7 +122,7 @@ export default defineComponent({
       canonicalUrl.value = `${origin}${encodedPath}${encodedSearch}`
     }
 
-    const { fetch } = useFetch(async () => {
+    const { fetch } = useFetch(async ({ $graphql }) => {
       const { articles } = await $graphql.default.request(getArticles, {
         lang: i18n.locale.toUpperCase(),
         first: 1,
@@ -198,7 +209,7 @@ export default defineComponent({
                 <VueSvgIcon class="c-ribbon__right" :data="ribbon" width="9" height="24" />
               </div>
               <h1 v-if="brand" class="text-white" v-text="brand.title" />
-              <div class="h4 my-4 !text-white" v-text="metaFields.subtitle" />
+              <div class="h4 my-4 !text-white" v-text="metaFields.subtitle[$i18n.locale]" />
             </div>
             <ClientOnly v-if="!!metaFields.images.length">
               <VueSlickCarousel
@@ -284,7 +295,7 @@ export default defineComponent({
         </div>
         <div v-else class="max-w-screen-xl mx-auto py-4">
           <h1 v-if="brand" class="px-4 text-secondary" v-text="brand.title" />
-          <div class="px-4 h4 my-4 text-secondary" v-text="metaFields.subtitle" />
+          <div class="px-4 h4 my-4 text-secondary" v-text="metaFields.subtitle[$i18n.locale]" />
           <div class="md:(grid gap-4 grid-cols-[minmax(auto,_60%)_minmax(auto,_40%)])">
             <div>
               <ClientOnly v-if="!!metaFields.images.length">
