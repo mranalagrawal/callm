@@ -230,10 +230,10 @@ export default defineComponent({
 
       this.view[el] = filterId
         ? {
-          key: filterId,
-          name: buckets.length > 0 ? buckets.find(x => `${x.key[0]}` === `${filterId}`).key[1] : null,
-          field: el,
-        }
+            key: filterId,
+            name: buckets.length > 0 ? buckets.find(x => `${x.key[0]}` === `${filterId}`).key[1] : null,
+            field: el,
+          }
         : null
     })
 
@@ -259,10 +259,10 @@ export default defineComponent({
       const filterId = this.inputParameters[el]
       this.view[el] = filterId
         ? {
-          key: filterId,
-          name: data.length > 0 ? data.find(x => `${x.key[0]}` === `${filterId}`).key[1] : null,
-          field: el,
-        }
+            key: filterId,
+            name: data.length > 0 ? data.find(x => `${x.key[0]}` === `${filterId}`).key[1] : null,
+            field: el,
+          }
         : null
     })
 
@@ -324,17 +324,17 @@ export default defineComponent({
 
     this.view.priceFrom = priceFrom
       ? {
-        key: 'priceFrom',
-        name: `From ${priceFrom}`,
-        field: 'price_from',
-      }
+          key: 'priceFrom',
+          name: `From ${priceFrom}`,
+          field: 'price_from',
+        }
       : null
     this.view.priceTo = priceTo
       ? {
-        key: 'priceTo',
-        name: `To ${priceTo}`,
-        field: 'price_to',
-      }
+          key: 'priceTo',
+          name: `To ${priceTo}`,
+          field: 'price_to',
+        }
       : null
 
     this.maxPriceTotal = Math.round(+search.aggregations.max_price['agg-max-price'].value)
@@ -353,8 +353,11 @@ export default defineComponent({
 
       if (process.client && typeof window !== 'undefined') {
         const { origin, search } = window.location
+        const searchParams = new URLSearchParams(search)
+        searchParams.delete('page')
+
         const encodedPath = `${encodeURIComponent(this.view.brands.name.replace(' ', '-'))}-${brandId}.htm`
-        const encodedSearch = search ? encodeURIComponent(search) : ''
+        const encodedSearch = searchParams.toString() ? `?${searchParams.toString()}` : ''
         this.canonicalUrl = `${origin}/${encodedPath}${encodedSearch}`
       }
     }
@@ -362,6 +365,15 @@ export default defineComponent({
     this.loading = false
   },
   head() {
+    let link = []
+    const href = this.canonicalUrl ? this.canonicalUrl : ''
+
+    if (href) {
+      link = [{
+        rel: 'canonical',
+        href,
+      }]
+    }
     return {
       title: this.seoData?.seoTitle || this.seoTitleReplace,
       meta: [
@@ -371,10 +383,7 @@ export default defineComponent({
           content: this.seoData?.seoDescription || this.seoTitleReplace,
         },
       ],
-      link: [{
-        rel: 'canonical',
-        href: this.canonicalUrl ? this.canonicalUrl : '',
-      }],
+      link,
     }
   },
   allSelections: [
@@ -558,17 +567,23 @@ export default defineComponent({
       </template>
     </h1>
 
-    <CategoriesMainFilters v-if="Object.keys(aggregations).length && Object.keys(inputParameters).length"
-      :aggregations="aggregations" :input-parameters="inputParameters" @item-clicked="handleUpdateValue" />
+    <CategoriesMainFilters
+      v-if="Object.keys(aggregations).length && Object.keys(inputParameters).length"
+      :aggregations="aggregations" :input-parameters="inputParameters" @item-clicked="handleUpdateValue"
+    />
 
     <div v-if="isDesktop">
       <!-- Filter Components -->
-      <CategoriesFiltersComponents v-if="Object.keys(aggregations).length"
+      <CategoriesFiltersComponents
+        v-if="Object.keys(aggregations).length"
         :key="JSON.stringify(inputParameters) || 'categories-filters-components'" :aggregations="aggregations"
         :input-parameters="inputParameters" @update-value-selections="handleUpdateValueSelections"
-        @update-value="handleUpdateValue" @handle-on-footer-click="handleOnFooterClick" />
-      <CategoriesActiveSelections :input-parameters="inputParameters" :view="view"
-        @remove-selection-from-query="removeSelectionFromQuery" @reset-filter="resetFilter" />
+        @update-value="handleUpdateValue" @handle-on-footer-click="handleOnFooterClick"
+      />
+      <CategoriesActiveSelections
+        :input-parameters="inputParameters" :view="view"
+        @remove-selection-from-query="removeSelectionFromQuery" @reset-filter="resetFilter"
+      />
       <p v-html="seoData.pageDescription" />
     </div>
     <ProductsResultsList :results="results" :total="total" :loading="loading" @update-sort-value="handleUpdateSortValue" />
@@ -576,13 +591,17 @@ export default defineComponent({
 
     <ClientOnly>
       <div>
-        <div class="relative overflow-hidden pb-8"
+        <div
+          class="relative overflow-hidden pb-8"
           :class="showPageFullDescription
             ? 'h-full'
             : 'h-[200px] after:(content-DEFAULT absolute w-full h-1/2 bottom-0 left-0 bg-gradient-to-b from-transparent to-white)'"
-          v-html="seoData?.pageFullDescription ? seoData.pageFullDescription : ''" />
-        <Button v-if="!showPageFullDescription" class="justify-end pb-8" variant="text"
-          @click.native="showPageFullDescription = true">
+          v-html="seoData?.pageFullDescription ? seoData.pageFullDescription : ''"
+        />
+        <Button
+          v-if="!showPageFullDescription" class="justify-end pb-8" variant="text"
+          @click.native="showPageFullDescription = true"
+        >
           <span class="mr-2">{{ $t('common.cta.readMore') }}</span>
           <VueSvgIcon width="18" height="18" :data="require(`@/assets/svg/chevron-down.svg`)" />
         </Button>
@@ -599,29 +618,39 @@ export default defineComponent({
 
     <div v-if="!isDesktop">
       <transition>
-        <div v-show="showMobileFilters"
-          class="fixed w-screen h-screen top-0 left-0 bg-white z-amenadiel grid grid-rows-[60px_auto_90px]">
+        <div
+          v-show="showMobileFilters"
+          class="fixed w-screen h-screen top-0 left-0 bg-white z-amenadiel grid grid-rows-[60px_auto_90px]"
+        >
           <!-- splash-header -->
           <div class="sticky grid grid-cols-[100px_auto_100px] justify-between items-center px-4 shadow">
             <div class="text-center w-max text-xs font-bold" v-text="$t('common.filters.by')" />
             <div>
-              <Button v-if="!!activeSelections.length || Object.values(view).some(v => v !== null)" variant="text"
-                size="sm" :label="$t('search.removeFilters')" @click.native="resetFilter" />
+              <Button
+                v-if="!!activeSelections.length || Object.values(view).some(v => v !== null)" variant="text"
+                size="sm" :label="$t('search.removeFilters')" @click.native="resetFilter"
+              />
             </div>
-            <ButtonIcon class="justify-self-end" :icon="closeIcon" variant="icon" :size="20"
-              @click.native="showMobileFilters = false" />
+            <ButtonIcon
+              class="justify-self-end" :icon="closeIcon" variant="icon" :size="20"
+              @click.native="showMobileFilters = false"
+            />
           </div>
           <!-- splash-body -->
           <div class="px-2 max-h-screen overflow-auto">
-            <CmwAccordion key="mobile-our-selections" size="sm" :has-item="!!activeSelections?.length"
-              :active="cmwActiveSelect === 'mobile-our-selections'" @update-trigger="handleUpdateTrigger">
+            <CmwAccordion
+              key="mobile-our-selections" size="sm" :has-item="!!activeSelections?.length"
+              :active="cmwActiveSelect === 'mobile-our-selections'" @update-trigger="handleUpdateTrigger"
+            >
               <template #default>
                 <span class="block">
                   <span class="block text-left" :class="{ 'font-bold': !!activeSelections?.length }">{{
                     $t('search.selections') }}</span>
                   <small v-if="!!activeSelections?.length" class="block text-primary text-left text-xs">
-                    <span v-for="selection in activeSelections" :key="selection" data-before="∙ "
-                      class="before:(content-[attr(data-before)] text-primary text-xs) first:before:(content-DEFAULT)">
+                    <span
+                      v-for="selection in activeSelections" :key="selection" data-before="∙ "
+                      class="before:(content-[attr(data-before)] text-primary text-xs) first:before:(content-DEFAULT)"
+                    >
                       {{ $t(`selections.${selection}`) }}
                     </span>
                   </small>
@@ -631,9 +660,11 @@ export default defineComponent({
                 <CmwSelect size="sm" :options="selections" is-full-width @update-value="handleUpdateValueSelections" />
               </template>
             </CmwAccordion>
-            <CmwAccordion v-for="(value, key) in filterCategories" :key="`mobile-${key}`" size="sm"
+            <CmwAccordion
+              v-for="(value, key) in filterCategories" :key="`mobile-${key}`" size="sm"
               :has-item="Object.keys(inputParameters).includes(key)" :active="cmwActiveSelect === `mobile-${key}`"
-              @update-trigger="handleUpdateTrigger">
+              @update-trigger="handleUpdateTrigger"
+            >
               <template #default>
                 <span class="block">
                   <span class="block text-left" :class="{ 'font-bold': Object.keys(inputParameters).includes(key) }">{{
@@ -649,20 +680,28 @@ export default defineComponent({
                 </div>
               </template>
             </CmwAccordion>
-            <CmwAccordion key="mobile-prize" size="sm" :has-item="Object.keys(inputParameters).includes('price_from')"
+            <CmwAccordion
+              key="mobile-prize" size="sm" :has-item="Object.keys(inputParameters).includes('price_from')"
               :footer-label="$t('common.cta.apply')" :on-footer-click="handleOnFooterClick"
-              :active="cmwActiveSelect === 'mobile-prize'" @update-trigger="handleUpdateTrigger">
+              :active="cmwActiveSelect === 'mobile-prize'" @update-trigger="handleUpdateTrigger"
+            >
               <template #default>
                 <span class="block">
-                  <span class="block text-left"
-                    :class="{ 'font-bold': Object.keys(inputParameters).includes('price_from') }">{{ $t('search.price')
-                    }}</span>
-                  <small v-if="Object.keys(inputParameters).includes('price_from')"
-                    class="block text-primary text-left text-xs">
+                  <span
+                    class="block text-left"
+                    :class="{ 'font-bold': Object.keys(inputParameters).includes('price_from') }"
+                  >{{ $t('search.price')
+                  }}</span>
+                  <small
+                    v-if="Object.keys(inputParameters).includes('price_from')"
+                    class="block text-primary text-left text-xs"
+                  >
                     <i18n path="search.priceFromTo" tag="span">
-                      <i18n-n class="inline-block" :value="Number(inputParameters.price_from)"
+                      <i18n-n
+                        class="inline-block" :value="Number(inputParameters.price_from)"
                         :format="{ key: 'currency' }"
-                        :locale="getLocaleFromCurrencyCode($config.STORE === 'CMW_UK' ? 'GBP' : 'EUR')">
+                        :locale="getLocaleFromCurrencyCode($config.STORE === 'CMW_UK' ? 'GBP' : 'EUR')"
+                      >
                         <template #currency="slotProps">
                           <span class="text-xs">{{ slotProps.currency }}</span>
                         </template>
@@ -676,8 +715,10 @@ export default defineComponent({
                           <span class="text-xs">{{ slotProps.fraction }}</span>
                         </template>
                       </i18n-n>
-                      <i18n-n class="inline-block" :value="Number(inputParameters.price_to)" :format="{ key: 'currency' }"
-                        :locale="getLocaleFromCurrencyCode($config.STORE === 'CMW_UK' ? 'GBP' : 'EUR')">
+                      <i18n-n
+                        class="inline-block" :value="Number(inputParameters.price_to)" :format="{ key: 'currency' }"
+                        :locale="getLocaleFromCurrencyCode($config.STORE === 'CMW_UK' ? 'GBP' : 'EUR')"
+                      >
                         <template #currency="slotProps">
                           <span class="text-xs">{{ slotProps.currency }}</span>
                         </template>
@@ -697,8 +738,10 @@ export default defineComponent({
               </template>
               <template #children>
                 <div class="px-4 pb-4">
-                  <CmwRangeSlider :min="minPrice" :max="maxPrice" :min-value-total="minPriceTotal"
-                    :max-value-total="maxPriceTotal" @update-values="handleUpdateRangeValues" />
+                  <CmwRangeSlider
+                    :min="minPrice" :max="maxPrice" :min-value-total="minPriceTotal"
+                    :max-value-total="maxPriceTotal" @update-values="handleUpdateRangeValues"
+                  />
                 </div>
               </template>
             </CmwAccordion>
