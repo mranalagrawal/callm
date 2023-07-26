@@ -9,6 +9,10 @@ export default defineComponent({
   layout({ $config }) {
     return $config.STORE
   },
+  middleware({ $config, localeRoute, redirect }) {
+    if ($config.STORE !== 'CMW')
+      return redirect(localeRoute('/') as unknown as string)
+  },
   setup() {
     const { $cmwGtmUtils } = useContext()
 

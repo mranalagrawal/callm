@@ -8,6 +8,14 @@ export interface IPrismicPageData {
     }
     url: string
   }
+  main_banner?: {
+    alt: string
+    dimensions: {
+      height: number
+      width: number
+    }
+    url: string
+  }
   section: Record<string, any>
   content: Record<string, any>
   body?: Record<string, any>[]

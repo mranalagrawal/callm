@@ -221,13 +221,27 @@ export default defineComponent({
                 :to="localePath('/restaurants-wineshops')"
                 class="block text-white"
               >
-                {{ $t('footer.restaurantsAndWineshops') }}
+                {{ $t('footer.restaurantsAndWineShops') }}
+              </NuxtLink>
+              <NuxtLink
+                v-if="$config.STORE === 'CMW'"
+                :to="localePath('/corporate-gifts')"
+                class="block text-white"
+              >
+                {{ $t('footer.corporateGifts') }}
               </NuxtLink>
               <NuxtLink
                 :to="localePath('/gift-cards')"
                 class="block text-white"
               >
                 {{ $t('footer.giftCards') }}
+              </NuxtLink>
+              <NuxtLink
+                v-if="$config.STORE === 'CMW'"
+                :to="localePath('/guide-to-our-wines')"
+                class="block text-white"
+              >
+                {{ $t('footer.guideToOurWines') }}
               </NuxtLink>
             </div>
             <div class="flex flex-col gap-2">
