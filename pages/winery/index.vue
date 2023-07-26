@@ -125,7 +125,7 @@ export default defineComponent({
         ...route.value.query,
         cursor,
       }
-      router.push(localePath({ name: 'winery-handle', query }))
+      router.push(localePath({ name: 'winery', query }))
     }
 
     const handleLazyLoad = () => {
@@ -169,7 +169,7 @@ export default defineComponent({
         delete query[keyword]
       else query[keyword] = id
 
-      router.push(localePath({ name: 'winery-handle', query }))
+      router.push(localePath({ name: 'winery', query }))
     }
 
     const handleUpdateTrigger = (value: string) => cmwActiveSelect.value = cmwActiveSelect.value === value ? '' : value
