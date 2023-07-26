@@ -258,6 +258,8 @@ export default {
       name: 'Nome',
       price: 'Prezzo',
     },
+    highestPopularity: 'Più popolare',
+    lowestPopularity: 'Meno popolare',
     highestPrice: 'Prezzo più alto',
     lowestPrice: 'Prezzo più basso',
     mostAwarded: 'Più premitati',
