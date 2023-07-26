@@ -1,7 +1,8 @@
 <script lang="ts">
-import { defineComponent, ref, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref, useContext } from '@nuxtjs/composition-api'
 import type { PropType } from '@nuxtjs/composition-api'
 import type { IProductMapped } from '~/types/product'
+import { getUniqueListBy } from '~/utilities/arrays'
 import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({
@@ -23,36 +24,43 @@ export default defineComponent({
       required: false,
     },
   },
-  setup() {
+  setup(props) {
     const { i18n } = useContext()
 
-    const tabs = [
+    const tabs = computed(() => ([
       {
         key: 'description',
         label: i18n.t('product.description'),
         component: 'ProductDetailsTabDescription',
+        available: props.product.descriptionHtml,
       },
       {
         key: 'toEnjoyBetter',
         label: i18n.t('product.toEnjoyBetter'),
         component: 'ProductDetailsTabToEnjoyBetter',
+        available: props.productDetails.servingTemperature,
       },
       {
         key: 'awardsAndAcknowledgments',
         label: i18n.t('product.awardsAndAcknowledgments'),
         component: 'ProductDetailsTabAwardsAndAcknowledgments',
+        available: props.product?.awards.length > 0,
       },
       {
         key: 'producer',
         label: i18n.t('product.producer'),
         component: 'ProductDetailsTabProducer',
+        available: props.brand,
       },
       {
         key: 'pairings',
         label: i18n.t('product.pairings'),
         component: 'ProductDetailsTabPairings',
+        available: props.productDetails && getUniqueListBy(props.productDetails.foodPairings, 'id'),
       },
-    ]
+    ]))
+
+    const availableTabs = computed(() => tabs.value.filter(tab => tab.available))
 
     const currentTab = ref('ProductDetailsTabDescription')
 
@@ -65,9 +73,10 @@ export default defineComponent({
     }
 
     return {
-      tabs,
-      currentTab,
+      availableTabs,
       componentMap,
+      currentTab,
+      tabs,
     }
   },
   methods: { generateKey },
@@ -82,7 +91,7 @@ export default defineComponent({
         border-b border-b-gray-dark mb-3 md:(mt-9)"
       >
         <div
-          v-for="({ label, component }) in tabs" :key="generateKey(component)"
+          v-for="({ label, component }) in availableTabs" :key="generateKey(component)"
           class="relative py-2 flex-shrink-0 font-light text-sm
                 hover:after:(bg-primary text-primary w-full)
                 after:(content-DEFAULT transform absolute bottom-0 left-1/2 h-1 transition-progress-bar -translate-x-1/2)"
