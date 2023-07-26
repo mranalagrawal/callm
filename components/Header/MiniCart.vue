@@ -60,8 +60,8 @@ export default {
       this.$store.state.user.user.customer.defaultAddress?.lastName
       && (baseUrl += `&checkout[shipping_address][last_name]=${this.$store.state.user.user.customer.defaultAddress.lastName}`)
 
-      this.$store.state.user.user.customer.defaultAddress?.phone
-      && (baseUrl += `&checkout[shipping_address][phone]=${this.$store.state.user.user.customer.defaultAddress.phone}`)
+      this.$store.state.user.user.customer?.phone
+      && (baseUrl += `&checkout[shipping_address][phone]=${this.$store.state.user.user.customer.phone}`)
 
       this.$store.state.user.user.customer.defaultAddress?.address1
       && (baseUrl += `&checkout[shipping_address][address1]=${this.$store.state.user.user.customer.defaultAddress.address1}`)
