@@ -225,13 +225,15 @@ hover:shadow-elevation"
     </div>
     <!-- Content Section -->
     <div class="p-2">
-      <div class="h4 mt-4">
+      <div class="relative h4 mt-4">
         <button
           class="text-body text-left hover:(text-primary-400)"
+          :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')"
           @click="handleProductCLick"
         >
           {{ product.title }}
         </button>
+        <NuxtLink class="block sr-only" :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')" :to="localeLocation(product.url)" />
       </div>
       <ProductUserRating v-if="customerId" :product-id="`${product.details.feId}`" @click-star="handleStarAndCustomerCommentClick" />
       <div class="flex gap-3 my-8">

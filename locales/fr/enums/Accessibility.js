@@ -28,6 +28,7 @@ export default {
     labels: {
       GO_TO_CART_PAGE: 'Accédez à la page du panier',
       GO_TO_HOME_PAGE: 'Naviguer vers la page d\'accueil',
+      GO_TO_PRODUCT_DETAIL_PAGE: 'Accédez à la page de détails du produit',
       GO_TO_PAGE: 'Aller à {url}',
       views: {
         GRILLE: 'vue grille',

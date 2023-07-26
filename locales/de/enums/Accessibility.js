@@ -28,6 +28,7 @@ export default {
     labels: {
       GO_TO_CART_PAGE: 'Navigate to the cart page',
       GO_TO_HOME_PAGE: 'Navigieren Sie zur Warenkorbseite',
+      GO_TO_PRODUCT_DETAIL_PAGE: 'Navigieren Sie zur Produktdetailseite',
       GO_TO_PAGE: 'Gehe zu {url}',
       views: {
         GRID: 'Rasteransicht',

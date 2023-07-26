@@ -28,6 +28,7 @@ export default {
     labels: {
       GO_TO_CART_PAGE: 'Vai alla pagina del carrello',
       GO_TO_HOME_PAGE: 'Vai alla home page',
+      GO_TO_PRODUCT_DETAIL_PAGE: 'Vai alla pagina dei dettagli del prodotto',
       GO_TO_PAGE: 'Vai a {url}',
       views: {
         GRID: 'vista a griglia',
