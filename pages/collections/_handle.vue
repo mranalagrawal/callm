@@ -221,6 +221,9 @@ export default defineComponent({
           })
 
         buckets = buckets.filter(bucket => !bucket.key.includes('not specified'))
+        buckets = buckets.filter(bucket => !bucket.key.includes('non specificato'))
+        buckets = buckets.filter(bucket => !bucket.key.includes('nicht angegeben'))
+        buckets = buckets.filter(bucket => !bucket.key.includes('non spécifié'))
 
         const filterId = inputParameters.value[el]
 
