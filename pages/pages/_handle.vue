@@ -136,7 +136,6 @@ export default defineComponent({
 
           await $cmw.$get(`${$config.ELASTIC_URL}products/search?stores=${storeConfigId}&locale=${$i18n.locale}&${queryToString}`)
             .then((data) => {
-              console.warn('$cmw.$get: ', $i18n.locale)
               const { hits, aggregations } = data as Record<string, any>
               results.value = hits.hits
               total.value = hits.total.value
@@ -144,20 +143,11 @@ export default defineComponent({
               if (Object.keys(aggregations).length)
                 aggregationsRef.value = aggregations
             })
-
-          // We don't wanna know ...🫣
-          /* const changedCategories = [1, 2, 3, 4, 54, 57, 64, 66, 75, 78, 87, 95, 97, 99, 104, 106, 109]
-
-          if (changedCategories.some(n => query.includes(`categories=${n}`))) {
-            const matched = changedCategories.find(n => query.includes(`categories=${n}`))
-            return redirect(301, localeLocation(`${$route.fullPath.replaceAll(`-C${matched}`, `-M${matched}`)}`))
-          } */
         })
         .catch((err: Error) => $handleApiErrors(`Catch getting getPageByHandle from shopify: ${err}`))
     })
 
-    watch(() => route.value?.query, (v) => {
-      console.log('WATCHER: ', v)
+    watch(() => route.value?.query, () => {
       fetch()
     })
 
@@ -223,11 +213,11 @@ export default defineComponent({
         @update-value="handleUpdateValue"
       />
     </template>
-    <div v-else>
+    <template v-else-if="!$fetchState.pending">
       <p class="text-lg font-light mt-5">
         {{ $t('search.noResultsAlert') }}
       </p>
       <div v-html="$t('search.noResultsMessage')" />
-    </div>
+    </template>
   </div>
 </template>
