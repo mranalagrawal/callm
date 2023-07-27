@@ -207,7 +207,23 @@ const SITEMAP = {
   CMW_DE: [
     {
       path: '/sitemap_en_product_pages.xml',
-      routes: () => getSitemapProducts('EN'),
+      routes: () => getSitemapProducts('DE'),
+      exclude: ['/**'],
+    },
+    {
+      path: '/sitemap_en_category_listing_pages.xml',
+      routes: async () => getSitemapBrands(),
+      exclude: ['/**'],
+    },
+    {
+      path: '/sitemap_en_editorial_other_pages.xml',
+      exclude: ['/product/**', '/search/**', '/profile', '/profile/**', '/catalog', '/privacy', '/terms-of-sales', '/cookie', '/cart', '/gift-cards', '/login', '/preview', '/recover', '/thank-you', '/winery'],
+    },
+  ],
+  CMW_FR: [
+    {
+      path: '/sitemap_en_product_pages.xml',
+      routes: () => getSitemapProducts('FR'),
       exclude: ['/**'],
     },
     {
@@ -628,6 +644,8 @@ export default {
     const isCMWUKStore = process.env.STORE === 'CMW_UK'
 
     const commonDisallowPaths = [
+      '/*?*',
+      '/catalog',
       '/?search=',
       '/!*?search=*',
       '/?search=*',
