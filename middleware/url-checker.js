@@ -273,7 +273,7 @@ function pageWithFilterCode(routePath) {
 }
 
 export default async function ({ redirect, route, $cmw, $config, error, localePath }) {
-  // console.log({ path: route.path, elasticUrl: $config.ELASTIC_URL })
+  console.log({ path: route.path, elasticUrl: $config.ELASTIC_URL })
   // never resetted
   // count++
   // if (count >= 5) {
@@ -315,6 +315,7 @@ export default async function ({ redirect, route, $cmw, $config, error, localePa
 
     if (matched && REDIRECT_SEO_REGEX[matched] === 301) {
       try {
+        console.log(`🚥(301) need redirect get ${$config.ELASTIC_URL}seo/get-redirect-url?urlPath=${route.path}`)
         const resp = await $cmw.$get(`${$config.ELASTIC_URL}seo/get-redirect-url?urlPath=${route.path}`)
         console.log(`🚥(301) ${route.path} match ${matched} -> redirectTo /${resp.data.redirectUrl}`, $config.ELASTIC_URL)
         redirectTo = `/${resp.data.redirectUrl}`
