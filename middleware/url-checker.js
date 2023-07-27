@@ -273,6 +273,7 @@ function pageWithFilterCode(routePath) {
 }
 
 export default async function ({ redirect, route, $cmw, $config, error, localePath, $sentry }) {
+  console.log({ path: route.path, elasticUrl: $config.ELASTIC_URL })
   count++
 
   if (count >= 5) {
