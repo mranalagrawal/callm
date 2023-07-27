@@ -236,8 +236,9 @@ export const useShopifyCart = defineStore({
       this.$patch({ shopifyCart: data.cartLinesUpdate.cart })
     },
 
-    async cartLinesRemove(lineIds = []) {
+    async cartLinesRemove(cartLines = []) {
       const cartId = this.shopifyCart.id
+      const lineIds = cartLines.map(cartLine => cartLine.id)
 
       await this.$nuxt.$graphql.default
         .request(cartLinesRemove, {
@@ -248,6 +249,21 @@ export const useShopifyCart = defineStore({
           if (!userErrors.length) {
             // Success
             this.$patch({ shopifyCart: cart })
+
+            cartLines.forEach((cartLine) => {
+              this.$nuxt.$gtm.push({
+                event: 'removeFromCart',
+                ecommerce: {
+                  currencyCode: this.$nuxt.$config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
+                  remove: {
+                    products: JSON.parse(cartLine.attributes.find(el => el.key === 'gtmProductData').value),
+                  },
+                },
+              })
+            })
+
+            if (typeof window !== 'undefined' && window.google_tag_manager && window.google_tag_manager[this.$nuxt.app.$config.gtm.id])
+              window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.set('ecommerce', undefined)
           } else {
             SweetAlertToast.fire({
               icon: 'error',
