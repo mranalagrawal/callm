@@ -1,3 +1,10 @@
+let count = 0
+
+// eslint-disable-next-line max-len
+// const OLD_LETTERS_REGEX = /^\/(.*?)(?<!%)((C(1|2|3|4|54|57|64|66|75|78|87|95|97|99|104|106|109))|(R(1|15|4|5|6|221|238|9|10|275|11|12|282|13|14|16|17|19|20|21|22|23|24|25|233|26|203|188|28|29|241|30|31|32|229|33|34|35|36|38|39|40|196|42|291|43|44|45|46|47|48|247|49|50|51|293|52|186|184|297)))([A-OQ-Z]\d+)?(.*?).htm/
+const MACRO_LETTERS = '(1|2|3|4|54|57|64|66|75|78|87|95|97|99|104|106|109)'
+const COUNTRY_LETTERS = '(1|4|5|6|9|10|11|12|13|14|15|16|17|19|20|21|22|23|24|25|26|28|29|30|31|32|33|34|35|36|38|39|40|42|43|44|45|46|47|48|49|50|51|52|184|186|188|196|203|221|229|233|238|241|247|275|282|291|293|297)'
+
 // avoid callmewine-api call to get the redirectUrl
 const REDIRECT_PUNTUALI = {
   '/champagne-blanc-de-blancs-collin-ulysse-extra-brut-V63B409D4.htm': '/champagne-collin-ulysse-extra-brut-C9B409D4.htm',
@@ -147,8 +154,8 @@ const REDIRECT_SEO_REGEX = {
   // non serve + spostato nel prepareRedirect '^\/(.*?)-(C(?:1|2|3|4|54|57|64|66|75|78|87|95|97|99|104|106|109))(.*?).htm': '/customRedirectMacrocategories',
 
   // new letters are ok, if is not required a 301
-  '^\/(.*?)-(M(?:1|2|3|4|54|57|64|66|75|78|87|95|97|99|104|106|109))(.*?).htm': 200,
-  '^\/(.*?)-(N(?:1|4|5|6|9|10|11|12|13|14|15|16|17|19|20|21|22|23|24|25|26|28|29|30|31|32|33|34|35|36|38|39|40|42|43|44|45|46|47|48|49|50|51|52|184|186|188|196|203|221|229|233|238|241|247|275|282|291|293|297)).htm': 200,
+  [`M${MACRO_LETTERS}[A-Z.]`]: 200,
+  [`N${COUNTRY_LETTERS}[A-Z.]`]: 200,
 
   // ********************* STATUS OK - 200
   '^\/(.*?)-(C\\d+B\\d+A\\d+).htm': 200,
@@ -226,20 +233,36 @@ function getMatchedRegex(urlPath) {
   })
 }
 
-// eslint-disable-next-line max-len
-const OLD_LETTERS_REGEX = /^\/(.*?)(?<!%)((C(1|2|3|4|54|57|64|66|75|78|87|95|97|99|104|106|109))|(R(1|15|4|5|6|221|238|9|10|275|11|12|282|13|14|16|17|19|20|21|22|23|24|25|233|26|203|188|28|29|241|30|31|32|229|33|34|35|36|38|39|40|196|42|291|43|44|45|46|47|48|247|49|50|51|293|52|186|184|297)))([A-OQ-Z]\d+)?(.*?).htm/
+function isOldMacros(url) {
+  const isOldMacros = new RegExp(`C${MACRO_LETTERS}[A-Z.]`, 'g')
+  if (url.match(isOldMacros))
+    return true
 
-function isOldUrl(url) {
-  const regexToCheck = new RegExp(OLD_LETTERS_REGEX, 'g')
-  // console.log(`isOldUrl ${url} ?`, url.match(regexToCheck))
-  return url.match(regexToCheck)
+  return false
+}
+
+function isOldCountries(url) {
+  const isOldCountries = new RegExp(`R${COUNTRY_LETTERS}[A-Z.]`, 'g')
+  if (url.match(isOldCountries))
+    return true
+
+  return false
+}
+
+function needLettersReplace(url) {
+  return isOldMacros(url) || isOldCountries(url)
 }
 
 function prepareRedirect(redirectUrl) {
-  if (isOldUrl(redirectUrl)) {
-    // do replace
-    redirectUrl = redirectUrl.replace(/((?<!%)(C)(1|2|3|4|54|57|64|66|75|78|87|95|97|99|104|106|109))(\D)/, 'M$3$4')
-    redirectUrl = redirectUrl.replace(/((?<!%)(R)(1|4|5|6|9|10|11|12|13|14|15|16|17|19|20|21|22|23|24|25|26|28|29|30|31|32|33|34|35|36|38|39|40|42|43|44|45|46|47|48|49|50|51|52|184|186|188|196|203|221|229|233|238|241|247|275|282|291|293|297))(\D)/, 'N$3$4')
+  if (isOldMacros(redirectUrl)) {
+    const macrosRegex = new RegExp(`C${MACRO_LETTERS}([A-Z.])`)
+    redirectUrl = redirectUrl.replace(macrosRegex, 'M$1$2')
+    console.log('macrosReplaced', redirectUrl)
+  }
+  if (isOldCountries(redirectUrl)) {
+    const countriesRegex = new RegExp(`R${COUNTRY_LETTERS}([A-Z.])`)
+    redirectUrl = redirectUrl.replace(countriesRegex, 'N$1$2')
+    console.log('countriesReplaced', redirectUrl)
   }
 
   return redirectUrl
@@ -249,59 +272,68 @@ function pageWithFilterCode(routePath) {
   return routePath.match(/-([A-OQ-Z]\d+)+.htm/) // exclude P product pages
 }
 
-export default async function ({ redirect, route, $cmw, $config, error, localePath }) {
+export default async function ({ redirect, route, $cmw, $config, error, localePath, $sentry }) {
+  count++
+
+  if (count >= 5) {
+    $sentry.captureException(new Error('url-checker - too many redirects'))
+    return
+  }
   // is brand
   if (route.path.match(/[a-z0-9\/]+(?:-[a-z0-9]+)*-(B\d+)+.htm/)) {
-    // console.log(`${route.path} is a brandPage...`)
+    console.log(`${route.path} is a brandPage...`)
     // only /brand-slug-B123.htm, ignore /cantina/brand-slug-B123.htm
     if (route.path.match(/^\/[a-z0-9]+(?:-[a-z0-9]+)*-(B\d+)+.htm/)) {
-      // console.log(`${route.path} , remove slash ${route.path.substring(1)}`)
+      console.log(`${route.path} , remove slash ${route.path.substring(1)}`)
       const redirectTo = localePath({
         name: 'winery-handle',
         params: { handle: route.path.substring(1) },
       })
-      // console.log(`🚥(301) ${route.path} missing folder, redirect to ${redirectTo}`)
+      console.log(`🚥(301) ${route.path} missing folder, redirect to ${redirectTo}`)
       redirect(301, redirectTo)
     }
-  }
+  } else if (pageWithFilterCode(route.path)) {
   // only pages with at least one filter/code part es C1, M1R13 ecc
-  else if (pageWithFilterCode(route.path)) {
-    // console.log(`${route.path} is a pageWithFilterCode searching for a match...`)
+    console.log(`${route.path} is a pageWithFilterCode searching for a match...`)
     let redirectTo = null
 
     // 1. searching in redirect puntuali/fissi
     redirectTo = searchRedirectPuntuali(route.path)
-    // console.log(`${route.path} is redirectPuntuale ?`, redirectTo)
+    console.log(`${route.path} is redirectPuntuale ?`, redirectTo)
 
     if (redirectTo) {
       redirectTo = prepareRedirect(redirectTo)
-      // console.log(`🚥(301) ${route.path} is redirectPuntuale -> redirectTo ${redirectTo}`)
+      console.log(`🚥(301) ${route.path} is redirectPuntuale -> redirectTo ${redirectTo}`)
       return redirect(301, redirectTo)
     }
 
     // 2. searching in redirect seo rules/regex
     const matched = getMatchedRegex(route.path)
     // need backend to get redirectUrl
-    // console.log("redirectByRegex matched", matched, REDIRECT_SEO_REGEX[matched]);
+    console.log('redirectByRegex matched', matched, REDIRECT_SEO_REGEX[matched])
 
     if (matched && REDIRECT_SEO_REGEX[matched] === 301) {
-      const resp = await $cmw.$get(`${$config.ELASTIC_URL}seo/get-redirect-url?urlPath=${route.path}`)
-      // console.log(`🚥(301) ${route.path} match ${matched} -> redirectTo /${resp.data.redirectUrl}`)
-      redirectTo = `/${resp.data.redirectUrl}`
-      redirectTo = prepareRedirect(redirectTo)
-      redirect(301, redirectTo)
+      try {
+        const resp = await $cmw.$get(`${$config.ELASTIC_URL}seo/get-redirect-url?urlPath=${route.path}`)
+        console.log(`🚥(301) ${route.path} match ${matched} -> redirectTo /${resp.data.redirectUrl}`, $config.ELASTIC_URL)
+        redirectTo = `/${resp.data.redirectUrl}`
+        redirectTo = prepareRedirect(redirectTo)
+        redirect(301, redirectTo)
+      } catch (e) {
+        // if bo can't respond - continue with old url instead of broken
+      }
     } else if (matched && REDIRECT_SEO_REGEX[matched] === 200) {
-      // console.log(`🚥${route.path} match ${matched} -> 200 url ok`)
-      // need to do redirect
-      /* if (isOldUrl(route.path)) {
-        // redirectTo = prepareRedirect(route.path)
-        // console.log(`🚥(301) ${route.path} contains oldletters need redirect to  -> ${redirectTo}`)
-        // redirect(301, redirectTo)
+      console.log(`🚥${route.path} match ${matched} -> 200 url ok`)
+
+      if (needLettersReplace(route.path)) {
+        redirectTo = prepareRedirect(route.path)
+        console.log(`🚥(301) ${route.path} contains oldletters need redirect to  -> ${redirectTo}`)
+        redirect(301, redirectTo)
       } else {
-        // console.log(`🚥(200) ${route.path} -> continue`)
-      } */
+        console.log(`🚥(200) ${route.path} -> continue`)
+      }
     } else {
-      // console.log(`🚥${route.path} doesn't match regex -> 410`)
+      console.log(`🚥${route.path} doesn't match regex -> 410`)
       error({ statusCode: 410, message: 'Resource is gone.' })
     }
   }
