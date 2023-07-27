@@ -628,6 +628,8 @@ export default {
     const isCMWUKStore = process.env.STORE === 'CMW_UK'
 
     const commonDisallowPaths = [
+      '/*?*',
+      '/catalog',
       '/?search=',
       '/!*?search=*',
       '/?search=*',
