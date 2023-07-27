@@ -150,6 +150,7 @@ export default defineComponent({
           <button
             v-show="showMobileButton"
             class="relative z-base md:hidden"
+            :aria-label="isMobileMenuOpen ? $t('enums.accessibility.role.MENU.CLOSE') : $t('enums.accessibility.role.MENU.OPEN')"
             @click="toggleSidebar"
           >
             <VueSvgIcon
@@ -175,6 +176,7 @@ export default defineComponent({
           <div class="flex items-center ml-auto lg:hidden">
             <button
               class="p-3"
+              :aria-label="mobileLogin ? $t('enums.accessibility.role.MENU_LOGIN.OPEN') : $t('enums.accessibility.role.MENU_NAVIGATION_USER.OPEN')"
               @click="toggleMobileLogin"
             >
               <VueSvgIcon
@@ -185,6 +187,7 @@ export default defineComponent({
             </button>
             <NuxtLink
               :to="localePath('/cart')"
+              :aria-label="$t('enums.accessibility.labels.GO_TO_CART_PAGE')"
               class="relative p-3"
             >
               <VueSvgIcon

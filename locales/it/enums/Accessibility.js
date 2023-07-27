@@ -5,6 +5,18 @@ export default {
       prev: 'Prossimo',
     },
     role: {
+      MENU: {
+        OPEN: 'Apri menù',
+        CLOSE: 'Chiudi menù',
+      },
+      MENU_LOGIN: {
+        OPEN: 'Apri il menu di accesso',
+        CLOSE: 'Chiudi il menu di accesso',
+      },
+      MENU_NAVIGATION_USER: {
+        OPEN: 'Apri il menu di navigazione dell\'utente',
+        CLOSE: 'Chiude il menu di navigazione dell\'utente',
+      },
       TRIGGER_SEARCH: 'Attiva ricerca',
       ADD_TO_CART: 'Aggiungi al carrello',
       MODAL_OPEN: 'Aprire finestra modale',
@@ -14,7 +26,9 @@ export default {
       REMOVE_FROM_WISHLIST: 'Rimuovi dalla lista dei desideri',
     },
     labels: {
+      GO_TO_CART_PAGE: 'Vai alla pagina del carrello',
       GO_TO_HOME_PAGE: 'Vai alla home page',
+      GO_TO_PRODUCT_DETAIL_PAGE: 'Vai alla pagina dei dettagli del prodotto',
       GO_TO_PAGE: 'Vai a {url}',
       views: {
         GRID: 'vista a griglia',

@@ -218,6 +218,9 @@ export default defineComponent({
       // console.log(`buckets for ${el}`, buckets)
 
       buckets = buckets.filter(bucket => !bucket.key.includes('not specified'))
+      buckets = buckets.filter(bucket => !bucket.key.includes('non specificato'))
+      buckets = buckets.filter(bucket => !bucket.key.includes('nicht angegeben'))
+      buckets = buckets.filter(bucket => !bucket.key.includes('non spécifié'))
 
       // console.log(`buckets for ${el} after filter`, buckets)
 
@@ -295,6 +298,9 @@ export default defineComponent({
       )
 
       buckets = buckets.filter(bucket => !bucket.key.includes('not specified'))
+      buckets = buckets.filter(bucket => !bucket.key.includes('non specificato'))
+      buckets = buckets.filter(bucket => !bucket.key.includes('nicht angegeben'))
+      buckets = buckets.filter(bucket => !bucket.key.includes('non spécifié'))
 
       this.filters = {
         ...this.filters,

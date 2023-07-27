@@ -186,6 +186,9 @@ export default defineComponent({
         )
 
         data = data.filter((bucket: { key: string | string[] }) => !bucket.key.includes('not specified'))
+        data = data.filter((bucket: { key: string | string[] }) => !bucket.key.includes('non specificato'))
+        data = data.filter((bucket: { key: string | string[] }) => !bucket.key.includes('nicht angegeben'))
+        data = data.filter((bucket: { key: string | string[] }) => !bucket.key.includes('non spécifié'))
 
         // this[`${el}`] = buckets
 

@@ -9,7 +9,6 @@ import {
   useRoute,
   useRouter, watch,
 } from '@nuxtjs/composition-api'
-import type { RawLocation } from 'vue-router'
 import Loader from '../../components/UI/Loader.vue'
 import type { IOptions } from '~/types/types'
 
@@ -33,8 +32,7 @@ export default defineComponent({
     return $config.STORE
   },
   setup() {
-    const { $http, $config, localeLocation } = useContext()
-    const { $cmwGtmUtils } = useContext()
+    const { $cmwGtmUtils, localePath } = useContext()
     const route = useRoute()
     const router = useRouter()
 
@@ -56,10 +54,11 @@ export default defineComponent({
       categories: 'category',
     })[key] || ''
 
-    const { fetch } = useFetch(async () => {
+    const { fetch } = useFetch(async ({ $cmw, $config }) => {
       if (!Object.keys(allFiltersRaw.value).length) {
-        await $http.$get(`${$config.ELASTIC_URL}brands`)
+        await $cmw.$get(`${$config.ELASTIC_URL}brands`)
           .then((response) => {
+            console.log(response)
             const { brands } = response as { brands: { filters: Record<string, any> } }
 
             allFiltersRaw.value = brands.filters
@@ -68,7 +67,7 @@ export default defineComponent({
 
       const searchParams = route.value.query as { [key: string]: string | number | boolean }
 
-      await $http.$get(`${$config.ELASTIC_URL}brands`, {
+      await $cmw.$get(`${$config.ELASTIC_URL}brands`, {
         searchParams,
       }).then((response) => {
         const { brands, links } = response as { brands: Record<string, any>; links: ILinksRef }
@@ -126,7 +125,7 @@ export default defineComponent({
         ...route.value.query,
         cursor,
       }
-      router.push({ path: '/winery', query })
+      router.push(localePath({ name: 'winery', query }))
     }
 
     const handleLazyLoad = () => {
@@ -170,7 +169,7 @@ export default defineComponent({
         delete query[keyword]
       else query[keyword] = id
 
-      router.push(localeLocation({ path: '/winery', query }) as RawLocation)
+      router.push(localePath({ name: 'winery', query }))
     }
 
     const handleUpdateTrigger = (value: string) => cmwActiveSelect.value = cmwActiveSelect.value === value ? '' : value

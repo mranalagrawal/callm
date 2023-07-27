@@ -53,13 +53,14 @@ export default defineComponent({
 
     if (process.server && req?.headers && req?.url) {
       const urlSearchParams = new URLSearchParams(req.url.slice(req.url.indexOf('?')))
-
       urlSearchParams.delete('page')
 
       const encodedPath = req?.url.split('?')[0] || ''
-      const encodedSearch = `?${urlSearchParams.toString()}`
+      const encodedSearch = urlSearchParams.toString()
 
-      canonicalUrl.value = `https://${req.headers.host}${encodedPath}${encodedSearch}`
+      // Add the question mark only if there are other query parameters left
+      const questionMark = encodedSearch ? '?' : ''
+      canonicalUrl.value = `https://${req.headers.host}${encodedPath}${questionMark}${encodedSearch}`
     }
 
     if (process.client && typeof window !== 'undefined') {
@@ -74,7 +75,10 @@ export default defineComponent({
 
       const encodedPath = pathname || ''
       const encodedSearch = urlSearchParams.toString()
-      canonicalUrl.value = `${origin}${encodedPath}${encodedSearch}`
+
+      // Add the question mark only if there are other query parameters left
+      const questionMark = encodedSearch ? '?' : ''
+      canonicalUrl.value = `${origin}${encodedPath}${questionMark}${encodedSearch}`
     }
 
     useMeta(() => ({

@@ -227,13 +227,15 @@ export default defineComponent({
         />
       </div>
       <div class="c-productBox__title">
-        <div class="mx-4 mt-1">
+        <div class="relative mx-4 mt-1">
           <button
+            :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')"
             class="transition-colors text-body text-left hover:(text-primary-400)"
             @click="handleProductCLick"
           >
             <span class="line-clamp-2">{{ product.title }}</span>
           </button>
+          <NuxtLink class="block sr-only" :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')" :to="localeLocation(product.url)" />
         </div>
       </div>
       <div class="c-productBox__price justify-self-start self-end">

@@ -39,6 +39,9 @@ export default {
     if (lang === 'en-gb' && this.$config.STORE === 'CMW')
       lang = 'en-eu'
 
+    if (this.$config.STORE === 'B2B')
+      lang = 'it-br'
+
     const response = await this.$prismic.api.getSingle(
       documents[this.$config.STORE].shipping,
       {
@@ -59,6 +62,9 @@ export default {
 
       this.$store.state.user.user.customer.defaultAddress?.lastName
       && (baseUrl += `&checkout[shipping_address][last_name]=${this.$store.state.user.user.customer.defaultAddress.lastName}`)
+
+      this.$store.state.user.user.customer?.phone
+      && (baseUrl += `&checkout[shipping_address][phone]=${this.$store.state.user.user.customer.phone}`)
 
       this.$store.state.user.user.customer.defaultAddress?.address1
       && (baseUrl += `&checkout[shipping_address][address1]=${this.$store.state.user.user.customer.defaultAddress.address1}`)
@@ -100,6 +106,9 @@ export default {
 
       this.$store.state.user.user.customer.defaultAddress?.lastName
       && (checkoutUrl += `&checkout[shipping_address][last_name]=${this.$store.state.user.user.customer.defaultAddress.lastName}`)
+
+      this.$store.state.user.user.customer?.phone
+      && (checkoutUrl += `&checkout[shipping_address][phone]=${this.$store.state.user.user.customer.phone}`)
 
       this.$store.state.user.user.customer.defaultAddress?.address1
       && (checkoutUrl += `&checkout[shipping_address][address1]=${this.$store.state.user.user.customer.defaultAddress.address1}`)

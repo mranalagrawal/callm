@@ -82,10 +82,11 @@ export default defineComponent({
           class="text-center text-uppercase py-2"
           @mouseenter="onTab(firstLevel.name)"
         >
-          <NuxtLink
+          <component
+            :is="firstLevel.link ? 'NuxtLink' : 'span'"
             class="w-max text-xs w-max desktop-wide:text-sm uppercase hover:(text-primary font-bold)"
             :class="firstLevel.isPromotionTab ? 'text-primary-400' : 'text-body'"
-            :to="localePath(`/${firstLevel.link}`)"
+            :to="firstLevel.link ? localePath(`/${firstLevel.link}`) : undefined"
           >
             <VueSvgIcon
               v-if="firstLevel.isPromotionTab"
@@ -95,7 +96,7 @@ export default defineComponent({
               class="inline"
             />
             {{ firstLevel.name }}
-          </NuxtLink>
+          </component>
         </div>
       </div>
     </div>

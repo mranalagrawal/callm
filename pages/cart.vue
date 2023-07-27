@@ -102,6 +102,9 @@ export default defineComponent({
       this.$store.state.user.user.customer.defaultAddress?.lastName
       && (checkoutUrl += `&checkout[shipping_address][last_name]=${this.$store.state.user.user.customer.defaultAddress.lastName}`)
 
+      this.$store.state.user.user.customer?.phone
+      && (checkoutUrl += `&checkout[shipping_address][phone]=${this.$store.state.user.user.customer.phone}`)
+
       this.$store.state.user.user.customer.defaultAddress?.address1
       && (checkoutUrl += `&checkout[shipping_address][address1]=${this.$store.state.user.user.customer.defaultAddress.address1}`)
 
