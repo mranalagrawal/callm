@@ -1,4 +1,4 @@
-let count = 0
+// let count = 0
 
 // eslint-disable-next-line max-len
 // const OLD_LETTERS_REGEX = /^\/(.*?)(?<!%)((C(1|2|3|4|54|57|64|66|75|78|87|95|97|99|104|106|109))|(R(1|15|4|5|6|221|238|9|10|275|11|12|282|13|14|16|17|19|20|21|22|23|24|25|233|26|203|188|28|29|241|30|31|32|229|33|34|35|36|38|39|40|196|42|291|43|44|45|46|47|48|247|49|50|51|293|52|186|184|297)))([A-OQ-Z]\d+)?(.*?).htm/
@@ -272,14 +272,14 @@ function pageWithFilterCode(routePath) {
   return routePath.match(/-([A-OQ-Z]\d+)+.htm/) // exclude P product pages
 }
 
-export default async function ({ redirect, route, $cmw, $config, error, localePath, $sentry }) {
-  console.log({ path: route.path, elasticUrl: $config.ELASTIC_URL })
-  count++
-
-  if (count >= 5) {
-    $sentry.captureException(new Error(`url-checker - too many redirects ${route.path}`))
-    return
-  }
+export default async function ({ redirect, route, $cmw, $config, error, localePath }) {
+  // console.log({ path: route.path, elasticUrl: $config.ELASTIC_URL })
+  // never resetted
+  // count++
+  // if (count >= 5) {
+  //  $sentry.captureException(new Error(`url-checker - too many redirects ${route.path}`))
+  //  return
+  // }
   // is brand
   if (route.path.match(/[a-z0-9\/]+(?:-[a-z0-9]+)*-(B\d+)+.htm/)) {
     console.log(`${route.path} is a brandPage...`)
