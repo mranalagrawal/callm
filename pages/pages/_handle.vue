@@ -143,6 +143,7 @@ export default defineComponent({
               if (Object.keys(aggregations).length)
                 aggregationsRef.value = aggregations
             })
+            .catch((err: Error) => $handleApiErrors(`Catch getting results.value = hits.hits from elastic: ${err}`))
         })
         .catch((err: Error) => $handleApiErrors(`Catch getting getPageByHandle from shopify: ${err}`))
     })
