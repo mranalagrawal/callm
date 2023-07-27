@@ -276,7 +276,7 @@ export default async function ({ redirect, route, $cmw, $config, error, localePa
   count++
 
   if (count >= 5) {
-    $sentry.captureException(new Error('url-checker - too many redirects'))
+    $sentry.captureException(new Error(`url-checker - too many redirects ${route.path}`))
     return
   }
   // is brand
