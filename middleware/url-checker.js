@@ -293,13 +293,13 @@ export default async function ({ redirect, route, $cmw, $config, error, localePa
     } else if (matched && REDIRECT_SEO_REGEX[matched] === 200) {
       // console.log(`🚥${route.path} match ${matched} -> 200 url ok`)
       // need to do redirect
-      if (isOldUrl(route.path)) {
-        redirectTo = prepareRedirect(route.path)
+      /* if (isOldUrl(route.path)) {
+        // redirectTo = prepareRedirect(route.path)
         // console.log(`🚥(301) ${route.path} contains oldletters need redirect to  -> ${redirectTo}`)
-        redirect(301, redirectTo)
+        // redirect(301, redirectTo)
       } else {
         // console.log(`🚥(200) ${route.path} -> continue`)
-      }
+      } */
     } else {
       // console.log(`🚥${route.path} doesn't match regex -> 410`)
       error({ statusCode: 410, message: 'Resource is gone.' })
