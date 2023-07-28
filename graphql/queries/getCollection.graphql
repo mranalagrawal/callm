@@ -15,7 +15,7 @@ query getCollection($lang: LanguageCode!, $handle: String, $id: ID)
     link: metafield(namespace: "custom", key: "link_home") {
       value
     }
-    products(first: 12) {
+    products(first: 250) {
       # How can we reuse the objects on graphql?
       nodes {
         availableForSale
