@@ -11,13 +11,13 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $config } = useContext()
+    const { $elastic } = useContext()
 
     const vintages = ref([])
     onMounted(async () => {
       if (process.browser) {
-        const qry = await fetch(`${$config.ELASTIC_URL}product-related-vintages/${props.sku}`) // 13V91338
-        const { data = [] } = await qry.json()
+        const qry = await $elastic.$get(`product-related-vintages/${props.sku}`) // 13V91338
+        const { data = [] } = await qry as Record<string, any>
 
         if (data.length > 1)
           vintages.value = data

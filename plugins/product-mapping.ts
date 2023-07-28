@@ -44,7 +44,7 @@ declare module '@nuxt/types' {
   interface NuxtAppOptions {
     $productMapping: IProductMapping
   }
-  // nuxtContext.$cmw
+  // nuxtContext.$productMapping
   interface Context {
     $productMapping: IProductMapping
   }

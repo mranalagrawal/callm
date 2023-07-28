@@ -272,7 +272,7 @@ function pageWithFilterCode(routePath) {
   return routePath.match(/-([A-OQ-Z]\d+)+.htm/) // exclude P product pages
 }
 
-export default async function ({ redirect, route, $cmw, $config, error, localePath }) {
+export default async function ({ redirect, route, $elastic, $config, error, localePath }) {
   console.log({ path: route.path, elasticUrl: $config.ELASTIC_URL })
   // never resetted
   // count++
@@ -316,14 +316,14 @@ export default async function ({ redirect, route, $cmw, $config, error, localePa
     if (matched && REDIRECT_SEO_REGEX[matched] === 301) {
       try {
         console.log(`🚥(301) need redirect get ${$config.ELASTIC_URL}seo/get-redirect-url?urlPath=${route.path}`)
-        const resp = await $cmw.$get(`${$config.ELASTIC_URL}seo/get-redirect-url?urlPath=${route.path}`)
+        const resp = await $elastic.$get(`${$config.ELASTIC_URL}seo/get-redirect-url?urlPath=${route.path}`)
         console.log(`🚥(301) ${route.path} match ${matched} -> redirectTo /${resp.data.redirectUrl}`, $config.ELASTIC_URL)
         redirectTo = `/${resp.data.redirectUrl}`
         redirectTo = prepareRedirect(redirectTo)
         redirect(301, redirectTo)
       } catch (e) {
         // if bo can't respond - continue with old url instead of broken
-        console.log(`🚥(301) error`, { error: e.message })
+        console.log('🚥(301) error', { error: e.message })
       }
     } else if (matched && REDIRECT_SEO_REGEX[matched] === 200) {
       console.log(`🚥${route.path} match ${matched} -> 200 url ok`)

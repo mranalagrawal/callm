@@ -260,13 +260,13 @@ export default defineComponent({
       return views
     })
 
-    const { fetch } = useFetch(async ({ $config, $cmw, $cmwRepo, $i18n }) => {
+    const { fetch } = useFetch(async ({ $config, $elastic, $cmwRepo, $i18n }) => {
       const store = $config.STORE as TStores || 'CMW_UK'
       const storeConfigId = themeConfig[store]?.id || 2
 
       collectionRef.value = await $cmwRepo.products.getCollectionsByHandle({ handle: route.value.params.handle })
 
-      await $cmw.$get(`${$config.ELASTIC_URL}products/search?stores=${storeConfigId}&locale=${$i18n.locale}&${query.value}`)
+      await $elastic.$get(`products/search?stores=${storeConfigId}&locale=${$i18n.locale}&${query.value}`)
         .then((data) => {
           const { hits, aggregations } = data as Record<string, any>
           results.value = hits.hits
