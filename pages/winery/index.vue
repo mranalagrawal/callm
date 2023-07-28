@@ -56,7 +56,7 @@ export default defineComponent({
 
     const { fetch } = useFetch(async ({ $elastic }) => {
       if (!Object.keys(allFiltersRaw.value).length) {
-        await $elastic.$get('brands')
+        await $elastic.$get('/brands')
           .then((response) => {
             console.log(response)
             const { brands } = response as { brands: { filters: Record<string, any> } }
@@ -67,7 +67,7 @@ export default defineComponent({
 
       const searchParams = route.value.query as { [key: string]: string | number | boolean }
 
-      await $elastic.$get('brands', {
+      await $elastic.$get('/brands', {
         searchParams,
       }).then((response) => {
         const { brands, links } = response as { brands: Record<string, any>; links: ILinksRef }

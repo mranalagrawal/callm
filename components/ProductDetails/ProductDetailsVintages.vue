@@ -16,7 +16,7 @@ export default defineComponent({
     const vintages = ref([])
     onMounted(async () => {
       if (process.browser) {
-        const qry = await $elastic.$get(`product-related-vintages/${props.sku}`) // 13V91338
+        const qry = await $elastic.$get(`/product-related-vintages/${props.sku}`) // 13V91338
         const { data = [] } = await qry as Record<string, any>
 
         if (data.length > 1)

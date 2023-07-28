@@ -54,7 +54,7 @@ const cmwApi: Plugin = ({ $http, i18n, $config, $sentry }, inject) => {
   $cmw.setHeader('Accept', 'application/json')
   $cmw.setHeader('Content-Type', 'application/json')
 
-  $elastic.setBaseURL($config.ELASTIC_URL)
+  $elastic.setBaseURL($config.ELASTIC_URL_TEST)
   $elastic.setHeader('X-Cmw-Store', $config.STORE)
   $elastic.setHeader('X-Cmw-Sales-Channel', sale_channel)
   $elastic.setHeader('X-Cmw-Locale', i18n.locale)
