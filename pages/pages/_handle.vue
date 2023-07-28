@@ -115,37 +115,37 @@ export default defineComponent({
 
     const { fetch } = useFetch(async ({ $config, $elastic, $cmwRepo, $handleApiErrors, $route, $i18n }) => {
       await $cmwRepo.shopifyPages.getPageByHandle({ handle: $route.params.handle })
-        .then(async ({ page }) => {
+        .then(({ page }) => {
           if (!page || !Object.keys(page).length)
             return
 
-          const store = $config.STORE as TStores || 'CMW_UK'
-          const storeConfigId = themeConfig[store]?.id || 2
           pageData.value = page
           inputParameters.value = page?.filters?.value && JSON.parse(page.filters.value)
 
           shortDescription.value = shopifyRichTexttoHTML(page.shortDescription.value)
-
-          const mergedInputParameters = {
-            ...inputParameters.value,
-            ...route.value.query,
-          }
-
-          const urlSearchParams = new URLSearchParams(mergedInputParameters)
-          const queryToString = urlSearchParams.toString()
-
-          await $elastic.$get(`products/search?stores=${storeConfigId}&locale=${$i18n.locale}&${queryToString}`)
-            .then((data) => {
-              const { hits, aggregations } = data as Record<string, any>
-              results.value = hits.hits
-              total.value = hits.total.value
-
-              if (Object.keys(aggregations).length)
-                aggregationsRef.value = aggregations
-            })
-            .catch((err: Error) => $handleApiErrors(`Catch getting results.value = hits.hits from elastic: ${err}`))
         })
         .catch((err: Error) => $handleApiErrors(`Catch getting getPageByHandle from shopify: ${err}`))
+
+      const mergedInputParameters = {
+        ...inputParameters.value,
+        ...route.value.query,
+      }
+
+      const store = $config.STORE as TStores
+      const storeConfigId = themeConfig[store]?.id
+      const urlSearchParams = new URLSearchParams(mergedInputParameters)
+      const queryToString = urlSearchParams.toString()
+
+      await $elastic.$get(`products/search?stores=${storeConfigId}&locale=${$i18n.locale}&${queryToString}`)
+        .then((data) => {
+          const { hits, aggregations } = data as Record<string, any>
+          results.value = hits.hits
+          total.value = hits.total.value
+
+          if (Object.keys(aggregations).length)
+            aggregationsRef.value = aggregations
+        })
+        .catch((err: Error) => $handleApiErrors(`Catch getting results.value = hits.hits from elastic: ${err}`))
     })
 
     watch(() => route.value?.query, () => {
