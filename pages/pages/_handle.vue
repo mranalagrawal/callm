@@ -136,7 +136,7 @@ export default defineComponent({
       const urlSearchParams = new URLSearchParams(mergedInputParameters)
       const queryToString = urlSearchParams.toString()
 
-      await $elastic.$get(`products/search?stores=${storeConfigId}&locale=${$i18n.locale}&${queryToString}`)
+      await $elastic.$get(`/products/search?stores=${storeConfigId}&locale=${$i18n.locale}&${queryToString}`)
         .then((data) => {
           const { hits, aggregations } = data as Record<string, any>
           results.value = hits.hits

@@ -266,7 +266,7 @@ export default defineComponent({
 
       collectionRef.value = await $cmwRepo.products.getCollectionsByHandle({ handle: route.value.params.handle })
 
-      await $elastic.$get(`products/search?stores=${storeConfigId}&locale=${$i18n.locale}&${query.value}`)
+      await $elastic.$get(`/products/search?stores=${storeConfigId}&locale=${$i18n.locale}&${query.value}`)
         .then((data) => {
           const { hits, aggregations } = data as Record<string, any>
           results.value = hits.hits
