@@ -22,6 +22,7 @@ declare module '@nuxt/types' {
   }
   // nuxtContext.$cmw
   interface Context {
+    $elastic: NuxtHTTPInstance
     $cmw: NuxtHTTPInstance
     $handleApiErrors(err: string): void
   }
