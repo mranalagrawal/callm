@@ -247,6 +247,7 @@ const TITLE = {
 }
 
 export default {
+  debug: true,
   loading: '~/components/LoadingBar.vue',
   loadingIndicator: {
     name: 'circle',
