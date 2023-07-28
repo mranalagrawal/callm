@@ -113,7 +113,7 @@ export default defineComponent({
       sortBy(field, direction)
     }
 
-    const { fetch } = useFetch(async ({ $config, $cmw, $cmwRepo, $handleApiErrors, $route, $i18n }) => {
+    const { fetch } = useFetch(async ({ $config, $elastic, $cmwRepo, $handleApiErrors, $route, $i18n }) => {
       await $cmwRepo.shopifyPages.getPageByHandle({ handle: $route.params.handle })
         .then(async ({ page }) => {
           if (!page || !Object.keys(page).length)
@@ -134,7 +134,7 @@ export default defineComponent({
           const urlSearchParams = new URLSearchParams(mergedInputParameters)
           const queryToString = urlSearchParams.toString()
 
-          await $cmw.$get(`${$config.ELASTIC_URL}products/search?stores=${storeConfigId}&locale=${$i18n.locale}&${queryToString}`)
+          await $elastic.$get(`products/search?stores=${storeConfigId}&locale=${$i18n.locale}&${queryToString}`)
             .then((data) => {
               const { hits, aggregations } = data as Record<string, any>
               results.value = hits.hits

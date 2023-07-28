@@ -8,6 +8,7 @@ declare module 'vue/types/vue' {
   // this.$cmw inside Vue components
   interface Vue {
     $cmw: NuxtHTTPInstance
+    $elastic: NuxtHTTPInstance
     $handleApiErrors(err: string): void
   }
 }
@@ -16,6 +17,7 @@ declare module '@nuxt/types' {
   // nuxtContext.app.$cmw inside asyncData, fetch, plugins, middleware, nuxtServerInit
   interface NuxtAppOptions {
     $cmw: NuxtHTTPInstance
+    $elastic: NuxtHTTPInstance
     $handleApiErrors(err: string): void
   }
   // nuxtContext.$cmw
@@ -30,6 +32,7 @@ declare module 'vuex/types/index' {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars,unused-imports/no-unused-vars
   interface Store<S> {
     $cmw: NuxtHTTPInstance
+    $elastic: NuxtHTTPInstance
     $handleApiErrors(err: string): void
   }
 }
@@ -37,6 +40,8 @@ declare module 'vuex/types/index' {
 const cmwApi: Plugin = ({ $http, i18n, $config, $sentry }, inject) => {
   // See https://github.com/sindresorhus/ky#options
   const $cmw = $http.create({})
+  const $elastic = $http.create({})
+
   const store: TStores = $config.STORE || 'CMW_UK'
   const sale_channel: TSalesChannel = themeConfig[store]?.salesChannel || 'cmw_uk_b2c'
 
@@ -48,7 +53,16 @@ const cmwApi: Plugin = ({ $http, i18n, $config, $sentry }, inject) => {
   $cmw.setHeader('Accept', 'application/json')
   $cmw.setHeader('Content-Type', 'application/json')
 
+  $elastic.setBaseURL($config.ELASTIC_URL)
+  $elastic.setHeader('X-Cmw-Store', $config.STORE)
+  $elastic.setHeader('X-Cmw-Sales-Channel', sale_channel)
+  $elastic.setHeader('X-Cmw-Locale', i18n.locale)
+  $elastic.setHeader('Accept', 'application/json')
+  $elastic.setHeader('Content-Type', 'application/json')
+
   inject('cmw', $cmw)
+  inject('elastic', $elastic)
+
   inject('handleApiErrors', (err: string) => {
     SweetAlertToast.fire({
       icon: 'error',
