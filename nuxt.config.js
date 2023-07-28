@@ -623,6 +623,7 @@ export default {
     DOMAIN: process.env.DOMAIN,
     STOREFRONT_ACCESS_TOKEN: process.env.STOREFRONT_ACCESS_TOKEN,
     ELASTIC_URL: process.env.ELASTIC_URL,
+    ELASTIC_URL_TEST: process.env.ELASTIC_URL_TEST,
     CMW_API: process.env.CMW_API,
     CMW_API_KEY: process.env.CMW_API_KEY,
     SALECHANNEL: process.env.SALECHANNEL,
