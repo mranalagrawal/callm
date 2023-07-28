@@ -323,6 +323,7 @@ export default async function ({ redirect, route, $cmw, $config, error, localePa
         redirect(301, redirectTo)
       } catch (e) {
         // if bo can't respond - continue with old url instead of broken
+        console.log(`🚥(301) error`, e)
       }
     } else if (matched && REDIRECT_SEO_REGEX[matched] === 200) {
       console.log(`🚥${route.path} match ${matched} -> 200 url ok`)
