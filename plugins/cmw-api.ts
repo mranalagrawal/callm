@@ -60,6 +60,10 @@ const cmwApi: Plugin = ({ $http, i18n, $config, $sentry }, inject) => {
   $elastic.setHeader('X-Cmw-Locale', i18n.locale)
   $elastic.setHeader('Accept', 'application/json')
   $elastic.setHeader('Content-Type', 'application/json')
+  $elastic.onError((err) => {
+    console.log(err)
+    $sentry.captureException(new Error(`$elastic catch ${err}`))
+  })
 
   inject('cmw', $cmw)
   inject('elastic', $elastic)
