@@ -55,6 +55,7 @@ export default defineComponent({
     })[key] || ''
 
     const { fetch } = useFetch(async ({ $elastic }) => {
+      console.log($elastic)
       if (!Object.keys(allFiltersRaw.value).length) {
         await $elastic.$get('/brands')
           .then((response) => {
