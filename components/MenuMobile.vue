@@ -1,5 +1,6 @@
 <script lang="ts">
 import closeIcon from 'assets/svg/close.svg'
+import promoTagIcon from 'assets/svg/promo-tag.svg'
 import chevronRightIcon from 'assets/svg/chevron-right.svg'
 import chevronLeftIcon from 'assets/svg/chevron-left.svg'
 import type { PropType } from '@nuxtjs/composition-api'
@@ -43,13 +44,14 @@ export default defineComponent({
     watch(() => route.value, () => closeSidebar(true), { deep: true })
 
     return {
+      // handleAfterEnter,
       activeItem,
       chevronLeftIcon,
       chevronRightIcon,
       closeIcon,
       closeSidebar,
-      // handleAfterEnter,
       mappedMenu,
+      promoTagIcon,
     }
   },
   methods: { getIconByFeature, generateKey },
@@ -60,21 +62,33 @@ export default defineComponent({
   <div class="w-full bg-white">
     <div class="shadow h-[3px]" />
     <div class="overflow-auto h-screen">
-      <button
+      <component
+        :is="!!mappedMenuItem.items.length ? 'button' : 'NuxtLink'"
         v-for="(mappedMenuItem) in menu"
         :key="generateKey(mappedMenuItem.name)"
+        :to="!mappedMenuItem.items.length ? localePath(`/${mappedMenuItem.link}`) : undefined"
         class="relative flex justify-between items-center w-full py-4 px-2"
         @click="activeItem = mappedMenuItem"
       >
-        <span class="uppercase text-sm font-light tracking-wide">{{ mappedMenuItem.name }}</span>
+        <span class="uppercase text-sm font-light tracking-wide" :class="mappedMenuItem.isPromotionTab ? 'text-primary-400' : ''">
+          <VueSvgIcon
+            v-if="mappedMenuItem.isPromotionTab"
+            :data="promoTagIcon"
+            width="26"
+            height="26"
+            class="inline"
+          />
+          {{ mappedMenuItem.name }}
+        </span>
         <VueSvgIcon
+          v-if="!!mappedMenuItem.items.length"
           :data="chevronRightIcon"
           width="16"
           height="16"
           color="#d94965"
         />
         <span class="absolute w-[calc(100%_-_1rem)] left-2 bottom-0 h-px bg-gray-light" />
-      </button>
+      </component>
     </div>
     <!--    <transition name="menu-mobile-second-level" @after-enter="handleAfterEnter"> -->
     <div

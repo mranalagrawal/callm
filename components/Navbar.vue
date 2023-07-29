@@ -87,6 +87,8 @@ export default defineComponent({
             name: firstLevel.primary.group_label,
             link: firstLevel.primary.first_level_link,
             position: firstLevel.primary.first_level_position,
+            isPromotionTab: firstLevel.primary.is_promotion_tab,
+            display_as_cards: firstLevel.primary.display_as_cards,
             items,
           }
         })

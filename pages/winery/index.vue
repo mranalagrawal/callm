@@ -10,6 +10,8 @@ import {
   useRouter, watch,
 } from '@nuxtjs/composition-api'
 import Loader from '../../components/UI/Loader.vue'
+import type { TStores } from '~/config/themeConfig'
+import themeConfig from '~/config/themeConfig'
 import type { IOptions } from '~/types/types'
 
 interface ILinksRef {
@@ -189,6 +191,51 @@ export default defineComponent({
       fetchBrands,
       fetchPage,
       handleUpdateTrigger,
+    }
+  },
+  async asyncData({ $config, $elastic, $cmwRepo, $handleApiErrors, route, i18n }) {
+    try {
+      const pageResponse = await $cmwRepo.shopifyPages.getPageByHandle({ handle: route.params.handle })
+      const pageData = pageResponse.page
+      const inputParameters = pageData?.filters?.value ? JSON.parse(pageData.filters.value) : {}
+      // const shortDescription = shopifyRichTexttoHTML(pageData.shortDescription.value);
+      console.log(pageResponse)
+
+      const mergedInputParameters = {
+        ...inputParameters,
+        ...route.query,
+      }
+
+      const store = $config.STORE as TStores
+      const storeConfigId = themeConfig[store]?.id
+      const urlSearchParams = new URLSearchParams(mergedInputParameters)
+      const queryToString = urlSearchParams.toString()
+
+      const elasticData = await $elastic.$get(`products/search?stores=${storeConfigId}&locale=${i18n.locale}&${queryToString}`)
+      console.log(elasticData)
+      // const results = elasticData.hits.hits
+      // const total = elasticData.hits.total.value
+      // const aggregationsRef = Object.keys(elasticData.aggregations).length ? elasticData.aggregations : {}
+
+      return {
+        pageData,
+        inputParameters,
+        // shortDescription,
+        // results,
+        // total,
+        // aggregationsRef,
+      }
+    } catch (error) {
+      // Handle any errors here
+      $handleApiErrors(`Error fetching data: ${error}`)
+      return {
+        // pageData: {},
+        // inputParameters: {},
+        // shortDescription: '',
+        // results: [],
+        // total: 0,
+        // aggregationsRef: {},
+      }
     }
   },
 })
