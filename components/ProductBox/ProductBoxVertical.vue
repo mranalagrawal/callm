@@ -249,7 +249,7 @@ export default defineComponent({
                 $n(Number(product.compareAtPrice.amount), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode))
               }}
             </span>
-            <span v-if="$config.STORE === 'CMW_DE' && priceByLiter" class="text-sm">
+            <span v-if="$config.STORE === 'CMW_DE' && priceByLiter" class="text-xs">
               {{ $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode)) }}/liter</span>
           </span>
           <i18n-n

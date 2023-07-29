@@ -15,7 +15,7 @@ export default {
 </script>
 
 <template>
-  <div class="container my-5">
+  <div class="my-5">
     <CarouselProducts v-if="!!collectionRef.products?.length" :products="collectionRef.products" :title="collectionRef.description" />
     <div class="mt-5">
       <Button

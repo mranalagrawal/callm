@@ -178,7 +178,7 @@ export default defineComponent({
         </div>
       </div>
       <div
-        v-else class="grid grid-cols-1 gap-4 phone-md:(grid-cols-2 gap-2)
+        v-else class="grid grid-cols-1 gap-4 phone:(grid-cols-2 gap-2)
          sm:(grid-cols-2 gap-3) lg:(grid-cols-3 gap-4) desktop-wide:grid-cols-4"
       >
         <div

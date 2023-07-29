@@ -18,18 +18,14 @@ export default defineComponent({
       default: () => ([
         {
           minWidth: 0,
-          slidesPerPage: 2,
-        },
-        {
-          minWidth: 411,
           slidesPerPage: 1,
         },
         {
-          minWidth: 767,
+          minWidth: 412,
           slidesPerPage: 2,
         },
         {
-          minWidth: 1023,
+          minWidth: 992,
           slidesPerPage: 3,
         },
         {
