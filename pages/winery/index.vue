@@ -2,16 +2,15 @@
 import {
   computed,
   defineComponent,
+  onBeforeMount,
   onMounted,
   ref,
   useContext,
-  useFetch,
   useRoute,
-  useRouter, watch,
+  useRouter,
+  watch,
 } from '@nuxtjs/composition-api'
-import Loader from '../../components/UI/Loader.vue'
-import type { TStores } from '~/config/themeConfig'
-import themeConfig from '~/config/themeConfig'
+import Loader from '~/components/UI/Loader.vue'
 import type { IOptions } from '~/types/types'
 
 interface ILinksRef {
@@ -34,13 +33,13 @@ export default defineComponent({
     return $config.STORE
   },
   setup() {
-    const { $cmwGtmUtils, localePath } = useContext()
+    const { $cmwGtmUtils, localePath, $elastic } = useContext()
     const route = useRoute()
     const router = useRouter()
 
     const cmwActiveSelect = ref('')
-    const data = ref([])
-    const linksRef = ref<ILinksRef>({ first: '', last: '', next: '', prev: '' })
+    const pageData = ref([])
+    const linksRef = ref<ILinksRef | null>({ first: '', last: '', next: '', prev: '' })
     const allFiltersRaw = ref({})
     const limit = ref(5)
     const trigger = ref(null)
@@ -56,28 +55,38 @@ export default defineComponent({
       categories: 'category',
     })[key] || ''
 
-    const { fetch } = useFetch(async ({ $elastic }) => {
-      console.log($elastic)
-      if (!Object.keys(allFiltersRaw.value).length) {
-        await $elastic.$get('/brands')
-          .then((response) => {
-            console.log(response)
-            const { brands } = response as { brands: { filters: Record<string, any> } }
+    async function fetchData() {
+      const fetchState = { pending: true, error: null }
 
-            allFiltersRaw.value = brands.filters
-          })
-      }
+      try {
+        const filters = await $elastic.$get('/brands') as Record<string, any>
+        allFiltersRaw.value = filters.brands.filters
 
-      const searchParams = route.value.query as { [key: string]: string | number | boolean }
+        const searchParams = route.value.query as { [key: string]: string | number | boolean }
 
-      await $elastic.$get('/brands', {
-        searchParams,
-      }).then((response) => {
+        const response = await $elastic.$get('/brands', { searchParams })
         const { brands, links } = response as { brands: Record<string, any>; links: ILinksRef }
-        data.value = brands.data.sort((a: { isPartner: number }, b: { isPartner: number }) => b.isPartner - a.isPartner)
-        linksRef.value = links
-      })
-    })
+        fetchState.pending = false
+
+        return { data: brands.data.sort((a: { isPartner: number }, b: { isPartner: number }) => b.isPartner - a.isPartner), links, fetchState }
+      } catch (error: any) {
+        fetchState.pending = false
+        fetchState.error = error
+
+        return { data: [], links: null, fetchState }
+      }
+    }
+
+    const fetchState = ref({ pending: true, error: null })
+
+    async function fetchDataWithFetchState() {
+      const { data, links, fetchState: updatedFetchState } = await fetchData()
+      fetchState.value = updatedFetchState
+      pageData.value = data
+      linksRef.value = links
+    }
+
+    onBeforeMount(fetchDataWithFetchState)
 
     const allFilters = computed(() => {
       let newFilters: IAllFilters = {
@@ -92,11 +101,12 @@ export default defineComponent({
           ...newFilters,
           [k]: Object.values(v as Record<string, any>).map((value) => {
             const { name, id } = value as { name: string; id: string | number }
+
             return {
               id,
               keyword: getType(k),
               label: name,
-              selected: route.value.fullPath?.toLowerCase().includes(getType(k) as string) && route.value.query[getType(k) as string] === id.toString(),
+              selected: route.value.fullPath?.toLowerCase().includes(getType(k)) && route.value.query[getType(k)] === id.toString(),
               value: JSON.stringify({
                 id,
                 keyword: getType(k),
@@ -108,7 +118,7 @@ export default defineComponent({
 
       return newFilters
     })
-    const slicedData = computed(() => data.value && data.value.slice(0, limit.value))
+    const slicedData = computed(() => pageData.value && pageData.value.slice(0, limit.value))
     const activeSelections = computed<Record<string, string>[]>(() => {
       return Object.values(allFilters.value)
         .flatMap(v => v.filter((item: { selected: boolean }) => item.selected)) || []
@@ -121,6 +131,9 @@ export default defineComponent({
 
     const fetchPage = (isPrev = false) => {
       resetLazyLoad()
+      if (!linksRef.value)
+        return
+
       const url = isPrev ? new URL(linksRef.value.prev) : new URL(linksRef.value.next)
       const cursor = url.searchParams.get('cursor')
 
@@ -177,65 +190,22 @@ export default defineComponent({
 
     const handleUpdateTrigger = (value: string) => cmwActiveSelect.value = cmwActiveSelect.value === value ? '' : value
 
-    watch(() => route.value.query, () => fetch())
+    watch(() => route.value.query, () => fetchDataWithFetchState())
 
     return {
-      cmwActiveSelect,
       activeSelections,
-      data,
-      slicedData,
-      linksRef,
       allFilters,
-      trigger,
-      limit,
+      allFiltersRaw,
+      cmwActiveSelect,
       fetchBrands,
       fetchPage,
+      fetchState,
       handleUpdateTrigger,
-    }
-  },
-  async asyncData({ $config, $elastic, $cmwRepo, $handleApiErrors, route, i18n }) {
-    try {
-      const pageResponse = await $cmwRepo.shopifyPages.getPageByHandle({ handle: route.params.handle })
-      const pageData = pageResponse.page
-      const inputParameters = pageData?.filters?.value ? JSON.parse(pageData.filters.value) : {}
-      // const shortDescription = shopifyRichTexttoHTML(pageData.shortDescription.value);
-      console.log(pageResponse)
-
-      const mergedInputParameters = {
-        ...inputParameters,
-        ...route.query,
-      }
-
-      const store = $config.STORE as TStores
-      const storeConfigId = themeConfig[store]?.id
-      const urlSearchParams = new URLSearchParams(mergedInputParameters)
-      const queryToString = urlSearchParams.toString()
-
-      const elasticData = await $elastic.$get(`products/search?stores=${storeConfigId}&locale=${i18n.locale}&${queryToString}`)
-      console.log(elasticData)
-      // const results = elasticData.hits.hits
-      // const total = elasticData.hits.total.value
-      // const aggregationsRef = Object.keys(elasticData.aggregations).length ? elasticData.aggregations : {}
-
-      return {
-        pageData,
-        inputParameters,
-        // shortDescription,
-        // results,
-        // total,
-        // aggregationsRef,
-      }
-    } catch (error) {
-      // Handle any errors here
-      $handleApiErrors(`Error fetching data: ${error}`)
-      return {
-        // pageData: {},
-        // inputParameters: {},
-        // shortDescription: '',
-        // results: [],
-        // total: 0,
-        // aggregationsRef: {},
-      }
+      limit,
+      linksRef,
+      pageData,
+      slicedData,
+      trigger,
     }
   },
 })
@@ -344,23 +314,23 @@ export default defineComponent({
       <!-- Note: lazy load trigger, can't hide this because it loses the observer, v-if="limit < data.length" -->
       lazy-loading-trigger
     </div>
-    <div v-if="data" class="flex justify-between">
+    <div v-if="!!pageData.length" class="flex justify-between">
       <Button
-        v-if="linksRef.prev"
+        v-if="linksRef?.prev"
         class="w-max"
         variant="text"
         :label="$t('common.cta.prevPage')"
         @click.native="fetchPage(true)"
       />
       <Button
-        v-if="linksRef.next"
+        v-if="linksRef?.next"
         class="w-max"
         variant="text"
         :label="$t('common.cta.nextPage')"
         @click.native="fetchPage(false)"
       />
     </div>
-    <Loader v-if="$fetchState.pending" />
+    <Loader v-if="fetchState.pending" />
   </div>
 </template>
 
