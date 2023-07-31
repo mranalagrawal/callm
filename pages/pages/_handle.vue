@@ -139,7 +139,7 @@ export default defineComponent({
       urlSearchParams.set('locale', $i18n.locale || '')
       const searchParams = urlSearchParams.toString()
 
-      await $http.$get(`${$config.ELASTIC_URL_TEST}/products/search`)
+      await $http.$get(`${$config.ELASTIC_URL_TEST}/products/search`, { searchParams })
         .then(data => console.log(data))
 
       await $elastic.$get('/products/search', { searchParams })
