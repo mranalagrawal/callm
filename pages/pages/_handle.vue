@@ -13,7 +13,7 @@ import filterIcon from 'assets/svg/filter.svg'
 import type { RawLocation } from 'vue-router'
 import type { TStores } from '~/config/themeConfig'
 import themeConfig from '~/config/themeConfig'
-import { shopifyRichTexttoHTML } from '~/utilities/shopify'
+import { shopifyRichTextToHTML } from '~/utilities/shopify'
 
 interface IQuery {
   [key: string]: string | undefined
@@ -113,7 +113,8 @@ export default defineComponent({
       sortBy(field, direction)
     }
 
-    const { fetch } = useFetch(async ({ $config, $elastic, $cmwRepo, $handleApiErrors, $route, $i18n }) => {
+    const { fetch } = useFetch(async ({ $config, $http, $elastic, $cmwRepo, $handleApiErrors, $route, $i18n }) => {
+      console.log($elastic)
       await $cmwRepo.shopifyPages.getPageByHandle({ handle: $route.params.handle })
         .then(({ page }) => {
           if (!page || !Object.keys(page).length)
@@ -122,7 +123,7 @@ export default defineComponent({
           pageData.value = page
           inputParameters.value = page?.filters?.value && JSON.parse(page.filters.value)
 
-          shortDescription.value = shopifyRichTexttoHTML(page.shortDescription.value)
+          shortDescription.value = shopifyRichTextToHTML(page.shortDescription.value)
         })
         .catch((err: Error) => $handleApiErrors(`Catch getting getPageByHandle from shopify: ${err}`))
 
@@ -134,9 +135,14 @@ export default defineComponent({
       const store = $config.STORE as TStores
       const storeConfigId = themeConfig[store]?.id
       const urlSearchParams = new URLSearchParams(mergedInputParameters)
-      const queryToString = urlSearchParams.toString()
+      urlSearchParams.set('stores', storeConfigId?.toString() || '')
+      urlSearchParams.set('locale', $i18n.locale || '')
+      const searchParams = urlSearchParams.toString()
 
-      await $elastic.$get(`/products/search?stores=${storeConfigId}&locale=${$i18n.locale}&${queryToString}`)
+      await $http.$get(`${$config.ELASTIC_URL_TEST}/products/search`)
+        .then(data => console.log(data))
+
+      await $elastic.$get('/products/search', { searchParams })
         .then((data) => {
           const { hits, aggregations } = data as Record<string, any>
           results.value = hits.hits
