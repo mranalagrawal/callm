@@ -142,6 +142,9 @@ export default defineComponent({
       await $http.$get(`${$config.ELASTIC_URL_TEST}/products/search`, { searchParams })
         .then(data => console.log(data))
 
+      $elastic.setHeader('Accept', '*/*')
+      $elastic.setHeader('Content-Type', '')
+
       await $elastic.$get('/products/search', { searchParams })
         .then((data) => {
           const { hits, aggregations } = data as Record<string, any>
