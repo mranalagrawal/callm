@@ -608,8 +608,8 @@ export default defineComponent({
           v-if="!showPageFullDescription" class="justify-end pb-8" variant="text"
           @click.native="showPageFullDescription = true"
         >
-          <span class="mr-2">{{ $t('common.cta.readMore') }}</span>
-          <VueSvgIcon width="18" height="18" :data="require(`@/assets/svg/chevron-down.svg`)" />
+          <span v-if="seoData?.pageFullDescription" class="mr-2">{{ $t('common.cta.readMore') }}</span>
+          <VueSvgIcon v-if="seoData?.pageFullDescription" width="18" height="18" :data="require(`@/assets/svg/chevron-down.svg`)" />
         </Button>
       </div>
     </ClientOnly>
