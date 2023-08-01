@@ -137,6 +137,20 @@ export default defineConfig({
       animation: {
         'bounce-right': 'bounceRight 1s ease-in-out infinite',
       },
+      // https://windicss.org/plugins/official/typography.html#customization
+      typography: {
+        DEFAULT: {
+          css: {
+            a: {
+              'color': themeConfig[store]?.colors.primary[400],
+              'textDecoration': 'none',
+              '&:hover': {
+                textDecoration: 'underline',
+              },
+            },
+          },
+        },
+      },
     },
   },
   shortcuts: {
@@ -157,6 +171,7 @@ export default defineConfig({
     'center-the-unknown': 'absolute transform top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
   },
   plugins: [
+    require('windicss/plugin/typography'),
     require('windicss/plugin/line-clamp'),
     plugin(({ addComponents }) => {
       const margins = {

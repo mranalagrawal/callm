@@ -434,7 +434,7 @@ export default defineComponent({
             >
               {{ product.vendor }}
             </NuxtLink>
-            <div v-html="strippedContent" />
+            <div class="prose" v-html="strippedContent" />
             <div v-if="isBundle" class="mb-4">
               <div class="h4 my-4" v-text="$t('bundle.whatIsInTheBox')" />
               <ul class="my-4 text-sm">
