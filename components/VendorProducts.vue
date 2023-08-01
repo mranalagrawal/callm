@@ -1,5 +1,6 @@
 <script lang="ts">
 import { computed, ref, toRefs, useFetch, watch } from '@nuxtjs/composition-api'
+import { escapeJsonSingleQuotes } from '~/utilities/strings'
 
 export default {
   props: ['vendor', 'tag'],
@@ -7,7 +8,7 @@ export default {
     const productsRef = ref<Record<string, any>>([])
     const { vendor: vendorRef, tag } = toRefs(props)
     const query = computed(() => {
-      const vendorPart = `tag:active AND vendor:'${JSON.stringify(vendorRef.value)}'`
+      const vendorPart = `tag:active AND vendor:'${JSON.stringify(escapeJsonSingleQuotes(vendorRef.value))}'`
       const tagPart = tag.value ? ` AND tag_not:'${tag.value}'` : ''
       return `${vendorPart}${tagPart}`
     })

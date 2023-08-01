@@ -37,4 +37,6 @@ const cleanUrl = (str = '') =>
 const sleep = (ms: number) => new Promise(
   resolve => setTimeout(resolve, ms))
 
-export { djb2Hash, stripHtml, stripHtmlAnchors, generateKey, cleanRoutesLocales, cleanUrl, sleep }
+const escapeJsonSingleQuotes = (str: string) => str.replace(/'/g, '\\\'')
+
+export { djb2Hash, stripHtml, stripHtmlAnchors, generateKey, cleanRoutesLocales, cleanUrl, sleep, escapeJsonSingleQuotes }
