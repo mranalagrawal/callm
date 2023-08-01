@@ -270,7 +270,7 @@ export default defineComponent({
               <span class="text-sm md:text-base">{{ slotProps.fraction }}</span>
             </template>
           </i18n-n>
-          <small v-if="$config.STORE === 'CMW_DE'" class="text-gray">Inkl. MwSt. Und St.</small>
+          <small v-if="$config.STORE === 'CMW_DE'" class="text-xs text-gray-dark">Inkl. MwSt. Und St.</small>
         </div>
       </div>
       <div class="c-productBox__cart place-self-end">
