@@ -8,7 +8,7 @@ export default {
     const productsRef = ref<Record<string, any>>([])
     const { vendor: vendorRef, tag } = toRefs(props)
     const query = computed(() => {
-      const vendorPart = `tag:active AND vendor:'${JSON.stringify(escapeJsonSingleQuotes(vendorRef.value))}'`
+      const vendorPart = `tag:active AND vendor:'${escapeJsonSingleQuotes(vendorRef.value)}'`
       const tagPart = tag.value ? ` AND tag_not:'${tag.value}'` : ''
       return `${vendorPart}${tagPart}`
     })
