@@ -13,6 +13,7 @@
     "dev:CMW_UK": "nuxt --dotenv .env.stage.cmw-uk",
     "dev:CMW_DE": "nuxt --dotenv .env.stage.cmw-de",
     "dev:CMW_FR": "nuxt --dotenv .env.stage.cmw-fr",
+    "dev:prod:CMW_UK": "nuxt --dotenv .env.prod.cmw-uk",
     "build:prod:CMW": "nuxt build --dotenv .env.prod.cmw",
     "build:prod:B2B": "nuxt build --dotenv .env.prod.b2b",
     "build:prod:CMW_UK": "nuxt build --dotenv .env.prod.cmw-uk",
