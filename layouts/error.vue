@@ -2,9 +2,6 @@
 import { defineComponent, toRefs } from '@nuxtjs/composition-api'
 
 export default defineComponent({
-  layout({ $config }) {
-    return $config.STORE
-  },
   props: ['error'], // you can set a custom layout for the error page
   setup(props) {
     const { statusCode } = toRefs(props.error)

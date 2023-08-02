@@ -1,8 +1,5 @@
 <script>
 export default {
-  layout(context) {
-    return context.$config.STORE
-  },
   mounted() {
     this.$prismic.preview()
   },

@@ -3,9 +3,6 @@ import { defineComponent, onMounted, useContext } from '@nuxtjs/composition-api'
 import { useShopifyCart } from '~/store/shopifyCart'
 
 export default defineComponent({
-  layout({ $config }) {
-    return $config.STORE
-  },
   setup() {
     const { $cookies } = useContext()
 

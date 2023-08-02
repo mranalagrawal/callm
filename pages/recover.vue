@@ -5,9 +5,6 @@ import { useSplash } from '~/store/splash'
 import { SweetAlertToast } from '~/utilities/Swal'
 
 export default defineComponent({
-  layout(context) {
-    return context.$config.STORE
-  },
   setup() {
     const { $graphql, $sentry, i18n, $cmwGtmUtils } = useContext()
     const splash = useSplash()

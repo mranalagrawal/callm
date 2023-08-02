@@ -7,9 +7,6 @@ import type { IPrismicPageData } from '~/types/prismic'
 import { initialPageData } from '~/types/prismic'
 
 export default defineComponent({
-  layout({ $config }) {
-    return $config.STORE
-  },
   setup() {
     const { $cmwGtmUtils } = useContext()
 

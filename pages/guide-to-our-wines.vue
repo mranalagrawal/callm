@@ -6,9 +6,6 @@ import { initialPageData } from '~/types/prismic'
 import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({
-  layout({ $config }) {
-    return $config.STORE
-  },
   middleware({ $config, localeRoute, redirect }) {
     if ($config.STORE !== 'CMW')
       return redirect(localeRoute('/') as unknown as string)

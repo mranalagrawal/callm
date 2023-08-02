@@ -4,9 +4,6 @@ import { storeToRefs } from 'pinia'
 import { useCustomer } from '~/store/customer'
 
 export default defineComponent({
-  layout({ $config }) {
-    return $config.STORE
-  },
   middleware({ $config, redirect, localeLocation }) {
     if ($config.STORE !== 'B2B')
       return redirect(localeLocation('/login') as unknown as string)

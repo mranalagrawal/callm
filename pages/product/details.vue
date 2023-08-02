@@ -19,9 +19,6 @@ import { useShopifyCart } from '~/store/shopifyCart'
 import { generateKey, stripHtmlAnchors } from '~/utilities/strings'
 
 export default defineComponent({
-  layout({ $config }) {
-    return $config.STORE
-  },
   setup() {
     if (process.client)
       window.scrollTo(0, 0)

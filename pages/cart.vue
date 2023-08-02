@@ -11,9 +11,6 @@ import { SweetAlertConfirm } from '~/utilities/Swal'
 
 export default defineComponent({
   components: { CartLine },
-  layout(context) {
-    return context.$config.STORE
-  },
   setup() {
     const { $cookies, $config, $cmwGtmUtils, i18n } = useContext()
     const shipping = ref({})

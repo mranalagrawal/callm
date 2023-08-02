@@ -49,9 +49,6 @@ interface IBrand {
 }
 
 export default defineComponent({
-  layout({ $config }) {
-    return $config.STORE
-  },
   setup() {
     const { i18n, redirect, $cmwGtmUtils, localePath, req } = useContext()
     const route = useRoute()
