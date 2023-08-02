@@ -141,6 +141,7 @@ export default defineComponent({
 
       await $http.$get(`${$config.ELASTIC_URL_TEST}/products/search`, { searchParams })
         .then(data => console.log(data))
+        .catch((err: Error) => console.log({ $http, err }))
 
       $elastic.setHeader('Accept', '*/*')
       $elastic.setHeader('Content-Type', '')
