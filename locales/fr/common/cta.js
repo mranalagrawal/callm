@@ -18,5 +18,6 @@ export default {
     readMore: 'Tout lire',
     subscribe: 'enregistre-moi',
     cannot_order: '',
+    viewAll: 'Voir tout',
   },
 }

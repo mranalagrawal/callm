@@ -2,8 +2,6 @@
 import { defineComponent, ref, useFetch, useRoute, watch } from '@nuxtjs/composition-api'
 import promoTagIcon from 'assets/svg/promo-tag.svg'
 import ThirdLevel from '~/components/UI/ThirdLevel.vue'
-import prismicConfig from '~/config/prismicConfig'
-import type { TStores } from '~/config/themeConfig'
 import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({
@@ -15,8 +13,8 @@ export default defineComponent({
     const selectedItem = ref<string>('')
     const pageData = ref<any>()
 
-    useFetch(async ({ $config, $cmwRepo }) => {
-      await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.megaMenu })
+    useFetch(async ({ $cmwRepo }) => {
+      await $cmwRepo.prismic.getSingle('mega-menu-test')
         .then((data) => {
           pageData.value = data.body && data.body
             .map((firstLevel) => {

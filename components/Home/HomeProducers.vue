@@ -3,7 +3,8 @@ import { defineComponent, ref, useFetch } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   setup() {
-    const slides = ref<Record<string, any>[]>([])
+    const slidesTop = ref<Record<string, any>[]>([])
+    const slidesBottom = ref<Record<string, any>[]>([])
     const title = ref('')
 
     const settingsTop = {
@@ -77,21 +78,23 @@ export default defineComponent({
       ],
     }
 
-    const { fetch } = useFetch(async ({ $cmwRepo }) => {
-      await $cmwRepo.prismic.getSingle({ page: 'productors' })
-        .then((data) => {
-          const { productor, label } = data
+    useFetch(async ({ $cmwRepo }) => {
+      const { productor, label } = await $cmwRepo.prismic.getSingle('productors')
+      // Note: Some day we can make an API to handle these brands automatically without prismic
 
-          slides.value = productor?.concat(productor) || []
-          title.value = label as string
-        })
+      const top = productor?.slice(0, 5) || []
+      const bottom = productor?.slice(5, 10) || []
+      slidesTop.value = top.concat(top)
+      slidesBottom.value = bottom.concat(bottom)
+      title.value = label as string
     })
+
     return {
-      fetch,
-      slides,
-      title,
-      settingsTop,
       settingsBottom,
+      settingsTop,
+      slidesBottom,
+      slidesTop,
+      title,
     }
   },
 })
@@ -104,8 +107,8 @@ export default defineComponent({
         <!-- <PrismicText v-if="title" class="text-center" :field="title" /> -->
         <h2 class="text-center" v-text="title" />
 
-        <VueSlickCarousel v-if="!!slides.length" v-bind="settingsTop" class="py-4">
-          <div v-for="productor in slides" :key="productor.name">
+        <VueSlickCarousel v-if="!!slidesTop.length" v-bind="settingsTop" class="py-4">
+          <div v-for="productor in slidesTop" :key="productor.name">
             <nuxt-link
               :to="localePath({ name: 'winery-handle', params: { handle: `${productor.link}.htm` } })"
               class="flex bg-white mx-2 p-1 border border-gray-light rounded-sm border-gray-light shadow-elevation"
@@ -119,8 +122,8 @@ export default defineComponent({
             </nuxt-link>
           </div>
         </VueSlickCarousel>
-        <VueSlickCarousel v-if="!!slides.length" v-bind="settingsBottom" class="py-4">
-          <div v-for="productor in slides" :key="productor.name">
+        <VueSlickCarousel v-if="!!slidesBottom.length" v-bind="settingsBottom" class="py-4">
+          <div v-for="productor in slidesBottom" :key="productor.name">
             <nuxt-link
               :to="localePath({ name: 'winery-handle', params: { handle: `${productor.link}.htm` } })"
               class="flex bg-white mx-2 p-1 border border-gray-light rounded-sm border-gray-light shadow-elevation"
@@ -134,6 +137,7 @@ export default defineComponent({
             </nuxt-link>
           </div>
         </VueSlickCarousel>
+        <Button class="w-max mx-auto my-4" variant="ghost" :label="$t('common.cta.viewAll')" :to="localePath('winery')" />
       </div>
     </ClientOnly>
   </div>

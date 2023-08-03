@@ -18,5 +18,6 @@ export default {
     readMore: 'Leggi tutto',
     subscribe: 'iscrivimi',
     cannot_order: 'Acquistabile solo da utenti registrati',
+    viewAll: 'Vedi tutti',
   },
 }

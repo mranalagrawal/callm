@@ -1,9 +1,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
 import { generateHeadHreflang } from '@/utilities/arrays'
-import prismicConfig from '~/config/prismicConfig'
-import type { TStores } from '~/config/themeConfig'
-import { initialPageData } from '~/types/prismic'
+import { initialPageData } from '~/config/prismicConfig'
 import type { IPrismicPageData } from '~/types/prismic'
 
 export default defineComponent({
@@ -20,8 +18,8 @@ export default defineComponent({
 
     const pageData = ref<IPrismicPageData>(initialPageData)
 
-    useFetch(async ({ $config, $cmwRepo }) => {
-      pageData.value = await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.paymentsPage })
+    useFetch(async ({ $cmwRepo }) => {
+      pageData.value = await $cmwRepo.prismic.getSingle('payments')
     })
 
     onMounted(() => {

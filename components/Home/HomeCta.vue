@@ -1,18 +1,16 @@
 <script lang="ts">
 import { defineComponent, ref, useFetch } from '@nuxtjs/composition-api'
 import readMoreBg from 'assets/images/enoteca.jpeg'
-import prismicConfig from '~/config/prismicConfig'
-import type { TStores } from '~/config/themeConfig'
+import { initialPageData } from '~/config/prismicConfig'
 import type { IPrismicPageData } from '~/types/prismic'
-import { initialPageData } from '~/types/prismic'
 
 export default defineComponent({
   setup() {
     const componentData = ref<IPrismicPageData>(initialPageData)
     const showMoreText = ref(false)
 
-    useFetch(async ({ $config, $cmwRepo }) => {
-      componentData.value = await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.callToAction })
+    useFetch(async ({ $cmwRepo }) => {
+      componentData.value = await $cmwRepo.prismic.getSingle('call-to-action')
     })
     return { componentData, showMoreText, readMoreBg }
   },

@@ -58,7 +58,7 @@ export default defineComponent({
     }
 
     useFetch(async ({ $cmwRepo }) => {
-      const megaMenu = await $cmwRepo.prismic.getSingle({ page: 'mega-menu-test' })
+      const megaMenu = await $cmwRepo.prismic.getSingle('mega-menu-test')
 
       menuData.value = megaMenu?.body?.length
         ? megaMenu.body.map((firstLevel) => {

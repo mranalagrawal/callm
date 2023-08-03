@@ -1,8 +1,6 @@
 <script lang="ts">
 import { computed, defineComponent, ref, useFetch } from '@nuxtjs/composition-api'
 import bgCarousel from 'assets/images/bg-carousel.png'
-import prismicConfig from '~/config/prismicConfig'
-import type { TStores } from '~/config/themeConfig'
 import { getIconByFeature } from '~/utilities/icons'
 import { generateKey } from '~/utilities/strings'
 import { inRange } from '~/utilities/math'
@@ -46,8 +44,8 @@ export default defineComponent({
       ],
     }
 
-    useFetch(async ({ $config, $cmwRepo }) => {
-      await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.selections })
+    useFetch(async ({ $cmwRepo }) => {
+      await $cmwRepo.prismic.getSingle('selections')
         .then((data) => {
           if (!data.body || !Object.keys(data.body).length)
             return
