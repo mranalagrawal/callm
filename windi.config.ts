@@ -141,9 +141,13 @@ export default defineConfig({
       typography: {
         DEFAULT: {
           css: {
+            maxWidth: '60rem',
             a: {
               'color': themeConfig[store]?.colors.primary[400],
               'textDecoration': 'none',
+              '&:link': {
+                textDecoration: 'none',
+              },
               '&:hover': {
                 textDecoration: 'underline',
               },
