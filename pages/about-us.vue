@@ -1,10 +1,8 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
 import { generateHeadHreflang } from '@/utilities/arrays'
-import prismicConfig from '~/config/prismicConfig'
-import type { TStores } from '~/config/themeConfig'
+import { initialPageData } from '~/config/prismicConfig'
 import type { IPrismicPageData } from '~/types/prismic'
-import { initialPageData } from '~/types/prismic'
 
 export default defineComponent({
   setup() {
@@ -21,8 +19,8 @@ export default defineComponent({
     const pageData = ref<IPrismicPageData>(initialPageData)
     const sectionContent = ref({ section: [] })
 
-    const { fetch } = useFetch(async ({ $config, $cmwRepo, $handleApiErrors }) => {
-      await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.aboutUs })
+    const { fetch } = useFetch(async ({ $cmwRepo, $handleApiErrors }) => {
+      await $cmwRepo.prismic.getSingle('about_us')
         .then((data) => {
           pageData.value = data
           sectionContent.value = data.section[0] ? data.section[0].section_content : []

@@ -1,7 +1,5 @@
 <script lang="ts">
 import { defineComponent, ref, useFetch } from '@nuxtjs/composition-api'
-import prismicConfig from '~/config/prismicConfig'
-import type { TStores } from '~/config/themeConfig'
 import { generateKey } from '~/utilities/strings'
 import { inRange } from '@/utilities/math'
 
@@ -25,11 +23,9 @@ export default defineComponent({
       },
     ]
 
-    const { fetch } = useFetch(async ({ $config, $cmwRepo }) => {
-      await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.homeBoxes })
-        .then((data) => {
-          boxes.value = data.box as Record<string, any>[]
-        })
+    const { fetch } = useFetch(async ({ $cmwRepo }) => {
+      const data = await $cmwRepo.prismic.getSingle('home-boxes')
+      boxes.value = data.box as Record<string, any>[]
     })
 
     return { carousel, responsive, fetch, boxes }

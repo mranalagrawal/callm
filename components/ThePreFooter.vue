@@ -6,15 +6,9 @@ export default defineComponent({
     const isDesktop = inject('isDesktop')
     const preFooterData = ref<Record<string, any>[]>([])
 
-    useFetch(async ({
-      $cmwRepo,
-      $handleApiErrors,
-    }) => {
-      await $cmwRepo.prismic.getSingle({ page: 'footer' })
-        .then((data) => {
-          preFooterData.value = data.body as Record<string, any>[]
-        })
-        .catch((err: Error) => $handleApiErrors(`Catch getting pre footer data from prismic: ${err}`))
+    useFetch(async ({ $cmwRepo }) => {
+      const data = await $cmwRepo.prismic.getSingle('footer')
+      preFooterData.value = data.body as Record<string, any>[]
     })
 
     return {

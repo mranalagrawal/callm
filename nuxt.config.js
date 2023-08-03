@@ -281,6 +281,7 @@ export default {
   plugins: [
     { src: '~/plugins/cmw-api.ts' },
     { src: '~/plugins/cmw-gtm.ts' },
+    { src: '~/plugins/cmw-project-config.ts' },
     { src: '~/plugins/product-mapping.ts' },
     { src: '~/plugins/repositories.ts' },
     { src: '~/plugins/cookies.ts' },

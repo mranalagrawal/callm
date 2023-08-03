@@ -18,5 +18,6 @@ export default {
     send: 'Send',
     subscribe: 'sign me up',
     cannot_order: 'Available only for registered users',
+    viewAll: 'see all',
   },
 }

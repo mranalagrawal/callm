@@ -22,8 +22,9 @@ export interface ICompanyAddress {
   zip: string
 }
 
-interface IStoreConfig {
+export interface IStoreConfig {
   id: number
+  store: TStores
   defaultLocale: TISO639
   salesChannel: TSalesChannel
   customerType: TCustomerType
@@ -79,9 +80,13 @@ const defaultAddress: ICompanyAddress = {
   zip: '20121',
 }
 
+// Fixme: convert this to an array to make it easier, we can get the current STORE with id | store
+// Fixme: split colors in a way we don't import this on every component
+
 const themeConfig: TThemeConfig = {
   CMW: {
     id: 1,
+    store: 'CMW',
     defaultLocale: 'it',
     salesChannel: 'cmw_it_b2c',
     customerType: 'B2C',
@@ -94,6 +99,7 @@ const themeConfig: TThemeConfig = {
   },
   B2B: {
     id: 5,
+    store: 'B2B',
     defaultLocale: 'it',
     salesChannel: 'cmw_it_b2b',
     customerType: 'B2B',
@@ -106,6 +112,7 @@ const themeConfig: TThemeConfig = {
   },
   CMW_UK: {
     id: 2,
+    store: 'CMW_UK',
     defaultLocale: 'en',
     salesChannel: 'cmw_uk_b2c',
     customerType: 'B2C',
@@ -129,6 +136,7 @@ const themeConfig: TThemeConfig = {
   },
   CMW_FR: {
     id: 3,
+    store: 'CMW_FR',
     defaultLocale: 'fr',
     salesChannel: 'cmw_fr_b2c',
     customerType: 'B2C',
@@ -141,6 +149,7 @@ const themeConfig: TThemeConfig = {
   },
   CMW_DE: {
     id: 4,
+    store: 'CMW_DE',
     defaultLocale: 'de',
     salesChannel: 'cmw_de_b2c',
     customerType: 'B2C',
