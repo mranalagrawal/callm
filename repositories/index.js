@@ -4,7 +4,7 @@ import CustomerRepository from '~/repositories/CustomerRepository'
 import OrdersRepository from '~/repositories/OrdersRepository'
 import PrismicRepository from '~/repositories/PrismicRepository.ts'
 import ProductsRepository from '~/repositories/ProductsRepository.ts'
-import ShopifyPagesRepository from '~/repositories/ShopifyPagesRepository'
+import ShopifyPagesRepository from '~/repositories/ShopifyPagesRepository.ts'
 
 export default ctx => ({
   addresses: AddressesRepository(ctx),

@@ -1,9 +1,8 @@
 <script lang="ts">
 import {
   defineComponent,
-  inject, provide, readonly,
+  inject, onBeforeMount, provide, readonly,
   ref, useContext,
-  useFetch,
   useRoute,
   useRouter, watch,
 } from '@nuxtjs/composition-api'
@@ -11,8 +10,7 @@ import chevronLeftIcon from 'assets/svg/chevron-left.svg'
 import chevronRightIcon from 'assets/svg/chevron-right.svg'
 import filterIcon from 'assets/svg/filter.svg'
 import type { RawLocation } from 'vue-router'
-import type { TStores } from '~/config/themeConfig'
-import themeConfig from '~/config/themeConfig'
+import { initialShopifyPageData } from '~/config/shopifyConfig'
 import { shopifyRichTextToHTML } from '~/utilities/shopify'
 
 interface IQuery {
@@ -21,7 +19,7 @@ interface IQuery {
 
 export default defineComponent({
   setup() {
-    const { localeLocation } = useContext()
+    const { localeLocation, $cmwRepo, $cmwStore, $elastic, i18n } = useContext()
     const router = useRouter()
     const route = useRoute()
     const pageData = ref({})
@@ -30,6 +28,7 @@ export default defineComponent({
     const shortDescription = ref('')
     const results = ref([])
     const total = ref(0)
+    const fetchState = ref({ pending: true, error: null })
     const aggregationsRef = ref({})
     const cmwActiveSelect = ref('')
     const isDesktop = inject('isDesktop')
@@ -110,8 +109,8 @@ export default defineComponent({
       sortBy(field, direction)
     }
 
-    const { fetch } = useFetch(async ({ $config, $http, $elastic, $cmwRepo, $handleApiErrors, $route, $i18n }) => {
-      console.log($elastic)
+    // Fixme: There's something redirecting the API calls on SSR, so these pages will load data on client
+    /* const { fetch } = useFetch(async ({ $config, $elastic, $cmwRepo, $handleApiErrors, $route, $i18n }) => {
       await $cmwRepo.shopifyPages.getPageByHandle({ handle: $route.params.handle })
         .then(({ page }) => {
           if (!page || !Object.keys(page).length)
@@ -136,13 +135,6 @@ export default defineComponent({
       urlSearchParams.set('locale', $i18n.locale || '')
       const searchParams = urlSearchParams.toString()
 
-      await $http.$get(`${$config.ELASTIC_URL_TEST}/products/search`, { searchParams })
-        .then(data => console.log(data))
-        .catch((err: Error) => console.log({ $http, err }))
-
-      $elastic.setHeader('Accept', '*/*')
-      $elastic.setHeader('Content-Type', '')
-
       await $elastic.$get('/products/search', { searchParams })
         .then((data) => {
           const { hits, aggregations } = data as Record<string, any>
@@ -153,11 +145,58 @@ export default defineComponent({
             aggregationsRef.value = aggregations
         })
         .catch((err: Error) => $handleApiErrors(`Catch getting results.value = hits.hits from elastic: ${err}`))
-    })
+    }) */
 
-    watch(() => route.value?.query, () => {
-      fetch()
-    })
+    async function fetchData() {
+      const fetchState = { pending: true, error: null }
+
+      try {
+        const shopifyPage = await $cmwRepo.shopifyPages.getPageByHandle(route.value.params.handle)
+
+        const mergedInputParameters = {
+          ...inputParameters.value,
+          ...route.value.query,
+        }
+
+        const urlSearchParams = new URLSearchParams(mergedInputParameters)
+        urlSearchParams.set('stores', $cmwStore.settings.id.toString())
+        urlSearchParams.set('locale', i18n.locale || '')
+        const searchParams = urlSearchParams.toString()
+
+        const productsSearch = await $elastic.$get('/products/search', { searchParams })
+        fetchState.pending = false
+
+        return { shopifyPage, productsSearch, fetchState }
+      } catch (error: any) {
+        fetchState.pending = false
+        fetchState.error = error
+
+        return { shopifyPage: initialShopifyPageData, productsSearch: {}, links: null, fetchState }
+      }
+    }
+
+    async function fetchDataWithFetchState() {
+      const { shopifyPage, productsSearch, fetchState: updatedFetchState } = await fetchData()
+      fetchState.value = updatedFetchState
+
+      if (!shopifyPage || !Object.keys(shopifyPage).length)
+        return
+
+      pageData.value = shopifyPage
+      inputParameters.value = shopifyPage?.filters?.value && JSON.parse(shopifyPage.filters.value)
+      shortDescription.value = shopifyRichTextToHTML(shopifyPage.shortDescription.value)
+
+      const { hits, aggregations } = productsSearch as Record<string, any>
+      results.value = hits.hits
+      total.value = hits.total.value
+
+      if (Object.keys(aggregations).length)
+        aggregationsRef.value = aggregations
+    }
+
+    onBeforeMount(fetchDataWithFetchState)
+
+    watch(() => route.value?.query, () => fetchDataWithFetchState())
 
     return {
       aggregationsRef,
@@ -165,7 +204,7 @@ export default defineComponent({
       chevronRightIcon,
       cmwActiveSelect,
       currentPage,
-      fetch,
+      fetchState,
       filterIcon,
       handleOnFooterClick,
       handleUpdateSortValue,
@@ -186,7 +225,7 @@ export default defineComponent({
 
 <template>
   <div class="max-w-screen-xl mx-auto py-4 px-4 mt-4">
-    <template v-if="!!results.length && Object.keys(pageData).length">
+    <template v-if="!!results.length && pageData && Object.keys(pageData).length">
       <h1 class="h3" v-text="pageData.title" />
       <CategoriesMainFilters
         v-if="Object.keys(inputParameters).length && Object.keys(aggregationsRef).length"
@@ -221,7 +260,7 @@ export default defineComponent({
         @update-value="handleUpdateValue"
       />
     </template>
-    <template v-else-if="!$fetchState.pending">
+    <template v-else-if="!fetchState.pending">
       <p class="text-lg font-light mt-5">
         {{ $t('search.noResultsAlert') }}
       </p>

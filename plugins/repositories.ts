@@ -1,10 +1,11 @@
 import type { Plugin } from '@nuxt/types'
 import type { IPrismicPageData, IPrismicPageParams, TPrismicComponentsNames } from '~/types/prismic'
 import createRepository from '~/repositories'
+import type { IShopifyPage } from '~/types/shopifyPage'
 
 interface ICmwRepo {
   shopifyPages: {
-    getPageByHandle({ handle = '' }): Promise<Record<string, any>>
+    getPageByHandle(handle: string): Promise<IShopifyPage>
   }
   addresses: any
   countries: any
