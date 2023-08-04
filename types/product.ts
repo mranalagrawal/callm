@@ -85,6 +85,7 @@ export interface IBaseProductMapped {
 }
 
 export interface IProductMapped extends IBaseProductMapped {
+  milliliters: any
   // availableForSale: boolean
   // awards: []
   // handle: []
