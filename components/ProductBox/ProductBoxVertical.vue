@@ -1,7 +1,5 @@
 <script>
 // import type { PropType } from '@nuxtjs/composition-api'
-// import type { RawLocation } from 'vue-router'
-// import type { IProductMapped } from '~/types/product'
 import { computed, defineComponent, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api'
 import addIcon from 'assets/svg/add.svg'
 import cartIcon from 'assets/svg/cart.svg'
@@ -11,9 +9,10 @@ import heartFullIcon from 'assets/svg/heart-full.svg'
 import heartIcon from 'assets/svg/heart.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
 import { storeToRefs } from 'pinia'
+// import type { RawLocation } from 'vue-router'
+// import type { IProductMapped } from '~/types/product'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import { useCustomer } from '~/store/customer'
-import { useCustomerOrders } from '~/store/customerOrders.ts'
 import { useShopifyCart } from '~/store/shopifyCart'
 import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { generateKey } from '~/utilities/strings'
@@ -34,7 +33,6 @@ export default defineComponent({
   setup(props) {
     const { $config, localeLocation, $gtm, $cmwGtmUtils } = useContext()
     const { wishlistArr, getCustomerType, customerId } = storeToRefs(useCustomer())
-    const { getCanOrder } = storeToRefs(useCustomerOrders())
     const { shopifyCart } = storeToRefs(useShopifyCart())
     const { cartLinesAdd, createShopifyCart, cartLinesUpdate } = useShopifyCart()
     const { handleWishlist } = useCustomer()
@@ -61,7 +59,8 @@ export default defineComponent({
     )
 
     const isOnCart = computed(() => {
-      const product = shopifyCart.value?.lines?.edges.find(el => el.node.merchandise.id === props.product.shopify_product_variant_id)
+      const product = shopifyCart.value?.lines?.edges
+        .find(el => el.node.merchandise.id === props.product.shopify_product_variant_id)
       if (product)
         return product.node
       return null
@@ -121,7 +120,6 @@ export default defineComponent({
       customerId,
       emailIcon,
       finalPrice,
-      getCanOrder,
       getCustomerType,
       gtmProductData,
       handleProductCLick,
@@ -186,12 +184,13 @@ export default defineComponent({
     class="
     c-productBox relative transition transition-box-shadow bg-white rounded-sm border border-gray-light
     hover:shadow-elevation"
+    :class="`-${generateKey($config.STORE)}`"
     :data-sku="product.sku"
     @mouseenter="isHovering = true"
     @mouseleave="isHovering = false"
   >
     <div class="c-productBox__grid grid h-full" :class="`-${generateKey($config.STORE)}`">
-      <div class="c-productBox__image">
+      <div class="c-productBox__image relative">
         <ClientOnly>
           <button class="block mx-auto" @click="handleProductCLick">
             <LoadingImage
@@ -203,28 +202,28 @@ export default defineComponent({
             />
           </button>
         </ClientOnly>
-      </div>
-      <div class="c-productBox__features py-2 pl-2">
-        <div class="flex flex-col gap-y-1 w-max">
-          <ProductBoxFeature v-for="feature in product.availableFeatures" :key="feature" :feature="feature" />
+        <div class="c-productBox__features absolute top-2 left-2 md:left-4">
+          <div class="flex flex-col gap-y-1 w-max">
+            <ProductBoxFeature v-for="feature in product.availableFeatures" :key="feature" :feature="feature" />
+          </div>
         </div>
-      </div>
-      <div class="c-productBox__awards place-self-end">
-        <div
-          v-for="(award, i) in product.awards.slice(0, 4)"
-          :key="generateKey(`${award.id}-${i}`)"
-          class="flex gap-1 items-center pr-1.5"
-        >
-          <ProductBoxAward :award="award" />
+        <div class="c-productBox__awards absolute bottom-2 left-2 md:left-4">
+          <div
+            v-for="(award, i) in product.awards.slice(0, 4)"
+            :key="generateKey(`${award.id}-${i}`)"
+            class="flex gap-1 items-center pr-1.5"
+          >
+            <ProductBoxAward :award="award" />
+          </div>
         </div>
-      </div>
-      <div class="c-productBox__wishlist place-self-end relative">
-        <ButtonIcon
-          :icon="isOnFavourite ? heartFullIcon : heartIcon"
-          class="z-baseLow" :variant="isOnFavourite ? 'icon-primary' : 'icon'"
-          :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
-          @click.native="handleWishlistClick"
-        />
+        <div class="c-productBox__wishlist absolute bottom-2 right-2 md:right-2">
+          <ButtonIcon
+            :icon="isOnFavourite ? heartFullIcon : heartIcon"
+            class="z-baseLow" :variant="isOnFavourite ? 'icon-primary' : 'icon'"
+            :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
+            @click.native="handleWishlistClick"
+          />
+        </div>
       </div>
       <div class="c-productBox__title">
         <div class="relative mx-4 mt-1">
@@ -238,8 +237,8 @@ export default defineComponent({
           <NuxtLink class="block sr-only" :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')" :to="localeLocation(product.url)" />
         </div>
       </div>
-      <div class="c-productBox__price justify-self-start self-end">
-        <div class="flex flex-col ml-4 mb-4">
+      <div class="c-productBox__price justify-self-baseline self-end">
+        <div class="flex flex-col ml-3">
           <span class="flex gap-2">
             <span
               v-if="isOnSale"
@@ -249,8 +248,6 @@ export default defineComponent({
                 $n(Number(product.compareAtPrice.amount), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode))
               }}
             </span>
-            <span v-if="$config.STORE === 'CMW_DE' && priceByLiter" class="text-xs">
-              {{ $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode)) }}/liter</span>
           </span>
           <i18n-n
             v-if="finalPrice"
@@ -270,11 +267,10 @@ export default defineComponent({
               <span class="text-sm md:text-base">{{ slotProps.fraction }}</span>
             </template>
           </i18n-n>
-          <small v-if="$config.STORE === 'CMW_DE'" class="text-xs text-gray-dark">Inkl. MwSt. Und St.</small>
         </div>
       </div>
-      <div class="c-productBox__cart place-self-end">
-        <div v-if="product.availableForSale" class="mr-4 mb-4 relative">
+      <div class="c-productBox__cart justify-self-baseline place-self-end">
+        <div v-if="product.availableForSale" class="mr-3 relative">
           <ButtonIcon
             :icon="cartIcon"
             :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
@@ -321,9 +317,14 @@ export default defineComponent({
           />
         </div>
       </div>
+      <div v-if="$config.STORE === 'CMW_DE'" class="c-productBox__note mx-2">
+        <span v-if="priceByLiter">
+          {{ $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode)) }}/liter</span>
+        <span v-if="$config.STORE === 'CMW_DE'" class="text-gray">Inkl. MwSt. Und St.</span>
+      </div>
     </div>
-    <div class="c-productBox__lapel absolute top-$lapel-top right-10">
-      <CardLapel v-if="isOnSale" />
+    <div v-if="isOnSale" class="c-productBox__lapel absolute top-$lapel-top right-8">
+      <CardLapel />
     </div>
     <div
       v-if="!product.availableForSale && isHovering"
@@ -342,17 +343,13 @@ export default defineComponent({
 }
 
 .c-productBox__grid {
-  grid-template-columns: 60px auto auto 60px;
-  grid-template-rows: auto auto 72px 62px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: auto 60px 54px 12px;
   grid-template-areas:
-  "features image image wishlist"
-  "awards image image wishlist"
-  "title title title title"
-  "price price cart cart";
-}
-
-.c-productBox__grid.-cmw-de {
-  grid-template-rows: auto auto 72px 80px;
+  "image image"
+  "title title"
+  "price cart"
+  "note note";
 }
 
 .c-productBox__features {
@@ -379,15 +376,6 @@ export default defineComponent({
   height: 300px;
 }
 
-.c-productBox__wishlist {
-  grid-area: wishlist;
-  grid-row: 1;
-}
-
-.c-productBox__wishlist button {
-  margin-right: 1rem;
-}
-
 .c-productBox__title {
   grid-area: title;
 }
@@ -400,12 +388,26 @@ export default defineComponent({
   grid-area: cart;
 }
 
+.c-productBox__note {
+  grid-area: note;
+  font-size: 0.8rem;
+  align-self: center;
+}
+
 .c-productBox__lapel {
   --lapel-top: -6px;
 }
 
+/* DE Modifiers */
+.c-productBox.-cmw-de .c-productBox__grid {
+  grid-template-rows: auto 60px 54px 40px;
+}
 /* We are handling this piece skipping mobile-first to reduce the amount of CSS  */
 @container product-box (max-width: 250px) {
+  .c-productBox.-cmw-de .c-productBox__grid {
+    grid-template-rows: auto auto 54px 26px;
+  }
+
   .c-productBox__image {
     height: 260px;
   }
@@ -414,8 +416,8 @@ export default defineComponent({
     height: 260px;
   }
 
-  .c-productBox__wishlist button {
-    margin-right: 0.25rem;
+  .c-productBox__note {
+    font-size: 0.6rem;
   }
 
   .c-productBox__lapel {
