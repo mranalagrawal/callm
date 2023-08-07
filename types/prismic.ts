@@ -27,26 +27,31 @@ export type TPrismicComponentsNames =
 export type TPrismicComponents =
   | 'aboutUs'
   | 'callToAction'
-  | 'cookiePage'
-  | 'contactPage'
   | 'conditionsPage'
+  | 'contactPage'
+  | 'cookiePage'
   | 'footer'
-  | 'homeCarousel'
   | 'homeBoxes'
+  | 'homeCarousel'
   | 'megaMenu'
+  | 'partners'
+  | 'paymentsPage'
+  | 'privacyPage'
   | 'producers'
+  | 'selections'
   | 'shipping'
   | 'shippingPage'
-  | 'selections'
-  | 'paymentsPage'
-  | 'partners'
-  | 'privacyPage'
   | 'topbar'
   | 'wineShops'
 
+type TPrismicUid =
+  | 'corporate-gifts'
+  | 'customer-service'
+  | 'guide-to-our-wines'
+
 export interface IPrismicPageParams {
   page: string
-  uid?: string
+  uid?: TPrismicUid
 }
 
 export type TPrismicIsoMap = {

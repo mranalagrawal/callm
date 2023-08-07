@@ -7,8 +7,8 @@ export default defineComponent({
     const { statusCode } = props.error
 
     const componentMap = {
-      404: () => import('~/components/Error/404.vue'),
-      410: () => import('~/components/Error/410.vue'),
+      404: () => import('~/components/Error/Error404.vue'),
+      410: () => import('~/components/Error/Error410.vue'),
     }
     return { statusCode, componentMap }
   },
