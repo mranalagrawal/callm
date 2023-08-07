@@ -37,7 +37,7 @@ declare module 'vuex/types/index' {
   }
 }
 
-const cmwGtm: Plugin = ({ $config, $gtm }, inject) => {
+const cmwGtm: Plugin = ({ $cmwStore, $config, $gtm }, inject) => {
   const customerStore = useCustomer()
   const { customer } = storeToRefs(customerStore)
 
@@ -78,16 +78,22 @@ const cmwGtm: Plugin = ({ $config, $gtm }, inject) => {
   }
 
   $cmwGtmUtils.pushPage = async (pageType = '', data = {}) => {
-    // Note: temporary disabled push on Prod
-    if ($config.DEPLOY_ENV === 'prod')
+    // Note: temporary enable only on UK (PROD|STAGE) and and the rest just (STAGE)
+    if ($cmwStore.isUk && $cmwStore.isProd) {
+      // Run for UK in PROD environment
+      $cmwGtmUtils.resetDatalayerFields()
+    } else if (!$cmwStore.isProd) {
+      // Run for the rest of the STORES in the STAGING environment
+      $cmwGtmUtils.resetDatalayerFields()
+    } else {
+      // Do nothing for other scenarios
       return
-
-    await $cmwGtmUtils.resetDatalayerFields()
+    }
 
     $gtm.push({
       ...data,
       pageType,
-      ...($cmwGtmUtils.getCustomerGtmData()),
+      ...$cmwGtmUtils.getCustomerGtmData(),
     })
   }
 

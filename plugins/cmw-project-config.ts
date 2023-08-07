@@ -4,11 +4,36 @@ import ThemeConfig from '~/config/themeConfig'
 import type { IStoreConfig, TStores } from '~/config/themeConfig'
 import type { IPrismicConfig } from '~/types/prismic'
 
+// Todo: add proper types :)
+/* Note:
+*    maybe we can organize this better... interface ICmwStore {
+*   is: {
+*     B2b: boolean
+*     De: boolean
+*     Fr: boolean
+*     It: boolean
+*     Uk: boolean
+*   }
+*   env: {
+*    prod: boolean
+*    stage: boolean
+*    dev: boolean
+*    }
+*   prismic: IPrismicConfig
+*   global: IStoreConfig
+*/
+
 interface ICmwStore {
   isB2b: boolean
   isDe: boolean
   isFr: boolean
   isIt: boolean
+  isProd: boolean
+  /**
+   * Determine is the current store is UK
+   *
+   * @type boolean
+   */
   isUk: boolean
   prismicSettings: IPrismicConfig
   settings: IStoreConfig
@@ -50,6 +75,7 @@ const cmwProjectConfig: Plugin = ({ $config }, inject) => {
     isDe: settings?.store === 'CMW_DE',
     isFr: settings?.store === 'CMW_FR',
     isIt: settings?.store === 'CMW',
+    isProd: $config.DEPLOY_ENV === 'prod',
     isUk: settings?.store === 'CMW_UK',
     prismicSettings,
     settings,

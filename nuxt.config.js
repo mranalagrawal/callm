@@ -279,9 +279,10 @@ export default {
   ],
 
   plugins: [
+    // The order is important here, cmw-project-config.ts needs to go first
+    { src: '~/plugins/cmw-project-config.ts' },
     { src: '~/plugins/cmw-api.ts' },
     { src: '~/plugins/cmw-gtm.ts' },
-    { src: '~/plugins/cmw-project-config.ts' },
     { src: '~/plugins/product-mapping.ts' },
     { src: '~/plugins/repositories.ts' },
     { src: '~/plugins/cookies.ts' },
