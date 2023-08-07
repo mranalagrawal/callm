@@ -399,7 +399,7 @@ export default defineComponent({
               class="h-full"
               img-classes="max-h-[350px] md:max-h-[550px] mx-auto object-contain"
               :thumbnail="product.image.thumbnail"
-              :source="product.image.source"
+              :source="product.image.hd"
             />
             <div class="absolute top-4 left-2">
               <ProductBoxFeature

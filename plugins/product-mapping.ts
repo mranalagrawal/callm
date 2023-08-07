@@ -236,6 +236,12 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
               height: 540,
               altText: details?.name && details?.name[lang],
             },
+            hd: {
+              url: p.featuredImage?.url ? `${p.featuredImage?.url}&width=500&height=899` : 'https://cdn.shopify.com/s/files/1/0578/7497/2719/files/no-product-image-400x400_6.png?v=1680253923&width=300&height=540',
+              width: 500,
+              height: 899,
+              altText: details?.name && details?.name[lang],
+            },
           },
           gtmProductData: {
             internal_id: shopify_product_id.substring(`${shopify_product_id}`.lastIndexOf('/') + 1),
