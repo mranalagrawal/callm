@@ -10,6 +10,7 @@ import chevronLeftIcon from 'assets/svg/chevron-left.svg'
 import chevronRightIcon from 'assets/svg/chevron-right.svg'
 import filterIcon from 'assets/svg/filter.svg'
 import type { RawLocation } from 'vue-router'
+import Loader from '~/components/UI/Loader.vue'
 import { initialShopifyPageData } from '~/config/shopifyConfig'
 import { shopifyRichTextToHTML } from '~/utilities/shopify'
 
@@ -18,6 +19,7 @@ interface IQuery {
 }
 
 export default defineComponent({
+  components: { Loader },
   setup() {
     // https://callmewine-api-staging.dojo.sh/api/products/search?stores=4&locale=de
 
@@ -150,7 +152,7 @@ export default defineComponent({
     }) */
 
     async function fetchData() {
-      const fetchState = { pending: true, error: null }
+      fetchState.value = { pending: true, error: null }
 
       try {
         const shopifyPage = await $cmwRepo.shopifyPages.getPageByHandle(route.value.params.handle)
@@ -168,20 +170,19 @@ export default defineComponent({
         const searchParams = urlSearchParams.toString()
 
         const productsSearch = await $elastic.$get('/products/search', { searchParams })
-        fetchState.pending = false
+        fetchState.value.pending = false
 
-        return { shopifyPage, productsSearch, fetchState }
+        return { shopifyPage, productsSearch }
       } catch (error: any) {
-        fetchState.pending = false
-        fetchState.error = error
+        fetchState.value.pending = false
+        fetchState.value.error = error
 
-        return { shopifyPage: initialShopifyPageData, productsSearch: {}, links: null, fetchState }
+        return { shopifyPage: initialShopifyPageData, productsSearch: {}, links: null }
       }
     }
 
     async function fetchDataWithFetchState() {
-      const { shopifyPage, productsSearch, fetchState: updatedFetchState } = await fetchData()
-      fetchState.value = updatedFetchState
+      const { shopifyPage, productsSearch } = await fetchData()
 
       if (!shopifyPage || !Object.keys(shopifyPage).length)
         return
@@ -269,5 +270,9 @@ export default defineComponent({
       </p>
       <div v-html="$t('search.noResultsMessage')" />
     </template>
+    <div class="fixed bottom-4 left-4">
+      <pre>{{ fetchState }}</pre>
+    </div>
+    <Loader v-if="fetchState.pending" />
   </div>
 </template>
