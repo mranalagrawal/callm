@@ -18,7 +18,7 @@ export default ({ $prismic, $cmwStore, i18n, $handleApiErrors }: Context) => ({
       return initialPageData
     }
   },
-  async getByUID({ page = '', uid = '' }: IPrismicPageParams): Promise<any> {
+  async getByUID({ page = '', uid }: IPrismicPageParams): Promise<any> {
     try {
       const locale = i18n.locale as TISO639
 

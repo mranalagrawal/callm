@@ -6,19 +6,15 @@ import { initialPageData } from '~/config/prismicConfig'
 import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({
-  middleware({ $cmwStore, localeRoute, redirect }) {
-    if (!$cmwStore.isIt)
-      return redirect(localeRoute('/') as unknown as string)
-  },
   setup() {
     const { $cmwGtmUtils } = useContext()
 
     const hrefLang = {
-      'it': 'https://www.callmewine.com/regali-aziendali.html',
-      'en': 'https://www.callmewine.com/en/business-gifts.html',
-      'fr': 'https://callmewine.fr/corporate-gifts',
-      'de': 'https://callmewine.de/corporate-gifts',
-      'en-gb': 'https://callmewine.co.uk/corporate-gifts',
+      'it': 'https://www.callmewine.com/en/servizio-clienti.html',
+      'en': 'https://www.callmewine.com/en/customer-service.html',
+      'fr': 'https://callmewine.fr/customer-service',
+      'de': 'https://callmewine.de/customer-service',
+      'en-gb': 'https://callmewine.co.uk/customer-service',
     }
 
     const pageData = ref<IPrismicPageData>(initialPageData)
@@ -26,7 +22,7 @@ export default defineComponent({
     const { fetch } = useFetch(async ({ $cmwRepo }) => {
       pageData.value = await $cmwRepo.prismic.getByUID({
         page: 'static-page',
-        uid: 'corporate-gifts',
+        uid: 'customer-service',
       })
     })
 
@@ -49,7 +45,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="pageData.title" class="max-w-screen-xl mx-auto mt-5 p-4">
+  <div v-if="pageData.title" class="prose max-w-screen-xl mx-auto mt-5 p-4">
     <PrismicRichText v-if="pageData.title" :field="pageData.title" />
     <LoadingImage
       v-if="pageData.main_banner"
