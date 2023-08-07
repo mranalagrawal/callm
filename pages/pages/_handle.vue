@@ -19,6 +19,8 @@ interface IQuery {
 
 export default defineComponent({
   setup() {
+    // https://callmewine-api-staging.dojo.sh/api/products/search?stores=4&locale=de
+
     const { localeLocation, $cmwRepo, $cmwStore, $elastic, i18n } = useContext()
     const router = useRouter()
     const route = useRoute()
@@ -153,6 +155,8 @@ export default defineComponent({
       try {
         const shopifyPage = await $cmwRepo.shopifyPages.getPageByHandle(route.value.params.handle)
 
+        inputParameters.value = shopifyPage?.filters?.value && JSON.parse(shopifyPage.filters.value)
+
         const mergedInputParameters = {
           ...inputParameters.value,
           ...route.value.query,
@@ -183,7 +187,6 @@ export default defineComponent({
         return
 
       pageData.value = shopifyPage
-      inputParameters.value = shopifyPage?.filters?.value && JSON.parse(shopifyPage.filters.value)
       shortDescription.value = shopifyRichTextToHTML(shopifyPage.shortDescription.value)
 
       const { hits, aggregations } = productsSearch as Record<string, any>
