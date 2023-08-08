@@ -1,6 +1,7 @@
 <script lang="ts">
 import { localeChanged, localize } from 'vee-validate'
 import {
+  computed,
   defineComponent,
   onMounted,
   provide,
@@ -30,7 +31,7 @@ export default defineComponent({
     Navbar,
   },
   setup() {
-    const { i18n, $cookies } = useContext()
+    const { i18n, $cookies, req, store } = useContext()
     const route = useRoute()
     const { getCustomer } = useCustomer()
     const { getShopifyCart } = useShopifyCart()
@@ -56,7 +57,14 @@ export default defineComponent({
 
       const cartId = $cookies.get('cartId')
       cartId && await getShopifyCart(cartId)
+
+      const isFromApp = req.headers['from-app']
+
+      if (isFromApp)
+        store.commit('headers/SET_FROM_APP', { fromApp: true })
     })
+
+    const isFromApp = computed(() => store.state.headers.fromApp)
 
     onMounted(() => {
       handleNewsletterSplash()
@@ -78,7 +86,14 @@ export default defineComponent({
         setTimeout(() => window.scrollTo({ left: 0, top: 0, behavior: 'smooth' }), 300)
       }
     })
-    return { isTablet, isDesktop, isDesktopWide, hasBeenSet, handleNewsletterSplash }
+    return {
+      handleNewsletterSplash,
+      hasBeenSet,
+      isDesktop,
+      isDesktopWide,
+      isFromApp,
+      isTablet,
+    }
   },
   head: {},
 })
@@ -87,9 +102,9 @@ export default defineComponent({
 <template>
   <div>
     <TopBar />
-    <Navbar class="cmw-navbar" />
+    <Navbar v-if="!isFromApp" class="cmw-navbar " />
 
-    <nuxt class="cmw-main" />
+    <nuxt :class="isFromApp ? 'cmw-app-main' : 'cmw-main'" />
 
     <!--    <LazyHydrate :when-visible="{ rootMargin: '100px' }"> -->
     <TheFooter />
