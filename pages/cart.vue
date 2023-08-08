@@ -7,13 +7,18 @@ import { useShopifyCart } from '~/store/shopifyCart'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { generateKey } from '~/utilities/strings'
 import { SweetAlertConfirm } from '~/utilities/Swal'
+import { useCustomer } from '~/store/customer'
 
 export default defineComponent({
   components: { CartLine },
   setup() {
     const { $cookies, $config, $cmwGtmUtils, i18n } = useContext()
     const shipping = ref({})
-    const { shopifyCart, cartTotal } = storeToRefs(useShopifyCart())
+    const shopifyCartStore = useShopifyCart()
+    const checkout = shopifyCartStore.checkout
+    const { shopifyCart, cartTotal } = storeToRefs(shopifyCartStore)
+    const customerStore = useCustomer()
+    const { customer, customerId } = storeToRefs(customerStore)
 
     const { fetch } = useFetch(async ({ $cmwRepo }) => {
       shipping.value = await $cmwRepo.prismic.getSingle('shipping')
@@ -71,6 +76,9 @@ export default defineComponent({
       getLocaleFromCurrencyCode,
       shipping,
       shopifyCart,
+      checkout,
+      customer,
+      customerId,
     }
   },
   computed: {
@@ -81,47 +89,6 @@ export default defineComponent({
 
   methods: {
     generateKey,
-    async checkout() {
-      if (!this.$store.state.user.user) {
-        // crea checkoutUrl
-        window.location = this.shopifyCart.checkoutUrl
-        return
-      }
-      // crea checkoutUrl
-      let checkoutUrl = `${this.shopifyCart.checkoutUrl}/?`
-      this.$store.state.user.user.customer.email
-      && (checkoutUrl += `&checkout[email]=${this.$store.state.user.user.customer.email}`)
-
-      this.$store.state.user.user.customer.defaultAddress?.firstName
-      && (checkoutUrl += `&checkout[shipping_address][first_name]=${this.$store.state.user.user.customer.defaultAddress.firstName}`)
-
-      this.$store.state.user.user.customer.defaultAddress?.lastName
-      && (checkoutUrl += `&checkout[shipping_address][last_name]=${this.$store.state.user.user.customer.defaultAddress.lastName}`)
-
-      this.$store.state.user.user.customer?.phone
-      && (checkoutUrl += `&checkout[shipping_address][phone]=${this.$store.state.user.user.customer.phone}`)
-
-      this.$store.state.user.user.customer.defaultAddress?.address1
-      && (checkoutUrl += `&checkout[shipping_address][address1]=${this.$store.state.user.user.customer.defaultAddress.address1}`)
-
-      this.$store.state.user.user.customer.defaultAddress?.address2
-      && (checkoutUrl += `&checkout[shipping_address][address2]=${this.$store.state.user.user.customer.defaultAddress.address2}`)
-
-      this.$store.state.user.user.customer.defaultAddress?.country
-      && (checkoutUrl += `&checkout[shipping_address][country]=${this.$store.state.user.user.customer.defaultAddress.country}`)
-
-      this.$store.state.user.user.customer.defaultAddress?.province
-      && (checkoutUrl += `&checkout[shipping_address][province]=${this.$store.state.user.user.customer.defaultAddress.province}`)
-
-      this.$store.state.user.user.customer.defaultAddress?.city
-      && (checkoutUrl += `&checkout[shipping_address][city]=${this.$store.state.user.user.customer.defaultAddress.city}`)
-
-      this.$store.state.user.user.customer.defaultAddress?.zip
-      && (checkoutUrl += `&checkout[shipping_address][zip]=${this.$store.state.user.user.customer.defaultAddress.zip}`)
-      // redirect al checkoutUrl
-
-      window.location = checkoutUrl
-    },
   },
 })
 </script>

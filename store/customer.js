@@ -5,6 +5,7 @@ import { getIconAsImg } from '~/utilities/icons.ts'
 import { djb2Hash } from '~/utilities/strings'
 import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
 import customerAccessTokenCreate from '~/graphql/mutations/authenticateUser'
+import customerAccessTokenCreateWithMultipass from '~/graphql/mutations/authenticateUserWithMultipass'
 // import { useCustomerWishlist } from '@/store/customerWishlist'
 
 import { regexRules } from '@/utilities/validators'
@@ -70,6 +71,32 @@ export const useCustomer = defineStore({
   },
 
   actions: {
+
+    async loginWithMultipass(multipassToken = '') {
+      let valid = false
+
+      const data
+        = await this.$nuxt.$graphql.default.request(customerAccessTokenCreateWithMultipass, {
+          multipassToken,
+        })
+          .then(data => data && data.customerAccessTokenCreateWithMultipass)
+
+      const { customerAccessToken, customerUserErrors } = data
+      if (customerAccessToken && customerAccessToken.accessToken && typeof customerAccessToken.accessToken === 'string') {
+        const token = customerAccessToken.accessToken
+        this.$nuxt.$cookieHelpers.setToken(token)
+        this.$nuxt.$graphql.default.setHeader('authorization', `Bearer ${token}`)
+        valid = true
+      } else {
+        SweetAlertToast.fire({
+          icon: 'error',
+          text: customerUserErrors[0].message,
+        })
+      }
+
+      return valid
+    },
+
     async login(email, password) {
       let valid = false
 
@@ -112,6 +139,7 @@ export const useCustomer = defineStore({
 
     async getCustomer(event = '') {
       const customerOrders = useCustomerOrders()
+
       await this.$nuxt.$cmwRepo.customer.getCustomer()
         .then(async ({ customer }) => {
           if (customer) {

@@ -125,7 +125,13 @@ export default {
       register: 'Register',
       notRegisteredYet: 'Don\'t have a profile yet?',
       alreadyRegistered: 'I already have an account',
+      socialLogin: 'Social login',
+      socialRegister: 'Social register',
       forgotPassword: 'Did you forget your password?',
+      orLoginWith: 'Or login with',
+      orRegisterWith: 'Or register with',
+      facebookLogin: 'Login with Facebook',
+      googleLogin: 'Login with Google',
     },
   },
   profile: {
