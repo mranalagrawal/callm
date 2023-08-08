@@ -106,4 +106,7 @@ export interface IPrismicPageData {
   productor?: Record<string, any>[]
   featured?: Record<string, any>[]
   label?: string
+  threshold?: string
+  threshold_not_reached?: string
+  threshold_reached?: string
 }

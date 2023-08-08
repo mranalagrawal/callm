@@ -1,61 +1,37 @@
-<script>
-import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
+<script lang="ts">
+import { computed, defineComponent, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import checkCircularIcon from 'assets/svg/check-circular.svg'
-import deliveryIcon from 'assets/svg/delivery.svg'
-import locales from '../../locales-mapper'
-import documents from '../../prismic-mapper'
+import type { IPrismicPageData } from '~/types/prismic'
 import { useShopifyCart } from '~/store/shopifyCart'
+import { initialPageData } from '~/config/prismicConfig'
 import { generateKey } from '~/utilities/strings'
+import deliveryIcon from '~/assets/svg/delivery.svg'
+import checkCircularIcon from '~/assets/svg/check-circular.svg'
 
 export default defineComponent({
   name: 'HeaderMiniCart',
-  props: {
-    show: {
-      type: [Boolean],
-    },
-  },
   setup() {
-    const { $config } = useContext()
-    const shopifyCartStore = useShopifyCart()
-    const checkout = shopifyCartStore.checkout
-    const { shopifyCart, cartTotal } = storeToRefs(shopifyCartStore)
+    const { $cmwStore } = useContext()
+    const { checkout } = useShopifyCart()
+    const { shopifyCart, cartTotal } = storeToRefs(useShopifyCart())
 
-    const computedCartTotal = computed(() => cartTotal.value($config.SALECHANNEL))
+    const shipping = ref<IPrismicPageData>(initialPageData)
+
+    useFetch(async ({ $cmwRepo }) => {
+      shipping.value = await $cmwRepo.prismic.getSingle('shipping')
+    })
+
+    const computedCartTotal = computed(() => cartTotal.value($cmwStore.settings.salesChannel))
 
     return {
       cartTotal,
-      computedCartTotal,
       checkCircularIcon,
       checkout,
-      customer,
-      customerId,
+      computedCartTotal,
       deliveryIcon,
+      shipping,
       shopifyCart,
     }
-  },
-  data() {
-    return {
-      shipping: null,
-    }
-  },
-  async fetch() {
-    // TODO: move this to setup()
-    let lang = locales[this.$i18n.locale]
-
-    if (lang === 'en-gb' && this.$config.STORE === 'CMW')
-      lang = 'en-eu'
-
-    if (this.$config.STORE === 'B2B')
-      lang = 'it-br'
-
-    const response = await this.$prismic.api.getSingle(
-      documents[this.$config.STORE].shipping,
-      {
-        lang,
-      },
-    )
-    this.shipping = response.data
   },
   methods: { generateKey },
 })
@@ -65,7 +41,7 @@ export default defineComponent({
   <div>
     <div class="border-t-4 border-t-primary-900 pt-4">
       <div>
-        <div v-if="shipping">
+        <div v-if="shipping?.threshold">
           <div v-if="shopifyCart && shopifyCart.totalQuantity > 0" class="min-w-[640px]">
             <div
               class="text-secondary-700 flex items-center justify-center gap-2 text-sm uppercase pb-4"
@@ -87,30 +63,20 @@ export default defineComponent({
               </div>
             </div>
             <div class="grid grid-cols-2 gap-4 bg-gray-lightest p-4">
-              <Button variant="ghost" :to="localePath('/cart')">
-                {{
-                  $t("navbar.cart.detail")
-                }}
-              </Button>
-              <Button @click.native="checkout()">
-                {{ $t("navbar.cart.checkout") }}
-              </Button>
+              <Button variant="ghost" :to="localePath('/cart')" :label="$t('navbar.cart.detail')" />
+              <Button :label="$t('navbar.cart.checkout')" @click.native="checkout" />
             </div>
           </div>
           <div v-else class="min-w-[425px] text-center px-6 pb-4">
-            <div
-              class="text-secondary-700 flex items-center justify-center gap-2 text-sm uppercase py-0"
-            >
+            <div class="text-secondary-700 flex items-center justify-center gap-2 text-sm uppercase pb-4">
               <VueSvgIcon :data="deliveryIcon" width="24" height="24" />
-              <span>{{ shipping.threshold_not_reached }}</span>
+              <span v-text="shipping.threshold_not_reached" />
             </div>
             <hr>
-            <strong class="block">{{ $t("navbar.cart.empty") }}</strong>
-            <p class="pt-4">
-              {{ $t("navbar.cart.startFromMessage") }}
-            </p>
+            <strong class="block" v-text="$t('navbar.cart.empty')" />
+            <p class="pt-4" v-text="$t('navbar.cart.startFromMessage')" />
             <Button class="py-4" to="/">
-              <span>{{ $t("navbar.cart.cta") }}</span>
+              <span v-text="$t('navbar.cart.cta')" />
             </Button>
           </div>
         </div>
