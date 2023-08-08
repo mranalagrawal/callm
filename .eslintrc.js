@@ -37,6 +37,7 @@ module.exports = {
         'Navbar',
         '_handle',
         'addresses',
+        'callback',
         'cart',
         'catalog',
         'categories',

@@ -126,7 +126,13 @@ export default {
       register: 'Registrieren',
       notRegisteredYet: 'Sie haben noch kein Account?',
       alreadyRegistered: 'Ich habe bereits einen Account',
+      socialLogin: 'Soziales Login',
+      socialRegister: 'Soziales Login',
       forgotPassword: 'Haben Sie Ihr Passwort vergessen?',
+      orLoginWith: 'Oder melden Sie sich mit an',
+      orRegisterWith: 'Oder melden Sie sich mit an',
+      facebookLogin: 'Melden Sie sich mit Facebook an',
+      googleLogin: 'Melden Sie sich mit Google an',
     },
   },
   profile: {

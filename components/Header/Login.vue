@@ -1,12 +1,15 @@
-<script>
+<script lang="ts">
+import { defineComponent, ref, useContext, useRouter } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import { ref, useContext, useRouter } from '@nuxtjs/composition-api'
+import type { TranslateResult } from 'vue-i18n'
+import type { RawLocation } from 'vue-router'
+import socialFacebook from '~/assets/svg/social-facebook.svg'
+import socialGoogle from '~/assets/svg/social-google.svg'
 import { useCustomer } from '~/store/customer'
 import eyeShowIcon from '~/assets/svg/eye-show.svg'
 import eyeHideIcon from '~/assets/svg/eye-hide.svg'
 
-// noinspection JSUnusedGlobalSymbols
-export default {
+export default defineComponent({
   name: 'HeaderLogin',
   props: {
     show: {
@@ -21,7 +24,7 @@ export default {
     const { logout } = customerStore
     const isSubmitting = ref(false)
     const passwordIsVisible = ref(false)
-    const message = ref('')
+    const message = ref<TranslateResult>('')
     const form = ref({
       email: '',
       password: '',
@@ -33,14 +36,27 @@ export default {
 
       if (valid) {
         await customerStore.getCustomer('login')
-          .then(() => router.push(localeLocation('/profile/my-orders')))
+          .then(() => router.push(localeLocation('/profile/my-orders') as RawLocation))
       } else {
         message.value = i18n.t('common.feedback.KO.login')
       }
       isSubmitting.value = false
     }
 
-    return { customerStore, customer, form, passwordIsVisible, isSubmitting, eyeShowIcon, eyeHideIcon, message, logout, onSubmit }
+    return {
+      customer,
+      customerStore,
+      eyeHideIcon,
+      eyeShowIcon,
+      form,
+      isSubmitting,
+      logout,
+      message,
+      onSubmit,
+      passwordIsVisible,
+      socialFacebook,
+      socialGoogle,
+    }
   },
   userNavigation: [
     {
@@ -64,7 +80,7 @@ export default {
       label: 'navbar.user.accessData',
     },
   ],
-}
+})
 </script>
 
 <template>
@@ -79,7 +95,7 @@ export default {
             <InputField
               v-model="form.email"
               name="user-email-navbar"
-              :label="$t('email').toString()"
+              :label="$t('email')"
               autocomplete="off"
               :placeholder="$t('emailPlaceholder')"
               rules="required|email"
@@ -89,9 +105,9 @@ export default {
               v-model="form.password"
               :type="!passwordIsVisible ? 'password' : 'text'"
               name="user-password-navbar"
-              :label="$t('password').toString()"
+              :label="$t('password')"
               autocomplete="off"
-              :placeholder="$t('passwordPlaceholder').toString()"
+              :placeholder="$t('passwordPlaceholder')"
               rules="required|min:4"
               :icon="passwordIsVisible ? eyeHideIcon : eyeShowIcon"
               :click-icon="() => passwordIsVisible = !passwordIsVisible"
@@ -107,7 +123,7 @@ export default {
               class="mt-8"
               type="submit"
               :disabled="isSubmitting"
-              :label="$t('navbar.user.signIn').toString()"
+              :label="$t('navbar.user.signIn')"
             />
 
             <NuxtLink
@@ -118,6 +134,25 @@ export default {
             </NuxtLink>
           </form>
         </ValidationObserver>
+        <template v-if="!$cmwStore.isB2b">
+          <p class="text-center my-5">
+            {{ $t('navbar.user.orLoginWith') }}
+          </p>
+          <div class="flex justify-center ">
+            <a
+              :href="`${$config.MULTIPASS_URL}/social-login/${$config.STORE}/facebook/`"
+              class="btn-base p-2 w-auto btn-default facebook text-sm btn-base-spacing mr-3"
+            >
+              <VueSvgIcon :data="socialFacebook" width="1.75rem" height="auto" />
+            </a>
+            <a
+              :href="`${$config.MULTIPASS_URL}/social-login/${$config.STORE}/google/`"
+              class="btn-base p-2  w-auto btn-default google text-sm btn-base-spacing"
+            >
+              <VueSvgIcon :data="socialGoogle" original width="1.75rem" height="auto" />
+            </a>
+          </div>
+        </template>
       </template>
       <template v-else>
         <nav class="min-w-[425px]">
@@ -154,3 +189,16 @@ export default {
     </div>
   </div>
 </template>
+
+<style scoped>
+  .facebook {
+    background-color: #004bce !important;
+    text-transform: unset;
+  }
+  .google {
+    background-color: #fff !important;
+    text-transform: unset;
+    color: black;
+    border: 1px solid black !important;
+  }
+</style>

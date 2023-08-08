@@ -1,14 +1,14 @@
 <script>
-import { computed, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
+import { storeToRefs } from 'pinia'
 import checkCircularIcon from 'assets/svg/check-circular.svg'
 import deliveryIcon from 'assets/svg/delivery.svg'
-import { storeToRefs } from 'pinia'
 import locales from '../../locales-mapper'
 import documents from '../../prismic-mapper'
 import { useShopifyCart } from '~/store/shopifyCart'
 import { generateKey } from '~/utilities/strings'
 
-export default {
+export default defineComponent({
   name: 'HeaderMiniCart',
   props: {
     show: {
@@ -17,23 +17,30 @@ export default {
   },
   setup() {
     const { $config } = useContext()
-    const { shopifyCart, cartTotal } = storeToRefs(useShopifyCart())
+    const shopifyCartStore = useShopifyCart()
+    const checkout = shopifyCartStore.checkout
+    const { shopifyCart, cartTotal } = storeToRefs(shopifyCartStore)
+
     const computedCartTotal = computed(() => cartTotal.value($config.SALECHANNEL))
+
     return {
       cartTotal,
       computedCartTotal,
+      checkCircularIcon,
+      checkout,
+      customer,
+      customerId,
+      deliveryIcon,
       shopifyCart,
     }
   },
   data() {
     return {
-      deliveryIcon,
-      checkCircularIcon,
-      data: null,
       shipping: null,
     }
   },
   async fetch() {
+    // TODO: move this to setup()
     let lang = locales[this.$i18n.locale]
 
     if (lang === 'en-gb' && this.$config.STORE === 'CMW')
@@ -50,89 +57,8 @@ export default {
     )
     this.shipping = response.data
   },
-  computed: {
-    checkoutUrl() {
-      let baseUrl = `${this.shopifyCart.checkoutUrl}/?`
-
-      this.$store.state.user.user.customer.email
-      && (baseUrl += `&checkout[email]=${this.$store.state.user.user.customer.email}`)
-
-      this.$store.state.user.user.customer.defaultAddress?.firstName
-      && (baseUrl += `&checkout[shipping_address][first_name]=${this.$store.state.user.user.customer.defaultAddress.firstName}`)
-
-      this.$store.state.user.user.customer.defaultAddress?.lastName
-      && (baseUrl += `&checkout[shipping_address][last_name]=${this.$store.state.user.user.customer.defaultAddress.lastName}`)
-
-      this.$store.state.user.user.customer?.phone
-      && (baseUrl += `&checkout[shipping_address][phone]=${this.$store.state.user.user.customer.phone}`)
-
-      this.$store.state.user.user.customer.defaultAddress?.address1
-      && (baseUrl += `&checkout[shipping_address][address1]=${this.$store.state.user.user.customer.defaultAddress.address1}`)
-
-      this.$store.state.user.user.customer.defaultAddress?.address2
-      && (baseUrl += `&checkout[shipping_address][address2]=${this.$store.state.user.user.customer.defaultAddress.address2}`)
-
-      this.$store.state.user.user.customer.defaultAddress?.country
-      && (baseUrl += `&checkout[shipping_address][country]=${this.$store.state.user.user.customer.defaultAddress.country}`)
-
-      this.$store.state.user.user.customer.defaultAddress?.province
-      && (baseUrl += `&checkout[shipping_address][province]=${this.$store.state.user.user.customer.defaultAddress.province}`)
-
-      this.$store.state.user.user.customer.defaultAddress?.city
-      && (baseUrl += `&checkout[shipping_address][city]=${this.$store.state.user.user.customer.defaultAddress.city}`)
-
-      this.$store.state.user.user.customer.defaultAddress?.zip
-      && (baseUrl += `&checkout[shipping_address][zip]=${this.$store.state.user.user.customer.defaultAddress.zip}`)
-
-      return baseUrl
-    },
-  },
-
-  methods: {
-    generateKey,
-    async checkout() {
-      if (!this.$store.state.user.user) {
-        // crea checkoutUrl
-        window.location = this.shopifyCart.checkoutUrl
-        return
-      }
-      // crea checkoutUrl
-      let checkoutUrl = `${this.shopifyCart.checkoutUrl}/?`
-      this.$store.state.user.user.customer.email
-      && (checkoutUrl += `&checkout[email]=${this.$store.state.user.user.customer.email}`)
-
-      this.$store.state.user.user.customer.defaultAddress?.firstName
-      && (checkoutUrl += `&checkout[shipping_address][first_name]=${this.$store.state.user.user.customer.defaultAddress.firstName}`)
-
-      this.$store.state.user.user.customer.defaultAddress?.lastName
-      && (checkoutUrl += `&checkout[shipping_address][last_name]=${this.$store.state.user.user.customer.defaultAddress.lastName}`)
-
-      this.$store.state.user.user.customer?.phone
-      && (checkoutUrl += `&checkout[shipping_address][phone]=${this.$store.state.user.user.customer.phone}`)
-
-      this.$store.state.user.user.customer.defaultAddress?.address1
-      && (checkoutUrl += `&checkout[shipping_address][address1]=${this.$store.state.user.user.customer.defaultAddress.address1}`)
-
-      this.$store.state.user.user.customer.defaultAddress?.address2
-      && (checkoutUrl += `&checkout[shipping_address][address2]=${this.$store.state.user.user.customer.defaultAddress.address2}`)
-
-      this.$store.state.user.user.customer.defaultAddress?.country
-      && (checkoutUrl += `&checkout[shipping_address][country]=${this.$store.state.user.user.customer.defaultAddress.country}`)
-
-      this.$store.state.user.user.customer.defaultAddress?.province
-      && (checkoutUrl += `&checkout[shipping_address][province]=${this.$store.state.user.user.customer.defaultAddress.province}`)
-
-      this.$store.state.user.user.customer.defaultAddress?.city
-      && (checkoutUrl += `&checkout[shipping_address][city]=${this.$store.state.user.user.customer.defaultAddress.city}`)
-
-      this.$store.state.user.user.customer.defaultAddress?.zip
-      && (checkoutUrl += `&checkout[shipping_address][zip]=${this.$store.state.user.user.customer.defaultAddress.zip}`)
-      // redirect al checkoutUrl
-
-      window.location = checkoutUrl
-    },
-  },
-}
+  methods: { generateKey },
+})
 </script>
 
 <template>
@@ -144,8 +70,13 @@ export default {
             <div
               class="text-secondary-700 flex items-center justify-center gap-2 text-sm uppercase pb-4"
             >
-              <VueSvgIcon :data="computedCartTotal < shipping.threshold ? deliveryIcon : checkCircularIcon" width="24" height="24" />
-              <span>{{ computedCartTotal < shipping.threshold ? shipping.threshold_not_reached : shipping.threshold_reached }}</span>
+              <VueSvgIcon
+                :data="computedCartTotal < shipping.threshold ? deliveryIcon : checkCircularIcon" width="24"
+                height="24"
+              />
+              <span>{{
+                computedCartTotal < shipping.threshold ? shipping.threshold_not_reached : shipping.threshold_reached
+              }}</span>
             </div>
             <div class="px-4">
               <hr class="border-gray-light">
