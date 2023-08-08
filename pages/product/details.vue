@@ -19,9 +19,6 @@ import { useShopifyCart } from '~/store/shopifyCart'
 import { generateKey, stripHtmlAnchors } from '~/utilities/strings'
 
 export default defineComponent({
-  layout({ $config }) {
-    return $config.STORE
-  },
   setup() {
     if (process.client)
       window.scrollTo(0, 0)
@@ -402,7 +399,7 @@ export default defineComponent({
               class="h-full"
               img-classes="max-h-[350px] md:max-h-[550px] mx-auto object-contain"
               :thumbnail="product.image.thumbnail"
-              :source="product.image.source"
+              :source="product.image.hd"
             />
             <div class="absolute top-4 left-2">
               <ProductBoxFeature

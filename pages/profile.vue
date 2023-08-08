@@ -5,9 +5,6 @@ import debounce from 'lodash.debounce'
 import { useCustomer } from '~/store/customer'
 
 export default {
-  layout({ $config }) {
-    return $config.STORE
-  },
   middleware: ['auth', 'splash'],
   profileNavigation: [
     {

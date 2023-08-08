@@ -1,17 +1,15 @@
 import type { Context } from '@nuxt/types'
-import prismicConfig from '~/config/prismicConfig'
-import type { TISO639, TStores } from '~/config/themeConfig'
-import type { IPrismicPageData } from '~/types/prismic'
-import { initialPageData } from '~/types/prismic'
+import { initialPageData } from '~/config/prismicConfig'
+import type { TISO639 } from '~/config/themeConfig'
+import type { IPrismicPageData, IPrismicPageParams } from '~/types/prismic'
 
-export default ({ $config, $prismic, i18n, $handleApiErrors }: Context) => ({
-  async getSingle({ page = '' }): Promise<IPrismicPageData> {
+export default ({ $prismic, $cmwStore, i18n, $handleApiErrors }: Context) => ({
+  async getSingle(page = ''): Promise<IPrismicPageData> {
     try {
-      const store = $config.STORE as TStores || 'CMW_UK'
       const locale = i18n.locale as TISO639
 
       const { data } = await $prismic.api.getSingle(page, {
-        lang: prismicConfig[store]?.isoCode[locale],
+        lang: $cmwStore.prismicSettings.isoCode[locale],
       })
 
       return data
@@ -20,13 +18,12 @@ export default ({ $config, $prismic, i18n, $handleApiErrors }: Context) => ({
       return initialPageData
     }
   },
-  async getByUID({ page = '', uid = '' }): Promise<IPrismicPageData> {
+  async getByUID({ page = '', uid }: IPrismicPageParams): Promise<any> {
     try {
-      const store = $config.STORE as TStores || 'CMW_UK'
       const locale = i18n.locale as TISO639
 
       const { data } = await $prismic.api.getByUID(page, uid, {
-        lang: prismicConfig[store]?.isoCode[locale],
+        lang: $cmwStore.prismicSettings.isoCode[locale],
       })
 
       return data

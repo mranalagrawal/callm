@@ -63,6 +63,7 @@ interface IProductSeo {
 interface IProductImage {
   thumbnail: TImage
   source: TImage
+  hd?: TImage
 }
 
 export interface IProductBreadcrumbs {

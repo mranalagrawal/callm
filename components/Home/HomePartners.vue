@@ -1,7 +1,5 @@
 <script lang="ts">
 import { defineComponent, ref, useFetch } from '@nuxtjs/composition-api'
-import prismicConfig from '~/config/prismicConfig'
-import type { TStores } from '~/config/themeConfig'
 
 export default defineComponent({
   setup() {
@@ -11,8 +9,8 @@ export default defineComponent({
     const pageData = ref<Record<string, any>[] | undefined>([])
     const label = ref(null)
 
-    useFetch(async ({ $config, $cmwRepo }) => {
-      await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.partners })
+    useFetch(async ({ $cmwRepo }) => {
+      await $cmwRepo.prismic.getSingle('partners')
         .then((data) => {
           pageData.value = data.body && data.body.map(el => ({
             id: el.id,

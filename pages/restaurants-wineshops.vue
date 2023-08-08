@@ -1,13 +1,10 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
 import { generateHeadHreflang } from '@/utilities/arrays'
-import { initialPageData } from '~/types/prismic'
+import { initialPageData } from '~/config/prismicConfig'
 import type { IPrismicPageData } from '~/types/prismic'
 
 export default defineComponent({
-  layout({ $config }) {
-    return $config.STORE
-  },
   setup() {
     const { $cmwGtmUtils } = useContext()
 
@@ -22,7 +19,7 @@ export default defineComponent({
     const pageData = ref<IPrismicPageData>(initialPageData)
 
     useFetch(async ({ $cmwRepo }) => {
-      pageData.value = await $cmwRepo.prismic.getSingle({ page: 'restaurants-wineshops' })
+      pageData.value = await $cmwRepo.prismic.getSingle('restaurants-wineshops')
     })
 
     onMounted(() => {

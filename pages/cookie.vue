@@ -1,15 +1,10 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
 import { generateHeadHreflang } from '@/utilities/arrays'
-import prismicConfig from '~/config/prismicConfig'
-import type { TStores } from '~/config/themeConfig'
+import { initialPageData } from '~/config/prismicConfig'
 import type { IPrismicPageData } from '~/types/prismic'
-import { initialPageData } from '~/types/prismic'
 
 export default defineComponent({
-  layout({ $config }) {
-    return $config.STORE
-  },
   setup() {
     const { $cmwGtmUtils } = useContext()
 
@@ -24,8 +19,8 @@ export default defineComponent({
     const pageData = ref<IPrismicPageData>(initialPageData)
     const sectionContent = ref<IPrismicPageData['section']>({ section: [] })
 
-    const { fetch } = useFetch(async ({ $config, $cmwRepo }) => {
-      await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.cookiePage })
+    const { fetch } = useFetch(async ({ $cmwRepo }) => {
+      await $cmwRepo.prismic.getSingle('cookie-policy')
         .then((data) => {
           pageData.value = data
           sectionContent.value = data.section[0] ? data.section : []

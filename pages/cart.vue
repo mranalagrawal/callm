@@ -2,7 +2,6 @@
 import { computed, defineComponent, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import CartLine from '../components/Cart/CartLine.vue'
-import prismicConfig from '~/config/prismicConfig'
 import { useShopifyCart } from '~/store/shopifyCart'
 
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
@@ -11,16 +10,13 @@ import { SweetAlertConfirm } from '~/utilities/Swal'
 
 export default defineComponent({
   components: { CartLine },
-  layout(context) {
-    return context.$config.STORE
-  },
   setup() {
     const { $cookies, $config, $cmwGtmUtils, i18n } = useContext()
     const shipping = ref({})
     const { shopifyCart, cartTotal } = storeToRefs(useShopifyCart())
 
-    const { fetch } = useFetch(async ({ $config, $cmwRepo }) => {
-      shipping.value = await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE]?.components.shipping })
+    const { fetch } = useFetch(async ({ $cmwRepo }) => {
+      shipping.value = await $cmwRepo.prismic.getSingle('shipping')
     })
 
     const emptyCart = () => {

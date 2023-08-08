@@ -1,22 +1,27 @@
-<script>
+<script lang="ts">
+import type { Ref } from '@nuxtjs/composition-api'
+import { defineComponent, inject } from '@nuxtjs/composition-api'
 import LazyHydrate from 'vue-lazy-hydration'
 
-export default {
+export default defineComponent({
   name: 'IndexPage',
   components: {
     LazyHydrate,
     FeaturedProducts: () => import('../components/FeaturedProducts.vue'),
-    HomeLast: () => import('../components/Home/HomeLast.vue'),
+    // eslint-disable-next-line vue/no-unused-components
+    HomeLast: () => import('../components/Home/HomeLast.vue'), // Fixme: doesn't recognises Nuxt's Lazy prefix
     HomeCta: () => import('../components/Home/HomeCta.vue'),
     HomeSelections: () => import('../components/Home/HomeSelections.vue'),
     HomeSlider: () => import('../components/Home/HomeSlider.vue'),
   },
-  layout({ $config }) {
-    return $config.STORE
+  setup() {
+    const isTablet = inject('isTablet') as Ref<boolean>
+
+    return { isTablet }
   },
   data() {
     return {
-      homeBanner: 'HomeBanner',
+      // homeBanner: 'HomeBanner',
       links: {
         'en-gb': 'https://www.callmewine.co.uk',
         'it': 'https://www.callmewine.com',
@@ -39,12 +44,12 @@ export default {
       }),
     }
   },
-}
+})
 </script>
 
 <template>
   <div>
-    <component :is="homeBanner" />
+    <HomeBanner />
     <HomeBoxes />
     <!-- Note: LazyHydrate is not working as expected on carousels -->
     <ClientOnly>

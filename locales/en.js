@@ -1,5 +1,6 @@
 import * as enums from '@/locales/en/enums'
 import * as common from '@/locales/en/common'
+import * as pages from '@/locales/en/pages'
 
 export default {
   head: {
@@ -20,9 +21,11 @@ export default {
       recommendedProducts: 'Often bought together',
     },
   },
+  pages: {
+    ...pages.notFound,
+    ...pages.gone,
+  },
   searchResultLabel: 'The results of your search',
-  notFoundTitle: 'We are sorry',
-  notFoundLine: 'We didn\'t find anything with these characteristics, try searching for these suggestions',
   loading: 'Fetching data...',
   fetchError: 'An error occurred',
   save: 'Save',

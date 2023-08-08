@@ -47,9 +47,6 @@ interface AggregationsRefType {
 }
 
 export default defineComponent({
-  layout({ $config }) {
-    return $config.STORE
-  },
   setup() {
     const { localeLocation } = useContext()
     const router = useRouter()

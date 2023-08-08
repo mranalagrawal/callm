@@ -10,9 +10,6 @@ import { sortArrayByName, sortArrayByNumber } from '~/utilities/arrays'
 import { useFilters } from '~/store/filters'
 
 export default defineComponent({
-  layout({ $config }) {
-    return $config.STORE
-  },
   setup() {
     const { params, i18n, $cmwGtmUtils } = useContext()
     const customerStore = useCustomer()

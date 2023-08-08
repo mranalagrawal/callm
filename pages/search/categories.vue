@@ -10,9 +10,6 @@ import {
 } from '@nuxtjs/composition-api'
 
 export default defineComponent({
-  layout({ $config }) {
-    return $config.STORE
-  },
   // middleware: 'url-checker',
   setup() {
     const { req } = useContext()

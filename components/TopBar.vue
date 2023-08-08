@@ -1,14 +1,12 @@
 <script lang="ts">
 import { defineComponent, ref, useFetch } from '@nuxtjs/composition-api'
-import prismicConfig from '~/config/prismicConfig'
-import type { TStores } from '~/config/themeConfig'
 
 export default defineComponent({
   setup() {
     const headline = ref('')
 
-    useFetch(async ({ $config, $cmwRepo }) => {
-      await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.topbar })
+    useFetch(async ({ $cmwRepo }) => {
+      await $cmwRepo.prismic.getSingle('topbar')
         .then((data) => {
           if (!data.text?.length)
             return

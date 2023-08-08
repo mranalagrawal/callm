@@ -14,9 +14,6 @@ import { generateKey } from '~/utilities/strings'
 import { SweetAlertToast } from '~/utilities/Swal'
 
 export default defineComponent({
-  layout({ $config }) {
-    return $config.STORE
-  },
   setup() {
     const { $config, $cmwGtmUtils, req } = useContext()
     const { shopifyCart } = storeToRefs(useShopifyCart())

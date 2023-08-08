@@ -29,9 +29,6 @@ interface IAllFilters {
 
 export default defineComponent({
   components: { Loader },
-  layout({ $config }) {
-    return $config.STORE
-  },
   setup() {
     const { $cmwGtmUtils, localePath, $elastic } = useContext()
     const route = useRoute()

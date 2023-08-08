@@ -2,9 +2,6 @@
 import { defineComponent, inject, onMounted, ref, useContext } from '@nuxtjs/composition-api'
 
 export default defineComponent({
-  layout({ $config }) {
-    return $config.STORE
-  },
   setup() {
     const { $cmwGtmUtils, $config } = useContext()
     const registerIsVisible = ref(false)

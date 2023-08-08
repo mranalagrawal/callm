@@ -1,6 +1,6 @@
 {
   "name": "callmewine-frontend",
-  "version": "1.15.1",
+  "version": "1.16.0",
   "private": true,
   "engines": {
     "node": ">=16.0.0 <17.0.0"
@@ -21,6 +21,8 @@
     "build:prod:CMW_FR": "nuxt build --dotenv .env.prod.cmw-fr",
     "start": "nuxt start",
     "generate": "nuxt generate",
+    "prepare": "npx husky install",
+    "prebuild": "nuxt prepare && npm run lint:fix",
     "slicemachine": "start-slicemachine",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
@@ -44,6 +46,7 @@
     "@types/lodash.kebabcase": "^4.1.7",
     "@yzfe/svgicon": "^1.1.0",
     "@yzfe/vue-svgicon": "^4.0.3",
+    "commitlint": "^17.6.7",
     "cookie-universal-nuxt": "^2.2.2",
     "core-js": "^3.30.1",
     "graphql-tag": "^2.12.6",
@@ -69,6 +72,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.38.4",
+    "@commitlint/config-conventional": "^17.6.7",
     "@nuxt/types": "2.15.8",
     "@nuxt/typescript-build": "^3.0.1",
     "@nuxtjs/google-fonts": "^2.0.0",

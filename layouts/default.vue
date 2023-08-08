@@ -1,6 +1,16 @@
 <script lang="ts">
 import { localeChanged, localize } from 'vee-validate'
-import { defineComponent, onMounted, provide, readonly, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
+import {
+  defineComponent,
+  onMounted,
+  provide,
+  readonly,
+  useContext,
+  useFetch,
+  useMeta,
+  useRoute,
+  watch,
+} from '@nuxtjs/composition-api'
 // import LazyHydrate from 'vue-lazy-hydration'
 
 import useScreenSize from '~/components/composables/useScreenSize'
@@ -21,6 +31,7 @@ export default defineComponent({
   },
   setup() {
     const { i18n, $cookies } = useContext()
+    const route = useRoute()
     const { getCustomer } = useCustomer()
     const { getShopifyCart } = useShopifyCart()
     const { handleNewsletterSplash } = useNewsletterSplash()
@@ -61,6 +72,12 @@ export default defineComponent({
       ],
     }))
 
+    watch(() => route.value, () => {
+      if (process.client && !isTablet.value) {
+        // FixMe: temporary workaround for mobile
+        setTimeout(() => window.scrollTo({ left: 0, top: 0, behavior: 'smooth' }), 300)
+      }
+    })
     return { isTablet, isDesktop, isDesktopWide, hasBeenSet, handleNewsletterSplash }
   },
   head: {},

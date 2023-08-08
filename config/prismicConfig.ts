@@ -1,42 +1,4 @@
-import type { TISO639, TStores } from '~/config/themeConfig'
-
-export type TPrismicIsoCodes = 'it-it' | 'it-bn' | 'en-eu' | 'en-gb' | 'fr-fr' | 'de-de'
-export type TPrismicComponents =
-  | 'aboutUs'
-  | 'callToAction'
-  | 'cookiePage'
-  | 'contactPage'
-  | 'conditionsPage'
-  | 'footer'
-  | 'homeCarousel'
-  | 'homeBoxes'
-  | 'megaMenu'
-  | 'producers'
-  | 'shipping'
-  | 'shippingPage'
-  | 'selections'
-  | 'paymentsPage'
-  | 'partners'
-  | 'privacyPage'
-  | 'topbar'
-  | 'wineShops'
-
-type TPrismicIsoMap = {
-  [k in TISO639]?: TPrismicIsoCodes
-}
-
-type TPrismicComponentsMap = {
-  [k in TPrismicComponents]?: string
-}
-
-interface IPrismicConfig {
-  components: TPrismicComponentsMap
-  isoCode: TPrismicIsoMap
-}
-
-type TPrismicConfig = {
-  [k in TStores]?: IPrismicConfig
-}
+import type { IPrismicPageData, TPrismicComponentsMap, TPrismicConfig } from '~/types/prismic'
 
 const defaultPrismicComponents: TPrismicComponentsMap = {
   aboutUs: 'about_us',
@@ -59,33 +21,51 @@ const defaultPrismicComponents: TPrismicComponentsMap = {
   wineShops: 'restaurants-wineshops',
 }
 
-const prismicConfig: TPrismicConfig = {
-  CMW: {
+const prismicConfig: TPrismicConfig = [
+  {
+    store: 'CMW',
     components: defaultPrismicComponents,
     isoCode: {
       it: 'it-it',
       en: 'en-eu',
     },
   },
-  B2B: {
+  {
+    store: 'B2B',
     components: defaultPrismicComponents,
     isoCode: {
       it: 'it-bn',
     },
   },
-  CMW_UK: {
+  {
+    store: 'CMW_UK',
     components: defaultPrismicComponents,
     isoCode: { en: 'en-gb' },
   },
-  CMW_FR: {
+  {
+    store: 'CMW_FR',
     components: defaultPrismicComponents,
     isoCode: { fr: 'fr-fr' },
   },
-  CMW_DE: {
+  {
+    store: 'CMW_DE',
     components: defaultPrismicComponents,
     isoCode: { de: 'de-de' },
   },
+]
+
+const initialPageData: IPrismicPageData = {
+  title: '',
+  image: {
+    alt: '',
+    dimensions: {
+      height: 0,
+      width: 0,
+    },
+    url: '',
+  },
+  content: [],
+  section: [],
 }
 
-// Note: maybe we can rethink this export to gain some performance, that way we could just import necessary
-export default prismicConfig
+export { prismicConfig, initialPageData }

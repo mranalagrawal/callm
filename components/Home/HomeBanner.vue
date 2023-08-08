@@ -17,8 +17,6 @@ import carouselCurveDesktop from 'assets/svg/carousel-curve-desktop.svg'
 import carouselCurveMobile from 'assets/svg/carousel-curve-mobile.svg'
 import { getMobileOperatingSystem } from '@/utilities/getOS'
 import { generateKey } from '@/utilities/strings'
-import prismicConfig from '~/config/prismicConfig'
-import type { TStores } from '~/config/themeConfig'
 
 export default defineComponent({
   setup() {
@@ -38,17 +36,15 @@ export default defineComponent({
     const isDesktopWide = inject('isDesktopWide') as Ref<boolean>
     const hasBeenSet = inject('hasBeenSet') as Ref<boolean>
 
-    const { fetch } = useFetch(async ({ $config, $cmwRepo }) => {
-      await $cmwRepo.prismic.getSingle({ page: prismicConfig[$config.STORE as TStores]?.components.homeCarousel })
-        .then((data) => {
-          if (!process.browser) {
-            OS.value = getMobileOperatingSystem(req.headers['user-agent'])
-            $cookies.set('iOS', getMobileOperatingSystem(req.headers['user-agent']))
-          }
+    const { fetch } = useFetch(async ({ $cmwRepo }) => {
+      const data = await $cmwRepo.prismic.getSingle('home-carousel')
+      if (!process.browser) {
+        OS.value = getMobileOperatingSystem(req.headers['user-agent'])
+        $cookies.set('iOS', getMobileOperatingSystem(req.headers['user-agent']))
+      }
 
-          isBrowser.value = process?.browser
-          slides.value = data.body && data.body[0].items
-        })
+      isBrowser.value = process?.browser
+      slides.value = data.body && data.body[0].items
     })
 
     const handleMobileClick = (link: RawLocation) => {

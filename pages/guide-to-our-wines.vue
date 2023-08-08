@@ -2,15 +2,12 @@
 import { defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
 import { generateHeadHreflang } from '@/utilities/arrays'
 import type { IPrismicPageData } from '~/types/prismic'
-import { initialPageData } from '~/types/prismic'
+import { initialPageData } from '~/config/prismicConfig'
 import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({
-  layout({ $config }) {
-    return $config.STORE
-  },
-  middleware({ $config, localeRoute, redirect }) {
-    if ($config.STORE !== 'CMW')
+  middleware({ $cmwStore, localeRoute, redirect }) {
+    if (!$cmwStore.isIt)
       return redirect(localeRoute('/') as unknown as string)
   },
   setup() {
@@ -40,7 +37,7 @@ export default defineComponent({
       })
         .then((data) => {
           pageData.value = data
-          midParagraph.value = data.body.find((item: { slice_type: string }) => item.slice_type === 'paragraph')
+          midParagraph.value = data.body?.find((item: { slice_type: string }) => item.slice_type === 'paragraph')
         })
     })
 

@@ -119,46 +119,66 @@ export default defineComponent({
   <div>
     <ValidationObserver v-slot="{ handleSubmit }" ref="registrationForm" slim>
       <form class="px-4 pt-3 py-2 md:w-3/4 mx-auto" @submit.prevent="handleSubmit(onSubmit)">
-        <InputField v-model="form.firstName" name="firstName" :label="$t('firstName')"
-          :placeholder="$t('firstName')" rules="required" theme="gray" />
+        <InputField
+          v-model="form.firstName" name="firstName" :label="$t('firstName')"
+          :placeholder="$t('firstName')" rules="required" theme="gray"
+        />
 
-        <InputField v-model="form.lastName" name="lastName" :label="$t('lastName')"
-          :placeholder="$t('lastName')" rules="required" theme="gray" />
+        <InputField
+          v-model="form.lastName" name="lastName" :label="$t('lastName')"
+          :placeholder="$t('lastName')" rules="required" theme="gray"
+        />
 
-        <InputField v-model="form.email" type="email" name="email" :label="$t('email')"
-          :placeholder="$t('email')" rules="required|email" theme="gray" />
+        <InputField
+          v-model="form.email" type="email" name="email" :label="$t('email')"
+          :placeholder="$t('email')" rules="required|email" theme="gray"
+        />
 
-        <CmwStrongPassword vid="password" v-model="form.password" theme="gray" :placeholder="$t('passwordPlaceholder')" />
+        <CmwStrongPassword v-model="form.password" vid="password" theme="gray" :placeholder="$t('passwordPlaceholder')" />
 
-        <InputField v-model="form.businessName" name="businessName" :label="$t('businessName')"
-          :placeholder="$t('businessName')" :rules="{ required: true }" theme="gray" />
+        <InputField
+          v-model="form.businessName" name="businessName" :label="$t('businessName')"
+          :placeholder="$t('businessName')" :rules="{ required: true }" theme="gray"
+        />
 
-        <InputField v-model="form.vatNumber" name="vatNumber" :label="$t('vatNumber')"
-          :rules="{ required: true, regex: /^(IT)?[0-9]{11}$/i }" :placeholder="$t('vatNumber')" theme="gray" />
+        <InputField
+          v-model="form.vatNumber" name="vatNumber" :label="$t('vatNumber')"
+          :rules="{ required: true, regex: /^(IT)?[0-9]{11}$/i }" :placeholder="$t('vatNumber')" theme="gray"
+        />
 
-        <InputField v-model="form.businessType" name="businessType" :label="$t('businessType')"
-          :rules="{ required: true }" :placeholder="$t('businessType')" theme="gray" />
+        <InputField
+          v-model="form.businessType" name="businessType" :label="$t('businessType')"
+          :rules="{ required: true }" :placeholder="$t('businessType')" theme="gray"
+        />
 
-        <InputField v-model="form.phone" name="phone" :label="$t('phone')"
-          :rules="{ required: true, regex: /^[0,3]\d{8,9}$/ }" :placeholder="$t('phonePlaceholder')" theme="gray" />
+        <InputField
+          v-model="form.phone" name="phone" :label="$t('phone')"
+          :rules="{ required: true, regex: /^[0,3]\d{8,9}$/ }" :placeholder="$t('phonePlaceholder')" theme="gray"
+        />
 
-        <CmwCheckbox id="privacy" v-model="form.privacy" :checked="form.privacy" is-required
-          @change="form.privacy = !form.privacy">
+        <CmwCheckbox
+          id="privacy" v-model="form.privacy" :checked="form.privacy" is-required
+          @change="form.privacy = !form.privacy"
+        >
           <template #label>
             {{ $t('privacyPolicy') }}
           </template>
         </CmwCheckbox>
 
-        <CmwCheckbox id="acceptsMarketing" v-model="form.acceptsMarketing" :checked="form.acceptsMarketing"
-          @change="form.acceptsMarketing = !form.acceptsMarketing">
+        <CmwCheckbox
+          id="acceptsMarketing" v-model="form.acceptsMarketing" :checked="form.acceptsMarketing"
+          @change="form.acceptsMarketing = !form.acceptsMarketing"
+        >
           <template #label>
             {{ $t('acceptMarketing') }}
           </template>
         </CmwCheckbox>
 
-        <Button class="sm:max-w-330px mt-8" type="submit"
+        <Button
+          class="sm:max-w-330px mt-8" type="submit"
           :disabled="isSubmitting"
-          :label="$t('navbar.user.register')" />
+          :label="$t('navbar.user.register')"
+        />
       </form>
     </ValidationObserver>
   </div>
