@@ -71,8 +71,8 @@
 <style scoped>
 .loader {
   position: fixed;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   width: 100vw;
   height: 100vh;
   z-index: 999;
@@ -145,7 +145,7 @@
 
 :deep(.modal-footer),
 :deep(.modal-header) {
-  border: 0px;
+  border: 0;
 }
 :deep(.modal-content) {
   height: 100vh;
