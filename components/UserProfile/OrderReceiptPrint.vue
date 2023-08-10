@@ -57,7 +57,7 @@ export default defineComponent({
     >
       <strong
         class="font-sans font-bold text-body tracking-normal"
-        v-text="order.orderNumber"
+        v-text="order.name"
       />
     </i18n>
 

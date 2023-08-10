@@ -123,7 +123,7 @@ export default {
             height="32px"
           />
           <span class="block my-0 font-light text-sm truncate max-w-100px">
-            {{ customer.id ? customer.firstName : $t('navbar.user.signIn') }}
+            {{ customer.id ? (customer.firstName || customer.email.split('@')[0]) : $t('navbar.user.signIn') }}
           </span>
         </span>
       </button>

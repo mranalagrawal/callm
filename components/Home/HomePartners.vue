@@ -36,12 +36,10 @@ export default defineComponent({
           backgroundImage: `url(${mask_left}),url('${pageData[0].content.image.url}')`,
         }"
       >
-        <div class="w-1/2">
-          <h3 class="font-bold mb-8">
-            <NuxtLink class="text-white" :to="pageData[0].content.cta_link">
-              {{ pageData[0].content.main_text }}
-            </NuxtLink>
-          </h3>
+        <div class="h3 w-7/12 mb-6 leading-tight">
+          <NuxtLink class="text-white" :to="pageData[0].content.cta_link">
+            {{ pageData[0].content.main_text }}
+          </NuxtLink>
         </div>
         <Button
           class="w-max"
@@ -57,12 +55,10 @@ export default defineComponent({
           backgroundImage: `url(${mask}), url('${pageData[1].content.image.url}')`,
         }"
       >
-        <div class="w-3/4">
-          <h3 class="font-bold mb-8">
-            <NuxtLink class="text-white" :to="pageData[1].content.cta_link">
-              {{ pageData[1].content.main_text }}
-            </NuxtLink>
-          </h3>
+        <div class="h3 w-3/4 mb-6 leading-tight">
+          <NuxtLink class="text-white" :to="pageData[1].content.cta_link">
+            {{ pageData[1].content.main_text }}
+          </NuxtLink>
         </div>
         <div>
           <Button

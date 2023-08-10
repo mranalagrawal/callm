@@ -125,7 +125,13 @@ export default {
       register: 'Enregistrer',
       notRegisteredYet: 'Vous n\'avez pas encore de profil ?',
       alreadyRegistered: 'Je ai déjà un compte',
+      socialLogin: 'Connexion sociale',
+      socialRegister: 'Connexion sociale',
       forgotPassword: 'Avez-vous oublié votre mot de passe?',
+      orLoginWith: 'Ou connectez-vous avec',
+      orRegisterWith: 'Ou inscrivez-vous avec',
+      facebookLogin: 'Se connecter avec Google',
+      googleLogin: 'Se connecter avec Google',
     },
   },
   profile: {

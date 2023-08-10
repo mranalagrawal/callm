@@ -78,9 +78,13 @@ const cmwGtm: Plugin = ({ $cmwStore, $config, $gtm }, inject) => {
   }
 
   $cmwGtmUtils.pushPage = async (pageType = '', data = {}) => {
-    // Note: temporary enable only on UK (PROD|STAGE) and and the rest just (STAGE)
+    // Note: temporary enable only on UK, FR, DE (PROD|STAGE) and and the rest just (STAGE)
     if ($cmwStore.isUk && $cmwStore.isProd) {
       // Run for UK in PROD environment
+      $cmwGtmUtils.resetDatalayerFields()
+    } else if (!$cmwStore.isDe && $cmwStore.isProd) {
+      $cmwGtmUtils.resetDatalayerFields()
+    } else if (!$cmwStore.isFr && $cmwStore.isProd) {
       $cmwGtmUtils.resetDatalayerFields()
     } else if (!$cmwStore.isProd) {
       // Run for the rest of the STORES in the STAGING environment

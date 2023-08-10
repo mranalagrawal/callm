@@ -191,17 +191,3 @@ export default {
     </form>
   </ValidationObserver>
 </template>
-
-<style scoped>
-select::-internal-input-suggested {
-  @apply text-base text-gray-dark;
-}
-
-select:-webkit-autofill ~ label {
-  @apply bg-gray-lightest;
-}
-
-select:-webkit-autofill ~ label {
-  @apply text-[0.775rem] px-2 top-[-0.4rem];
-}
-</style>

@@ -40,6 +40,26 @@ export const useShopifyCart = defineStore({
   },
 
   actions: {
+    async checkout() {
+      const { customer } = useCustomer()
+      if (!customer.id) {
+        // crea checkoutUrl
+        window.location = this.shopifyCart.checkoutUrl
+        return
+      }
+
+      try {
+        const res = await this.$nuxt.$elastic.$post('/checkout', {
+          customerAccessToken: this.$nuxt.$cookieHelpers.getToken(),
+          store: this.$nuxt.$config.STORE,
+          checkoutUrl: this.shopifyCart.checkoutUrl,
+          email: customer.email,
+        })
+        window.location = res.link
+      } catch (error) {
+        this.$nuxt.$handleApiErrors(`Catch on checkout: ${error}`)
+      }
+    },
     async createShopifyCart() {
       const { customer } = useCustomer()
       const buyer = customer

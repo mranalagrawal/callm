@@ -69,8 +69,9 @@ export default {
 }
 
 .ripple:hover {
-  background: theme('colors.primary.50') radial-gradient(circle, transparent 1%, theme('colors.primary.50') 1%) center/15000%;
+  background: radial-gradient(circle, transparent 1%, theme('colors.primary.50') 1%) center/15000% theme('colors.primary.50');
 }
+
 .ripple:active {
   background-size: 100%;
   background-color: theme('colors.primary.100');

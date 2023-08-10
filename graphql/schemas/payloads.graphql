@@ -28,6 +28,11 @@ type CustomerAccessTokenCreatePayload {
   customerUserErrors: DisplayableError # [CustomerUserError!]!
 }
 
+type CustomerAccessTokenCreateWithMultipassPayload {
+  customerAccessToken: CustomerAccessToken
+  customerUserErrors: DisplayableError # [CustomerUserError!]!
+}
+
 type CustomerRecoverPayload {
   customerUserErrors: DisplayableError
 }

@@ -5,6 +5,8 @@ import calendarIcon from '~/assets/svg/calendar.svg'
 import GqlCustomerCreate from '~/graphql/mutations/customerCreate.graphql'
 import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
 import { useCustomer } from '~/store/customer'
+import socialFacebook from '~/assets/svg/social-facebook.svg'
+import socialGoogle from '~/assets/svg/social-google.svg'
 
 export default {
   setup() {
@@ -90,6 +92,8 @@ export default {
       handleFocus,
       handleBlur,
       onSubmit,
+      socialGoogle,
+      socialFacebook,
     }
   },
 }
@@ -161,5 +165,35 @@ export default {
         />
       </form>
     </ValidationObserver>
+    <div v-if="$config.STORE !== 'B2B'" class="px-4 pt-3 pb-2 md:w-3/4 mx-auto">
+      <p class="mb-5">
+        {{ $t("navbar.user.orRegisterWith") }}
+      </p>
+      <a
+        v-if="!$cmwStore.isProd"
+        :href="`${$config.MULTIPASS_URL}/social-login/${$config.STORE}/facebook/`"
+        class="btn-base w-auto btn-default facebook text-sm sm:max-w-330px btn-base-spacing my-3"
+      >
+        <VueSvgIcon :data="socialFacebook" color="white" width="30" height="auto" />
+        <span class="px-3">{{ $t("navbar.user.facebookLogin") }}</span>
+      </a>
+      <a :href="`${$config.MULTIPASS_URL}/social-login/${$config.STORE}/google/`" class="btn-base w-auto btn-default google text-sm sm:max-w-330px btn-base-spacing mb-3">
+        <VueSvgIcon :data="socialGoogle" original width="30" height="auto" />
+        <span class="px-3">{{ $t("navbar.user.googleLogin") }}</span>
+      </a>
+    </div>
   </div>
 </template>
+
+<style scoped>
+  .facebook {
+    background-color: #004bce !important;
+    text-transform: unset;
+  }
+  .google {
+    background-color: #fff !important;
+    text-transform: unset;
+    color: black;
+    border: 1px solid black !important;
+  }
+</style>
