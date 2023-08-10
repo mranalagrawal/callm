@@ -3,8 +3,8 @@ import { cleanRoutesLocales, djb2Hash } from '~/utilities/strings'
 
 const excludePages = ['login', 'waiting-for-confirmation']
 
-const b2bMiddleware: Middleware = ({ app, route, localeLocation, redirect }) => {
-  if (app.$config.STORE !== 'B2B')
+const b2bMiddleware: Middleware = ({ $cookies, $cookieHelpers, $cmwStore, route, localeLocation, redirect }) => {
+  if (!$cmwStore.isB2b)
     return
 
   const cleanedRouteName = cleanRoutesLocales(`${route.name}`)
@@ -12,8 +12,8 @@ const b2bMiddleware: Middleware = ({ app, route, localeLocation, redirect }) => 
   if (excludePages.includes(cleanedRouteName))
     return
 
-  const sessionToken = app.$cookieHelpers.getToken()
-  const b2bApprovedToken = app.$cookies.get('b2b-approved')
+  const sessionToken = $cookieHelpers.getToken()
+  const b2bApprovedToken = $cookies.get('b2b-approved')
 
   // Todo: Remove the assertions when TS stops complaining
   if (!sessionToken)

@@ -52,6 +52,7 @@ module.exports = {
         'search',
         'shipping',
         'sustainability',
+        'waiting-for-confirmation',
         'wishlist',
       ],
     }],
