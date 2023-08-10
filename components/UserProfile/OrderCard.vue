@@ -196,7 +196,7 @@ export default defineComponent({
           >
             <strong
               class="font-sans font-bold text-body tracking-normal"
-              v-text="order.orderNumber"
+              v-text="order.name"
             />
             <span
               class="font-sans text-body tracking-normal"
@@ -253,7 +253,7 @@ export default defineComponent({
           >
             <strong
               class="font-sans font-bold text-body tracking-normal"
-              v-text="order.orderNumber"
+              v-text="order.name"
             />
           </i18n>
 
