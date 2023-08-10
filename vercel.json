@@ -7,8 +7,11 @@
       "src": "nuxt.config.js",
       "use": "@nuxtjs/vercel-builder",
       "config": {
+        "internalServer": true,
         "serverFiles": [
-          "./.nuxt/dist/sitemap-routes.json"
+          "./.nuxt/dist/sitemap-routes.json",
+          ".nuxt/content/**",
+          "content/**"
         ]
       }
     }
