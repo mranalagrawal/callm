@@ -87,7 +87,7 @@ export default defineComponent({
 
 <template>
   <div v-if="slides.length" class="relative">
-    <SsrCarousel ref="carousel" :key="slides.length" :show-arrows="isDesktopWide" show-dots class="relative">
+    <SsrCarousel ref="carousel" :key="slides.length" loop :show-arrows="isDesktopWide" show-dots class="relative">
       <div
         v-for="({ text, cta, image, link }) in slides" :key="generateKey(text)" class="slide relative w-full h-[505px] overflow-hidden"
         @click="handleMobileClick(link)"
