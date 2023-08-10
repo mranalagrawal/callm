@@ -169,7 +169,11 @@ export default {
       <p class="mb-5">
         {{ $t("navbar.user.orRegisterWith") }}
       </p>
-      <a :href="`${$config.MULTIPASS_URL}/social-login/${$config.STORE}/facebook/`" class="btn-base w-auto btn-default facebook text-sm sm:max-w-330px btn-base-spacing my-3">
+      <a
+        v-if="!$cmwStore.isProd"
+        :href="`${$config.MULTIPASS_URL}/social-login/${$config.STORE}/facebook/`"
+        class="btn-base w-auto btn-default facebook text-sm sm:max-w-330px btn-base-spacing my-3"
+      >
         <VueSvgIcon :data="socialFacebook" color="white" width="30" height="auto" />
         <span class="px-3">{{ $t("navbar.user.facebookLogin") }}</span>
       </a>

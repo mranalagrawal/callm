@@ -1,9 +1,9 @@
 <script>
 import { storeToRefs } from 'pinia'
 import { defineComponent, ref, useContext, useRouter } from '@nuxtjs/composition-api'
-import loginGoogle from 'assets/svg/login-google.svg'
-import loginFacebook from 'assets/svg/login-facebook.svg'
-import loginApple from 'assets/svg/login-apple.svg'
+import loginGoogle from '~/assets/svg/login-google.svg'
+import loginFacebook from '~/assets/svg/login-facebook.svg'
+import loginApple from '~/assets/svg/login-apple.svg'
 import eyeShowIcon from '~/assets/svg/eye-show.svg'
 import eyeHideIcon from '~/assets/svg/eye-hide.svg'
 import { useCustomer } from '~/store/customer'
@@ -122,7 +122,11 @@ export default defineComponent({
       <p class="mb-5">
         {{ $t("navbar.user.orLoginWith") }}
       </p>
-      <a :href="`${$config.MULTIPASS_URL}/social-login/${$config.STORE}/facebook/`" class="btn-base w-auto btn-default facebook text-sm sm:max-w-330px btn-base-spacing my-3">
+      <a
+        v-if="!$cmwStore.isProd"
+        :href="`${$config.MULTIPASS_URL}/social-login/${$config.STORE}/facebook/`"
+        class="btn-base w-auto btn-default facebook text-sm sm:max-w-330px btn-base-spacing my-3"
+      >
         <VueSvgIcon :data="socialFacebook" color="white" width="30" height="auto" />
         <span class="px-3">{{ $t("navbar.user.facebookLogin") }}</span>
       </a>

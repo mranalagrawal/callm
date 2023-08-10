@@ -140,6 +140,7 @@ export default defineComponent({
           </p>
           <div class="flex justify-center ">
             <a
+              v-if="!$cmwStore.isProd"
               :href="`${$config.MULTIPASS_URL}/social-login/${$config.STORE}/facebook/`"
               class="btn-base p-2 w-auto btn-default facebook text-sm btn-base-spacing mr-3"
             >
