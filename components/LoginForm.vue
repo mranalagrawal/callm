@@ -123,7 +123,6 @@ export default defineComponent({
         {{ $t("navbar.user.orLoginWith") }}
       </p>
       <a
-        v-if="!$cmwStore.isProd"
         :href="`${$config.MULTIPASS_URL}/social-login/${$config.STORE}/facebook/`"
         class="btn-base w-auto btn-default facebook text-sm sm:max-w-330px btn-base-spacing my-3"
       >
