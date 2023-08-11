@@ -17,7 +17,7 @@ export default defineComponent({
     const formData = ref({
       email: '',
       acceptsMarketing: false,
-      profiling: false,
+      // profiling: false,
     })
 
     const onSubmit = async () => {
@@ -87,7 +87,7 @@ export default defineComponent({
       />
     </div>
     <p class="text-sm px-4 text-center" v-text="$t('newsletter.splash.headline')" />
-    <div class="h4" v-text="$t('newsletter.splash.offer', { discount: $config.STORE === 'B2B' ? 3 : 5 })" />
+    <div class="h4" v-text="$t('newsletter.splash.offer', { discount: $cmwStore.isB2b ? 3 : 5 })" />
 
     <div class="grid grid-cols-[1fr_3fr] px-4">
       <div class="c">
@@ -130,7 +130,7 @@ export default defineComponent({
               </template>
             </CmwCheckbox>
 
-            <CmwCheckbox
+            <!--            <CmwCheckbox
               id="newsletter-profiling"
               v-model="formData.profiling"
               :checked="formData.profiling"
@@ -148,7 +148,7 @@ export default defineComponent({
                   />
                 </i18n>
               </template>
-            </CmwCheckbox>
+            </CmwCheckbox> -->
             <Button class="w-max ml-auto my-4" size="sm" :label="$t('common.cta.subscribe')" type="submit" />
           </form>
         </ValidationObserver>
