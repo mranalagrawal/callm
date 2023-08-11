@@ -270,9 +270,6 @@ export default defineComponent({
       </p>
       <div v-html="$t('search.noResultsMessage')" />
     </template>
-    <div class="fixed bottom-4 left-4">
-      <pre>{{ fetchState }}</pre>
-    </div>
     <Loader v-if="fetchState.pending" />
   </div>
 </template>
