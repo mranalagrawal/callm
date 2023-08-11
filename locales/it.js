@@ -210,18 +210,6 @@ export default {
   collections: {
     breadcrumb: 'Tutte le Selezioni',
   },
-  selections: {
-    favourite: 'Favoriti da Callmewine',
-    rarewine: 'Vini rari',
-    foreveryday: 'Da ogni giorno',
-    artisanal: 'Artigianali',
-    unusualvariety: 'Varietà insolite',
-    isnew: 'Nuovi',
-    togift: 'Da regalare',
-    inpromotion: 'In promozione',
-    topsale: 'Top Sale',
-    organic: 'Organici e Biodinamici',
-  },
   search: {
     search: 'Cerca',
     showMore: 'Mostra di più',

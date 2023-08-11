@@ -48,16 +48,17 @@ export default defineComponent({
     const isDesktop = inject('isDesktop') as Ref<boolean>
 
     const allSelections = [
-      'favourite',
       'artisanal',
-      'isnew',
-      'inpromotion',
-      'topsale',
+      'exclusive',
+      'favourite',
       'foreveryday',
+      'inpromotion',
+      'isnew',
       'organic',
-      'togift',
-      'unusualvariety',
       'rarewine',
+      'togift',
+      'topsale',
+      'unusualvariety',
     ]
 
     const belongFilters = [

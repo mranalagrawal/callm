@@ -54,37 +54,38 @@ export default defineComponent({
     const activeSelections = ref<string[]>([])
 
     const allSelections = [
-      'favourite',
       'artisanal',
-      'isnew',
-      'inpromotion',
-      'topsale',
+      'exclusive',
+      'favourite',
       'foreveryday',
+      'inpromotion',
+      'isnew',
       'organic',
-      'togift',
-      'unusualvariety',
       'rarewine',
+      'togift',
+      'topsale',
+      'unusualvariety',
     ]
 
     const belongFilters = [
       'areas',
-      'brands',
-      'regions',
-      'countries',
-      'vintages',
-      'sizes',
-      'boxes',
-      'dosagecontents',
       'bodystyles',
+      'boxes',
+      'brands',
+      'countries',
+      'dosagecontents',
+      'regions',
+      'sizes',
+      'vintages',
     ]
 
     const relationFilters = [
-      'awards',
       'agings',
+      'awards',
       'categories',
+      'pairings',
       'philosophies',
       'winelists',
-      'pairings',
     ]
 
     const cmwActiveSelect = ref('')

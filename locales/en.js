@@ -210,18 +210,6 @@ export default {
   collections: {
     breadcrumb: 'All Selections',
   },
-  selections: {
-    favourite: 'Callmewine\'s Favourites',
-    rarewine: 'Rare Wines',
-    foreveryday: 'Everyday Wines',
-    artisanal: 'Natural Wines',
-    unusualvariety: 'Unusual variety',
-    isnew: 'New',
-    togift: 'Perfect Gift Ideas',
-    inpromotion: 'On Sale',
-    topsale: 'Top Sales',
-    organic: 'Organic Wines',
-  },
   search: {
     search: 'Search',
     showMore: 'Show more',

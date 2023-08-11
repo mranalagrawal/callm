@@ -312,16 +312,17 @@ export default defineComponent({
     const priceTo = this.inputParameters.price_to
 
     const allSelections = [
-      'favourite',
       'artisanal',
-      'isnew',
-      'inpromotion',
-      'topsale',
+      'exclusive',
+      'favourite',
       'foreveryday',
+      'inpromotion',
+      'isnew',
       'organic',
-      'togift',
-      'unusualvariety',
       'rarewine',
+      'togift',
+      'topsale',
+      'unusualvariety',
     ]
 
     this.activeSelections = Object.keys(this.inputParameters).filter(el =>
@@ -393,16 +394,17 @@ export default defineComponent({
     }
   },
   allSelections: [
-    'favourite',
     'artisanal',
-    'isnew',
-    'inpromotion',
-    'topsale',
+    'exclusive',
+    'favourite',
     'foreveryday',
+    'inpromotion',
+    'isnew',
     'organic',
-    'togift',
-    'unusualvariety',
     'rarewine',
+    'togift',
+    'topsale',
+    'unusualvariety',
   ],
   searchableFilters: ['winelists', 'pairings', 'regions', 'areas', 'brands'],
   computed: {

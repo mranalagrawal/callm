@@ -43,17 +43,18 @@ export interface IProductAward {
 }
 
 export type TProductFeatures =
+  | 'artisanal'
+  | 'exclusive'
   | 'favourite'
-  | 'isnew'
+  | 'foreveryday'
   | 'inpromotion'
   | 'isInPromotion'
-  | 'foreveryday'
-  | 'togift'
-  | 'unusualvariety'
-  | 'rarewine'
-  | 'artisanal'
+  | 'isnew'
   | 'organic'
+  | 'rarewine'
+  | 'togift'
   | 'topsale'
+  | 'unusualvariety'
 
 interface IProductSeo {
   description: string

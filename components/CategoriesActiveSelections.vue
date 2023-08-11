@@ -44,16 +44,17 @@ export default defineComponent({
   emits: ['remove-selection-from-query', 'reset-filter'],
   setup(props, { emit }) {
     const allSelections = [
-      'favourite',
       'artisanal',
-      'isnew',
-      'inpromotion',
-      'topsale',
+      'exclusive',
+      'favourite',
       'foreveryday',
+      'inpromotion',
+      'isnew',
       'organic',
-      'togift',
-      'unusualvariety',
       'rarewine',
+      'togift',
+      'topsale',
+      'unusualvariety',
     ]
 
     const activeSelections = computed<string[] | undefined>(() => {
@@ -104,7 +105,7 @@ export default defineComponent({
           <template v-if="!!activeSelections?.length">
             <CmwChip
               v-for="item in activeSelections" :key="item" size="xs"
-              :label="$t(`selections.${item}`)" :on-delete="() => removeSelectionFromQuery(item)"
+              :label="$t(`common.features.${item}`)" :on-delete="() => removeSelectionFromQuery(item)"
             />
           </template>
           <!-- other filters -->

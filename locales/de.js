@@ -210,18 +210,6 @@ export default {
   collections: {
     breadcrumb: 'Alle Auswahlen',
   },
-  selections: {
-    favourite: 'Callmewine-Favoriten',
-    rarewine: 'Seltene Weine',
-    foreveryday: 'Für jeden Tag',
-    artisanal: 'Handwerklich',
-    unusualvariety: 'Ungewöhnliche Sorte',
-    isnew: 'Neu',
-    togift: 'Schenken',
-    inpromotion: 'Bei der Förderung',
-    topsale: 'Top Sale',
-    organic: 'Bio und Biodynamisch',
-  },
   search: {
     search: 'Suche',
     showMore: 'Zeig mehr',
