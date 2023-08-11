@@ -177,7 +177,7 @@ export default defineComponent({
                   >{{ footerInfoData.first_check }}
                     <NuxtLink :to="localePath('/privacy')" class="text-white">Privacy Policy</NuxtLink></label>
                 </div>
-                <div v-show="newsletter" class="mt-3">
+                <!--                <div v-show="newsletter" class="mt-3">
                   <div class="custom-checkbox">
                     <input
                       id="customCheck2"
@@ -191,7 +191,7 @@ export default defineComponent({
                     >{{ footerInfoData.second_check }}
                       <NuxtLink :to="localePath('/privacy')" class="text-white">Privacy Policy</NuxtLink></label>
                   </div>
-                </div>
+                </div> -->
               </div>
             </form>
           </div>
