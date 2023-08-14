@@ -280,6 +280,7 @@ export default {
 
   plugins: [
     // The order is important here, cmw-project-config.ts needs to go first
+    { src: '~/plugins/app-utils.js', ssr: false },
     { src: '~/plugins/cmw-project-config.ts' },
     { src: '~/plugins/cmw-api.ts' },
     { src: '~/plugins/cmw-gtm.ts' },
