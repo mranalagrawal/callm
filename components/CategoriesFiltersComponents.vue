@@ -133,7 +133,7 @@ export default defineComponent({
 
       const selectionsListMapped: any[] = []
       allSelections.forEach((el) => {
-        const tmp = aggregationsParsed[`agg-${el}`][`agg-${el}`].buckets.find(
+        const tmp = aggregationsParsed[`agg-${el}`] && aggregationsParsed[`agg-${el}`][`agg-${el}`].buckets.find(
           (el: { key: number }) => el.key === 1,
         )
 
@@ -141,7 +141,7 @@ export default defineComponent({
           tmp.key = [Boolean(tmp.key), el]
           tmp.key_as_string = el
           tmp.value = el
-          tmp.label = i18n.t(`selections.${el}`)
+          tmp.label = i18n.t(`common.features.${el}`)
           tmp.icon = el // `selections/${el}.svg`
           tmp.selected = route.value.fullPath?.toLowerCase().includes(el)
           selectionsListMapped.push(tmp)

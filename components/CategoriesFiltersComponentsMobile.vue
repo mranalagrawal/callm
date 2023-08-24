@@ -155,7 +155,7 @@ export default defineComponent({
           tmp.key = [Boolean(tmp.key), el]
           tmp.key_as_string = el
           tmp.value = el
-          tmp.label = i18n.t(`selections.${el}`)
+          tmp.label = i18n.t(`common.features.${el}`)
           tmp.icon = el // `selections/${el}.svg`
           tmp.selected = route.value.fullPath?.toLowerCase().includes(el)
           selectionsListMapped.push(tmp)
@@ -338,7 +338,7 @@ export default defineComponent({
                     data-before="∙ "
                     class="before:(content-[attr(data-before)] text-primary text-xs) first:before:(content-DEFAULT)"
                   >
-                    {{ $t(`selections.${selection}`) }}
+                    {{ $t(`common.features.${selection}`) }}
                   </span>
                 </small>
               </span>
