@@ -54,6 +54,7 @@ export default defineComponent({
       aggregations: {},
       regions: null,
       pairings: null,
+      exclusive: null,
       philosophies: null,
       sizes: null,
       dosagecontents: null,
@@ -95,6 +96,7 @@ export default defineComponent({
         totalPages: 0,
       },
       view: {
+        exclusive: null,
         categories: null,
         winelists: null,
         regions: null,
@@ -204,7 +206,9 @@ export default defineComponent({
     ]
 
     belong_filters.forEach((el) => {
-      // console.log(`aggregations searching ${el}`)
+      if (!search.aggregations[`agg-${el}`])
+        return
+
       let buckets = search.aggregations[`agg-${el}`][`agg-${el}`].buckets.map(
         (x) => {
           return {
@@ -250,13 +254,17 @@ export default defineComponent({
     ]
 
     relation_filters.forEach((el) => {
-      const data = search.aggregations[`agg-${el}`].inner.result.buckets.map((el) => {
+      if (!search.aggregations[`agg-${el}`])
+        return
+
+      const data = search.aggregations[`agg-${el}`] && search.aggregations[`agg-${el}`].inner.result.buckets.map((el) => {
         return {
           key: [el.key, el.name.buckets[0].key],
           key_as_string: `${el.key}|${el.name.buckets[0].key}`,
           doc_count: el.doc_count,
         }
       })
+      console.log(el)
       this[el] = data
 
       const filterId = this.inputParameters[el]
@@ -270,7 +278,10 @@ export default defineComponent({
     })
 
     relation_filters.forEach((el) => {
-      const data = search.aggregations[`agg-${el}`].inner.result.buckets.map((aggregation) => {
+      if (!search.aggregations[`agg-${el}`])
+        return
+
+      const data = search.aggregations[`agg-${el}`] && search.aggregations[`agg-${el}`].inner.result.buckets.map((aggregation) => {
         return {
           value: JSON.stringify({ id: aggregation.key, keyword: el }),
           label: `${aggregation.name.buckets[0].key} <span class="font-light text-gray">(${aggregation.doc_count})</span>`,
@@ -286,7 +297,10 @@ export default defineComponent({
     })
 
     belong_filters.forEach((el) => {
-      let buckets = search.aggregations[`agg-${el}`][`agg-${el}`].buckets.map(
+      if (!search.aggregations[`agg-${el}`])
+        return
+
+      let buckets = search.aggregations[`agg-${el}`] && search.aggregations[`agg-${el}`][`agg-${el}`].buckets.map(
         (aggregation) => {
           return {
             key: aggregation.key.split('|'),
@@ -312,16 +326,17 @@ export default defineComponent({
     const priceTo = this.inputParameters.price_to
 
     const allSelections = [
-      'favourite',
       'artisanal',
-      'isnew',
-      'inpromotion',
-      'topsale',
+      'exclusive',
+      'favourite',
       'foreveryday',
+      'inpromotion',
+      'isnew',
       'organic',
-      'togift',
-      'unusualvariety',
       'rarewine',
+      'togift',
+      'topsale',
+      'unusualvariety',
     ]
 
     this.activeSelections = Object.keys(this.inputParameters).filter(el =>
@@ -393,16 +408,17 @@ export default defineComponent({
     }
   },
   allSelections: [
-    'favourite',
     'artisanal',
-    'isnew',
-    'inpromotion',
-    'topsale',
+    'exclusive',
+    'favourite',
     'foreveryday',
+    'inpromotion',
+    'isnew',
     'organic',
-    'togift',
-    'unusualvariety',
     'rarewine',
+    'togift',
+    'topsale',
+    'unusualvariety',
   ],
   searchableFilters: ['winelists', 'pairings', 'regions', 'areas', 'brands'],
   computed: {
@@ -428,6 +444,9 @@ export default defineComponent({
 
       const selectionsListMapped = []
       this.$options.allSelections.forEach((el) => {
+        if (!aggregations[`agg-${el}`])
+          return
+
         const tmp = aggregations[`agg-${el}`][`agg-${el}`].buckets.find(
           el => el.key === 1,
         )
@@ -436,7 +455,7 @@ export default defineComponent({
           tmp.key = [Boolean(tmp.key), el]
           tmp.key_as_string = el
           tmp.value = el
-          tmp.label = this.$i18n.t(`selections.${el}`)
+          tmp.label = this.$i18n.t(`common.features.${el}`)
           tmp.icon = el // `selections/${el}.svg`
           tmp.selected = this.$route.fullPath?.toLowerCase().includes(el)
           selectionsListMapped.push(tmp)
@@ -568,7 +587,7 @@ export default defineComponent({
       <template v-else>
         {{ seoTitleReplace }}
         <span v-for="selection in activeSelections" :key="selection">
-          {{ $t(`selections.${selection}`) }}
+          {{ $t(`common.features.${selection}`) }}
         </span>
       </template>
     </h1>
@@ -657,7 +676,7 @@ export default defineComponent({
                       v-for="selection in activeSelections" :key="selection" data-before="∙ "
                       class="before:(content-[attr(data-before)] text-primary text-xs) first:before:(content-DEFAULT)"
                     >
-                      {{ $t(`selections.${selection}`) }}
+                      {{ $t(`common.features.${selection}`) }}
                     </span>
                   </small>
                 </span>

@@ -8,37 +8,39 @@ export function getIconAsImg(icon = 'success') {
 }
 
 export type DEPRECATED_FEATURES =
-  | 'favourite'
-  | 'isnew'
-  | 'isInPromotion'
-  | 'inpromotion'
-  | 'foreveryday'
-  | 'togift'
-  | 'unusualvariety'
-  | 'rarewine'
   | 'artisanal'
+  | 'favourite'
+  | 'foreveryday'
+  | 'inpromotion'
+  | 'isInPromotion'
+  | 'isnew'
   | 'natural'
   | 'organic'
+  | 'rarewine'
+  | 'togift'
   | 'topsale'
+  | 'unusualvariety'
 
 export type FEATURES =
-  | 'AWARDS'
-  | 'FAVOURITE'
-  | 'IS_NEW'
-  | 'IN_PROMOTION'
-  | 'FOR_EVERYDAY'
-  | 'TO_GIFT'
-  | 'UNUSUAL_VARIETY'
-  | 'RARE_WINE'
   | 'ARTISANAL'
+  | 'AWARDS'
+  | 'EXCLUSIVE'
+  | 'FAVOURITE'
+  | 'FOR_EVERYDAY'
+  | 'IN_PROMOTION'
+  | 'IS_NEW'
   | 'NATURAL'
   | 'ORGANIC'
+  | 'RARE_WINE'
   | 'TOP_SALE'
+  | 'TO_GIFT'
+  | 'UNUSUAL_VARIETY'
 
 export function getIconByFeature(key: DEPRECATED_FEATURES | FEATURES): string {
   // TODO: use enum definitions everywhere and create an Icon viewer for marketing
   return ({
     AWARDS: 'awards',
+    EXCLUSIVE: 'feature-exclusive',
     favourite: 'feature-cmw-favourite',
     FAVOURITE: 'feature-cmw-favourite',
     isnew: 'feature-is-new',
