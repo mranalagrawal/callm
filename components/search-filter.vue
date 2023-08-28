@@ -612,7 +612,7 @@ export default defineComponent({
       <p v-html="seoData.pageDescription" />
     </div>
     <ProductsResultsList :results="results" :total="total" :loading="loading" @update-sort-value="handleUpdateSortValue" />
-    <CategoriesPagination :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters" />
+    <CategoriesPagination :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters" :base-path="$route.path" />
 
     <ClientOnly>
       <div>
