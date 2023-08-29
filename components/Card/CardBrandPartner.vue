@@ -103,6 +103,7 @@ export default {
   width: 100%;
   align-items: center;
   justify-content: center;
+  text-align: center;
 }
 
 /* We are handling this piece skipping mobile-first to reduce the amount of CSS  */
@@ -121,7 +122,7 @@ export default {
   }
 }
 
-@container brand-card-content (min-width: 300px) {
+@container brand-card-content (min-width: 500px) {
   .c-brand__content {
     grid-template-columns: 40% 60%;
   }
