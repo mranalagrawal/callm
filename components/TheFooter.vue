@@ -98,13 +98,13 @@ export default defineComponent({
 
 <template>
   <footer class="bg-gray-lightest print:hidden">
-    <ThePreFooter v-if="$config.STORE !== 'CMW_UK'" />
+    <ThePreFooter v-if="!$cmwStore.isUk" />
     <div
       v-if="footerInfoData"
       class="bg-secondary text-secondary-100 p-4 mt-4"
     >
       <div class="max-w-screen-xl mx-auto py-4 px-4 mt-4">
-        <div v-if="$config.STORE === 'CMW'" class="flex justify-end">
+        <div v-if="$cmwStore.isIt" class="flex justify-end">
           <NuxtLink
             class="uppercase text-white text-sm mr-3"
             :to="switchLocalePath(themeConfig[$config.STORE].defaultLocale)"

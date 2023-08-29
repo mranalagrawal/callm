@@ -21,7 +21,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="md:px-4">
+  <div class="max-w-screen-xl mx-auto md:px-4">
     <div class="h2 text-center pt-20 pb-8">
       {{ $t('footer.explore') }}
     </div>
