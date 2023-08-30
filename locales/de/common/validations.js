@@ -1,0 +1,46 @@
+import validation from 'vee-validate/dist/locale/de.json'
+
+export default {
+  validations: {
+    code: validation.code,
+    messages: {
+      ...validation.messages,
+      oneNumber: 'eine Zahl',
+      oneUpperCase: 'ein Großbuchstabe',
+      oneLowerCase: 'ein Kleinbuchstabe',
+      oneSpecialChar: 'ein besonderer Charakter',
+    },
+    password: {
+      title: 'Passwort muss enthalten:',
+      effectiveness: 'Kennwortwirksamkeit',
+      min: 'mindestens 8 Zeichen',
+      oneNumber: 'eine Nummer',
+      oneUpperCase: 'ein Großbuchstabe',
+      oneLowerCase: 'ein kleiner Buchstabe',
+      oneSpecialChar: 'ein Sonderzeichen',
+    },
+    fields: {
+      'contact-user-email': 'Email',
+      'contact-first-name': 'Name',
+      'contact-last-name': 'Familienname, Nachname',
+      'notify-me-user-email': 'Email',
+      'user-email': 'Email',
+      'user-password': 'Passwort',
+      'user-email-navbar': 'Email',
+      'user-email-newsletter': 'Email',
+      'user-password-navbar': 'Passwort',
+      'register-user-firstname': 'Name',
+      'register-user-lastname': 'Familienname, Nachname',
+      'register-user-email': 'EEmail',
+      'new-password': 'Passwortd',
+      'customer-edit-email': 'Email',
+      'customer-edit-password': 'Passwort',
+      'customer-edit-firstname': 'Vorname',
+      'customer-edit-lastname': 'Familienname, Nachname',
+      'customer-edit-phone': 'Telefon',
+      'message': 'Nachricht',
+      'newsletter-checkbox': 'newsletter',
+      'privacy': 'Datenschutz',
+    },
+  },
+}

@@ -547,7 +547,15 @@ export default {
 
   build: {
     publicPath: '/_cmw/',
-    transpile: ['@prismicio/vue', 'swiper', 'vue-svg-icon', 'vee-validate/dist/rules'],
+    transpile: [
+      '@prismicio/vue',
+      'swiper', 'vue-svg-icon',
+      'vee-validate/dist/rules',
+      'vee-validate/dist/locale/de.json',
+      'vee-validate/dist/locale/en.json',
+      'vee-validate/dist/locale/fr.json',
+      'vee-validate/dist/locale/it.json',
+    ],
     extend(config) {
       const svgFilePath = join(__dirname, 'assets')
       const imageLoaderRule = config.module.rules.find(rule => rule.test && rule.test.test('.svg'))

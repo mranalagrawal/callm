@@ -1,0 +1,46 @@
+import validation from 'vee-validate/dist/locale/en.json'
+
+export default {
+  validations: {
+    code: validation.code,
+    messages: {
+      ...validation.messages,
+      oneNumber: 'eine Zahl',
+      oneUpperCase: 'ein Großbuchstabe',
+      oneLowerCase: 'ein Kleinbuchstabe',
+      oneSpecialChar: 'ein besonderer Charakter',
+    },
+    password: {
+      title: 'Password must contain:',
+      effectiveness: 'Password Effectiveness',
+      min: 'at least 8 characters',
+      oneNumber: 'one number',
+      oneUpperCase: 'one uppercase letter',
+      oneLowerCase: 'one lowercase letter',
+      oneSpecialChar: 'one special character',
+    },
+    fields: {
+      'contact-user-email': 'Email',
+      'contact-first-name': 'Name',
+      'contact-last-name': 'Lastname',
+      'notify-me-user-email': 'Email',
+      'user-email': 'Email',
+      'user-password': 'Password',
+      'user-email-navbar': 'Email',
+      'user-email-newsletter': 'Email',
+      'user-password-navbar': 'Password',
+      'register-user-firstname': 'Name',
+      'register-user-lastname': 'Lastname',
+      'register-user-email': 'E-mail',
+      'new-password': 'Password',
+      'customer-edit-email': 'Email',
+      'customer-edit-password': 'Password',
+      'customer-edit-firstname': 'First name',
+      'customer-edit-lastname': 'Last name',
+      'customer-edit-phone': 'Telephone',
+      'message': 'Message',
+      'newsletter-checkbox': 'newsletter',
+      'privacy': 'privacy',
+    },
+  },
+}

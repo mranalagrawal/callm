@@ -315,17 +315,6 @@ export default {
     additionalNotes: 'Additional Notes',
     proprietaryGrapes: 'proprietary grapes',
   },
-  validations: {
-    password: {
-      title: 'Password must contain:',
-      effectiveness: 'Password Effectiveness',
-      min: 'at least 8 characters',
-      oneNumber: 'one number',
-      oneUpperCase: 'one uppercase letter',
-      oneLowerCase: 'one lowercase letter',
-      oneSpecialChar: 'one special character',
-    },
-  },
   recoverPwd: {
     title: 'Reset password',
     paragraph: 'Enter the email with which you registered. You will receive a message in your inbox with instructions for changing your password.',

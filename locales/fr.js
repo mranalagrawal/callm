@@ -3,6 +3,7 @@ import * as common from '@/locales/fr/common'
 import * as pages from '@/locales/fr/pages'
 
 export default {
+  ...common.validations,
   head: {
     description: 'Vin en ligne à vendre sur Callmewine, votre boutique de vins en ligne: la meilleure façon d\'acheter des vins, du champagne et distillé à des prix exceptionnels!',
   },
@@ -317,17 +318,6 @@ export default {
     refinement: 'Refinement',
     additionalNotes: 'Additional Notes',
     proprietaryGrapes: 'raisins propriétaires',
-  },
-  validations: {
-    password: {
-      title: 'Le mot de passe doit contenir:',
-      effectiveness: 'Efficacité du mot de passe',
-      min: 'au moins 8 caractères',
-      oneNumber: 'un nombre',
-      oneUpperCase: 'une lettre majuscule',
-      oneLowerCase: 'une lettre minuscule',
-      oneSpecialChar: 'un caractère spécial',
-    },
   },
   recoverPwd: {
     title: 'Réinitialiser le mot de passe',

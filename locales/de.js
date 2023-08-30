@@ -3,6 +3,7 @@ import * as common from '@/locales/de/common'
 import * as pages from '@/locales/de/pages'
 
 export default {
+  ...common.validations,
   head: {
     description: 'Online -Wein zum Verkauf auf Callmewine, Ihr Online -Weinwerk: Der beste Weg, um Weine zu kaufen, Champagner und destilliert zu außergewöhnlichen Preisen zu destilliert!',
   },
@@ -316,8 +317,8 @@ export default {
     additionalNotes: 'Zusätzliche Bemerkungen',
     proprietaryGrapes: 'eigene Trauben',
   },
-  validations: {
-    password: {
+  /* validations: {
+    'password': {
       title: 'Passwort muss enthalten:',
       effectiveness: 'Kennwortwirksamkeit',
       min: 'mindestens 8 Zeichen',
@@ -326,7 +327,7 @@ export default {
       oneLowerCase: 'ein kleiner Buchstabe',
       oneSpecialChar: 'ein Sonderzeichen',
     },
-  },
+  }, */
   recoverPwd: {
     title: 'Passwort zurücksetzen',
     paragraph: 'Geben Sie die E-Mail ein, mit der Sie sich registriert haben. Sie erhalten eine Nachricht in Ihrem Posteingang mit Anweisungen zum Ändern Ihres Passworts.',

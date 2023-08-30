@@ -1,5 +1,4 @@
 <script lang="ts">
-import { localeChanged, localize } from 'vee-validate'
 import {
   computed,
   defineComponent,
@@ -19,7 +18,6 @@ import useNewsletterSplash from '~/components/composables/useNewsletterSplash'
 import Navbar from '~/components/Navbar.vue'
 import TopBar from '~/components/TopBar.vue'
 
-import { lookUpLocale } from '~/plugins/vee-validate'
 import { useCustomer } from '~/store/customer'
 import { useShopifyCart } from '~/store/shopifyCart'
 
@@ -49,9 +47,6 @@ export default defineComponent({
     provide('hasBeenSet', readonly(hasBeenSet))
 
     useFetch(async ({ $cookieHelpers }) => {
-      localize(i18n.locale, lookUpLocale(i18n.locale))
-      localeChanged()
-
       const accessToken = $cookieHelpers.getToken()
       accessToken && await getCustomer()
 

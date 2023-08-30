@@ -3,6 +3,7 @@ import * as common from '@/locales/it/common'
 import * as pages from '@/locales/it/pages'
 
 export default {
+  ...common.validations,
   head: {
     description: 'Vendita vino online su Callmewine, la tua enoteca online: il modo migliore per comprare vini, champagne e distillati in offerta a prezzi eccezionali!',
   },
@@ -315,17 +316,6 @@ export default {
     refinement: 'Raffinamento',
     additionalNotes: 'Note addizionali',
     proprietaryGrapes: 'uve di proprietà',
-  },
-  validations: {
-    password: {
-      title: 'La password deve contenere:',
-      effectiveness: 'Efficacia Password',
-      min: 'almeno 8 caratteri',
-      oneNumber: 'un numero',
-      oneUpperCase: 'una lettera maiuscola',
-      oneLowerCase: 'una lettera minuscola',
-      oneSpecialChar: 'un carattere speciale',
-    },
   },
   recoverPwd: {
     title: 'Reimposta password',

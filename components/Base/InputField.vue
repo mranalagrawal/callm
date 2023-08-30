@@ -56,14 +56,14 @@ export default {
 
 <template>
   <ValidationProvider
-    v-slot="{ errors }"
+    v-slot="{ classes, errors }"
     :vid="name"
     :rules="rules"
     :name="name"
     slim
   >
     <div class="mt-8">
-      <div class="relative">
+      <div class="relative" :class="classes">
         <input
           v-bind="[$attrs]"
           :id="name"
