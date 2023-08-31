@@ -510,22 +510,23 @@ export default {
     prefetchLinks: false,
     linkPrefetchedClass: 'nuxt-link-prefetched',
     extendRoutes(routes, resolve) {
+      const validCategoriesFilterLetters = 'V|C|R|D|B|N|M|A|F'
       routes.push(
         {
           name: 'search',
-          path: '/(.*)-:filter_key_1(V|C|R|D|B|N|M):filter_id_1(\\d+).htm/',
+          path: `/(.*)-:filter_key_1(${validCategoriesFilterLetters}):filter_id_1(\\d+).htm/`,
           component: resolve(__dirname, 'pages/search/categories.vue'),
           meta: { actionField: 'category' },
         },
         {
           name: 'search-deep',
-          path: '/(.*)-:filter_key_1(V|C|R|D|B|N|M):filter_id_1(\\d+):filter_key_2(V|C|R|D|B|N|M):filter_id_2(\\d+).htm/',
+          path: `/(.*)-:filter_key_1(${validCategoriesFilterLetters}):filter_id_1(\\d+):filter_key_2(${validCategoriesFilterLetters}):filter_id_2(\\d+).htm/`,
           component: resolve(__dirname, 'pages/search/categories.vue'),
           meta: { actionField: 'category' },
         },
         {
           name: 'search-deep-deep',
-          path: '/(.*)-:filter_key_1(V|C|R|D|B|N|M):filter_id_1(\\d+):filter_key_2(V|C|R|D|B|N|M):filter_id_2(\\d+):filter_key_3(V|C|R|D|B|N|M|A):filter_id_3(\\d+).htm/',
+          path: `/(.*)-:filter_key_1(${validCategoriesFilterLetters}):filter_id_1(\\d+):filter_key_2(${validCategoriesFilterLetters}):filter_id_2(\\d+):filter_key_3(${validCategoriesFilterLetters}):filter_id_3(\\d+).htm/`,
           component: resolve(__dirname, 'pages/search/categories.vue'),
           meta: { actionField: 'category' },
         },
