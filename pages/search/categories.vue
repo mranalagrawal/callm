@@ -25,6 +25,7 @@ export default defineComponent({
       N: 'countries',
       M: 'macros',
       A: 'vintages',
+      F: 'sizes',
       null: 'selections',
     })[key] || ''
 
