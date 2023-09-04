@@ -179,6 +179,7 @@ export default {
     greeting: 'Bonjour {name}',
     noOrder: 'Vous n\'avez pas encore de commande',
     noFavourite: 'Vous n\'avez pas encore de favori',
+    noProducts: 'Vous n\'avez pas encore acheté de produit',
     myAccount: 'Mon compte',
     myOrders: 'Mes commandes',
     buyAgain: 'Acheter à nouveau',
@@ -322,6 +323,7 @@ export default {
   recoverPwd: {
     title: 'Réinitialiser le mot de passe',
     paragraph: 'Entrez l\'e-mail avec lequel vous vous êtes inscrit. Vous recevrez un message dans votre boîte de réception avec des instructions pour changer votre mot de passe.',
+    feedback: 'Si l\'adresse {0} est associée à un profil enregistré, vous recevrez un lien par e-mail pour réinitialiser le mot de passe de votre compte.',
     feedbackFooter: {
       text: 'Votre profil est enregistré et vous n\'avez pas reçu l\'email ? Rechercher dans vos courriers indésirables ou {0}',
       link: 'demander un renvoi',

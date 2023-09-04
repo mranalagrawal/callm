@@ -318,7 +318,7 @@ export default {
   recoverPwd: {
     title: 'Reset password',
     paragraph: 'Enter the email with which you registered. You will receive a message in your inbox with instructions for changing your password.',
-    feedback: 'Se l\'indirizzo {0} è associato ad un profilo registrato, riceverai via mail il link per reimpostare la password del tuo account.',
+    feedback: 'If the address {0} is associated with a registered profile, you will receive the link to reset the password of your account by email.',
     feedbackFooter: {
       text: 'Is your profile registered and you haven\'t received the email? Search your junk mail or {0}',
       link: 'request a resend',
