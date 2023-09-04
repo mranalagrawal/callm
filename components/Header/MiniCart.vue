@@ -75,7 +75,7 @@ export default defineComponent({
             <hr>
             <strong class="block" v-text="$t('navbar.cart.empty')" />
             <p class="pt-4" v-text="$t('navbar.cart.startFromMessage')" />
-            <Button class="py-4" to="/">
+            <Button class="py-4" to="/catalog?inpromotion=true">
               <span v-text="$t('navbar.cart.cta')" />
             </Button>
           </div>
