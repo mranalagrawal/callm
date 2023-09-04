@@ -381,8 +381,7 @@ export default async function ({ redirect, route, $config, error, localePath, i1
         redirectTo = prepareRedirect(route.path)
         console.log(`🚥(301) ${route.path} contains capitalized or oldletters, redirect to  -> ${redirectTo}`)
         redirect(301, redirectTo)
-      }
-      else {
+      } else {
         console.log(`🚥(200) ${route.path} -> continue`)
       }
     } else {
