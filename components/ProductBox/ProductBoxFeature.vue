@@ -21,17 +21,18 @@ export default {
     // Note: if we align these features as ENUMS we could use them directly es. enums.feature.$ProdFeature,
     //  we also can have a better look to the tags property and see if they properly fit for these
     const getFeature = key => ({
-      favourite: { icon: 'feature-cmw-favourite', iconColor: '!fill-primary', title: i18n.t('common.features.FAVOURITE') },
-      isnew: { icon: 'feature-is-new', iconColor: '!fill-gray-dark', title: i18n.t('common.features.NEW') },
-      isInPromotion: { icon: 'feature-in-promotion', iconColor: '!fill-gray-dark', title: i18n.t('common.features.IN_PROMOTION') },
-      inpromotion: { icon: 'feature-in-promotion', iconColor: '!fill-gray-dark', title: i18n.t('common.features.IN_PROMOTION') },
-      foreveryday: { icon: 'feature-for-everyday', iconColor: '!fill-gray-dark', title: i18n.t('common.features.FOR_EVERYDAY') },
-      togift: { icon: 'feature-to-gift', iconColor: '!fill-gray-dark', title: i18n.t('common.features.TO_GIFT') },
-      unusualvariety: { icon: 'feature-unusual-variety', iconColor: '!fill-gray-dark', title: i18n.t('common.features.UNUSUAL_VARIETY') },
-      rarewine: { icon: 'feature-rare-wine', iconColor: '!fill-gray-dark', title: i18n.t('common.features.RARE_WINE') },
       artisanal: { icon: 'feature-artisanal', iconColor: '!fill-success', title: i18n.t('common.features.ARTISANAL') },
+      exclusive: { icon: 'feature-exclusive', iconColor: '!fill-gray-dark', title: i18n.t('common.features.EXCLUSIVE') },
+      favourite: { icon: 'feature-cmw-favourite', iconColor: '!fill-primary', title: i18n.t('common.features.FAVOURITE') },
+      foreveryday: { icon: 'feature-for-everyday', iconColor: '!fill-gray-dark', title: i18n.t('common.features.FOR_EVERYDAY') },
+      inpromotion: { icon: 'feature-in-promotion', iconColor: '!fill-gray-dark', title: i18n.t('common.features.IN_PROMOTION') },
+      isInPromotion: { icon: 'feature-in-promotion', iconColor: '!fill-gray-dark', title: i18n.t('common.features.IN_PROMOTION') },
+      isnew: { icon: 'feature-is-new', iconColor: '!fill-gray-dark', title: i18n.t('common.features.NEW') },
       organic: { icon: 'feature-organic', iconColor: '!fill-gray-dark', title: i18n.t('common.features.ORGANIC') },
+      rarewine: { icon: 'feature-rare-wine', iconColor: '!fill-gray-dark', title: i18n.t('common.features.RARE_WINE') },
+      togift: { icon: 'feature-to-gift', iconColor: '!fill-gray-dark', title: i18n.t('common.features.TO_GIFT') },
       topsale: { icon: 'feature-best-seller', iconColor: '!fill-gray-dark', title: i18n.t('common.features.BEST_SELLER') },
+      unusualvariety: { icon: 'feature-unusual-variety', iconColor: '!fill-gray-dark', title: i18n.t('common.features.UNUSUAL_VARIETY') },
     })[key]
 
     return { handleMouseEnter, handleMouseLeave, show, closeIcon, getFeature }
