@@ -38,15 +38,17 @@ export default defineComponent({
 
     const paymentMethods = computed(() => {
       const slice = findSlice('payment-methods', footerData.value)
-
+      console.warn('paymentMethods', { slice })
       return slice?.items || []
     })
     const socialLinks = computed(() => {
       const slice = findSlice('social-links', footerData.value)
+      console.warn('socialLinks', { slice })
       return slice?.items || []
     })
     const mobileApps = computed(() => {
       const slice = findSlice('mobile-apps', footerData.value)
+      console.warn('mobileApps', { slice })
       return slice?.items || []
     })
 

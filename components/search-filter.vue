@@ -264,7 +264,6 @@ export default defineComponent({
           doc_count: el.doc_count,
         }
       })
-      console.log(el)
       this[el] = data
 
       const filterId = this.inputParameters[el]

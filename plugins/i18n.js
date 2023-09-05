@@ -1,7 +1,6 @@
 import { configure, localeChanged, localize } from 'vee-validate'
 
 export default function ({ app }) {
-  console.log('export default function: ')
   configure({
     defaultMessage: (field, values) => {
       values._field_ = app.i18n.t(`validations.fields.${field}`)
@@ -15,7 +14,6 @@ export default function ({ app }) {
   })
 
   app.i18n.onLanguageSwitched = (_, newLocale) => {
-    console.log('onLanguageSwitched: ', newLocale)
     localize(newLocale)
     localeChanged()
   }
