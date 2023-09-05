@@ -80,21 +80,26 @@ export default defineComponent({
           class="text-center text-uppercase py-2"
           @mouseenter="onTab(firstLevel.name)"
         >
-          <component
-            :is="firstLevel.link ? 'NuxtLink' : 'span'"
-            class="w-max text-xs w-max desktop-wide:text-sm uppercase hover:(text-primary font-bold)"
-            :class="firstLevel.isPromotionTab ? 'text-primary-400' : 'text-body'"
-            :to="firstLevel.link ? localePath(`/${firstLevel.link}`) : undefined"
-          >
-            <VueSvgIcon
-              v-if="firstLevel.isPromotionTab"
-              :data="promoTagIcon"
-              width="26"
-              height="26"
-              class="inline"
-            />
-            {{ firstLevel.name }}
-          </component>
+          <template v-if="firstLevel?.link === 'blog'">
+            <a href="/blog" class="w-max text-xs w-max desktop-wide:text-sm uppercase text-body hover:(text-primary font-bold)">{{ firstLevel.link }}</a>
+          </template>
+          <template v-else>
+            <component
+              :is="firstLevel.link ? 'NuxtLink' : 'span'"
+              class="w-max text-xs w-max desktop-wide:text-sm uppercase hover:(text-primary font-bold)"
+              :class="firstLevel.isPromotionTab ? 'text-primary-400' : 'text-body'"
+              :to="firstLevel.link ? localePath(`/${firstLevel.link}`) : undefined"
+            >
+              <VueSvgIcon
+                v-if="firstLevel.isPromotionTab"
+                :data="promoTagIcon"
+                width="26"
+                height="26"
+                class="inline"
+              />
+              {{ firstLevel.name }}
+            </component>
+          </template>
         </div>
       </div>
     </div>
