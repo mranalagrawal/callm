@@ -31,6 +31,11 @@ export default defineComponent({
       return null
     }
 
+    useFetch(async ({ $cmwRepo }) => {
+      footerInfoData.value = await $cmwRepo.prismic.getSingle('footer-info')
+      footerData.value = await $cmwRepo.prismic.getSingle('footer-test')
+    })
+
     const paymentMethods = computed(() => {
       const slice = findSlice('payment-methods', footerData.value)
 
@@ -43,11 +48,6 @@ export default defineComponent({
     const mobileApps = computed(() => {
       const slice = findSlice('mobile-apps', footerData.value)
       return slice?.items || []
-    })
-
-    useFetch(async ({ $cmwRepo }) => {
-      footerInfoData.value = await $cmwRepo.prismic.getSingle('footer-info')
-      footerData.value = await $cmwRepo.prismic.getSingle('footer-test')
     })
 
     provide('socialLinks', readonly(socialLinks))
