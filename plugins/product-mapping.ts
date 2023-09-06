@@ -5,13 +5,10 @@ import themeConfig from '~/config/themeConfig'
 import { useCustomer } from '~/store/customer'
 import type { IMoneyV2 } from '~/types/common-objects'
 import type { IBaseProductMapped, IGiftCardMapped, IGiftCardVariantMapped, IGtmProductData, IProductBreadcrumbs, IProductMapped, TProductFeatures } from '~/types/product'
+import type { ObjType } from '~/types/types'
 import { getUniqueListBy, pick } from '~/utilities/arrays'
 import { getCountryFromStore } from '~/utilities/currency'
 import { cleanUrl } from '~/utilities/strings'
-
-export type ObjType<T> = {
-  [key in KeyType]: T;
-}
 
 interface IProductMapping {
   availableFeatures<T extends KeyType>(
@@ -97,9 +94,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
     },
 
     fromElastic: (arr = []) => {
-      let products: IProductMapped[] = []
-
-      products = arr.map((p: Record<string, any>) => {
+      const products: IProductMapped[] = arr.map((p: Record<string, any>) => {
         const compareAtPrice: IMoneyV2 = {
           amount: p._source.price[sale_channel],
           currencyCode: store === 'CMW_UK' ? 'GBP' : 'EUR',
@@ -185,9 +180,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
     },
 
     fromShopify: (arr = []) => {
-      let products = []
-
-      products = arr.map((p: Record<string, any>) => {
+      const products: IProductMapped[] = arr.map((p: Record<string, any>) => {
         const details = p.details?.value ? JSON.parse(p.details.value) : {}
         const bundle = JSON.parse(p.bundle?.value || '[]')
         const compareAtPrice = p.variants.nodes[0].compareAtPrice

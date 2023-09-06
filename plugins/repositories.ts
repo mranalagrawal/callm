@@ -12,7 +12,8 @@ interface ICmwRepo {
   customer: any
   orders: any
   prismic: {
-    getByUID(page: IPrismicPageParams): Promise<any>
+    getPageByUID(page: IPrismicPageParams): Promise<any>
+    getSinglePage(page: TPrismicComponentsNames,): Promise<Record<string, any>>
     getSingle(page: TPrismicComponentsNames): Promise<IPrismicPageData>
   }
   products: any

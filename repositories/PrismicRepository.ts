@@ -4,6 +4,20 @@ import type { TISO639 } from '~/config/themeConfig'
 import type { IPrismicPageData, IPrismicPageParams } from '~/types/prismic'
 
 export default ({ $prismic, $cmwStore, i18n, $handleApiErrors }: Context) => ({
+  async getSinglePage(page = ''): Promise<Record<string, any>> {
+    try {
+      const locale = i18n.locale as TISO639
+
+      const { data } = await $prismic.api.getSingle(page, {
+        lang: $cmwStore.prismicSettings.isoCode[locale],
+      })
+
+      return data
+    } catch (err) {
+      $handleApiErrors(`Catch getting page (${page}) from Prismic: ${err}`)
+      return {}
+    }
+  },
   async getSingle(page = ''): Promise<IPrismicPageData> {
     try {
       const locale = i18n.locale as TISO639
@@ -18,7 +32,7 @@ export default ({ $prismic, $cmwStore, i18n, $handleApiErrors }: Context) => ({
       return initialPageData
     }
   },
-  async getByUID({ page = '', uid }: IPrismicPageParams): Promise<any> {
+  async getPageByUID({ page = '', uid }: IPrismicPageParams): Promise<any> {
     try {
       const locale = i18n.locale as TISO639
 
