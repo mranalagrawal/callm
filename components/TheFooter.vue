@@ -38,17 +38,14 @@ export default defineComponent({
 
     const paymentMethods = computed(() => {
       const slice = findSlice('payment-methods', footerData.value)
-      console.warn('paymentMethods', { slice })
       return slice?.items || []
     })
     const socialLinks = computed(() => {
       const slice = findSlice('social-links', footerData.value)
-      console.warn('socialLinks', { slice })
       return slice?.items || []
     })
     const mobileApps = computed(() => {
       const slice = findSlice('mobile-apps', footerData.value)
-      console.warn('mobileApps', { slice })
       return slice?.items || []
     })
 
@@ -333,13 +330,13 @@ export default defineComponent({
             <span>{{ $t('footer.paymentMethods') }}</span>
           </div>
           <div
-            class="grid grid-cols-3 md:grid-cols-6 justify-items-center items-center content-center px-8 py-4"
+            class="grid grid-cols-3 md:grid-cols-8 justify-items-center items-center content-center px-8 py-4"
           >
             <PrismicImage
               v-for="payment in paymentMethods"
               :key="generateKey(payment.image.url)"
               :field="payment.image"
-              class="max-w-16"
+              class="max-w-12"
             />
           </div>
         </div>

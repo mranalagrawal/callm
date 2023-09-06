@@ -12,7 +12,6 @@ export default ({ $prismic, $cmwStore, i18n, $handleApiErrors }: Context) => ({
         lang: $cmwStore.prismicSettings.isoCode[locale],
       })
 
-      console.warn('PrismicRepository: getSingle', data)
       return data
     } catch (err) {
       $handleApiErrors(`Catch getting page (${page}) from Prismic: ${err}`)
