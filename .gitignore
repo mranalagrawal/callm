@@ -72,6 +72,9 @@ typings/
 # Nuxt generate
 dist
 
+# vercel config
+.vercel.json
+
 # vuepress build output
 .vuepress/dist
 
