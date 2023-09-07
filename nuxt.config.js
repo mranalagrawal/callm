@@ -271,6 +271,7 @@ export default {
     '@yzfe/svgicon/lib/svgicon.css',
     '@assets/css/vue-transitions.css',
     '@assets/css/layers/base.pcss',
+    '@assets/css/prose.css',
     // Vendors
     '@/assets/css/vendors/flash-message.css',
     '@/assets/css/vendors/swal.css',

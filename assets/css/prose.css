@@ -1,0 +1,3 @@
+.mktg-btn-default {
+  @apply btn-base btn-default btn-base-spacing text-base w-max;
+}
