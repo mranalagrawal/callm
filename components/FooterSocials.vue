@@ -26,7 +26,7 @@ export default {
         />
       </a>
     </div>
-    <div v-if="$config.STORE === 'CMW'" class="grid max-w-300px grid-cols-2 gap-4 items-center justify-end md:ml-auto">
+    <div class="grid max-w-300px grid-cols-2 gap-4 items-center justify-end md:ml-auto">
       <a
         v-for="({ image, link }) in mobileApps" :key="image.url" :href="link.url"
         :aria-label="$t(`enums.accessibility.labels.GET_THE_APP`)"
