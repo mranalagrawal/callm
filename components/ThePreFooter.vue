@@ -42,12 +42,13 @@ export default defineComponent({
           class="w-full flex justify-between items-center border-b border-b-transparent"
           :class="{ 'border-b-gray': !isDesktop }"
         >
-          <NuxtLink
-            :to="localePath(item?.primary?.link || '/')"
-            class="block overline-2 text-secondary-700 text-uppercase text-sm pl-2 py-2"
+          <component
+            :is="item?.primary?.link ? 'NuxtLink' : 'div'"
+            :to="item?.primary?.link ? localePath(item?.primary?.link) : null"
+            class="block overline-2 text-secondary-700 text-uppercase text-sm pl-2 py-2 select-none"
           >
             {{ item?.primary?.title }}
-          </NuxtLink>
+          </component>
           <button
             type="button"
             class="w-12 h-12 text-primary flex md:hidden"
