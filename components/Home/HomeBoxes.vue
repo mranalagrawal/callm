@@ -41,7 +41,7 @@ export default defineComponent({
       ref="carousel" :key="boxes.length" :responsive="responsive" :show-arrows="false"
       :show-dots="false" class="relative"
     >
-      <div v-for="({ title, description, image }) in boxes" :key="generateKey(title)" class="h-full pt-8">
+      <div v-for="({ title, description, image }) in boxes" :key="generateKey(title)" class="c-wrapper h-full pt-8">
         <div class="relative rounded border border-gray-light px-4 text-center h-full pt-12 pb-2">
           <div class="absolute flex bg-white transform left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 px-2 w-[100px] h-[100px]">
             <img
@@ -53,9 +53,43 @@ export default defineComponent({
             >
           </div>
           <div class="font-bold text-secondary-700" v-text="title" />
-          <p v-text="description" />
+          <p class="c-wrapper__desc" v-text="description" />
         </div>
       </div>
     </SsrCarousel>
   </div>
 </template>
+
+<style scoped>
+.c-wrapper {
+  container: card-wrapper / inline-size;
+}
+
+.c-wrapper__desc {
+  min-height: 16ch;
+}
+
+@container card-wrapper (min-width: 200px) {
+  .c-wrapper__desc {
+    min-height: 14ch;
+  }
+}
+
+@container card-wrapper (min-width: 300px) {
+  .c-wrapper__desc {
+    min-height: 12ch;
+  }
+}
+
+@container card-wrapper (min-width: 360px) {
+  .c-wrapper__desc {
+    min-height: 14ch;
+  }
+}
+
+@container card-wrapper (min-width: 460px) {
+  .c-wrapper__desc {
+    min-height: 10ch;
+  }
+}
+</style>
