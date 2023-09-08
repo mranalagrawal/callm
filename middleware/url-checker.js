@@ -287,7 +287,7 @@ function isBrandUrl(url) {
 }
 
 export default async function ({ redirect, route, $config, error, localePath, i18n }) {
-  console.log({ path: route.path, elasticUrl: $config.ELASTIC_URL })
+  const queryParams = route.query
   // BDP - brand detail page
   if (isBrandUrl(route.path)) {
     console.log(`${route.path} is a brandPage...`)
@@ -300,7 +300,7 @@ export default async function ({ redirect, route, $config, error, localePath, i1
       })
       const redirectTo = prepareRedirect(brandUrl)
       console.log(`🚥(301) ${route.path} missing folder, redirect to ${redirectTo}`)
-      redirect(301, redirectTo)
+      redirect(301, redirectTo, queryParams)
     }
   } else if (pageWithFilterCode(route.path)) {
     // PLP - listing pages with at least one filter/code part es C1, M1R13 ecc
@@ -314,7 +314,7 @@ export default async function ({ redirect, route, $config, error, localePath, i1
     if (redirectTo) {
       redirectTo = prepareRedirect(redirectTo)
       console.log(`🚥(301) ${route.path} is redirectPuntuale -> redirectTo ${redirectTo}`)
-      return redirect(301, redirectTo)
+      return redirect(301, redirectTo, queryParams)
     }
 
     // 2. searching in redirect seo rules/regex
@@ -345,7 +345,7 @@ export default async function ({ redirect, route, $config, error, localePath, i1
         } else {
           redirectTo = prepareRedirect(beRedirectTo)
           console.log(`🚥(301) api redirect response: ${beRedirectTo}, redirectTo --> ${redirectTo}`)
-          redirect(301, redirectTo)
+          redirect(301, redirectTo, queryParams)
         }
       } catch (e) {
         // if bo can't respond - continue with old url instead of broken
@@ -357,7 +357,7 @@ export default async function ({ redirect, route, $config, error, localePath, i1
       if (containsCapitalizedLetters(route.path) || needLettersReplace(route.path)) {
         redirectTo = prepareRedirect(route.path)
         console.log(`🚥(301) ${route.path} contains capitalized or oldletters, redirect to  -> ${redirectTo}`)
-        redirect(301, redirectTo)
+        redirect(301, redirectTo, queryParams)
       } else {
         console.log(`🚥(200) ${route.path} -> continue`)
       }
