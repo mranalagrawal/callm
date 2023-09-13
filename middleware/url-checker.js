@@ -282,6 +282,10 @@ function pageWithFilterCode(routePath) {
   return routePath.match(/-([A-OQ-Z]\d+)+.htm/) // exclude P product pages
 }
 
+function plpWithOldPagination(routePath) {
+  return routePath.match(/-([A-OQ-Z]\d+)+_(\d+).htm/) // plp with paginations es vini-C1_2.htm
+}
+
 function isBrandUrl(url) {
   return url.match(/[\w\/]+(?:-[\w]+)*-(B\d+)+.htm/)
 }
@@ -302,30 +306,39 @@ export default async function ({ redirect, route, $config, error, localePath, i1
       console.log(`🚥(301) ${route.path} missing folder, redirect to ${redirectTo}`)
       redirect(301, redirectTo, queryParams)
     }
-  } else if (pageWithFilterCode(route.path)) {
+  } else if (pageWithFilterCode(route.path) || plpWithOldPagination(route.path)) {
     // PLP - listing pages with at least one filter/code part es C1, M1R13 ecc
-    console.log(`${route.path} is a pageWithFilterCode searching for a match...`)
-    let redirectTo = null
+    console.log(`${route.path} is a plp/pageWithFilterCode searching for a match...`)
 
+    let urlPath = route.path
+    const isOldPlpPaginationUrl = plpWithOldPagination(urlPath)
+    if (isOldPlpPaginationUrl) {
+      console.log(`${urlPath} is a plp with old pagination...`)
+      const page = isOldPlpPaginationUrl[2]
+      urlPath = urlPath.replace(`_${page}`, '')
+      queryParams.page = page // append pagination value to current query params
+    }
+
+    let redirectTo = null
     // 1. searching in redirect puntuali/fissi
-    redirectTo = searchRedirectPuntuali(route.path)
-    console.log(`${route.path} is redirectPuntuale ?`, redirectTo)
+    redirectTo = searchRedirectPuntuali(urlPath)
+    console.log(`${urlPath} is redirectPuntuale ?`, redirectTo)
 
     if (redirectTo) {
       redirectTo = prepareRedirect(redirectTo)
-      console.log(`🚥(301) ${route.path} is redirectPuntuale -> redirectTo ${redirectTo}`)
+      console.log(`🚥(301) ${urlPath} is redirectPuntuale -> redirectTo ${redirectTo}`)
       return redirect(301, redirectTo, queryParams)
     }
 
     // 2. searching in redirect seo rules/regex
-    const matched = getMatchedRegex(route.path)
+    const matched = getMatchedRegex(urlPath)
     // need backend to get redirectUrl
     console.log('redirectByRegex matched', matched, REDIRECT_SEO_REGEX[matched])
 
     if (matched && REDIRECT_SEO_REGEX[matched] === 301) {
       try {
-        console.log(`🚥(301) need redirect get ${$config.ELASTIC_URL}seo/get-redirect-url?urlPath=${route.path}`)
-        const url = `${$config.ELASTIC_URL}seo/get-redirect-url?urlPath=${route.path}`
+        console.log(`🚥(301) need redirect get ${$config.ELASTIC_URL}seo/get-redirect-url?urlPath=${urlPath}`)
+        const url = `${$config.ELASTIC_URL}seo/get-redirect-url?urlPath=${urlPath}`
         const headers = {
           'x-cmw-locale': i18n.locale,
           'x-cmw-store': $config.STORE,
@@ -352,17 +365,17 @@ export default async function ({ redirect, route, $config, error, localePath, i1
         console.log('🚥(301) error', { error: e.message })
       }
     } else if (matched && REDIRECT_SEO_REGEX[matched] === 200) {
-      console.log(`🚥${route.path} match ${matched} -> valid/200 url`)
+      console.log(`🚥${urlPath} match ${matched} -> valid/200 url`)
       // exception that need 301 redirect also if valid/200 url
-      if (containsCapitalizedLetters(route.path) || needLettersReplace(route.path)) {
-        redirectTo = prepareRedirect(route.path)
-        console.log(`🚥(301) ${route.path} contains capitalized or oldletters, redirect to  -> ${redirectTo}`)
+      if (containsCapitalizedLetters(urlPath) || needLettersReplace(urlPath) || isOldPlpPaginationUrl) {
+        redirectTo = prepareRedirect(urlPath)
+        console.log(`🚥(301) ${urlPath} contains capitalized or oldletters, redirect to  -> ${redirectTo}`)
         redirect(301, redirectTo, queryParams)
       } else {
-        console.log(`🚥(200) ${route.path} -> continue`)
+        console.log(`🚥(200) ${urlPath} -> continue`)
       }
     } else {
-      console.log(`🚥${route.path} doesn't match regex -> 410`)
+      console.log(`🚥${urlPath} doesn't match regex -> 410`)
       error({ statusCode: 410, message: 'Resource is gone.' })
     }
   }
