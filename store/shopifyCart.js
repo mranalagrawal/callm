@@ -148,6 +148,7 @@ export const useShopifyCart = defineStore({
             this.$patch({ shopifyCart: cart })
             successCB()
           } else {
+            this.$nuxt.$sentry.captureException(userErrors[0].message)
             this.$patch({ shopifyCart: cart })
             SweetAlertToast.fire({
               icon: 'error',
