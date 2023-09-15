@@ -34,7 +34,10 @@ export default defineComponent({
 
     const getNumberColor = computed(() => props.bgColor === 'white' ? 'text-primary' : 'text-white')
 
-    return { getBgColor, getNumberColor }
+    return {
+      getBgColor,
+      getNumberColor,
+    }
   },
   methods: {
     getIconByFeature,
@@ -47,7 +50,10 @@ export default defineComponent({
     class="w-full max-w-450px grid grid-cols-[90px_auto_40px] items-center rounded border border-gray min-h-[98px] text-left mb-4"
     :class="[getBgColor()]"
   >
-    <span class="h-full bg-cover bg-center rounded-tl rounded-bl overflow-hidden" :style="`backgroundImage: url('${bgUrl}')`" />
+    <span
+      class="h-full bg-cover bg-center rounded-tl rounded-bl overflow-hidden"
+      :style="`backgroundImage: url('${bgUrl}&w=${200}')`"
+    />
     <span class="block p-2 overflow-hidden" :class="{ 'col-start-2 col-end-[-1]': !icon }">
       <span v-if="title" class="block overline-2 font-medium truncate mb-1" v-text="title" />
       <span v-if="subtitle" class="block line-clamp-2 leading-snug text-primary-400 text-sm" v-text="subtitle" />
