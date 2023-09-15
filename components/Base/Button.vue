@@ -31,7 +31,7 @@ export default defineComponent({
     const getSize = () => ({
       xs: 'text-xs rounded-sm px-3 py-1 md:(px-4 py-[0.4rem])',
       sm: 'text-sm',
-      md: 'text-base',
+      md: 'text-sm md:text-base',
       lg: 'text-base',
     })[props.size] || props.size
 
