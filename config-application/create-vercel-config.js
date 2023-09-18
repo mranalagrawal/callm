@@ -1,5 +1,6 @@
 const fs = require('node:fs')
 
+// eslint-disable-next-line no-console
 console.log('Creating vercel.json file...')
 
 const blogBaseUrl = process.env.DEPLOY_ENV === 'prod'
@@ -8,8 +9,6 @@ const blogBaseUrl = process.env.DEPLOY_ENV === 'prod'
 
 const config = {
   version: 2,
-  installCommand: 'yarn install',
-  buildCommand: 'nuxt build',
   builds: [
     {
       src: 'nuxt.config.js',
