@@ -44,7 +44,6 @@ export interface IProductAward {
 
 export type TProductFeatures =
   | 'artisanal'
-  | 'exclusive'
   | 'favourite'
   | 'foreveryday'
   | 'inpromotion'
