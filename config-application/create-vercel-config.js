@@ -1,5 +1,7 @@
 const fs = require('node:fs')
 
+console.log('Creating vercel.json file...')
+
 const blogBaseUrl = process.env.DEPLOY_ENV === 'prod'
   ? 'https://blog.callmewine.com/'
   : 'https://blog-stage.callmewine.com/'
