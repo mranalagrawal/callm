@@ -53,7 +53,7 @@ export default defineComponent({
       const cartId = $cookies.get('cartId')
       cartId && await getShopifyCart(cartId)
 
-      const isFromApp = req.headers['from-app']
+      let isFromApp = req.headers['user-agent']?.includes('CMW-App')
 
       if (isFromApp)
         store.commit('headers/SET_FROM_APP', { fromApp: true })
