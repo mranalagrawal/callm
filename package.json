@@ -22,7 +22,7 @@
     "start": "nuxt start",
     "generate": "nuxt generate",
     "prepare": "npx husky install",
-    "prebuild": "node ./config-application/create-vercel-config.js && npm run prepare && npm run lint:fix",
+    "prebuild": "echo prebuilt && node ./config-application/create-vercel-config.js && npm run prepare && npm run lint:fix",
     "slicemachine": "start-slicemachine",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
