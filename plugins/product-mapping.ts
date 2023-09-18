@@ -272,7 +272,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
     },
 
     giftCard(product): IGiftCardMapped {
-      const getGiftCardVariants = (): IGiftCardVariantMapped[] => product.variants.nodes.map((v: any) => ({
+      const getGiftCardVariants = (brand: string): IGiftCardVariantMapped[] => product.variants.nodes.map((v: any) => ({
         isGiftCard: product.isGiftCard,
         id: v.id,
         merchandiseId: v.id,
@@ -284,7 +284,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
         quantityAvailable: v.quantityAvailable,
         gtmProductData: {
           artisanal: 'no',
-          brand: v.brand.replaceAll('\'', '') || 'callmewine',
+          brand: (brand || 'callmewine').replaceAll('\'', ''),
           category: 'Gift Cards',
           compareAtPrice: v.compareAtPrice,
           favourite: 'no',
@@ -330,7 +330,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
           },
         },
         availableForSale: product.availableForSale,
-        variants: getGiftCardVariants(),
+        variants: getGiftCardVariants(product.vendor),
         breadcrumbs: Object.keys(breadcrumbs).length ? $productMapping.breadcrumbs(breadcrumbs[lang]) : [],
         href: '', // TODO
         tags: [],

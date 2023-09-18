@@ -24,3 +24,7 @@ export interface IOptions {
   value: string
   icon?: string
 }
+
+export type ObjType<T> = {
+  [key in KeyType]: T;
+}
