@@ -2,7 +2,7 @@
 import type { PropType } from '@nuxtjs/composition-api'
 import { computed, defineComponent, inject, ref, useContext, useRoute } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import type { ObjType } from '~/plugins/product-mapping'
+import type { ObjType } from '~/types/types'
 import { useFilters } from '~/store/filters'
 import type { IProductMapped } from '~/types/product'
 
