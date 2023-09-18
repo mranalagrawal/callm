@@ -5,13 +5,10 @@ import themeConfig from '~/config/themeConfig'
 import { useCustomer } from '~/store/customer'
 import type { IMoneyV2 } from '~/types/common-objects'
 import type { IBaseProductMapped, IGiftCardMapped, IGiftCardVariantMapped, IGtmProductData, IProductBreadcrumbs, IProductMapped, TProductFeatures } from '~/types/product'
+import type { ObjType } from '~/types/types'
 import { getUniqueListBy, pick } from '~/utilities/arrays'
 import { getCountryFromStore } from '~/utilities/currency'
 import { cleanUrl } from '~/utilities/strings'
-
-export type ObjType<T> = {
-  [key in KeyType]: T;
-}
 
 interface IProductMapping {
   availableFeatures<T extends KeyType>(
@@ -64,7 +61,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
   const sale_channel: TSalesChannel = themeConfig[store]?.salesChannel || 'cmw_uk_b2c'
   const lang: TISO639 = i18n.locale as TISO639
 
-  const productFeatures: TProductFeatures[] = ['favourite', 'isnew', 'isInPromotion', 'foreveryday', 'togift', 'unusualvariety', 'rarewine', 'artisanal', 'organic', 'topsale']
+  const productFeatures: TProductFeatures[] = ['exclusive', 'favourite', 'isnew', 'isInPromotion', 'foreveryday', 'togift', 'unusualvariety', 'rarewine', 'artisanal', 'organic', 'topsale']
 
   const $productMapping: IProductMapping = {
     availableFeatures(obj): TProductFeatures[] {
@@ -97,9 +94,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
     },
 
     fromElastic: (arr = []) => {
-      let products: IProductMapped[] = []
-
-      products = arr.map((p: Record<string, any>) => {
+      const products: IProductMapped[] = arr.map((p: Record<string, any>) => {
         const compareAtPrice: IMoneyV2 = {
           amount: p._source.price[sale_channel],
           currencyCode: store === 'CMW_UK' ? 'GBP' : 'EUR',
@@ -185,9 +180,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
     },
 
     fromShopify: (arr = []) => {
-      let products = []
-
-      products = arr.map((p: Record<string, any>) => {
+      const products: IProductMapped[] = arr.map((p: Record<string, any>) => {
         const details = p.details?.value ? JSON.parse(p.details.value) : {}
         const bundle = JSON.parse(p.bundle?.value || '[]')
         const compareAtPrice = p.variants.nodes[0].compareAtPrice
@@ -279,7 +272,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
     },
 
     giftCard(product): IGiftCardMapped {
-      const getGiftCardVariants = (): IGiftCardVariantMapped[] => product.variants.nodes.map((v: any) => ({
+      const getGiftCardVariants = (brand: string): IGiftCardVariantMapped[] => product.variants.nodes.map((v: any) => ({
         isGiftCard: product.isGiftCard,
         id: v.id,
         merchandiseId: v.id,
@@ -291,7 +284,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
         quantityAvailable: v.quantityAvailable,
         gtmProductData: {
           artisanal: 'no',
-          brand: v.brand.replaceAll('\'', '') || 'callmewine',
+          brand: (brand || 'callmewine').replaceAll('\'', ''),
           category: 'Gift Cards',
           compareAtPrice: v.compareAtPrice,
           favourite: 'no',
@@ -337,7 +330,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
           },
         },
         availableForSale: product.availableForSale,
-        variants: getGiftCardVariants(),
+        variants: getGiftCardVariants(product.vendor),
         breadcrumbs: Object.keys(breadcrumbs).length ? $productMapping.breadcrumbs(breadcrumbs[lang]) : [],
         href: '', // TODO
         tags: [],
