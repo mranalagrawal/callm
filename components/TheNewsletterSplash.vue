@@ -87,7 +87,7 @@ export default defineComponent({
       />
     </div>
     <p class="text-sm px-4 text-center" v-text="$t('newsletter.splash.headline')" />
-    <div class="h4" v-text="$t('newsletter.splash.offer', { discount: $cmwStore.isB2b ? 3 : 5 })" />
+    <div class="h4" v-text="$t('newsletter.splash.offer', { discount: $cmwStore.isB2b ? 3 : ($cmwStore.isUk ? 10 : 5) })" />
 
     <div class="grid grid-cols-[1fr_3fr] px-4">
       <div class="c">
