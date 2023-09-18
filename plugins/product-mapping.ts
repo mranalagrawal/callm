@@ -61,7 +61,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
   const sale_channel: TSalesChannel = themeConfig[store]?.salesChannel || 'cmw_uk_b2c'
   const lang: TISO639 = i18n.locale as TISO639
 
-  const productFeatures: TProductFeatures[] = ['favourite', 'isnew', 'isInPromotion', 'foreveryday', 'togift', 'unusualvariety', 'rarewine', 'artisanal', 'organic', 'topsale']
+  const productFeatures: TProductFeatures[] = ['exclusive', 'favourite', 'isnew', 'isInPromotion', 'foreveryday', 'togift', 'unusualvariety', 'rarewine', 'artisanal', 'organic', 'topsale']
 
   const $productMapping: IProductMapping = {
     availableFeatures(obj): TProductFeatures[] {
