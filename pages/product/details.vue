@@ -401,27 +401,22 @@ export default defineComponent({
               :thumbnail="product.image.thumbnail"
               :source="product.image.hd"
             />
-            <div class="transform absolute bottom-0 flex items-center left-1/2 -translate-x-1/2 translate-y-8">
+            <div v-if="$cmwStore.isDe" class="md:hidden transform absolute bottom-0 flex items-center left-1/2 -translate-x-1/2 translate-y-8">
               <div
                 v-if="isOnSale"
                 class="flex items-center gap-2"
               >
-                <span class="line-through text-gray text-sm">
+                <span class="line-through text-gray-light text-sm">
                   {{
                     $n(Number(productVariant.compareAtPrice.amount),
                        'currency',
                        getLocaleFromCurrencyCode(productVariant.compareAtPrice.currencyCode))
                   }}
                 </span>
-                <CmwChip
-                  color="secondary"
-                  shape="rounded"
-                  :label="`-${getPercent(finalPrice, productVariant.compareAtPrice.amount)}%`"
-                />
               </div>
               <i18n-n
-                v-if="finalPrice"
-                class="inline-block" :value="Number(finalPrice)"
+                v-else-if="finalPrice && !isOnSale"
+                class="md:hidden inline-block text-gray" :value="Number(finalPrice)"
                 :format="{ key: 'currency' }"
                 :locale="getLocaleFromCurrencyCode(productVariant.price.currencyCode)"
               >
@@ -442,7 +437,7 @@ export default defineComponent({
                 {{
                   $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode))
                 }}/liter</span>
-              <div v-if="$cmwStore.isDe" class="md:hidden text-sm text-gray-dark">
+              <div v-if="$cmwStore.isDe" class="md:hidden text-sm text-gray ml-1">
                 Inkl. MwSt. Und St.
               </div>
             </div>
@@ -544,7 +539,7 @@ export default defineComponent({
                     <span class="text-sm md:text-base">{{ slotProps.fraction }}</span>
                   </template>
                 </i18n-n>
-                <div>
+                <div v-if="$cmwStore.isDe">
                   <span v-if="$cmwStore.isDe && priceByLiter" class="text-sm">
                     {{
                       $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode))
