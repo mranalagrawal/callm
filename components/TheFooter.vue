@@ -257,7 +257,7 @@ export default defineComponent({
                 {{ $t('footer.restaurantsAndWineShops') }}
               </NuxtLink>
               <NuxtLink
-                v-if="$config.STORE === 'CMW'"
+                v-if="$cmwStore.isIt || $cmwStore.isB2b"
                 :to="localePath('/corporate-gifts')"
                 class="block text-white"
               >
@@ -270,7 +270,7 @@ export default defineComponent({
                 {{ $t('footer.giftCards') }}
               </NuxtLink>
               <NuxtLink
-                v-if="$config.STORE === 'CMW'"
+                v-if="$cmwStore.isIt || $cmwStore.isB2b"
                 :to="localePath('/guide-to-our-wines')"
                 class="block text-white"
               >
