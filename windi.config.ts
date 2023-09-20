@@ -115,6 +115,7 @@ export default defineConfig({
         full: '100%',
       },
       transitionProperty: {
+        'max-h': 'max-height',
         'height': 'height',
         'width': 'width',
         'transform-opacity': 'transform, opacity',

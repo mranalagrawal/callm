@@ -1,5 +1,4 @@
 <script lang="ts">
-import { localeChanged, localize } from 'vee-validate'
 import {
   computed,
   defineComponent,
@@ -19,7 +18,6 @@ import useNewsletterSplash from '~/components/composables/useNewsletterSplash'
 import Navbar from '~/components/Navbar.vue'
 import TopBar from '~/components/TopBar.vue'
 
-import { lookUpLocale } from '~/plugins/vee-validate'
 import { useCustomer } from '~/store/customer'
 import { useShopifyCart } from '~/store/shopifyCart'
 
@@ -49,16 +47,13 @@ export default defineComponent({
     provide('hasBeenSet', readonly(hasBeenSet))
 
     useFetch(async ({ $cookieHelpers }) => {
-      localize(i18n.locale, lookUpLocale(i18n.locale))
-      localeChanged()
-
       const accessToken = $cookieHelpers.getToken()
       accessToken && await getCustomer()
 
       const cartId = $cookies.get('cartId')
       cartId && await getShopifyCart(cartId)
 
-      const isFromApp = req.headers['from-app']
+      const isFromApp = req.headers['user-agent']?.includes('CMW-App')
 
       if (isFromApp)
         store.commit('headers/SET_FROM_APP', { fromApp: true })
@@ -107,7 +102,9 @@ export default defineComponent({
     <nuxt :class="isFromApp ? 'cmw-app-main' : 'cmw-main'" />
 
     <!--    <LazyHydrate :when-visible="{ rootMargin: '100px' }"> -->
-    <TheFooter />
+    <ClientOnly>
+      <TheFooter />
+    </ClientOnly>
     <!--    </LazyHydrate> -->
 
     <ClientOnly>

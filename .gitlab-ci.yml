@@ -1,0 +1,12 @@
+stages:
+  - lint
+
+eslint:
+  stage: lint
+  image: node:16
+  script:
+    - yarn install
+    - yarn run lint || exit 1
+  only:
+    - merge_requests
+    - master

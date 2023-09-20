@@ -3,6 +3,7 @@ import * as common from '@/locales/fr/common'
 import * as pages from '@/locales/fr/pages'
 
 export default {
+  ...common.validations,
   head: {
     description: 'Vin en ligne à vendre sur Callmewine, votre boutique de vins en ligne: la meilleure façon d\'acheter des vins, du champagne et distillé à des prix exceptionnels!',
   },
@@ -178,6 +179,7 @@ export default {
     greeting: 'Bonjour {name}',
     noOrder: 'Vous n\'avez pas encore de commande',
     noFavourite: 'Vous n\'avez pas encore de favori',
+    noProducts: 'Vous n\'avez pas encore acheté de produit',
     myAccount: 'Mon compte',
     myOrders: 'Mes commandes',
     buyAgain: 'Acheter à nouveau',
@@ -210,16 +212,7 @@ export default {
     breadcrumb: 'Toutes les sélections',
   },
   selections: {
-    favourite: 'Callmewine Favourites',
-    rarewine: 'Vins rares',
-    foreveryday: 'Pour tous les jours',
-    artisanal: 'Artisanale',
-    unusualvariety: 'Variété inhabituelle',
-    isnew: 'Nouvelle',
-    togift: 'À offrir',
-    inpromotion: 'En promotion',
-    topsale: 'Meilleure vente',
-    organic: 'Biologique et Biodynamique',
+
   },
   search: {
     search: 'Recherche',
@@ -327,20 +320,10 @@ export default {
     additionalNotes: 'Additional Notes',
     proprietaryGrapes: 'raisins propriétaires',
   },
-  validations: {
-    password: {
-      title: 'Le mot de passe doit contenir:',
-      effectiveness: 'Efficacité du mot de passe',
-      min: 'au moins 8 caractères',
-      oneNumber: 'un nombre',
-      oneUpperCase: 'une lettre majuscule',
-      oneLowerCase: 'une lettre minuscule',
-      oneSpecialChar: 'un caractère spécial',
-    },
-  },
   recoverPwd: {
     title: 'Réinitialiser le mot de passe',
     paragraph: 'Entrez l\'e-mail avec lequel vous vous êtes inscrit. Vous recevrez un message dans votre boîte de réception avec des instructions pour changer votre mot de passe.',
+    feedback: 'Si l\'adresse {0} est associée à un profil enregistré, vous recevrez un lien par e-mail pour réinitialiser le mot de passe de votre compte.',
     feedbackFooter: {
       text: 'Votre profil est enregistré et vous n\'avez pas reçu l\'email ? Rechercher dans vos courriers indésirables ou {0}',
       link: 'demander un renvoi',

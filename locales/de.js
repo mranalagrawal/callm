@@ -3,6 +3,7 @@ import * as common from '@/locales/de/common'
 import * as pages from '@/locales/de/pages'
 
 export default {
+  ...common.validations,
   head: {
     description: 'Online -Wein zum Verkauf auf Callmewine, Ihr Online -Weinwerk: Der beste Weg, um Weine zu kaufen, Champagner und destilliert zu außergewöhnlichen Preisen zu destilliert!',
   },
@@ -179,6 +180,7 @@ export default {
     greeting: 'Hallo {name}',
     noOrder: 'Sie haben noch keine Bestellung',
     noFavourite: 'Sie haben noch keinen Favoriten',
+    noProducts: 'Sie haben noch kein Produkt gekauft',
     myAccount: 'Account',
     myOrders: 'Aufträge',
     buyAgain: 'Zurück kaufen',
@@ -209,18 +211,6 @@ export default {
   },
   collections: {
     breadcrumb: 'Alle Auswahlen',
-  },
-  selections: {
-    favourite: 'Callmewine-Favoriten',
-    rarewine: 'Seltene Weine',
-    foreveryday: 'Für jeden Tag',
-    artisanal: 'Handwerklich',
-    unusualvariety: 'Ungewöhnliche Sorte',
-    isnew: 'Neu',
-    togift: 'Schenken',
-    inpromotion: 'Bei der Förderung',
-    topsale: 'Top Sale',
-    organic: 'Bio und Biodynamisch',
   },
   search: {
     search: 'Suche',
@@ -328,20 +318,10 @@ export default {
     additionalNotes: 'Zusätzliche Bemerkungen',
     proprietaryGrapes: 'eigene Trauben',
   },
-  validations: {
-    password: {
-      title: 'Passwort muss enthalten:',
-      effectiveness: 'Kennwortwirksamkeit',
-      min: 'mindestens 8 Zeichen',
-      oneNumber: 'eine Nummer',
-      oneUpperCase: 'ein Großbuchstabe',
-      oneLowerCase: 'ein kleiner Buchstabe',
-      oneSpecialChar: 'ein Sonderzeichen',
-    },
-  },
   recoverPwd: {
     title: 'Passwort zurücksetzen',
     paragraph: 'Geben Sie die E-Mail ein, mit der Sie sich registriert haben. Sie erhalten eine Nachricht in Ihrem Posteingang mit Anweisungen zum Ändern Ihres Passworts.',
+    feedback: 'Wenn die Adresse {0} mit einem registrierten Profil verknüpft ist, erhalten Sie per E-Mail den Link zum Zurücksetzen des Passworts Ihres Kontos.',
     feedbackFooter: {
       text: 'Ist Ihr Profil registriert und Sie haben die E-Mail nicht erhalten? Durchsuchen Sie Ihre Junk-Mail oder fordern Sie eine {0}',
       link: 'erneute Zusendung an',

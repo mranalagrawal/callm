@@ -82,8 +82,11 @@ export default defineComponent({
       const { productor, label } = await $cmwRepo.prismic.getSingle('productors')
       // Note: Some day we can make an API to handle these brands automatically without prismic
 
-      const top = productor?.slice(0, 5) || []
-      const bottom = productor?.slice(5, 10) || []
+      // Get the productor length and split it in two arrays
+      const productorLength = productor?.length || 0
+      const productorHalf = Math.ceil(productorLength / 2)
+      const top = productor?.slice(0, productorHalf) || []
+      const bottom = productor?.slice(productorHalf, productorLength) || []
       slidesTop.value = top.concat(top)
       slidesBottom.value = bottom.concat(bottom)
       title.value = label as string

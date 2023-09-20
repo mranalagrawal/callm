@@ -116,9 +116,11 @@ export default defineComponent({
         >
           {{ $t("navbar.user.forgotPassword") }}
         </NuxtLink>
+        <a v-if="$cmwStore.isIt" class="my-8 font-bold text-secondary-400" href="https://b2b.callmewine.com">PORTALE
+          OPERATORI HO.RE.CA.</a>
       </form>
     </ValidationObserver>
-    <div v-if="$config.STORE !== 'B2B'" class="px-4 pb-2 md:w-3/4 mx-auto">
+    <div v-if="!$cmwStore.isB2b" class="px-4 pb-2 md:w-3/4 mx-auto">
       <p class="mb-5">
         {{ $t("navbar.user.orLoginWith") }}
       </p>

@@ -12,7 +12,6 @@ export default defineComponent({
     const customerStore = useCustomer()
     const isSubmitting = ref(false)
     const showPasswordToast = ref(false)
-    const now = new Date()
 
     const handleFocus = () => showPasswordToast.value = true
     const handleBlur = () => showPasswordToast.value = false
@@ -29,7 +28,6 @@ export default defineComponent({
       password: '',
       privacy: false,
       acceptsMarketing: false,
-      age: '',
     })
 
     // used in for ref= template in ValidationObserver
@@ -71,25 +69,6 @@ export default defineComponent({
               text: backendMessage,
             })
           }
-          /*
-          if (customerUserErrors[0].field) {
-            await SweetAlertToast.fire({
-              icon: 'error',
-              text: customerUserErrors[0].message,
-            })
-          } else {
-            SweetAlertConfirm.fire({
-              // TODO: Add some cool animated icons and the use with iconHtml: getIconAsImg('error'),
-              icon: 'info',
-              text: customerUserErrors[0].message,
-              showCancelButton: false,
-              showConfirmButton: false,
-              confirmButtonText: i18n.t('common.cta.confirm'),
-              preConfirm: async () => {
-              },
-            }).then(() => {})
-          }
-          */
         } else {
           // Handle other errors
           $handleApiErrors(`Handle other errors: ${error}`)
@@ -106,10 +85,9 @@ export default defineComponent({
       handleFocus,
       isCmwItB2b,
       isSubmitting,
-      now,
       onSubmit,
-      showPasswordToast,
       registrationForm,
+      showPasswordToast,
     }
   },
 })

@@ -6,6 +6,11 @@ export type TButtonVariant = 'default' | 'default-inverse' | 'ghost' | 'ghost-in
 export type TColors = 'primary' | 'secondary' | 'secondary-400'
 export type TShapes = 'rounded' | 'pill'
 export type TContextual = 'success' | 'error' | 'warning' | 'info'
+
+export type ObjType<T> = {
+  [key in KeyType]: T;
+}
+
 export interface TImage {
   altText: string
   height: number
@@ -18,8 +23,4 @@ export interface IOptions {
   label: TranslateResult
   value: string
   icon?: string
-}
-
-export type ObjType<T> = {
-  [key in KeyType]: T;
 }

@@ -210,18 +210,6 @@ export default {
   collections: {
     breadcrumb: 'All Selections',
   },
-  selections: {
-    favourite: 'Callmewine\'s Favourites',
-    rarewine: 'Rare Wines',
-    foreveryday: 'Everyday Wines',
-    artisanal: 'Natural Wines',
-    unusualvariety: 'Unusual variety',
-    isnew: 'New',
-    togift: 'Perfect Gift Ideas',
-    inpromotion: 'On Sale',
-    topsale: 'Top Sales',
-    organic: 'Organic Wines',
-  },
   search: {
     search: 'Search',
     showMore: 'Show more',
@@ -327,21 +315,10 @@ export default {
     additionalNotes: 'Additional Notes',
     proprietaryGrapes: 'proprietary grapes',
   },
-  validations: {
-    password: {
-      title: 'Password must contain:',
-      effectiveness: 'Password Effectiveness',
-      min: 'at least 8 characters',
-      oneNumber: 'one number',
-      oneUpperCase: 'one uppercase letter',
-      oneLowerCase: 'one lowercase letter',
-      oneSpecialChar: 'one special character',
-    },
-  },
   recoverPwd: {
     title: 'Reset password',
     paragraph: 'Enter the email with which you registered. You will receive a message in your inbox with instructions for changing your password.',
-    feedback: 'Se l\'indirizzo {0} è associato ad un profilo registrato, riceverai via mail il link per reimpostare la password del tuo account.',
+    feedback: 'If the address {0} is associated with a registered profile, you will receive the link to reset the password of your account by email.',
     feedbackFooter: {
       text: 'Is your profile registered and you haven\'t received the email? Search your junk mail or {0}',
       link: 'request a resend',

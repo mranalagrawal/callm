@@ -3,17 +3,15 @@ import { defineComponent, inject, onMounted, ref, useContext } from '@nuxtjs/com
 
 export default defineComponent({
   setup() {
-    const { $cmwGtmUtils, $config } = useContext()
+    const { $cmwGtmUtils } = useContext()
     const registerIsVisible = ref(false)
     const isDesktop = inject('isDesktop')
-
-    const isB2bStore = $config.STORE === 'B2B'
 
     onMounted(() => {
       process.browser && $cmwGtmUtils.pushPage('page')
     })
 
-    return { registerIsVisible, isDesktop, isB2bStore }
+    return { registerIsVisible, isDesktop }
   },
 })
 </script>
@@ -38,7 +36,7 @@ export default defineComponent({
       </div>
       <div v-else>
         <h3 class="text-center" v-text="$t('createYourAccount')" />
-        <RegisterBox-B2b v-if="isB2bStore" />
+        <RegisterBox-B2b v-if="$cmwStore.isB2b" />
         <RegisterBox v-else />
       </div>
     </div>
@@ -55,7 +53,7 @@ export default defineComponent({
       </div>
       <div class="bg-gray-lightest py-20">
         <h3 class="text-center" v-text="$t('createYourAccount')" />
-        <RegisterBox-B2b v-if="isB2bStore" />
+        <RegisterBox-B2b v-if="$cmwStore.isB2b" />
         <RegisterBox v-else />
       </div>
     </div>

@@ -9,6 +9,8 @@ export type TPrismicComponentsNames =
   | 'cookie-policy'
   | 'footer'
   | 'footer-info'
+  | 'footer-elements'
+  | 'footer-test'
   | 'home-boxes'
   | 'home-carousel'
   | 'home-featured'
@@ -48,6 +50,8 @@ type TPrismicUid =
   | 'corporate-gifts'
   | 'customer-service'
   | 'guide-to-our-wines'
+  | 'footer-elements'
+  | 'footer-test'
 
 export interface IPrismicPageParams {
   page: string

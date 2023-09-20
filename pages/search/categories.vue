@@ -25,6 +25,7 @@ export default defineComponent({
       N: 'countries',
       M: 'macros',
       A: 'vintages',
+      F: 'sizes',
       null: 'selections',
     })[key] || ''
 
@@ -53,11 +54,11 @@ export default defineComponent({
       urlSearchParams.delete('page')
 
       const encodedPath = req?.url.split('?')[0] || ''
-      const encodedSearch = urlSearchParams.toString()
+      // const encodedSearch = urlSearchParams.toString()
 
       // Add the question mark only if there are other query parameters left
-      const questionMark = encodedSearch ? '?' : ''
-      canonicalUrl.value = `https://${req.headers.host}${encodedPath}${questionMark}${encodedSearch}`
+      // const questionMark = encodedSearch ? '?' : ''
+      canonicalUrl.value = `https://${req.headers.host}${encodedPath}`
     }
 
     if (process.client && typeof window !== 'undefined') {
@@ -71,11 +72,11 @@ export default defineComponent({
       urlSearchParams.delete('page')
 
       const encodedPath = pathname || ''
-      const encodedSearch = urlSearchParams.toString()
+      // const encodedSearch = urlSearchParams.toString()
 
       // Add the question mark only if there are other query parameters left
-      const questionMark = encodedSearch ? '?' : ''
-      canonicalUrl.value = `${origin}${encodedPath}${questionMark}${encodedSearch}`
+      // const questionMark = encodedSearch ? '?' : ''
+      canonicalUrl.value = `${origin}${encodedPath}`
     }
 
     useMeta(() => ({

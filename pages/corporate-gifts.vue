@@ -24,7 +24,7 @@ export default defineComponent({
     const pageData = ref<IPrismicPageData>(initialPageData)
 
     const { fetch } = useFetch(async ({ $cmwRepo }) => {
-      pageData.value = await $cmwRepo.prismic.getByUID({
+      pageData.value = await $cmwRepo.prismic.getPageByUID({
         page: 'static-page',
         uid: 'corporate-gifts',
       })

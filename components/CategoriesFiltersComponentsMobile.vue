@@ -54,37 +54,38 @@ export default defineComponent({
     const activeSelections = ref<string[]>([])
 
     const allSelections = [
-      'favourite',
       'artisanal',
-      'isnew',
-      'inpromotion',
-      'topsale',
+      'exclusive',
+      'favourite',
       'foreveryday',
+      'inpromotion',
+      'isnew',
       'organic',
-      'togift',
-      'unusualvariety',
       'rarewine',
+      'togift',
+      'topsale',
+      'unusualvariety',
     ]
 
     const belongFilters = [
       'areas',
-      'brands',
-      'regions',
-      'countries',
-      'vintages',
-      'sizes',
-      'boxes',
-      'dosagecontents',
       'bodystyles',
+      'boxes',
+      'brands',
+      'countries',
+      'dosagecontents',
+      'regions',
+      'sizes',
+      'vintages',
     ]
 
     const relationFilters = [
-      'awards',
       'agings',
+      'awards',
       'categories',
+      'pairings',
       'philosophies',
       'winelists',
-      'pairings',
     ]
 
     const cmwActiveSelect = ref('')
@@ -154,7 +155,7 @@ export default defineComponent({
           tmp.key = [Boolean(tmp.key), el]
           tmp.key_as_string = el
           tmp.value = el
-          tmp.label = i18n.t(`selections.${el}`)
+          tmp.label = i18n.t(`common.features.${el}`)
           tmp.icon = el // `selections/${el}.svg`
           tmp.selected = route.value.fullPath?.toLowerCase().includes(el)
           selectionsListMapped.push(tmp)
@@ -337,7 +338,7 @@ export default defineComponent({
                     data-before="∙ "
                     class="before:(content-[attr(data-before)] text-primary text-xs) first:before:(content-DEFAULT)"
                   >
-                    {{ $t(`selections.${selection}`) }}
+                    {{ $t(`common.features.${selection}`) }}
                   </span>
                 </small>
               </span>

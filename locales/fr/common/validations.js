@@ -1,0 +1,46 @@
+import validation from 'vee-validate/dist/locale/fr.json'
+
+export default {
+  validations: {
+    code: validation.code,
+    messages: {
+      ...validation.messages,
+      oneNumber: 'eine Zahl',
+      oneUpperCase: 'ein Großbuchstabe',
+      oneLowerCase: 'ein Kleinbuchstabe',
+      oneSpecialChar: 'ein besonderer Charakter',
+    },
+    password: {
+      title: 'Le mot de passe doit contenir:',
+      effectiveness: 'Efficacité du mot de passe',
+      min: 'au moins 8 caractères',
+      oneNumber: 'un nombre',
+      oneUpperCase: 'une lettre majuscule',
+      oneLowerCase: 'une lettre minuscule',
+      oneSpecialChar: 'un caractère spécial',
+    },
+    fields: {
+      'contact-user-email': 'Email',
+      'contact-first-name': 'Nom',
+      'contact-last-name': 'Nom de famille',
+      'notify-me-user-email': 'E-mail',
+      'user-email': 'E-mail',
+      'user-password': 'Mot de passe',
+      'user-email-navbar': 'E-mail',
+      'user-email-newsletter': 'Email',
+      'user-password-navbar': 'Mot de passe',
+      'register-user-firstname': 'Prénom',
+      'register-user-lastname': 'Nom de famille',
+      'register-user-email': 'E-E-mail',
+      'new-password': 'Mot de passed',
+      'customer-edit-email': 'E-mail',
+      'customer-edit-password': 'Mot de passe',
+      'customer-edit-firstname': 'Prénom',
+      'customer-edit-lastname': 'Nom',
+      'customer-edit-phone': 'Téléphone',
+      'message': 'Message',
+      'newsletter-checkbox': 'newsletter',
+      'privacy': 'privacy',
+    },
+  },
+}

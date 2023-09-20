@@ -59,7 +59,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="c-scrollbar flex overflow-auto gap-4 my-8 md:(flex-wrap)">
+  <div
+    class="c-scrollbar flex overflow-auto gap-4 md:(flex-wrap)"
+    :class="{ 'my-8': !!mainFilters.length }"
+  >
     <button
       v-for="({ key, name, keyword }) in mainFilters" :key="key"
       class="btn-base text-sm rounded-sm px-3 py-1 md:(px-4 py-[0.4rem]) flex-shrink-0 w-max border-primary-400 bg-white text-primary-400 hover:(bg-primary-50)"

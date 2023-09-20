@@ -31,7 +31,7 @@ export default defineComponent({
     })
 
     const { fetch } = useFetch(async ({ $cmwRepo }) => {
-      await $cmwRepo.prismic.getByUID({
+      await $cmwRepo.prismic.getPageByUID({
         page: 'static-page',
         uid: 'guide-to-our-wines',
       })

@@ -15,7 +15,6 @@ export default {
     const customerStore = useCustomer()
     const isSubmitting = ref(false)
     const showPasswordToast = ref(false)
-    const now = new Date()
 
     const handleFocus = () => showPasswordToast.value = true
     const handleBlur = () => showPasswordToast.value = false
@@ -27,14 +26,13 @@ export default {
       password: '',
       privacy: false,
       acceptsMarketing: false,
-      age: '',
     })
 
     const onSubmit = async () => {
       isSubmitting.value = true
 
       // eslint-disable-next-line unused-imports/no-unused-vars
-      const { age, privacy, ...input } = form.value
+      const { privacy, ...input } = form.value
       await $graphql.default.request(GqlCustomerCreate, {
         lang: i18n.locale.toUpperCase(),
         input,
@@ -84,16 +82,15 @@ export default {
     }
 
     return {
-      now,
-      isSubmitting,
-      form,
-      showPasswordToast,
       calendarIcon,
-      handleFocus,
+      form,
       handleBlur,
+      handleFocus,
+      isSubmitting,
       onSubmit,
-      socialGoogle,
+      showPasswordToast,
       socialFacebook,
+      socialGoogle,
     }
   },
 }
@@ -124,21 +121,6 @@ export default {
 
         <CmwStrongPassword v-model="form.password" theme="gray" :placeholder="$t('passwordPlaceholder')" />
 
-        <InputField
-          v-model="form.age"
-          type="date"
-          name="register-user-age" :label="$t('birthday')"
-          placeholder="dd/mm/yyyy" rules="required"
-          theme="gray"
-        />
-
-        <p
-          v-if="new Date(now) - new Date(form.age) < 568036800000"
-          class="text-danger font-bold small mt-2"
-        >
-          Devi essere maggiorenne per poterti registrare al sito.
-        </p>
-
         <CmwCheckbox
           id="privacy" v-model="form.privacy"
           :checked="form.privacy" is-required @change="form.privacy = !form.privacy"
@@ -160,7 +142,7 @@ export default {
         <Button
           class="sm:max-w-330px mt-8"
           type="submit"
-          :disabled="isSubmitting || !(new Date(now) - new Date(form.age) > 568036800000)"
+          :disabled="isSubmitting"
           :label="$t('navbar.user.register')"
         />
       </form>

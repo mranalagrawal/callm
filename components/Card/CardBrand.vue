@@ -61,7 +61,7 @@ export default {
   max-width: 150px;
 }
 
-@container brand-card-content (min-width: 300px) {
+@container brand-card-content (min-width: 500px) {
   .c-brand__content {
     grid-template-columns: 40% 60%;
     text-align: left;

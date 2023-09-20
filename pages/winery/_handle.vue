@@ -99,9 +99,8 @@ export default defineComponent({
       urlSearchParams.delete('page')
 
       const encodedPath = req?.url.split('?')[0] || ''
-      const encodedSearch = `?${urlSearchParams.toString()}`
 
-      canonicalUrl.value = `https://${req.headers.host}${encodedPath}${encodedSearch}`
+      canonicalUrl.value = `https://${req.headers.host}${encodedPath}`
     }
 
     if (process.client && typeof window !== 'undefined') {
@@ -115,8 +114,7 @@ export default defineComponent({
       urlSearchParams.delete('page')
 
       const encodedPath = pathname || ''
-      const encodedSearch = urlSearchParams.toString()
-      canonicalUrl.value = `${origin}${encodedPath}${encodedSearch}`
+      canonicalUrl.value = `${origin}${encodedPath}`
     }
 
     const { fetch } = useFetch(async ({ $graphql }) => {

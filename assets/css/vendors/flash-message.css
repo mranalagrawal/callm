@@ -1,3 +1,8 @@
+._vue-flash-msg-body_._vue-flash-msg-body._vue-flash-msg-_right-top.add-product-notification {
+  pointer-events: none;
+  user-select: none;
+}
+
 .add-product-notification {
   width: 424px !important;
   background: rgba(0, 0, 0, 0.85) !important;
@@ -19,18 +24,23 @@
   height: 0;
   border-left: 8px solid transparent;
   border-right: 8px solid transparent;
-
   border-bottom: 8px solid black;
 }
 
 .add-product-notification::before {
   content: "\00d7";
   position: absolute;
-  top: 8px;
-  right: 30px;
-  width: 0;
-  height: 0;
+  top: -6px;
+  right: -6px;
+  width: 42px;
+  height: 42px;
   color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: initial;
+  user-select: initial;
+  font-size: 20px;
 }
 
 @media screen and (max-width: 768px) {
@@ -39,11 +49,4 @@
     right: 10px !important;
     top: 100px !important;
   }
-}
-
-.free-shipping-notification {
-  width: 400px !important;
-  background: rgba(0, 0, 0, 0.7) !important;
-  color: white !important;
-  z-index: 999;
 }

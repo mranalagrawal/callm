@@ -271,6 +271,7 @@ export default {
     '@yzfe/svgicon/lib/svgicon.css',
     '@assets/css/vue-transitions.css',
     '@assets/css/layers/base.pcss',
+    '@assets/css/prose.css',
     // Vendors
     '@/assets/css/vendors/flash-message.css',
     '@/assets/css/vendors/swal.css',
@@ -280,6 +281,7 @@ export default {
 
   plugins: [
     // The order is important here, cmw-project-config.ts needs to go first
+    { src: '~/plugins/app-utils.js', ssr: false },
     { src: '~/plugins/cmw-project-config.ts' },
     { src: '~/plugins/cmw-api.ts' },
     { src: '~/plugins/cmw-gtm.ts' },
@@ -509,22 +511,23 @@ export default {
     prefetchLinks: false,
     linkPrefetchedClass: 'nuxt-link-prefetched',
     extendRoutes(routes, resolve) {
+      const validCategoriesFilterLetters = 'V|C|R|D|B|N|M|A|F'
       routes.push(
         {
           name: 'search',
-          path: '/(.*)-:filter_key_1(V|C|R|D|B|N|M):filter_id_1(\\d+).htm/',
+          path: `/(.*)-:filter_key_1(${validCategoriesFilterLetters}):filter_id_1(\\d+).htm/`,
           component: resolve(__dirname, 'pages/search/categories.vue'),
           meta: { actionField: 'category' },
         },
         {
           name: 'search-deep',
-          path: '/(.*)-:filter_key_1(V|C|R|D|B|N|M):filter_id_1(\\d+):filter_key_2(V|C|R|D|B|N|M):filter_id_2(\\d+).htm/',
+          path: `/(.*)-:filter_key_1(${validCategoriesFilterLetters}):filter_id_1(\\d+):filter_key_2(${validCategoriesFilterLetters}):filter_id_2(\\d+).htm/`,
           component: resolve(__dirname, 'pages/search/categories.vue'),
           meta: { actionField: 'category' },
         },
         {
           name: 'search-deep-deep',
-          path: '/(.*)-:filter_key_1(V|C|R|D|B|N|M):filter_id_1(\\d+):filter_key_2(V|C|R|D|B|N|M):filter_id_2(\\d+):filter_key_3(V|C|R|D|B|N|M|A):filter_id_3(\\d+).htm/',
+          path: `/(.*)-:filter_key_1(${validCategoriesFilterLetters}):filter_id_1(\\d+):filter_key_2(${validCategoriesFilterLetters}):filter_id_2(\\d+):filter_key_3(${validCategoriesFilterLetters}):filter_id_3(\\d+).htm/`,
           component: resolve(__dirname, 'pages/search/categories.vue'),
           meta: { actionField: 'category' },
         },
@@ -546,7 +549,15 @@ export default {
 
   build: {
     publicPath: '/_cmw/',
-    transpile: ['@prismicio/vue', 'swiper', 'vue-svg-icon', 'vee-validate/dist/rules'],
+    transpile: [
+      '@prismicio/vue',
+      'swiper', 'vue-svg-icon',
+      'vee-validate/dist/rules',
+      'vee-validate/dist/locale/de.json',
+      'vee-validate/dist/locale/en.json',
+      'vee-validate/dist/locale/fr.json',
+      'vee-validate/dist/locale/it.json',
+    ],
     extend(config) {
       const svgFilePath = join(__dirname, 'assets')
       const imageLoaderRule = config.module.rules.find(rule => rule.test && rule.test.test('.svg'))

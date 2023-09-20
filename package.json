@@ -1,6 +1,6 @@
 {
   "name": "callmewine-frontend",
-  "version": "1.16.1",
+  "version": "1.17.0",
   "private": true,
   "engines": {
     "node": ">=16.0.0 <17.0.0"
@@ -22,7 +22,7 @@
     "start": "nuxt start",
     "generate": "nuxt generate",
     "prepare": "npx husky install",
-    "prebuild": "echo prebuilt && npm run prepare && npm run lint:fix",
+    "prebuild": "echo prebuilt && node ./config-application/create-vercel-config.js && npm run prepare && npm run lint:fix",
     "slicemachine": "start-slicemachine",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"

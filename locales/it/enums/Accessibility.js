@@ -30,6 +30,7 @@ export default {
       GO_TO_HOME_PAGE: 'Vai alla home page',
       GO_TO_PRODUCT_DETAIL_PAGE: 'Vai alla pagina dei dettagli del prodotto',
       GO_TO_PAGE: 'Vai a {url}',
+      GET_THE_APP: 'Scarica l\'app',
       views: {
         GRID: 'vista a griglia',
         LIST: 'visualizzazione elenco',

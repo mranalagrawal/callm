@@ -1,32 +1,64 @@
 <script lang="ts">
-import { defineComponent, inject, ref, useFetch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, inject, provide, readonly, ref, useFetch } from '@nuxtjs/composition-api'
 import logo from 'assets/svg/logo-call-me-wine.svg'
 import walletIcon from 'assets/svg/wallet.svg'
 import emailIcon from 'assets/svg/email.svg'
 import themeConfig from '~/config/themeConfig'
 import { initialPageData } from '~/config/prismicConfig'
 import type { IPrismicPageData } from '~/types/prismic'
+import { generateKey } from '~/utilities/strings'
 import { SweetAlertToast } from '~/utilities/Swal'
 
 export default defineComponent({
   setup() {
     const isDesktop = inject('isDesktop')
     const footerInfoData = ref<IPrismicPageData>(initialPageData)
+    const footerData = ref<IPrismicPageData>(initialPageData)
 
-    useFetch(async ({
-      $cmwRepo,
-      $handleApiErrors,
-    }) => {
-      await $cmwRepo.prismic.getSingle('footer-info')
-        .then((data) => {
-          footerInfoData.value = data
-        })
-        .catch((err: Error) => $handleApiErrors(`Catch getting contact us data from prismic: ${err}`))
+    // create a function to find the slice type
+    function findSlice(sliceLabel = '', responseObject: Record<string, any>) {
+      // Loop through all the keys in the object
+      for (const key in responseObject) {
+        if (Array.isArray(responseObject[key])) {
+          // Loop through each 'slice' in the body array
+          for (const slice of responseObject[key]) {
+            // Check if the slice_label matches the one we're looking for
+            if (slice.slice_label === sliceLabel)
+              return slice
+          }
+        }
+      }
+      return null
+    }
+
+    useFetch(async ({ $cmwRepo }) => {
+      footerInfoData.value = await $cmwRepo.prismic.getSingle('footer-info')
+      footerData.value = await $cmwRepo.prismic.getSingle('footer-test')
     })
 
+    const paymentMethods = computed(() => {
+      const slice = findSlice('payment-methods', footerData.value)
+      return slice?.items || []
+    })
+    const socialLinks = computed(() => {
+      const slice = findSlice('social-links', footerData.value)
+      return slice?.items || []
+    })
+    const mobileApps = computed(() => {
+      const slice = findSlice('mobile-apps', footerData.value)
+      return slice?.items || []
+    })
+
+    provide('socialLinks', readonly(socialLinks))
+    provide('mobileApps', readonly(mobileApps))
+
     return {
+      footerData,
       footerInfoData,
       isDesktop,
+      mobileApps,
+      paymentMethods,
+      socialLinks,
     }
   },
   data() {
@@ -45,6 +77,7 @@ export default defineComponent({
     },
   },
   methods: {
+    generateKey,
     async handleSubmit() {
       await this.$cmw.$post('/customers/subscribe-nl', {
         email: this.email,
@@ -98,13 +131,13 @@ export default defineComponent({
 
 <template>
   <footer class="bg-gray-lightest print:hidden">
-    <ThePreFooter v-if="$config.STORE !== 'CMW_UK'" />
+    <ThePreFooter v-if="!$cmwStore.isUk" />
     <div
       v-if="footerInfoData"
       class="bg-secondary text-secondary-100 p-4 mt-4"
     >
       <div class="max-w-screen-xl mx-auto py-4 px-4 mt-4">
-        <div v-if="$config.STORE === 'CMW'" class="flex justify-end">
+        <div v-if="$cmwStore.isIt" class="flex justify-end">
           <NuxtLink
             class="uppercase text-white text-sm mr-3"
             :to="switchLocalePath(themeConfig[$config.STORE].defaultLocale)"
@@ -297,39 +330,14 @@ export default defineComponent({
             <span>{{ $t('footer.paymentMethods') }}</span>
           </div>
           <div
-            class="grid grid-cols-3 md:grid-cols-6 justify-items-center items-center content-center px-8 py-4"
+            class="grid grid-cols-3 md:grid-cols-8 justify-items-center items-center content-center px-8 py-4"
           >
-            <img
-              src="https://cdn.shopify.com/s/files/1/0578/7497/2719/files/american-express.png?v=1677682511&format=webp"
-              width="65"
-              height="64"
-              alt="american express logo"
-            >
-            <img
-              src="../assets/images/mastercard.png"
-              width="65"
-              height="64"
-              alt="mastercard logo"
-            >
-            <img
-              src="../assets/images/visa.png"
-              width="65"
-              height="64"
-              alt="visa logo"
-            >
-            <img
-              src="../assets/images/comodo.png"
-              width="65"
-              height="64"
-              alt="comodo logo"
-            >
-            <img
-              v-if="$config.STORE === 'CMW_UK'"
-              src="https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.png"
-              width="65"
-              height="36"
-              alt="Klarna logo"
-            >
+            <PrismicImage
+              v-for="payment in paymentMethods"
+              :key="generateKey(payment.image.url)"
+              :field="payment.image"
+              class="max-w-12"
+            />
           </div>
         </div>
 
