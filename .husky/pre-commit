@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-# yarn run lint:fix
+yarn run lint:fix
 # Todo: When prod is stable
 # yarn run build

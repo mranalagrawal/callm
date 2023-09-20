@@ -66,7 +66,6 @@ const REDIRECT_SEO_REGEX = {
   // exception for C+V
   '^\/(.*?)-(C8V\\d+).htm': 200,
   '^\/(.*?)-(C9V\\d+).htm': 200,
-  '^\/(.*?)-(C9V\\d+).htm': 200,
   '^\/(.*?)-((C|M)\\d+V\\d+).htm': 301,
   // "vini-meursault-C1V166.htm" : 301,
 

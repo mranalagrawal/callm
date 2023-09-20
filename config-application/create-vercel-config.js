@@ -3,12 +3,14 @@ const fs = require('node:fs')
 // eslint-disable-next-line no-console
 console.log('Creating vercel.json file...')
 
-const blogBaseUrl = process.env.DEPLOY_ENV === 'prod'
+/* const blogBaseUrl = process.env.DEPLOY_ENV === 'prod'
   ? 'https://blog.callmewine.com/'
-  : 'https://blog-stage.callmewine.com/'
+  : 'https://blog-stage.callmewine.com/' */
 
 const config = {
   version: 2,
+  installCommand: 'yarn install',
+  buildCommand: 'nuxt build',
   builds: [
     {
       src: 'nuxt.config.js',
@@ -85,11 +87,23 @@ const config = {
   rewrites: [
     {
       source: '/blog',
-      destination: blogBaseUrl,
+      has: [
+        {
+          value: 'stage',
+          type: 'host',
+        },
+      ],
+      destination: 'https://blog-stage.callmewine.com/',
     },
     {
       source: '/blog/:match*',
-      destination: `${blogBaseUrl}:match*/`,
+      has: [
+        {
+          value: 'stage',
+          type: 'host',
+        },
+      ],
+      destination: 'https://blog-stage.callmewine.com/:match*/',
     },
   ],
 
