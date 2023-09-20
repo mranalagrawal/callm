@@ -104,7 +104,7 @@ export default {
   },
   navbar: {
     search: 'Cosa stai cercando?',
-    favorites: 'Favoriti',
+    favorites: 'Preferiti',
     promotions: 'Promozioni',
     cart: {
       total: 'Totale',
@@ -117,7 +117,7 @@ export default {
     user: {
       myOrders: 'I miei Ordini',
       buyAgain: 'Compra di nuovo',
-      favorites: 'I miei Favoriti',
+      favorites: 'I miei Preferiti',
       addresses: 'Indirizzi di spedizione',
       accessData: 'Dati di accesso',
       cards: 'Carte salvate',
@@ -183,7 +183,7 @@ export default {
     myAccount: 'Account',
     myOrders: 'Ordini',
     buyAgain: 'Compra di nuovo',
-    favorites: 'Favoriti',
+    favorites: 'Preferiti',
     addresses: 'Indirizzi di spedizione',
     accessData: 'Dati di accesso',
     cards: 'Carte salvate',
