@@ -80,7 +80,7 @@
       "source": "/blog",
       "has": [
         {
-          "value": "*stage*",
+          "value": ".*stage.*",
           "type": "host"
         }
       ],
@@ -90,7 +90,7 @@
       "source": "/blog/:match*",
       "has": [
         {
-          "value": "*stage*",
+          "value": ".*stage.*",
           "type": "host"
         }
       ],
@@ -100,7 +100,7 @@
       "source": "/blog",
       "missing": [
         {
-          "value": "*stage*",
+          "value": ".*stage.*",
           "type": "host"
         }
       ],
@@ -110,7 +110,7 @@
       "source": "/blog/:match*",
       "missing": [
         {
-          "value": "*stage*",
+          "value": ".*stage.*",
           "type": "host"
         }
       ],
