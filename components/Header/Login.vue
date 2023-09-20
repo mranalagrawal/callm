@@ -133,7 +133,7 @@ export default defineComponent({
               {{ $t("navbar.user.forgotPassword") }}
             </NuxtLink>
             <div class="text-center">
-              <a v-if="$cmwStore.isIt" class="my-8 font-bold text-secondary-400" href="https://www.b2b.callmewine.com">PORTALE
+              <a v-if="$cmwStore.isIt" class="my-8 font-bold text-secondary-400" href="https://b2b.callmewine.com">PORTALE
                 OPERATORI HO.RE.CA.</a>
             </div>
           </form>
