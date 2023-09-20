@@ -89,7 +89,7 @@ const config = {
       source: '/blog',
       has: [
         {
-          value: 'stage',
+          value: '*stage*',
           type: 'host',
         },
       ],
@@ -99,11 +99,31 @@ const config = {
       source: '/blog/:match*',
       has: [
         {
-          value: 'stage',
+          value: '*stage*',
           type: 'host',
         },
       ],
       destination: 'https://blog-stage.callmewine.com/:match*/',
+    },
+    {
+      source: '/blog',
+      missing: [
+        {
+          value: '*stage*',
+          type: 'host',
+        },
+      ],
+      destination: 'https://blog.callmewine.com/',
+    },
+    {
+      source: '/blog/:match*',
+      missing: [
+        {
+          value: '*stage*',
+          type: 'host',
+        },
+      ],
+      destination: 'https://blog.callmewine.com/:match*/',
     },
   ],
 
