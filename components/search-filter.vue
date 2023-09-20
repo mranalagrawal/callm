@@ -190,8 +190,10 @@ export default defineComponent({
     const total = search.hits.total.value
     this.total = total
 
-    if (total === 0)
+    if (total === 0) {
       this.loading = false
+      return
+    }
 
     const belong_filters = [
       'areas',
@@ -575,7 +577,7 @@ export default defineComponent({
 
 <template>
   <div class="max-w-screen-xl mx-auto py-4 px-4 mt-4">
-    <h1 class="h3">
+    <h1 v-if="total > 0 || searchedTerm" class="h3">
       <template v-if="searchedTerm">
         <span>"{{ searchedTerm }}"</span>
         <p class="h4" v-text="$t('searchResultLabel')" />
@@ -592,11 +594,11 @@ export default defineComponent({
     </h1>
 
     <CategoriesMainFilters
-      v-if="Object.keys(aggregations).length && Object.keys(inputParameters).length"
+      v-if="total > 0 && Object.keys(aggregations).length && Object.keys(inputParameters).length"
       :aggregations="aggregations" :input-parameters="inputParameters" @item-clicked="handleUpdateValue"
     />
 
-    <div v-if="isDesktop">
+    <div v-if="total > 0 && isDesktop">
       <!-- Filter Components -->
       <CategoriesFiltersComponents
         v-if="Object.keys(aggregations).length"
@@ -611,7 +613,7 @@ export default defineComponent({
       <p v-html="seoData.pageDescription" />
     </div>
     <ProductsResultsList :results="results" :total="total" :loading="loading" @update-sort-value="handleUpdateSortValue" />
-    <CategoriesPagination :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters" :base-path="$route.path" />
+    <CategoriesPagination v-if="total > 0" :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters" :base-path="$route.path" />
 
     <ClientOnly>
       <div>
@@ -633,14 +635,14 @@ export default defineComponent({
     </ClientOnly>
     <Loader v-if="loading" />
 
-    <div v-if="!isDesktop" class="sticky bottom-8 w-[min(100%,_14rem)] m-inline-auto">
+    <div v-if="total > 0 && !isDesktop" class="sticky bottom-8 w-[min(100%,_14rem)] m-inline-auto">
       <Button @click.native="showMobileFilters = !showMobileFilters">
         <VueSvgIcon width="28" height="28" :data="require(`@/assets/svg/filter.svg`)" />
         <span class="ml-2">{{ $t('search.showFilters') }}</span>
       </Button>
     </div>
 
-    <div v-if="!isDesktop">
+    <div v-if="total > 0 && !isDesktop">
       <transition>
         <div
           v-show="showMobileFilters"
