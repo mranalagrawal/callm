@@ -68,6 +68,7 @@ export default defineComponent({
       results: [],
       activeSelections: [],
       total: 0,
+      h1MacroName: '',
       seoData: {
         pageTitle: null,
         pageDescription: null,
@@ -189,6 +190,13 @@ export default defineComponent({
 
     const total = search.hits.total.value
     this.total = total
+
+    // h1 macro name - is not filter
+    if (this.inputParameters?.macros && this.search.aggregations['agg-macros']) {
+      const currentMacrosVal = this.inputParameters?.macros
+      const macrosBucket = this.search.aggregations['agg-macros'].inner.result.buckets.find(b => b.key === parseInt(currentMacrosVal))
+      this.h1MacroName = macrosBucket.name.buckets[0].key
+    }
 
     if (total === 0) {
       this.loading = false
@@ -424,10 +432,14 @@ export default defineComponent({
   searchableFilters: ['winelists', 'pairings', 'regions', 'areas', 'brands'],
   computed: {
     seoTitleReplace() {
-      return Object.values(this.view)
+      let h1Words = Object.values(this.view)
         .filter(v => v !== null)
         .map(v => v.name || '')
-        .join(' - ')
+
+      if (this.h1MacroName)
+        h1Words = [this.h1MacroName, ...h1Words]
+
+      return h1Words.join(' - ')
     },
     filterCategories() {
       return Object.entries(this.filters).slice(0, !(this.showMoreFilters || !this.isDesktop) ? 4 : undefined).reduce((acc, [k, v]) => {

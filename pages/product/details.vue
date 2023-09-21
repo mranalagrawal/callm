@@ -144,11 +144,14 @@ export default defineComponent({
               ? []
               : $productMapping.breadcrumbs(productBreadcrumbs.value[i18n.locale])
 
-            if (route.value.params.pathMatch !== product.value.handle)
-              return redirect(301, localeLocation(`/${product.value.handle}-${productDetails.value.key}.htm`))
+            if (route.value.params.pathMatch.toLowerCase() !== product.value.handle.toLowerCase())
+              return redirect(301, localeLocation(`/${product.value.handle}-${productDetails.value.key}.htm`.toLowerCase()))
 
-            if (product.value.tags.includes('not_active'))
-              return redirect(301, localeLocation(`/${productDetails.value.redirectSeoUrl[i18n.locale]}`))
+            if (product.value.tags.includes('not_active')) {
+              if (productDetails.value.redirectSeoUrl && productDetails.value.redirectSeoUrl[i18n.locale])
+                return redirect(301, localeLocation(`/${productDetails.value.redirectSeoUrl[i18n.locale]}`.toLowerCase()))
+              return redirect(301, '/') // redirect to home if redirectSeoUrl is missing
+            }
 
             // if (!productDetails.value.enabled)
             //   return redirect(301, productDetails.value.canonicalProductId ||
