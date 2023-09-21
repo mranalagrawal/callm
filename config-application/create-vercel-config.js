@@ -22,68 +22,6 @@ const config = {
       },
     },
   ],
-  headers: [
-    {
-      source: '/(.*-[V,C,R,D,B,N,M][0-9]*$)',
-      has: [
-        {
-          value: '.*callmewine.co.uk',
-          type: 'host',
-        },
-      ],
-      headers: [
-        {
-          key: 'x-robots-tag',
-          value: 'noindex',
-        },
-      ],
-    },
-    {
-      source: '/(.*-[V,C,R,D,B,N,M][0-9]*[V,C,R,D,B,N,M][0-9]*$)',
-      has: [
-        {
-          value: '.*callmewine.co.uk',
-          type: 'host',
-        },
-      ],
-      headers: [
-        {
-          key: 'x-robots-tag',
-          value: 'noindex',
-        },
-      ],
-    },
-    {
-      source: '/(.*-[V,C,R,D,B,N,M][0-9]*[V,C,R,D,B,N,M][0-9]*.htm$)',
-      has: [
-        {
-          value: '.*callmewine.co.uk',
-          type: 'host',
-        },
-      ],
-      headers: [
-        {
-          key: 'x-robots-tag',
-          value: 'noindex',
-        },
-      ],
-    },
-    {
-      source: '/([^\\/.]*-[V,C,R,D,B,N,M][0-9]*.htm$)',
-      has: [
-        {
-          value: '.*callmewine.co.uk',
-          type: 'host',
-        },
-      ],
-      headers: [
-        {
-          key: 'x-robots-tag',
-          value: 'noindex',
-        },
-      ],
-    },
-  ],
   rewrites: [
     {
       source: '/blog',
