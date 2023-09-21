@@ -141,7 +141,7 @@ export default defineComponent({
           tmp.key = [Boolean(tmp.key), el]
           tmp.key_as_string = el
           tmp.value = el
-          tmp.label = i18n.t(`common.features.${el}`)
+          tmp.label = `${i18n.t(`common.features.${el}`)} <span class="font-light text-gray">(${tmp.doc_count})</span>`
           tmp.icon = el // `selections/${el}.svg`
           tmp.selected = route.value.fullPath?.toLowerCase().includes(el)
           selectionsListMapped.push(tmp)
@@ -265,6 +265,7 @@ export default defineComponent({
   >
     <div class="flex flex-wrap min-h-[42px]">
       <CmwDropdown
+        v-if="!!selections.length"
         key="our-selections"
         size="sm"
         :active="cmwActiveSelect === 'our-selections'"
