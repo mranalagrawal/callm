@@ -145,11 +145,11 @@ export default defineComponent({
               : $productMapping.breadcrumbs(productBreadcrumbs.value[i18n.locale])
 
             if (route.value.params.pathMatch !== product.value.handle.toLowerCase())
-              return redirect(301, localeLocation(`/${product.value.handle}-${productDetails.value.key}.htm`.toLowerCase()))
+              return redirect(301, localeLocation(`/${product.value.handle}-${productDetails.value.key}.htm`.toLowerCase()), route.value.query)
 
             if (product.value.tags.includes('not_active')) {
               if (productDetails.value.redirectSeoUrl && productDetails.value.redirectSeoUrl[i18n.locale])
-                return redirect(301, localeLocation(`/${productDetails.value.redirectSeoUrl[i18n.locale]}`.toLowerCase()))
+                return redirect(301, localeLocation(`/${productDetails.value.redirectSeoUrl[i18n.locale]}`.toLowerCase()), route.value.query)
               return redirect(301, '/') // redirect to home if redirectSeoUrl is missing
             }
 
