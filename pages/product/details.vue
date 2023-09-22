@@ -144,7 +144,7 @@ export default defineComponent({
               ? []
               : $productMapping.breadcrumbs(productBreadcrumbs.value[i18n.locale])
 
-            if (route.value.params.pathMatch.toLowerCase() !== product.value.handle.toLowerCase())
+            if (route.value.params.pathMatch !== product.value.handle.toLowerCase())
               return redirect(301, localeLocation(`/${product.value.handle}-${productDetails.value.key}.htm`.toLowerCase()))
 
             if (product.value.tags.includes('not_active')) {
