@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref, useFetch, useRoute, watch } from '@nuxtjs/composition-api'
+import { defineComponent, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api'
 import promoTagIcon from 'assets/svg/promo-tag.svg'
 import ThirdLevel from '~/components/UI/ThirdLevel.vue'
 import { generateKey } from '~/utilities/strings'
@@ -8,12 +8,13 @@ export default defineComponent({
   name: 'MegaMenu',
   components: { ThirdLevel },
   setup() {
+    const { i18n } = useContext()
     const route = useRoute()
     const megaMenu = ref(null)
     const selectedItem = ref<string>('')
     const pageData = ref<any>()
 
-    useFetch(async ({ $cmwRepo }) => {
+    const { fetch } = useFetch(async ({ $cmwRepo }) => {
       await $cmwRepo.prismic.getSingle('mega-menu-test')
         .then((data) => {
           pageData.value = data.body && data.body
@@ -55,6 +56,7 @@ export default defineComponent({
     })
 
     watch(() => route.value, () => selectedItem.value = '')
+    watch(() => i18n.locale, () => fetch(), { deep: true })
 
     const onTab = (item: string) => selectedItem.value = item
 
