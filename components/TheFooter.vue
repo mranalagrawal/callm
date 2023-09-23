@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, inject, provide, readonly, ref, useFetch } from '@nuxtjs/composition-api'
+import { defineComponent, inject, provide, readonly, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api'
 import logo from 'assets/svg/logo-call-me-wine.svg'
 import walletIcon from 'assets/svg/wallet.svg'
 import emailIcon from 'assets/svg/email.svg'
@@ -11,8 +11,12 @@ import { SweetAlertToast } from '~/utilities/Swal'
 
 export default defineComponent({
   setup() {
+    const { i18n } = useContext()
     const isDesktop = inject('isDesktop')
     const footerInfoData = ref<IPrismicPageData>(initialPageData)
+    const paymentMethods = ref<any>([])
+    const socialLinks = ref<any>([])
+    const mobileApps = ref<any>([])
     const footerData = ref<IPrismicPageData>(initialPageData)
 
     // create a function to find the slice type
@@ -31,26 +35,24 @@ export default defineComponent({
       return null
     }
 
-    useFetch(async ({ $cmwRepo }) => {
+    const { fetch } = useFetch(async ({ $cmwRepo }) => {
       footerInfoData.value = await $cmwRepo.prismic.getSingle('footer-info')
       footerData.value = await $cmwRepo.prismic.getSingle('footer-test')
-    })
 
-    const paymentMethods = computed(() => {
-      const slice = findSlice('payment-methods', footerData.value)
-      return slice?.items || []
-    })
-    const socialLinks = computed(() => {
-      const slice = findSlice('social-links', footerData.value)
-      return slice?.items || []
-    })
-    const mobileApps = computed(() => {
-      const slice = findSlice('mobile-apps', footerData.value)
-      return slice?.items || []
+      const paymentMethodsSlice = await findSlice('payment-methods', footerData.value)
+      paymentMethods.value = paymentMethodsSlice?.items || []
+
+      const socialLinksSlice = await findSlice('social-links', footerData.value)
+      socialLinks.value = socialLinksSlice?.items || []
+
+      const mobileAppsSlice = await findSlice('mobile-apps', footerData.value)
+      mobileApps.value = mobileAppsSlice?.items || []
     })
 
     provide('socialLinks', readonly(socialLinks))
     provide('mobileApps', readonly(mobileApps))
+
+    watch(() => i18n.locale, () => fetch(), { deep: true })
 
     return {
       footerData,
