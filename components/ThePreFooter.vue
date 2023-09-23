@@ -1,22 +1,26 @@
 <script lang="ts">
-import { computed, defineComponent, inject, ref, useFetch } from '@nuxtjs/composition-api'
+import { defineComponent, inject, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api'
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
 import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({
   setup() {
+    const { i18n } = useContext()
     const isDesktop = inject('isDesktop')
     const currentItem = ref('')
     const data = ref<Record<string, any> | null>(null)
+    const preFooterMenu = ref({})
 
-    useFetch(async ({ $cmwRepo }) => {
+    const { fetch } = useFetch(async ({ $cmwRepo }) => {
       data.value = await $cmwRepo.prismic.getSinglePage('footer')
+      preFooterMenu.value = data.value?.body
     })
 
-    const preFooterMenu = computed(() => data.value?.body)
     const handleTriggerClick = (id: string) => {
       currentItem.value = currentItem.value === id ? '' : id
     }
+
+    watch(() => i18n.locale, () => fetch(), { deep: true })
 
     return {
       chevronDownIcon,

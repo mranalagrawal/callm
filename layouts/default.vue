@@ -102,9 +102,7 @@ export default defineComponent({
     <nuxt :class="isFromApp ? 'cmw-app-main' : 'cmw-main'" />
 
     <!--    <LazyHydrate :when-visible="{ rootMargin: '100px' }"> -->
-    <ClientOnly>
-      <TheFooter />
-    </ClientOnly>
+    <TheFooter />
     <!--    </LazyHydrate> -->
 
     <ClientOnly>
