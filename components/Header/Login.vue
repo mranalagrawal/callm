@@ -79,6 +79,10 @@ export default defineComponent({
       to: '/profile/access-data',
       label: 'navbar.user.accessData',
     },
+    {
+      to: '/profile/billing',
+      label: 'navbar.user.billing',
+    },
   ],
 })
 </script>

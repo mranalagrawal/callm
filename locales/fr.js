@@ -18,6 +18,7 @@ export default {
     ...common.features,
     ...common.feedback,
     ...common.filters,
+    ...common.forms,
     carousel: {
       recommendedProducts: 'Souvent achetés ensemble',
     },
@@ -119,6 +120,7 @@ export default {
       favorites: 'Mes favoris',
       addresses: 'Adresses de livraison',
       accessData: 'Données d\'accès',
+      billing: 'Facturation',
       cards: 'Cartes enregistrées',
       logout: 'Se déconnecter',
       signIn: 'S\'identifier',
@@ -185,6 +187,7 @@ export default {
     favorites: 'Mes favoris',
     addresses: 'Adresses de livraison',
     accessData: 'Données d\'accès',
+    billing: 'Informations de facturation',
     cards: 'Cartes enregistrées',
     logout: 'Se déconnecter',
     editAddress: 'Changement d\'adresse',

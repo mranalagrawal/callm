@@ -8,6 +8,9 @@ query getCustomer($customerAccessToken: String!, $lang: LanguageCode!)
     email
     phone
     tags
+    billing: metafield(namespace: "custom", key: "billing") {
+      value
+    }
     wishlist: metafield(namespace: "custom", key: "wishlist") {
       value
     }

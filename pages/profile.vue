@@ -1,58 +1,64 @@
-<script>
+<script lang="ts">
 import { storeToRefs } from 'pinia'
-import { nextTick, onMounted, onUnmounted, ref } from '@nuxtjs/composition-api'
-import debounce from 'lodash.debounce'
+import type { Ref } from '@nuxtjs/composition-api'
+import { computed, defineComponent, inject, useContext } from '@nuxtjs/composition-api'
+import chevronRightIcon from 'assets/svg/chevron-right.svg'
+import arrowRightIcon from 'assets/svg/arrow-right.svg'
 import { useCustomer } from '~/store/customer'
 
-export default {
+export default defineComponent({
   middleware: ['auth', 'splash'],
-  profileNavigation: [
-    {
-      to: '/profile/my-orders',
-      label: 'navbar.user.myOrders',
-    },
-    {
-      to: '/profile/buy-again',
-      label: 'navbar.user.buyAgain',
-    },
-    {
-      to: '/profile/wishlist',
-      label: 'navbar.user.favorites',
-    },
-    {
-      to: '/profile/addresses',
-      label: 'navbar.user.addresses',
-    },
-    {
-      to: '/profile/access-data',
-      label: 'navbar.user.accessData',
-    },
-  ],
   setup() {
-    const customerStore = useCustomer()
-    const { customer } = storeToRefs(customerStore)
-    const { logout } = customerStore
+    const { customer } = storeToRefs(useCustomer())
+    const { logout } = useCustomer()
+    const { i18n, $cmwStore } = useContext()
+    const isDesktop = inject('isDesktop') as Ref<boolean>
 
-    const isDesktop = ref(false)
-    const resizeListener = debounce(() => {
-      isDesktop.value = window.innerWidth > 991
-    }, 400)
+    const profileNavigation = [
+      {
+        to: '/profile/my-orders',
+        label: i18n.t('navbar.user.myOrders'),
+        show: true,
+      },
+      {
+        to: '/profile/buy-again',
+        label: i18n.t('navbar.user.buyAgain'),
+        show: true,
+      },
+      {
+        to: '/profile/wishlist',
+        label: i18n.t('navbar.user.favorites'),
+        show: true,
+      },
+      {
+        to: '/profile/addresses',
+        label: i18n.t('navbar.user.addresses'),
+        show: true,
+      },
+      {
+        to: '/profile/access-data',
+        label: i18n.t('navbar.user.accessData'),
+        show: true,
+      },
+      {
+        to: '/profile/billing',
+        label: i18n.t('navbar.user.billing'),
+        show: !$cmwStore.isUk,
+      },
+    ]
 
-    onMounted(() => {
-      // Todo: Move this to a global composable when we implement VueUse
-      window.addEventListener('resize', resizeListener)
-      nextTick(() => {
-        resizeListener()
-      })
-    })
-
-    onUnmounted(() => {
-      window.removeEventListener('resize', resizeListener)
-    })
-
-    return { isDesktop, customer, logout }
+    const filteredNavigation = computed(() => profileNavigation.filter(nav => nav.show))
+    return {
+      arrowRightIcon,
+      chevronRightIcon,
+      customer,
+      filteredNavigation,
+      isDesktop,
+      logout,
+      profileNavigation,
+    }
   },
-}
+})
 </script>
 
 <template>
@@ -65,7 +71,7 @@ export default {
         {{ $t('home') }}
       </NuxtLink>
       <VueSvgIcon
-        :data="require(`@/assets/svg/chevron-right.svg`)"
+        :data="chevronRightIcon"
         width="12"
         height="12"
       />
@@ -80,7 +86,7 @@ export default {
         <span>{{ $t("profile.logout") }}</span>
         <VueSvgIcon
           class="group-hover:animate-bounce-right"
-          :data="require(`@/assets/svg/arrow-right.svg`)"
+          :data="arrowRightIcon"
           width="24"
           height="24"
         />
@@ -95,7 +101,7 @@ export default {
       >
         <!-- Note: exact-active-class is not recognizing pseudo after -->
         <NuxtLink
-          v-for="({ to, label }) in $options.profileNavigation"
+          v-for="({ to, label }) in filteredNavigation"
           :key="to"
           :to="localePath(to)"
           exact-active-class="maybeACustomClass"
@@ -107,7 +113,8 @@ export default {
           <span
             class="w-max px-4 hover:text-primary"
             :class="$route.path.includes(to) ? 'text-primary' : 'text-gray-dark'"
-          >{{ $t(label) }}</span>
+            v-text="label"
+          />
         </NuxtLink>
       </nav>
     </div>

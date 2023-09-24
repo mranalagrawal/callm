@@ -157,21 +157,21 @@ function requestMiddleware(request: RequestInit) {
 function storeLocales(store) {
   const obj = {
     CMW: [
-      { code: 'en', iso: 'en-GB', file: 'en.js', dir: 'ltr' },
-      { code: 'it', iso: 'it-IT', file: 'it.js', dir: 'ltr' },
+      { 'code': 'en', 'iso': 'en-GB', 'file': 'en.js', 'dir': 'ltr', 'iso-3166-1-alpha-3': 'gbr' },
+      { 'code': 'it', 'iso': 'it-IT', 'file': 'it.js', 'dir': 'ltr', 'iso-3166-1-alpha-3': 'ita' },
     ],
     B2B: [
-      { code: 'it', iso: 'it-IT', file: 'it.js', dir: 'ltr' },
+      { 'code': 'it', 'iso': 'it-IT', 'file': 'it.js', 'dir': 'ltr', 'iso-3166-1-alpha-3': 'ita' },
     ],
     CMW_UK: [
-      { code: 'en', iso: 'en-GB', file: 'en.js', dir: 'ltr' },
+      { 'code': 'en', 'iso': 'en-GB', 'file': 'en.js', 'dir': 'ltr', 'iso-3166-1-alpha-3': 'gbr' },
       // { code: 'it', iso: 'it-IT', file: 'it.js', dir: 'ltr' }, // Todo: Remove this line
     ],
     CMW_FR: [
-      { code: 'fr', iso: 'fr-FR', file: 'fr.js', dir: 'ltr' },
+      { 'code': 'fr', 'iso': 'fr-FR', 'file': 'fr.js', 'dir': 'ltr', 'iso-3166-1-alpha-3': 'fra' },
     ],
     CMW_DE: [
-      { code: 'de', iso: 'de-DE', file: 'de.js', dir: 'ltr' },
+      { 'code': 'de', 'iso': 'de-DE', 'file': 'de.js', 'dir': 'ltr', 'iso-3166-1-alpha-3': 'deu' },
     ],
   }
 
