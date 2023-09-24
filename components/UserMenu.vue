@@ -48,6 +48,13 @@ export default defineComponent({
     >
       {{ $t("navbar.user.accessData") }}
     </NuxtLink>
+    <NuxtLink
+      exact-active-class="text-primary-400"
+      :to="localePath('/profile/billing')"
+      class="block py-4 border-b border-b-gray-light"
+    >
+      {{ $t("navbar.user.billing") }}
+    </NuxtLink>
     <Button
       variant="ghost"
       class="mt-10"

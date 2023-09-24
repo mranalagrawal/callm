@@ -53,6 +53,9 @@ const cmwApi: Plugin = ({ $http, i18n, $config, $sentry }, inject) => {
   $cmw.setHeader('X-Cmw-Locale', i18n.locale)
   $cmw.setHeader('Accept', 'application/json')
   $cmw.setHeader('Content-Type', 'application/json')
+  $cmw.onError((err) => {
+    $sentry.captureException(new Error(`$cmw catch ${err}`))
+  })
 
   $elastic.setBaseURL($config.ELASTIC_URL_TEST)
   $elastic.setHeader('X-Cmw-Store', $config.STORE)
@@ -61,7 +64,6 @@ const cmwApi: Plugin = ({ $http, i18n, $config, $sentry }, inject) => {
   $elastic.setHeader('Accept', 'application/json')
   $elastic.setHeader('Content-Type', 'application/json')
   $elastic.onError((err) => {
-    console.log(err)
     $sentry.captureException(new Error(`$elastic catch ${err}`))
   })
 

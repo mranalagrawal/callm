@@ -127,6 +127,7 @@ export default defineComponent({
       if (articles.nodes[0]) {
         brand.value = articles.nodes[0]
         metaFields.value = articles.nodes[0].details && JSON.parse(articles.nodes[0].details.value) as IMetaFields
+        console.log('HERE', metaFields.value.subtitle)
 
         if (route.value.params.handle !== `${brand!.value.handle}-${metaFields.value.key}.htm`)
           return redirect(301, localePath({ name: 'winery-handle', params: { handle: `${brand.value?.handle.trim()}-${metaFields.value?.key}.htm` } }))
@@ -204,7 +205,7 @@ export default defineComponent({
                 <VueSvgIcon class="c-ribbon__right" :data="ribbon" width="9" height="24" />
               </div>
               <h1 v-if="brand" class="text-white" v-text="brand.title" />
-              <div class="h4 my-4 !text-white" v-text="metaFields.subtitle[$i18n.locale]" />
+              <div class="h4 my-4 !text-white" v-text="metaFields.subtitle && metaFields.subtitle[$i18n.locale]" />
             </div>
             <ClientOnly v-if="!!metaFields.images.length">
               <VueSlickCarousel
@@ -290,7 +291,7 @@ export default defineComponent({
         </div>
         <div v-else class="max-w-screen-xl mx-auto py-4">
           <h1 v-if="brand" class="px-4 text-secondary" v-text="brand.title" />
-          <div class="px-4 h4 my-4 text-secondary" v-text="metaFields.subtitle[$i18n.locale]" />
+          <div class="px-4 h4 my-4 text-secondary" v-text="metaFields.subtitle && metaFields.subtitle[$i18n.locale]" />
           <div class="md:(grid gap-4 grid-cols-[minmax(auto,_60%)_minmax(auto,_40%)])">
             <div>
               <ClientOnly v-if="!!metaFields.images.length">

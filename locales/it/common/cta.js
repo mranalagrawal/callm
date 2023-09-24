@@ -19,5 +19,7 @@ export default {
     subscribe: 'iscrivimi',
     cannot_order: 'Acquistabile solo da utenti registrati',
     viewAll: 'Vedi tutti',
+    yes: 'Si',
+    no: 'No',
   },
 }
