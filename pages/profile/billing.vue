@@ -175,11 +175,10 @@ export default defineComponent({
       })(),
     }))
 
+    // CODICE FISCALE
     const formDataTaxCode = computed(() => ({
       inputName: 'checkout_invoice_private_taxcode',
-      show: ($cmwStore.isB2b || $cmwStore.isIt)
-        && selectedCountry.value === 'IT'
-        && (selectedInvoiceType.value === 'Privato' || selectedInvoiceType.value === 'Associazione'),
+      show: ((selectedCountry.value === 'IT' && (selectedInvoiceType.value === 'Associazione' || selectedInvoiceType.value === 'Privato'))),
       inputValue: customerBilling.value?.tax_code || '',
       rules: (() => {
         if (selectedInvoiceType.value === 'Privato')
