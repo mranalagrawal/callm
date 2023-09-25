@@ -102,21 +102,13 @@ export default defineComponent({
     const formIsDisabled = computed(() => false)
     const formDataName = computed(() => ({
       inputName: 'checkout_billing_address_first_name',
-      show: (($cmwStore.isB2b || $cmwStore.isIt)
-          && (selectedInvoiceType.value === 'Privato' || selectedInvoiceType.value === 'Azienda'))
-        || (($cmwStore.isB2b || $cmwStore.isIt)
-          && (selectedCountry.value === 'IT' && selectedInvoiceType.value === 'Associazione'))
-        || (($cmwStore.isFr)
-          && (selectedInvoiceType.value === 'Azienda' || selectedInvoiceType.value === 'Privato'))
-        || (($cmwStore.isDe)
-          && (selectedInvoiceType.value === 'Azienda' || selectedInvoiceType.value === 'Privato')),
+      show: ((!!selectedCountry.value)
+        && (selectedInvoiceType.value === 'Associazione' && selectedCountry.value === 'IT'))
+      || ((!!selectedCountry.value)
+        && (selectedInvoiceType.value === 'Privato' || selectedInvoiceType.value === 'Azienda')),
       inputValue: customerBilling.value?.first_name || '',
       rules: (() => {
-        if (($cmwStore.isB2b || $cmwStore.isIt) && selectedInvoiceType.value === 'Privato')
-          return { required: true }
-        else if ($cmwStore.isFr && selectedInvoiceType.value === 'Privato')
-          return { required: true }
-        else if ($cmwStore.isDe && selectedInvoiceType.value === 'Privato')
+        if (selectedInvoiceType.value === 'Privato')
           return { required: true }
         else
           return { required: false }
@@ -443,6 +435,7 @@ export default defineComponent({
                   :rules="formDataTaxCode.rules"
                 />
               </fieldset>
+              <pre>{{ formDataVat }}</pre>
               <fieldset>
                 <InputField
                   v-if="formDataVat.show"
