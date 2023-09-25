@@ -187,45 +187,46 @@ export default defineComponent({
       })(),
     }))
 
+    // CITTA
     const formDataCity = computed(() => ({
       inputName: 'checkout_billing_address_city',
-      show: (($cmwStore.isB2b || $cmwStore.isIt)
-          && (selectedInvoiceType.value === 'Privato' || selectedInvoiceType.value === 'Azienda'))
-        || (($cmwStore.isB2b || $cmwStore.isIt)
-          && (selectedCountry.value === 'IT' && selectedInvoiceType.value === 'Associazione')),
+      show: ((!!selectedCountry.value)
+          && (selectedInvoiceType.value === 'Associazione' && selectedCountry.value === 'IT'))
+        || ((!!selectedCountry.value)
+          && (selectedInvoiceType.value === 'Privato' || selectedInvoiceType.value === 'Azienda')),
       inputValue: customerBilling.value?.city || '',
       rules: { required: true },
     }))
 
+    // PROVINCIA
     const formDataProvince = computed(() => ({
       inputName: 'checkout_billing_address_province',
-      show: (($cmwStore.isB2b || $cmwStore.isIt)
-          && !!provincesOptions.value?.length
-          && (!['DE', 'FR'].includes(selectedCountry.value))
-          && (selectedInvoiceType.value === 'Privato' || selectedInvoiceType.value === 'Azienda'))
-        || (($cmwStore.isB2b || $cmwStore.isIt)
-          && !!provincesOptions.value?.length
-          && (selectedCountry.value === 'IT' && selectedInvoiceType.value === 'Associazione')),
+      show: ((!!selectedCountry.value)
+          && (selectedInvoiceType.value === 'Associazione' && selectedCountry.value === 'IT'))
+        || ((!!selectedCountry.value)
+          && (selectedInvoiceType.value === 'Privato' || selectedInvoiceType.value === 'Azienda')),
       inputValue: customerBilling.value?.province || '',
       rules: { required: true },
     }))
 
+    // INDIRIZZO
     const formDataAddress1 = computed(() => ({
       inputName: 'checkout_billing_address_address1',
-      show: (($cmwStore.isB2b || $cmwStore.isIt)
-          && (selectedInvoiceType.value === 'Privato' || selectedInvoiceType.value === 'Azienda'))
-        || (($cmwStore.isB2b || $cmwStore.isIt)
-          && (selectedCountry.value === 'IT' && selectedInvoiceType.value === 'Associazione')),
+      show: ((!!selectedCountry.value)
+          && (selectedInvoiceType.value === 'Associazione' && selectedCountry.value === 'IT'))
+        || ((!!selectedCountry.value)
+          && (selectedInvoiceType.value === 'Privato' || selectedInvoiceType.value === 'Azienda')),
       inputValue: customerBilling.value?.address1 || '',
       rules: { required: true },
     }))
 
+    // CAP
     const formDataZip = computed(() => ({
       inputName: 'checkout_billing_address_zip',
-      show: (($cmwStore.isB2b || $cmwStore.isIt)
-          && (selectedInvoiceType.value === 'Privato' || selectedInvoiceType.value === 'Azienda'))
-        || (($cmwStore.isB2b || $cmwStore.isIt)
-          && (selectedCountry.value === 'IT' && selectedInvoiceType.value === 'Associazione')),
+      show: ((!!selectedCountry.value)
+          && (selectedInvoiceType.value === 'Associazione' && selectedCountry.value === 'IT'))
+        || ((!!selectedCountry.value)
+          && (selectedInvoiceType.value === 'Privato' || selectedInvoiceType.value === 'Azienda')),
       inputValue: customerBilling.value?.zip || '',
       rules: { required: true },
     }))
