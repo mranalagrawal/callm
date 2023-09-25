@@ -107,35 +107,17 @@ export default defineComponent({
       || ((!!selectedCountry.value)
         && (selectedInvoiceType.value === 'Privato' || selectedInvoiceType.value === 'Azienda')),
       inputValue: customerBilling.value?.first_name || '',
-      rules: (() => {
-        if (selectedInvoiceType.value === 'Privato')
-          return { required: true }
-        else
-          return { required: false }
-      })(),
+      rules: (() => ({ required: (selectedInvoiceType.value === 'Privato') }))(),
     }))
 
     const formDataLastname = computed(() => ({
       inputName: 'checkout_billing_address_last_name',
-      show: (($cmwStore.isB2b || $cmwStore.isIt)
-          && (selectedInvoiceType.value === 'Privato' || selectedInvoiceType.value === 'Azienda'))
-        || (($cmwStore.isB2b || $cmwStore.isIt)
-          && (selectedCountry.value === 'IT' && selectedInvoiceType.value === 'Associazione'))
-        || (($cmwStore.isFr)
-          && (selectedInvoiceType.value === 'Azienda' || selectedInvoiceType.value === 'Privato'))
-        || (($cmwStore.isDe)
-          && (selectedInvoiceType.value === 'Azienda' || selectedInvoiceType.value === 'Privato')),
+      show: ((!!selectedCountry.value)
+          && (selectedInvoiceType.value === 'Associazione' && selectedCountry.value === 'IT'))
+        || ((!!selectedCountry.value)
+          && (selectedInvoiceType.value === 'Privato' || selectedInvoiceType.value === 'Azienda')),
       inputValue: customerBilling.value?.last_name || '',
-      rules: (() => {
-        if (($cmwStore.isB2b || $cmwStore.isIt) && selectedInvoiceType.value === 'Privato')
-          return { required: true }
-        else if ($cmwStore.isFr && selectedInvoiceType.value === 'Privato')
-          return { required: true }
-        else if ($cmwStore.isDe && selectedInvoiceType.value === 'Privato')
-          return { required: true }
-        else
-          return { required: false }
-      })(),
+      rules: (() => ({ required: (selectedInvoiceType.value === 'Privato') }))(),
     }))
 
     const formDataCompany = computed(() => ({
@@ -435,7 +417,6 @@ export default defineComponent({
                   :rules="formDataTaxCode.rules"
                 />
               </fieldset>
-              <pre>{{ formDataVat }}</pre>
               <fieldset>
                 <InputField
                   v-if="formDataVat.show"
