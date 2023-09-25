@@ -131,7 +131,7 @@ export default defineComponent({
       rules: { required: true },
     }))
 
-    // NOME AZIENDA
+    // NOME AZIENDA (FACOLTATIVO)
     const formDataCompanyName = computed(() => ({
       inputName: 'checkout_invoice_company_name',
       show: selectedInvoiceType.value === 'Azienda',
@@ -189,10 +189,7 @@ export default defineComponent({
     // PROVINCIA
     const formDataProvince = computed(() => ({
       inputName: 'checkout_billing_address_province',
-      show: ((!!selectedCountry.value)
-          && (selectedInvoiceType.value === 'Associazione' && selectedCountry.value === 'IT'))
-        || ((!!selectedCountry.value)
-          && (selectedInvoiceType.value === 'Privato' || selectedInvoiceType.value === 'Azienda')),
+      show: (selectedCountry.value === 'IT' && !!selectedInvoiceType.value),
       inputValue: customerBilling.value?.province || '',
       rules: { required: true },
     }))
