@@ -131,18 +131,12 @@ export default defineComponent({
       rules: { required: true },
     }))
 
+    // NOME AZIENDA
     const formDataCompanyName = computed(() => ({
       inputName: 'checkout_invoice_company_name',
-      show: (($cmwStore.isB2b || $cmwStore.isIt)
-          && (selectedInvoiceType.value === 'Azienda'))
-        || (($cmwStore.isB2b || $cmwStore.isIt)
-          && (selectedCountry.value === 'IT' && selectedInvoiceType.value === 'Associazione'))
-        || (($cmwStore.isFr)
-          && (selectedInvoiceType.value === 'Azienda' || selectedInvoiceType.value === 'Privato'))
-        || (($cmwStore.isDe)
-          && (selectedInvoiceType.value === 'Azienda' || selectedInvoiceType.value === 'Privato')),
+      show: selectedInvoiceType.value === 'Azienda',
       inputValue: customerBilling.value?.company_name || '',
-      rules: { required: true },
+      rules: { required: false },
     }))
 
     // PARTITA IVA
