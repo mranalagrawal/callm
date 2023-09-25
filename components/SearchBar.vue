@@ -35,7 +35,7 @@ export default defineComponent({
       const regexValue = new RegExp(`(${search.value})`, 'ig')
       return text.replace(
         regexValue,
-        '<span class=\'font-bold\'>$1</span>',
+        '<span class=\'cmw-font-bold\'>$1</span>',
       )
     }
 

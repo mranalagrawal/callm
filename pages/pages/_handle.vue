@@ -265,7 +265,7 @@ export default defineComponent({
       />
     </template>
     <template v-else-if="!fetchState.pending">
-      <p class="text-lg font-light mt-5">
+      <p class="text-lg cmw-font-light mt-5">
         {{ $t('search.noResultsAlert') }}
       </p>
       <div v-html="$t('search.noResultsMessage')" />

@@ -22,19 +22,19 @@ export default defineComponent({
       class="w-full table table-striped"
     >
       <thead>
-        <tr class="text-white font-light">
-          <th scope="col" class="text-base bg-secondary font-light py-3 px-4 overline-2 uppercase text-left rounded-tl">
+        <tr class="text-white cmw-font-light">
+          <th scope="col" class="text-base bg-secondary cmw-font-light py-3 px-4 overline-2 uppercase text-left rounded-tl">
             {{ $t('product.guide') }}
           </th>
-          <th scope="col" class="text-base bg-secondary font-light py-3 px-4 overline-2 uppercase">
+          <th scope="col" class="text-base bg-secondary cmw-font-light py-3 px-4 overline-2 uppercase">
             {{ $t('product.year') }}
           </th>
 
-          <th scope="col" class="text-base bg-secondary font-light py-3 px-4 overline-2 uppercase">
+          <th scope="col" class="text-base bg-secondary cmw-font-light py-3 px-4 overline-2 uppercase">
             {{ $t('product.score') }}
           </th>
 
-          <th scope="col" class="text-base bg-secondary font-light py-3 px-4 overline-2 uppercase text-left rounded-tr">
+          <th scope="col" class="text-base bg-secondary cmw-font-light py-3 px-4 overline-2 uppercase text-left rounded-tr">
             {{ $t('product.quote') }}
           </th>
         </tr>

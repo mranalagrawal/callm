@@ -604,7 +604,9 @@ export default {
     fontsDir: process.env.NODE_ENV === 'production' ? 'fonts' : undefined,
     fontsPath: process.env.NODE_ENV === 'production' ? '~assets/fonts' : undefined,
     families: {
-      'Open Sans': [300, 400, 500, 600, 700],
+      'Open Sans': {
+        wght: [300, 400, 600, 700],
+      },
     },
   },
 

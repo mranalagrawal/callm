@@ -121,7 +121,7 @@ export default defineComponent({
                 <p class="text-sm mt-2">
                   {{ $t('continueShopping') }}
                   <NuxtLink
-                    class="font-bold text-primary-400"
+                    class="cmw-font-bold text-primary-400"
                     :to="localePath('/')"
                   >
                     {{ $t('common.cta.continueShopping') }}

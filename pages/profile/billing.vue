@@ -379,7 +379,7 @@ export default defineComponent({
     </p>
     <div v-else class="px-4 md:(mt-9 max-w-10/12)">
       <ClientOnly>
-        <div class="px-4 h4 font-semibold" v-text="$t('profile.billing')" />
+        <div class="px-4 h4 cmw-font-semibold" v-text="$t('profile.billing')" />
         <ValidationObserver
           ref="formEl"
           v-slot="{ handleSubmit, valid }"

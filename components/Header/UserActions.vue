@@ -98,7 +98,7 @@ export default {
             height="32px"
           />
           <span
-            class="block my-0 font-light text-sm"
+            class="block my-0 cmw-font-light text-sm"
             v-text="$t('navbar.favorites')"
           />
           <Badge
@@ -122,7 +122,7 @@ export default {
             width="32px"
             height="32px"
           />
-          <span class="block my-0 font-light text-sm truncate max-w-100px">
+          <span class="block my-0 cmw-font-light text-sm truncate max-w-100px">
             {{ customer.id ? (customer.firstName || customer.email.split('@')[0]) : $t('navbar.user.signIn') }}
           </span>
         </span>
@@ -165,7 +165,7 @@ export default {
             />
             <span
               v-if="!cartTotalQuantity"
-              class="block my-0 font-light text-sm"
+              class="block my-0 cmw-font-light text-sm"
             >
               {{ $t('cart') }}
             </span>

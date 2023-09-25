@@ -52,7 +52,7 @@ export default defineComponent({
   <div class="relative" :class="isActive ? 'z-baseHigh' : 'z-base' ">
     <button
       type="button"
-      class="inherit flex items-center gap-2 z-baseHigh p-3 rounded-t-sm uppercase font-light
+      class="inherit flex items-center gap-2 z-baseHigh p-3 rounded-t-sm uppercase cmw-font-light
       hover:(text-primary)"
       :class="[
         isActive ? 'shadow-filter bg-white text-primary' : 'text-body',

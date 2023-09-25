@@ -105,7 +105,7 @@ export default defineComponent({
           :key="to"
           :to="localePath(to)"
           exact-active-class="maybeACustomClass"
-          class="relative py-2 flex-shrink-0 font-light text-sm
+          class="relative py-2 flex-shrink-0 cmw-font-light text-sm
                 hover:after:(bg-primary text-primary w-full)
                 after:(content-DEFAULT transform absolute bottom-0 left-1/2 h-1 transition-progress-bar -translate-x-1/2)"
           :class="$route.path.includes(to) ? 'after:(bg-primary text-primary w-full)' : 'after:(w-0 bg-primary-400)'"

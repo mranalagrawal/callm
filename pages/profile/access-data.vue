@@ -68,7 +68,7 @@ export default {
       {{ $t("loading") }}
     </p>
     <div v-else class="md:(mt-9 max-w-10/12)">
-      <div class="px-4 h4 font-semibold" v-text="$t('profile.accessData')" />
+      <div class="px-4 h4 cmw-font-semibold" v-text="$t('profile.accessData')" />
       <div class="grid sm:grid-cols-2 gap-4 p-4">
         <div>
           <div
@@ -105,7 +105,7 @@ export default {
           </div>
         </div>
       </div>
-      <div class="px-4 h4 font-semibold mt-10" v-text="$t('profile.personalData')" />
+      <div class="px-4 h4 cmw-font-semibold mt-10" v-text="$t('profile.personalData')" />
       <div class="p-4">
         <div
           class="h-full flex items-center font-sans rounded-sm border border-gray-light

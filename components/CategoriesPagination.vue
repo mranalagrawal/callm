@@ -131,7 +131,7 @@ export default defineComponent({
         <NuxtLink
           :to="localeLocation({ path: basePath, query: getPageQuery(n) })"
           class="relative btn-text text-base px-3 py-2 md:(py-[0.8rem])"
-          :class="{ 'text-primary font-bold after:(content-DEFAULT absolute left-0 bottom-0 h-1 bg-primary w-full)': pagination.currentPage === n }"
+          :class="{ 'text-primary cmw-font-bold after:(content-DEFAULT absolute left-0 bottom-0 h-1 bg-primary w-full)': pagination.currentPage === n }"
           :rel="$t(pagination.currentPage > n ? 'enums.accessibility.rel.prev' : 'enums.accessibility.rel.next')"
         >
           {{ n }}
