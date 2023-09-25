@@ -122,7 +122,7 @@ export default defineComponent({
 
     // RAGIONE SOCIALE
     const formDataCompany = computed(() => ({
-      inputName: 'checkout_billing_address_company',
+      inputName: 'checkout_invoice_company_name',
       show: (((!!selectedCountry.value && !!selectedCountry.value)
       && (selectedInvoiceType.value === 'Azienda'))
       || ((!!selectedCountry.value && !!selectedCountry.value)
@@ -133,7 +133,7 @@ export default defineComponent({
 
     // NOME AZIENDA (FACOLTATIVO)
     const formDataCompanyName = computed(() => ({
-      inputName: 'checkout_invoice_company_name',
+      inputName: 'checkout_billing_address_company',
       show: selectedInvoiceType.value === 'Azienda',
       inputValue: customerBilling.value?.company_name || '',
       rules: { required: false },
@@ -431,8 +431,8 @@ export default defineComponent({
                   v-model="formDataCompanyName.inputValue"
                   type="text"
                   :name="formDataCompanyName.inputName"
-                  :label="$t('common.forms.billingAddress.checkout_invoice_company_name')"
-                  :placeholder="$t('common.forms.billingAddress.checkout_invoice_company_name')"
+                  :label="$t('common.forms.billingAddress.checkout_billing_address_company')"
+                  :placeholder="$t('common.forms.billingAddress.checkout_billing_address_company')"
                   :rules="formDataCompanyName.rules"
                 />
               </fieldset>
@@ -462,8 +462,8 @@ export default defineComponent({
                   v-model="formDataCompany.inputValue"
                   type="text"
                   :name="formDataCompany.inputName"
-                  :label="$t('common.forms.billingAddress.checkout_billing_address_company')"
-                  :placeholder="$t('common.forms.billingAddress.checkout_billing_address_company')"
+                  :label="$t('common.forms.billingAddress.checkout_invoice_company_name')"
+                  :placeholder="$t('common.forms.billingAddress.checkout_invoice_company_name')"
                   :rules="formDataCompany.rules"
                 />
               </fieldset>
