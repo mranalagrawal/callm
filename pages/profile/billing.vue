@@ -283,7 +283,7 @@ export default defineComponent({
           await getCustomer()
           SweetAlertToast.fire({
             icon: 'success',
-            title: i18n.t('common.feedback.OK.customerUpdatePassword'),
+            title: i18n.t('common.feedback.OK.customerUpdateData'),
           })
         })
         .catch((err: Error) => {
