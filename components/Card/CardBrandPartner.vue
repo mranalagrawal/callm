@@ -60,7 +60,7 @@ export default {
               }"
             />
             <div>
-              <div class="font-bold text-xl mt-4" v-text="brand.name" />
+              <div class="cmw-font-bold text-xl mt-4" v-text="brand.name" />
               <div v-text="brand.subtitle" />
               <div class="text-secondary-700" v-text="brand.region" />
             </div>

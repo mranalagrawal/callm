@@ -74,7 +74,7 @@ export default defineComponent({
         >
           {{ $n(Number(orderLineItem.originalTotalPrice.amount), 'currency', getLocaleFromCurrencyCode(orderLineItem.originalTotalPrice.currencyCode)) }}
         </div>
-        <div class="font-bold">
+        <div class="cmw-font-bold">
           {{ $n(Number(orderLineItem.discountedTotalPrice.amount), 'currency', getLocaleFromCurrencyCode(orderLineItem.discountedTotalPrice.currencyCode)) }}
         </div>
       </div>

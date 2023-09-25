@@ -72,7 +72,7 @@ export default {
           before:(border-[0.75rem_0.5rem_0.75rem_0] border-transparent border-r-gray-lightest)"
         >
           <div
-            class="font-bold my-1"
+            class="cmw-font-bold my-1"
             v-text="getFeature(feature).title"
           />
           <button class="absolute top-[-0.25rem] right-0 p-2 text-gray md:hidden" @click="handleMouseLeave">

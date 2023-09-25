@@ -86,7 +86,7 @@ export default defineComponent({
       <img :src="item.merchandise.product.featuredImage.url" alt="" style="height: 50px">
     </div>
     <div class="c-cartLineItem__description">
-      <p class="text-sm font-bold">
+      <p class="text-sm cmw-font-bold">
         {{ item.merchandise.product.title }}
       </p>
     </div>
@@ -127,16 +127,16 @@ export default defineComponent({
         :locale="getLocaleFromCurrencyCode(item.merchandise.price.currencyCode)"
       >
         <template #currency="slotProps">
-          <span class="text-lg font-bold !leading-none">{{ slotProps.currency }}</span>
+          <span class="text-lg cmw-font-bold !leading-none">{{ slotProps.currency }}</span>
         </template>
         <template #integer="slotProps">
-          <span class="text-lg font-bold !leading-none">{{ slotProps.integer }}</span>
+          <span class="text-lg cmw-font-bold !leading-none">{{ slotProps.integer }}</span>
         </template>
         <template #group="slotProps">
-          <span class="text-lg font-bold !leading-none">{{ slotProps.group }}</span>
+          <span class="text-lg cmw-font-bold !leading-none">{{ slotProps.group }}</span>
         </template>
         <template #fraction="slotProps">
-          <span class="text-lg font-bold !leading-none">{{ slotProps.fraction }}</span>
+          <span class="text-lg cmw-font-bold !leading-none">{{ slotProps.fraction }}</span>
         </template>
       </i18n-n>
     </div>

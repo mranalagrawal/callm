@@ -56,7 +56,7 @@ export default defineComponent({
       class="overline-2 uppercase text-secondary-400 mt-12"
     >
       <strong
-        class="font-sans font-bold text-body tracking-normal"
+        class="font-sans cmw-font-bold text-body tracking-normal"
         v-text="order.name"
       />
     </i18n>
@@ -117,13 +117,13 @@ export default defineComponent({
         <tr class="border-t border-t-secondary-400">
           <td colspan="2">
             <span
-              class="text-xl font-bold my-4 text-secondary-400"
+              class="text-xl cmw-font-bold my-4 text-secondary-400"
               v-text="$t('profile.orders.card.orderTotal')"
             />
           </td>
           <td colspan="2" class="mt-4 text-right">
             <span
-              class="text-xl font-bold my-4 place-self-end text-secondary-400"
+              class="text-xl cmw-font-bold my-4 place-self-end text-secondary-400"
               v-text="$n(Number(order.totalPrice.amount), 'currency', getLocaleFromCurrencyCode(order.totalPrice.currencyCode))"
             />
           </td>

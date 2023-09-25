@@ -180,7 +180,7 @@ export default defineComponent({
               key_as_string: aggregation.key,
               doc_count: aggregation.doc_count,
               value: JSON.stringify({ id: aggregation.key.split('|')[0], keyword: el }),
-              label: `${aggregation.key.split('|')[1]} <span class="font-light text-gray">(${aggregation.doc_count})</span>`,
+              label: `${aggregation.key.split('|')[1]} <span class="cmw-font-light text-gray">(${aggregation.doc_count})</span>`,
               selected: props.inputParameters && props.inputParameters[el] && props.inputParameters[el] === `${aggregation.key}`,
             }
           },
@@ -217,7 +217,7 @@ export default defineComponent({
               key_as_string: `${aggregation.key}|${aggregation.name.buckets[0].key}`,
               doc_count: aggregation.doc_count,
               value: JSON.stringify({ id: aggregation.key, keyword: el }),
-              label: `${aggregation.name.buckets[0].key} <span class="font-light text-gray">(${aggregation.doc_count})</span>`,
+              label: `${aggregation.name.buckets[0].key} <span class="cmw-font-light text-gray">(${aggregation.doc_count})</span>`,
               simpleLabel: aggregation.name.buckets[0].key,
               selected: props.inputParameters && props.inputParameters[el] && props.inputParameters[el] === `${aggregation.key}`,
             }
@@ -307,7 +307,7 @@ export default defineComponent({
         <div
           class="sticky grid grid-cols-[100px_auto_100px] justify-between items-center px-4 shadow"
         >
-          <div class="text-center w-max text-xs font-bold" v-text="$t('common.filters.by')" />
+          <div class="text-center w-max text-xs cmw-font-bold" v-text="$t('common.filters.by')" />
           <div>
             <Button
               v-if="!!activeSelections.length || Object.values(view).some(v => v !== null)"
@@ -330,7 +330,7 @@ export default defineComponent({
           >
             <template #default>
               <span class="block">
-                <span class="block text-left" :class="{ 'font-bold': !!activeSelections?.length }">{{ $t('search.selections') }}</span>
+                <span class="block text-left" :class="{ 'cmw-font-bold': !!activeSelections?.length }">{{ $t('search.selections') }}</span>
                 <small v-if="!!activeSelections?.length" class="block text-primary text-left text-xs">
                   <span
                     v-for="selection in activeSelections"
@@ -364,7 +364,7 @@ export default defineComponent({
               <span class="block">
                 <span
                   class="block text-left"
-                  :class="{ 'font-bold': Object.keys(inputParameters).includes(key) }"
+                  :class="{ 'cmw-font-bold': Object.keys(inputParameters).includes(key) }"
                 >{{ $t(`search.${key}`) }}</span>
                 <small
                   v-if="Object.keys(inputParameters).includes(key)"
@@ -398,7 +398,7 @@ export default defineComponent({
               <span class="block">
                 <span
                   class="block text-left"
-                  :class="{ 'font-bold': Object.keys(inputParameters).includes('price_from') }"
+                  :class="{ 'cmw-font-bold': Object.keys(inputParameters).includes('price_from') }"
                 >{{ $t('search.price') }}</span>
                 <small
                   v-if="Object.keys(inputParameters).includes('price_from')"

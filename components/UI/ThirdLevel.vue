@@ -25,7 +25,7 @@ export default defineComponent({
           :data="require(`@/assets/svg/selections/${selection}.svg`)"
           width="20px"
         />
-        <span class="text-sm font-light" :class="{ 'text-primary-400': is_last_item || is_red }">{{ third_level_name }}</span>
+        <span class="text-sm cmw-font-light" :class="{ 'text-primary-400': is_last_item || is_red }">{{ third_level_name }}</span>
       </NuxtLink>
     </div>
     <NuxtLink v-else :to="localePath(third_level_link)">

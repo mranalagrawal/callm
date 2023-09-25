@@ -144,7 +144,7 @@ export default defineComponent({
             class="uppercase text-white text-sm mr-3"
             :to="switchLocalePath(themeConfig[$config.STORE].defaultLocale)"
             :class="
-              $i18n.locale === themeConfig[$config.STORE].defaultLocale ? 'font-bold' : ''
+              $i18n.locale === themeConfig[$config.STORE].defaultLocale ? 'cmw-font-bold' : ''
             "
           >
             {{ themeConfig[$config.STORE].defaultLocale }}
@@ -154,7 +154,7 @@ export default defineComponent({
             v-if="themeConfig[$config.STORE].defaultLocale !== 'en'"
             class="text-uppercase text-white text-sm mr-3"
             :to="switchLocalePath('en')"
-            :class="$i18n.locale === 'en' ? 'font-bold' : ''"
+            :class="$i18n.locale === 'en' ? 'cmw-font-bold' : ''"
           >
             EN
           </NuxtLink>
@@ -162,7 +162,7 @@ export default defineComponent({
             v-else
             class="uppercase text-white text-sm mr-3"
             :to="switchLocalePath('it')"
-            :class="$i18n.locale === 'it' ? 'font-bold' : ''"
+            :class="$i18n.locale === 'it' ? 'cmw-font-bold' : ''"
           >
             IT
           </NuxtLink>

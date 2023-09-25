@@ -55,54 +55,54 @@ a, a:link {
 }
 
 /* Headings */
+h1, .h1,
+h2, .h2,
+h3, .h3,
+h4, .h4 {
+  @apply cmw-font-bold;
+  /*@supports (font-variation-settings: 'wght' 469) {
+    font-variation-settings: 'wght' 700;
+  }
+  @supports not (font-variation-settings: 'wght' 469) {
+    font-weight: 700;
+  }*/
+}
+
 h1, .h1 {
-  /*@apply cmw-text-3xl leading-tight tracking-0px font-bold md:cmw-text-5xl;*/
+  /*@apply cmw-text-3xl leading-tight tracking-0px cmw-font-bold md:cmw-text-5xl;*/
   font-size: theme("fontSize.3xl");
   line-height: theme("leading.tight");
   letter-spacing: 0;
-  font-weight: bold;
 }
 
 h2, .h2 {
-  /*@apply cmw-text-2xl leading-tight tracking-0px font-bold md:cmw-text-4xl;*/
+  /*@apply cmw-text-2xl leading-tight tracking-0px cmw-font-bold md:cmw-text-4xl;*/
   font-size: theme("fontSize.2xl");
   line-height: theme("leading.tight");
   letter-spacing: 0;
-  font-weight: bold;
 }
 
 h3, .h3 {
-  /*@apply cmw-text-xl leading-tight tracking-0px font-bold md:cmw-text-3xl;*/
+  /*@apply cmw-text-xl leading-tight tracking-0px cmw-font-bold md:cmw-text-3xl;*/
   font-size: theme("fontSize.xl");
   line-height: theme("leading.tight");
   letter-spacing: 0;
   font-family: theme("fontFamily.sans"), serif;
-  font-weight: bold;
 }
 
 h4, .h4 {
-  /*@apply cmw-text-lg leading-tight tracking-0px font-bold md:cmw-text-xl;*/
+  /*@apply cmw-text-lg leading-tight tracking-0px cmw-font-bold md:cmw-text-xl;*/
   font-size: theme("fontSize.lg");
   line-height: theme("leading.tight");
   letter-spacing: 0;
   font-family: theme("fontFamily.sans"), serif;
-  font-weight: bold;
-}
-
-h5, .h5 {
-  /*@apply cmw-text-base leading-tight tracking-0px font-bold;*/
-  font-size: theme("fontSize.base");
-  line-height: theme("leading.tight");
-  letter-spacing: 0;
-  font-weight: bold;
 }
 
 p,
 h1, .h1,
 h2, .h2,
 h3, .h3,
-h4, .h4,
-h5, .h5 {
+h4, .h4 {
   color: theme("colors.body");
   margin-top: theme("spacing.2");
   margin-bottom: theme("spacing.2");
@@ -112,8 +112,7 @@ p.-dark,
 h1.-dark, .h1.-dark,
 h2.-dark, .h2.-dark,
 h3.-dark, .h3.-dark,
-h4.-dark, .h4.-dark,
-h5.-dark, .h5.-dark {
+h4.-dark, .h4.-dark {
   color: theme("colors.white");
 }
 

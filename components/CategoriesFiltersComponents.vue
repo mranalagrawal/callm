@@ -141,7 +141,7 @@ export default defineComponent({
           tmp.key = [Boolean(tmp.key), el]
           tmp.key_as_string = el
           tmp.value = el
-          tmp.label = `${i18n.t(`common.features.${el}`)} <span class="font-light text-gray">(${tmp.doc_count})</span>`
+          tmp.label = `${i18n.t(`common.features.${el}`)} <span class="cmw-font-light text-gray">(${tmp.doc_count})</span>`
           tmp.icon = el // `selections/${el}.svg`
           tmp.selected = route.value.fullPath?.toLowerCase().includes(el)
           selectionsListMapped.push(tmp)
@@ -162,7 +162,7 @@ export default defineComponent({
               key_as_string: aggregation.key,
               doc_count: aggregation.doc_count,
               value: JSON.stringify({ id: aggregation.key.split('|')[0], keyword: el }),
-              label: `${aggregation.key.split('|')[1]} <span class="font-light text-gray">(${aggregation.doc_count})</span>`,
+              label: `${aggregation.key.split('|')[1]} <span class="cmw-font-light text-gray">(${aggregation.doc_count})</span>`,
               selected: props.inputParameters && props.inputParameters[el] && props.inputParameters[el] === `${aggregation.key}`,
             }
           },
@@ -187,7 +187,7 @@ export default defineComponent({
               key_as_string: `${aggregation.key}|${aggregation.name.buckets[0].key}`,
               doc_count: aggregation.doc_count,
               value: JSON.stringify({ id: aggregation.key, keyword: el }),
-              label: `${aggregation.name.buckets[0].key} <span class="font-light text-gray">(${aggregation.doc_count})</span>`,
+              label: `${aggregation.name.buckets[0].key} <span class="cmw-font-light text-gray">(${aggregation.doc_count})</span>`,
               simpleLabel: aggregation.name.buckets[0].key,
               selected: props.inputParameters && props.inputParameters[el] && props.inputParameters[el] === `${aggregation.key}`,
             }

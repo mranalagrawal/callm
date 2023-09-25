@@ -251,17 +251,17 @@ hover:shadow-elevation"
         :class="{ 'opacity-50': !product.availableForSale }"
       >
         <div
-          class="font-bold"
+          class="cmw-font-bold"
           v-text="$t('product.vines')"
         />
         <div>{{ product.tbd.grapes }}</div>
         <div
-          class="font-bold"
+          class="cmw-font-bold"
           v-text="$t('product.region')"
         />
         <div>{{ product.tbd.regionName }}</div>
         <div
-          class="font-bold"
+          class="cmw-font-bold"
           v-text="$t('product.format')"
         />
         <div v-if="product.tbd.size.length">
@@ -302,10 +302,10 @@ hover:shadow-elevation"
             <span class="text-sm md:text-base">{{ slotProps.currency }}</span>
           </template>
           <template #integer="slotProps">
-            <span class="h1 font-bold">{{ slotProps.integer }}</span>
+            <span class="h1 cmw-font-bold">{{ slotProps.integer }}</span>
           </template>
           <template #group="slotProps">
-            <span class="h1 font-bold">{{ slotProps.group }}</span>
+            <span class="h1 cmw-font-bold">{{ slotProps.group }}</span>
           </template>
           <template #fraction="slotProps">
             <span class="text-sm md:text-base">{{ slotProps.fraction }}</span>

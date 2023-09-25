@@ -92,7 +92,7 @@ export default defineComponent({
       >
         <div
           v-for="({ label, component }) in availableTabs" :key="generateKey(component)"
-          class="relative py-2 flex-shrink-0 font-light text-sm
+          class="relative py-2 flex-shrink-0 cmw-font-light text-sm
                 hover:after:(bg-primary text-primary w-full)
                 after:(content-DEFAULT transform absolute bottom-0 left-1/2 h-1 transition-progress-bar -translate-x-1/2)"
           :class="component === currentTab ? 'after:(bg-primary text-primary w-full)' : 'after:(w-0 bg-primary-400)'"
@@ -122,18 +122,18 @@ export default defineComponent({
         <h3 class="mb-5" v-text="$t('product.features')" />
 
         <div v-if="productDetails.denomination[$i18n.locale]">
-          <p class="font-bold mb-0" v-text="$t('product.denomination')" />
+          <p class="cmw-font-bold mb-0" v-text="$t('product.denomination')" />
           <p class="mb-4" v-text="productDetails.denomination[$i18n.locale]" />
           <hr class="border-gray-light">
         </div>
         <div v-if="productDetails.grapes[$i18n.locale]">
-          <p class="font-bold mb-0" v-text="$t('product.vines')" />
+          <p class="cmw-font-bold mb-0" v-text="$t('product.vines')" />
           <p class="mb-4" v-text="productDetails.grapes[$i18n.locale]" />
           <hr class="border-gray-light">
         </div>
 
         <div v-if="productDetails.countryName[$i18n.locale] || productDetails.countryRegionName">
-          <p class="font-bold mb-0" v-text="$t('product.region')" />
+          <p class="cmw-font-bold mb-0" v-text="$t('product.region')" />
           <p class="mb-4">
             {{ productDetails.countryRegionName }}
             {{ productDetails.countryName[$i18n.locale] }}
@@ -141,27 +141,27 @@ export default defineComponent({
           <hr class="border-gray-light">
         </div>
         <div v-if="productDetails.alcoholContent">
-          <p class="font-bold mb-0" v-text="$t('product.alcoholContent')" />
+          <p class="cmw-font-bold mb-0" v-text="$t('product.alcoholContent')" />
           <p class="mb-4" v-text="`${productDetails.alcoholContent}%`" />
           <hr class="border-gray-light">
         </div>
         <div v-if="productDetails.size[$i18n.locale]">
-          <p class="font-bold mb-0" v-text="$t('product.format')" />
+          <p class="cmw-font-bold mb-0" v-text="$t('product.format')" />
           <p class="mb-4" v-text="productDetails.size[$i18n.locale]" />
           <hr class="border-gray-light">
         </div>
         <div v-if="productDetails.winemaking[$i18n.locale]">
-          <p class="font-bold mb-0" v-text="$t('product.vinification')" />
+          <p class="cmw-font-bold mb-0" v-text="$t('product.vinification')" />
           <p class="mb-4" v-text="productDetails.winemaking[$i18n.locale]" />
           <hr class="border-gray-light">
         </div>
         <div v-if="productDetails.agingDescription[$i18n.locale]">
-          <p class="font-bold mb-0" v-text="$t('product.refinement')" />
+          <p class="cmw-font-bold mb-0" v-text="$t('product.refinement')" />
           <p class="mb-4" v-text="productDetails.agingDescription[$i18n.locale]" />
           <hr class="border-gray-light">
         </div>
         <div v-if="productDetails.productInformations[$i18n.locale]">
-          <p class="font-bold mb-0" v-text="$t('product.additionalNotes')" />
+          <p class="cmw-font-bold mb-0" v-text="$t('product.additionalNotes')" />
           <p class="mb-4" v-text="productDetails.productInformations[$i18n.locale]" />
         </div>
       </div>

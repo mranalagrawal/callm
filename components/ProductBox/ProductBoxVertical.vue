@@ -258,10 +258,10 @@ export default defineComponent({
               <span class="text-sm md:text-base">{{ slotProps.currency }}</span>
             </template>
             <template #integer="slotProps">
-              <span class="h1 font-bold !leading-none">{{ slotProps.integer }}</span>
+              <span class="h1 cmw-font-bold !leading-none">{{ slotProps.integer }}</span>
             </template>
             <template #group="slotProps">
-              <span class="h1 font-bold !leading-none">{{ slotProps.group }}</span>
+              <span class="h1 cmw-font-bold !leading-none">{{ slotProps.group }}</span>
             </template>
             <template #fraction="slotProps">
               <span class="text-sm md:text-base">{{ slotProps.fraction }}</span>

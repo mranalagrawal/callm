@@ -104,7 +104,7 @@ body.swal2-shown {
 }
 
 .swal2-toast .swal2-title, .swal2-toast .swal2-html-container {
-  @apply shadow text-gray-light text-left text-sm font-light;
+  @apply shadow text-gray-light text-left text-sm cmw-font-light;
 }
 
 .swal2-toast .swal2-actions {
