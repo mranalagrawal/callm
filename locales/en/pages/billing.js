@@ -1,11 +1,11 @@
 export default {
   billing: {
-    requestInvoice: 'I request an invoice',
+    association: 'Association',
+    company: 'Agency',
+    invoiceType: 'Invoice type',
+    private: 'Private',
     refuse: 'I do not require an invoice',
     request: 'I request an invoice',
-    private: 'Private',
-    company: 'Agency',
-    association: 'Association',
-    invoiceType: 'Invoice type',
+    requestInvoice: 'I request an invoice',
   },
 }

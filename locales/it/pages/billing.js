@@ -1,11 +1,11 @@
 export default {
   billing: {
-    requestInvoice: 'Richiedo Fattura',
-    refuse: 'Non richiedo fattura', // (checked se metafield è vuoto)
-    request: 'Richiedo Fattura', // (checked se metafield è popolato)
-    private: 'Privato',
-    company: 'Azienda',
     association: 'Associazione',
+    company: 'Azienda',
     invoiceType: 'Tipologia fattura',
+    private: 'Privato',
+    refuse: 'Non richiedo fattura',
+    request: 'Richiedo Fattura',
+    requestInvoice: 'Richiedo Fattura',
   },
 }

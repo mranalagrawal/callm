@@ -26,6 +26,7 @@ export default {
   pages: {
     ...pages.notFound,
     ...pages.gone,
+    ...pages.billing,
   },
   searchResultLabel: 'Les résultats de votre recherche',
   loading: 'Récupération des données...',

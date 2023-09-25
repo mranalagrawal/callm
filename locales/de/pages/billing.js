@@ -1,11 +1,11 @@
 export default {
   billing: {
-    requestInvoice: 'Ich bitte um eine Rechnung',
+    association: 'Verband',
+    company: 'Agentur',
+    invoiceType: 'Rechnungsart',
+    private: 'Privat',
     refuse: 'Ich benötige keine Rechnung',
     request: 'Ich bitte um eine Rechnung',
-    private: 'Privat',
-    company: 'Agentur',
-    association: 'Verband',
-    invoiceType: 'Rechnungsart',
+    requestInvoice: 'Ich bitte um eine Rechnung',
   },
 }
