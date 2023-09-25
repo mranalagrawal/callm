@@ -143,7 +143,7 @@ export default defineComponent({
     // PARTITA IVA
     const formDataVat = computed(() => ({
       inputName: 'checkout_invoice_company_vat',
-      show: ((!!selectedCountry.value && selectedInvoiceType === 'Azienda')),
+      show: ((!!selectedCountry.value && selectedInvoiceType.value === 'Azienda')),
       inputValue: customerBilling.value?.vat || '',
       rules: (() => {
         if (selectedCountry.value === 'DE')
@@ -266,9 +266,9 @@ export default defineComponent({
         country: selectedCountry.value,
         invoice_type: selectedInvoiceType.value,
         ...(formDataTaxCode.value.inputValue && { tax_code: formDataTaxCode.value.inputValue }),
-        ...(formDataCompanyName.value.inputValue && { company_name: formDataCompanyName.value.inputValue }),
-        ...(formDataCompany.value.inputValue && { company: formDataCompany.value.inputValue }),
-        ...(formDataVat.value.inputValue && { vat: formDataVat.value.inputValue }),
+        ...(formDataCompanyName.value.inputValue && { company: formDataCompanyName.value.inputValue }),
+        ...(formDataCompany.value.inputValue && { company_name: formDataCompany.value.inputValue }),
+        ...(formDataVat.value.show && formDataVat.value.inputValue && { vat: formDataVat.value.inputValue }),
         ...(formDataPec.value.inputValue && { pec_sdi: formDataPec.value.inputValue }),
         ...(formDataName.value.inputValue && { first_name: formDataName.value.inputValue }),
         ...(formDataLastname.value.inputValue && { last_name: formDataLastname.value.inputValue }),
