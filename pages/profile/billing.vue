@@ -160,19 +160,13 @@ export default defineComponent({
       })(),
     }))
 
+    // PEC
     const formDataPec = computed(() => ({
       inputName: 'checkout_invoice_company_pec',
-      show: (($cmwStore.isB2b || $cmwStore.isIt)
-          && (selectedInvoiceType.value === 'Azienda'))
-        || (($cmwStore.isB2b || $cmwStore.isIt)
-          && (selectedCountry.value === 'IT' && selectedInvoiceType.value === 'Associazione')),
+      show: ((selectedCountry.value === 'IT'
+        && (selectedInvoiceType.value === 'Associazione' || selectedInvoiceType.value === 'Azienda'))),
       inputValue: customerBilling.value?.pec_sdi || '',
-      rules: (() => {
-        if (($cmwStore.isB2b || $cmwStore.isIt) && selectedCountry.value === 'IT' && (selectedInvoiceType.value === 'Azienda'))
-          return { required: true, regex: /^(?:[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}|[0-9]{7})$/ }
-        else
-          return { required: false, regex: /^(?:[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}|[0-9]{7})$/ }
-      })(),
+      rules: { required: true, regex: /^(?:[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}|[0-9]{7})$/ },
     }))
 
     // CODICE FISCALE
@@ -231,12 +225,13 @@ export default defineComponent({
       rules: { required: true },
     }))
 
+    // TELEFONO
     const formDataPhone = computed(() => ({
       inputName: 'checkout_billing_address_phone',
-      show: (($cmwStore.isB2b || $cmwStore.isIt)
-          && (selectedInvoiceType.value === 'Privato' || selectedInvoiceType.value === 'Azienda'))
-        || (($cmwStore.isB2b || $cmwStore.isIt)
-          && (selectedCountry.value === 'IT' && selectedInvoiceType.value === 'Associazione')),
+      show: ((!!selectedCountry.value)
+          && (selectedInvoiceType.value === 'Associazione' && selectedCountry.value === 'IT'))
+        || ((!!selectedCountry.value)
+          && (selectedInvoiceType.value === 'Privato' || selectedInvoiceType.value === 'Azienda')),
       inputValue: customerBilling.value?.phone || '',
       rules: { required: false },
     }))
