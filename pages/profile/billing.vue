@@ -491,8 +491,8 @@ export default defineComponent({
                   v-model="formDataLastname.inputValue"
                   type="text"
                   :name="formDataLastname.inputName"
-                  :label="$t('common.forms.billingAddress.checkout_billing_address_las_name')"
-                  :placeholder="$t('common.forms.billingAddress.checkout_billing_address_las_name')"
+                  :label="$t('common.forms.billingAddress.checkout_billing_address_last_name')"
+                  :placeholder="$t('common.forms.billingAddress.checkout_billing_address_last_name')"
                   :rules="formDataLastname.rules"
                 />
               </fieldset>

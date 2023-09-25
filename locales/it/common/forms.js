@@ -6,7 +6,7 @@ export default {
       checkout_billing_address_city: 'Città',
       checkout_billing_address_company: 'Azienda (facoltativo)',
       checkout_billing_address_first_name: 'Nome',
-      checkout_billing_address_las_name: 'Cognome',
+      checkout_billing_address_last_name: 'Cognome',
       checkout_billing_address_phone: 'Telefono',
       checkout_billing_address_province: 'Provincia',
       checkout_billing_address_zip: 'CAP',
