@@ -6,6 +6,7 @@ import radioCheckedIcon from '~/assets/svg/radio-checked.svg'
 import radioUncheckedIcon from '~/assets/svg/radio-unchecked.svg'
 import { useCustomer } from '~/store/customer'
 import type { IOptions } from '~/types/types'
+import { SweetAlertToast } from '~/utilities/Swal'
 
 export default defineComponent({
   setup() {
@@ -14,6 +15,7 @@ export default defineComponent({
     const { getCustomer } = useCustomer()
     const fetchingCountries = ref(true)
     const formEl = ref<HTMLFormElement | null>(null)
+    const isSubmitting = ref(false)
     const countries = ref<IOptions[]>([])
     const provincesOptions = ref<IOptions[]>([])
     const customerBilling = computed(() => customer.value.billing?.value ? JSON.parse(customer.value.billing.value) : {})
@@ -99,7 +101,6 @@ export default defineComponent({
       fetchingCountries.value = false
     })
 
-    const formIsDisabled = computed(() => false)
     const formDataName = computed(() => ({
       inputName: 'checkout_billing_address_first_name',
       show: ((!!selectedCountry.value)
@@ -256,6 +257,7 @@ export default defineComponent({
       if (!formEl.value)
         return
 
+      isSubmitting.value = true
       const customerAccessToken = $cookieHelpers.getToken()
       $cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
 
@@ -279,10 +281,17 @@ export default defineComponent({
       })
         .then(async () => {
           await getCustomer()
+          SweetAlertToast.fire({
+            icon: 'success',
+            title: i18n.t('common.feedback.OK.customerUpdatePassword'),
+          })
         })
         .catch((err: Error) => {
+          isSubmitting.value = false
           $handleApiErrors(`Catch on billing: ${err}`)
         })
+
+      isSubmitting.value = false
     }
 
     onMounted(() => {
@@ -313,12 +322,12 @@ export default defineComponent({
       formDataVat,
       formDataZip,
       formEl,
-      formIsDisabled,
       getCustomer,
       handleCountryChange,
       handleInvoiceTypeChange,
       handleProvinceChange,
       invoiceType,
+      isSubmitting,
       onSubmit,
       provincesOptions,
       radioCheckedIcon,
@@ -521,7 +530,7 @@ export default defineComponent({
             <Button
               class="w-max mt-8"
               type="submit"
-              :disabled="formIsDisabled || !valid"
+              :disabled="isSubmitting || !valid"
               :label="$t('common.cta.save')"
             />
           </form>
