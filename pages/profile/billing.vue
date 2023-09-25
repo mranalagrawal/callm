@@ -145,19 +145,15 @@ export default defineComponent({
       rules: { required: true },
     }))
 
+    // PARTITA IVA
     const formDataVat = computed(() => ({
       inputName: 'checkout_invoice_company_vat',
-      show: (($cmwStore.isB2b || $cmwStore.isIt)
-        && (selectedInvoiceType.value === 'Azienda'))
-        || (($cmwStore.isFr)
-          && (selectedInvoiceType.value === 'Azienda'))
-      || (($cmwStore.isDe)
-          && (selectedInvoiceType.value === 'Azienda')),
+      show: ((!!selectedCountry.value && selectedInvoiceType === 'Azienda')),
       inputValue: customerBilling.value?.vat || '',
       rules: (() => {
-        if ($cmwStore.isDe)
+        if (selectedCountry.value === 'DE')
           return { required: true, regex: /^DE\d{9}$/ }
-        else if ($cmwStore.isFr)
+        else if (selectedCountry.value === 'FR')
           return { required: true, regex: /^FR[a-zA-Z0-9]{11}$/ }
         else
           return { required: true, regex: /^(IT)?\d{11}$/ }
