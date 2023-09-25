@@ -120,11 +120,15 @@ export default defineComponent({
       rules: (() => ({ required: (selectedInvoiceType.value === 'Privato') }))(),
     }))
 
+    // RAGIONE SOCIALE
     const formDataCompany = computed(() => ({
       inputName: 'checkout_billing_address_company',
-      show: true,
+      show: (((!!selectedCountry.value && !!selectedCountry.value)
+      && (selectedInvoiceType.value === 'Azienda'))
+      || ((!!selectedCountry.value && !!selectedCountry.value)
+      && (selectedInvoiceType.value === 'Associazione' && selectedCountry.value === 'IT'))),
       inputValue: customerBilling.value?.company || '',
-      rules: { required: false },
+      rules: { required: true },
     }))
 
     const formDataCompanyName = computed(() => ({
