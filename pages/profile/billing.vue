@@ -425,6 +425,17 @@ export default defineComponent({
               </fieldset>
               <fieldset>
                 <InputField
+                  v-if="formDataCompany.show"
+                  v-model="formDataCompany.inputValue"
+                  type="text"
+                  :name="formDataCompany.inputName"
+                  :label="$t('common.forms.billingAddress.checkout_invoice_company_name')"
+                  :placeholder="$t('common.forms.billingAddress.checkout_invoice_company_name')"
+                  :rules="formDataCompany.rules"
+                />
+              </fieldset>
+              <fieldset>
+                <InputField
                   v-if="formDataTaxCode.show"
                   v-model="formDataTaxCode.inputValue"
                   type="text"
@@ -485,17 +496,6 @@ export default defineComponent({
                   :label="$t('common.forms.billingAddress.checkout_billing_address_last_name')"
                   :placeholder="$t('common.forms.billingAddress.checkout_billing_address_last_name')"
                   :rules="formDataLastname.rules"
-                />
-              </fieldset>
-              <fieldset>
-                <InputField
-                  v-if="formDataCompany.show"
-                  v-model="formDataCompany.inputValue"
-                  type="text"
-                  :name="formDataCompany.inputName"
-                  :label="$t('common.forms.billingAddress.checkout_invoice_company_name')"
-                  :placeholder="$t('common.forms.billingAddress.checkout_invoice_company_name')"
-                  :rules="formDataCompany.rules"
                 />
               </fieldset>
               <fieldset>
