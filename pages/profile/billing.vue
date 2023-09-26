@@ -8,6 +8,19 @@ import { useCustomer } from '~/store/customer'
 import type { IOptions } from '~/types/types'
 import { SweetAlertToast } from '~/utilities/Swal'
 
+interface CustomResponse extends Response {
+  data: {
+    message: string
+    errors: {
+      vat: string[]
+    }
+  }
+}
+
+interface CustomError extends Error {
+  response: CustomResponse
+}
+
 export default defineComponent({
   setup() {
     const { i18n, $cmw, $cmwGtmUtils, $cmwStore, $cookieHelpers, $handleApiErrors } = useContext()
@@ -286,12 +299,21 @@ export default defineComponent({
             title: i18n.t('common.feedback.OK.customerUpdateData'),
           })
         })
-        .catch((err: Error) => {
-          isSubmitting.value = false
-          $handleApiErrors(`Catch on billing: ${err}`)
-        })
+        .catch(async (err: CustomError) => {
+          const text = err.response.data?.message
 
-      isSubmitting.value = false
+          if (text) {
+            await SweetAlertToast.fire({
+              icon: 'error',
+              text,
+            })
+          } else {
+            $handleApiErrors(`Catch on billing: ${err}`)
+          }
+        })
+        .finally(() => {
+          isSubmitting.value = false
+        })
     }
 
     onMounted(() => {
