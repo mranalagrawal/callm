@@ -1,54 +1,346 @@
 <script>
-import { defineComponent, inject, ref, useContext, watchEffect } from '@nuxtjs/composition-api'
+import { defineComponent, inject, ref, useContext, useFetch, watchEffect } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import Loader from '@/components/UI/Loader.vue'
 import closeIcon from '~/assets/svg/close.svg'
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
-import { pick } from '@/utilities/arrays'
 import { useFilters } from '~/store/filters'
 import { getLocaleFromCurrencyCode } from '@/utilities/currency'
-import themeConfig from '~/config/themeConfig'
+import { pick } from '~/utilities/arrays'
 
 export default defineComponent({
   components: { Loader },
   scrollToTop: true,
   props: ['inputParameters'],
-  setup() {
-    const { redirect } = useContext()
+  setup(props) {
+    const { redirect, $config, i18n } = useContext()
     const filtersStore = useFilters()
     const { selectedLayout, availableLayouts } = storeToRefs(filtersStore)
     const isDesktop = inject('isDesktop')
     const showPageFullDescription = ref(false)
     const showMoreFilters = ref(false)
     const showMobileFilters = ref(false)
+    const aggregations = ref(null)
+    const results = ref(null)
+    const total = ref(0)
+    const loading = ref(false)
+    const canonicalUrl = ref('')
+    const search = ref('')
+    const cmwActiveSelect = ref('')
+    const minPrice = ref(0)
+    const maxPrice = ref(0)
+    const currentPage = ref(1)
+    const pagination = ref({
+      prevPage: 0,
+      nextPage: 0,
+      currentPage: 1,
+      pageNumbers: [],
+      totalPages: 0,
+    })
 
+    const seoData = {
+      pageTitle: null,
+      pageDescription: null,
+      seoTitle: null,
+      seoDescription: null,
+      pageFullDescription: '',
+      mainFilters: [],
+    }
+    const searchedTerm = ref('')
+
+    const { fetch } = useFetch(async ({ $elastic, $cmwStore }) => {
+      if (process.client)
+        window.scrollTo(0, 0)
+
+      loading.value = true
+
+      // console.log('Before fetching:', this.inputParameters)
+
+      currentPage.value = props.inputParameters.page
+        ? props.inputParameters.page
+        : 1
+
+      searchedTerm.value = props.inputParameters.search
+        ? props.inputParameters.search
+        : ''
+
+      const urlSearchParams = new URLSearchParams(props.inputParameters)
+      const queryToString = urlSearchParams.toString()
+
+      let sel = '&'
+
+      if (props.inputParameters.sel) {
+        sel += props.inputParameters.sel
+          .split(',')
+          .map(el => `${el}=true`)
+          .join('&')
+      }
+
+      const elastic_url
+        = `${$config.ELASTIC_URL
+      }products/search?stores=${$cmwStore.settings.id}&locale=${i18n.locale
+      }&`
+
+      const searchResult = await $elastic.$get(`${elastic_url}${queryToString}${sel}`)
+      const seo = await $elastic.$get(`${$config.ELASTIC_URL}product-list/seo?stores=${$cmwStore.settings.id}&locale=${i18n.locale}&${queryToString}${sel}`)
+      // seo = await seo.json()
+
+      if (seo) {
+        const pickedSeo = pick(seo, ['pageTitle', 'pageDescription', 'seoTitle', 'seoDescription', 'pageFullDescription'])
+
+        if (!Object.values(pickedSeo).every(item => !item))
+          seoData.value = pickedSeo
+      } else {
+        this.$sentry.captureException(new Error('Something went wrong on SEO API on listing page'))
+      }
+
+      // const search = await searchResult.json()
+      search.value = searchResult
+
+      aggregations.value = search?.aggregations || {}
+      results.value = search.hits.hits
+
+      total.value = search.hits.total.value
+      /*
+      // h1 macro name - is not filter
+      if (props.inputParameters?.macros && this.search.aggregations['agg-macros']) {
+        const currentMacrosVal = props.inputParameters?.macros
+        const macrosBucket = this.search.aggregations['agg-macros'].inner.result.buckets.find(b => b.key === parseInt(currentMacrosVal))
+        this.h1MacroName = macrosBucket.name.buckets[0].key
+      }
+
+      if (total === 0) {
+        this.loading = false
+        return
+      }
+
+      const belong_filters = [
+        'areas',
+        'brands',
+        'regions',
+        'countries',
+        'vintages',
+        'sizes',
+        'boxes',
+        'dosagecontents',
+        'bodystyles',
+      ]
+
+      belong_filters.forEach((el) => {
+        if (!search.aggregations[`agg-${el}`])
+          return
+
+        let buckets = search.aggregations[`agg-${el}`][`agg-${el}`].buckets.map(
+          (x) => {
+            return {
+              key: x.key.split('|'),
+              key_as_string: x.key,
+              doc_count: x.doc_count,
+            }
+          },
+        )
+
+        // console.log(`buckets for ${el}`, buckets)
+
+        buckets = buckets.filter(bucket => !bucket.key.includes('not specified'))
+        buckets = buckets.filter(bucket => !bucket.key.includes('non specificato'))
+        buckets = buckets.filter(bucket => !bucket.key.includes('nicht angegeben'))
+        buckets = buckets.filter(bucket => !bucket.key.includes('non spécifié'))
+
+        // console.log(`buckets for ${el} after filter`, buckets)
+
+        this[`${el}`] = buckets
+
+        const filterId = props.inputParameters[el]
+        // console.log('filterId ', filterId)
+
+        // console.log('this.view ', this.view)
+
+        this.view[el] = filterId
+          ? {
+              key: filterId,
+              name: buckets.length > 0 ? buckets.find(x => `${x.key[0]}` === `${filterId}`).key[1] : null,
+              field: el,
+            }
+          : null
+      })
+
+      const relation_filters = [
+        'awards',
+        'agings',
+        'categories',
+        'philosophies',
+        'winelists',
+        'pairings',
+      ]
+
+      relation_filters.forEach((el) => {
+        if (!search.aggregations[`agg-${el}`])
+          return
+
+        const data = search.aggregations[`agg-${el}`] && search.aggregations[`agg-${el}`].inner.result.buckets.map((el) => {
+          return {
+            key: [el.key, el.name.buckets[0].key],
+            key_as_string: `${el.key}|${el.name.buckets[0].key}`,
+            doc_count: el.doc_count,
+          }
+        })
+        this[el] = data
+
+        const filterId = props.inputParameters[el]
+        this.view[el] = filterId
+          ? {
+              key: filterId,
+              name: data.length > 0 ? data.find(x => `${x.key[0]}` === `${filterId}`).key[1] : null,
+              field: el,
+            }
+          : null
+      })
+
+      relation_filters.forEach((el) => {
+        if (!search.aggregations[`agg-${el}`])
+          return
+
+        const data = search.aggregations[`agg-${el}`] && search.aggregations[`agg-${el}`].inner.result.buckets.map((aggregation) => {
+          return {
+            value: JSON.stringify({ id: aggregation.key, keyword: el }),
+            label: `${aggregation.name.buckets[0].key} <span class="cmw-font-light text-gray">(${aggregation.doc_count})</span>`,
+            simpleLabel: aggregation.name.buckets[0].key,
+            selected: props.inputParameters && props.inputParameters[el] && props.inputParameters[el] === `${aggregation.key}`,
+          }
+        })
+
+        this.filters = {
+          ...this.filters,
+          [el]: data,
+        }
+      })
+
+      belong_filters.forEach((el) => {
+        if (!search.aggregations[`agg-${el}`])
+          return
+
+        let buckets = search.aggregations[`agg-${el}`] && search.aggregations[`agg-${el}`][`agg-${el}`].buckets.map(
+          (aggregation) => {
+            return {
+              key: aggregation.key.split('|'),
+              value: JSON.stringify({ id: aggregation.key.split('|')[0], keyword: el }),
+              label: `${aggregation.key.split('|')[1]} <span class="cmw-font-light text-gray">(${aggregation.doc_count})</span>`,
+              selected: props.inputParameters && props.inputParameters[el] && props.inputParameters[el] === `${aggregation.key}`,
+            }
+          },
+        )
+
+        buckets = buckets.filter(bucket => !bucket.key.includes('not specified'))
+        buckets = buckets.filter(bucket => !bucket.key.includes('non specificato'))
+        buckets = buckets.filter(bucket => !bucket.key.includes('nicht angegeben'))
+        buckets = buckets.filter(bucket => !bucket.key.includes('non spécifié'))
+
+        this.filters = {
+          ...this.filters,
+          [el]: buckets,
+        }
+      })
+
+      const priceFrom = props.inputParameters.price_from
+      const priceTo = props.inputParameters.price_to
+
+      const allSelections = [
+        'artisanal',
+        'exclusive',
+        'favourite',
+        'foreveryday',
+        'inpromotion',
+        'isnew',
+        'organic',
+        'rarewine',
+        'togift',
+        'topsale',
+        'unusualvariety',
+      ]
+
+      this.activeSelections = Object.keys(props.inputParameters).filter(el =>
+        allSelections.includes(el),
+      )
+
+      this.view.priceFrom = priceFrom
+        ? {
+            key: 'priceFrom',
+            name: `From ${priceFrom}`,
+            field: 'price_from',
+          }
+        : null
+      this.view.priceTo = priceTo
+        ? {
+            key: 'priceTo',
+            name: `To ${priceTo}`,
+            field: 'price_to',
+          }
+        : null
+
+      this.maxPriceTotal = Math.round(+search.aggregations.max_price['agg-max-price'].value)
+      this.maxPrice
+        = priceTo
+        || Math.round(+search.aggregations.max_price['agg-max-price'].value)
+      this.minPriceTotal = Math.round(+search.aggregations.min_price['agg-min-price'].value)
+      this.minPrice
+        = priceFrom
+        || Math.round(+search.aggregations.min_price['agg-min-price'].value)
+
+      const hasBrand = urlSearchParams.has('brands')
+
+      if (hasBrand) {
+        const brandId = `B${urlSearchParams.get('brands')}`
+
+        if (process.client && typeof window !== 'undefined') {
+          const { origin, search } = window.location
+          const searchParams = new URLSearchParams(search)
+          searchParams.delete('page')
+
+          const encodedPath = `${encodeURIComponent(this.view.brands.name.replace(' ', '-'))}-${brandId}.htm`
+          const encodedSearch = searchParams.toString() ? `?${searchParams.toString()}` : ''
+          canonicalUrl.value = `${origin}/${encodedPath}${encodedSearch}`
+        }
+      } */
+
+      loading.value = false
+    })
     watchEffect(() => {
       if (process.browser && document.body)
         document.body.classList.toggle('lock-scroll', showMobileFilters.value && !isDesktop.value)
     })
 
     return {
-      isDesktop,
-      showPageFullDescription,
-      showMoreFilters,
-      showMobileFilters,
       availableLayouts,
-      selectedLayout,
-      closeIcon,
+      canonicalUrl,
       chevronDownIcon,
+      closeIcon,
+      cmwActiveSelect,
+      fetch,
+      isDesktop,
+      loading,
+      maxPrice,
+      minPrice,
+      pagination,
       redirect,
+      searchedTerm,
+      selectedLayout,
+      seoData,
+      showMobileFilters,
+      showMoreFilters,
+      showPageFullDescription,
     }
   },
   data() {
     return {
-      canonicalUrl: '',
-      cmwActiveSelect: '',
-      minPrice: 0,
-      maxPrice: 0,
+      // canonicalUrl: '',
+      // cmwActiveSelect: '',
+      // minPrice: 0,
+      // maxPrice: 0,
       minPriceTotal: null,
       maxPriceTotal: null,
-      searchedTerm: '',
-      loading: null,
+      // searchedTerm: '',
+      // loading: null,
       brands: null,
       search: {},
       aggregations: {},
@@ -69,14 +361,14 @@ export default defineComponent({
       activeSelections: [],
       total: 0,
       h1MacroName: '',
-      seoData: {
-        pageTitle: null,
-        pageDescription: null,
-        seoTitle: null,
-        seoDescription: null,
-        pageFullDescription: '',
-        mainFilters: [],
-      },
+      // seoData: {
+      //   pageTitle: null,
+      //   pageDescription: null,
+      //   seoTitle: null,
+      //   seoDescription: null,
+      //   pageFullDescription: '',
+      //   mainFilters: [],
+      // },
       filters: {
         winelists: [],
         pairings: [],
@@ -89,13 +381,13 @@ export default defineComponent({
         agings: [],
         philosophies: [],
       },
-      pagination: {
+      /* pagination: {
         prevPage: 0,
         nextPage: 0,
         currentPage: 1,
         pageNumbers: [],
         totalPages: 0,
-      },
+      }, */
       view: {
         exclusive: null,
         categories: null,
@@ -117,7 +409,7 @@ export default defineComponent({
       },
     }
   },
-  async fetch() {
+  /* async fetch() {
     if (process.client)
       window.scrollTo(0, 0)
 
@@ -135,25 +427,6 @@ export default defineComponent({
 
     const urlSearchParams = new URLSearchParams(this.inputParameters)
     const queryToString = urlSearchParams.toString()
-
-    /*
-    // We don't wanna know ...🫣
-    // move in page-seo-rules middleware
-    const changedCategories = ['1', '2', '3', '4', '54', '57', '64', '66', '75', '78', '87', '95', '97', '99', '104', '106', '109']
-
-    if (urlSearchParams.has('categories')) {
-      const category = urlSearchParams.get('categories')
-      const matched = changedCategories.includes(category)
-
-      /*
-      if (matched) {
-        console.log("switch from C to M");
-        const newPath = this.$route.fullPath.replaceAll(`-C${category}`, `-M${category}`)
-        const newLocation = this.localeLocation(newPath)
-        return this.redirect(301, newLocation)
-      }
-    }
-    */
 
     let sel = '&'
 
@@ -393,7 +666,7 @@ export default defineComponent({
     }
 
     this.loading = false
-  },
+  }, */
   head() {
     let link = []
     const href = this.canonicalUrl ? this.canonicalUrl : ''
