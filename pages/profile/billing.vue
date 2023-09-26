@@ -373,7 +373,7 @@ export default defineComponent({
         <div class="px-4 h4 cmw-font-semibold" v-text="$t('profile.billing')" />
         <ValidationObserver
           ref="formEl"
-          v-slot="{ handleSubmit, valid }"
+          v-slot="{ handleSubmit }"
           slim
         >
           <form
@@ -552,7 +552,7 @@ export default defineComponent({
             <Button
               class="w-max mt-8"
               type="submit"
-              :disabled="isSubmitting || !valid"
+              :disabled="isSubmitting"
               :label="$t('common.cta.save')"
             />
           </form>
