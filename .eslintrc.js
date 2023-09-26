@@ -22,7 +22,8 @@ module.exports = {
     'vue/no-v-for-template-key': 'error',
     'vue/no-v-for-template-key-on-child': 'off',
     'vue/no-v-text-v-html-on-component': 'warn',
-    'vue/no-deprecated-v-on-native-modifier': 'warn',
+    /* NOTE: Switching this off for now till we migrate to Nuxt 3 */
+    'vue/no-deprecated-v-on-native-modifier': 'off',
     'vue/script-setup-uses-vars': 'error',
     'vue/valid-template-root': 0,
     'vue/no-multiple-template-root': 0,

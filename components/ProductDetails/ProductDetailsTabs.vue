@@ -135,8 +135,12 @@ export default defineComponent({
         <div v-if="productDetails.countryName[$i18n.locale] || productDetails.countryRegionName">
           <p class="cmw-font-bold mb-0" v-text="$t('product.region')" />
           <p class="mb-4">
-            {{ productDetails.countryRegionName }}
-            {{ productDetails.countryName[$i18n.locale] }}
+            <NuxtLink :to="localePath('/bla')">
+              {{ productDetails.countryRegionName }}
+            </NuxtLink>
+            <NuxtLink :to="localePath('/foo')">
+              {{ productDetails.countryName[$i18n.locale] }}
+            </NuxtLink>
           </p>
           <hr class="border-gray-light">
         </div>
