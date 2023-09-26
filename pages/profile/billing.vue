@@ -128,7 +128,7 @@ export default defineComponent({
       && (selectedInvoiceType.value === 'Azienda'))
       || ((!!selectedCountry.value && !!selectedCountry.value)
       && (selectedInvoiceType.value === 'Associazione' && selectedCountry.value === 'IT'))),
-      inputValue: customerBilling.value?.company || '',
+      inputValue: customerBilling.value?.company_name || '',
       rules: { required: true },
     }))
 
@@ -136,7 +136,7 @@ export default defineComponent({
     const formDataCompanyName = computed(() => ({
       inputName: 'checkout_billing_address_company',
       show: selectedInvoiceType.value === 'Azienda',
-      inputValue: customerBilling.value?.company_name || '',
+      inputValue: customerBilling.value?.company || '',
       rules: { required: false },
     }))
 
