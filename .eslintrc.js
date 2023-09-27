@@ -64,6 +64,9 @@ module.exports = {
     'vue/custom-event-name-casing': ['error', 'kebab-case'],
     /* ANTFU ESLINT RULES */
     'antfu/top-level-function': 'off',
+    'curly': ['error', 'multi-line', 'consistent'],
+    'max-statements-per-line': ['error', { max: 3 }],
+    'max-depth': ['error', 4],
     /* TYPESCRIPT ESLINT RULES */
     '@typescript-eslint/brace-style': ['error', '1tbs', { allowSingleLine: true }],
     '@typescript-eslint/no-unused-vars': ['error', { ignoreRestSiblings: true }],

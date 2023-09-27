@@ -39,15 +39,13 @@ export default defineComponent({
     const isOnSale = computed(() => finalPrice < +merchandise.value.price.amount)
 
     const increaseQuantity = async () => {
-      if (!canAddMore.value)
-        return
+      if (!canAddMore.value) { return }
 
       await cartLinesAdd(props.item, true)
     }
 
     const decreaseQuantity = async () => {
-      if (props.item.quantity === 0)
-        return
+      if (props.item.quantity === 0) { return }
 
       await cartLinesUpdate(props.item, props.item.quantity - 1, true)
     }

@@ -42,8 +42,7 @@ export default defineComponent({
     const suggest = debounce(async () => {
       showSearchSuggestions.value = true
 
-      if (search.value.length <= 3)
-        return
+      if (search.value.length <= 3) { return }
 
       await fetch(`${ELASTIC_URL}autocomplete/search/?stores=${storeConfigId}&locale=${i18n.locale}&search=${search.value}`)
         .then(r => r.json())
@@ -58,8 +57,7 @@ export default defineComponent({
     }
 
     const startSearch = () => {
-      if (!search.value)
-        return
+      if (!search.value) { return }
 
       router.push({
         path: '/catalog',

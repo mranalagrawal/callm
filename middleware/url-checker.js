@@ -202,11 +202,9 @@ const REDIRECT_SEO_REGEX = {
 
 function searchRedirectPuntuali(urlPath) {
   // force to lower case before match search
-  if (containsCapitalizedLetters(urlPath))
-    urlPath = urlToLowerCase(urlPath)
+  if (containsCapitalizedLetters(urlPath)) { urlPath = urlToLowerCase(urlPath) }
   for (const [urlFrom, urlRedirectTo] of Object.entries(REDIRECT_PUNTUALI)) {
-    if (urlFrom === urlPath || urlPath === encodeURI(urlFrom))
-      return urlRedirectTo
+    if (urlFrom === urlPath || urlPath === encodeURI(urlFrom)) { return urlRedirectTo }
   }
 
   return null
@@ -218,8 +216,7 @@ function getMatchedRegex(urlPath) {
 
     const regexToCheck = new RegExp(regex, 'g')
     const matches = urlPath.match(regexToCheck)
-    if (matches)
-      return true
+    if (matches) { return true }
 
     return false
   })
@@ -227,16 +224,14 @@ function getMatchedRegex(urlPath) {
 
 function isOldMacros(url) {
   const isOldMacros = new RegExp(`C${MACRO_LETTERS}[A-Z.]`, 'g')
-  if (url.match(isOldMacros))
-    return true
+  if (url.match(isOldMacros)) { return true }
 
   return false
 }
 
 function isOldCountries(url) {
   const isOldCountries = new RegExp(`R${COUNTRY_LETTERS}[A-Z.]`, 'g')
-  if (url.match(isOldCountries))
-    return true
+  if (url.match(isOldCountries)) { return true }
 
   return false
 }

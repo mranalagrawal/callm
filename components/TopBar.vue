@@ -8,8 +8,7 @@ export default defineComponent({
     useFetch(async ({ $cmwRepo }) => {
       await $cmwRepo.prismic.getSingle('topbar')
         .then((data) => {
-          if (!data.text?.length)
-            return
+          if (!data.text?.length) { return }
 
           headline.value = data.text[0].text
         })

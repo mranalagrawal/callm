@@ -47,8 +47,7 @@ export default defineComponent({
     useFetch(async ({ $cmwRepo }) => {
       await $cmwRepo.prismic.getSingle('selections')
         .then((data) => {
-          if (!data.body || !Object.keys(data.body).length)
-            return
+          if (!data.body || !Object.keys(data.body).length) { return }
 
           items.value = data.body[0].items.concat(data.body[0].items).concat(data.body[0].items)
           title.value = data.body[0].primary.title

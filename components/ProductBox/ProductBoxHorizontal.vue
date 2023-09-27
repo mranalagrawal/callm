@@ -51,8 +51,7 @@ export default defineComponent({
     const isOnFavourite = computed(() => wishlistArr.value.includes(props.product.source_id))
     const isOnSale = computed(() => props.product.availableFeatures.includes('isInPromotion'))
     const finalPrice = computed(() => {
-      if (!props.product.priceLists || !props.product.priceLists[$config.SALECHANNEL])
-        return 0
+      if (!props.product.priceLists || !props.product.priceLists[$config.SALECHANNEL]) { return 0 }
       return props.product.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0
     })
     const gtmProductData = computed(() => ({
@@ -106,8 +105,7 @@ export default defineComponent({
 
     const isOnCart = computed(() => {
       const product = shopifyCart.value?.lines?.edges.find(el => el.node.merchandise.id === props.product.shopify_product_variant_id)
-      if (product)
-        return product.node
+      if (product) { return product.node }
       return null
     })
 
@@ -116,10 +114,7 @@ export default defineComponent({
     const canAddMore = computed(() => (amountMax.value - cartQuantity.value) > 0)
 
     const priceByLiter = computed(() => {
-      if ($config.STORE !== 'CMW_DE')
-        return 0
-      else
-        return ((finalPrice.value / props.product.milliliters) * 1000)
+      if ($config.STORE !== 'CMW_DE') { return 0 } else { return ((finalPrice.value / props.product.milliliters) * 1000) }
     })
 
     return {
@@ -169,8 +164,7 @@ export default defineComponent({
         return
       }
 
-      if (!this.shopifyCart)
-        await this.createShopifyCart()
+      if (!this.shopifyCart) { await this.createShopifyCart() }
 
       await this.cartLinesAdd(this.product, false, () => this.flashMessage.show({
         status: '',
@@ -182,8 +176,7 @@ export default defineComponent({
       }))
     },
     async removeFromUserCart() {
-      if (this.cartQuantity === 0)
-        return
+      if (this.cartQuantity === 0) { return }
 
       await this.cartLinesUpdate(this.product, this.cartQuantity - 1)
     },

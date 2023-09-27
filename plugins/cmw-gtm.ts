@@ -45,19 +45,20 @@ const cmwGtm: Plugin = ({ $cmwStore, $config, $gtm }, inject) => {
 
   const $cmwGtmUtils: ICmwGtmUtils = {
     getActionField: (route) => {
-      if (route.path === '/')
+      if (route.path === '/') {
         return 'home'
-      else if (Object.keys(route.query).includes('search'))
+      } else if (Object.keys(route.query).includes('search')) {
         return 'search_results'
-      else return route.meta?.actionField || cleanRoutesLocales(route.name as string)
+      } else { return route.meta?.actionField || cleanRoutesLocales(route.name as string) }
     },
     pushPage: () => {},
     getCustomerGtmData: () => {},
     resetDatalayerFields: async () => {
       const fields = ['ecommerce', 'actionField', 'impressions', 'pageType', 'wishlistAddedProduct', 'event']
 
-      if (typeof window !== 'undefined' && window.google_tag_manager && window.google_tag_manager[$config.gtm.id])
+      if (typeof window !== 'undefined' && window.google_tag_manager && window.google_tag_manager[$config.gtm.id]) {
         fields.forEach(field => window.google_tag_manager[$config.gtm.id].dataLayer.set(field, undefined))
+      }
     },
   }
 

@@ -14,16 +14,14 @@ export default {
     })
 
     const { fetch } = useFetch(async ({ $cmwRepo, $productMapping, $handleApiErrors }) => {
-      if (!vendorRef.value)
-        return
+      if (!vendorRef.value) { return }
 
       await $cmwRepo.products.getAll({
         first: 12,
         query: query.value,
       })
         .then(async ({ products = { nodes: [] } }) => {
-          if (products.nodes.length)
-            productsRef.value = $productMapping.fromShopify(products.nodes)
+          if (products.nodes.length) { productsRef.value = $productMapping.fromShopify(products.nodes) }
         })
         .catch((err: Error) => {
           $handleApiErrors(`Catch getting products getAll from shopify: ${err}`)

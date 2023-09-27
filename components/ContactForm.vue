@@ -99,8 +99,7 @@ export default defineComponent({
     })
 
     const onSubmit = async () => {
-      if (!formEl.value)
-        return
+      if (!formEl.value) { return }
 
       isSubmitting.value = true
 

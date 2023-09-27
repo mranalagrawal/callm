@@ -20,8 +20,7 @@ import { generateKey, stripHtmlAnchors } from '~/utilities/strings'
 
 export default defineComponent({
   setup() {
-    if (process.client)
-      window.scrollTo(0, 0)
+    if (process.client) { window.scrollTo(0, 0) }
 
     const {
       i18n,
@@ -112,8 +111,7 @@ export default defineComponent({
 
     const canonicalUrl = ref('')
 
-    if (process.server && req?.headers && req?.url)
-      canonicalUrl.value = `https://${req.headers.host}${req.url}`
+    if (process.server && req?.headers && req?.url) { canonicalUrl.value = `https://${req.headers.host}${req.url}` }
 
     if (process.client && typeof window !== 'undefined') {
       const {
@@ -144,12 +142,10 @@ export default defineComponent({
               ? []
               : $productMapping.breadcrumbs(productBreadcrumbs.value[i18n.locale])
 
-            if (route.value.params.pathMatch !== product.value.handle.toLowerCase())
-              return redirect(301, localeLocation(`/${product.value.handle.toLowerCase()}-${productDetails.value.key}.htm`), route.value.query)
+            if (route.value.params.pathMatch !== product.value.handle.toLowerCase()) { return redirect(301, localeLocation(`/${product.value.handle.toLowerCase()}-${productDetails.value.key}.htm`), route.value.query) }
 
             if (product.value.tags.includes('not_active')) {
-              if (productDetails.value.redirectSeoUrl && productDetails.value.redirectSeoUrl[i18n.locale])
-                return redirect(301, localeLocation(`/${productDetails.value.redirectSeoUrl[i18n.locale]}`), route.value.query)
+              if (productDetails.value.redirectSeoUrl && productDetails.value.redirectSeoUrl[i18n.locale]) { return redirect(301, localeLocation(`/${productDetails.value.redirectSeoUrl[i18n.locale]}`), route.value.query) }
               return redirect(301, '/') // redirect to home if redirectSeoUrl is missing
             }
 
@@ -185,19 +181,15 @@ export default defineComponent({
     })
 
     const isOnSale = computed(() => {
-      if (!productVariant.value)
-        return false
+      if (!productVariant.value) { return false }
 
       return product.value.availableFeatures.includes('isInPromotion')
     })
 
     const strippedContent = computed(() => {
       if (productDetails.value.shortDescription[i18n.locale]) {
-        if ($config.SALECHANNEL === 'cmw_uk_b2c')
-          return stripHtmlAnchors(productDetails.value.shortDescription[i18n.locale])
-        else
-          return productDetails.value.shortDescription[i18n.locale]
-          /*
+        if ($config.SALECHANNEL === 'cmw_uk_b2c') { return stripHtmlAnchors(productDetails.value.shortDescription[i18n.locale]) } else { return productDetails.value.shortDescription[i18n.locale] }
+        /*
         return productDetails.value.shortDescription[i18n.locale]
           .replace('href', '')
           .replace('style', '')
@@ -215,8 +207,7 @@ export default defineComponent({
 
     const isOnCart = computed(() => {
       const productIncart = shopifyCart.value?.lines?.edges.find(el => el.node.merchandise.id === product.value.shopify_product_variant_id)
-      if (productIncart)
-        return productIncart.node
+      if (productIncart) { return productIncart.node }
 
       return null
     })
@@ -228,8 +219,7 @@ export default defineComponent({
     const isBundle = computed(() => !!product.value.bundle.length)
 
     const finalPrice = computed(() => {
-      if (!productDetails.value.feId)
-        return false
+      if (!productDetails.value.feId) { return false }
 
       return productDetails.value.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0
     })
@@ -239,10 +229,7 @@ export default defineComponent({
     })
 
     const priceByLiter = computed(() => {
-      if ($config.STORE !== 'CMW_DE')
-        return 0
-      else
-        return ((finalPrice.value / productDetails.value.milliliters) * 1000)
+      if ($config.STORE !== 'CMW_DE') { return 0 } else { return ((finalPrice.value / productDetails.value.milliliters) * 1000) }
     })
 
     const gtmProductData = computed(() => ({
@@ -353,8 +340,7 @@ export default defineComponent({
         return
       }
 
-      if (!this.shopifyCart?.id)
-        await this.createShopifyCart()
+      if (!this.shopifyCart?.id) { await this.createShopifyCart() }
 
       await this.cartLinesAdd(this.product)
 
@@ -369,8 +355,7 @@ export default defineComponent({
     },
 
     async removeFromUserCart() {
-      if (this.cartQuantity === 0)
-        return
+      if (this.cartQuantity === 0) { return }
 
       await this.cartLinesUpdate(this.product, this.cartQuantity - 1)
     },

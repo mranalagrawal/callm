@@ -45,8 +45,7 @@ export default defineComponent({
       if (!checked) {
         selectedFrequency.value = ''
       } else {
-        if (!selectedFrequency.value)
-          selectedFrequency.value = 'DAILY'
+        if (!selectedFrequency.value) { selectedFrequency.value = 'DAILY' }
       }
     }
 

@@ -302,8 +302,7 @@ export const useCustomer = defineStore({
         return
       }
 
-      if (!this.customerId || !args.id)
-        throw new Error('missing arguments')
+      if (!this.customerId || !args.id) { throw new Error('missing arguments') }
 
       if (args.isOnFavourite) {
         SweetAlertConfirm.fire({

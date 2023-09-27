@@ -85,12 +85,11 @@ export default defineComponent({
 
         let firstCountryValue: string
 
-        if ($cmwStore.isIt || $cmwStore.isB2b)
+        if ($cmwStore.isIt || $cmwStore.isB2b) {
           firstCountryValue = 'IT'
-        else if ($cmwStore.isFr)
+        } else if ($cmwStore.isFr) {
           firstCountryValue = 'FR'
-        else if ($cmwStore.isDe)
-          firstCountryValue = 'DE'
+        } else if ($cmwStore.isDe) { firstCountryValue = 'DE' }
 
         // Remove the first country from the array (if exists)
         const firstCountry = countriesArr.find((c: { value: any }) => c.value === firstCountryValue)
@@ -159,12 +158,11 @@ export default defineComponent({
       show: ((!!selectedCountry.value && selectedInvoiceType.value === 'Azienda')),
       inputValue: customerBilling.value?.vat || '',
       rules: (() => {
-        if (selectedCountry.value === 'DE')
+        if (selectedCountry.value === 'DE') {
           return { required: true, regex: /^DE\d{9}$/ }
-        else if (selectedCountry.value === 'FR')
+        } else if (selectedCountry.value === 'FR') {
           return { required: true, regex: /^FR[a-zA-Z0-9]{11}$/ }
-        else
-          return { required: true, regex: /^(IT)?\d{11}$/ }
+        } else { return { required: true, regex: /^(IT)?\d{11}$/ } }
       })(),
     }))
 
@@ -183,9 +181,7 @@ export default defineComponent({
       show: ((selectedCountry.value === 'IT' && (selectedInvoiceType.value === 'Associazione' || selectedInvoiceType.value === 'Privato'))),
       inputValue: customerBilling.value?.tax_code || '',
       rules: (() => {
-        if (selectedInvoiceType.value === 'Privato')
-          return { required: true, regex: /^[A-Z]{6}\d{2}[A-Z]\d{2}[A-Z]\d{3}[A-Z]$/i }
-        else return { required: true, regex: /^\d{11}$/i }
+        if (selectedInvoiceType.value === 'Privato') { return { required: true, regex: /^[A-Z]{6}\d{2}[A-Z]\d{2}[A-Z]\d{3}[A-Z]$/i } } else { return { required: true, regex: /^\d{11}$/i } }
       })(),
     }))
 
@@ -267,8 +263,7 @@ export default defineComponent({
     }
 
     const onSubmit = async () => {
-      if (!formEl.value)
-        return
+      if (!formEl.value) { return }
 
       isSubmitting.value = true
       const customerAccessToken = $cookieHelpers.getToken()
@@ -320,8 +315,7 @@ export default defineComponent({
       process.browser && $cmwGtmUtils.pushPage('page')
       if (selectedCountry.value) {
         handleCountryChange(selectedCountry.value)
-        if (customerBilling.value?.province)
-          handleProvinceChange(customerBilling.value?.province)
+        if (customerBilling.value?.province) { handleProvinceChange(customerBilling.value?.province) }
       }
     })
 

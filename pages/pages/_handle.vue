@@ -49,14 +49,10 @@ export default defineComponent({
       // this.showMobileFilters = false
       const query: IQuery = { ...inputParameters.value, ...route.value.query }
 
-      if (`${query[id]}` === 'true')
-        delete query[id]
-      else
-        query[id] = 'true'
+      if (`${query[id]}` === 'true') { delete query[id] } else { query[id] = 'true' }
 
       // if (id !== this.active)
-      if (id !== route.value.query[id])
-        query.page = '1'
+      if (id !== route.value.query[id]) { query.page = '1' }
 
       router.push({
         path: '/catalog',
@@ -70,10 +66,7 @@ export default defineComponent({
       const { id, keyword } = JSON.parse(val)
       const query: IQuery = { ...inputParameters.value, ...route.value.query }
 
-      if (`${query[keyword]}` === id.toString())
-        delete query[keyword]
-      else
-        query[keyword] = id.toString()
+      if (`${query[keyword]}` === id.toString()) { delete query[keyword] } else { query[keyword] = id.toString() }
 
       router.push({
         path: '/catalog',
@@ -184,8 +177,7 @@ export default defineComponent({
     async function fetchDataWithFetchState() {
       const { shopifyPage, productsSearch } = await fetchData()
 
-      if (!shopifyPage || !Object.keys(shopifyPage).length)
-        return
+      if (!shopifyPage || !Object.keys(shopifyPage).length) { return }
 
       pageData.value = shopifyPage
       shortDescription.value = shopifyRichTextToHTML(shopifyPage.shortDescription.value)
@@ -194,8 +186,7 @@ export default defineComponent({
       results.value = hits.hits
       total.value = hits.total.value
 
-      if (Object.keys(aggregations).length)
-        aggregationsRef.value = aggregations
+      if (Object.keys(aggregations).length) { aggregationsRef.value = aggregations }
     }
 
     onBeforeMount(fetchDataWithFetchState)

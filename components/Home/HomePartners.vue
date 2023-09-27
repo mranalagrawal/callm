@@ -24,15 +24,13 @@ export default defineComponent({
 
     const urlBg01 = computed(() => {
       const content = pageData.value && pageData.value[0]?.content
-      if (!content)
-        return ''
+      if (!content) { return '' }
       return isTablet.value ? content.image.url : content.image.mobile?.url
     })
 
     const urlBg02 = computed(() => {
       const content = pageData.value && pageData.value[1]?.content
-      if (!content)
-        return ''
+      if (!content) { return '' }
       return isTablet.value ? content.image.url : content.image.mobile?.url
     })
 

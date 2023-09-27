@@ -79,8 +79,7 @@ export default defineComponent({
 
     const handleReorderProducts = async () => {
       // If there's no cart create one
-      if (!shopifyCart.value?.id)
-        await createShopifyCart()
+      if (!shopifyCart.value?.id) { await createShopifyCart() }
 
       // Check every Item in orderLineItems,
       for (const orderLine of orderLineItems.value) {
@@ -145,10 +144,7 @@ export default defineComponent({
     canBuyAgain() {
       return this.order.lineItems && this.order.lineItems.nodes
         .map((el) => {
-          if (el.variant)
-            return el.variant.product.availableForSale
-          else
-            return false
+          if (el.variant) { return el.variant.product.availableForSale } else { return false }
         })
         .every(el => el === true)
     },

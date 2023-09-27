@@ -27,8 +27,7 @@ export default defineComponent({
           // Loop through each 'slice' in the body array
           for (const slice of responseObject[key]) {
             // Check if the slice_label matches the one we're looking for
-            if (slice.slice_label === sliceLabel)
-              return slice
+            if (slice.slice_label === sliceLabel) { return slice }
           }
         }
       }

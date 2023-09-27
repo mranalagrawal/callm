@@ -47,27 +47,23 @@ export default {
     handleUserActionMouseEnter(key) {
       setTimeout(() => this.hoveringAction = true, 25)
 
-      if (this.currentComponent === key)
-        return
+      if (this.currentComponent === key) { return }
 
       this.currentComponent = key
     },
     handleMouseAction(show) {
       this.hoveringComponent = show
       setTimeout(() => {
-        if (!this.hoveringAction && !this.hoveringComponent)
-          this.currentComponent = false
+        if (!this.hoveringAction && !this.hoveringComponent) { this.currentComponent = false }
       }, 75)
     },
     handleUserActionMouseLeave() {
       this.hoveringAction = false
 
       setTimeout(() => {
-        if (this.hoveringComponent)
-          return
+        if (this.hoveringComponent) { return }
 
-        if (!this.hoveringComponent && !this.hoveringAction)
-          this.currentComponent = false
+        if (!this.hoveringComponent && !this.hoveringAction) { this.currentComponent = false }
       }, 150)
     },
     lookUpComponent(k) {

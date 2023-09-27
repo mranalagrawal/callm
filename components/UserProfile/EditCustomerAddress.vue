@@ -73,8 +73,7 @@ export default {
                 text: i18n.t('common.feedback.OK.customerAddressUpdate'),
               })
 
-              if (isDefaultAddress.value || setAsDefault.value)
-                customerAddresses.setAddressAsDefault(customerAddress.id)
+              if (isDefaultAddress.value || setAsDefault.value) { customerAddresses.setAddressAsDefault(customerAddress.id) }
             } else {
               SweetAlertToast.fire({
                 icon: 'error',

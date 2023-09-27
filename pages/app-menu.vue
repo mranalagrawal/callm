@@ -8,10 +8,7 @@ export default {
   },
   async fetch() {
     let lang = ''
-    if (this.$i18n.locale === 'en')
-      lang = 'en-gb'
-    else
-      lang = 'it-it'
+    if (this.$i18n.locale === 'en') { lang = 'en-gb' } else { lang = 'it-it' }
 
     // TODO component access!
     const response = await this.$prismic.api.getSingle('mega-menu-test', {

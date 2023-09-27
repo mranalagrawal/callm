@@ -87,8 +87,7 @@ export default defineComponent({
     const canonicalUrl = ref('')
     const query = computed(() => {
       const pathParts = route.value?.path.split('-')
-      if (!pathParts)
-        return
+      if (!pathParts) { return }
 
       return `tag:${pathParts.at(-1)?.replace('.htm', '') ?? ''}`
     })
@@ -129,8 +128,7 @@ export default defineComponent({
         metaFields.value = articles.nodes[0].details && JSON.parse(articles.nodes[0].details.value) as IMetaFields
         console.log('HERE', metaFields.value.subtitle)
 
-        if (route.value.params.handle !== `${brand!.value.handle}-${metaFields.value.key}.htm`)
-          return redirect(301, localePath({ name: 'winery-handle', params: { handle: `${brand.value?.handle.trim()}-${metaFields.value?.key}.htm` } }))
+        if (route.value.params.handle !== `${brand!.value.handle}-${metaFields.value.key}.htm`) { return redirect(301, localePath({ name: 'winery-handle', params: { handle: `${brand.value?.handle.trim()}-${metaFields.value?.key}.htm` } })) }
       }
     })
 

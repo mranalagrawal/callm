@@ -39,8 +39,7 @@ export default defineComponent({
 
     const isOnCart = computed(() => {
       const productIncart = shopifyCart.value?.lines?.edges.find(el => el.node.merchandise.id === giftCardVariantSelected.value.id)
-      if (productIncart)
-        return productIncart.node
+      if (productIncart) { return productIncart.node }
       return null
     })
 
@@ -48,8 +47,7 @@ export default defineComponent({
 
     const canAddMore = computed(() => ((amountMax.value - cartQuantity.value) > 0))
 
-    if (process.server && req?.headers && req?.url)
-      canonicalUrl.value = `https://${req.headers.host}${req.url}`
+    if (process.server && req?.headers && req?.url) { canonicalUrl.value = `https://${req.headers.host}${req.url}` }
 
     if (process.client && typeof window !== 'undefined') {
       const {
@@ -170,8 +168,7 @@ export default defineComponent({
         return
       }
 
-      if (!this.shopifyCart)
-        await this.createShopifyCart()
+      if (!this.shopifyCart) { await this.createShopifyCart() }
 
       await this.cartLinesAdd(this.giftCardVariantSelected)
 
@@ -186,8 +183,7 @@ export default defineComponent({
     },
 
     async removeFromUserCart() {
-      if (this.cartQuantity === 0)
-        return
+      if (this.cartQuantity === 0) { return }
 
       await this.cartLinesUpdate(this.giftCardVariantSelected, this.cartQuantity - 1)
     },

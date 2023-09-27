@@ -140,8 +140,7 @@ export default defineComponent({
     }
 
     const selections = computed(() => {
-      if (!props.aggregations || !Object.keys(props.aggregations).length)
-        return []
+      if (!props.aggregations || !Object.keys(props.aggregations).length) { return [] }
 
       const aggregationsParsed = JSON.parse(JSON.stringify(props.aggregations))
 
@@ -260,8 +259,7 @@ export default defineComponent({
       return Object.entries(computedFilters.value)
         .slice(0, !(showMoreFilters.value || !isDesktop.value) ? 4 : undefined)
         .reduce((acc: { [key: string]: any[] }, [k, v]) => {
-          if (v.length)
-            acc[k] = v
+          if (v.length) { acc[k] = v }
 
           return acc
         }, {})

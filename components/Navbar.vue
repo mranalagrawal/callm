@@ -38,8 +38,7 @@ export default defineComponent({
     }
 
     const lockBody = () => {
-      if (process.browser && document.body)
-        document.body.classList.toggle('lock-scroll', isMobileMenuOpen.value)
+      if (process.browser && document.body) { document.body.classList.toggle('lock-scroll', isMobileMenuOpen.value) }
     }
 
     const toggleMobileLogin = () => {

@@ -113,8 +113,7 @@ export default defineComponent({
     const searchedTerm = ref('')
 
     const { fetch } = useFetch(async ({ $elastic, $cmwStore }) => {
-      if (process.client)
-        window.scrollTo(0, 0)
+      if (process.client) { window.scrollTo(0, 0) }
 
       loading.value = true
 
@@ -149,8 +148,7 @@ export default defineComponent({
       if (seo) {
         const pickedSeo = pick(seo, ['pageTitle', 'pageDescription', 'seoTitle', 'seoDescription', 'pageFullDescription'])
 
-        if (!Object.values(pickedSeo).every(item => !item))
-          seoData.value = pickedSeo
+        if (!Object.values(pickedSeo).every(item => !item)) { seoData.value = pickedSeo }
       } else {
         this.$sentry.captureException(new Error('Something went wrong on SEO API on listing page'))
       }
@@ -188,8 +186,7 @@ export default defineComponent({
       ]
 
       belong_filters.forEach((el) => {
-        if (!search.value.aggregations[`agg-${el}`])
-          return
+        if (!search.value.aggregations[`agg-${el}`]) { return }
 
         let buckets = search.value.aggregations[`agg-${el}`][`agg-${el}`].buckets.map(
           (x) => {
@@ -229,8 +226,7 @@ export default defineComponent({
       ]
 
       relation_filters.forEach((el) => {
-        if (!search.value.aggregations[`agg-${el}`])
-          return
+        if (!search.value.aggregations[`agg-${el}`]) { return }
 
         const data = search.value.aggregations[`agg-${el}`] && search.value.aggregations[`agg-${el}`].inner.result.buckets.map((el) => {
           return {
@@ -252,8 +248,7 @@ export default defineComponent({
       })
 
       relation_filters.forEach((el) => {
-        if (!search.value.aggregations[`agg-${el}`])
-          return
+        if (!search.value.aggregations[`agg-${el}`]) { return }
 
         const data = search.value.aggregations[`agg-${el}`] && search.value.aggregations[`agg-${el}`].inner.result.buckets.map((aggregation) => {
           return {
@@ -271,8 +266,7 @@ export default defineComponent({
       })
 
       belong_filters.forEach((el) => {
-        if (!search.value.aggregations[`agg-${el}`])
-          return
+        if (!search.value.aggregations[`agg-${el}`]) { return }
 
         let buckets = search.value.aggregations[`agg-${el}`] && search.value.aggregations[`agg-${el}`][`agg-${el}`].buckets.map(
           (aggregation) => {
@@ -374,31 +368,27 @@ export default defineComponent({
         .filter(v => v !== null)
         .map(v => v.name || '')
 
-      if (h1MacroName.value)
-        h1Words = [h1MacroName.value, ...h1Words]
+      if (h1MacroName.value) { h1Words = [h1MacroName.value, ...h1Words] }
 
       return h1Words.join(' - ')
     })
 
     const filterCategories = computed(() => {
       return Object.entries(filters.value).slice(0, !(showMoreFilters.value || !isDesktop.value) ? 4 : undefined).reduce((acc, [k, v]) => {
-        if (v.length)
-          acc[k] = v
+        if (v.length) { acc[k] = v }
 
         return acc
       }, {})
     })
 
     const selections = computed(() => {
-      if (!search.value?.aggregations)
-        return []
+      if (!search.value?.aggregations) { return [] }
 
       const aggregations = JSON.parse(JSON.stringify(search.value.aggregations))
 
       const selectionsListMapped = []
       allSelections.forEach((el) => {
-        if (!aggregations[`agg-${el}`])
-          return
+        if (!aggregations[`agg-${el}`]) { return }
 
         const tmp = aggregations[`agg-${el}`][`agg-${el}`].buckets.find(
           el => el.key === 1,
@@ -448,9 +438,9 @@ export default defineComponent({
       const { id, keyword } = JSON.parse(val)
       const query = { ...props.inputParameters.value, ...route.value.query }
 
-      if (`${query[keyword]}` === id.toString())
+      if (`${query[keyword]}` === id.toString()) {
         delete query[keyword]
-      else query[keyword] = id
+      } else { query[keyword] = id }
 
       /* if (id !== this.active)
         query.page = 1 */
@@ -466,13 +456,11 @@ export default defineComponent({
       showMobileFilters.value = false
       const query = { ...props.inputParameters, ...route.value.query }
 
-      if (`${query[id]}` === 'true')
+      if (`${query[id]}` === 'true') {
         delete query[id]
-      else
-        query[id] = 'true'
+      } else { query[id] = 'true' }
 
-      if (id !== route.value.query[id])
-        query.page = 1
+      if (id !== route.value.query[id]) { query.page = 1 }
 
       this.$router.push({
         path: '/catalog',
@@ -527,8 +515,7 @@ export default defineComponent({
     // WATCHERS
     watch(() => route.value.query, () => fetch())
     watchEffect(() => {
-      if (process.browser && document.body)
-        document.body.classList.toggle('lock-scroll', showMobileFilters.value && !isDesktop.value)
+      if (process.browser && document.body) { document.body.classList.toggle('lock-scroll', showMobileFilters.value && !isDesktop.value) }
     })
 
     useMeta(() => {

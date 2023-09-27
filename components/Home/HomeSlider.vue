@@ -32,8 +32,7 @@ export default {
     const setArrow = () => {
       let slider: HTMLDivElement | null = null
       setTimeout(() => {
-        if (wrapperEl.value)
-          slider = wrapperEl.value.querySelector('.carousel-3d-slider')
+        if (wrapperEl.value) { slider = wrapperEl.value.querySelector('.carousel-3d-slider') }
 
         if (slider) {
           setTimeout(() => {

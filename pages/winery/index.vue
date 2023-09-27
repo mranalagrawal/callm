@@ -128,8 +128,7 @@ export default defineComponent({
 
     const fetchPage = (isPrev = false) => {
       resetLazyLoad()
-      if (!linksRef.value)
-        return
+      if (!linksRef.value) { return }
 
       const url = isPrev ? new URL(linksRef.value.prev) : new URL(linksRef.value.next)
       const cursor = url.searchParams.get('cursor')
@@ -147,8 +146,7 @@ export default defineComponent({
 
     const handleIntersect = (entries: any[]) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting)
-          handleLazyLoad()
+        if (entry.isIntersecting) { handleLazyLoad() }
       })
     }
 
@@ -178,9 +176,7 @@ export default defineComponent({
         ...(rest && { ...rest }),
       }
 
-      if (`${query[keyword]}` === id.toString())
-        delete query[keyword]
-      else query[keyword] = id
+      if (`${query[keyword]}` === id.toString()) { delete query[keyword] } else { query[keyword] = id }
 
       router.push(localePath({ name: 'winery', query }))
     }
