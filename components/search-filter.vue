@@ -633,24 +633,22 @@ export default defineComponent({
     <ProductsResultsList :results="results" :total="total" :loading="loading" @update-sort-value="handleUpdateSortValue" />
     <CategoriesPagination v-if="total > 0" :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters" :base-path="$route.path" />
 
-    <ClientOnly>
-      <div>
-        <div
-          class="relative overflow-hidden pb-8"
-          :class="showPageFullDescription
-            ? 'h-full'
-            : 'h-[200px] after:(content-DEFAULT absolute w-full h-1/2 bottom-0 left-0 bg-gradient-to-b from-transparent to-white)'"
-          v-html="seoData?.pageFullDescription ? seoData.pageFullDescription : ''"
-        />
-        <Button
-          v-if="!showPageFullDescription" class="justify-end pb-8" variant="text"
-          @click.native="showPageFullDescription = true"
-        >
-          <span v-if="seoData?.pageFullDescription" class="mr-2">{{ $t('common.cta.readMore') }}</span>
-          <VueSvgIcon v-if="seoData?.pageFullDescription" width="18" height="18" :data="require(`@/assets/svg/chevron-down.svg`)" />
-        </Button>
-      </div>
-    </ClientOnly>
+    <div>
+      <div
+        class="relative overflow-hidden pb-8"
+        :class="showPageFullDescription
+          ? 'h-full'
+          : 'h-[200px] after:(content-DEFAULT absolute w-full h-1/2 bottom-0 left-0 bg-gradient-to-b from-transparent to-white)'"
+        v-html="seoData?.pageFullDescription ? seoData.pageFullDescription : ''"
+      />
+      <Button
+        v-if="!showPageFullDescription" class="justify-end pb-8" variant="text"
+        @click.native="showPageFullDescription = true"
+      >
+        <span v-if="seoData?.pageFullDescription" class="mr-2">{{ $t('common.cta.readMore') }}</span>
+        <VueSvgIcon v-if="seoData?.pageFullDescription" width="18" height="18" :data="require(`@/assets/svg/chevron-down.svg`)" />
+      </Button>
+    </div>
     <Loader v-if="loading" />
 
     <div v-if="total > 0 && !isDesktop" class="sticky bottom-8 w-[min(100%,_14rem)] m-inline-auto">
