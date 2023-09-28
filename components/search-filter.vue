@@ -594,59 +594,49 @@ export default defineComponent({
 
 <template>
   <div class="max-w-screen-xl mx-auto py-4 px-4 mt-4">
-    <ClientOnly>
-      <h1 v-if="total > 0 || searchedTerm" class="h3">
-        <template v-if="searchedTerm">
-          <span>"{{ searchedTerm }}"</span>
-          <p class="h4" v-text="$t('searchResultLabel')" />
-        </template>
-        <template v-else-if="seoData && seoData?.pageTitle">
-          {{ seoData.pageTitle }}
-        </template>
-        <template v-else>
-          {{ seoTitleReplace }}
-          <span v-for="selection in activeSelections" :key="selection">
-            {{ $t(`common.features.${selection}`) }}
-          </span>
-        </template>
-      </h1>
-    </ClientOnly>
+    <h1 v-if="total > 0 || searchedTerm" class="h3">
+      <template v-if="searchedTerm">
+        <span>"{{ searchedTerm }}"</span>
+        <p class="h4" v-text="$t('searchResultLabel')" />
+      </template>
+      <template v-else-if="seoData && seoData?.pageTitle">
+        {{ seoData.pageTitle }}
+      </template>
+      <template v-else>
+        {{ seoTitleReplace }}
+        <span v-for="selection in activeSelections" :key="selection">
+          {{ $t(`common.features.${selection}`) }}
+        </span>
+      </template>
+    </h1>
 
-    <ClientOnly>
-      <CategoriesMainFilters
-        v-if="total > 0 && Object.keys(aggregations).length && Object.keys(inputParameters).length"
-        :aggregations="aggregations" :input-parameters="inputParameters" @item-clicked="handleUpdateValue"
-      />
-    </ClientOnly>
+    <CategoriesMainFilters
+      v-if="total > 0 && Object.keys(aggregations).length && Object.keys(inputParameters).length"
+      :aggregations="aggregations" :input-parameters="inputParameters" @item-clicked="handleUpdateValue"
+    />
 
-    <ClientOnly>
-      <div v-if="total > 0 && isDesktop">
-        <!-- Filter Components -->
-        <CategoriesFiltersComponents
-          v-if="Object.keys(aggregations).length"
-          :key="JSON.stringify(inputParameters) || 'categories-filters-components'" :aggregations="aggregations"
-          :input-parameters="inputParameters" @update-value-selections="handleUpdateValueSelections"
-          @update-value="handleUpdateValue" @handle-on-footer-click="handleOnFooterClick"
-        />
-        <CategoriesActiveSelections
-          :input-parameters="inputParameters" :view="view"
-          @remove-selection-from-query="removeSelectionFromQuery" @reset-filter="resetFilter"
-        />
-      </div>
-    </ClientOnly>
-    <ClientOnly><p class="<md:hidden" v-html="seoData.pageDescription" /></ClientOnly>
-    <ClientOnly>
-      <ProductsResultsList
-        :results="results" :total="total" :loading="loading"
-        @update-sort-value="handleUpdateSortValue"
+    <div v-if="total > 0 && isDesktop">
+      <!-- Filter Components -->
+      <CategoriesFiltersComponents
+        v-if="Object.keys(aggregations).length"
+        :key="JSON.stringify(inputParameters) || 'categories-filters-components'" :aggregations="aggregations"
+        :input-parameters="inputParameters" @update-value-selections="handleUpdateValueSelections"
+        @update-value="handleUpdateValue" @handle-on-footer-click="handleOnFooterClick"
       />
-    </ClientOnly>
-    <ClientOnly>
-      <CategoriesPagination
-        v-if="total > 0" :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters"
-        :base-path="$route.path"
+      <CategoriesActiveSelections
+        :input-parameters="inputParameters" :view="view"
+        @remove-selection-from-query="removeSelectionFromQuery" @reset-filter="resetFilter"
       />
-    </ClientOnly>
+    </div>
+    <p class="<md:hidden" v-html="seoData.pageDescription" />
+    <ProductsResultsList
+      :results="results" :total="total" :loading="loading"
+      @update-sort-value="handleUpdateSortValue"
+    />
+    <CategoriesPagination
+      v-if="total > 0" :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters"
+      :base-path="$route.path"
+    />
 
     <ClientOnly>
       <div>
