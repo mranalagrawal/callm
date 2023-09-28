@@ -632,10 +632,12 @@ export default defineComponent({
       />
     </div>
     <div class="<md:hidden" v-html="seoData.pageDescription" />
-    <ProductsResultsList
-      :results="results" :total="total" :loading="loading"
-      @update-sort-value="handleUpdateSortValue"
-    />
+    <ClientOnly>
+      <ProductsResultsList
+        :results="results" :total="total" :loading="loading"
+        @update-sort-value="handleUpdateSortValue"
+      />
+    </ClientOnly>
     <ClientOnly>
       <CategoriesPagination
         v-if="total > 0" :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters"
