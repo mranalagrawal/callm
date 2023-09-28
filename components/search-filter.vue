@@ -611,44 +611,63 @@ export default defineComponent({
       </h1>
     </ClientOnly>
 
-    <CategoriesMainFilters
-      v-if="total > 0 && Object.keys(aggregations).length && Object.keys(inputParameters).length"
-      :aggregations="aggregations" :input-parameters="inputParameters" @item-clicked="handleUpdateValue"
-    />
+    <ClientOnly>
+      <CategoriesMainFilters
+        v-if="total > 0 && Object.keys(aggregations).length && Object.keys(inputParameters).length"
+        :aggregations="aggregations" :input-parameters="inputParameters" @item-clicked="handleUpdateValue"
+      />
+    </ClientOnly>
 
-    <div v-if="total > 0 && isDesktop">
-      <!-- Filter Components -->
-      <CategoriesFiltersComponents
-        v-if="Object.keys(aggregations).length"
-        :key="JSON.stringify(inputParameters) || 'categories-filters-components'" :aggregations="aggregations"
-        :input-parameters="inputParameters" @update-value-selections="handleUpdateValueSelections"
-        @update-value="handleUpdateValue" @handle-on-footer-click="handleOnFooterClick"
+    <ClientOnly>
+      <div v-if="total > 0 && isDesktop">
+        <!-- Filter Components -->
+        <CategoriesFiltersComponents
+          v-if="Object.keys(aggregations).length"
+          :key="JSON.stringify(inputParameters) || 'categories-filters-components'" :aggregations="aggregations"
+          :input-parameters="inputParameters" @update-value-selections="handleUpdateValueSelections"
+          @update-value="handleUpdateValue" @handle-on-footer-click="handleOnFooterClick"
+        />
+        <CategoriesActiveSelections
+          :input-parameters="inputParameters" :view="view"
+          @remove-selection-from-query="removeSelectionFromQuery" @reset-filter="resetFilter"
+        />
+      </div>
+    </ClientOnly>
+    <ClientOnly><p class="<md:hidden" v-html="seoData.pageDescription" /></ClientOnly>
+    <ClientOnly>
+      <ProductsResultsList
+        :results="results" :total="total" :loading="loading"
+        @update-sort-value="handleUpdateSortValue"
       />
-      <CategoriesActiveSelections
-        :input-parameters="inputParameters" :view="view"
-        @remove-selection-from-query="removeSelectionFromQuery" @reset-filter="resetFilter"
+    </ClientOnly>
+    <ClientOnly>
+      <CategoriesPagination
+        v-if="total > 0" :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters"
+        :base-path="$route.path"
       />
-    </div>
-    <p class="<md:hidden" v-html="seoData.pageDescription" />
-    <ProductsResultsList :results="results" :total="total" :loading="loading" @update-sort-value="handleUpdateSortValue" />
-    <CategoriesPagination v-if="total > 0" :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters" :base-path="$route.path" />
+    </ClientOnly>
 
-    <div>
-      <div
-        class="relative overflow-hidden pb-8"
-        :class="showPageFullDescription
-          ? 'h-full'
-          : 'h-[200px] after:(content-DEFAULT absolute w-full h-1/2 bottom-0 left-0 bg-gradient-to-b from-transparent to-white)'"
-        v-html="seoData?.pageFullDescription ? seoData.pageFullDescription : ''"
-      />
-      <Button
-        v-if="!showPageFullDescription" class="justify-end pb-8" variant="text"
-        @click.native="showPageFullDescription = true"
-      >
-        <span v-if="seoData?.pageFullDescription" class="mr-2">{{ $t('common.cta.readMore') }}</span>
-        <VueSvgIcon v-if="seoData?.pageFullDescription" width="18" height="18" :data="require(`@/assets/svg/chevron-down.svg`)" />
-      </Button>
-    </div>
+    <ClientOnly>
+      <div>
+        <div
+          class="relative overflow-hidden pb-8"
+          :class="showPageFullDescription
+            ? 'h-full'
+            : 'h-[200px] after:(content-DEFAULT absolute w-full h-1/2 bottom-0 left-0 bg-gradient-to-b from-transparent to-white)'"
+          v-html="seoData?.pageFullDescription ? seoData.pageFullDescription : ''"
+        />
+        <Button
+          v-if="!showPageFullDescription" class="justify-end pb-8" variant="text"
+          @click.native="showPageFullDescription = true"
+        >
+          <span v-if="seoData?.pageFullDescription" class="mr-2">{{ $t('common.cta.readMore') }}</span>
+          <VueSvgIcon
+            v-if="seoData?.pageFullDescription" width="18" height="18"
+            :data="require(`@/assets/svg/chevron-down.svg`)"
+          />
+        </Button>
+      </div>
+    </ClientOnly>
     <Loader v-if="loading" />
 
     <div v-if="total > 0 && !isDesktop" class="sticky bottom-8 w-[min(100%,_14rem)] m-inline-auto">
