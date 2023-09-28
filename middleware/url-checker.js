@@ -259,12 +259,12 @@ function prepareRedirect(redirectUrl) {
   if (isOldMacros(redirectUrl)) {
     const macrosRegex = new RegExp(`C${MACRO_LETTERS}([A-Z.])`)
     redirectUrl = redirectUrl.replace(macrosRegex, 'M$1$2')
-    console.log('macrosReplaced', redirectUrl)
+    // console.log('macrosReplaced', redirectUrl)
   }
   if (isOldCountries(redirectUrl)) {
     const countriesRegex = new RegExp(`R${COUNTRY_LETTERS}([A-Z.])`)
     redirectUrl = redirectUrl.replace(countriesRegex, 'N$1$2')
-    console.log('countriesReplaced', redirectUrl)
+    // console.log('countriesReplaced', redirectUrl)
   }
 
   redirectUrl = urlToLowerCase(redirectUrl)
@@ -288,26 +288,26 @@ export default async function ({ redirect, route, $config, error, localePath, i1
   const queryParams = route.query
   // BDP - brand detail page
   if (isBrandUrl(route.path)) {
-    console.log(`${route.path} is a brandPage...`)
+    // console.log(`${route.path} is a brandPage...`)
     // only /brand-slug-B123.htm, without initial folder ignore /cantina/brand-slug-B123.htm
     if (route.path.match(/^\/[\w]+(?:-[\w]+)*-(B\d+)+.htm/)) {
-      console.log(`${route.path} , remove slash ${route.path.substring(1)}`)
+      // console.log(`${route.path} , remove slash ${route.path.substring(1)}`)
       const brandUrl = localePath({
         name: 'winery-handle',
         params: { handle: route.path.substring(1) },
       })
       const redirectTo = prepareRedirect(brandUrl)
-      console.log(`🚥(301) ${route.path} missing folder, redirect to ${redirectTo}`)
+      // console.log(`🚥(301) ${route.path} missing folder, redirect to ${redirectTo}`)
       redirect(301, redirectTo, queryParams)
     }
   } else if (pageWithFilterCode(route.path) || plpWithOldPagination(route.path)) {
     // PLP - listing pages with at least one filter/code part es C1, M1R13 ecc
-    console.log(`${route.path} is a plp/pageWithFilterCode searching for a match...`)
+    // console.log(`${route.path} is a plp/pageWithFilterCode searching for a match...`)
 
     let urlPath = route.path
     const isOldPlpPaginationUrl = plpWithOldPagination(urlPath)
     if (isOldPlpPaginationUrl) {
-      console.log(`${urlPath} is a plp with old pagination...`)
+      // console.log(`${urlPath} is a plp with old pagination...`)
       const page = isOldPlpPaginationUrl[2]
       urlPath = urlPath.replace(`_${page}`, '')
       queryParams.page = page // append pagination value to current query params
@@ -316,22 +316,22 @@ export default async function ({ redirect, route, $config, error, localePath, i1
     let redirectTo = null
     // 1. searching in redirect puntuali/fissi
     redirectTo = searchRedirectPuntuali(urlPath)
-    console.log(`${urlPath} is redirectPuntuale ?`, redirectTo)
+    // console.log(`${urlPath} is redirectPuntuale ?`, redirectTo)
 
     if (redirectTo) {
       redirectTo = prepareRedirect(redirectTo)
-      console.log(`🚥(301) ${urlPath} is redirectPuntuale -> redirectTo ${redirectTo}`)
+      // console.log(`🚥(301) ${urlPath} is redirectPuntuale -> redirectTo ${redirectTo}`)
       return redirect(301, redirectTo, queryParams)
     }
 
     // 2. searching in redirect seo rules/regex
     const matched = getMatchedRegex(urlPath)
     // need backend to get redirectUrl
-    console.log('redirectByRegex matched', matched, REDIRECT_SEO_REGEX[matched])
+    // console.log('redirectByRegex matched', matched, REDIRECT_SEO_REGEX[matched])
 
     if (matched && REDIRECT_SEO_REGEX[matched] === 301) {
       try {
-        console.log(`🚥(301) need redirect get ${$config.ELASTIC_URL}seo/get-redirect-url?urlPath=${urlPath}`)
+        // console.log(`🚥(301) need redirect get ${$config.ELASTIC_URL}seo/get-redirect-url?urlPath=${urlPath}`)
         const url = `${$config.ELASTIC_URL}seo/get-redirect-url?urlPath=${urlPath}`
         const headers = {
           'x-cmw-locale': i18n.locale,
@@ -347,29 +347,29 @@ export default async function ({ redirect, route, $config, error, localePath, i1
             name: 'winery-handle',
             params: { handle: beRedirectTo },
           })
-          console.log(`🚥(301) redirect url is a brand, redirect to ${brandUrl}`)
+          // console.log(`🚥(301) redirect url is a brand, redirect to ${brandUrl}`)
           redirect(301, brandUrl)
         } else {
           redirectTo = prepareRedirect(beRedirectTo)
-          console.log(`🚥(301) api redirect response: ${beRedirectTo}, redirectTo --> ${redirectTo}`)
+          // console.log(`🚥(301) api redirect response: ${beRedirectTo}, redirectTo --> ${redirectTo}`)
           redirect(301, redirectTo, queryParams)
         }
       } catch (e) {
         // if bo can't respond - continue with old url instead of broken
-        console.log('🚥(301) error', { error: e.message })
+        // console.log('🚥(301) error', { error: e.message })
       }
     } else if (matched && REDIRECT_SEO_REGEX[matched] === 200) {
-      console.log(`🚥${urlPath} match ${matched} -> valid/200 url`)
+      // console.log(`🚥${urlPath} match ${matched} -> valid/200 url`)
       // exception that need 301 redirect also if valid/200 url
       if (containsCapitalizedLetters(urlPath) || needLettersReplace(urlPath) || isOldPlpPaginationUrl) {
         redirectTo = prepareRedirect(urlPath)
-        console.log(`🚥(301) ${urlPath} contains capitalized or oldletters, redirect to  -> ${redirectTo}`)
+        // console.log(`🚥(301) ${urlPath} contains capitalized or oldletters, redirect to  -> ${redirectTo}`)
         redirect(301, redirectTo, queryParams)
       } else {
-        console.log(`🚥(200) ${urlPath} -> continue`)
+        // console.log(`🚥(200) ${urlPath} -> continue`)
       }
     } else {
-      console.log(`🚥${urlPath} doesn't match regex -> 410`)
+      // console.log(`🚥${urlPath} doesn't match regex -> 410`)
       error({ statusCode: 410, message: 'Resource is gone.' })
     }
   }
