@@ -142,11 +142,13 @@ export default defineComponent({
       }products/search?stores=${$cmwStore.settings.id}&locale=${i18n.locale
       }&`
 
-      console.log('pre', $elastic.getBaseURL())
+      console.log('pre products/search', $elastic.getBaseURL(), $config.ELASTIC_URL)
       const searchResult = await $elastic.$get(`${elastic_url}${queryToString}${sel}`)
-      console.log('after', $elastic.getBaseURL())
+      console.log('after products/search', $elastic.getBaseURL(), $config.ELASTIC_URL)
 
+      console.log('pre product-list/seo', $elastic.getBaseURL(), $config.ELASTIC_URL)
       const seo = await $elastic.$get(`${$config.ELASTIC_URL}product-list/seo?stores=${$cmwStore.settings.id}&locale=${i18n.locale}&${queryToString}${sel}`)
+      console.log('pre product-list/seo', $elastic.getBaseURL(), $config.ELASTIC_URL)
 
       if (seo) {
         const pickedSeo = pick(seo, ['pageTitle', 'pageDescription', 'seoTitle', 'seoDescription', 'pageFullDescription'])
