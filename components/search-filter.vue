@@ -462,7 +462,7 @@ export default defineComponent({
 
       if (id !== route.value.query[id]) { query.page = 1 }
 
-      this.$router.push({
+      router.push({
         path: '/catalog',
         query,
       })
