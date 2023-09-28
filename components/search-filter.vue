@@ -628,8 +628,8 @@ export default defineComponent({
         :input-parameters="inputParameters" :view="view"
         @remove-selection-from-query="removeSelectionFromQuery" @reset-filter="resetFilter"
       />
-      <p v-html="seoData.pageDescription" />
     </div>
+    <p class="<md:hidden" v-html="seoData.pageDescription" />
     <ProductsResultsList :results="results" :total="total" :loading="loading" @update-sort-value="handleUpdateSortValue" />
     <CategoriesPagination v-if="total > 0" :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters" :base-path="$route.path" />
 
