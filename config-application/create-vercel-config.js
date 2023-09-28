@@ -24,6 +24,10 @@ const config = {
   ],
   rewrites: [
     {
+      source: '/api/products/search:match*',
+      destination: 'https://callmewine-api-staging.dojo.sh/api/products/search:match*',
+    },
+    {
       source: '/blog',
       has: [
         {
