@@ -23,8 +23,7 @@ export default defineComponent({
 
     const isOnSale = computed(() => {
       // Note: for gift cards compareAtPrice sometimes is null, so we need to check
-      if (!props.orderLineItem.variant.compareAtPrice)
-        return false
+      if (!props.orderLineItem.variant.compareAtPrice) { return false }
 
       return Number(props.orderLineItem.originalTotalPrice.amount) > Number(props.orderLineItem.discountedTotalPrice.amount)
     })
@@ -74,7 +73,7 @@ export default defineComponent({
         >
           {{ $n(Number(orderLineItem.originalTotalPrice.amount), 'currency', getLocaleFromCurrencyCode(orderLineItem.originalTotalPrice.currencyCode)) }}
         </div>
-        <div class="font-bold">
+        <div class="cmw-font-bold">
           {{ $n(Number(orderLineItem.discountedTotalPrice.amount), 'currency', getLocaleFromCurrencyCode(orderLineItem.discountedTotalPrice.currencyCode)) }}
         </div>
       </div>

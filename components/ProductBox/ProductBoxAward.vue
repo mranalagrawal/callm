@@ -30,7 +30,7 @@ export default defineComponent({
     @touchstart.passive="handleMouseEnter"
     @touchstend.passive="handleMouseLeave"
   >
-    <span class="text-gray-darkest font-light text-sm">{{ award.value }}</span>
+    <span class="text-gray-darkest cmw-font-light text-sm">{{ award.value }}</span>
     <!-- Note: Why we have award.type === 'icona' || award.type === 'numerico' ? -->
     <!-- Note: Why are we using number? we should have a unique code for awards es.(gambero-rosso) -->
     <!-- Note: Also, are these awards or guides? I see guida on Alkemy -->
@@ -39,7 +39,7 @@ export default defineComponent({
       :title="`-@@-${award.id}-${award.title}`"
       width="20"
       height="20"
-      class="text-gray font-light"
+      class="text-gray cmw-font-light"
     />
     <!-- Note: With nuxt 3 we can use Vue3 Teleport component to place this tooltip on body or have a global tooltip -->
     <transition
@@ -58,7 +58,7 @@ export default defineComponent({
           before:(border-[0.5rem_0.75rem_0_0.75rem] border-transparent border-t-gray-lightest)"
         >
           <div
-            class="font-bold my-1"
+            class="cmw-font-bold my-1"
             v-text="$t('product.tooltip.guide', { guide: award.title })"
           />
           <div class=" my-1">

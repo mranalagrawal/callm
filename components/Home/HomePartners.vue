@@ -24,15 +24,13 @@ export default defineComponent({
 
     const urlBg01 = computed(() => {
       const content = pageData.value && pageData.value[0]?.content
-      if (!content)
-        return ''
+      if (!content) { return '' }
       return isTablet.value ? content.image.url : content.image.mobile?.url
     })
 
     const urlBg02 = computed(() => {
       const content = pageData.value && pageData.value[1]?.content
-      if (!content)
-        return ''
+      if (!content) { return '' }
       return isTablet.value ? content.image.url : content.image.mobile?.url
     })
 
@@ -106,7 +104,7 @@ export default defineComponent({
 }
 .partners-last {
   background-size: cover;
-  background-position: 0 60px, center, center;
+  background-position: 0 120px, center, center;
   background-repeat: no-repeat;
   border-radius: 0 0 10px 10px;
 }

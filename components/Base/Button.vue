@@ -45,9 +45,9 @@ export default defineComponent({
 
     const getVariant = () => ({
       'default': 'btn-default disabled:(bg-gray-light)',
-      'default-inverse': 'font-secondary font-bold border-transparent bg-white text-primary-400 uppercase',
-      'ghost': 'border-primary-400 bg-white text-primary-400 font-bold uppercase hover:(bg-primary-50)',
-      'ghost-inverse': 'border-white text-white font-bold uppercase hover:(bg-primary-50 text-primary-400)',
+      'default-inverse': 'font-secondary cmw-font-bold border-transparent bg-white text-primary-400 uppercase',
+      'ghost': 'border-primary-400 bg-white text-primary-400 cmw-font-bold uppercase hover:(bg-primary-50)',
+      'ghost-inverse': 'border-white text-white cmw-font-bold uppercase hover:(bg-primary-50 text-primary-400)',
       'text': 'btn-text',
     })[props.variant]
 

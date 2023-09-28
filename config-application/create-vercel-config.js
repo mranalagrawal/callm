@@ -27,7 +27,7 @@ const config = {
       source: '/blog',
       has: [
         {
-          value: '*stage*',
+          value: '.*stage.*',
           type: 'host',
         },
       ],
@@ -37,7 +37,7 @@ const config = {
       source: '/blog/:match*',
       has: [
         {
-          value: '*stage*',
+          value: '.*stage.*',
           type: 'host',
         },
       ],
@@ -47,7 +47,7 @@ const config = {
       source: '/blog',
       missing: [
         {
-          value: '*stage*',
+          value: '.*stage.*',
           type: 'host',
         },
       ],
@@ -57,7 +57,7 @@ const config = {
       source: '/blog/:match*',
       missing: [
         {
-          value: '*stage*',
+          value: '.*stage.*',
           type: 'host',
         },
       ],

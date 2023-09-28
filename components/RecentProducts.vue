@@ -13,16 +13,14 @@ export default {
     const query = computed(() => `tag:active AND ${recentProducts.value.join(' OR ')}`)
 
     const { fetch } = useFetch(async ({ $productMapping, $handleApiErrors }) => {
-      if (!recentProducts.value)
-        return
+      if (!recentProducts.value) { return }
 
       await $cmwRepo.products.getAll({
         first: recentProducts.value?.length,
         query: query.value,
       })
         .then(async ({ products = { nodes: [] } }) => {
-          if (products.nodes.length)
-            productsRef.value = $productMapping.fromShopify(products.nodes)
+          if (products.nodes.length) { productsRef.value = $productMapping.fromShopify(products.nodes) }
         })
         .catch((err: Error) => {
           $handleApiErrors(`Catch getting products getAll from shopify on Recent Products on Vendor Products: ${query.value} ${err}`)

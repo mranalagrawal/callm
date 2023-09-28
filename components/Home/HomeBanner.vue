@@ -48,17 +48,13 @@ export default defineComponent({
     })
 
     const handleMobileClick = (link: RawLocation) => {
-      if (isTablet.value)
-        return
+      if (isTablet.value) { return }
 
       router.push(localeLocation(link) as RawLocation)
     }
 
     const showDesktopImage = computed(() => {
-      if (hasBeenSet.value)
-        return isTablet.value
-      else
-        return (!isBrowser.value && !OS.value) || (isBrowser.value && isTablet.value)
+      if (hasBeenSet.value) { return isTablet.value } else { return (!isBrowser.value && !OS.value) || (isBrowser.value && isTablet.value) }
     })
     onBeforeUnmount(() => slides.value = [])
 

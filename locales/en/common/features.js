@@ -2,6 +2,7 @@ export default {
   features: {
     ARTISANAL: 'artisanal',
     BEST_SELLER: 'best seller',
+    EXCLUSIVE: 'Exclusive',
     FAVOURITE: 'Callmewine\'s Favorites',
     FOR_EVERYDAY: 'for everyday',
     IN_PROMOTION: 'in promotion',

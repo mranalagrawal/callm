@@ -18,6 +18,7 @@ export default {
     ...common.features,
     ...common.feedback,
     ...common.filters,
+    ...common.forms,
     carousel: {
       recommendedProducts: 'Oft zusammen gekauft',
     },
@@ -25,6 +26,7 @@ export default {
   pages: {
     ...pages.notFound,
     ...pages.gone,
+    ...pages.billing,
   },
   searchResultLabel: 'Die Ergebnisse Ihrer Suche',
   loading: 'Daten werden abgerufen...',
@@ -121,6 +123,7 @@ export default {
       favorites: 'Favoriten',
       addresses: 'Lieferadresse',
       accessData: 'Zugangsdaten',
+      billing: 'Abrechnung',
       cards: 'Saved cards',
       logout: 'Logout',
       signIn: 'Anmeldung',
@@ -190,6 +193,7 @@ export default {
     defaultAddress: 'Standard',
     addresses: 'Lieferadresse',
     accessData: 'Zugangsdaten',
+    billing: 'Abrechnungsdaten',
     cards: 'Saved cards',
     logout: 'Logout',
     addAddress: 'Adresse hinzufügen',

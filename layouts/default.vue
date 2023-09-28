@@ -55,8 +55,7 @@ export default defineComponent({
 
       const isFromApp = req.headers['user-agent']?.includes('CMW-App')
 
-      if (isFromApp)
-        store.commit('headers/SET_FROM_APP', { fromApp: true })
+      if (isFromApp) { store.commit('headers/SET_FROM_APP', { fromApp: true }) }
     })
 
     const isFromApp = computed(() => store.state.headers.fromApp)

@@ -1,20 +1,21 @@
-<script>
+<script lang="ts">
+import type { PropType } from '@nuxtjs/composition-api'
+import { defineComponent } from '@nuxtjs/composition-api'
 import chevronDownIcon from 'assets/svg/chevron-down.svg'
+import type { TranslateResult } from 'vue-i18n'
 
-// noinspection JSUnusedGlobalSymbols
-export default {
+export default defineComponent({
 
   name: 'BaseSelect',
   inheritAttrs: false,
   props: {
-    id: String,
+    id: { type: String, required: true },
     value: {
       type: String,
       default: null,
-      validator: prop => ['string'].includes(typeof prop) || prop === null,
     },
     label: {
-      type: String,
+      type: String as PropType<TranslateResult>,
       default: '',
     },
     options: {
@@ -27,7 +28,7 @@ export default {
   setup() {
     return { chevronDownIcon }
   },
-}
+})
 </script>
 
 <template>
@@ -35,7 +36,7 @@ export default {
     v-slot="{ classes, errors, ariaInput }"
     :vid="id"
     :rules="rules"
-    :name="label"
+    :name="`${$attrs.name || label}`"
     slim
   >
     <div class="text-left" :class="[classes]">
@@ -47,7 +48,7 @@ export default {
             :value="value"
             :name="$attrs.name || id"
             class="
-          peer appearance-none px-4 text-gray-dark py-3 w-full bg-transparent border border-gray-light
+          peer appearance-none px-4 text-gray-dark py-3 w-full bg-transparent border border-gray-light max-h-200px
           placeholder-transparent rounded transition-colors
               focus:(outline-none border-gray-dark)
               autofill:!text-black autofill:border-secondary autofill:!shadow-input"
@@ -55,7 +56,7 @@ export default {
             @change="$emit('change', $event.target.value)"
           >
             <option value="" disabled selected v-text="label" />
-            <option v-for="option in options" :key="option.value" :value="option.value" v-text="option.label" />
+            <option v-for="option in options" :key="option.value" :disabled="option.disabled" :value="option.value" v-text="option.label" />
           </select>
           <div
             class="absolute transform right-2 top-1/2 -translate-y-1/2 pointer-events-none"

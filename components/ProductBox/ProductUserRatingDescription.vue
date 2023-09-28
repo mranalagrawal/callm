@@ -35,8 +35,7 @@ export default defineComponent({
     const onSubmit = async () => {
       const { isValid } = await formEl.value?.validateWithInfo()
 
-      if (!isValid)
-        return
+      if (!isValid) { return }
 
       hasFocus.value = false
       emit('submit-comment', {

@@ -19,16 +19,10 @@ export default {
     const handleInput = throttle(({ target }) => {
       const { id, value } = target
 
-      if (id === 'input-field-max')
-        maxValue.value = value > props.maxValueTotal ? props.maxValueTotal : value
-      else
-        minValue.value = value < props.minValueTotal ? props.minValueTotal : value
+      if (id === 'input-field-max') { maxValue.value = value > props.maxValueTotal ? props.maxValueTotal : value } else { minValue.value = value < props.minValueTotal ? props.minValueTotal : value }
 
       if ((maxValue.value - minValue.value) < rangeGap) {
-        if (id === 'input-field-max')
-          maxValue.value = value > props.maxValueTotal ? props.maxValueTotal : +minValue.value + rangeGap
-        else
-          minValue.value = +maxValue.value - rangeGap
+        if (id === 'input-field-max') { maxValue.value = value > props.maxValueTotal ? props.maxValueTotal : +minValue.value + rangeGap } else { minValue.value = +maxValue.value - rangeGap }
       }
 
       emit('update-values', { minValue: minValue.value, maxValue: maxValue.value })
@@ -38,10 +32,7 @@ export default {
       const { id } = target
 
       if ((maxValue.value - minValue.value) < rangeGap) {
-        if (id === 'range-max')
-          maxValue.value = +minValue.value + rangeGap
-        else
-          minValue.value = +maxValue.value - rangeGap
+        if (id === 'range-max') { maxValue.value = +minValue.value + rangeGap } else { minValue.value = +maxValue.value - rangeGap }
       }
 
       emit('update-values', { minValue: minValue.value, maxValue: maxValue.value })

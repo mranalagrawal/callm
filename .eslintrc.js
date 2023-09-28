@@ -22,7 +22,8 @@ module.exports = {
     'vue/no-v-for-template-key': 'error',
     'vue/no-v-for-template-key-on-child': 'off',
     'vue/no-v-text-v-html-on-component': 'warn',
-    'vue/no-deprecated-v-on-native-modifier': 'warn',
+    /* NOTE: Switching this off for now till we migrate to Nuxt 3 */
+    'vue/no-deprecated-v-on-native-modifier': 'off',
     'vue/script-setup-uses-vars': 'error',
     'vue/valid-template-root': 0,
     'vue/no-multiple-template-root': 0,
@@ -37,6 +38,7 @@ module.exports = {
         'Navbar',
         '_handle',
         'addresses',
+        'billing',
         'callback',
         'cart',
         'catalog',
@@ -44,6 +46,8 @@ module.exports = {
         'contact',
         'default',
         'error',
+        'error404',
+        'error410',
         'index',
         'login',
         'preview',
@@ -60,6 +64,9 @@ module.exports = {
     'vue/custom-event-name-casing': ['error', 'kebab-case'],
     /* ANTFU ESLINT RULES */
     'antfu/top-level-function': 'off',
+    'curly': ['error', 'multi-line', 'consistent'],
+    'max-statements-per-line': ['error', { max: 3 }],
+    'max-depth': ['error', 4],
     /* TYPESCRIPT ESLINT RULES */
     '@typescript-eslint/brace-style': ['error', '1tbs', { allowSingleLine: true }],
     '@typescript-eslint/no-unused-vars': ['error', { ignoreRestSiblings: true }],

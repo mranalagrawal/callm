@@ -73,8 +73,7 @@ export default {
                 text: i18n.t('common.feedback.OK.customerAddressUpdate'),
               })
 
-              if (isDefaultAddress.value || setAsDefault.value)
-                customerAddresses.setAddressAsDefault(customerAddress.id)
+              if (isDefaultAddress.value || setAsDefault.value) { customerAddresses.setAddressAsDefault(customerAddress.id) }
             } else {
               SweetAlertToast.fire({
                 icon: 'error',
@@ -142,6 +141,7 @@ export default {
           rules="required"
         />
         <BaseSelect
+          id="country-code-v2"
           v-model="editingAddress.countryCodeV2" :options="countriesOptions"
           :label="$t('country').toString()" @change="handleCountryChange"
         />
@@ -170,7 +170,11 @@ export default {
             :placeholder="$t('zip').toString()"
             rules="required"
           />
-          <BaseSelect v-model="editingAddress.provinceCode" :options="provincesOptions" :label="$t('province').toString()" @change="handleProvinceChange" />
+          <BaseSelect
+            id="province-code"
+            v-model="editingAddress.provinceCode"
+            :options="provincesOptions" :label="$t('province').toString()" @change="handleProvinceChange"
+          />
         </div>
         <InputField
           v-model="editingAddress.phone"
@@ -208,7 +212,7 @@ export default {
       </div>
       <div class="flex items-center justify-between mt-8">
         <div>
-          <CmwChip v-if="isDefaultAddress" :icon="bookmarkIcon" color="secondary" :label="$t('profile.defaultAddress').toUpperCase()" />
+          <CmwChip v-if="isDefaultAddress" :icon="bookmarkIcon" color="secondary-400" :label="$t('profile.defaultAddress').toUpperCase()" />
           <!-- Note: v-model is not working as expected, we need to handle change here FTM -->
           <CmwCheckbox v-else id="set-as-default" v-model="setAsDefault" @change="setAsDefault = !setAsDefault">
             <template #label>

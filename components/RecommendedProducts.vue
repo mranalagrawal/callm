@@ -11,16 +11,14 @@ export default {
     const { id: idRef } = toRefs(props)
 
     const { fetch } = useFetch(async ({ $productMapping, $handleApiErrors }) => {
-      if (!idRef.value)
-        return
+      if (!idRef.value) { return }
 
       await $graphql.default.request(getProductRecommendations, {
         lang: i18n.locale.toUpperCase(),
         productId: idRef.value,
       })
         .then(async ({ productRecommendations = [] }) => {
-          if (productRecommendations.length)
-            productsRef.value = $productMapping.fromShopify(productRecommendations)
+          if (productRecommendations.length) { productsRef.value = $productMapping.fromShopify(productRecommendations) }
         })
         .catch((err: Error) => {
           $handleApiErrors(`Catch getProductRecommendations from shopify: ${err}`)

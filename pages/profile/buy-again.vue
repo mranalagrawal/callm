@@ -62,8 +62,7 @@ export default defineComponent({
 
     const customerProducts = computed(() => {
       // Note: there's an annoying warning but the page renders perfectly, https://github.com/nuxt-community/composition-api/issues/19
-      if (!orders.value)
-        return []
+      if (!orders.value) { return [] }
 
       const uniqueProductIds = new Set()
       const mappedProducts = []

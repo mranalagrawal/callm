@@ -5,8 +5,7 @@ export const useRecentProductsStore = defineStore('recentProductsStore', () => {
   const recentProducts = ref([])
   const { $cookies } = useContext()
 
-  if ($cookies.get('recentProducts'))
-    recentProducts.value = $cookies.get('recentProducts')
+  if ($cookies.get('recentProducts')) { recentProducts.value = $cookies.get('recentProducts') }
 
   watch(recentProducts, (val) => {
     $cookies.set('recentProducts', val)

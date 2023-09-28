@@ -23,4 +23,5 @@ export interface IOptions {
   label: TranslateResult
   value: string
   icon?: string
+  disabled?: boolean
 }

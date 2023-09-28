@@ -107,7 +107,7 @@ export default {
               class="relative flex justify-between items-center w-full py-4 px-2"
             >
               <span
-                class="text-sm font-light tracking-wide"
+                class="text-sm cmw-font-light tracking-wide"
                 :class="third_level_style ? 'text-primary-400' : 'text-body' "
               >{{ third_level_name }}</span>
               <span class="absolute w-[calc(100%_-_1rem)] left-2 bottom-0 h-px bg-gray-light" />

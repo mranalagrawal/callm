@@ -7,8 +7,7 @@ import { useCustomer } from '~/store/customer'
 export default defineComponent({
   components: { Alert },
   middleware({ $cmwStore, redirect, localeLocation }) {
-    if (!$cmwStore.isB2b)
-      return redirect(localeLocation('/login') as unknown as string)
+    if (!$cmwStore.isB2b) { return redirect(localeLocation('/login') as unknown as string) }
   },
   setup() {
     const { i18n } = useContext()

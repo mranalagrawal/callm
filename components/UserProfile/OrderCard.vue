@@ -79,8 +79,7 @@ export default defineComponent({
 
     const handleReorderProducts = async () => {
       // If there's no cart create one
-      if (!shopifyCart.value?.id)
-        await createShopifyCart()
+      if (!shopifyCart.value?.id) { await createShopifyCart() }
 
       // Check every Item in orderLineItems,
       for (const orderLine of orderLineItems.value) {
@@ -145,10 +144,7 @@ export default defineComponent({
     canBuyAgain() {
       return this.order.lineItems && this.order.lineItems.nodes
         .map((el) => {
-          if (el.variant)
-            return el.variant.product.availableForSale
-          else
-            return false
+          if (el.variant) { return el.variant.product.availableForSale } else { return false }
         })
         .every(el => el === true)
     },
@@ -195,7 +191,7 @@ export default defineComponent({
             @click="handleClick(order.orderNumber)"
           >
             <strong
-              class="font-sans font-bold text-body tracking-normal"
+              class="font-sans cmw-font-bold text-body tracking-normal"
               v-text="order.name"
             />
             <span
@@ -252,7 +248,7 @@ export default defineComponent({
             class="overline-2 uppercase text-secondary-400 mb-4"
           >
             <strong
-              class="font-sans font-bold text-body tracking-normal"
+              class="font-sans cmw-font-bold text-body tracking-normal"
               v-text="order.name"
             />
           </i18n>
@@ -406,11 +402,11 @@ export default defineComponent({
             <div class="border-t border-t-secondary-400 w-full mt-4" />
             <div class="border-t border-t-secondary-400 w-full mt-4" />
             <div
-              class="text-xl font-bold my-4 text-secondary-400"
+              class="text-xl cmw-font-bold my-4 text-secondary-400"
               v-text="$t('profile.orders.card.orderTotal')"
             />
             <div
-              class="text-xl font-bold my-4 place-self-end text-secondary-400"
+              class="text-xl cmw-font-bold my-4 place-self-end text-secondary-400"
               v-text="$n(Number(order.totalPrice.amount), 'currency', getLocaleFromCurrencyCode(order.totalPrice.currencyCode))"
             />
           </div>

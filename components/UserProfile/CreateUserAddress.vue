@@ -68,8 +68,7 @@ export default {
                 text: i18n.t('common.feedback.OK.customerAddressCreate'),
               })
 
-              if (setAsDefault.value)
-                customerAddresses.setAddressAsDefault(customerAddress.id)
+              if (setAsDefault.value) { customerAddresses.setAddressAsDefault(customerAddress.id) }
             } else {
               SweetAlertToast.fire({
                 icon: 'error',
@@ -125,6 +124,7 @@ export default {
           rules="required"
         />
         <BaseSelect
+          id="country"
           v-model="form.country" :options="countriesOptions"
           :label="$t('country').toString()" @change="handleCountryChange"
         />
@@ -153,7 +153,10 @@ export default {
             :placeholder="$t('zip').toString()"
             rules="required"
           />
-          <BaseSelect v-model="form.province" :options="provincesOptions" :label="$t('province').toString()" @change="handleProvinceChange" />
+          <BaseSelect
+            id="province"
+            v-model="form.province" :options="provincesOptions" :label="$t('province').toString()" @change="handleProvinceChange"
+          />
         </div>
         <InputField
           v-model="form.phone"

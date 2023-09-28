@@ -83,12 +83,12 @@ export default defineComponent({
           @mouseenter="onTab(firstLevel.name)"
         >
           <template v-if="firstLevel?.link === 'blog'">
-            <a href="/blog" class="w-max text-xs w-max desktop-wide:text-sm uppercase text-body hover:(text-primary font-bold)">{{ firstLevel.link }}</a>
+            <a href="/blog" class="w-max text-xs w-max desktop-wide:text-sm uppercase text-body hover:(text-primary cmw-font-bold)">{{ firstLevel.link }}</a>
           </template>
           <template v-else>
             <component
               :is="firstLevel.link ? 'NuxtLink' : 'span'"
-              class="w-max text-xs w-max desktop-wide:text-sm uppercase hover:(text-primary font-bold)"
+              class="w-max text-xs w-max desktop-wide:text-sm uppercase hover:(text-primary cmw-font-bold)"
               :class="firstLevel.isPromotionTab ? 'text-primary-400' : 'text-body'"
               :to="firstLevel.link ? localePath(`/${firstLevel.link}`) : undefined"
             >
@@ -116,7 +116,7 @@ export default defineComponent({
         >
           <div v-for="(secondLevel, i) in items.items" :key="generateKey(`${secondLevel.name}-as-card-${i}`)">
             <div>
-              <p class="overline-2 uppercase text-secondary-700 font-semibold pt-8" v-text="secondLevel.name" />
+              <p class="overline-2 uppercase text-secondary-700 cmw-font-semibold pt-8" v-text="secondLevel.name" />
             </div>
             <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               <div v-for="(thirdLevel, j) in secondLevel.items" :key="j">
@@ -140,7 +140,7 @@ export default defineComponent({
                 { 'bg-gray-lightest': (i === 0) },
               ]"
             >
-              <p class="overline-2 uppercase text-secondary-700 font-semibold pt-4" v-text="secondLevel.name" />
+              <p class="overline-2 uppercase text-secondary-700 cmw-font-semibold pt-4" v-text="secondLevel.name" />
               <div class="flex flex-col h-full">
                 <ThirdLevel
                   v-for="(thirdLevel, idx) in secondLevel.items"

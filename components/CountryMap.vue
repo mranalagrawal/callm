@@ -34,8 +34,7 @@ export default defineComponent({
     const currentMap = computed(() => props.country && getMap(props.country.toLowerCase()))
 
     const paintRegion = () => {
-      if (!mapRef.value || !props.region)
-        return
+      if (!mapRef.value || !props.region) { return }
 
       const region = mapRef.value.querySelector(`[aria-valuetext='${generateKey(props.region)}']`)
 

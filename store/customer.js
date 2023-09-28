@@ -28,19 +28,16 @@ export const useCustomer = defineStore({
   state: () => ({
     customer: {
       acceptsMarketing: false,
+      billing: { value: '' },
       email: '',
       firstName: '',
       id: '',
       lastName: '',
-      newsletterFrequency: {
-        value: '',
-      },
+      newsletterFrequency: { value: '' },
       orders_count: '',
       phone: '',
       total_spent: '',
-      wishlist: {
-        value: '',
-      },
+      wishlist: { value: '' },
     },
     // FixMe: on Nuxt 3 or using GraphQl local storage properly we shouldn't need this,
     //  we need to reduce the extra objects and relay on the state,
@@ -169,6 +166,7 @@ export const useCustomer = defineStore({
 
             this.$patch({
               customer,
+              billing: (customer.billing && customer.billing.value) ? JSON.parse(customer.billing.value) : [],
               wishlistArr: (customer.wishlist && customer.wishlist.value) ? setCustomerWishlist(customer.wishlist.value) : [],
               approved,
             })
@@ -304,8 +302,7 @@ export const useCustomer = defineStore({
         return
       }
 
-      if (!this.customerId || !args.id)
-        throw new Error('missing arguments')
+      if (!this.customerId || !args.id) { throw new Error('missing arguments') }
 
       if (args.isOnFavourite) {
         SweetAlertConfirm.fire({

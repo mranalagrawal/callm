@@ -34,8 +34,7 @@ export default {
 
     const customerProducts = computed(() => {
       // Note: there's an annoying warning but the page renders perfectly, https://github.com/nuxt-community/composition-api/issues/19
-      if (!wishlistProducts.value || !wishlistProducts.value.length)
-        return []
+      if (!wishlistProducts.value || !wishlistProducts.value.length) { return [] }
 
       return $productMapping.fromShopify(wishlistProducts.value)
     })

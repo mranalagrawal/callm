@@ -41,7 +41,7 @@ export default defineComponent({
     const mappedProducts = computed<IProductMapped[]>(() => {
       let mappedProducts: IProductMapped[] = []
 
-      if (props.results.length) {
+      if (props.results?.length) {
         mappedProducts = $productMapping.fromElastic(props.results)
         mappedProducts.sort((a, b) => Number(b.availableForSale) - Number(a.availableForSale))
       }
@@ -84,7 +84,7 @@ export default defineComponent({
 
 <template>
   <div class="mt-2">
-    <div v-if="mappedProducts.length > 0" class="">
+    <div v-if="mappedProducts?.length > 0" class="">
       <div class="flex gap-2 items-center justify-between mb-8">
         <div>
           <strong>{{ total }}</strong> <span>{{ $t('search.results') }}</span>
@@ -190,7 +190,7 @@ export default defineComponent({
     </div>
     <div v-else>
       <div v-if="!loading">
-        <p class="text-lg font-light mt-5">
+        <p class="text-lg cmw-font-light mt-5">
           {{ $t('search.noResultsAlert') }}
         </p>
         <div v-html="$t('search.noResultsMessage')" />

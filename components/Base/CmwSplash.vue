@@ -12,8 +12,7 @@ export default defineComponent({
 
     const showBody = ref(false)
     const closeModal = () => {
-      if (typeof splash.onBeforeCloseModal === 'function' && splash.onBeforeCloseModal !== (() => {}))
-        splash.onBeforeCloseModal()
+      if (typeof splash.onBeforeCloseModal === 'function' && splash.onBeforeCloseModal !== (() => {})) { splash.onBeforeCloseModal() }
 
       showBody.value = false
     }
@@ -38,8 +37,7 @@ export default defineComponent({
     }
 
     watchEffect(() => {
-      if (process.browser && document.body)
-        document.body.classList.toggle('lock-scroll', !!currentSplash.value)
+      if (process.browser && document.body) { document.body.classList.toggle('lock-scroll', !!currentSplash.value) }
     })
 
     return {

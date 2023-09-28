@@ -58,8 +58,7 @@ export default defineComponent({
     ]
 
     const activeSelections = computed<string[] | undefined>(() => {
-      if (!props.inputParameters)
-        return
+      if (!props.inputParameters) { return }
 
       return Object.keys(props.inputParameters).filter(el =>
         allSelections.includes(el),
@@ -67,8 +66,7 @@ export default defineComponent({
     })
 
     const mappedViews = computed<IViews[] | []>(() => {
-      if (props.view && !Object.keys(props.view).length)
-        return []
+      if (props.view && !Object.keys(props.view).length) { return [] }
 
       const viewValues = Object.values(props.view as Record<string, any>)
 

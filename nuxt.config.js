@@ -53,8 +53,7 @@ async function getPageProducts(lang, cursor = null) {
 
 async function getMoreProducts(lang, arr, endCursor) {
   const { data } = await getPageProducts(lang, endCursor)
-  if (!data?.products.nodes)
-    return arr
+  if (!data?.products.nodes) { return arr }
   arr = [...arr,
     ...data.products?.nodes.map(product => ({
       url: `/${product.handle}-${product.details?.value ? JSON.parse(product.details.value).key : 'OHBOY'}.htm`,
@@ -67,17 +66,14 @@ async function getMoreProducts(lang, arr, endCursor) {
       ],
     }))]
 
-  if (data.products.pageInfo && data.products.pageInfo.hasNextPage)
-    return await getMoreProducts(lang, arr, data.products.pageInfo.endCursor)
-  else return arr
+  if (data.products.pageInfo && data.products.pageInfo.hasNextPage) { return await getMoreProducts(lang, arr, data.products.pageInfo.endCursor) } else { return arr }
 }
 
 async function getSitemapProducts(lang) {
   let arr = []
   const { data } = await getPageProducts(lang)
 
-  if (!data?.products?.nodes)
-    return
+  if (!data?.products?.nodes) { return }
 
   if (data.products.nodes) {
     arr = data.products?.nodes.map(product => ({
@@ -108,8 +104,7 @@ async function getBrands(query) {
 
 async function getMoreBrands(arr, query) {
   const { data, meta } = await getBrands(query)
-  if (!data)
-    return arr
+  if (!data) { return arr }
   arr = [...arr,
     ...data.map((brand) => {
       const url = new URL(brand.url)
@@ -120,17 +115,14 @@ async function getMoreBrands(arr, query) {
       })
     })]
 
-  if (meta.next_cursor)
-    return await getMoreBrands(arr, `paginate=300&cursor=${meta.next_cursor}`)
-  else return arr
+  if (meta.next_cursor) { return await getMoreBrands(arr, `paginate=300&cursor=${meta.next_cursor}`) } else { return arr }
 }
 
 async function getSitemapBrands() {
   let arr = []
   const { data, meta } = await getBrands('paginate=300')
 
-  if (!data)
-    return
+  if (!data) { return }
 
   arr = data.map((brand) => {
     const url = new URL(brand.url)
@@ -157,21 +149,21 @@ function requestMiddleware(request: RequestInit) {
 function storeLocales(store) {
   const obj = {
     CMW: [
-      { code: 'en', iso: 'en-GB', file: 'en.js', dir: 'ltr' },
-      { code: 'it', iso: 'it-IT', file: 'it.js', dir: 'ltr' },
+      { 'code': 'en', 'iso': 'en-GB', 'file': 'en.js', 'dir': 'ltr', 'iso-3166-1-alpha-3': 'gbr' },
+      { 'code': 'it', 'iso': 'it-IT', 'file': 'it.js', 'dir': 'ltr', 'iso-3166-1-alpha-3': 'ita' },
     ],
     B2B: [
-      { code: 'it', iso: 'it-IT', file: 'it.js', dir: 'ltr' },
+      { 'code': 'it', 'iso': 'it-IT', 'file': 'it.js', 'dir': 'ltr', 'iso-3166-1-alpha-3': 'ita' },
     ],
     CMW_UK: [
-      { code: 'en', iso: 'en-GB', file: 'en.js', dir: 'ltr' },
+      { 'code': 'en', 'iso': 'en-GB', 'file': 'en.js', 'dir': 'ltr', 'iso-3166-1-alpha-3': 'gbr' },
       // { code: 'it', iso: 'it-IT', file: 'it.js', dir: 'ltr' }, // Todo: Remove this line
     ],
     CMW_FR: [
-      { code: 'fr', iso: 'fr-FR', file: 'fr.js', dir: 'ltr' },
+      { 'code': 'fr', 'iso': 'fr-FR', 'file': 'fr.js', 'dir': 'ltr', 'iso-3166-1-alpha-3': 'fra' },
     ],
     CMW_DE: [
-      { code: 'de', iso: 'de-DE', file: 'de.js', dir: 'ltr' },
+      { 'code': 'de', 'iso': 'de-DE', 'file': 'de.js', 'dir': 'ltr', 'iso-3166-1-alpha-3': 'deu' },
     ],
   }
 
@@ -604,7 +596,9 @@ export default {
     fontsDir: process.env.NODE_ENV === 'production' ? 'fonts' : undefined,
     fontsPath: process.env.NODE_ENV === 'production' ? '~assets/fonts' : undefined,
     families: {
-      'Open Sans': [300, 400, 500, 600, 700],
+      'Open Sans': {
+        wght: [300, 400, 600, 700],
+      },
     },
   },
 
@@ -697,8 +691,7 @@ export default {
       Disallow: disallowPaths,
     }
 
-    if (isProd)
-      robotsConfig.Sitemap = req => `https://${req.headers.host}/sitemap.xml`
+    if (isProd) { robotsConfig.Sitemap = req => `https://${req.headers.host}/sitemap.xml` }
 
     return robotsConfig
   },

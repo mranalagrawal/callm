@@ -1,6 +1,6 @@
 {
   "name": "callmewine-frontend",
-  "version": "1.17.0",
+  "version": "1.18.0",
   "private": true,
   "engines": {
     "node": ">=16.0.0 <17.0.0"
@@ -13,6 +13,7 @@
     "dev:CMW_UK": "nuxt --dotenv .env.stage.cmw-uk",
     "dev:CMW_DE": "nuxt --dotenv .env.stage.cmw-de",
     "dev:CMW_FR": "nuxt --dotenv .env.stage.cmw-fr",
+    "dev:prod:CMW": "nuxt --dotenv .env.prod.cmw",
     "dev:prod:CMW_UK": "nuxt --dotenv .env.prod.cmw-uk",
     "build:prod:CMW": "nuxt build --dotenv .env.prod.cmw",
     "build:prod:B2B": "nuxt build --dotenv .env.prod.b2b",

@@ -160,14 +160,38 @@ export default defineConfig({
   },
   shortcuts: {
     // Note: This compiles classes, instead, Alias uses single utilities
+    'cmw-font-light': {
+      '@supports (font-variation-settings: "wght" 469)': {
+        fontVariationSettings: '"wght" 300',
+      },
+      '@supports not (font-variation-settings: "wght" 469)': {
+        'font-weight': '300',
+      },
+    },
+    'cmw-font-semibold': {
+      '@supports (font-variation-settings: "wght" 469)': {
+        fontVariationSettings: '"wght" 600',
+      },
+      '@supports not (font-variation-settings: "wght" 469)': {
+        'font-weight': '600',
+      },
+    },
+    'cmw-font-bold': {
+      '@supports (font-variation-settings: "wght" 469)': {
+        fontVariationSettings: '"wght" 700',
+      },
+      '@supports not (font-variation-settings: "wght" 469)': {
+        'font-weight': '700',
+      },
+    },
     'nuxt-link-exact-active': 'no-underline',
     'center-the-unknown': 'absolute transform top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
     'body-1': 'font-normal text-sm text-black hover:text-black',
-    'overline-1': 'font-light cwm-tracking-wider tracking-wider text-xxs',
-    'overline-2': 'font-light cwm-tracking-widest tracking-widest text-xs',
+    'overline-1': 'cmw-font-light tracking-wider text-xxs',
+    'overline-2': 'cmw-font-light tracking-widest text-xs',
     'btn-base': 'font-secondary flex items-center justify-center w-full transition-colors rounded border-2',
     'btn-base-spacing': 'px-4 py-1 md:(px-8 py-[0.8rem])',
-    'btn-default': 'font-secondary border-transparent bg-primary-400 text-white font-bold uppercase',
+    'btn-default': 'font-secondary border-transparent bg-primary-400 text-white cmw-font-bold uppercase',
     'btn-text': 'border-transparent text-primary-400',
   },
   alias: {

@@ -22,8 +22,7 @@ export const useShopifyCart = defineStore({
 
         let cartLines = []
 
-        if (!state.shopifyCart?.lines?.edges?.length)
-          return cartLines
+        if (!state.shopifyCart?.lines?.edges?.length) { return cartLines }
 
         cartLines = state.shopifyCart.lines.edges?.map(edge => ({
           quantity: edge.node.quantity,
@@ -142,8 +141,7 @@ export const useShopifyCart = defineStore({
               },
             })
 
-            if (typeof window !== 'undefined' && window.google_tag_manager && window.google_tag_manager[this.$nuxt.app.$config.gtm.id])
-              window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.set('ecommerce', undefined)
+            if (typeof window !== 'undefined' && window.google_tag_manager && window.google_tag_manager[this.$nuxt.app.$config.gtm.id]) { window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.set('ecommerce', undefined) }
 
             this.$patch({ shopifyCart: cart })
             successCB()
@@ -179,8 +177,7 @@ export const useShopifyCart = defineStore({
               },
             })
 
-            if (typeof window !== 'undefined' && window.google_tag_manager && window.google_tag_manager[this.$nuxt.app.$config.gtm.id])
-              window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.set('ecommerce', undefined)
+            if (typeof window !== 'undefined' && window.google_tag_manager && window.google_tag_manager[this.$nuxt.app.$config.gtm.id]) { window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.set('ecommerce', undefined) }
 
             this.$patch({ shopifyCart: cart })
           } else {
@@ -251,8 +248,7 @@ export const useShopifyCart = defineStore({
         },
       })
 
-      if (typeof window !== 'undefined' && window.google_tag_manager && window.google_tag_manager[this.$nuxt.app.$config.gtm.id])
-        window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.set('ecommerce', undefined)
+      if (typeof window !== 'undefined' && window.google_tag_manager && window.google_tag_manager[this.$nuxt.app.$config.gtm.id]) { window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.set('ecommerce', undefined) }
 
       this.$patch({ shopifyCart: data.cartLinesUpdate.cart })
     },
@@ -283,8 +279,7 @@ export const useShopifyCart = defineStore({
               })
             })
 
-            if (typeof window !== 'undefined' && window.google_tag_manager && window.google_tag_manager[this.$nuxt.app.$config.gtm.id])
-              window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.set('ecommerce', undefined)
+            if (typeof window !== 'undefined' && window.google_tag_manager && window.google_tag_manager[this.$nuxt.app.$config.gtm.id]) { window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.set('ecommerce', undefined) }
           } else {
             SweetAlertToast.fire({
               icon: 'error',

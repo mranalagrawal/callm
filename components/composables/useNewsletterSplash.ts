@@ -19,8 +19,7 @@ export default function () {
     setTimeout(() => {
       const newsletterCookie = $cookies.get('newsletter')
 
-      if (newsletterCookie)
-        return
+      if (newsletterCookie) { return }
 
       if (customer.value.acceptsMarketing) {
         const oneYearLater = new Date()

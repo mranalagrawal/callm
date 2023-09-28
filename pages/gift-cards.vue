@@ -39,8 +39,7 @@ export default defineComponent({
 
     const isOnCart = computed(() => {
       const productIncart = shopifyCart.value?.lines?.edges.find(el => el.node.merchandise.id === giftCardVariantSelected.value.id)
-      if (productIncart)
-        return productIncart.node
+      if (productIncart) { return productIncart.node }
       return null
     })
 
@@ -48,8 +47,7 @@ export default defineComponent({
 
     const canAddMore = computed(() => ((amountMax.value - cartQuantity.value) > 0))
 
-    if (process.server && req?.headers && req?.url)
-      canonicalUrl.value = `https://${req.headers.host}${req.url}`
+    if (process.server && req?.headers && req?.url) { canonicalUrl.value = `https://${req.headers.host}${req.url}` }
 
     if (process.client && typeof window !== 'undefined') {
       const {
@@ -170,8 +168,7 @@ export default defineComponent({
         return
       }
 
-      if (!this.shopifyCart)
-        await this.createShopifyCart()
+      if (!this.shopifyCart) { await this.createShopifyCart() }
 
       await this.cartLinesAdd(this.giftCardVariantSelected)
 
@@ -186,8 +183,7 @@ export default defineComponent({
     },
 
     async removeFromUserCart() {
-      if (this.cartQuantity === 0)
-        return
+      if (this.cartQuantity === 0) { return }
 
       await this.cartLinesUpdate(this.giftCardVariantSelected, this.cartQuantity - 1)
     },
@@ -247,7 +243,7 @@ export default defineComponent({
                   >
                   <label
                     :for="variant.id"
-                    class="btn-base btn-base-spacing text-sm cursor-pointer border-primary-400 text-primary-400 font-bold uppercase
+                    class="btn-base btn-base-spacing text-sm cursor-pointer border-primary-400 text-primary-400 cmw-font-bold uppercase
                      hover:(bg-primary-50)"
                     :class="{ 'bg-primary-400': variant.id === giftCardVariantSelected.id }"
                   >
@@ -291,10 +287,10 @@ export default defineComponent({
                   <span class="text-sm md:text-base">{{ slotProps.currency }}</span>
                 </template>
                 <template #integer="slotProps">
-                  <span class="h1 font-bold !leading-none">{{ slotProps.integer }}</span>
+                  <span class="h1 cmw-font-bold !leading-none">{{ slotProps.integer }}</span>
                 </template>
                 <template #group="slotProps">
-                  <span class="h1 font-bold !leading-none">{{ slotProps.group }}</span>
+                  <span class="h1 cmw-font-bold !leading-none">{{ slotProps.group }}</span>
                 </template>
                 <template #fraction="slotProps">
                   <span class="text-sm md:text-base">{{ slotProps.fraction }}</span>

@@ -52,7 +52,7 @@ export default defineComponent({
               height="80"
             >
           </div>
-          <div class="font-bold text-secondary-700" v-text="title" />
+          <div class="cmw-font-bold text-secondary-700" v-text="title" />
           <p class="c-wrapper__desc" v-text="description" />
         </div>
       </div>

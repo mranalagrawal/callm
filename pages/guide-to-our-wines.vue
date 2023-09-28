@@ -7,8 +7,7 @@ import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({
   middleware({ $cmwStore, localeRoute, redirect }) {
-    if (!$cmwStore.isIt)
-      return redirect(localeRoute('/') as unknown as string)
+    if (!$cmwStore.isIt) { return redirect(localeRoute('/') as unknown as string) }
   },
   setup() {
     const { $cmwGtmUtils } = useContext()

@@ -38,12 +38,13 @@ export default defineComponent({
 
     const mainFilters = computed(() => {
       let finalFilters = []
-      if (!hasMacrosSelected.value && !hasCategorySelected.value)
+      if (!hasMacrosSelected.value && !hasCategorySelected.value) {
         finalFilters = aggMacros.value
-      else if (hasMacrosSelected.value && !hasCategorySelected.value)
+      } else if (hasMacrosSelected.value && !hasCategorySelected.value) {
         finalFilters = aggCategories.value
-      else
-        finalFilters = aggCategories.value.filter((item: any) => `${item.key}` !== `${props.inputParameters.categories}`) // return 'this.aggCategories.filter(item => `${item.key}` !== `${this.inputParameters.categories}`)'
+      } else {
+        finalFilters = aggCategories.value.filter((item: any) => `${item.key}` !== `${props.inputParameters.categories}`)
+      }
 
       return finalFilters.slice(0, 15)
     })

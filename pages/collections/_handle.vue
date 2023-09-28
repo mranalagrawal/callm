@@ -99,14 +99,10 @@ export default defineComponent({
       showMobileFilters.value = false
       const query: IQuery = { ...inputParameters.value, ...route.value.query }
 
-      if (`${query[id]}` === 'true')
-        delete query[id]
-      else
-        query[id] = 'true'
+      if (`${query[id]}` === 'true') { delete query[id] } else { query[id] = 'true' }
 
       // if (id !== this.active)
-      if (id !== route.value.query[id])
-        query.page = '1'
+      if (id !== route.value.query[id]) { query.page = '1' }
 
       delete query.selection
 
@@ -122,10 +118,7 @@ export default defineComponent({
       const { id, keyword } = JSON.parse(val)
       const query: IQuery = { ...inputParameters.value, ...route.value.query }
 
-      if (`${query[keyword]}` === id.toString())
-        delete query[keyword]
-      else
-        query[keyword] = id.toString()
+      if (`${query[keyword]}` === id.toString()) { delete query[keyword] } else { query[keyword] = id.toString() }
 
       delete query.selection
 
@@ -185,11 +178,9 @@ export default defineComponent({
       // this.maxPrice = this.maxPriceTotal
       const query = Object.assign({}, inputParameters.value)
 
-      if ('selection' in query)
-        Reflect.deleteProperty(query, 'selection')
+      if ('selection' in query) { Reflect.deleteProperty(query, 'selection') }
 
-      if (selection in query)
-        Reflect.deleteProperty(query, selection)
+      if (selection in query) { Reflect.deleteProperty(query, selection) }
 
       router.push(localeLocation({
         path: `/collections/${route.value.params.handle}`,
@@ -204,8 +195,7 @@ export default defineComponent({
     const view = computed<IView>(() => {
       const views: IView = {}
 
-      if (!aggregationsRef.value || !Object.keys(aggregationsRef.value).length)
-        return {}
+      if (!aggregationsRef.value || !Object.keys(aggregationsRef.value).length) { return {} }
 
       belong_filters.forEach((el) => {
         let buckets: { key: string[]; key_as_string: string; doc_count: any }[]
@@ -269,8 +259,7 @@ export default defineComponent({
           results.value = hits.hits
           total.value = hits.total.value
 
-          if (Object.keys(aggregations).length)
-            aggregationsRef.value = aggregations
+          if (Object.keys(aggregations).length) { aggregationsRef.value = aggregations }
 
           const priceFrom = inputParameters.value.price_from
           const priceTo = inputParameters.value.price_to
