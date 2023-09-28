@@ -142,7 +142,10 @@ export default defineComponent({
       }products/search?stores=${$cmwStore.settings.id}&locale=${i18n.locale
       }&`
 
+      console.log('pre', $elastic.getBaseURL())
       const searchResult = await $elastic.$get(`${elastic_url}${queryToString}${sel}`)
+      console.log('after', $elastic.getBaseURL())
+
       const seo = await $elastic.$get(`${$config.ELASTIC_URL}product-list/seo?stores=${$cmwStore.settings.id}&locale=${i18n.locale}&${queryToString}${sel}`)
 
       if (seo) {
