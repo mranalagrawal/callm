@@ -153,7 +153,6 @@ export default defineComponent({
         this.$sentry.captureException(new Error('Something went wrong on SEO API on listing page'))
       }
 
-      console.log('searchResult', searchResult)
       // const search = await searchResult.json()
       search.value = searchResult
 
@@ -619,28 +618,24 @@ export default defineComponent({
       />
     </ClientOnly>
 
-    <ClientOnly>
-      <div v-if="total > 0 && isDesktop">
-        <!-- Filter Components -->
-        <CategoriesFiltersComponents
-          v-if="Object.keys(aggregations).length"
-          :key="JSON.stringify(inputParameters) || 'categories-filters-components'" :aggregations="aggregations"
-          :input-parameters="inputParameters" @update-value-selections="handleUpdateValueSelections"
-          @update-value="handleUpdateValue" @handle-on-footer-click="handleOnFooterClick"
-        />
-        <CategoriesActiveSelections
-          :input-parameters="inputParameters" :view="view"
-          @remove-selection-from-query="removeSelectionFromQuery" @reset-filter="resetFilter"
-        />
-      </div>
-    </ClientOnly>
-    <div class="<md:hidden" v-html="seoData.pageDescription" />
-    <ClientOnly>
-      <ProductsResultsList
-        :results="results" :total="total" :loading="loading"
-        @update-sort-value="handleUpdateSortValue"
+    <div v-if="total > 0 && isDesktop">
+      <!-- Filter Components -->
+      <CategoriesFiltersComponents
+        v-if="Object.keys(aggregations).length"
+        :key="JSON.stringify(inputParameters) || 'categories-filters-components'" :aggregations="aggregations"
+        :input-parameters="inputParameters" @update-value-selections="handleUpdateValueSelections"
+        @update-value="handleUpdateValue" @handle-on-footer-click="handleOnFooterClick"
       />
-    </ClientOnly>
+      <CategoriesActiveSelections
+        :input-parameters="inputParameters" :view="view"
+        @remove-selection-from-query="removeSelectionFromQuery" @reset-filter="resetFilter"
+      />
+    </div>
+    <div class="<md:hidden" v-html="seoData.pageDescription" />
+    <ProductsResultsList
+      :results="results" :total="total" :loading="loading"
+      @update-sort-value="handleUpdateSortValue"
+    />
     <ClientOnly>
       <CategoriesPagination
         v-if="total > 0" :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters"
