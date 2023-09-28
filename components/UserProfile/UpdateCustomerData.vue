@@ -111,8 +111,8 @@ export default defineComponent({
         <InputField
           v-model="lastName"
           name="customer-edit-lastname"
-          :label="$t('firstName')"
-          :placeholder="$t('firstName')"
+          :label="$t('lastName')"
+          :placeholder="$t('lastName')"
           rules="required"
         />
         <InputField
@@ -125,8 +125,16 @@ export default defineComponent({
         <div>
           <CmwCheckbox id="marketing" v-model="acceptsMarketing" :checked="acceptsMarketing" @change="handleAcceptsMarketingChange">
             <template #label>
-              Acconsento a ricevere newsletter e comunicazioni promozionali da parte di Callmewine, come previsto dalla Privacy Policy
-              {{ $t('newsletter.headline') }}
+              <i18n
+                class="block"
+                path="newsletter.splash.acceptMarketing"
+                tag="span"
+              >
+                <span
+                  class="font-sans text-primary-400 tracking-normal"
+                  v-text="$t('newsletter.splash.privacyPolicy')"
+                />
+              </i18n>
             </template>
           </CmwCheckbox>
         </div>
@@ -172,5 +180,16 @@ export default defineComponent({
         <Button :label="$t('common.cta.confirm')" type="submit" />
       </div>
     </form>
+    <div>
+      <i18n
+        class="block text-xs"
+        path="newsletter.splash.readMore"
+        tag="span"
+      >
+        <NuxtLink to="/privacy" class="text-xs text-primary hover:(text-primary)">
+          {{ $t('newsletter.splash.privacyPolicy') }}
+        </NuxtLink>
+      </i18n>
+    </div>
   </ValidationObserver>
 </template>

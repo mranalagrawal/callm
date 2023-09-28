@@ -38,7 +38,7 @@ export default {
       'contact-user-email': 'Email',
       'customer-edit-email': 'E-mail',
       'customer-edit-firstname': 'Prénom',
-      'customer-edit-lastname': 'Nom',
+      'customer-edit-lastname': 'Nom de famille',
       'customer-edit-password': 'Mot de passe',
       'customer-edit-phone': 'Téléphone',
       'message': 'Message',

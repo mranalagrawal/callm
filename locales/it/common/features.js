@@ -2,7 +2,7 @@ export default {
   features: {
     ARTISANAL: 'Vini Artigianali',
     BEST_SELLER: 'massima vendita',
-    EXCLUSIVE: 'esclusivo',
+    EXCLUSIVE: 'Esclusivo',
     FAVOURITE: 'Preferiti di Callmewine',
     FOR_EVERYDAY: 'per tutti i giorni',
     IN_PROMOTION: 'Vini in offerta',
@@ -12,7 +12,7 @@ export default {
     TO_GIFT: 'Vini perfetti da regalare',
     UNUSUAL_VARIETY: 'Vini da varietà insolite',
     artisanal: 'Vini Artigianali',
-    exclusive: 'esclusivo',
+    exclusive: 'Esclusivo',
     favourite: 'Preferiti di Callmewine',
     foreveryday: 'Vini da tutti i giorni',
     inpromotion: 'Vini in offerta',

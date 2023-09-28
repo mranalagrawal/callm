@@ -54,7 +54,7 @@ export default {
   zip: 'Code postal',
   province: 'Province * ANTIBES FRANCE',
   firstName: 'Prénom',
-  lastName: 'Nom',
+  lastName: 'Nom de famille',
   businessName: 'Nom de l\'entreprise',
   vatNumber: 'numéro de TVA',
   businessType: 'Secteur d\'activité',

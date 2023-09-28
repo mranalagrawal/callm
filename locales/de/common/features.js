@@ -2,7 +2,7 @@ export default {
   features: {
     ARTISANAL: 'handwerklich',
     BEST_SELLER: 'Bestseller, Verkaufsschlager, Spitzenreiter',
-    EXCLUSIVE: 'exclusive',
+    EXCLUSIVE: 'Exclusive',
     FAVOURITE: 'Callmewines Favoriten',
     FOR_EVERYDAY: 'für jeden Tag',
     IN_PROMOTION: 'bei der Förderung',
@@ -12,7 +12,7 @@ export default {
     TO_GIFT: 'das perfekte Geschenk',
     UNUSUAL_VARIETY: 'ungewöhnlich (nicht von dieser Welt?)',
     artisanal: 'Handwerklich',
-    exclusive: 'exklusiv',
+    exclusive: 'Exklusiv',
     favourite: 'Callmewine-Favoriten',
     foreveryday: 'Für jeden Tag',
     inpromotion: 'Bei der Förderung',

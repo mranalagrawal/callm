@@ -104,7 +104,7 @@ export default defineComponent({
 }
 .partners-last {
   background-size: cover;
-  background-position: 0 60px, center, center;
+  background-position: 0 120px, center, center;
   background-repeat: no-repeat;
   border-radius: 0 0 10px 10px;
 }
