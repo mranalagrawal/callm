@@ -609,10 +609,12 @@ export default defineComponent({
       </template>
     </h1>
 
-    <CategoriesMainFilters
-      v-if="total > 0 && Object.keys(aggregations).length && Object.keys(inputParameters).length"
-      :aggregations="aggregations" :input-parameters="inputParameters" @item-clicked="handleUpdateValue"
-    />
+    <ClientOnly>
+      <CategoriesMainFilters
+        v-if="total > 0 && Object.keys(aggregations).length && Object.keys(inputParameters).length"
+        :aggregations="aggregations" :input-parameters="inputParameters" @item-clicked="handleUpdateValue"
+      />
+    </ClientOnly>
 
     <div v-if="total > 0 && isDesktop">
       <!-- Filter Components -->
@@ -628,12 +630,10 @@ export default defineComponent({
       />
     </div>
     <div class="<md:hidden" v-html="seoData.pageDescription" />
-    <ClientOnly>
-      <ProductsResultsList
-        :results="results" :total="total" :loading="loading"
-        @update-sort-value="handleUpdateSortValue"
-      />
-    </ClientOnly>
+    <ProductsResultsList
+      :results="results" :total="total" :loading="loading"
+      @update-sort-value="handleUpdateSortValue"
+    />
     <ClientOnly>
       <CategoriesPagination
         v-if="total > 0" :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters"
@@ -641,27 +641,25 @@ export default defineComponent({
       />
     </ClientOnly>
 
-    <ClientOnly>
-      <div>
-        <div
-          class="relative overflow-hidden pb-8"
-          :class="showPageFullDescription
-            ? 'h-full'
-            : 'h-[200px] after:(content-DEFAULT absolute w-full h-1/2 bottom-0 left-0 bg-gradient-to-b from-transparent to-white)'"
-          v-html="seoData?.pageFullDescription ? seoData.pageFullDescription : ''"
+    <div>
+      <div
+        class="relative overflow-hidden pb-8"
+        :class="showPageFullDescription
+          ? 'h-full'
+          : 'h-[200px] after:(content-DEFAULT absolute w-full h-1/2 bottom-0 left-0 bg-gradient-to-b from-transparent to-white)'"
+        v-html="seoData?.pageFullDescription ? seoData.pageFullDescription : ''"
+      />
+      <Button
+        v-if="!showPageFullDescription" class="justify-end pb-8" variant="text"
+        @click.native="showPageFullDescription = true"
+      >
+        <span v-if="seoData?.pageFullDescription" class="mr-2">{{ $t('common.cta.readMore') }}</span>
+        <VueSvgIcon
+          v-if="seoData?.pageFullDescription" width="18" height="18"
+          :data="require(`@/assets/svg/chevron-down.svg`)"
         />
-        <Button
-          v-if="!showPageFullDescription" class="justify-end pb-8" variant="text"
-          @click.native="showPageFullDescription = true"
-        >
-          <span v-if="seoData?.pageFullDescription" class="mr-2">{{ $t('common.cta.readMore') }}</span>
-          <VueSvgIcon
-            v-if="seoData?.pageFullDescription" width="18" height="18"
-            :data="require(`@/assets/svg/chevron-down.svg`)"
-          />
-        </Button>
-      </div>
-    </ClientOnly>
+      </Button>
+    </div>
     <Loader v-if="loading" />
 
     <div v-if="total > 0 && !isDesktop" class="sticky bottom-8 w-[min(100%,_14rem)] m-inline-auto">
