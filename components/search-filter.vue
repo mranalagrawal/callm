@@ -153,6 +153,7 @@ export default defineComponent({
         this.$sentry.captureException(new Error('Something went wrong on SEO API on listing page'))
       }
 
+      console.log('searchResult', searchResult)
       // const search = await searchResult.json()
       search.value = searchResult
 
