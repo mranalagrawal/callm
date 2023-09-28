@@ -634,7 +634,7 @@ export default defineComponent({
         />
       </div>
     </ClientOnly>
-    <ClientOnly><p class="<md:hidden" v-html="seoData.pageDescription" /></ClientOnly>
+    <div class="<md:hidden" v-html="seoData.pageDescription" />
     <ClientOnly>
       <ProductsResultsList
         :results="results" :total="total" :loading="loading"
