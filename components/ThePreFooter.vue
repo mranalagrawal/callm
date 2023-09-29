@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, inject, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api'
+import { defineComponent, inject, onMounted, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api'
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
 import { generateKey } from '~/utilities/strings'
 
@@ -10,6 +10,7 @@ export default defineComponent({
     const currentItem = ref('')
     const data = ref<Record<string, any> | null>(null)
     const preFooterMenu = ref({})
+    const jsIsDisabled = ref(true)
 
     const { fetch } = useFetch(async ({ $cmwRepo }) => {
       data.value = await $cmwRepo.prismic.getSinglePage('footer')
@@ -21,12 +22,16 @@ export default defineComponent({
     }
 
     watch(() => i18n.locale, () => fetch(), { deep: true })
+    onMounted(() => {
+      if (process.client) { jsIsDisabled.value = !window.navigator }
+    })
 
     return {
       chevronDownIcon,
       currentItem,
       handleTriggerClick,
       isDesktop,
+      jsIsDisabled,
       preFooterMenu,
     }
   },
@@ -69,7 +74,10 @@ export default defineComponent({
             />
           </button>
         </div>
-        <div class="transition transition-max-h" :class="currentItem === item.id || isDesktop ? 'max-h-screen' : 'max-h-1px overflow-hidden'">
+        <div
+          class="transition transition-max-h"
+          :class="currentItem === item.id || isDesktop || jsIsDisabled ? 'max-h-screen' : 'max-h-1px overflow-hidden'"
+        >
           <p
             v-for="link in item.items"
             :key="generateKey(`inner_${link.name}`)"
