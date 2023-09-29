@@ -11,7 +11,7 @@ export default defineComponent({
     },
     productDetails: {
       type: Object,
-      required: false,
+      required: true,
     },
   },
   setup() {
@@ -23,20 +23,33 @@ export default defineComponent({
 <template>
   <div class="mt-6">
     <div>
-      <h2 class="" v-text="$t('product.toEnjoyBetter')" />
+      <h2 class="mb-4" v-text="$t('product.toEnjoyBetter')" />
 
-      <h3 class="mb-4" v-text="$t('product.temperature')" />
-      <p>{{ productDetails.servingTemperature }}</p>
-
-      <h3 class="mb-4" v-text="$t('product.whenDrink')" />
-      <div class="mb-4">
-        <p v-text="productDetails.drinkNotesDrinkingTitle[$i18n.locale]" />
-        <p v-text="productDetails.drinkNotesServingDescription[$i18n.locale]" />
-        <p v-text="productDetails.drinkNotesDrinkingLongevity[$i18n.locale]" />
+      <div class="mb-6">
+        <div v-if="productDetails.servingTemperature" class="h3" v-text="$t('product.temperature')" />
+        <div>{{ productDetails.servingTemperature }}</div>
       </div>
 
-      <h3 class="mb-4" v-text=" productDetails.glassTitle[$i18n.locale]" />
-      <p v-html="productDetails.glassDescription[$i18n.locale]" />
+      <div v-if="productDetails.drinkNotesServingDescription[$i18n.locale]" class="mb-6">
+        <div class="h3" v-text="$t('product.whenOpen')" />
+        <div v-text="productDetails.drinkNotesServingDescription[$i18n.locale]" />
+      </div>
+
+      <div v-if="productDetails.drinkNotesDrinkingTitle[$i18n.locale]" class="mb-6">
+        <div class="h3" v-text="$t('product.whenDrink')" />
+        <div v-text="productDetails.drinkNotesDrinkingTitle[$i18n.locale]" />
+      </div>
+
+      <div v-if="productDetails.glassTitle[$i18n.locale] || productDetails.glassDescription[$i18n.locale]" class="mb-6">
+        <div class="h3" v-text="$t('product.glass')" />
+        <div class="h4" v-text=" productDetails.glassTitle[$i18n.locale]" />
+        <div v-html="productDetails.glassDescription[$i18n.locale]" />
+      </div>
+
+      <div v-if="productDetails.drinkNotesDrinkingLongevity[$i18n.locale]" class="mb-6">
+        <div class="h3" v-text="$t('product.longevity')" />
+        <div v-text="productDetails.drinkNotesDrinkingLongevity[$i18n.locale]" />
+      </div>
     </div>
   </div>
 </template>

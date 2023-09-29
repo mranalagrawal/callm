@@ -77,7 +77,7 @@ export default defineComponent({
           .replace('href', '')
           .replace('style', '')
       }
-      return 'No description available.'
+      return '' // empty like old.com
     })
 
     const generateMetaLink = (arr = []) => {

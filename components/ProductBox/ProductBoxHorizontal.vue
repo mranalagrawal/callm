@@ -205,7 +205,7 @@ hover:shadow-elevation"
           />
         </button>
       </ClientOnly>
-      <div class="absolute top-4 left-2 flex flex-col gap-y-1">
+      <div v-if="product.availableFeatures.length" class="absolute top-4 left-2 flex flex-col gap-y-1">
         <!-- Todo: create a global tooltip that change position base on mouse position -->
         <ProductBoxFeature v-for="feature in product.availableFeatures" :key="feature" :feature="feature" />
       </div>
@@ -245,17 +245,17 @@ hover:shadow-elevation"
       >
         <div
           class="cmw-font-bold"
-          v-text="$t('product.vines')"
+          v-text="$t('product.grapes')"
         />
         <div>{{ product.tbd.grapes }}</div>
         <div
           class="cmw-font-bold"
-          v-text="$t('product.region')"
+          v-text="$t('product.regionCountry')"
         />
         <div>{{ product.tbd.regionName }}</div>
         <div
           class="cmw-font-bold"
-          v-text="$t('product.format')"
+          v-text="$t('product.size')"
         />
         <div v-if="product.tbd.size.length">
           {{ product.tbd.size }}

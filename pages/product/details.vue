@@ -196,7 +196,7 @@ export default defineComponent({
         */
       }
 
-      return 'No description available.'
+      return ''// empty like old.com
     })
 
     const amountMax = computed(() => (product.value.details.amountMax[$config.SALECHANNEL]
@@ -429,7 +429,7 @@ export default defineComponent({
                 Inkl. MwSt. Und St.
               </div>
             </div>
-            <div class="absolute top-4 left-2">
+            <div v-if="product.availableFeatures" class="absolute top-4 left-2">
               <ProductBoxFeature
                 v-for="feature in product.availableFeatures"
                 :key="generateKey(`details-feature-${feature}`)" :feature="feature"
@@ -643,7 +643,7 @@ export default defineComponent({
                       @click.native="() => handleShowRequestModal(productDetails.feId)"
                     >
                       <VueSvgIcon :data="emailIcon" width="30" height="auto" />
-                      <span class="text-sm" v-text="$t('common.cta.notifyMe')" />
+                      <span class="text-sm" v-text="$t('product.notifyMeTitle')" />
                     </Button>
                   </div>
                 </div>
