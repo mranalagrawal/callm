@@ -126,7 +126,6 @@ export default defineComponent({
       if (articles.nodes[0]) {
         brand.value = articles.nodes[0]
         metaFields.value = articles.nodes[0].details && JSON.parse(articles.nodes[0].details.value) as IMetaFields
-        console.log('HERE', metaFields.value.subtitle)
 
         if (route.value.params.handle !== `${brand!.value.handle}-${metaFields.value.key}.htm`) { return redirect(301, localePath({ name: 'winery-handle', params: { handle: `${brand.value?.handle.trim()}-${metaFields.value?.key}.htm` } })) }
       }
