@@ -1,3 +1,4 @@
+import type { TranslateResult } from 'vue-i18n'
 import type { IMoneyV2 } from '~/types/common-objects'
 import type { TImage } from '~/types/types'
 
@@ -69,7 +70,7 @@ interface IProductImage {
 
 export interface IProductBreadcrumbs {
   handle: string
-  label: string
+  label: TranslateResult
   to: string
 }
 

@@ -2,17 +2,18 @@ type Mutation {
   cartLinesAdd(cartId: ID!, lines: [CartLineInput!]!): CartLinesAddPayload
   cartLinesRemove(cartId: ID!, lineIds: [ID!]!): CartLinesRemovePayload
   cartLinesUpdate(cartId: ID!, lines: [CartLineUpdateInput!]!): CartLinesUpdatePayload
+  cartNoteUpdate(cartId: ID!, note: String): CartNoteUpdatePayload
   customerAccessTokenCreate(input: CustomerAccessTokenCreateInput): CustomerAccessTokenCreatePayload
+  customerAccessTokenCreate(input: CustomerAccessTokenCreateInput): CustomerAccessTokenCreatePayload
+  customerAccessTokenCreateWithMultipass(multipassToken: String!): CustomerAccessTokenCreateWithMultipassPayload
+  customerAddressCreate(address: MailingAddressInput, customerAccessToken: String!): CustomerAddressCreatePayload
   customerAddressCreate(address: MailingAddressInput, customerAccessToken: String!): CustomerAddressCreatePayload
   customerAddressDelete(id: ID!, customerAccessToken: String!): CustomerAddressDeletePayload
+  customerAddressDelete(id: ID!, customerAccessToken: String!): CustomerAddressDeletePayload
+  customerAddressUpdate(address: MailingAddressInput, id: ID!, customerAccessToken: String!): CustomerAddressUpdatePayload
   customerAddressUpdate(address: MailingAddressInput, id: ID!, customerAccessToken: String!): CustomerAddressUpdatePayload
   customerCreate(input: CustomerCreateInput!): CustomerCreatePayload
   customerDefaultAddressUpdate(addressId: ID!, customerAccessToken: String!): CustomerDefaultAddressUpdatePayload
-  customerAddressUpdate(address: MailingAddressInput, id: ID!, customerAccessToken: String!): CustomerAddressUpdatePayload
-  customerAddressDelete(id: ID!, customerAccessToken: String!): CustomerAddressDeletePayload
-  customerAddressCreate(address: MailingAddressInput, customerAccessToken: String!): CustomerAddressCreatePayload
-  customerAccessTokenCreate(input: CustomerAccessTokenCreateInput): CustomerAccessTokenCreatePayload
-  customerAccessTokenCreateWithMultipass(multipassToken: String!): CustomerAccessTokenCreateWithMultipassPayload
   customerRecover(email: String!, customerAccessToken: String): CustomerRecoverPayload
   customerUpdate(customer: CustomerUpdateInput, customerAccessToken: String): CustomerUpdatePayload
 }

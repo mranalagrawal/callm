@@ -1,7 +1,8 @@
-<script>
+<script lang="ts">
 import { computed, defineComponent, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import CartLine from '../components/Cart/CartLine.vue'
+import type { IProductBreadcrumbs } from '~/types/product'
 import { useShopifyCart } from '~/store/shopifyCart'
 
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
@@ -15,10 +16,15 @@ export default defineComponent({
     const { $cookies, $config, $cmwGtmUtils, i18n } = useContext()
     const shipping = ref({})
     const shopifyCartStore = useShopifyCart()
-    const checkout = shopifyCartStore.checkout
+    const { checkout, cartNoteUpdate } = useShopifyCart()
     const { shopifyCart, cartTotal } = storeToRefs(shopifyCartStore)
     const customerStore = useCustomer()
     const { customer, customerId } = storeToRefs(customerStore)
+    const orderNote = ref(shopifyCart.value?.note)
+    const breadcrumb: IProductBreadcrumbs[] = [
+      { handle: '/', label: i18n.t('home'), to: '/' },
+      { handle: '/cart', label: i18n.t('cart'), to: '/cart' },
+    ]
 
     const { fetch } = useFetch(async ({ $cmwRepo }) => {
       shipping.value = await $cmwRepo.prismic.getSingle('shipping')
@@ -37,11 +43,23 @@ export default defineComponent({
       })
     }
 
+    const handleChange = () => {
+      // Call shopify mutation cartNoteUpdate to update the note
+      cartNoteUpdate(orderNote.value)
+
+      /* shopifyCartStore.$patch({
+        shopifyCart: {
+          ...shopifyCart.value,
+          note: orderNote.value,
+        },
+      }) */
+    }
+
     const computedCartTotal = computed(() => cartTotal.value($config.SALECHANNEL))
 
     onMounted(() => {
       const products = shopifyCart.value?.lines?.nodes?.map(
-        (node) => {
+        (node: { attributes: any[]; quantity: any }) => {
           const gtmProductData = node.attributes.find(v => v.key === 'gtmProductData')
           const productDataJson = gtmProductData?.value ?? null
           return productDataJson
@@ -69,16 +87,19 @@ export default defineComponent({
     })
 
     return {
+      breadcrumb,
       cartTotal,
+      checkout,
       computedCartTotal,
+      customer,
+      customerId,
       emptyCart,
       fetch,
       getLocaleFromCurrencyCode,
+      handleChange,
+      orderNote,
       shipping,
       shopifyCart,
-      checkout,
-      customer,
-      customerId,
     }
   },
   computed: {
@@ -97,10 +118,7 @@ export default defineComponent({
   <div class="font-sans">
     <div class="max-w-screen-xl mx-auto py-4 px-4 min-h-[600px]">
       <TheBreadcrumbs
-        :breadcrumbs="[
-          { handle: '/', label: $t('home'), to: '/' },
-          { handle: '/cart', label: $t('cart'), to: '/cart' },
-        ]"
+        :breadcrumbs="breadcrumb"
       />
 
       <ClientOnly>
@@ -116,6 +134,29 @@ export default defineComponent({
               </div>
               <div v-for="item in cart.lines.edges" :key="generateKey(`cart-${item.node.id}`)">
                 <CartLine :item="item.node" />
+              </div>
+              <div class="my-8">
+                <div class="h4">
+                  Aggiungi una nota (optional)
+                </div>
+                <div class="relative">
+                  <textarea
+                    id="order-note"
+                    v-model="orderNote"
+                    :placeholder="$t('profile.ratingMessage')"
+                    rows="3"
+                    class="
+              px-4 text-sm py-3 w-full bg-info/15 border border-info/15 placeholder-gray-dark
+              focus:(outline-none border-info)
+              autofill:(text-body border-info text-sm)
+"
+                    @blur="handleChange"
+                  />
+                  <label
+                    for="order-note"
+                    class="sr-only"
+                  >{{ $t('profile.ratingMessage') }}</label>
+                </div>
               </div>
               <div class="my-4">
                 <p class="text-sm mt-2">
