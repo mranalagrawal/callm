@@ -15,11 +15,11 @@ export default defineComponent({
   setup() {
     const { $cookies, $config, $cmwGtmUtils, i18n } = useContext()
     const shipping = ref({})
-    const shopifyCartStore = useShopifyCart()
     const { checkout, cartNoteUpdate } = useShopifyCart()
-    const { shopifyCart, cartTotal } = storeToRefs(shopifyCartStore)
+    const { shopifyCart, cartTotal } = storeToRefs(useShopifyCart())
     const customerStore = useCustomer()
     const { customer, customerId } = storeToRefs(customerStore)
+    // @ts-expect-error we need to define shopifyCart type
     const orderNote = ref(shopifyCart.value?.note)
     const breadcrumb: IProductBreadcrumbs[] = [
       { handle: '/', label: i18n.t('home'), to: '/' },
@@ -58,6 +58,7 @@ export default defineComponent({
     const computedCartTotal = computed(() => cartTotal.value($config.SALECHANNEL))
 
     onMounted(() => {
+      // @ts-expect-error we need to define shopifyCart type
       const products = shopifyCart.value?.lines?.nodes?.map(
         (node: { attributes: any[]; quantity: any }) => {
           const gtmProductData = node.attributes.find(v => v.key === 'gtmProductData')
