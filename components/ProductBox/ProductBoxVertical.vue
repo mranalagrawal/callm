@@ -195,7 +195,7 @@ export default defineComponent({
             />
           </button>
         </ClientOnly>
-        <div class="c-productBox__features absolute top-2 left-2 md:left-4">
+        <div v-if="product.availableFeatures.length" class="c-productBox__features absolute top-2 left-2 md:left-4">
           <div class="flex flex-col gap-y-1 w-max">
             <ProductBoxFeature v-for="feature in product.availableFeatures" :key="feature" :feature="feature" />
           </div>

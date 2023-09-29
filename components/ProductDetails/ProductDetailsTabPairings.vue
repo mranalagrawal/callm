@@ -21,7 +21,7 @@ export default defineComponent({
 <template>
   <div class="mt-6">
     <h3 class="mb-5">
-      {{ $t('product.pairings') }}
+      {{ $t('product.pairingsTitle') }}
     </h3>
 
     <div v-if="productDetailsFoodPairings.length" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

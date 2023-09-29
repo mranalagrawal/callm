@@ -39,31 +39,27 @@ export default defineComponent({
       <div class="grid gap-4 md:grid-cols-[8fr_4fr]">
         <table class="w-full">
           <tbody>
-            <tr>
-              <th scope="row" v-text="$t('product.mainWines')" />
-              <td />
-            </tr>
-            <tr>
+            <tr v-if="brandMetaFields.year">
               <th scope="row" v-text="$t('product.foundation')" />
               <td v-text="brandMetaFields.year" />
             </tr>
-            <tr>
+            <tr v-if="brandMetaFields.hectares">
               <th scope="row" v-text="$t('product.vineyardHectares')" />
               <td v-text="brandMetaFields.hectares" />
             </tr>
-            <tr>
+            <tr v-if="brandMetaFields.ownedGrapes">
               <th scope="row" v-text="$t('product.ownGrapes')" />
               <td v-text="brandMetaFields.ownedGrapes" />
             </tr>
-            <tr>
+            <tr v-if="brandMetaFields.annualProduction">
               <th scope="row" v-text="$t('product.annualProduction')" />
               <td v-text="brandMetaFields.annualProduction" />
             </tr>
-            <tr>
+            <tr v-if="brandMetaFields.oenologist">
               <th scope="row" v-text="$t('product.winemaker')" />
-              <td />
+              <td v-text="brandMetaFields.oenologist" />
             </tr>
-            <tr>
+            <tr v-if="brandMetaFields.address">
               <th scope="row" v-text="$t('product.address')" />
               <td>{{ brandMetaFields.address }}</td>
             </tr>
