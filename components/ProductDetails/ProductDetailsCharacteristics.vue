@@ -21,7 +21,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-gray-lightest rounded px-6 py-3 mx-auto">
+  <div class="prose bg-gray-lightest rounded px-6 py-3 mx-auto">
     <h2 class="mb-5" v-text="$t('product.features')" />
     <div>
       <ProductCharacteristic characteristic="denomination" />

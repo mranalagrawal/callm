@@ -646,7 +646,7 @@ export default defineComponent({
 
     <div>
       <div
-        class="relative overflow-hidden pb-8"
+        class="prose relative overflow-hidden pb-8"
         :class="showPageFullDescription
           ? 'h-full'
           : 'h-[200px] after:(content-DEFAULT absolute w-full h-1/2 bottom-0 left-0 bg-gradient-to-b from-transparent to-white)'"
