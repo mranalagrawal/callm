@@ -231,11 +231,11 @@ const SITEMAP = {
 }
 
 const TITLE = {
-  CMW: 'Callmewine',
-  B2B: 'Callmewine B2B',
-  CMW_UK: 'Callmewine UK',
-  CMW_FR: 'Callmewine FR',
-  CMW_DE: 'Callmewine DE',
+  CMW: 'Callmewine: Vendita Vino Online, Enoteca e Shop Online',
+  B2B: 'Callmewine: Vendita Vino Online, Enoteca e Shop Online',
+  CMW_UK: 'Italian Wine Shop - Callmewine',
+  CMW_FR: 'Achat Vin, Vente de Vins En Ligne - Callmewine',
+  CMW_DE: 'Online Önothek, Verkauf italienischer Weine – Callmewine',
 }
 
 export default {
