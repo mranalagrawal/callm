@@ -21,8 +21,6 @@ interface IQuery {
 export default defineComponent({
   components: { Loader },
   setup() {
-    // https://callmewine-api-staging.dojo.sh/api/products/search?stores=4&locale=de
-
     const { localeLocation, $cmwRepo, $cmwStore, $elastic, i18n } = useContext()
     const router = useRouter()
     const route = useRoute()
