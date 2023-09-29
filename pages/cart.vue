@@ -15,7 +15,8 @@ export default defineComponent({
   setup() {
     const { $cookies, $config, $cmwGtmUtils, i18n } = useContext()
     const shipping = ref({})
-    const { checkout, cartNoteUpdate } = useShopifyCart()
+    const shopifyCartStore = useShopifyCart()
+    const { checkout } = useShopifyCart()
     const { shopifyCart, cartTotal } = storeToRefs(useShopifyCart())
     const customerStore = useCustomer()
     const { customer, customerId } = storeToRefs(customerStore)
@@ -43,16 +44,13 @@ export default defineComponent({
       })
     }
 
-    const handleChange = () => {
-      // Call shopify mutation cartNoteUpdate to update the note
-      cartNoteUpdate(orderNote.value)
-
-      /* shopifyCartStore.$patch({
+    const handleKeyUp = () => {
+      shopifyCartStore.$patch({
         shopifyCart: {
-          ...shopifyCart.value,
+          ...shopifyCart.value as any,
           note: orderNote.value,
         },
-      }) */
+      })
     }
 
     const computedCartTotal = computed(() => cartTotal.value($config.SALECHANNEL))
@@ -96,8 +94,7 @@ export default defineComponent({
       customerId,
       emptyCart,
       fetch,
-      getLocaleFromCurrencyCode,
-      handleChange,
+      handleKeyUp,
       orderNote,
       shipping,
       shopifyCart,
@@ -111,6 +108,7 @@ export default defineComponent({
 
   methods: {
     generateKey,
+    getLocaleFromCurrencyCode,
   },
 })
 </script>
@@ -122,6 +120,7 @@ export default defineComponent({
         :breadcrumbs="breadcrumb"
       />
 
+      <pre>{{ shopifyCart.note }}</pre>
       <ClientOnly>
         <div v-if="cart && computedCartTotal > 0">
           <h1 class="h2 my-4" v-text="$t('cartDetails')" />
@@ -136,7 +135,7 @@ export default defineComponent({
               <div v-for="item in cart.lines.edges" :key="generateKey(`cart-${item.node.id}`)">
                 <CartLine :item="item.node" />
               </div>
-              <div class="my-8">
+              <div v-if="!$cmwStore.isUk" class="my-8">
                 <div class="h4">
                   Aggiungi una nota (optional)
                 </div>
@@ -151,7 +150,7 @@ export default defineComponent({
               focus:(outline-none border-info)
               autofill:(text-body border-info text-sm)
 "
-                    @blur="handleChange"
+                    @keyup="handleKeyUp"
                   />
                   <label
                     for="order-note"

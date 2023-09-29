@@ -40,12 +40,35 @@ export const useShopifyCart = defineStore({
   },
 
   actions: {
+    async cartNoteUpdate(note = '') {
+      const cartId = this.shopifyCart.id
+      if (!note) { return }
+
+      await this.$nuxt.$graphql.default
+        .request(cartNoteUpdate, { cartId, note })
+        .then(({ cartNoteUpdate: { cart, userErrors } }) => {
+          if (!userErrors.length) {
+            // Success
+            this.$patch({ ...this.shopifyCart, note: cart.note })
+          } else {
+            SweetAlertToast.fire({
+              icon: 'error',
+              text: userErrors[0].message,
+            })
+          }
+        })
+    },
+
     async checkout() {
       const { customer } = useCustomer()
       if (!customer.id) {
         // crea checkoutUrl
         window.location = this.shopifyCart.checkoutUrl
         return
+      }
+
+      if (this.shopifyCart.note) {
+        await this.cartNoteUpdate(this.shopifyCart.note)
       }
 
       try {
@@ -281,25 +304,6 @@ export const useShopifyCart = defineStore({
             })
 
             if (typeof window !== 'undefined' && window.google_tag_manager && window.google_tag_manager[this.$nuxt.app.$config.gtm.id]) { window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.set('ecommerce', undefined) }
-          } else {
-            SweetAlertToast.fire({
-              icon: 'error',
-              text: userErrors[0].message,
-            })
-          }
-        })
-    },
-
-    async cartNoteUpdate(note = '') {
-      const cartId = this.shopifyCart.id
-      if (!note || note === this.shopifyCart.note) { return }
-
-      await this.$nuxt.$graphql.default
-        .request(cartNoteUpdate, { cartId, note })
-        .then(({ cartNoteUpdate: { cart, userErrors } }) => {
-          if (!userErrors.length) {
-            // Success
-            this.$patch({ ...this.shopifyCart, note: cart.note })
           } else {
             SweetAlertToast.fire({
               icon: 'error',
