@@ -8,7 +8,19 @@ export default {
   props: {
     feature: {
       required: true,
-      validator: prop => ['favourite', 'isnew', 'isInPromotion', 'foreveryday', 'togift', 'unusualvariety', 'rarewine', 'artisanal', 'organic', 'topsale']
+      validator: prop => [
+        'artisanal',
+        'exclusive',
+        'favourite',
+        'foreveryday',
+        'isInPromotion',
+        'isnew',
+        'organic',
+        'rarewine',
+        'togift',
+        'topsale',
+        'unusualvariety',
+      ]
         .includes(prop),
     },
   },

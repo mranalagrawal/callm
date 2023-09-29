@@ -15,5 +15,10 @@ export default {
       checkout_invoice_company_vat: 'VAT Number',
       checkout_invoice_private_taxcode: 'Tax Code',
     },
+    cart: {
+      cart_order_note: 'Note',
+      cart_order_note_title: 'Add a note (optional)',
+      cart_order_note_placeholder: 'Enter your message',
+    },
   },
 }

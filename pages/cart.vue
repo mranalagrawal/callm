@@ -120,7 +120,6 @@ export default defineComponent({
         :breadcrumbs="breadcrumb"
       />
 
-      <pre>{{ shopifyCart.note }}</pre>
       <ClientOnly>
         <div v-if="cart && computedCartTotal > 0">
           <h1 class="h2 my-4" v-text="$t('cartDetails')" />
@@ -136,26 +135,33 @@ export default defineComponent({
                 <CartLine :item="item.node" />
               </div>
               <div v-if="!$cmwStore.isUk" class="my-8">
-                <div class="h4">
-                  Aggiungi una nota (optional)
-                </div>
+                <div class="h4" v-text="$t('common.forms.cart.cart_order_note_title')" />
                 <div class="relative">
                   <textarea
                     id="order-note"
                     v-model="orderNote"
-                    :placeholder="$t('profile.ratingMessage')"
-                    rows="3"
+                    :placeholder="$t('common.forms.cart.cart_order_note_placeholder')"
+                    rows="4"
                     class="
-              px-4 text-sm py-3 w-full bg-info/15 border border-info/15 placeholder-gray-dark
-              focus:(outline-none border-info)
-              autofill:(text-body border-info text-sm)
+              peer px-4 text-gray-dark py-3 w-full bg-transparent border border-gray-light
+              rounded transition-colors
+              hover:(border-gray)
+              focus:(outline-none border-gray-dark placeholder-gray-light)
+              autofill:(text-body border-info text-base)
+              disabled:(border-gray-light/70 cursor-not-allowed)
 "
+                    :class="orderNote ? 'placeholder-gray-light' : 'placeholder-transparent'"
                     @keyup="handleKeyUp"
                   />
                   <label
-                    for="order-note"
-                    class="sr-only"
-                  >{{ $t('profile.ratingMessage') }}</label>
+                    for="message"
+                    class="absolute m-0 left-4 transition-all select-none pointer-events-none truncate
+               peer-focus:(text-[0.775rem] px-2 top-[-0.4rem] bg-white w-auto)
+               peer-disabled:(text-gray-light/70) peer-focus:bg-white -bg-white"
+                    :class="[
+                      orderNote ? `text-[0.775rem] px-2 top-[-0.4rem] bg-white w-auto` : 'top-[0.75rem] w-full pr-8',
+                    ]"
+                  >{{ $t('common.forms.cart.cart_order_note') }}</label>
                 </div>
               </div>
               <div class="my-4">
