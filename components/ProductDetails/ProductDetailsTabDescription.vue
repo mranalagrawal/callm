@@ -19,11 +19,6 @@ export default defineComponent({
   setup(props) {
     const { i18n } = useContext()
 
-    // const characteristics = [
-    //   { title: 'Color', description: 'Giallo' },
-    //   { title: 'Color', description: 'Giallo' },
-    // ]
-
     const characteristicsInDescription = computed(() => {
       const result = []
       const characteristicsObj: Record<string, any> = pick(props.productDetails, ['color', 'taste', 'aroma'])
@@ -48,7 +43,7 @@ export default defineComponent({
   <div v-if="visible" class="mt-6">
     <h2 class="h2" v-text="$t('productDescriptionTab', { productTitle: product?.title.toUpperCase() })" />
     <div class="prose" v-html="product?.descriptionHtml" />
-    <div v-if="characteristicsInDescription" class="grid grid-cols-3">
+    <div v-if="characteristicsInDescription" class="grid md:grid-cols-3">
       <div v-for="({ title, description }) in characteristicsInDescription" :key="generateKey(`${title}`)">
         <div class="h4">
           {{ title }}

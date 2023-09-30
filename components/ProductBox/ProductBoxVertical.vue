@@ -310,7 +310,7 @@ export default defineComponent({
           />
         </div>
       </div>
-      <div v-if="$config.STORE === 'CMW_DE'" class="c-productBox__note mx-2">
+      <div v-if="$cmwStore.isDe" class="c-productBox__note mx-2">
         <span v-if="priceByLiter">
           {{ $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode)) }}/liter</span>
         <span v-if="$config.STORE === 'CMW_DE'" class="text-gray">Inkl. MwSt. Und St.</span>

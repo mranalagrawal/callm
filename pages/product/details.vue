@@ -447,6 +447,20 @@ export default defineComponent({
             <div class="absolute transform top-4 right-8">
               <CardLapel v-if="isOnSale" variant="simple" />
             </div>
+            <div class="absolute bottom-0 right-0">
+              <button
+                type="button"
+                :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
+                @click="handleWishlist({ id: product.id, isOnFavourite, gtmProductData: product.gtmProductData })"
+              >
+                <VueSvgIcon
+                  color="#d94965"
+                  width="32"
+                  height="32"
+                  :data="isOnFavourite ? heartFullIcon : heartIcon"
+                />
+              </button>
+            </div>
           </div>
           <!-- Content Section -->
           <div class="flex flex-col">
@@ -460,6 +474,9 @@ export default defineComponent({
               {{ product.vendor }}
             </NuxtLink>
             <div class="prose" v-html="strippedContent" />
+            <p v-if="!product.quantityAvailable" class="text-primary-400">
+              {{ $t('product.notAvailable') }}
+            </p>
             <div v-if="isBundle" class="mb-4">
               <div class="h4 my-4" v-text="$t('bundle.whatIsInTheBox')" />
               <ul class="my-4 text-sm">
@@ -469,20 +486,21 @@ export default defineComponent({
               </ul>
             </div>
             <script
-              v-if="$config.STORE === 'CMW_UK'"
+              v-if="$cmwStore.isUk"
               data-environment="production" src="https://osm.klarnaservices.com/lib.js"
               data-client-id="c72bae1f-0d1c-5ed1-a3bb-b0fa3d12e442"
               async
             />
             <ClientOnly>
               <klarna-placement
-                v-if="$config.STORE === 'CMW_UK'"
+                v-if="$cmwStore.isUk"
                 data-key="credit-promotion-badge"
                 data-locale="en-GB"
                 :data-purchase-amount="String(Number(finalPrice)).replace(/[^0-9]/g, '')"
               />
             </ClientOnly>
             <ProductDetailsVintages :sku="product.sku" />
+            <!-- MOBILE ADD_TO_CART BUTTON -->
             <div
               class="
             <md:(fixed bottom-0 left-0 w-full bg-white z-content shadow-elevation px-3 py-4)
@@ -545,9 +563,6 @@ export default defineComponent({
                       :class="{ hidden: product.quantityAvailable > 6 }"
                     >
                       {{ $t('product.available', { quantity: product.quantityAvailable }) }}
-                    </p>
-                    <p v-else class="text-primary-400">
-                      {{ $t('product.notAvailable') }}
                     </p>
                   </div>
                   <div v-if="product.availableForSale" class="relative">
@@ -648,19 +663,6 @@ export default defineComponent({
                   </div>
                 </div>
               </div>
-              <button
-                type="button"
-                class="mb-2"
-                :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
-                @click="handleWishlist({ id: product.id, isOnFavourite, gtmProductData: product.gtmProductData })"
-              >
-                <VueSvgIcon
-                  color="#d94965"
-                  width="32"
-                  height="32"
-                  :data="isOnFavourite ? heartFullIcon : heartIcon"
-                />
-              </button>
             </div>
           </div>
         </div>

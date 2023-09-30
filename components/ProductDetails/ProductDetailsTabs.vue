@@ -118,9 +118,10 @@ export default defineComponent({
         />
       </transition>
     </div>
-    <div class="block">
-      <ProductDetailsCharacteristics :availables-features="product.availableFeatures" :product-characteristic="product.characteristics" />
-    </div>
+    <ProductDetailsCharacteristics
+      v-if="product.characteristics"
+      :product-characteristic="product.characteristics"
+    />
   </div>
 </template>
 

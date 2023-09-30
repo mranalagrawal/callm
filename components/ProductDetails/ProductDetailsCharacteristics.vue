@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, provide } from '@nuxtjs/composition-api'
+import { defineComponent, provide, toRefs } from '@nuxtjs/composition-api'
 import type { PropType } from '@nuxtjs/composition-api'
 import type { IProductCharacteristics } from '~/types/product'
 
@@ -12,7 +12,7 @@ export default defineComponent({
   },
   setup(props) {
     provide('productCharacteristics', props.productCharacteristic)
-    const { rarewine } = props.productCharacteristic
+    const { rarewine } = toRefs(props.productCharacteristic)
     return {
       rarewine,
     }
