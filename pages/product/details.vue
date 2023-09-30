@@ -555,7 +555,7 @@ export default defineComponent({
                   </div>
                 </div>
               </div>
-              <div class="ml-auto mr-4">
+              <div class="ml-auto mr-2">
                 <div class="">
                   <div v-if="!amountMax">
                     <p
@@ -609,7 +609,7 @@ export default defineComponent({
                     </div>
                     <div v-else>
                       <CmwButton
-                        class="gap-2 pl-2 pr-3 py-2"
+                        class="gap-2 pl-2 pr-3 py-3"
                         :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
                         @click.native="addToUserCart"
                       >
