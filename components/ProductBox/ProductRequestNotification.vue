@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 import { ref, useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import { useSplash } from '@/store/splash'
@@ -27,7 +27,7 @@ export default {
         email: form.value.email,
         productId: productId.value,
       })
-        .then(({ data }) => {
+        .then(({ data }: any) => {
           if (data) {
             splash.$reset()
             productAvailability.$reset()
@@ -68,8 +68,8 @@ export default {
         <InputField
           v-model="form.email"
           type="email"
-          name="notify-me-user-email" :label="$t('email').toString()"
-          :placeholder="$t('email').toString()" rules="required|email" theme="gray"
+          name="notify-me-user-email" :label="$t('email')"
+          :placeholder="$t('email')" rules="required|email" theme="gray"
         />
         <CmwCheckbox id="privacy" v-model="form.privacy" :checked="form.privacy" is-required @change="form.privacy = !form.privacy">
           <template #label>
@@ -77,7 +77,7 @@ export default {
           </template>
         </CmwCheckbox>
         <div class="flex items-center justify-center mt-8 mb-4">
-          <Button :disabled="isSubmitting" class="w-max" :label="$t('common.cta.notifyMe').toString()" type="submit" />
+          <Button :disabled="isSubmitting" class="w-max" :label="$t('common.cta.notifyMe')" type="submit" />
         </div>
       </div>
     </form>

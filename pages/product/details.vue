@@ -653,7 +653,7 @@ export default defineComponent({
                   <div v-else>
                     <Button
                       variant="ghost"
-                      class="gap-2 pl-2 pr-3 py-2"
+                      class="gap-2 pl-2 pr-3 py-2 <md:(w-[min(100%,_14rem)] ml-auto)"
                       :aria-label="$t('enums.accessibility.role.MODAL_OPEN')"
                       @click.native="() => handleShowRequestModal(productDetails.feId)"
                     >
