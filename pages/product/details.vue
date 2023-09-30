@@ -389,21 +389,9 @@ export default defineComponent({
               :thumbnail="product.image.thumbnail"
               :source="product.image.hd"
             />
-            <div v-if="$cmwStore.isDe" class="md:hidden transform absolute bottom-0 flex items-center left-1/2 -translate-x-1/2 translate-y-8">
-              <div
-                v-if="isOnSale"
-                class="flex items-center gap-2"
-              >
-                <span class="line-through text-gray-light text-sm">
-                  {{
-                    $n(Number(productVariant.compareAtPrice.amount),
-                       'currency',
-                       getLocaleFromCurrencyCode(productVariant.compareAtPrice.currencyCode))
-                  }}
-                </span>
-              </div>
+            <div v-if="$cmwStore.isDe" class="md:hidden transform absolute w-full bottom-0 flex items-center justify-center left-1/2 -translate-x-1/2 translate-y-8">
               <i18n-n
-                v-else-if="finalPrice && !isOnSale"
+                v-if="finalPrice && !isOnSale"
                 class="md:hidden inline-block text-gray" :value="Number(finalPrice)"
                 :format="{ key: 'currency' }"
                 :locale="getLocaleFromCurrencyCode(productVariant.price.currencyCode)"
@@ -421,7 +409,7 @@ export default defineComponent({
                   <span class="text-xs">{{ slotProps.fraction }}</span>
                 </template>
               </i18n-n>
-              <span v-if="$cmwStore.isDe && priceByLiter" class="text-sm">
+              <span v-if="$cmwStore.isDe && priceByLiter" class="text-sm text-gray">
                 {{
                   $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode))
                 }}/liter</span>
@@ -546,7 +534,7 @@ export default defineComponent({
                   </template>
                 </i18n-n>
                 <div v-if="$cmwStore.isDe">
-                  <span v-if="$cmwStore.isDe && priceByLiter" class="text-sm">
+                  <span v-if="$cmwStore.isDe && priceByLiter" class="text-sm <md:hidden">
                     {{
                       $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode))
                     }}/liter</span>
