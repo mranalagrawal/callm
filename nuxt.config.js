@@ -292,6 +292,7 @@ export default {
   components: [
     '~/components',
     { path: '~/components/Base', extensions: ['vue'] },
+    { path: '~/components/Cmw', extensions: ['vue'] },
     { path: '~/components/Home', extensions: ['vue'] },
   ],
 

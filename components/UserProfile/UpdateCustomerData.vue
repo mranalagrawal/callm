@@ -177,7 +177,7 @@ export default defineComponent({
         </fieldset>
       </div>
       <div class="text-center mt-8 max-w-sm mx-auto">
-        <Button :label="$t('common.cta.confirm')" type="submit" />
+        <CmwButton :label="$t('common.cta.confirm')" type="submit" />
       </div>
     </form>
     <div>

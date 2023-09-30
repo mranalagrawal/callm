@@ -77,7 +77,7 @@ export default {
           </template>
         </CmwCheckbox>
         <div class="flex items-center justify-center mt-8 mb-4">
-          <Button :disabled="isSubmitting" class="w-max" :label="$t('common.cta.notifyMe')" type="submit" />
+          <CmwButton :disabled="isSubmitting" class="w-max" :label="$t('common.cta.notifyMe')" type="submit" />
         </div>
       </div>
     </form>

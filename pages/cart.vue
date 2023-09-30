@@ -129,7 +129,7 @@ export default defineComponent({
                 <small><strong v-text="cart.totalQuantity" />
                   <span>{{ $tc('profile.orders.card.goods', computedCartTotal) }}</span>
                 </small>
-                <Button class="w-max ml-auto" variant="text" :label="$t('common.cta.emptyCart')" @click.native="emptyCart" />
+                <CmwButton class="w-max ml-auto" variant="text" :label="$t('common.cta.emptyCart')" @click.native="emptyCart" />
               </div>
               <div v-for="item in cart.lines.edges" :key="generateKey(`cart-${item.node.id}`)">
                 <CartLine :item="item.node" />
@@ -193,12 +193,12 @@ export default defineComponent({
                   <hr>
                   <p class="text-sm text-gray-darkest" v-html="$t('discountCode')" />
                   <p class="text-sm text-gray-darkest" v-html="$t('shippingCost')" />
-                  <Button
+                  <CmwButton
                     type="button" variant="default"
                     @click.native="checkout()"
                   >
                     {{ $t('common.cta.goToCheckout') }}
-                  </Button>
+                  </CmwButton>
                 </div>
               </div>
             </div>
@@ -210,7 +210,7 @@ export default defineComponent({
             <VueSvgIcon :data="require(`@/assets/svg/cart-empty.svg`)" width="200" height="200" original />
           </div>
           <div class="mt-8">
-            <Button :to="localePath('/')" class="w-max mx-auto" :label="$t('common.cta.continueShopping')" />
+            <CmwButton :to="localePath('/')" class="w-max mx-auto" :label="$t('common.cta.continueShopping')" />
           </div>
         </div>
       </ClientOnly>

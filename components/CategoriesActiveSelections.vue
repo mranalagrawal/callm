@@ -117,7 +117,7 @@ export default defineComponent({
       </div>
     </div>
     <div v-if="!!activeSelections?.length || Object.values(view).some(v => v !== null)">
-      <Button
+      <CmwButton
         variant="text"
         size="sm"
         class=""
@@ -126,7 +126,7 @@ export default defineComponent({
         <span class="text-body flex items-center gap-1">
           <VueSvgIcon :data="closeIcon" width="14" height="14" />
           {{ $t('search.removeAll') }}</span>
-      </Button>
+      </CmwButton>
     </div>
   </div>
 </template>

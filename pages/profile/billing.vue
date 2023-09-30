@@ -543,7 +543,7 @@ export default defineComponent({
                 />
               </fieldset>
             </template>
-            <Button
+            <CmwButton
               class="w-max mt-8"
               type="submit"
               :disabled="isSubmitting"

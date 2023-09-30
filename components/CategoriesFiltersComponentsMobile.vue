@@ -307,7 +307,7 @@ export default defineComponent({
         >
           <div class="text-center w-max text-xs cmw-font-bold" v-text="$t('common.filters.by')" />
           <div>
-            <Button
+            <CmwButton
               v-if="!!activeSelections.length || Object.values(view).some(v => v !== null)"
               variant="text" size="sm" :label="$t('search.removeFilters')" @click.native="resetFilter"
             />
@@ -460,7 +460,7 @@ export default defineComponent({
           class="sticky flex bottom-0 left-0 w-full bg-white z-content shadow-elevation"
         >
           <div class="w-[min(100%,_14rem)] m-inline-auto place-self-center">
-            <Button :label="$t('search.showResults', { count: total })" @click.native="showMobileFilters = false" />
+            <CmwButton :label="$t('search.showResults', { count: total })" @click.native="showMobileFilters = false" />
           </div>
         </div>
       </div>

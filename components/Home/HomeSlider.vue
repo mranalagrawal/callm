@@ -88,9 +88,9 @@ export default {
               <span class="text-white">{{ slide.title }}</span>
             </NuxtLink>
 
-            <Button :to="slide.link" variant="ghost-inverse" class="w-max absolute bottom-6">
+            <CmwButton :to="slide.link" variant="ghost-inverse" class="w-max absolute bottom-6">
               {{ slide.cta }}
-            </Button>
+            </CmwButton>
           </div>
           <div class="w-full loader" />
         </slide>

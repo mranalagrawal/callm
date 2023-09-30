@@ -140,7 +140,7 @@ export default defineComponent({
             </nuxt-link>
           </div>
         </VueSlickCarousel>
-        <Button class="w-max mx-auto my-4" variant="ghost" :label="$t('common.cta.viewAll')" :to="localePath('winery')" />
+        <CmwButton class="w-max mx-auto my-4" variant="ghost" :label="$t('common.cta.viewAll')" :to="localePath('winery')" />
       </div>
     </ClientOnly>
   </div>

@@ -95,8 +95,8 @@ export default defineComponent({
         <span v-if="!!errors.length" class="block text-sm text-error">{{ errors[0] }}</span>
       </validationprovider>
       <div v-if="hasFocus" class="flex ml-auto max-w-1/3">
-        <Button :label="$t('common.cta.cancel')" type="button" size="sm" variant="text" @click.native="handleReset" />
-        <Button :label="$t('common.cta.save')" type="submit" size="sm" variant="text" />
+        <CmwButton :label="$t('common.cta.cancel')" type="button" size="sm" variant="text" @click.native="handleReset" />
+        <CmwButton :label="$t('common.cta.save')" type="submit" size="sm" variant="text" />
       </div>
     </form>
   </ValidationObserver>

@@ -6,9 +6,7 @@ import type { RawLocation } from 'vue-router'
 import type { TButtonVariant, TSizes } from '~/types/types'
 
 export default defineComponent({
-  // Note: temp ignore till migrate to Nuxt 3, then we will name this BaseButton
-  // eslint-disable-next-line vue/multi-word-component-names,vue/no-reserved-component-names
-  name: 'Button',
+  name: 'CmwButton',
   props: {
     to: {
       type: String as PropType<RawLocation>,

@@ -652,7 +652,7 @@ export default defineComponent({
           : 'h-[200px] after:(content-DEFAULT absolute w-full h-1/2 bottom-0 left-0 bg-gradient-to-b from-transparent to-white)'"
         v-html="seoData?.pageFullDescription ? seoData.pageFullDescription : ''"
       />
-      <Button
+      <CmwButton
         v-if="!showPageFullDescription" class="justify-end pb-8" variant="text"
         @click.native="showPageFullDescription = true"
       >
@@ -661,15 +661,15 @@ export default defineComponent({
           v-if="seoData?.pageFullDescription" width="18" height="18"
           :data="require(`@/assets/svg/chevron-down.svg`)"
         />
-      </Button>
+      </CmwButton>
     </div>
     <Loader v-if="loading" />
 
     <div v-if="total > 0 && !isDesktop" class="sticky bottom-8 w-[min(100%,_14rem)] m-inline-auto">
-      <Button @click.native="showMobileFilters = !showMobileFilters">
+      <CmwButton @click.native="showMobileFilters = !showMobileFilters">
         <VueSvgIcon width="28" height="28" :data="require(`@/assets/svg/filter.svg`)" />
         <span class="ml-2">{{ $t('search.showFilters') }}</span>
-      </Button>
+      </CmwButton>
     </div>
 
     <ClientOnly>
@@ -683,7 +683,7 @@ export default defineComponent({
             <div class="sticky grid grid-cols-[100px_auto_100px] justify-between items-center px-4 shadow">
               <div class="text-center w-max text-xs cmw-font-bold" v-text="$t('common.filters.by')" />
               <div>
-                <Button
+                <CmwButton
                   v-if="!!activeSelections.length || Object.values(view).some(v => v !== null)" variant="text"
                   size="sm" :label="$t('search.removeFilters')" @click.native="resetFilter"
                 />
@@ -812,7 +812,7 @@ export default defineComponent({
             <!-- splash-footer -->
             <div class="sticky flex bottom-0 left-0 w-full bg-white z-content shadow-elevation">
               <div class="w-[min(100%,_14rem)] m-inline-auto place-self-center">
-                <Button :label="$t('search.showResults', { count: total })" @click.native="showMobileFilters = false" />
+                <CmwButton :label="$t('search.showResults', { count: total })" @click.native="showMobileFilters = false" />
               </div>
             </div>
           </div>

@@ -189,7 +189,7 @@ export default {
             </template>
           </CmwCheckbox>
         </div>
-        <Button class="w-max" :label="$t('common.cta.addAddress').toString()" type="submit" />
+        <CmwButton class="w-max" :label="$t('common.cta.addAddress').toString()" type="submit" />
       </div>
     </form>
   </ValidationObserver>

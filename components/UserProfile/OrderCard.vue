@@ -345,7 +345,7 @@ export default defineComponent({
             <!-- Cta Section -->
             <div class="flex gap-2 flex-col my-4 md:(flex-row) print:hidden">
               <div>
-                <Button
+                <CmwButton
                   variant="text"
                   class="ml-auto"
                   :label="$t('common.cta.requestAssistance')"
@@ -353,7 +353,7 @@ export default defineComponent({
                 />
               </div>
               <div>
-                <Button
+                <CmwButton
                   variant="default"
                   :label="$t('common.cta.reorderProducts')"
                   :disabled="!canBuyAgain"
@@ -361,7 +361,7 @@ export default defineComponent({
                 />
               </div>
               <div>
-                <Button
+                <CmwButton
                   :label="$t('common.cta.print')"
                   @click.native="handlePrint"
                 />

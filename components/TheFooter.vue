@@ -188,7 +188,7 @@ export default defineComponent({
                   class="flex-1 bg-transparent text-white"
                   required
                 >
-                <Button
+                <CmwButton
                   size="xs"
                   type="submit"
                   class="w-max ml-auto justify-end"

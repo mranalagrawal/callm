@@ -103,7 +103,7 @@ export default defineComponent({
           <div class="sticky bg-white z-base flex gap-2 justify-between items-center top-0 left-0 pt-2 px-4">
             <ButtonIcon :icon="chevronLeftIcon" variant="icon" :size="22" @click.native="closeSidebar(false)" />
             <div class="text-center">
-              {{ menuItem.name }} <Button variant="text" size="sm" class="block py-0" :label="$t('common.cta.viewAll')" :to="localePath(`/${menuItem.link}`)" />
+              {{ menuItem.name }} <CmwButton variant="text" size="sm" class="block py-0" :label="$t('common.cta.viewAll')" :to="localePath(`/${menuItem.link}`)" />
             </div>
             <ButtonIcon :icon="closeIcon" variant="icon" :size="26" @click.native="closeSidebar(true)" />
           </div>

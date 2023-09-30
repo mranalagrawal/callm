@@ -123,7 +123,7 @@ export default defineComponent({
               {{ message }}
             </p>
 
-            <Button
+            <CmwButton
               class="mt-8"
               type="submit"
               :disabled="isSubmitting"
@@ -173,12 +173,12 @@ export default defineComponent({
             {{ $t(label) }}
           </NuxtLink>
           <div class="mt-5">
-            <Button
+            <CmwButton
               variant="ghost"
               @click.native="logout"
             >
               {{ $t("navbar.user.logout") }}
-            </Button>
+            </CmwButton>
           </div>
         </nav>
       </template>

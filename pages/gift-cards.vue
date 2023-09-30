@@ -299,7 +299,7 @@ export default defineComponent({
               <div class="ml-auto mr-4">
                 <div class="">
                   <div v-if="product.availableForSale" class="relative">
-                    <Button
+                    <CmwButton
                       class="gap-2 pl-2 pr-3 py-2"
                       :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
                       :disabled="!giftCardVariantSelected.id"
@@ -307,7 +307,7 @@ export default defineComponent({
                     >
                       <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
                       <span class="text-sm" v-text="$t('product.addToCart')" />
-                    </Button>
+                    </CmwButton>
                     <Badge
                       v-show="cartQuantity && !isOpen"
                       class="absolute top-0 left-full transform -translate-x-1/2 -translate-y-1/2"

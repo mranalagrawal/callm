@@ -139,7 +139,7 @@ export default {
           </template>
         </CmwCheckbox>
 
-        <Button
+        <CmwButton
           class="sm:max-w-330px mt-8"
           type="submit"
           :disabled="isSubmitting"

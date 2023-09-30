@@ -567,14 +567,14 @@ export default defineComponent({
                   </div>
                   <div v-if="product.availableForSale" class="relative">
                     <div v-if="!amountMax">
-                      <Button
+                      <CmwButton
                         class="gap-2 pl-2 pr-3 py-2"
                         :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
                         @click.native="addToUserCart"
                       >
                         <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
                         <span class="text-sm" v-text="$t('product.addToCart')" />
-                      </Button>
+                      </CmwButton>
                       <Badge
                         v-show="cartQuantity && !isOpen"
                         class="absolute top-0 left-full transform -translate-x-1/2 -translate-y-1/2"
@@ -608,14 +608,14 @@ export default defineComponent({
                       </div>
                     </div>
                     <div v-else>
-                      <Button
+                      <CmwButton
                         class="gap-2 pl-2 pr-3 py-2"
                         :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
                         @click.native="addToUserCart"
                       >
                         <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
                         <span class="text-sm" v-text="$t('product.addToCart')" />
-                      </Button>
+                      </CmwButton>
                       <Badge
                         v-show="cartQuantity && !isOpen"
                         class="absolute top-0 left-full transform -translate-x-1/2 -translate-y-1/2"
@@ -651,7 +651,7 @@ export default defineComponent({
                   </div>
 
                   <div v-else>
-                    <Button
+                    <CmwButton
                       variant="ghost"
                       class="gap-2 pl-2 pr-3 py-2 <md:(w-[min(100%,_14rem)] ml-auto)"
                       :aria-label="$t('enums.accessibility.role.MODAL_OPEN')"
@@ -659,7 +659,7 @@ export default defineComponent({
                     >
                       <VueSvgIcon :data="emailIcon" width="30" height="auto" />
                       <span class="text-sm" v-text="$t('product.notifyMeTitle')" />
-                    </Button>
+                    </CmwButton>
                   </div>
                 </div>
               </div>

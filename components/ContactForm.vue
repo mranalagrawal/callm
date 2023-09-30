@@ -281,7 +281,7 @@ export default defineComponent({
             ]"
           >{{ $t('profile.message') }}</label>
         </div>
-        <Button
+        <CmwButton
           v-if="showForm"
           class="w-max mt-8"
           type="submit"

@@ -103,7 +103,7 @@ export default defineComponent({
             >
               {{ text }}
             </NuxtLink>
-            <Button
+            <CmwButton
               class="hidden w-max self-end mt-8 py-2 text-shadow-none md:(block self-start)"
               variant="default-inverse" :to="localePath(link)" :label="cta"
             />

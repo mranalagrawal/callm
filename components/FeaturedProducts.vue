@@ -18,13 +18,13 @@ export default {
   <div class="my-5">
     <CarouselProducts v-if="!!collectionRef.products?.length" :products="collectionRef.products" :title="collectionRef.description" />
     <div class="mt-5">
-      <Button
+      <CmwButton
         class="w-[min(100%,_10rem)] m-inline-auto"
         variant="ghost"
         :to="localePath(collectionRef.link?.value || '/catalog?favourite=true&page=1')"
       >
         {{ $t("viewMore") }}
-      </Button>
+      </CmwButton>
     </div>
   </div>
 </template>

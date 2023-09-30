@@ -49,7 +49,7 @@ export default {
         />
       </div>
       <div class="text-center mt-8 max-w-sm mx-auto">
-        <Button :label="$t('common.cta.confirm').toString()" type="submit" />
+        <CmwButton :label="$t('common.cta.confirm').toString()" type="submit" />
       </div>
     </form>
   </ValidationObserver>
