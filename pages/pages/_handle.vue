@@ -9,7 +9,6 @@ import {
 import chevronLeftIcon from 'assets/svg/chevron-left.svg'
 import chevronRightIcon from 'assets/svg/chevron-right.svg'
 import filterIcon from 'assets/svg/filter.svg'
-import type { RawLocation } from 'vue-router'
 import Loader from '~/components/UI/Loader.vue'
 import { initialShopifyPageData } from '~/config/shopifyConfig'
 import { shopifyRichTextToHTML } from '~/utilities/shopify'
@@ -21,7 +20,7 @@ interface IQuery {
 export default defineComponent({
   components: { Loader },
   setup() {
-    const { localeLocation, $cmwRepo, $cmwStore, $elastic, i18n } = useContext()
+    const { $cmwRepo, $cmwStore, $elastic, i18n, localePath } = useContext()
     const router = useRouter()
     const route = useRoute()
     const pageData = ref({})
@@ -52,10 +51,10 @@ export default defineComponent({
       // if (id !== this.active)
       if (id !== route.value.query[id]) { query.page = '1' }
 
-      router.push({
-        path: '/catalog',
+      router.push(localePath({
+        name: '/catalog',
         query,
-      })
+      }))
     }
 
     const handleUpdateValue = (val: string) => {
@@ -66,24 +65,24 @@ export default defineComponent({
 
       if (`${query[keyword]}` === id.toString()) { delete query[keyword] } else { query[keyword] = id.toString() }
 
-      router.push({
-        path: '/catalog',
+      router.push(localePath({
+        name: '/catalog',
         query,
-      })
+      }))
     }
 
     const handleOnFooterClick = ({ price_from = '', price_to = '' }) => {
       cmwActiveSelect.value = ''
       showMobileFilters.value = false
-      router.push(localeLocation({
-        path: '/catalog',
+      router.push(localePath({
+        name: '/catalog',
         query: {
           ...route.value.query,
           price_from,
           price_to,
           page: '1',
         },
-      }) as RawLocation)
+      }))
     }
 
     const sortBy = (field: any, direction: any) => {
@@ -93,10 +92,10 @@ export default defineComponent({
         direction,
       }
 
-      router.push({
-        path: '/catalog',
+      router.push(localePath({
+        name: '/catalog',
         query,
-      })
+      }))
     }
 
     const handleUpdateSortValue = (value: string) => {

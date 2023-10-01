@@ -23,7 +23,7 @@ export default defineComponent({
   scrollToTop: true,
   props: ['inputParameters'],
   setup(props) {
-    const { redirect, $config, i18n } = useContext()
+    const { redirect, $config, i18n, localePath } = useContext()
     const route = useRoute()
     const router = useRouter()
     const filtersStore = useFilters()
@@ -410,15 +410,15 @@ export default defineComponent({
     const handleOnFooterClick = ({ price_from = '', price_to = '' }) => {
       cmwActiveSelect.value = ''
       showMobileFilters.value = false
-      router.push({
-        path: '/catalog',
+      router.push(localePath({
+        name: '/catalog',
         query: {
           ...route.value.query,
           price_from, // : this.minPrice,
           price_to, // : this.maxPrice,
           page: '1',
         },
-      })
+      }))
     }
 
     const handleUpdateTrigger = (key) => {
@@ -443,10 +443,10 @@ export default defineComponent({
       /* if (id !== this.active)
         query.page = 1 */
 
-      router.push({
-        path: '/catalog',
+      router.push(localePath({
+        name: '/catalog',
         query,
-      })
+      }))
     }
 
     const handleUpdateValueSelections = (id) => {
@@ -460,10 +460,10 @@ export default defineComponent({
 
       if (id !== route.value.query[id]) { query.page = 1 }
 
-      router.push({
-        path: '/catalog',
+      router.push(localePath({
+        name: '/catalog',
         query,
-      })
+      }))
     }
 
     const handleUpdateSortValue = (value) => {
@@ -476,10 +476,10 @@ export default defineComponent({
       showMobileFilters.value = false
       minPrice.value = minPriceTotal.value
       maxPrice.value = maxPriceTotal.value
-      router.push({
-        path: '/catalog',
+      router.push(localePath({
+        name: '/catalog',
         query: null,
-      })
+      }))
     }
 
     const removeSelectionFromQuery = (selection) => {
@@ -491,23 +491,23 @@ export default defineComponent({
 
       delete query[selection]
 
-      router.push({
-        path: 'catalog',
+      router.push(localePath({
+        name: 'catalog',
         query: {
           ...query,
           page: 1,
         },
-      })
+      }))
     }
 
     const sortBy = (field, direction) => {
       const query = Object.assign({}, props.inputParameters)
       query.sort = field
       query.direction = direction
-      router.push({
-        path: 'catalog',
+      router.push(localePath({
+        name: 'catalog',
         query,
-      })
+      }))
     }
 
     // WATCHERS
