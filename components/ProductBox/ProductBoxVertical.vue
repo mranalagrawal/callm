@@ -277,11 +277,11 @@ export default defineComponent({
           />
           <div
             v-show="isOpen"
-            class="absolute w-full h-[120px] bottom-0 left-0"
+            class="absolute w-full h-[132px] bottom-0 left-0"
             @mouseleave="isOpen = false"
           >
             <button
-              class="flex transition-colors w-[40px] h-[40px] bg-primary-400 rounded-t-sm
+              class="flex transition-colors w-[44px] h-[44px] bg-primary-400 rounded-t-sm
                  hover:(bg-primary)
                  disabled:(bg-primary-100 cursor-not-allowed)"
               :disabled="!canAddMore"
@@ -290,11 +290,11 @@ export default defineComponent({
             >
               <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
             </button>
-            <div class="flex w-[40px] h-[40px] bg-primary-400 text-white text-center">
+            <div class="flex w-[44px] h-[44px] bg-primary-400 text-white text-center">
               <span class="m-auto text-sm">{{ cartQuantity }}</span>
             </div>
             <button
-              class="flex transition-colors w-[40px] h-[40px] bg-primary-400 rounded-b-sm hover:(bg-primary)"
+              class="flex transition-colors w-[44px] h-[44px] bg-primary-400 rounded-b-sm hover:(bg-primary)"
               :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
               @click="removeFromUserCart"
             >
