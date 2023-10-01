@@ -682,7 +682,7 @@ export default defineComponent({
                 />
               </div>
               <ButtonIcon
-                class="justify-self-end" :icon="closeIcon" variant="icon" :size="20"
+                class="justify-self-end" :icon="closeIcon" variant="icon" size="20"
                 @click.native="showMobileFilters = false"
               />
             </div>

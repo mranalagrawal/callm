@@ -1,8 +1,19 @@
 <script lang="ts">
-import { defineComponent, inject, provide, readonly, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api'
+import type { Ref } from '@nuxtjs/composition-api'
+import {
+  defineComponent,
+  inject,
+  provide,
+  readonly,
+  ref,
+  useContext,
+  useFetch,
+  watch,
+} from '@nuxtjs/composition-api'
 import logo from 'assets/svg/logo-call-me-wine.svg'
 import walletIcon from 'assets/svg/wallet.svg'
 import emailIcon from 'assets/svg/email.svg'
+import sentIcon from 'assets/svg/sent.svg'
 import themeConfig from '~/config/themeConfig'
 import { initialPageData } from '~/config/prismicConfig'
 import type { IPrismicPageData } from '~/types/prismic'
@@ -12,7 +23,7 @@ import { SweetAlertToast } from '~/utilities/Swal'
 export default defineComponent({
   setup() {
     const { i18n } = useContext()
-    const isDesktop = inject('isDesktop')
+    const isDesktop = inject('isDesktop') as Ref<boolean>
     const footerInfoData = ref<IPrismicPageData>(initialPageData)
     const paymentMethods = ref<any>([])
     const socialLinks = ref<any>([])
@@ -54,19 +65,20 @@ export default defineComponent({
     watch(() => i18n.locale, () => fetch(), { deep: true })
 
     return {
+      emailIcon,
       footerData,
       footerInfoData,
       isDesktop,
+      logo,
       mobileApps,
       paymentMethods,
+      sentIcon,
       socialLinks,
+      walletIcon,
     }
   },
   data() {
     return {
-      logo,
-      walletIcon,
-      emailIcon,
       newsletter: false,
       marketing: false,
       email: '',
@@ -189,12 +201,14 @@ export default defineComponent({
                   required
                 >
                 <CmwButton
+                  v-if="isDesktop"
                   size="xs"
                   type="submit"
                   class="w-max ml-auto justify-end"
                   variant="default-inverse"
                   :label="$t('common.cta.subscribe')"
                 />
+                <ButtonIcon v-else type="submit" :icon="sentIcon" variant="filled-white" class="!border-white" color="white" width="30" height="30" />
               </div>
               <div class="mt-3">
                 <div class="custom-checkbox">

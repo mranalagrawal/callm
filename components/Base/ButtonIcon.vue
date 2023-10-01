@@ -1,29 +1,33 @@
-<script>
-// noinspection JSUnusedGlobalSymbols
-export default {
+<script lang="ts">
+import type { PropType } from '@nuxtjs/composition-api'
+import { defineComponent } from '@nuxtjs/composition-api'
+import type { TSizes } from '~/types/types'
+
+export default defineComponent({
   name: 'ButtonIcon',
   props: {
     icon: {
-      type: [Object],
+      type: Object,
       require: true,
     },
     size: {
-      validator: prop => ['xs', 'sm', 'md'].includes(prop) || !Number.isNaN(prop),
+      type: String as PropType<TSizes | string>,
       default: 'md',
     },
     variant: {
-      validator: prop => ['filled', 'ghost', 'icon', 'icon-primary'].includes(prop),
+      type: String as PropType<'filled' | 'filled-white' | 'ghost' | 'icon' | 'icon-primary'>,
       default: 'filled',
     },
   },
   setup(props) {
     const getSize = () => ({
-      xs: 12,
-      sm: 22,
-      md: 32,
+      xs: '12',
+      sm: '22',
+      md: '32',
     })[props.size] || props.size
 
     const getVariant = () => ({
+      'filled-white': 'bg-white text-primary-400 rounded-sm hover:(border-primary)',
       'filled': 'bg-primary-400 text-white rounded-sm hover:(bg-primary)',
       'ghost': 'bg-white text-primary-400 rounded-sm border-2 border-primary-400 hover:(border-primary)',
       'icon': 'text-primary-400 rounded-full',
@@ -32,7 +36,7 @@ export default {
 
     return { getSize, getVariant }
   },
-}
+})
 </script>
 
 <template>
