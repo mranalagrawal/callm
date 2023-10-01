@@ -115,12 +115,7 @@ export default defineComponent({
               :to="localePath({ name: 'winery-handle', params: { handle: `${productor.link}.htm` } })"
               :class="sliderClasses.wrapper"
             >
-              <img
-                :src="productor.logo.url"
-                alt="logo"
-                height="120"
-                :class="sliderClasses.image"
-              >
+              <PrismicImage :field="productor.logo" :class="sliderClasses.image" height="120" />
             </nuxt-link>
           </div>
         </VueSlickCarousel>
@@ -130,12 +125,7 @@ export default defineComponent({
               :to="localePath({ name: 'winery-handle', params: { handle: `${productor.link}.htm` } })"
               :class="sliderClasses.wrapper"
             >
-              <img
-                :src="productor.logo.url"
-                alt="logo"
-                height="120"
-                :class="sliderClasses.image"
-              >
+              <PrismicImage :field="productor.logo" :class="sliderClasses.image" height="120" />
             </nuxt-link>
           </div>
         </VueSlickCarousel>
