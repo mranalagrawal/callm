@@ -204,7 +204,7 @@ export default defineComponent({
                   v-if="isDesktop"
                   size="xs"
                   type="submit"
-                  class="w-max ml-auto justify-end"
+                  class="w-max ml-auto justify-end  md:(px-8 py-[0.6rem])"
                   variant="default-inverse"
                   :label="$t('common.cta.subscribe')"
                 />

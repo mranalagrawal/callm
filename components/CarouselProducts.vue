@@ -100,3 +100,15 @@ export default defineComponent({
     </SsrCarousel>
   </div>
 </template>
+
+<style scoped>
+@screen desktop-wide {
+  ::v-deep(.ssr-carousel-back-button) {
+    left: -2%;
+  }
+
+  ::v-deep(.ssr-carousel-next-button) {
+    right: -2%;
+  }
+}
+</style>

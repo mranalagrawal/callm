@@ -1,5 +1,15 @@
 <script>
-import { computed, defineComponent, ref, useContext, useFetch, useMeta, useRoute, watch } from '@nuxtjs/composition-api'
+import {
+  computed,
+  defineComponent,
+  inject,
+  ref,
+  useContext,
+  useFetch,
+  useMeta,
+  useRoute,
+  watch,
+} from '@nuxtjs/composition-api'
 import addIcon from 'assets/svg/add.svg'
 import cartIcon from 'assets/svg/cart.svg'
 import emailIcon from 'assets/svg/email.svg'
@@ -35,6 +45,7 @@ export default defineComponent({
       req,
     } = useContext()
     const customerStore = useCustomer()
+    const isDesktop = inject('isDesktop')
     const recentProductsStore = useRecentProductsStore()
     const { recentProducts } = storeToRefs(recentProductsStore)
 
@@ -284,6 +295,7 @@ export default defineComponent({
     }))
 
     return {
+      isDesktop,
       addIcon,
       amountMax,
       brand,
@@ -291,6 +303,7 @@ export default defineComponent({
       canAddMore,
       cartIcon,
       cartLinesAdd,
+      cartLinesUpdate,
       cartQuantity,
       createShopifyCart,
       customer,
@@ -320,7 +333,6 @@ export default defineComponent({
       showRequestModal,
       strippedContent,
       subtractIcon,
-      cartLinesUpdate,
       wishlistArr,
     }
   },
@@ -595,14 +607,14 @@ export default defineComponent({
                         </button>
                       </div>
                     </div>
-                    <div v-else>
+                    <div v-else :class="{ 'w-[150px]': isOpen && !isDesktop }">
                       <CmwButton
-                        class="gap-2 pl-2 pr-3 py-3"
+                        class="gap-2 pl-2 pr-3 py-2"
                         :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
                         @click.native="addToUserCart"
                       >
                         <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
-                        <span class="text-sm" v-text="$t('product.addToCart')" />
+                        <span v-if="isDesktop" class="text-sm" v-text="$t('product.addToCart')" />
                       </CmwButton>
                       <Badge
                         v-show="cartQuantity && !isOpen"
@@ -611,7 +623,7 @@ export default defineComponent({
                       />
                       <div
                         v-show="isOpen"
-                        class="absolute grid grid-cols-[50px_auto_50px] items-center w-full h-[50px] top-0 left-0"
+                        class="absolute grid grid-cols-[50px_auto_50px] items-center w-full h-[50px] top-0 right-0"
                         @mouseleave="isOpen = false"
                       >
                         <button
@@ -640,6 +652,7 @@ export default defineComponent({
 
                   <div v-else>
                     <CmwButton
+                      v-if="isDesktop"
                       variant="ghost"
                       class="gap-2 pl-2 pr-3 py-2 <md:(w-[min(100%,_14rem)] ml-auto)"
                       :aria-label="$t('enums.accessibility.role.MODAL_OPEN')"
@@ -648,6 +661,13 @@ export default defineComponent({
                       <VueSvgIcon :data="emailIcon" width="30" height="auto" />
                       <span class="text-sm" v-text="$t('product.notifyMeTitle')" />
                     </CmwButton>
+                    <ButtonIcon
+                      v-else
+                      :icon="emailIcon"
+                      variant="ghost"
+                      :aria-label="$t('enums.accessibility.role.MODAL_OPEN')"
+                      @click.native="() => handleShowRequestModal(productDetails.feId)"
+                    />
                   </div>
                 </div>
               </div>

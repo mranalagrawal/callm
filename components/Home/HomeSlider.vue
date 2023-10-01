@@ -1,5 +1,6 @@
 <script lang="ts">
-import { onMounted, ref, useFetch } from '@nuxtjs/composition-api'
+import debounce from 'lodash.debounce'
+import { onMounted, onUnmounted, ref, useFetch } from '@nuxtjs/composition-api'
 import { generateKey } from '~/utilities/strings'
 
 interface ISlide {
@@ -35,17 +36,24 @@ export default {
         if (wrapperEl.value) { slider = wrapperEl.value.querySelector('.carousel-3d-slider') }
 
         if (slider) {
-          setTimeout(() => {
-            arrowPos.value = `${slider?.getBoundingClientRect().right}px`
-          }, 600)
+          arrowPos.value = `${((slider?.getBoundingClientRect().right || 10) + 40)}px`
         }
-      }, 600)
+      }, 200)
     }
 
+    const resizeListener = debounce(() => setArrow(), 400)
+
     onMounted(() => {
-      setTimeout(() => setArrow(), 600)
+      window.addEventListener('resize', resizeListener)
+      setArrow()
     })
+
+    onUnmounted(() => {
+      window.removeEventListener('resize', resizeListener)
+    })
+
     return {
+      arrowPos,
       fetch,
       mask,
       setArrow,
@@ -61,7 +69,6 @@ export default {
 <template>
   <div ref="wrapperEl" class="my-5">
     <h2 class="text-center" v-text="title" />
-
     <ClientOnly v-if="!!slides.length" placeholder="Loading...">
       <carousel-3d
         :controls-visible="true"

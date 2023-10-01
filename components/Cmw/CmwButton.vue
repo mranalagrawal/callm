@@ -27,7 +27,7 @@ export default defineComponent({
   },
   setup(props) {
     const getSize = () => ({
-      xs: 'text-xs rounded-sm px-3 py-2 md:(px-4 py-[0.4rem])',
+      xs: 'text-xs',
       sm: 'text-sm',
       md: 'text-sm md:text-base',
       lg: 'text-base',
