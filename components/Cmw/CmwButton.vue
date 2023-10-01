@@ -57,7 +57,7 @@ export default defineComponent({
 <template>
   <component
     :is="$props.to ? 'NuxtLink' : 'button'"
-    :type="$attrs.type || !$props.to ? 'button' : ''"
+    :type="$attrs.type || !$props.to ? 'button' : null"
     :to="$props.to"
     v-bind="$attrs"
     class="btn-base disabled:(text-gray cursor-not-allowed)"

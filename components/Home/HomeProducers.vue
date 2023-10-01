@@ -106,7 +106,6 @@ export default defineComponent({
   <div class="my-5 bg-gray-lightest">
     <ClientOnly>
       <div class="py-5">
-        <!-- <PrismicText v-if="title" class="text-center" :field="title" /> -->
         <h2 class="text-center" v-text="title" />
 
         <VueSlickCarousel v-if="!!slidesTop.length" v-bind="settingsTop" class="py-4">
@@ -129,7 +128,7 @@ export default defineComponent({
             </nuxt-link>
           </div>
         </VueSlickCarousel>
-        <CmwButton class="w-max mx-auto my-4" variant="ghost" :label="$t('common.cta.viewAll')" :to="localePath('winery')" />
+        <CmwButton class="w-[min(100%,_80%)] m-inline-auto my-4" variant="ghost" :label="$t('common.cta.viewAll')" :to="localePath('winery')" />
       </div>
     </ClientOnly>
   </div>
