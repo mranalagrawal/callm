@@ -7,7 +7,11 @@ export default defineComponent({
     const slidesBottom = ref<Record<string, any>[]>([])
     const title = ref('')
 
-    const settingsTop = {
+    const sliderClasses = {
+      wrapper: 'flex bg-white mx-2 p-1 h-32 items-center border border-gray-light rounded-sm border-gray-light shadow-elevation',
+      image: 'w-3/4 m-auto',
+    }
+    const settingsShare = {
       arrows: false,
       dots: false,
       infinite: true,
@@ -20,6 +24,10 @@ export default defineComponent({
       pauseOnFocus: false,
       pauseOnHover: false,
       rtl: false,
+    }
+
+    const settingsTop = {
+      ...settingsShare,
 
       responsive: [
         {
@@ -44,17 +52,7 @@ export default defineComponent({
     }
 
     const settingsBottom = {
-      arrows: false,
-      dots: false,
-      infinite: true,
-      slidesToShow: 5,
-      slidesToScroll: 2,
-      autoplay: true,
-      speed: 8000,
-      autoplaySpeed: 0,
-      cssEase: 'linear',
-      pauseOnFocus: false,
-      pauseOnHover: false,
+      ...settingsShare,
       rtl: true,
       responsive: [
         {
@@ -95,6 +93,7 @@ export default defineComponent({
     return {
       settingsBottom,
       settingsTop,
+      sliderClasses,
       slidesBottom,
       slidesTop,
       title,
@@ -114,13 +113,13 @@ export default defineComponent({
           <div v-for="productor in slidesTop" :key="productor.name">
             <nuxt-link
               :to="localePath({ name: 'winery-handle', params: { handle: `${productor.link}.htm` } })"
-              class="flex bg-white mx-2 p-1 border border-gray-light rounded-sm border-gray-light shadow-elevation"
+              :class="sliderClasses.wrapper"
             >
               <img
                 :src="productor.logo.url"
                 alt="logo"
                 height="120"
-                class="m-auto"
+                :class="sliderClasses.image"
               >
             </nuxt-link>
           </div>
@@ -129,13 +128,13 @@ export default defineComponent({
           <div v-for="productor in slidesBottom" :key="productor.name">
             <nuxt-link
               :to="localePath({ name: 'winery-handle', params: { handle: `${productor.link}.htm` } })"
-              class="flex bg-white mx-2 p-1 border border-gray-light rounded-sm border-gray-light shadow-elevation"
+              :class="sliderClasses.wrapper"
             >
               <img
                 :src="productor.logo.url"
                 alt="logo"
                 height="120"
-                class="m-auto"
+                :class="sliderClasses.image"
               >
             </nuxt-link>
           </div>
