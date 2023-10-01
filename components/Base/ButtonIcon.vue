@@ -29,7 +29,7 @@ export default defineComponent({
     const getVariant = () => ({
       'filled-white': 'bg-white text-primary-400 rounded-sm hover:(border-primary)',
       'filled': 'bg-primary-400 text-white rounded-sm hover:(bg-primary)',
-      'ghost': 'bg-white text-primary-400 rounded-sm border-2 border-primary-400 hover:(border-primary)',
+      'ghost': 'bg-white text-primary-400 rounded-sm border-2 border-primary-400 hover:(border-primary-400)',
       'icon': 'text-primary-400 rounded-full',
       'icon-primary': 'text-primary rounded-full',
     })[props.variant]

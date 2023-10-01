@@ -265,6 +265,7 @@ export default defineComponent({
       <div class="c-productBox__cart justify-self-baseline place-self-end">
         <div v-if="product.availableForSale" class="mr-3 relative">
           <ButtonIcon
+            variant="ghost"
             :icon="cartIcon"
             :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
             @click.native="addToUserCart"
@@ -311,7 +312,7 @@ export default defineComponent({
         </div>
       </div>
       <div v-if="$cmwStore.isDe" class="c-productBox__note mx-2">
-        <span v-if="priceByLiter">
+        <span v-if="priceByLiter" class="text-gray">
           {{ $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode)) }}/liter</span>
         <span v-if="$config.STORE === 'CMW_DE'" class="text-gray">Inkl. MwSt. Und St.</span>
       </div>
