@@ -19,7 +19,7 @@ export default {
     <CarouselProducts v-if="!!collectionRef.products?.length" :products="collectionRef.products" :title="collectionRef.description" />
     <div class="mt-5">
       <CmwButton
-        class="w-[min(100%,_80%)] m-inline-auto"
+        class="w-[min(100%,_80%)] sm:w-[min(100%,_14rem)] m-inline-auto"
         variant="ghost"
         :to="localePath(collectionRef.link?.value || '/catalog?favourite=true&page=1')"
       >
