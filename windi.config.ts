@@ -190,7 +190,7 @@ export default defineConfig({
     'overline-1': 'cmw-font-light tracking-wider text-xxs',
     'overline-2': 'cmw-font-light tracking-widest text-xs',
     'btn-base': 'font-secondary flex items-center justify-center w-full transition-colors rounded border-2',
-    'btn-base-spacing': 'px-4 py-2 md:(px-8 py-[0.8rem])',
+    'btn-base-spacing': 'px-4 py-3 md:(px-8 py-[0.8rem])',
     'btn-default': 'font-secondary border-transparent bg-primary-400 text-white cmw-font-bold uppercase',
     'btn-text': 'border-transparent text-primary-400',
   },

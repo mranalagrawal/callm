@@ -51,9 +51,9 @@ export default defineComponent({
       lockBody()
     }
 
-    const handleGoToLogin = () => {
+    const handleGoToRegister = () => {
       mobileLogin.value = false
-      router.push(localeLocation('/login') as RawLocation)
+      router.push(localeLocation('/login#register') as RawLocation)
     }
 
     useFetch(async ({ $cmwRepo }) => {
@@ -110,7 +110,7 @@ export default defineComponent({
       chevronLeftIcon,
       closeIcon,
       customer,
-      handleGoToLogin,
+      handleGoToRegister,
       handleShowMobileButton,
       isDesktop,
       isMobileMenuOpen,
@@ -237,7 +237,7 @@ export default defineComponent({
           <div class="h3 text-center mt-5">
             {{ $t("navbar.user.signIn") }}
           </div>
-          <div class="px-2">
+          <div class="px-4">
             <LoginForm />
           </div>
           <div class="bg-gray-lightest p-2 text-center flex items-center justify-center">
@@ -245,7 +245,7 @@ export default defineComponent({
             <CmwButton
               variant="text"
               class="w-max uppercase text-primary-400"
-              @click.native="handleGoToLogin"
+              @click.native="handleGoToRegister"
             >
               {{ $t("navbar.user.register") }}
             </CmwButton>

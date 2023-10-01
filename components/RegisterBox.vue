@@ -99,7 +99,7 @@ export default {
 <template>
   <div>
     <ValidationObserver v-slot="{ handleSubmit }" slim>
-      <form class="px-4 pt-3 py-2 md:w-3/4 mx-auto" @submit.prevent="handleSubmit(onSubmit)">
+      <form class="pt-3 py-2 md:w-3/5 mx-auto" @submit.prevent="handleSubmit(onSubmit)">
         <InputField
           v-model="form.firstName"
           name="register-user-firstname" :label="$t('firstName')"
@@ -140,25 +140,28 @@ export default {
         </CmwCheckbox>
 
         <CmwButton
-          class="sm:max-w-330px mt-8"
+          class="mt-8"
           type="submit"
           :disabled="isSubmitting"
           :label="$t('navbar.user.register')"
         />
       </form>
     </ValidationObserver>
-    <div v-if="$config.STORE !== 'B2B'" class="px-4 pt-3 pb-2 md:w-3/4 mx-auto">
+    <div v-if="$config.STORE !== 'B2B'" class="pt-3 pb-2 md:w-3/5 mx-auto">
       <p class="mb-5">
         {{ $t("navbar.user.orRegisterWith") }}
       </p>
       <a
         :href="`${$config.MULTIPASS_URL}/social-login/${$config.STORE}/facebook/`"
-        class="btn-base w-auto btn-default facebook text-sm sm:max-w-330px btn-base-spacing my-3"
+        class="btn-base cmw-font-bold w-full text-sm text-white btn-base-spacing my-3 facebook"
       >
         <VueSvgIcon :data="socialFacebook" color="white" width="30" height="auto" />
         <span class="px-3">{{ $t("navbar.user.facebookLogin") }}</span>
       </a>
-      <a :href="`${$config.MULTIPASS_URL}/social-login/${$config.STORE}/google/`" class="btn-base w-auto btn-default google text-sm sm:max-w-330px btn-base-spacing mb-3">
+      <a
+        :href="`${$config.MULTIPASS_URL}/social-login/${$config.STORE}/google/`"
+        class="btn-base cmw-font-bold w-full text-sm btn-base-spacing mb-3 google"
+      >
         <VueSvgIcon :data="socialGoogle" original width="30" height="auto" />
         <span class="px-3">{{ $t("navbar.user.googleLogin") }}</span>
       </a>
@@ -168,13 +171,15 @@ export default {
 
 <style scoped>
   .facebook {
-    background-color: #004bce !important;
+    background-color: #004bce;
+    border-color: #004bce;
     text-transform: unset;
   }
   .google {
-    background-color: #fff !important;
+    background-color: #fff;
     text-transform: unset;
     color: black;
-    border: 1px solid black !important;
+    border-color: black;
+    border-width: 1px;
   }
 </style>
