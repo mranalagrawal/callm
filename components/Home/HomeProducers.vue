@@ -9,7 +9,7 @@ export default defineComponent({
 
     const sliderClasses = {
       wrapper: 'flex bg-white mx-2 p-1 h-32 items-center border border-gray-light rounded-sm border-gray-light shadow-elevation',
-      image: 'w-3/4 m-auto',
+      image: 'w-[min(75%,_10rem)] m-inline-auto',
     }
     const settingsShare = {
       arrows: false,
