@@ -304,7 +304,8 @@ export default defineComponent({
         </div>
         <div v-else>
           <ButtonIcon
-            class="mr-4 mb-4 relative"
+            variant="ghost"
+            class="mr-3 relative"
             :icon="emailIcon"
             :aria-label="$t('enums.accessibility.role.MODAL_OPEN')"
             @click.native="() => handleShowRequestModal(product.details.feId)"

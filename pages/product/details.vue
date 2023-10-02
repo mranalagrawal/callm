@@ -607,14 +607,14 @@ export default defineComponent({
                         </button>
                       </div>
                     </div>
-                    <div v-else :class="{ 'w-[150px]': isOpen && !isDesktop }">
+                    <div v-else>
                       <CmwButton
                         class="gap-2 pl-2 pr-3 py-2"
                         :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
                         @click.native="addToUserCart"
                       >
                         <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
-                        <span v-if="isDesktop" class="text-sm" v-text="$t('product.addToCart')" />
+                        <span class="text-sm" v-text="$t('product.addToCart')" />
                       </CmwButton>
                       <Badge
                         v-show="cartQuantity && !isOpen"
@@ -652,22 +652,14 @@ export default defineComponent({
 
                   <div v-else>
                     <CmwButton
-                      v-if="isDesktop"
                       variant="ghost"
                       class="gap-2 pl-2 pr-3 py-2 <md:(w-[min(100%,_14rem)] ml-auto)"
                       :aria-label="$t('enums.accessibility.role.MODAL_OPEN')"
                       @click.native="() => handleShowRequestModal(productDetails.feId)"
                     >
                       <VueSvgIcon :data="emailIcon" width="30" height="auto" />
-                      <span class="text-sm" v-text="$t('product.notifyMeTitle')" />
+                      <span class="text-sm" v-text="$t('product.notifyMe')" />
                     </CmwButton>
-                    <ButtonIcon
-                      v-else
-                      :icon="emailIcon"
-                      variant="ghost"
-                      :aria-label="$t('enums.accessibility.role.MODAL_OPEN')"
-                      @click.native="() => handleShowRequestModal(productDetails.feId)"
-                    />
                   </div>
                 </div>
               </div>
