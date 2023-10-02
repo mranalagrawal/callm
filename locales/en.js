@@ -281,8 +281,6 @@ export default {
       year: 'Year: {year}',
     },
     promoLabel: 'Promo',
-    addToCart: 'Add to Cart',
-    notifyMe: 'notify me',
     notifyMeTitle: 'Notify me when it arrives',
     notifyMeSubtitle: 'Enter your email and we will notify you when the product is available',
     notifyMeNote: 'You will receive an email when the product is available',

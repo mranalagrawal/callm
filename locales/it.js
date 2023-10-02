@@ -282,8 +282,6 @@ export default {
       year: 'Annata: {year}',
     },
     promoLabel: 'Promo',
-    addToCart: 'Aggiungi al carrello',
-    notifyMe: 'Avvisami',
     notifyMeTitle: 'Avvisami quando arriva',
     notifyMeSubtitle: 'Inserisci la tua mail e ti avviseremo quando il prodotto sarà disponibile',
     notifyMeNote: 'Riceverai una mail quando il prodotto sarà disponibile',

@@ -306,7 +306,7 @@ export default defineComponent({
                       @click.native="addToUserCart"
                     >
                       <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
-                      <span class="text-sm" v-text="$t('product.addToCart')" />
+                      <span class="text-sm" v-text="$t('common.cta.addToCart')" />
                     </CmwButton>
                     <Badge
                       v-show="cartQuantity && !isOpen"

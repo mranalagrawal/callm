@@ -284,8 +284,6 @@ export default {
       year: 'Année : {year}',
     },
     promoLabel: 'Promo',
-    addToCart: 'Ajouter au panier',
-    notifyMe: 'Prévenez-moi',
     notifyMeTitle: 'Avertissez-moi quand il arrive',
     notifyMeSubtitle: 'Entrez votre e-mail et nous vous informerons lorsque le produit sera disponible',
     notifyMeNote: 'Vous recevrez un e-mail lorsque le produit sera disponible',

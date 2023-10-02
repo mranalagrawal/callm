@@ -573,7 +573,7 @@ export default defineComponent({
                         @click.native="addToUserCart"
                       >
                         <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
-                        <span class="text-sm" v-text="$t('product.addToCart')" />
+                        <span class="text-sm" v-text="isDesktop ? $t('common.cta.addToCart') : $t('common.cta.addToCartSm')" />
                       </CmwButton>
                       <Badge
                         v-show="cartQuantity && !isOpen"
@@ -614,7 +614,7 @@ export default defineComponent({
                         @click.native="addToUserCart"
                       >
                         <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
-                        <span class="text-sm" v-text="$t('product.addToCart')" />
+                        <span class="text-sm" v-text="isDesktop ? $t('common.cta.addToCart') : $t('common.cta.addToCartSm')" />
                       </CmwButton>
                       <Badge
                         v-show="cartQuantity && !isOpen"
@@ -658,7 +658,7 @@ export default defineComponent({
                       @click.native="() => handleShowRequestModal(productDetails.feId)"
                     >
                       <VueSvgIcon :data="emailIcon" width="30" height="auto" />
-                      <span class="text-sm" v-text="$t('product.notifyMe')" />
+                      <span class="text-sm" v-text="isDesktop ? $t('common.cta.notifyMe') : $t('common.cta.notifyMeSm')" />
                     </CmwButton>
                   </div>
                 </div>

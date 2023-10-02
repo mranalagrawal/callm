@@ -1,6 +1,8 @@
 export default {
   cta: {
     addAddress: 'Ajoutez l\'adresse',
+    addToCart: 'Ajouter au panier',
+    addToCartSm: 'Ajouter au panier',
     apply: 'Appliquer',
     cancel: 'Annuler',
     cannot_order: '',
@@ -10,7 +12,8 @@ export default {
     goToCheckout: 'Aller à la caisse',
     nextPage: 'Page suivante',
     no: 'Non',
-    notifyMe: 'Avertissez-moi quand il arrive',
+    notifyMe: 'Dis-moi quand disponible',
+    notifyMeSm: 'Prévenez-moi',
     prevPage: 'Page précédente',
     print: 'Imprimer',
     readMore: 'Tout lire',
