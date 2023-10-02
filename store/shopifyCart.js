@@ -61,14 +61,15 @@ export const useShopifyCart = defineStore({
 
     async checkout() {
       const { customer } = useCustomer()
+
+      if (this.shopifyCart.note) {
+        await this.cartNoteUpdate(this.shopifyCart.note)
+      }
+
       if (!customer.id) {
         // crea checkoutUrl
         window.location = this.shopifyCart.checkoutUrl
         return
-      }
-
-      if (this.shopifyCart.note) {
-        await this.cartNoteUpdate(this.shopifyCart.note)
       }
 
       try {
