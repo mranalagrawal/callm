@@ -627,7 +627,7 @@ export default defineComponent({
         @remove-selection-from-query="removeSelectionFromQuery" @reset-filter="resetFilter"
       />
     </div>
-    <div class="<md:hidden" v-html="seoData.pageDescription" />
+    <div class="prose <md:hidden" v-html="seoData.pageDescription" />
     <ProductsResultsList
       :results="results" :total="total" :loading="loading"
       @update-sort-value="handleUpdateSortValue"

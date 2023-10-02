@@ -38,7 +38,7 @@ export default {
   note: 'Eventuali note di consegna {0}',
   noteDesktop: '(Presso, Interno, Citofono solo se diverso, Portineria)',
   country: 'Scegli paese',
-  recentlySeen: 'Visti di Recente',
+  recentlySeen: 'Visti di recente',
   sameProducer: 'Dallo stesso produttore',
   viewMore: 'Vedi di più',
   home: 'Home',

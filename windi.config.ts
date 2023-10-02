@@ -142,7 +142,7 @@ export default defineConfig({
       typography: {
         DEFAULT: {
           css: {
-            maxWidth: '60rem',
+            maxWidth: 'unset',
             a: {
               'color': themeConfig[store]?.colors.primary[400],
               'textDecoration': 'none',

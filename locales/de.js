@@ -283,7 +283,7 @@ export default {
       year: 'Jahr: {year}',
     },
     promoLabel: 'Werbeaktion',
-    addToCart: 'in den Warenkorb legen',
+    addToCart: 'In den Einkaufswagen',
     notifyMe: 'Benachrichtige mich',
     notifyMeTitle: 'Benachrichtigen Sie mich, wenn es ankommt',
     notifyMeSubtitle: 'Geben Sie Ihre E-Mail-Adresse ein und wir benachrichtigen Sie, sobald das Produkt verfügbar ist',
