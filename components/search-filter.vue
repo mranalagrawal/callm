@@ -411,7 +411,7 @@ export default defineComponent({
       cmwActiveSelect.value = ''
       showMobileFilters.value = false
       router.push(localePath({
-        name: '/catalog',
+        name: 'catalog',
         query: {
           ...route.value.query,
           price_from, // : this.minPrice,
@@ -444,7 +444,7 @@ export default defineComponent({
         query.page = 1 */
 
       router.push(localePath({
-        name: '/catalog',
+        name: 'catalog',
         query,
       }))
     }
@@ -461,7 +461,7 @@ export default defineComponent({
       if (id !== route.value.query[id]) { query.page = 1 }
 
       router.push(localePath({
-        name: '/catalog',
+        name: 'catalog',
         query,
       }))
     }
@@ -477,7 +477,7 @@ export default defineComponent({
       minPrice.value = minPriceTotal.value
       maxPrice.value = maxPriceTotal.value
       router.push(localePath({
-        name: '/catalog',
+        name: 'catalog',
         query: null,
       }))
     }

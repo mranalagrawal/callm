@@ -52,7 +52,7 @@ export default defineComponent({
       if (id !== route.value.query[id]) { query.page = '1' }
 
       router.push(localePath({
-        name: '/catalog',
+        name: 'catalog',
         query,
       }))
     }
@@ -66,7 +66,7 @@ export default defineComponent({
       if (`${query[keyword]}` === id.toString()) { delete query[keyword] } else { query[keyword] = id.toString() }
 
       router.push(localePath({
-        name: '/catalog',
+        name: 'catalog',
         query,
       }))
     }
@@ -75,7 +75,7 @@ export default defineComponent({
       cmwActiveSelect.value = ''
       showMobileFilters.value = false
       router.push(localePath({
-        name: '/catalog',
+        name: 'catalog',
         query: {
           ...route.value.query,
           price_from,
@@ -93,7 +93,7 @@ export default defineComponent({
       }
 
       router.push(localePath({
-        name: '/catalog',
+        name: 'catalog',
         query,
       }))
     }
