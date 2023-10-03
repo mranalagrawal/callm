@@ -321,17 +321,12 @@ export default defineComponent({
                 Privacy policy
               </NuxtLink>
               <NuxtLink
-                :to="localePath('/cookie')"
-                class="block text-white"
-              >
-                Cookie policy
-              </NuxtLink>
-              <NuxtLink
                 :to="localePath('/contact')"
                 class="block text-white"
               >
                 {{ $t('footer.contacts') }}
               </NuxtLink>
+              <Iubenda />
             </div>
           </div>
         </div>
