@@ -65,7 +65,7 @@ export default defineComponent({
             </tr>
           </tbody>
         </table>
-        <img :src="brand.image.url" alt="">
+        <img v-if="brand.image" :src="brand.image.url" alt="">
       </div>
     </div>
   </div>
