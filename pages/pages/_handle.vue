@@ -2,7 +2,7 @@
 import {
   defineComponent,
   inject, onBeforeMount, provide, readonly,
-  ref, useContext,
+  ref, useContext, useMeta,
   useRoute,
   useRouter, watch,
 } from '@nuxtjs/composition-api'
@@ -23,7 +23,7 @@ export default defineComponent({
     const { $cmwRepo, $cmwStore, $elastic, i18n, localePath } = useContext()
     const router = useRouter()
     const route = useRoute()
-    const pageData = ref({})
+    const pageData = ref<Record<string, any>>({})
     const inputParameters = ref({})
     const currentPage = ref({})
     const shortDescription = ref('')
@@ -186,6 +186,17 @@ export default defineComponent({
       if (Object.keys(aggregations).length) { aggregationsRef.value = aggregations }
     }
 
+    useMeta(() => ({
+      title: pageData.value?.seo?.title || '',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: pageData?.value?.seo?.description || '',
+        },
+      ],
+    }))
+
     onBeforeMount(fetchDataWithFetchState)
 
     watch(() => route.value?.query, () => fetchDataWithFetchState())
@@ -212,6 +223,7 @@ export default defineComponent({
       total,
     }
   },
+  head: {},
 })
 </script>
 
