@@ -163,7 +163,7 @@ export default defineComponent({
       if (props.inputParameters?.macros && search.value.aggregations['agg-macros']) {
         const currentMacrosVal = props.inputParameters?.macros
         const macrosBucket = search.value.aggregations['agg-macros'].inner.result.buckets.find(b => b.key === parseInt(currentMacrosVal))
-        h1MacroName.value = macrosBucket.name.buckets[0].key
+        h1MacroName.value = macrosBucket?.name.buckets[0].key
       }
 
       if (total.value === 0) {
