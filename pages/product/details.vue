@@ -479,7 +479,7 @@ export default defineComponent({
               {{ product.vendor }}
             </NuxtLink>
             <div class="prose" v-html="strippedContent" />
-            <p v-if="!product.quantityAvailable" class="text-primary-400">
+            <p v-if="!product.availableForSale" class="text-primary-400 sm:text-right">
               {{ $t('product.notAvailable') }}
             </p>
             <div v-if="isBundle" class="mb-4">
@@ -663,7 +663,7 @@ export default defineComponent({
                       @click.native="() => handleShowRequestModal(productDetails.feId)"
                     >
                       <VueSvgIcon :data="emailIcon" width="30" height="auto" />
-                      <span class="text-sm" v-text="isDesktop ? $t('common.cta.notifyMe') : $t('common.cta.notifyMeSm')" />
+                      <span class="text-sm leading-4" v-text="isDesktop ? $t('common.cta.notifyMe') : $t('common.cta.notifyMeSm')" />
                     </CmwButton>
                   </div>
                 </div>
