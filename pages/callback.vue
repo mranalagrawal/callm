@@ -40,5 +40,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <Loader />
+  <div class="min-h-screen">
+    <Loader />
+  </div>
 </template>
