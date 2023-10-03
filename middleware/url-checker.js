@@ -210,7 +210,7 @@ const REDIRECT_SEO_REGEX = {
   // "prosecco-pas-dos%C3%A8-nature-V232D5.htm" : 200,
   '^\/(.*?)-(V\\d+F\\d+).htm': 200,
   // "franciacorta-jeroboam-300-cl-V109F10.htm" : 200,
-  '^\/(.*?)-(V\\d+R\\d+).htm': 200,
+  '^\/(.*?)-(V\\d+(R|N)\\d+).htm': 200,
   // "chambolle-musigny-borgogna-V508R83.htm" : 200,
   '^\/(.*?)-(V\\d+).htm': 200,
   // "amarone-V11.htm" : 200,
