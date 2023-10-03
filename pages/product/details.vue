@@ -395,7 +395,7 @@ export default defineComponent({
       </div>
     </div>
     <div v-else>
-      <div v-if="product.title && brandMetaFields && amountMax">
+      <div v-if="product?.title && brandMetaFields">
         <TheBreadcrumbs v-if="!!productBreadcrumbs.length" :breadcrumbs="productBreadcrumbs" />
         <div class="md:(grid grid-cols-[40%_60%] min-h-[550px] my-4)">
           <!-- Image Section -->
