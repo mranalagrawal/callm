@@ -210,11 +210,14 @@ export default defineComponent({
       return ''// empty like old.com
     })
 
-    const amountMax = computed(() => (product.value.details.amountMax[$config.SALECHANNEL]
-      && product.value.details.amountMax[$config.SALECHANNEL] <= product.value.quantityAvailable)
-      ? product.value.details.amountMax[$config.SALECHANNEL]
-      : product.value.quantityAvailable,
-    )
+    const amountMax = computed(() => {
+      if (!product.value.details.amountMax) { return 0 }
+
+      return (product.value.details.amountMax[$config.SALECHANNEL]
+              && product.value.details.amountMax[$config.SALECHANNEL] <= product.value.quantityAvailable)
+        ? product.value.details.amountMax[$config.SALECHANNEL]
+        : product.value.quantityAvailable
+    })
 
     const isOnCart = computed(() => {
       const productIncart = shopifyCart.value?.lines?.edges.find(el => el.node.merchandise.id === product.value.shopify_product_variant_id)
