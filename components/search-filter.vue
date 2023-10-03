@@ -637,6 +637,7 @@ export default defineComponent({
       :base-path="$route.path"
     />
 
+    <div class="prose md:hidden" v-html="seoData.pageDescription" />
     <div>
       <div
         class="prose relative overflow-hidden pb-8"
