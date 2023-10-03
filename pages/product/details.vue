@@ -479,7 +479,7 @@ export default defineComponent({
               {{ product.vendor }}
             </NuxtLink>
             <div class="prose" v-html="strippedContent" />
-            <p v-if="!product.availableForSale" class="text-primary-400 sm:text-right">
+            <p v-if="!product.availableForSale" class="text-primary-400">
               {{ $t('product.notAvailable') }}
             </p>
             <div v-if="isBundle" class="mb-4">
