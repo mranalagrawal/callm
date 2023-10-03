@@ -389,8 +389,8 @@ export default defineComponent({
           alt="empty-bottles"
         >
         <div class="text-left">
-          <h2 class="h1 text-secondary" v-text="$t('notFoundTitle')" />
-          <p class="mb-8 md:w-3/5" v-text="$t('notFoundLine')" />
+          <h2 class="h1 text-secondary" v-text="$t('pages.notFound.title')" />
+          <p class="mb-8 md:w-3/5" v-text="$t('pages.notFound.line')" />
         </div>
       </div>
     </div>
