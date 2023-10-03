@@ -656,30 +656,30 @@ export default {
 
     const commonDisallowPaths = [
       '/*?*',
+      '/*?*=true',
       '/catalog',
       '/?search=',
-      '/!*?search=*',
+      '/*?search=*',
       '/?search=*',
       '/catalog.htm',
       '/catalog.htm?*',
-      '/!*catalog.htm',
-      '/!*catalog.htm?*',
-      '/!*?pricerange=*',
-      '/!*?acustom=*',
-      '/!*?pcustom=*',
-      '/!*?aid=*',
-      '/!*?sel=*',
-      '/!*?mid=*',
-      '/!*?zid=*',
-      '/!*?sid=*',
-      '/!*?fpid=*',
-      '/!*?fid=*',
-      '/!*?pid=*',
-      '/!*?s_id=*',
-      '/!*sort=*',
+      '/*catalog.htm',
+      '/*catalog.htm?*',
+      '/*?pricerange=*',
+      '/*?acustom=*',
+      '/*?pcustom=*',
+      '/*?aid=*',
+      '/*?sel=*',
+      '/*?mid=*',
+      '/*?zid=*',
+      '/*?sid=*',
+      '/*?fpid=*',
+      '/*?fid=*',
+      '/*?pid=*',
+      '/*?s_id=*',
+      '/*sort=*',
       '/notificadisponibilita',
       '/en/notificadisponibilita*',
-      '/it/',
     ]
 
     const disallowPaths = isProd
@@ -689,6 +689,7 @@ export default {
       : ['/']
 
     const robotsConfig = {
+      Allow: '*page',
       UserAgent: '*',
       Disallow: disallowPaths,
     }
