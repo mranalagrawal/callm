@@ -7,8 +7,27 @@ const COUNTRY_LETTERS = '(1|4|5|6|9|10|11|12|13|14|15|16|17|19|20|21|22|23|24|25
 
 const URL_WITH_CAPITALIZED_LETTERS = '^\/(.*[A-Z].*)-(.*?)\.htm$'
 
+const STATIC_PAGES = '^\/(vini-artigianali|vini-biodinamici|vini-biologici|vini-e-distillati-da-regalare|vini-in-anfora|vini-in-offerta|vini-lago-di-garda|vini-langhe|vini-maremma|vini-oltrepo-pavese|vini-ossidativi|vini-rari|vini-sassicaia|vini-senza-solfiti|vini-triple-a|vini-valtellina|vini-vegani)(_(\d+))?.htm'
+
 // avoid callmewine-api call to get the redirectUrl
 const REDIRECT_PUNTUALI = {
+  '/vini-artigianali.htm': '/pages/vini-artigianali',
+  '/vini-biodinamici.htm': '/pages/vini-biodinamici',
+  '/vini-biologici.htm': '/pages/vini-biologici',
+  '/vini-e-distillati-da-regalare.htm': '/pages/vini-e-distillati-da-regalare',
+  '/vini-in-anfora.htm': '/pages/vini-in-anfora',
+  '/vini-in-offerta.htm': '/pages/vini-in-offerta',
+  '/vini-lago-di-garda.htm': '/pages/vini-lago-di-garda',
+  '/vini-langhe.htm': '/pages/vini-langhe',
+  '/vini-maremma.htm': '/pages/vini-maremma',
+  '/vini-oltrepo-pavese.htm': '/pages/vini-oltrepo-pavese',
+  '/vini-ossidativia.htm': '/pages/vini-ossidativi',
+  '/vini-rari.htm': '/pages/vini-rari',
+  '/vini-sassicaia.htm': '/pages/vini-sassicaia',
+  '/vini-senza-solfiti.htm': '/pages/vini-senza-solfiti',
+  '/vini-triple-a.htm': '/pages/vini-triple-a',
+  '/vini-valtellina.htm': '/pages/vini-valtellina',
+  '/vini-vegani.htm': '/pages/vini-vegani',
   '/champagne-blanc-de-blancs-collin-ulysse-extra-brut-V63B409D4.htm': '/champagne-collin-ulysse-extra-brut-C9B409D4.htm',
   '/champagne-millesimato-laurent-perrier-brut-V65B520D3.htm': '/champagne-laurent-perrier-brut-C9B520D3.htm',
   '/alta-langa-spumante-germano-ettore-pas-dosè-nature-V10B121D5.htm': '/spumanti-germano-ettore-pas-dos%C3%A8-nature-C8B121D5.htm',
@@ -278,8 +297,19 @@ function pageWithFilterCode(routePath) {
   return routePath.match(/-([A-OQ-Z]\d+)+.htm/) // exclude P product pages
 }
 
+function oldStaticPages(routePath) {
+  const regex = new RegExp(STATIC_PAGES)
+  return routePath.match(regex)
+}
+
+function getStaticPageRedirectTo(routePath) {
+  const oldStaticPagesMatch = oldStaticPages(routePath)
+  console.log('oldStaticPagesMatch', oldStaticPagesMatch)
+  return `/pages/${oldStaticPagesMatch[1]}`
+}
+
 function plpWithOldPagination(routePath) {
-  return routePath.match(/-([A-OQ-Z]\d+)+_(\d+).htm/) // plp with paginations es vini-C1_2.htm
+  return routePath.match(/[a-zA-Z0-9-_]+_(\d+).htm/) // plp with paginations es vini-C1_2.htm, vini-rari_10.htm
 }
 
 function isBrandUrl(url) {
@@ -310,19 +340,35 @@ export default async function ({ redirect, route, $config, error, localePath, i1
       // console.log(`🚥(301) ${routePath} missing folder, redirect to ${redirectTo}`)
       redirect(301, redirectTo, queryParams)
     }
+  } else if (oldStaticPages(routePath)) {
+    // old static pages
+    const isOldPlpPaginationUrl = plpWithOldPagination(routePath)
+    if (isOldPlpPaginationUrl) {
+      console.log(`${routePath} is a plp with old pagination...`, isOldPlpPaginationUrl)
+      const page = isOldPlpPaginationUrl[1]
+      routePath = routePath.replace(`_${page}`, '')
+      console.log(`${routePath} cleaned...`)
+      queryParams.page = page // append pagination value to current query params
+    }
+
+    const redirectTo = prepareRedirect(getStaticPageRedirectTo(routePath))
+
+    return redirect(301, redirectTo, queryParams)
   } else if (pageWithFilterCode(routePath) || plpWithOldPagination(routePath)) {
     // PLP - listing pages with at least one filter/code part es C1, M1R13 ecc
     // console.log(`${routePath} is a plp/pageWithFilterCode searching for a match...`)
 
     const isOldPlpPaginationUrl = plpWithOldPagination(routePath)
     if (isOldPlpPaginationUrl) {
-      // console.log(`${routePath} is a plp with old pagination...`)
-      const page = isOldPlpPaginationUrl[2]
+      console.log(`${routePath} is a plp with old pagination...`, isOldPlpPaginationUrl)
+      const page = isOldPlpPaginationUrl[1]
       routePath = routePath.replace(`_${page}`, '')
+      console.log(`${routePath} cleaned...`)
       queryParams.page = page // append pagination value to current query params
     }
 
     let redirectTo = null
+
     // 1. searching in redirect puntuali/fissi
     redirectTo = searchRedirectPuntuali(routePath)
     // console.log(`${routePath} is redirectPuntuale ?`, redirectTo)
