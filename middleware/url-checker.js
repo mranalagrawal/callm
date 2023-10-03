@@ -308,7 +308,7 @@ export default async function ({ redirect, route, $config, error, localePath, i1
       })
       const redirectTo = prepareRedirect(brandUrl)
       // console.log(`🚥(301) ${routePath} missing folder, redirect to ${redirectTo}`)
-      redirect(301, redirectTo, queryParams)
+      redirect(301, localePath(redirectTo), queryParams)
     }
   } else if (pageWithFilterCode(routePath) || plpWithOldPagination(routePath)) {
     // PLP - listing pages with at least one filter/code part es C1, M1R13 ecc
@@ -330,7 +330,7 @@ export default async function ({ redirect, route, $config, error, localePath, i1
     if (redirectTo) {
       redirectTo = prepareRedirect(redirectTo)
       // console.log(`🚥(301) ${routePath} is redirectPuntuale -> redirectTo ${redirectTo}`)
-      return redirect(301, redirectTo, queryParams)
+      return redirect(301, localePath(redirectTo), queryParams)
     }
 
     // 2. searching in redirect seo rules/regex
@@ -360,23 +360,23 @@ export default async function ({ redirect, route, $config, error, localePath, i1
           redirect(301, brandUrl)
         } else {
           redirectTo = prepareRedirect(beRedirectTo)
-          console.log(`🚥(301) api redirect response: ${beRedirectTo}, redirectTo --> ${redirectTo}`)
-          redirect(301, redirectTo, queryParams)
+          // console.log(`🚥(301) api redirect response: ${beRedirectTo}, redirectTo --> ${redirectTo}`)
+          redirect(301, localePath(redirectTo), queryParams)
         }
       } catch (e) {
         // if bo can't respond - continue with old url instead of broken
         // console.log('🚥(301) error', { error: e.message })
       }
     } else if (matched && REDIRECT_SEO_REGEX[matched] === 200) {
-      console.log(`🚥${routePath} match ${matched} -> valid/200 url`)
+      // console.log(`🚥${routePath} match ${matched} -> valid/200 url`)
       // exception that need 301 redirect also if valid/200 url
       if (containsCapitalizedLetters(routePath) || needLettersReplace(routePath) || isOldPlpPaginationUrl) {
         redirectTo = prepareRedirect(routePath)
         // console.log(`🚥(301) ${routePath} contains capitalized or oldletters, redirect to  -> ${redirectTo}`)
         redirect(301, redirectTo, queryParams)
       } else if (routePath !== route.path) {
-        console.log(`🚥(301) ${routePath} is different from original ${route.path}, redirect to ${routePath}`)
-        redirect(301, routePath, queryParams)
+        // console.log(`🚥(301) ${routePath} is different from original ${route.path}, redirect to ${routePath}`)
+        redirect(301, localePath(routePath), queryParams)
       } else {
         // console.log(`🚥(200) ${routePath} -> continue`)
       }
@@ -385,8 +385,8 @@ export default async function ({ redirect, route, $config, error, localePath, i1
       error({ statusCode: 410, message: 'Resource is gone.' })
     }
   } else if (routePath !== route.path) {
-    console.log(`🚥(301) ${routePath} is different from original ${route.path}, redirect to ${routePath}`)
-    redirect(301, routePath, queryParams)
+    // console.log(`🚥(301) ${routePath} is different from original ${route.path}, redirect to ${routePath}`)
+    redirect(301, localePath(routePath), queryParams)
   }
   // default continue...
   // capitalized letters in PDP e BDP are handled directly in specific pages
