@@ -13,7 +13,7 @@ import {
 import logo from 'assets/svg/logo-call-me-wine.svg'
 import walletIcon from 'assets/svg/wallet.svg'
 import emailIcon from 'assets/svg/email.svg'
-import sentIcon from 'assets/svg/sent.svg'
+import paperPlaneIcon from 'assets/svg/paper-plane.svg'
 import themeConfig from '~/config/themeConfig'
 import { initialPageData } from '~/config/prismicConfig'
 import type { IPrismicPageData } from '~/types/prismic'
@@ -72,7 +72,7 @@ export default defineComponent({
       logo,
       mobileApps,
       paymentMethods,
-      sentIcon,
+      paperPlaneIcon,
       socialLinks,
       walletIcon,
     }
@@ -208,7 +208,7 @@ export default defineComponent({
                   variant="default-inverse"
                   :label="$t('common.cta.subscribe')"
                 />
-                <ButtonIcon v-else type="submit" :icon="sentIcon" variant="filled-white" class="!border-white" color="white" width="30" height="30" />
+                <ButtonIcon v-else type="submit" :icon="paperPlaneIcon" variant="filled-white" class="!border-white" color="white" width="30" height="30" />
               </div>
               <div class="mt-3">
                 <div class="custom-checkbox">
