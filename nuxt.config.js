@@ -392,6 +392,7 @@ export default {
   },
 
   i18n: {
+    detectBrowserLanguage: false,
     locales: storeLocales(process.env.STORE),
     defaultLocale: process.env.DEFAULT_LOCALE,
     lazy: true,
