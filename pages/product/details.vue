@@ -137,7 +137,7 @@ export default defineComponent({
 
     const { handleShowRequestModal } = useShowRequestModal()
 
-    useFetch(async ({ $sentry }) => {
+    const { fetchState } = useFetch(async ({ $sentry }) => {
       await $cmwRepo.products.getAll({
         first: 1,
         query: `tag:P${route.value.params.id}`,
@@ -298,7 +298,6 @@ export default defineComponent({
     }))
 
     return {
-      isDesktop,
       addIcon,
       amountMax,
       brand,
@@ -313,6 +312,7 @@ export default defineComponent({
       customerId,
       emailIcon,
       favouriteIcon,
+      fetchState,
       finalPrice,
       generateMetaLink,
       getCanOrder,
@@ -323,6 +323,7 @@ export default defineComponent({
       heartFullIcon,
       heartIcon,
       isBundle,
+      isDesktop,
       isOnCart,
       isOnFavourite,
       isOnSale,
@@ -380,7 +381,8 @@ export default defineComponent({
 
 <template>
   <div class="mt-4 max-w-screen-xl mx-auto <md:px-4">
-    <div v-if="$fetchState.error" class="relative text-center mt-12">
+    <div v-if="fetchState.pending" :class="fetchState?.pending" class="sr-only" />
+    <div v-else-if="fetchState?.error" class="relative text-center mt-12">
       <div class="md:(grid grid-cols-2 items-center)">
         <img
           class="w-3/4 mx-auto" src="https://cdn.shopify.com/s/files/1/0668/1860/5335/files/wine-stain.png?width=900"
@@ -392,8 +394,8 @@ export default defineComponent({
         </div>
       </div>
     </div>
-    <template v-else>
-      <div v-if="product.title && brandMetaFields">
+    <div v-else>
+      <div v-if="product.title && brandMetaFields && amountMax">
         <TheBreadcrumbs v-if="!!productBreadcrumbs.length" :breadcrumbs="productBreadcrumbs" />
         <div class="md:(grid grid-cols-[40%_60%] min-h-[550px] my-4)">
           <!-- Image Section -->
@@ -681,6 +683,6 @@ export default defineComponent({
           <RecommendedProducts :id="product.shopify_product_id" />
         </ClientOnly>
       </div>
-    </template>
+    </div>
   </div>
 </template>
