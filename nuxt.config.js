@@ -655,8 +655,6 @@ export default {
     const isCMWUKStore = process.env.STORE === 'CMW_UK'
 
     const commonDisallowPaths = [
-      '/*?*',
-      '/*?*=true',
       '/catalog',
       '/?search=',
       '/*?search=*',
@@ -680,6 +678,7 @@ export default {
       '/*sort=*',
       '/notificadisponibilita',
       '/en/notificadisponibilita*',
+      '/it/',
     ]
 
     const disallowPaths = isProd
@@ -688,15 +687,40 @@ export default {
         : [...commonDisallowPaths]
       : ['/']
 
-    const robotsConfig = {
-      Allow: isProd ? '*page' : '',
-      UserAgent: '*',
-      Disallow: disallowPaths,
-    }
-
-    if (isProd) { robotsConfig.Sitemap = req => `https://${req.headers.host}/sitemap.xml` }
-
-    return robotsConfig
+    return [
+      {
+        UserAgent: '*',
+        Disallow: [
+          '/*?*',
+          '/*?*=true',
+        ],
+        Allow: '*page',
+      },
+      {
+        Disallow: disallowPaths,
+        ...(isProd && { Sitemap: req => `https://${req.headers.host}/sitemap.xml` }),
+      },
+      {
+        UserAgent: 'dotbot',
+        Disallow: '/',
+      },
+      {
+        UserAgent: 'DotBot/1.2',
+        Disallow: '/',
+      },
+      {
+        UserAgent: 'BLEXBot/1.0',
+        Disallow: '/',
+      },
+      {
+        UserAgent: 'PetalBot',
+        Disallow: '/',
+      },
+      {
+        UserAgent: 'DataForSeoBot/1.0',
+        Disallow: '/',
+      },
+    ]
   },
 
 }
