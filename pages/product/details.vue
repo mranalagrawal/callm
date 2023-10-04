@@ -137,7 +137,7 @@ export default defineComponent({
 
     const { handleShowRequestModal } = useShowRequestModal()
 
-    useFetch(async ({ $sentry }) => {
+    const { fetchState } = useFetch(async ({ $sentry }) => {
       await $cmwRepo.products.getAll({
         first: 1,
         query: `tag:P${route.value.params.id}`,
@@ -210,11 +210,14 @@ export default defineComponent({
       return ''// empty like old.com
     })
 
-    const amountMax = computed(() => (product.value.details.amountMax[$config.SALECHANNEL]
-      && product.value.details.amountMax[$config.SALECHANNEL] <= product.value.quantityAvailable)
-      ? product.value.details.amountMax[$config.SALECHANNEL]
-      : product.value.quantityAvailable,
-    )
+    const amountMax = computed(() => {
+      if (!product.value.details.amountMax) { return 0 }
+
+      return (product.value.details.amountMax[$config.SALECHANNEL]
+              && product.value.details.amountMax[$config.SALECHANNEL] <= product.value.quantityAvailable)
+        ? product.value.details.amountMax[$config.SALECHANNEL]
+        : product.value.quantityAvailable
+    })
 
     const isOnCart = computed(() => {
       const productIncart = shopifyCart.value?.lines?.edges.find(el => el.node.merchandise.id === product.value.shopify_product_variant_id)
@@ -295,7 +298,6 @@ export default defineComponent({
     }))
 
     return {
-      isDesktop,
       addIcon,
       amountMax,
       brand,
@@ -310,6 +312,7 @@ export default defineComponent({
       customerId,
       emailIcon,
       favouriteIcon,
+      fetchState,
       finalPrice,
       generateMetaLink,
       getCanOrder,
@@ -320,6 +323,7 @@ export default defineComponent({
       heartFullIcon,
       heartIcon,
       isBundle,
+      isDesktop,
       isOnCart,
       isOnFavourite,
       isOnSale,
@@ -377,20 +381,21 @@ export default defineComponent({
 
 <template>
   <div class="mt-4 max-w-screen-xl mx-auto <md:px-4">
-    <div v-if="$fetchState.error" class="relative text-center mt-12">
+    <div v-if="fetchState.pending" :class="fetchState?.pending" class="sr-only" />
+    <div v-else-if="fetchState?.error" class="relative text-center mt-12">
       <div class="md:(grid grid-cols-2 items-center)">
         <img
           class="w-3/4 mx-auto" src="https://cdn.shopify.com/s/files/1/0668/1860/5335/files/wine-stain.png?width=900"
           alt="empty-bottles"
         >
         <div class="text-left">
-          <h2 class="h1 text-secondary" v-text="$t('notFoundTitle')" />
-          <p class="mb-8 md:w-3/5" v-text="$t('notFoundLine')" />
+          <h2 class="h1 text-secondary" v-text="$t('pages.notFound.title')" />
+          <p class="mb-8 md:w-3/5" v-text="$t('pages.notFound.line')" />
         </div>
       </div>
     </div>
-    <template v-else>
-      <div v-if="product.title && brandMetaFields">
+    <div v-else>
+      <div v-if="product?.title && brandMetaFields">
         <TheBreadcrumbs v-if="!!productBreadcrumbs.length" :breadcrumbs="productBreadcrumbs" />
         <div class="md:(grid grid-cols-[40%_60%] min-h-[550px] my-4)">
           <!-- Image Section -->
@@ -474,7 +479,7 @@ export default defineComponent({
               {{ product.vendor }}
             </NuxtLink>
             <div class="prose" v-html="strippedContent" />
-            <p v-if="!product.quantityAvailable" class="text-primary-400">
+            <p v-if="!product.availableForSale" class="text-primary-400">
               {{ $t('product.notAvailable') }}
             </p>
             <div v-if="isBundle" class="mb-4">
@@ -658,7 +663,7 @@ export default defineComponent({
                       @click.native="() => handleShowRequestModal(productDetails.feId)"
                     >
                       <VueSvgIcon :data="emailIcon" width="30" height="auto" />
-                      <span class="text-sm" v-text="isDesktop ? $t('common.cta.notifyMe') : $t('common.cta.notifyMeSm')" />
+                      <span class="text-sm leading-4" v-text="isDesktop ? $t('common.cta.notifyMe') : $t('common.cta.notifyMeSm')" />
                     </CmwButton>
                   </div>
                 </div>
@@ -678,6 +683,6 @@ export default defineComponent({
           <RecommendedProducts :id="product.shopify_product_id" />
         </ClientOnly>
       </div>
-    </template>
+    </div>
   </div>
 </template>

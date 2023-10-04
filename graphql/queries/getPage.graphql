@@ -5,6 +5,10 @@ query getPage(
   page(handle: $handle) {
     body
     id
+    seo {
+      description
+      title
+    }
     title
     rewriteUrl: metafield(namespace: "custom", key: "rewrite_url") {
       value

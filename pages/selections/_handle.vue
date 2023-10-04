@@ -113,7 +113,7 @@ export default defineComponent({
     <img v-if="collectionRef.image" :src="collectionRef.image.url" :alt="collectionRef.image.altText">
     <div v-html="collectionRef.descriptionHtml" />
 
-    <div v-if="!!sorted.length">
+    <div v-if="!!sorted?.length">
       <div class="hidden items-center gap-2 lg:flex">
         <!-- Todo: Implement availableLayouts when we can use the newest product box -->
         <!--        <div

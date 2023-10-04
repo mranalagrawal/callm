@@ -163,7 +163,7 @@ export default defineComponent({
       if (props.inputParameters?.macros && search.value.aggregations['agg-macros']) {
         const currentMacrosVal = props.inputParameters?.macros
         const macrosBucket = search.value.aggregations['agg-macros'].inner.result.buckets.find(b => b.key === parseInt(currentMacrosVal))
-        h1MacroName.value = macrosBucket.name.buckets[0].key
+        h1MacroName.value = macrosBucket?.name.buckets[0].key
       }
 
       if (total.value === 0) {
@@ -411,7 +411,7 @@ export default defineComponent({
       cmwActiveSelect.value = ''
       showMobileFilters.value = false
       router.push(localePath({
-        name: '/catalog',
+        name: 'catalog',
         query: {
           ...route.value.query,
           price_from, // : this.minPrice,
@@ -444,7 +444,7 @@ export default defineComponent({
         query.page = 1 */
 
       router.push(localePath({
-        name: '/catalog',
+        name: 'catalog',
         query,
       }))
     }
@@ -461,7 +461,7 @@ export default defineComponent({
       if (id !== route.value.query[id]) { query.page = 1 }
 
       router.push(localePath({
-        name: '/catalog',
+        name: 'catalog',
         query,
       }))
     }
@@ -477,7 +477,7 @@ export default defineComponent({
       minPrice.value = minPriceTotal.value
       maxPrice.value = maxPriceTotal.value
       router.push(localePath({
-        name: '/catalog',
+        name: 'catalog',
         query: null,
       }))
     }
@@ -637,6 +637,7 @@ export default defineComponent({
       :base-path="$route.path"
     />
 
+    <div class="prose md:hidden" v-html="seoData.pageDescription" />
     <div>
       <div
         class="prose relative overflow-hidden pb-8"

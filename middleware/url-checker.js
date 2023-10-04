@@ -323,7 +323,7 @@ export default async function ({ redirect, route, $config, error, localePath, i1
       })
       const redirectTo = prepareRedirect(brandUrl)
       // console.log(`🚥(301) ${routePath} missing folder, redirect to ${redirectTo}`)
-      redirect(301, redirectTo, queryParams)
+      redirect(301, localePath(redirectTo), queryParams)
     }
   } else if (oldStaticPages(routePath)) {
     // old static pages
@@ -362,7 +362,7 @@ export default async function ({ redirect, route, $config, error, localePath, i1
     if (redirectTo) {
       redirectTo = prepareRedirect(redirectTo)
       // console.log(`🚥(301) ${routePath} is redirectPuntuale -> redirectTo ${redirectTo}`)
-      return redirect(301, redirectTo, queryParams)
+      return redirect(301, localePath(redirectTo), queryParams)
     }
 
     // 2. searching in redirect seo rules/regex
@@ -393,7 +393,7 @@ export default async function ({ redirect, route, $config, error, localePath, i1
         } else {
           redirectTo = prepareRedirect(beRedirectTo)
           // console.log(`🚥(301) api redirect response: ${beRedirectTo}, redirectTo --> ${redirectTo}`)
-          redirect(301, redirectTo, queryParams)
+          redirect(301, localePath(redirectTo), queryParams)
         }
       } catch (e) {
         // if bo can't respond - continue with old url instead of broken
@@ -408,7 +408,7 @@ export default async function ({ redirect, route, $config, error, localePath, i1
         redirect(301, redirectTo, queryParams)
       } else if (routePath !== route.path) {
         // console.log(`🚥(301) ${routePath} is different from original ${route.path}, redirect to ${routePath}`)
-        redirect(301, routePath, queryParams)
+        redirect(301, localePath(routePath), queryParams)
       } else {
         // console.log(`🚥(200) ${routePath} -> continue`)
       }
@@ -418,7 +418,7 @@ export default async function ({ redirect, route, $config, error, localePath, i1
     }
   } else if (routePath !== route.path) {
     // console.log(`🚥(301) ${routePath} is different from original ${route.path}, redirect to ${routePath}`)
-    redirect(301, routePath, queryParams)
+    redirect(301, localePath(routePath), queryParams)
   }
   // default continue...
   // capitalized letters in PDP e BDP are handled directly in specific pages
