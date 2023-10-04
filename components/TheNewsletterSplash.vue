@@ -148,7 +148,7 @@ export default defineComponent({
                 </i18n>
               </template>
             </CmwCheckbox> -->
-            <Button class="w-max ml-auto my-4" size="sm" :label="$t('common.cta.subscribe')" type="submit" />
+            <CmwButton class="w-max ml-auto my-4" size="sm" :label="$t('common.cta.subscribe')" type="submit" />
           </form>
         </ValidationObserver>
 

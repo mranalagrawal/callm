@@ -23,7 +23,7 @@ export default defineComponent({
   scrollToTop: true,
   props: ['inputParameters'],
   setup(props) {
-    const { redirect, $config, i18n } = useContext()
+    const { redirect, $config, i18n, localePath } = useContext()
     const route = useRoute()
     const router = useRouter()
     const filtersStore = useFilters()
@@ -153,9 +153,7 @@ export default defineComponent({
         this.$sentry.captureException(new Error('Something went wrong on SEO API on listing page'))
       }
 
-      // const search = await searchResult.json()
       search.value = searchResult
-
       aggregations.value = search?.value.aggregations || {}
       results.value = search.value.hits.hits
 
@@ -165,7 +163,7 @@ export default defineComponent({
       if (props.inputParameters?.macros && search.value.aggregations['agg-macros']) {
         const currentMacrosVal = props.inputParameters?.macros
         const macrosBucket = search.value.aggregations['agg-macros'].inner.result.buckets.find(b => b.key === parseInt(currentMacrosVal))
-        h1MacroName.value = macrosBucket.name.buckets[0].key
+        h1MacroName.value = macrosBucket?.name.buckets[0].key
       }
 
       if (total.value === 0) {
@@ -412,15 +410,15 @@ export default defineComponent({
     const handleOnFooterClick = ({ price_from = '', price_to = '' }) => {
       cmwActiveSelect.value = ''
       showMobileFilters.value = false
-      router.push({
-        path: '/catalog',
+      router.push(localePath({
+        name: 'catalog',
         query: {
           ...route.value.query,
           price_from, // : this.minPrice,
           price_to, // : this.maxPrice,
           page: '1',
         },
-      })
+      }))
     }
 
     const handleUpdateTrigger = (key) => {
@@ -445,10 +443,10 @@ export default defineComponent({
       /* if (id !== this.active)
         query.page = 1 */
 
-      router.push({
-        path: '/catalog',
+      router.push(localePath({
+        name: 'catalog',
         query,
-      })
+      }))
     }
 
     const handleUpdateValueSelections = (id) => {
@@ -462,10 +460,10 @@ export default defineComponent({
 
       if (id !== route.value.query[id]) { query.page = 1 }
 
-      router.push({
-        path: '/catalog',
+      router.push(localePath({
+        name: 'catalog',
         query,
-      })
+      }))
     }
 
     const handleUpdateSortValue = (value) => {
@@ -478,10 +476,10 @@ export default defineComponent({
       showMobileFilters.value = false
       minPrice.value = minPriceTotal.value
       maxPrice.value = maxPriceTotal.value
-      router.push({
-        path: '/catalog',
+      router.push(localePath({
+        name: 'catalog',
         query: null,
-      })
+      }))
     }
 
     const removeSelectionFromQuery = (selection) => {
@@ -493,23 +491,23 @@ export default defineComponent({
 
       delete query[selection]
 
-      router.push({
-        path: 'catalog',
+      router.push(localePath({
+        name: 'catalog',
         query: {
           ...query,
           page: 1,
         },
-      })
+      }))
     }
 
     const sortBy = (field, direction) => {
       const query = Object.assign({}, props.inputParameters)
       query.sort = field
       query.direction = direction
-      router.push({
-        path: 'catalog',
+      router.push(localePath({
+        name: 'catalog',
         query,
-      })
+      }))
     }
 
     // WATCHERS
@@ -629,7 +627,7 @@ export default defineComponent({
         @remove-selection-from-query="removeSelectionFromQuery" @reset-filter="resetFilter"
       />
     </div>
-    <div class="<md:hidden" v-html="seoData.pageDescription" />
+    <div class="prose <md:hidden" v-html="seoData.pageDescription" />
     <ProductsResultsList
       :results="results" :total="total" :loading="loading"
       @update-sort-value="handleUpdateSortValue"
@@ -639,15 +637,16 @@ export default defineComponent({
       :base-path="$route.path"
     />
 
+    <div class="prose md:hidden" v-html="seoData.pageDescription" />
     <div>
       <div
-        class="relative overflow-hidden pb-8"
+        class="prose relative overflow-hidden pb-8"
         :class="showPageFullDescription
           ? 'h-full'
           : 'h-[200px] after:(content-DEFAULT absolute w-full h-1/2 bottom-0 left-0 bg-gradient-to-b from-transparent to-white)'"
         v-html="seoData?.pageFullDescription ? seoData.pageFullDescription : ''"
       />
-      <Button
+      <CmwButton
         v-if="!showPageFullDescription" class="justify-end pb-8" variant="text"
         @click.native="showPageFullDescription = true"
       >
@@ -656,15 +655,15 @@ export default defineComponent({
           v-if="seoData?.pageFullDescription" width="18" height="18"
           :data="require(`@/assets/svg/chevron-down.svg`)"
         />
-      </Button>
+      </CmwButton>
     </div>
     <Loader v-if="loading" />
 
     <div v-if="total > 0 && !isDesktop" class="sticky bottom-8 w-[min(100%,_14rem)] m-inline-auto">
-      <Button @click.native="showMobileFilters = !showMobileFilters">
+      <CmwButton @click.native="showMobileFilters = !showMobileFilters">
         <VueSvgIcon width="28" height="28" :data="require(`@/assets/svg/filter.svg`)" />
         <span class="ml-2">{{ $t('search.showFilters') }}</span>
-      </Button>
+      </CmwButton>
     </div>
 
     <ClientOnly>
@@ -678,13 +677,13 @@ export default defineComponent({
             <div class="sticky grid grid-cols-[100px_auto_100px] justify-between items-center px-4 shadow">
               <div class="text-center w-max text-xs cmw-font-bold" v-text="$t('common.filters.by')" />
               <div>
-                <Button
+                <CmwButton
                   v-if="!!activeSelections.length || Object.values(view).some(v => v !== null)" variant="text"
                   size="sm" :label="$t('search.removeFilters')" @click.native="resetFilter"
                 />
               </div>
               <ButtonIcon
-                class="justify-self-end" :icon="closeIcon" variant="icon" :size="20"
+                class="justify-self-end" :icon="closeIcon" variant="icon" size="20"
                 @click.native="showMobileFilters = false"
               />
             </div>
@@ -807,7 +806,7 @@ export default defineComponent({
             <!-- splash-footer -->
             <div class="sticky flex bottom-0 left-0 w-full bg-white z-content shadow-elevation">
               <div class="w-[min(100%,_14rem)] m-inline-auto place-self-center">
-                <Button :label="$t('search.showResults', { count: total })" @click.native="showMobileFilters = false" />
+                <CmwButton :label="$t('search.showResults', { count: total })" @click.native="showMobileFilters = false" />
               </div>
             </div>
           </div>

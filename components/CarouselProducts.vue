@@ -68,7 +68,7 @@ export default defineComponent({
     <div class="h2 text-center py-4" v-text="title" />
     <SsrCarousel
       :key="products.length" :responsive="responsive" :show-arrows="isTablet"
-      :show-dots="isTablet" class="relative"
+      :show-dots="true" class="relative"
     >
       <div v-for="(product, idx) in products" :key="generateKey(`${title}-${product.id}`)" class="my-8">
         <ProductBoxVertical :product="product" :position="idx + 1" />
@@ -100,3 +100,15 @@ export default defineComponent({
     </SsrCarousel>
   </div>
 </template>
+
+<style scoped>
+@screen desktop-wide {
+  ::v-deep(.ssr-carousel-back-button) {
+    left: -2%;
+  }
+
+  ::v-deep(.ssr-carousel-next-button) {
+    right: -2%;
+  }
+}
+</style>

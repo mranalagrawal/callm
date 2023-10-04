@@ -15,5 +15,10 @@ export default {
       checkout_invoice_company_vat: 'Umsatzsteuer-Identifikationsnummer',
       checkout_invoice_private_taxcode: 'Steuernummer',
     },
+    cart: {
+      cart_order_note: 'Hinweis',
+      cart_order_note_title: 'Hinweis hinzufügen (optional)',
+      cart_order_note_placeholder: 'Geben Sie Ihre Nachricht ein',
+    },
   },
 }

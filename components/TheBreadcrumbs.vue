@@ -22,7 +22,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <nav class="<md:hidden md:(flex items-center) my-2 font-sans text-sm">
+  <nav class="<md:sr-only md:(flex items-center) my-2 font-sans text-sm">
     <div v-for="({ label, to }) in shallowBreadcrumb" v-once :key="to">
       <NuxtLink
         class="text-primary-400"

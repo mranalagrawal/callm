@@ -220,7 +220,7 @@ export default {
             </template>
           </CmwCheckbox>
         </div>
-        <Button class="w-max" :label="$t('common.cta.confirm').toString()" type="submit" />
+        <CmwButton class="w-max" :label="$t('common.cta.confirm').toString()" type="submit" />
       </div>
     </form>
   </ValidationObserver>

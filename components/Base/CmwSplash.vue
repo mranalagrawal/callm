@@ -74,7 +74,7 @@ export default defineComponent({
             <div v-if="title" class="text-center h3 pt-4" v-text="title" />
             <div v-if="subtitle" class="text-center my-2 max-w-3/4 mx-auto" v-text="subtitle" />
             <div class="absolute top-0 right-0">
-              <ButtonIcon :icon="closeIcon" variant="icon" :size="18" @click.native="closeModal" />
+              <ButtonIcon :icon="closeIcon" variant="icon" size="18" @click.native="closeModal" />
             </div>
           </div>
           <!-- splash-body -->

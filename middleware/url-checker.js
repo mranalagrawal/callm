@@ -7,6 +7,10 @@ const COUNTRY_LETTERS = '(1|4|5|6|9|10|11|12|13|14|15|16|17|19|20|21|22|23|24|25
 
 const URL_WITH_CAPITALIZED_LETTERS = '^\/(.*[A-Z].*)-(.*?)\.htm$'
 
+const STATIC_PAGES = '^\/(vini-artigianali|vini-biodinamici|vini-biologici|vini-e-distillati-da-regalare|vini-in-anfora|vini-in-offerta|vini-lago-di-garda|vini-langhe|vini-maremma|vini-oltrepo-pavese|vini-ossidativi|vini-rari|vini-sassicaia|vini-senza-solfiti|vini-triple-a|vini-valtellina|vini-vegani)(_(\\d+))?.htm'
+
+const SLUG_REGEX = '[a-zA-Z0-9\-._~%!$&\'()*+,;=:@]'
+
 // avoid callmewine-api call to get the redirectUrl
 const REDIRECT_PUNTUALI = {
   '/champagne-blanc-de-blancs-collin-ulysse-extra-brut-V63B409D4.htm': '/champagne-collin-ulysse-extra-brut-C9B409D4.htm',
@@ -64,78 +68,78 @@ const REDIRECT_PUNTUALI = {
 const REDIRECT_SEO_REGEX = {
   // ********************* REDIRECT - 301
   // exception for C+V
-  '^\/(.*?)-(C8V\\d+).htm': 200,
-  '^\/(.*?)-(C9V\\d+).htm': 200,
-  '^\/(.*?)-((C|M)\\d+V\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(C8V\\d+).htm`]: 200,
+  [`^\/${SLUG_REGEX}+-(C9V\\d+).htm`]: 200,
+  [`^\/${SLUG_REGEX}+-((C|M)\\d+V\\d+).htm`]: 301,
   // "vini-meursault-C1V166.htm" : 301,
 
-  '^\/(.*?)-(C\\d+B\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(C\\d+B\\d+).htm`]: 301,
   // "champagne-collin-ulysse-C9B409.htm" : 301,
 
-  '^\/(.*?)-(C\\d+V\\d+B\\d+F\\d+R\\d+A\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(C\\d+V\\d+B\\d+F\\d+R\\d+A\\d+).htm`]: 301,
   // "armagnac-bas-armagnac-dartigalongue-bottiglia-70-cl-francia-1996-C19V361B854F6R15A22.htm" : 301,
 
-  '^\/(.*?)-(C\\d+B\\d+F\\d+R\\d+A\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(C\\d+B\\d+F\\d+R\\d+A\\d+).htm`]: 301,
   // "vini-domaine-giacometti-bottiglia-75-cl-corsica-2020-C1B2234F7R260A38.htm" : 301,
-  '^\/(.*?)-(C\\d+V\\d+F\\d+R\\d+A\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(C\\d+V\\d+F\\d+R\\d+A\\d+).htm`]: 301,
   // "vini-albana-secco-bottiglia-75-cl-italia-2022-C1V4F7R1A43.htm" : 301,
-  '^\/(.*?)-(C\\d+V\\d+B\\d+R\\d+A\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(C\\d+V\\d+B\\d+R\\d+A\\d+).htm`]: 301,
   // "rum-rum-invecchiato-transcontinental-rum-line-panama-2011-C14V330B1067R179A7.htm" : 301,
-  '^\/(.*?)-(C\\d+V\\d+B\\d+F\\d+A\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(C\\d+V\\d+B\\d+F\\d+A\\d+).htm`]: 301,
   // "champagne-champagne-millesimato-veuve-clicquot-bottiglia-75-cl-2012-C9V65B1090F7A6" : 301,
-  '^\/(.*?)-(C\\d+V\\d+B\\d+F\\d+R\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(C\\d+V\\d+B\\d+F\\d+R\\d+).htm`]: 301,
   // "vini-ploussard-tony-bornard-bottiglia-75-cl-jura-C1V493B2575F7R80.htm" : 301,
-  '^\/(.*?)-(C\\d+V\\d+B\\d+R\\d+D\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(C\\d+V\\d+B\\d+R\\d+D\\d+).htm`]: 301,
   // "vini-spumante-metodo-classico-rev%C3%AC-italia-pas-dos%C3%A8-nature-C1V275B1334R1D5.htm" : 301,
-  '^\/(.*?)-(C\\d+V\\d+B\\d+R\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(C\\d+V\\d+B\\d+R\\d+).htm`]: 301,
   // "vini-bianchi-trebbiano-toscano-guccione-sicilia-C6V298B1614R72.htm" : 301,
-  '^\/(.*?)-(C\\d+V\\d+B\\d+D\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(C\\d+V\\d+B\\d+D\\d+).htm`]: 301,
   // "champagne-champagne-millesimato-dom-perignon-brut-C9V65B886D3.htm" : 301,
-  '^\/(.*?)-(C\\d+V\\d+B\\d+F\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(C\\d+V\\d+B\\d+F\\d+).htm`]: 301,
   // "vini-rossi-bolgheri-rosso-grattamacco-magnum-150-cl-C5V29B142F9.htm" : 301,
-  '^\/(.*?)-(C\\d+V\\d+B\\d+A\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(C\\d+V\\d+B\\d+A\\d+).htm`]: 301,
   // "vini-rossi-bolgheri-rosso-grattamacco-magnum-150-cl-C5V29B142F9.htm" : 301,
 
-  '^\/(.*?)-(C\\d+B\\d+D\\d+A\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(C\\d+B\\d+D\\d+A\\d+).htm`]: 301,
   // "champagne-krug-brut-senza-annata-C9B454D3A1.htm" : 301,
-  '^\/(.*?)-(C\\d+B\\d+F\\d+A\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(C\\d+B\\d+F\\d+A\\d+).htm`]: 301,
   // "vini-barbacarlo-bottiglia-75-cl-2016-C1B701F7A2.htm" : 301,
-  '^\/(.*?)-(C\\d+B\\d+F\\d+R\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(C\\d+B\\d+F\\d+R\\d+).htm`]: 301,
   // "champagne-pol-roger-jeroboam-300-cl-francia-C9B404F10R15.htm" : 301,
-  '^\/(.*?)-(C\\d+B\\d+R\\d+A\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(C\\d+B\\d+R\\d+A\\d+).htm`]: 301,
   // "vini-chateau-lafite-rothschild-francia-2010-C1B2090R15A8.htm" : 301,
-  '^\/(.*?)-(C\\d+V\\d+F\\d+R\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(C\\d+V\\d+F\\d+R\\d+).htm`]: 301,
   // "vini-saperavi-bottiglia-75-cl-georgia-C1V260F7R16.htm" : 301,
-  '^\/(.*?)-(C\\d+V\\d+R\\d+A\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(C\\d+V\\d+R\\d+A\\d+).htm`]: 301,
   // "vini-pinot-nero-borgogna-2017-C1V222R83A32.htm" : 301,
 
-  '^\/(.*?)-(C\\d+V\\d+B\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(C\\d+V\\d+B\\d+).htm`]: 301,
   // "vini-bianchi-malvasia-di-candia-vino-del-poggio-C6V155B763.htm" : 301,
-  '^\/(.*?)-(C\\d+V\\d+D\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(C\\d+V\\d+D\\d+).htm`]: 301,
   // "spumanti-nero-buono-extra-brut-C8V187D4.htm" : 301,
 
-  '^\/(.*?)-(C\\d+R\\d+D\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(C\\d+R\\d+D\\d+).htm`]: 301,
   // "spumanti-toscana-brut-C8R73D3.htm" : 301,
 
-  '^\/(.*?)-(V\\d+B\\d+F\\d+R\\d+A\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(V\\d+B\\d+F\\d+R\\d+A\\d+).htm`]: 301,
   // "malvasia-istriana-zidarich-bottiglia-75-cl-friuli-venezia-giulia-2019-V156B174F7R63A37.htm" : 301,
 
-  '^\/(.*?)-(V\\d+B\\d+F\\d+A\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(V\\d+B\\d+F\\d+A\\d+).htm`]: 301,
   // "schioppettino-bressan-bottiglia-75-cl-2016-V268B224F7A2.htm" : 301,
-  '^\/(.*?)-(V\\d+B\\d+F\\d+R\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(V\\d+B\\d+F\\d+R\\d+).htm`]: 301,
   // "champagne-blanc-de-noirs-freres-laherte-bottiglia-75-cl-regione-champagne-V64B518F7R84.htm" : 301,
-  '^\/(.*?)-(V\\d+B\\d+R\\d+A\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(V\\d+B\\d+R\\d+A\\d+).htm`]: 301,
   // "barolo-bartolo-mascarello-piemonte-2012-V24B184R69A6.htm" : 301,
-  '^\/(.*?)-(V\\d+B\\d+R\\d+D\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(V\\d+B\\d+R\\d+D\\d+).htm`]: 301,
   // "spumante-metodo-classico-chemin-des-vignobles-valle-d-aosta-extra-brut-V275B2165R76D4" : 301,
-  '^\/(.*?)-(V\\d+F\\d+R\\d+A\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(V\\d+F\\d+R\\d+A\\d+).htm`]: 301,
   // "vino-bianco-blend-di-uve-bottiglia-75-cl-victoria-2019-V319F7R268A37.htm" : 301,
 
-  '^\/(.*?)-(V\\d+B\\d+D\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(V\\d+B\\d+D\\d+).htm`]: 301,
   // "champagne-premier-cru-gaston-chiquet-brut-V441B900D3.htm" : 301,
-  '^\/(.*?)-(V\\d+F\\d+R\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(V\\d+F\\d+R\\d+).htm`]: 301,
   // "savagnin-bottiglia-62-cl-jura-V264F5R80" : 301,
-  '^\/(.*?)-(V\\d+R\\d+A\\d+).htm': 301,
+  [`^\/${SLUG_REGEX}+-(V\\d+R\\d+A\\d+).htm`]: 301,
   // "alta-langa-spumante-italia-2019-V10R1A37.htm" : 301,
 
   // DA RIVEDERE '^\/[a-z0-9]+(?:-[a-z0-9]+)*-(B\\d+).htm': 301,
@@ -144,60 +148,60 @@ const REDIRECT_SEO_REGEX = {
   // "????? vini-oltrepo-pavese_2.htm" : 301
 
   // macro categories custom rule to catch macros C to be transformed in M
-  // non serve + spostato nel prepareRedirect '^\/(.*?)-(C(?:1|2|3|4|54|57|64|66|75|78|87|95|97|99|104|106|109))(.*?).htm': '/customRedirectMacrocategories',
+  // non serve + spostato nel prepareRedirect '^\/${SLUG_REGEX}+-(C(?:1|2|3|4|54|57|64|66|75|78|87|95|97|99|104|106|109))(.*?).htm': '/customRedirectMacrocategories',
 
   // new letters are ok, if is not required a 301
-  [`M${MACRO_LETTERS}[A-Z.]`]: 200,
-  [`N${COUNTRY_LETTERS}[A-Z.]`]: 200,
+  [`^\/${SLUG_REGEX}+M${MACRO_LETTERS}[A-Z.]`]: 200,
+  [`^\/${SLUG_REGEX}+N${COUNTRY_LETTERS}[A-Z.]`]: 200,
 
   // ********************* STATUS OK - 200
-  '^\/(.*?)-(C\\d+B\\d+A\\d+).htm': 200,
+  [`^\/${SLUG_REGEX}+-(C\\d+B\\d+A\\d+).htm`]: 200,
   // "champagne-dom-perignon-1996-C9B886A22" : 200,
-  '^\/(.*?)-(C\\d+B\\d+R\\d+).htm': 200,
+  [`^\/${SLUG_REGEX}+-(C\\d+B\\d+R\\d+).htm`]: 200,
   // "vini-podere-della-civettaja-toscana-C1B1288R73.htm" : 200,
-  '^\/(.*?)-(C\\d+B\\d+F\\d+).htm': 200,
+  [`^\/${SLUG_REGEX}+-(C\\d+B\\d+F\\d+).htm`]: 200,
   // "champagne-krug-magnum-150-cl-C9B454F9.htm" : 200,
-  '^\/(.*?)-(C\\d+B\\d+D\\d+).htm': 200,
+  [`^\/${SLUG_REGEX}+-(C\\d+B\\d+D\\d+).htm`]: 200,
   // "spumanti-tasca-d-almerita-brut-C8B87D3.htm" : 200,
-  '^\/(.*?)-(C\\d+F\\d+R\\d+).htm': 200,
+  [`^\/${SLUG_REGEX}+-(C\\d+F\\d+R\\d+).htm`]: 200,
   // "spumanti-jeroboam-300-cl-italia-C8F10R1.htm" : 200,
-  '^\/(.*?)-(C\\d+V\\d+A\\d+).htm': 200,
+  [`^\/${SLUG_REGEX}+-(C\\d+V\\d+A\\d+).htm`]: 200,
   // "vini-gevrey-chambertin-2018-C1V120A33.htm" : 200,
-  '^\/(.*?)-(C\\d+V\\d+F\\d+).htm': 200,
+  [`^\/${SLUG_REGEX}+-(C\\d+V\\d+F\\d+).htm`]: 200,
   // "spumanti-franciacorta-magnum-150-cl-C8V109F9.htm" : 200,
-  '^\/(.*?)-(C\\d+V\\d+R\\d+).htm': 200,
+  [`^\/${SLUG_REGEX}+-(C\\d+V\\d+R\\d+).htm`]: 200,
   // "vini-dolci-passito-friuli-venezia-giulia-C10V202R63.htm" : 200,
-  '^\/(.*?)-(C\\d+A\\d+).htm': 200,
+  [`^\/${SLUG_REGEX}+-(C\\d+A\\d+).htm`]: 200,
   // "champagne-2008-C9A10.htm" : 200,
-  '^\/(.*?)-(C\\d+D\\d+).htm': 200,
+  [`^\/${SLUG_REGEX}+-(C\\d+D\\d+).htm`]: 200,
   // "spumanti-brut-C8D3.htm" : 200,
-  '^\/(.*?)-(C\\d+F\\d+).htm': 200,
+  [`^\/${SLUG_REGEX}+-(C\\d+F\\d+).htm`]: 200,
   // "champagne-champagne-pinot-meunier-C9V66.htm" : 200,
-  '^\/(.*?)-(C\\d+R\\d+).htm': 200,
+  [`^\/${SLUG_REGEX}+-(C\\d+R\\d+).htm`]: 200,
   // "gin-giappone-C16R19.htm" : 200,
-  '^\/(.*?)-(C\\d+|).htm': 200,
+  [`^\/${SLUG_REGEX}+-(C\\d+|).htm`]: 200,
   // "vini-bianchi-C6.htm" : 200,
-  '^\/(.*?)-(V\\d+B\\d+A\\d+).htm': 200,
+  [`^\/${SLUG_REGEX}+-(V\\d+B\\d+A\\d+).htm`]: 200,
   // "barolo-lorenzo-accomasso-2014-V24B1973A4.htm" : 200,
-  '^\/(.*?)-(V\\d+B\\d+F\\d+).htm': 200,
+  [`^\/${SLUG_REGEX}+-(V\\d+B\\d+F\\d+).htm`]: 200,
   // "champagne-millesimato-moet-chandon-bottiglia-75-cl-V65B61F7.htm" : 200,
-  '^\/(.*?)-(V\\d+B\\d+R\\d+).htm': 200,
+  [`^\/${SLUG_REGEX}+-(V\\d+B\\d+R\\d+).htm`]: 200,
   // "pinot-nero-domaine-faiveley-borgogna-V222B867R83.htm" : 200,
-  '^\/(.*?)-(V\\d+A\\d+).htm': 200,
+  [`^\/${SLUG_REGEX}+-(V\\d+A\\d+).htm`]: 200,
   // "barolo-2016-V24A2.htm" : 200,
-  '^\/(.*?)-(V\\d+B\\d+).htm': 200,
+  [`^\/${SLUG_REGEX}+-(V\\d+B\\d+).htm`]: 200,
   // "barolo-giuseppe-rinaldi-V24B369.htm" : 200,
-  '^\/(.*?)-(V\\d+D\\d+).htm': 200,
+  [`^\/${SLUG_REGEX}+-(V\\d+D\\d+).htm`]: 200,
   // "prosecco-pas-dos%C3%A8-nature-V232D5.htm" : 200,
-  '^\/(.*?)-(V\\d+F\\d+).htm': 200,
+  [`^\/${SLUG_REGEX}+-(V\\d+F\\d+).htm`]: 200,
   // "franciacorta-jeroboam-300-cl-V109F10.htm" : 200,
-  '^\/(.*?)-(V\\d+R\\d+).htm': 200,
+  [`^\/${SLUG_REGEX}+-(V\\d+(R|N)\\d+).htm`]: 200,
   // "chambolle-musigny-borgogna-V508R83.htm" : 200,
-  '^\/(.*?)-(V\\d+).htm': 200,
+  [`^\/${SLUG_REGEX}+-(V\\d+).htm`]: 200,
   // "amarone-V11.htm" : 200,
 
-  '^\/(\\w+)\/(.*?)-(B\\d+).htm$': 200,
-  // '^\/$': 200,
+  [`^\/(\\w+)\/${SLUG_REGEX}+-(B\\d+).htm$`]: 200,
+  // `^\/$': 200,
 }
 
 function searchRedirectPuntuali(urlPath) {
@@ -269,6 +273,8 @@ function prepareRedirect(redirectUrl) {
 
   redirectUrl = urlToLowerCase(redirectUrl)
 
+  redirectUrl = !redirectUrl.startsWith('/') ? `/${redirectUrl}` : redirectUrl
+
   return redirectUrl
 }
 
@@ -276,63 +282,98 @@ function pageWithFilterCode(routePath) {
   return routePath.match(/-([A-OQ-Z]\d+)+.htm/) // exclude P product pages
 }
 
+function oldStaticPages(routePath) {
+  const regex = new RegExp(STATIC_PAGES)
+  const matches = routePath.match(regex)
+  return matches
+}
+
+function getStaticPageRedirectTo(routePath) {
+  const oldStaticPagesMatch = oldStaticPages(routePath)
+  return `/pages/${oldStaticPagesMatch[1]}`
+}
+
 function plpWithOldPagination(routePath) {
-  return routePath.match(/-([A-OQ-Z]\d+)+_(\d+).htm/) // plp with paginations es vini-C1_2.htm
+  return routePath.match(/[^/]+_(\d+).htm/) // plp with paginations es vini-C1_2.htm, vini-rari_10.htm
 }
 
 function isBrandUrl(url) {
-  return url.match(/[\w\/]+(?:-[\w]+)*-(B\d+)+.htm/)
+  return url.match(/[^\/]+-(B\d+)+.htm/)
+}
+
+function clearRoutePath(routePath) {
+  if (routePath !== '/' && routePath.endsWith('/')) {
+    return routePath.slice(0, -1)
+  }
+  return routePath
 }
 
 export default async function ({ redirect, route, $config, error, localePath, i18n }) {
   const queryParams = route.query
+  let routePath = clearRoutePath(route.path)
   // BDP - brand detail page
-  if (isBrandUrl(route.path)) {
-    // console.log(`${route.path} is a brandPage...`)
+  if (isBrandUrl(routePath)) {
+    // console.log(`${routePath} is a brandPage...`)
     // only /brand-slug-B123.htm, without initial folder ignore /cantina/brand-slug-B123.htm
-    if (route.path.match(/^\/[\w]+(?:-[\w]+)*-(B\d+)+.htm/)) {
-      // console.log(`${route.path} , remove slash ${route.path.substring(1)}`)
+    if (routePath.match(/^\/[^\/]+-(B\d+)+.htm/)) {
+      // console.log(`${routePath} , remove slash ${routePath.substring(1)}`)
       const brandUrl = localePath({
         name: 'winery-handle',
-        params: { handle: route.path.substring(1) },
+        params: { handle: routePath.substring(1) },
       })
       const redirectTo = prepareRedirect(brandUrl)
-      // console.log(`🚥(301) ${route.path} missing folder, redirect to ${redirectTo}`)
-      redirect(301, redirectTo, queryParams)
+      // console.log(`🚥(301) ${routePath} missing folder, redirect to ${redirectTo}`)
+      redirect(301, localePath(redirectTo), queryParams)
     }
-  } else if (pageWithFilterCode(route.path) || plpWithOldPagination(route.path)) {
-    // PLP - listing pages with at least one filter/code part es C1, M1R13 ecc
-    // console.log(`${route.path} is a plp/pageWithFilterCode searching for a match...`)
-
-    let urlPath = route.path
-    const isOldPlpPaginationUrl = plpWithOldPagination(urlPath)
+  } else if (oldStaticPages(routePath)) {
+    // old static pages
+    // console.log(`${routePath} old static page...`)
+    const isOldPlpPaginationUrl = plpWithOldPagination(routePath)
     if (isOldPlpPaginationUrl) {
-      // console.log(`${urlPath} is a plp with old pagination...`)
-      const page = isOldPlpPaginationUrl[2]
-      urlPath = urlPath.replace(`_${page}`, '')
+      // console.log(`${routePath} is a plp with old pagination...`, isOldPlpPaginationUrl)
+      const page = isOldPlpPaginationUrl[1]
+      routePath = routePath.replace(`_${page}`, '')
+      // console.log(`${routePath} cleaned...`)
+      // do not append page parameter as specification queryParams.page = page // append pagination value to current query params
+    }
+
+    const redirectTo = prepareRedirect(getStaticPageRedirectTo(routePath))
+    // console.log(`🚥(301) ${routePath} is oldStaticPage redirectTo ...`, redirectTo)
+
+    return redirect(301, redirectTo)
+  } else if (pageWithFilterCode(routePath) || plpWithOldPagination(routePath)) {
+    // PLP - listing pages with at least one filter/code part es C1, M1R13 ecc
+    // console.log(`${routePath} is a plp/pageWithFilterCode searching for a match...`)
+
+    const isOldPlpPaginationUrl = plpWithOldPagination(routePath)
+    if (isOldPlpPaginationUrl) {
+      // console.log(`${routePath} is a plp with old pagination...`, isOldPlpPaginationUrl)
+      const page = isOldPlpPaginationUrl[1]
+      routePath = routePath.replace(`_${page}`, '')
       queryParams.page = page // append pagination value to current query params
     }
 
     let redirectTo = null
+
     // 1. searching in redirect puntuali/fissi
-    redirectTo = searchRedirectPuntuali(urlPath)
-    // console.log(`${urlPath} is redirectPuntuale ?`, redirectTo)
+    redirectTo = searchRedirectPuntuali(routePath)
+    // console.log(`${routePath} is redirectPuntuale ?`, redirectTo)
 
     if (redirectTo) {
       redirectTo = prepareRedirect(redirectTo)
-      // console.log(`🚥(301) ${urlPath} is redirectPuntuale -> redirectTo ${redirectTo}`)
-      return redirect(301, redirectTo, queryParams)
+      // console.log(`🚥(301) ${routePath} is redirectPuntuale -> redirectTo ${redirectTo}`)
+      return redirect(301, localePath(redirectTo), queryParams)
     }
 
     // 2. searching in redirect seo rules/regex
-    const matched = getMatchedRegex(urlPath)
+    const matched = getMatchedRegex(routePath)
     // need backend to get redirectUrl
     // console.log('redirectByRegex matched', matched, REDIRECT_SEO_REGEX[matched])
 
     if (matched && REDIRECT_SEO_REGEX[matched] === 301) {
       try {
-        // console.log(`🚥(301) need redirect get ${$config.ELASTIC_URL}seo/get-redirect-url?urlPath=${urlPath}`)
-        const url = `${$config.ELASTIC_URL}seo/get-redirect-url?urlPath=${urlPath}`
+        // console.log(`🚥(301) need redirect get ${$config.ELASTIC_URL}seo/get-redirect-url?urlPath=${routePath}`)
+        const url = `${$config.ELASTIC_URL}seo/get-redirect-url?urlPath=${routePath}`
         const headers = {
           'x-cmw-locale': i18n.locale,
           'x-cmw-store': $config.STORE,
@@ -341,7 +382,7 @@ export default async function ({ redirect, route, $config, error, localePath, i1
         const response = await fetch(url, { headers })
         const respBody = await response.json()
         const beRedirectTo = respBody.data.redirectUrl
-        // redirectTo is brand - go to page, no redirect
+        // redirectTo is brand
         if (isBrandUrl(beRedirectTo)) {
           const brandUrl = localePath({
             name: 'winery-handle',
@@ -352,26 +393,32 @@ export default async function ({ redirect, route, $config, error, localePath, i1
         } else {
           redirectTo = prepareRedirect(beRedirectTo)
           // console.log(`🚥(301) api redirect response: ${beRedirectTo}, redirectTo --> ${redirectTo}`)
-          redirect(301, redirectTo, queryParams)
+          redirect(301, localePath(redirectTo), queryParams)
         }
       } catch (e) {
         // if bo can't respond - continue with old url instead of broken
         // console.log('🚥(301) error', { error: e.message })
       }
     } else if (matched && REDIRECT_SEO_REGEX[matched] === 200) {
-      // console.log(`🚥${urlPath} match ${matched} -> valid/200 url`)
+      // console.log(`🚥${routePath} match ${matched} -> valid/200 url`)
       // exception that need 301 redirect also if valid/200 url
-      if (containsCapitalizedLetters(urlPath) || needLettersReplace(urlPath) || isOldPlpPaginationUrl) {
-        redirectTo = prepareRedirect(urlPath)
-        // console.log(`🚥(301) ${urlPath} contains capitalized or oldletters, redirect to  -> ${redirectTo}`)
+      if (containsCapitalizedLetters(routePath) || needLettersReplace(routePath) || isOldPlpPaginationUrl) {
+        redirectTo = prepareRedirect(routePath)
+        // console.log(`🚥(301) ${routePath} contains capitalized or oldletters, redirect to  -> ${redirectTo}`)
         redirect(301, redirectTo, queryParams)
+      } else if (routePath !== route.path) {
+        // console.log(`🚥(301) ${routePath} is different from original ${route.path}, redirect to ${routePath}`)
+        redirect(301, localePath(routePath), queryParams)
       } else {
-        // console.log(`🚥(200) ${urlPath} -> continue`)
+        // console.log(`🚥(200) ${routePath} -> continue`)
       }
     } else {
       // console.log(`🚥${urlPath} doesn't match regex -> 410`)
       error({ statusCode: 410, message: 'Resource is gone.' })
     }
+  } else if (routePath !== route.path) {
+    // console.log(`🚥(301) ${routePath} is different from original ${route.path}, redirect to ${routePath}`)
+    redirect(301, localePath(routePath), queryParams)
   }
   // default continue...
   // capitalized letters in PDP e BDP are handled directly in specific pages

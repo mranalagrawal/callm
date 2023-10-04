@@ -15,5 +15,10 @@ export default {
       checkout_invoice_company_vat: 'Numéro de TVA',
       checkout_invoice_private_taxcode: 'Code fiscal',
     },
+    cart: {
+      cart_order_note: 'Note',
+      cart_order_note_title: 'Ajouter une note (facultatif)',
+      cart_order_note_placeholder: 'Entrez votre message',
+    },
   },
 }

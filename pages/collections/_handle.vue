@@ -48,7 +48,7 @@ interface AggregationsRefType {
 
 export default defineComponent({
   setup() {
-    const { localeLocation } = useContext()
+    const { localePath } = useContext()
     const router = useRouter()
     const route = useRoute()
     const pageData = ref({})
@@ -106,7 +106,7 @@ export default defineComponent({
 
       delete query.selection
 
-      router.push(localeLocation({
+      router.push(localePath({
         path: `/collections/${route.value.params.handle}`,
         query,
       }) as RawLocation)
@@ -122,7 +122,7 @@ export default defineComponent({
 
       delete query.selection
 
-      router.push(localeLocation({
+      router.push(localePath({
         path: `/collections/${route.value.params.handle}`,
         query,
       }) as RawLocation)
@@ -135,7 +135,7 @@ export default defineComponent({
         direction,
       }
 
-      router.push(localeLocation({
+      router.push(localePath({
         path: `/collections/${route.value.params.handle}`,
         query,
       }) as RawLocation)
@@ -149,7 +149,7 @@ export default defineComponent({
     const handleOnFooterClick = ({ price_from = '', price_to = '' }) => {
       cmwActiveSelect.value = ''
       showMobileFilters.value = false
-      router.push(localeLocation({
+      router.push(localePath({
         path: `/collections/${route.value.params.handle}`,
         query: {
           ...route.value.query,
@@ -165,7 +165,7 @@ export default defineComponent({
       showMobileFilters.value = false
       // this.minPrice = this.minPriceTotal
       // this.maxPrice = this.maxPriceTotal
-      router.push(localeLocation({
+      router.push(localePath({
         path: `/collections/${route.value.params.handle}`,
         query: {},
       }) as RawLocation)
@@ -182,7 +182,7 @@ export default defineComponent({
 
       if (selection in query) { Reflect.deleteProperty(query, selection) }
 
-      router.push(localeLocation({
+      router.push(localePath({
         path: `/collections/${route.value.params.handle}`,
         query: {
           ...query,
@@ -362,10 +362,10 @@ export default defineComponent({
     <CategoriesPagination :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters" :base-path="$route.path" />
     <div class="py-12" v-html="pageData?.body" />
     <div v-if="!isDesktop" class="sticky bottom-8 w-[min(100%,_14rem)] m-inline-auto">
-      <Button @click.native="showMobileFilters = !showMobileFilters">
+      <CmwButton @click.native="showMobileFilters = !showMobileFilters">
         <VueSvgIcon width="28" height="28" :data="filterIcon" />
         <span class="ml-2">{{ $t('search.showFilters') }}</span>
-      </Button>
+      </CmwButton>
     </div>
     <CategoriesFiltersComponentsMobile
       v-if="!isDesktop && showMobileFilters && Object.keys(inputParameters).length && Object.keys(aggregationsRef).length"

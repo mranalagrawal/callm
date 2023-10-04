@@ -7,9 +7,11 @@ import {
   useRouter,
 } from '@nuxtjs/composition-api'
 import type { RawLocation } from 'vue-router'
+import Loader from '~/components/UI/Loader.vue'
 import { useCustomer } from '~/store/customer'
 
 export default defineComponent({
+  components: { Loader },
   fetchOnServer: false,
   middleware({ route, localeLocation, redirect, $config }) {
     // Talk to Valerio how to handle this edge case, it seems appropriate to me to redirect to the login page
@@ -38,5 +40,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <p />
+  <div class="min-h-screen">
+    <Loader />
+  </div>
 </template>

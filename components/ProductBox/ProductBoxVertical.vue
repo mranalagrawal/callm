@@ -195,7 +195,7 @@ export default defineComponent({
             />
           </button>
         </ClientOnly>
-        <div class="c-productBox__features absolute top-2 left-2 md:left-4">
+        <div v-if="product.availableFeatures.length" class="c-productBox__features absolute top-2 left-2 md:left-4">
           <div class="flex flex-col gap-y-1 w-max">
             <ProductBoxFeature v-for="feature in product.availableFeatures" :key="feature" :feature="feature" />
           </div>
@@ -265,6 +265,7 @@ export default defineComponent({
       <div class="c-productBox__cart justify-self-baseline place-self-end">
         <div v-if="product.availableForSale" class="mr-3 relative">
           <ButtonIcon
+            variant="ghost"
             :icon="cartIcon"
             :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
             @click.native="addToUserCart"
@@ -276,11 +277,11 @@ export default defineComponent({
           />
           <div
             v-show="isOpen"
-            class="absolute w-full h-[120px] bottom-0 left-0"
+            class="absolute w-full h-[132px] bottom-0 left-0"
             @mouseleave="isOpen = false"
           >
             <button
-              class="flex transition-colors w-[40px] h-[40px] bg-primary-400 rounded-t-sm
+              class="flex transition-colors w-[44px] h-[44px] bg-primary-400 rounded-t-sm
                  hover:(bg-primary)
                  disabled:(bg-primary-100 cursor-not-allowed)"
               :disabled="!canAddMore"
@@ -289,11 +290,11 @@ export default defineComponent({
             >
               <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
             </button>
-            <div class="flex w-[40px] h-[40px] bg-primary-400 text-white text-center">
+            <div class="flex w-[44px] h-[44px] bg-primary-400 text-white text-center">
               <span class="m-auto text-sm">{{ cartQuantity }}</span>
             </div>
             <button
-              class="flex transition-colors w-[40px] h-[40px] bg-primary-400 rounded-b-sm hover:(bg-primary)"
+              class="flex transition-colors w-[44px] h-[44px] bg-primary-400 rounded-b-sm hover:(bg-primary)"
               :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
               @click="removeFromUserCart"
             >
@@ -303,15 +304,16 @@ export default defineComponent({
         </div>
         <div v-else>
           <ButtonIcon
-            class="mr-4 mb-4 relative"
+            variant="ghost"
+            class="mr-3 relative"
             :icon="emailIcon"
             :aria-label="$t('enums.accessibility.role.MODAL_OPEN')"
             @click.native="() => handleShowRequestModal(product.details.feId)"
           />
         </div>
       </div>
-      <div v-if="$config.STORE === 'CMW_DE'" class="c-productBox__note mx-2">
-        <span v-if="priceByLiter">
+      <div v-if="$cmwStore.isDe" class="c-productBox__note mx-2">
+        <span v-if="priceByLiter" class="text-gray">
           {{ $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode)) }}/liter</span>
         <span v-if="$config.STORE === 'CMW_DE'" class="text-gray">Inkl. MwSt. Und St.</span>
       </div>

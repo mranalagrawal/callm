@@ -1,4 +1,5 @@
-import type { IMoneyV2 } from '~/types/common-objects'
+import type { TranslateResult } from 'vue-i18n'
+import type { IMoneyV2, ITranslations } from '~/types/common-objects'
 import type { TImage } from '~/types/types'
 
 type TChoice = 'yes' | 'no'
@@ -69,8 +70,35 @@ interface IProductImage {
 
 export interface IProductBreadcrumbs {
   handle: string
-  label: string
+  label: TranslateResult
   to: string
+}
+
+export interface IDetailsObj {
+  id: string | number
+  name: ITranslations
+  slug?: ITranslations
+}
+
+export interface IProductCharacteristics {
+  denomination?: ITranslations
+  grapes?: ITranslations
+  subCategory?: ITranslations
+  region?: IDetailsObj
+  country?: IDetailsObj
+  alcoholContent?: string
+  size?: ITranslations
+  winemaking?: ITranslations
+  agingDescription?: ITranslations
+  productionPhilosophies?: IDetailsObj[]
+  productInformations?: IDetailsObj[]
+  color?: ITranslations
+  taste?: ITranslations
+  aroma?: ITranslations
+  vineyards?: ITranslations
+  organic?: boolean
+  rarewine?: boolean
+  bioOperator?: string
 }
 
 export interface IBaseProductMapped {
@@ -104,6 +132,7 @@ export interface IProductMapped extends IBaseProductMapped {
   sku: string
   source_id: string | number
   url: string
+  characteristics?: IProductCharacteristics
 }
 
 export interface IGiftCardVariantMapped extends IBaseProductMapped {

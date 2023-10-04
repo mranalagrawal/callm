@@ -308,14 +308,14 @@ export default defineComponent({
       lazy-loading-trigger
     </div>
     <div v-if="!!pageData.length" class="flex justify-between">
-      <Button
+      <CmwButton
         v-if="linksRef?.prev"
         class="w-max"
         variant="text"
         :label="$t('common.cta.prevPage')"
         @click.native="fetchPage(true)"
       />
-      <Button
+      <CmwButton
         v-if="linksRef?.next"
         class="w-max"
         variant="text"

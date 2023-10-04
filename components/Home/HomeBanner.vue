@@ -103,8 +103,8 @@ export default defineComponent({
             >
               {{ text }}
             </NuxtLink>
-            <Button
-              class="hidden w-max self-end mt-8 py-2 text-shadow-none md:(block self-start)"
+            <CmwButton
+              class="hidden w-max self-end mt-8 text-shadow-none md:(block self-start)"
               variant="default-inverse" :to="localePath(link)" :label="cta"
             />
           </div>
@@ -112,12 +112,12 @@ export default defineComponent({
         </div>
       </div>
       <template #back-arrow>
-        <span class="absolute w-12 h-12 bg-white rounded-sm flex left-20 top-2/5 -translate-y-1/2">
+        <span class="w-12 h-12 bg-white rounded-sm flex">
           <VueSvgIcon :data="chevronLeftIcon" color="#992545" width="20" height="20" class="m-auto" />
         </span>
       </template>
       <template #next-arrow>
-        <span class="absolute w-12 h-12 bg-white rounded-sm flex right-20 top-2/5 -translate-y-1/2">
+        <span class="w-12 h-12 bg-white rounded-sm flex">
           <VueSvgIcon :data="chevronRightIcon" color="#992545" width="20" height="20" class="m-auto" />
         </span>
       </template>
@@ -179,11 +179,11 @@ export default defineComponent({
 
 @screen desktop-wide {
   ::v-deep(.ssr-carousel-back-button) {
-    left: -2%;
+    left: 6%;
   }
 
   ::v-deep(.ssr-carousel-next-button) {
-    right: -2%;
+    right: 6%;
   }
 }
 
@@ -203,11 +203,11 @@ export default defineComponent({
 
 @screen desktop-wider {
   ::v-deep(.ssr-carousel-back-button) {
-    left: 5%;
+    left: 8%;
   }
 
   ::v-deep(.ssr-carousel-next-button) {
-    right: 5%;
+    right: 8%;
   }
 }
 </style>

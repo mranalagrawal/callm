@@ -92,7 +92,7 @@ export default {
         <!-- Todo: Implement upload file plugin, this one is good https://github.com/lian-yue/vue-upload-component -->
       </div>
       <div class="text-center mt-8 max-w-1/3 mx-auto">
-        <Button :label="$t('common.cta.send')" type="submit" />
+        <CmwButton :label="$t('common.cta.send')" type="submit" />
       </div>
     </form>
   </ValidationObserver>

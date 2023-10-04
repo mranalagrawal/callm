@@ -4,7 +4,7 @@ import type { TISO639, TSalesChannel, TStores } from '~/config/themeConfig'
 import themeConfig from '~/config/themeConfig'
 import { useCustomer } from '~/store/customer'
 import type { IMoneyV2 } from '~/types/common-objects'
-import type { IBaseProductMapped, IGiftCardMapped, IGiftCardVariantMapped, IGtmProductData, IProductBreadcrumbs, IProductMapped, TProductFeatures } from '~/types/product'
+import type { IBaseProductMapped, IGiftCardMapped, IGiftCardVariantMapped, IGtmProductData, IProductBreadcrumbs, IProductCharacteristics, IProductMapped, TProductFeatures } from '~/types/product'
 import type { ObjType } from '~/types/types'
 import { getUniqueListBy, pick } from '~/utilities/arrays'
 import { getCountryFromStore } from '~/utilities/currency'
@@ -17,6 +17,9 @@ interface IProductMapping {
   breadcrumbs<T extends KeyType>(
     arr: ObjType<T>[],
   ): IProductBreadcrumbs[]
+  pickProductCharacteristics<T extends KeyType>(
+    obj: ObjType<T>,
+  ): IProductCharacteristics
   giftCard(
     product: Record<string, any>,
   ): IBaseProductMapped
@@ -91,6 +94,10 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
         to: `/${cleanUrl(breadcrumb.handle)}`,
       }),
       )
+    },
+
+    pickProductCharacteristics(obj): IProductCharacteristics {
+      return pick(obj, ['denomination', 'subCategory', 'region', 'country', 'grapes', 'alcoholContent', 'size', 'winemaking', 'agingDescription', 'productionPhilosophies', 'productInformations', 'tipology', 'color', 'taste', 'aroma', 'organic', 'bioOperator', 'rarewine'])
     },
 
     fromElastic: (arr = []) => {
@@ -236,6 +243,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
               altText: details?.name && details?.name[lang],
             },
           },
+          characteristics: $productMapping.pickProductCharacteristics(details),
           gtmProductData: {
             internal_id: shopify_product_id.substring(`${shopify_product_id}`.lastIndexOf('/') + 1),
             stock_id: `shopify_${getCountryFromStore(store)}_${shopify_product_id.substring(`${shopify_product_id}`.lastIndexOf('/') + 1)}_${shopify_product_variant_id.substring(`${shopify_product_variant_id}`.lastIndexOf('/') + 1)}`,

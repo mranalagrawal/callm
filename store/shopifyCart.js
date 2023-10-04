@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import { useCustomer } from './customer'
 import { SweetAlertToast } from '~/utilities/Swal'
 import cartLinesAdd from '~/graphql/mutations/cartLinesAdd'
+import cartNoteUpdate from '~/graphql/mutations/cartNoteUpdate'
 import createCart from '~/graphql/mutations/createCart'
 import cartLinesRemove from '~/graphql/mutations/cartLinesRemove'
 import cartLinesUpdate from '~/graphql/mutations/cartLinesUpdate'
@@ -39,8 +40,32 @@ export const useShopifyCart = defineStore({
   },
 
   actions: {
+    async cartNoteUpdate(note = '') {
+      const cartId = this.shopifyCart.id
+      if (!note) { return }
+
+      await this.$nuxt.$graphql.default
+        .request(cartNoteUpdate, { cartId, note })
+        .then(({ cartNoteUpdate: { cart, userErrors } }) => {
+          if (!userErrors.length) {
+            // Success
+            this.$patch({ ...this.shopifyCart, note: cart.note })
+          } else {
+            SweetAlertToast.fire({
+              icon: 'error',
+              text: userErrors[0].message,
+            })
+          }
+        })
+    },
+
     async checkout() {
       const { customer } = useCustomer()
+
+      if (this.shopifyCart.note) {
+        await this.cartNoteUpdate(this.shopifyCart.note)
+      }
+
       if (!customer.id) {
         // crea checkoutUrl
         window.location = this.shopifyCart.checkoutUrl
@@ -76,7 +101,7 @@ export const useShopifyCart = defineStore({
             buyer,
             discountCodes: [''],
             lines: [],
-            note: '',
+            note: this.shopifyCart?.note ?? '',
           },
         })
         .then(data => data.cartCreate.cart)

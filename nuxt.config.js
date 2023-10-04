@@ -231,11 +231,11 @@ const SITEMAP = {
 }
 
 const TITLE = {
-  CMW: 'Callmewine',
-  B2B: 'Callmewine B2B',
-  CMW_UK: 'Callmewine UK',
-  CMW_FR: 'Callmewine FR',
-  CMW_DE: 'Callmewine DE',
+  CMW: 'Callmewine: Vendita Vino Online, Enoteca e Shop Online',
+  B2B: 'Callmewine: Vendita Vino Online, Enoteca e Shop Online',
+  CMW_UK: 'Italian Wine Shop - Callmewine',
+  CMW_FR: 'Achat Vin, Vente de Vins En Ligne - Callmewine',
+  CMW_DE: 'Online Önothek, Verkauf italienischer Weine – Callmewine',
 }
 
 export default {
@@ -292,6 +292,7 @@ export default {
   components: [
     '~/components',
     { path: '~/components/Base', extensions: ['vue'] },
+    { path: '~/components/Cmw', extensions: ['vue'] },
     { path: '~/components/Home', extensions: ['vue'] },
   ],
 
@@ -391,6 +392,7 @@ export default {
   },
 
   i18n: {
+    detectBrowserLanguage: false,
     locales: storeLocales(process.env.STORE),
     defaultLocale: process.env.DEFAULT_LOCALE,
     lazy: true,
@@ -654,30 +656,30 @@ export default {
 
     const commonDisallowPaths = [
       '/*?*',
+      '/*?*=true',
       '/catalog',
       '/?search=',
-      '/!*?search=*',
+      '/*?search=*',
       '/?search=*',
       '/catalog.htm',
       '/catalog.htm?*',
-      '/!*catalog.htm',
-      '/!*catalog.htm?*',
-      '/!*?pricerange=*',
-      '/!*?acustom=*',
-      '/!*?pcustom=*',
-      '/!*?aid=*',
-      '/!*?sel=*',
-      '/!*?mid=*',
-      '/!*?zid=*',
-      '/!*?sid=*',
-      '/!*?fpid=*',
-      '/!*?fid=*',
-      '/!*?pid=*',
-      '/!*?s_id=*',
-      '/!*sort=*',
+      '/*catalog.htm',
+      '/*catalog.htm?*',
+      '/*?pricerange=*',
+      '/*?acustom=*',
+      '/*?pcustom=*',
+      '/*?aid=*',
+      '/*?sel=*',
+      '/*?mid=*',
+      '/*?zid=*',
+      '/*?sid=*',
+      '/*?fpid=*',
+      '/*?fid=*',
+      '/*?pid=*',
+      '/*?s_id=*',
+      '/*sort=*',
       '/notificadisponibilita',
       '/en/notificadisponibilita*',
-      '/it/',
     ]
 
     const disallowPaths = isProd
@@ -687,6 +689,7 @@ export default {
       : ['/']
 
     const robotsConfig = {
+      Allow: isProd ? '*page' : '',
       UserAgent: '*',
       Disallow: disallowPaths,
     }

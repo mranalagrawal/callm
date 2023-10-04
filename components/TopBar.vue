@@ -21,11 +21,11 @@ export default defineComponent({
 
 <template>
   <div
-    class="print:hidden w-screen px-4 flex items-center justify-center h-$cmw-top-banner-height text-center
-     bg-secondary fixed top-0 left-0 z-1050 text-white uppercase py-1
+    class="print:hidden w-screen px-4 h-$cmw-top-banner-height text-center
+     bg-secondary fixed top-0 left-0 z-1050 text-white uppercase py-1 line-clamp-2 leading-4
      overline-1 md:overline-2"
   >
-    <span
+    <div
       v-html="headline"
     />
   </div>

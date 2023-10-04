@@ -55,7 +55,7 @@ export default defineComponent({
     >
       {{ $t("navbar.user.billing") }}
     </NuxtLink>
-    <Button
+    <CmwButton
       variant="ghost"
       class="mt-10"
       :label="$t('navbar.user.logout')"

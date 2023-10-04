@@ -1,0 +1,12 @@
+mutation cartNoteUpdate($cartId: ID!, $note: String) {
+  cartNoteUpdate(cartId: $cartId, note: $note) {
+    cart {
+      # Cart fields
+      note
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}

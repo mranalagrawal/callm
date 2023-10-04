@@ -1,5 +1,15 @@
 <script>
-import { computed, defineComponent, ref, useContext, useFetch, useMeta, useRoute, watch } from '@nuxtjs/composition-api'
+import {
+  computed,
+  defineComponent,
+  inject,
+  ref,
+  useContext,
+  useFetch,
+  useMeta,
+  useRoute,
+  watch,
+} from '@nuxtjs/composition-api'
 import addIcon from 'assets/svg/add.svg'
 import cartIcon from 'assets/svg/cart.svg'
 import emailIcon from 'assets/svg/email.svg'
@@ -35,6 +45,7 @@ export default defineComponent({
       req,
     } = useContext()
     const customerStore = useCustomer()
+    const isDesktop = inject('isDesktop')
     const recentProductsStore = useRecentProductsStore()
     const { recentProducts } = storeToRefs(recentProductsStore)
 
@@ -126,7 +137,7 @@ export default defineComponent({
 
     const { handleShowRequestModal } = useShowRequestModal()
 
-    useFetch(async ({ $sentry }) => {
+    const { fetchState } = useFetch(async ({ $sentry }) => {
       await $cmwRepo.products.getAll({
         first: 1,
         query: `tag:P${route.value.params.id}`,
@@ -196,14 +207,17 @@ export default defineComponent({
         */
       }
 
-      return 'No description available.'
+      return ''// empty like old.com
     })
 
-    const amountMax = computed(() => (product.value.details.amountMax[$config.SALECHANNEL]
-      && product.value.details.amountMax[$config.SALECHANNEL] <= product.value.quantityAvailable)
-      ? product.value.details.amountMax[$config.SALECHANNEL]
-      : product.value.quantityAvailable,
-    )
+    const amountMax = computed(() => {
+      if (!product.value.details.amountMax) { return 0 }
+
+      return (product.value.details.amountMax[$config.SALECHANNEL]
+              && product.value.details.amountMax[$config.SALECHANNEL] <= product.value.quantityAvailable)
+        ? product.value.details.amountMax[$config.SALECHANNEL]
+        : product.value.quantityAvailable
+    })
 
     const isOnCart = computed(() => {
       const productIncart = shopifyCart.value?.lines?.edges.find(el => el.node.merchandise.id === product.value.shopify_product_variant_id)
@@ -291,12 +305,14 @@ export default defineComponent({
       canAddMore,
       cartIcon,
       cartLinesAdd,
+      cartLinesUpdate,
       cartQuantity,
       createShopifyCart,
       customer,
       customerId,
       emailIcon,
       favouriteIcon,
+      fetchState,
       finalPrice,
       generateMetaLink,
       getCanOrder,
@@ -307,6 +323,7 @@ export default defineComponent({
       heartFullIcon,
       heartIcon,
       isBundle,
+      isDesktop,
       isOnCart,
       isOnFavourite,
       isOnSale,
@@ -320,7 +337,6 @@ export default defineComponent({
       showRequestModal,
       strippedContent,
       subtractIcon,
-      cartLinesUpdate,
       wishlistArr,
     }
   },
@@ -365,20 +381,21 @@ export default defineComponent({
 
 <template>
   <div class="mt-4 max-w-screen-xl mx-auto <md:px-4">
-    <div v-if="$fetchState.error" class="relative text-center mt-12">
+    <div v-if="fetchState.pending" :class="fetchState?.pending" class="sr-only" />
+    <div v-else-if="fetchState?.error" class="relative text-center mt-12">
       <div class="md:(grid grid-cols-2 items-center)">
         <img
           class="w-3/4 mx-auto" src="https://cdn.shopify.com/s/files/1/0668/1860/5335/files/wine-stain.png?width=900"
           alt="empty-bottles"
         >
         <div class="text-left">
-          <h2 class="h1 text-secondary" v-text="$t('notFoundTitle')" />
-          <p class="mb-8 md:w-3/5" v-text="$t('notFoundLine')" />
+          <h2 class="h1 text-secondary" v-text="$t('pages.notFound.title')" />
+          <p class="mb-8 md:w-3/5" v-text="$t('pages.notFound.line')" />
         </div>
       </div>
     </div>
-    <template v-else>
-      <div v-if="product.title && brandMetaFields">
+    <div v-else>
+      <div v-if="product?.title && brandMetaFields">
         <TheBreadcrumbs v-if="!!productBreadcrumbs.length" :breadcrumbs="productBreadcrumbs" />
         <div class="md:(grid grid-cols-[40%_60%] min-h-[550px] my-4)">
           <!-- Image Section -->
@@ -389,21 +406,9 @@ export default defineComponent({
               :thumbnail="product.image.thumbnail"
               :source="product.image.hd"
             />
-            <div v-if="$cmwStore.isDe" class="md:hidden transform absolute bottom-0 flex items-center left-1/2 -translate-x-1/2 translate-y-8">
-              <div
-                v-if="isOnSale"
-                class="flex items-center gap-2"
-              >
-                <span class="line-through text-gray-light text-sm">
-                  {{
-                    $n(Number(productVariant.compareAtPrice.amount),
-                       'currency',
-                       getLocaleFromCurrencyCode(productVariant.compareAtPrice.currencyCode))
-                  }}
-                </span>
-              </div>
+            <div v-if="$cmwStore.isDe" class="md:hidden transform absolute w-full bottom-0 flex items-center justify-center left-1/2 -translate-x-1/2 translate-y-8">
               <i18n-n
-                v-else-if="finalPrice && !isOnSale"
+                v-if="finalPrice && !isOnSale"
                 class="md:hidden inline-block text-gray" :value="Number(finalPrice)"
                 :format="{ key: 'currency' }"
                 :locale="getLocaleFromCurrencyCode(productVariant.price.currencyCode)"
@@ -421,7 +426,7 @@ export default defineComponent({
                   <span class="text-xs">{{ slotProps.fraction }}</span>
                 </template>
               </i18n-n>
-              <span v-if="$cmwStore.isDe && priceByLiter" class="text-sm">
+              <span v-if="$cmwStore.isDe && priceByLiter" class="text-sm text-gray">
                 {{
                   $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode))
                 }}/liter</span>
@@ -429,7 +434,7 @@ export default defineComponent({
                 Inkl. MwSt. Und St.
               </div>
             </div>
-            <div class="absolute top-4 left-2">
+            <div v-if="product.availableFeatures" class="absolute top-4 left-2">
               <ProductBoxFeature
                 v-for="feature in product.availableFeatures"
                 :key="generateKey(`details-feature-${feature}`)" :feature="feature"
@@ -447,6 +452,20 @@ export default defineComponent({
             <div class="absolute transform top-4 right-8">
               <CardLapel v-if="isOnSale" variant="simple" />
             </div>
+            <div class="absolute bottom-0 right-0">
+              <button
+                type="button"
+                :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
+                @click="handleWishlist({ id: product.id, isOnFavourite, gtmProductData: product.gtmProductData })"
+              >
+                <VueSvgIcon
+                  color="#d94965"
+                  width="32"
+                  height="32"
+                  :data="isOnFavourite ? heartFullIcon : heartIcon"
+                />
+              </button>
+            </div>
           </div>
           <!-- Content Section -->
           <div class="flex flex-col">
@@ -460,6 +479,9 @@ export default defineComponent({
               {{ product.vendor }}
             </NuxtLink>
             <div class="prose" v-html="strippedContent" />
+            <p v-if="!product.availableForSale" class="text-primary-400">
+              {{ $t('product.notAvailable') }}
+            </p>
             <div v-if="isBundle" class="mb-4">
               <div class="h4 my-4" v-text="$t('bundle.whatIsInTheBox')" />
               <ul class="my-4 text-sm">
@@ -469,20 +491,21 @@ export default defineComponent({
               </ul>
             </div>
             <script
-              v-if="$config.STORE === 'CMW_UK'"
+              v-if="$cmwStore.isUk"
               data-environment="production" src="https://osm.klarnaservices.com/lib.js"
               data-client-id="c72bae1f-0d1c-5ed1-a3bb-b0fa3d12e442"
               async
             />
             <ClientOnly>
               <klarna-placement
-                v-if="$config.STORE === 'CMW_UK'"
+                v-if="$cmwStore.isUk"
                 data-key="credit-promotion-badge"
                 data-locale="en-GB"
                 :data-purchase-amount="String(Number(finalPrice)).replace(/[^0-9]/g, '')"
               />
             </ClientOnly>
             <ProductDetailsVintages :sku="product.sku" />
+            <!-- MOBILE ADD_TO_CART BUTTON -->
             <div
               class="
             <md:(fixed bottom-0 left-0 w-full bg-white z-content shadow-elevation px-3 py-4)
@@ -528,7 +551,7 @@ export default defineComponent({
                   </template>
                 </i18n-n>
                 <div v-if="$cmwStore.isDe">
-                  <span v-if="$cmwStore.isDe && priceByLiter" class="text-sm">
+                  <span v-if="$cmwStore.isDe && priceByLiter" class="text-sm <md:hidden">
                     {{
                       $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode))
                     }}/liter</span>
@@ -537,7 +560,7 @@ export default defineComponent({
                   </div>
                 </div>
               </div>
-              <div class="ml-auto mr-4">
+              <div class="ml-auto mr-2">
                 <div class="">
                   <div v-if="!amountMax">
                     <p
@@ -546,20 +569,17 @@ export default defineComponent({
                     >
                       {{ $t('product.available', { quantity: product.quantityAvailable }) }}
                     </p>
-                    <p v-else class="text-primary-400">
-                      {{ $t('product.notAvailable') }}
-                    </p>
                   </div>
                   <div v-if="product.availableForSale" class="relative">
                     <div v-if="!amountMax">
-                      <Button
+                      <CmwButton
                         class="gap-2 pl-2 pr-3 py-2"
                         :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
                         @click.native="addToUserCart"
                       >
                         <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
-                        <span class="text-sm" v-text="$t('product.addToCart')" />
-                      </Button>
+                        <span class="text-sm" v-text="isDesktop ? $t('common.cta.addToCart') : $t('common.cta.addToCartSm')" />
+                      </CmwButton>
                       <Badge
                         v-show="cartQuantity && !isOpen"
                         class="absolute top-0 left-full transform -translate-x-1/2 -translate-y-1/2"
@@ -593,14 +613,14 @@ export default defineComponent({
                       </div>
                     </div>
                     <div v-else>
-                      <Button
+                      <CmwButton
                         class="gap-2 pl-2 pr-3 py-2"
                         :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
                         @click.native="addToUserCart"
                       >
                         <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
-                        <span class="text-sm" v-text="$t('product.addToCart')" />
-                      </Button>
+                        <span class="text-sm" v-text="isDesktop ? $t('common.cta.addToCart') : $t('common.cta.addToCartSm')" />
+                      </CmwButton>
                       <Badge
                         v-show="cartQuantity && !isOpen"
                         class="absolute top-0 left-full transform -translate-x-1/2 -translate-y-1/2"
@@ -608,7 +628,7 @@ export default defineComponent({
                       />
                       <div
                         v-show="isOpen"
-                        class="absolute grid grid-cols-[50px_auto_50px] items-center w-full h-[50px] top-0 left-0"
+                        class="absolute grid grid-cols-[50px_auto_50px] items-center w-full h-[50px] top-0 right-0"
                         @mouseleave="isOpen = false"
                       >
                         <button
@@ -636,31 +656,18 @@ export default defineComponent({
                   </div>
 
                   <div v-else>
-                    <Button
+                    <CmwButton
                       variant="ghost"
-                      class="gap-2 pl-2 pr-3 py-2"
+                      class="gap-2 pl-2 pr-3 py-2 <md:(w-[min(100%,_14rem)] ml-auto)"
                       :aria-label="$t('enums.accessibility.role.MODAL_OPEN')"
                       @click.native="() => handleShowRequestModal(productDetails.feId)"
                     >
                       <VueSvgIcon :data="emailIcon" width="30" height="auto" />
-                      <span class="text-sm" v-text="$t('common.cta.notifyMe')" />
-                    </Button>
+                      <span class="text-sm leading-4" v-text="isDesktop ? $t('common.cta.notifyMe') : $t('common.cta.notifyMeSm')" />
+                    </CmwButton>
                   </div>
                 </div>
               </div>
-              <button
-                type="button"
-                class="mb-2"
-                :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
-                @click="handleWishlist({ id: product.id, isOnFavourite, gtmProductData: product.gtmProductData })"
-              >
-                <VueSvgIcon
-                  color="#d94965"
-                  width="32"
-                  height="32"
-                  :data="isOnFavourite ? heartFullIcon : heartIcon"
-                />
-              </button>
             </div>
           </div>
         </div>
@@ -676,6 +683,6 @@ export default defineComponent({
           <RecommendedProducts :id="product.shopify_product_id" />
         </ClientOnly>
       </div>
-    </template>
+    </div>
   </div>
 </template>

@@ -70,7 +70,7 @@ export default defineComponent({
           :placeholder="$t('email')" rules="required|email" theme="gray"
         />
 
-        <Button
+        <CmwButton
           class="mt-8"
           type="submit"
           :disabled="!form.email || !valid"

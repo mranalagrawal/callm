@@ -39,7 +39,7 @@ export default defineComponent({
   <div v-if="!!boxes.length" class="max-w-screen-xl mx-auto py-8 px-4 mt-4">
     <SsrCarousel
       ref="carousel" :key="boxes.length" :responsive="responsive" :show-arrows="false"
-      :show-dots="false" class="relative"
+      :show-dots="true" class="relative"
     >
       <div v-for="({ title, description, image }) in boxes" :key="generateKey(title)" class="c-wrapper h-full pt-8">
         <div class="relative rounded border border-gray-light px-4 text-center h-full pt-12 pb-2">
@@ -53,7 +53,7 @@ export default defineComponent({
             >
           </div>
           <div class="cmw-font-bold text-secondary-700" v-text="title" />
-          <p class="c-wrapper__desc" v-text="description" />
+          <div class="prose c-wrapper__desc" v-html="description" />
         </div>
       </div>
     </SsrCarousel>

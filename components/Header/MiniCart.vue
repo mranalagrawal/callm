@@ -63,8 +63,8 @@ export default defineComponent({
               </div>
             </div>
             <div class="grid grid-cols-2 gap-4 bg-gray-lightest p-4">
-              <Button variant="ghost" :to="localePath('/cart')" :label="$t('navbar.cart.detail')" />
-              <Button :label="$t('navbar.cart.checkout')" @click.native="checkout" />
+              <CmwButton variant="ghost" :to="localePath('/cart')" :label="$t('navbar.cart.detail')" />
+              <CmwButton :label="$t('navbar.cart.checkout')" @click.native="checkout" />
             </div>
           </div>
           <div v-else class="min-w-[425px] text-center px-6 pb-4">
@@ -75,9 +75,9 @@ export default defineComponent({
             <hr>
             <strong class="block" v-text="$t('navbar.cart.empty')" />
             <p class="pt-4" v-text="$t('navbar.cart.startFromMessage')" />
-            <Button class="py-4" to="/catalog?inpromotion=true">
+            <CmwButton class="py-4" to="/catalog?inpromotion=true">
               <span v-text="$t('navbar.cart.cta')" />
-            </Button>
+            </CmwButton>
           </div>
         </div>
       </div>

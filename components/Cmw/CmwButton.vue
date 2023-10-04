@@ -6,9 +6,7 @@ import type { RawLocation } from 'vue-router'
 import type { TButtonVariant, TSizes } from '~/types/types'
 
 export default defineComponent({
-  // Note: temp ignore till migrate to Nuxt 3, then we will name this BaseButton
-  // eslint-disable-next-line vue/multi-word-component-names,vue/no-reserved-component-names
-  name: 'Button',
+  name: 'CmwButton',
   props: {
     to: {
       type: String as PropType<RawLocation>,
@@ -29,7 +27,7 @@ export default defineComponent({
   },
   setup(props) {
     const getSize = () => ({
-      xs: 'text-xs rounded-sm px-3 py-1 md:(px-4 py-[0.4rem])',
+      xs: 'text-xs',
       sm: 'text-sm',
       md: 'text-sm md:text-base',
       lg: 'text-base',
@@ -59,7 +57,7 @@ export default defineComponent({
 <template>
   <component
     :is="$props.to ? 'NuxtLink' : 'button'"
-    :type="$attrs.type || !$props.to ? 'button' : ''"
+    :type="$attrs.type || !$props.to ? 'button' : null"
     :to="$props.to"
     v-bind="$attrs"
     class="btn-base disabled:(text-gray cursor-not-allowed)"

@@ -16,8 +16,12 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="relative text-center mt-12 px-4">
-    <component :is="componentMap[statusCode]" v-if="componentMap[statusCode]" />
-    <div v-else class="text-xl" v-text="error.message" />
+  <div>
+    <div class="relative text-center mt-12 px-4">
+      <ClientOnly v-if="statusCode && componentMap[statusCode]">
+        <component :is="componentMap[statusCode]" />
+      </ClientOnly>
+      <div v-else class="text-xl" v-text="error.message" />
+    </div>
   </div>
 </template>

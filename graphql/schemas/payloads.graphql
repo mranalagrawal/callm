@@ -43,6 +43,13 @@ type CustomerUpdatePayload {
   customerUserErrors: DisplayableError
 }
 
+type CartNoteUpdatePayload {
+# The updated cart.
+  cart: Cart
+# The list of errors that occurred from executing the mutation.
+  userErrors: [CartUserError!]!
+}
+
 type CartLinesAddPayload {
 # The updated cart.
   cart: Cart

@@ -63,7 +63,7 @@ export default defineComponent({
             {{ pageData[0].content.main_text }}
           </NuxtLink>
         </div>
-        <Button
+        <CmwButton
           class="w-max"
           variant="ghost-inverse"
           :to="pageData[0].content.cta_link"
@@ -83,7 +83,7 @@ export default defineComponent({
           </NuxtLink>
         </div>
         <div>
-          <Button
+          <CmwButton
             class="w-max"
             variant="ghost-inverse"
             :to="pageData[1].content.cta_link"

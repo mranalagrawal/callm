@@ -139,7 +139,7 @@ export default defineComponent({
       </i18n-n>
     </div>
     <div class="c-cartLineItem__cta absolute md:relative top-0 right-0">
-      <ButtonIcon class="m-auto" :icon="deleteIcon" variant="icon" :size="28" @click.native="cartLinesRemove([item])" />
+      <ButtonIcon class="m-auto" :icon="deleteIcon" variant="icon" size="28" @click.native="cartLinesRemove([item])" />
     </div>
   </div>
 </template>

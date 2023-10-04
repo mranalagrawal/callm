@@ -26,7 +26,7 @@ export default defineComponent({
     >
       <PrismicText v-if="componentData.title" class="h2 !text-white" :field="componentData.title" />
       <PrismicRichText v-if="componentData.subtitle" :field="componentData.subtitle" />
-      <Button
+      <CmwButton
         class="w-max" variant="ghost-inverse" :label="componentData.cta_button" :to="componentData.cta_link"
       />
     </div>
@@ -44,7 +44,7 @@ export default defineComponent({
         <transition>
           <PrismicRichText v-if="componentData.hidden && showMoreText" :field="componentData.hidden" />
         </transition>
-        <Button
+        <CmwButton
           v-if="!showMoreText" class="relative w-max z-base"
           :label="$t('common.cta.readMore')" variant="ghost" @click.native="showMoreText = true"
         />

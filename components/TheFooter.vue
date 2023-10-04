@@ -1,8 +1,19 @@
 <script lang="ts">
-import { defineComponent, inject, provide, readonly, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api'
+import type { Ref } from '@nuxtjs/composition-api'
+import {
+  defineComponent,
+  inject,
+  provide,
+  readonly,
+  ref,
+  useContext,
+  useFetch,
+  watch,
+} from '@nuxtjs/composition-api'
 import logo from 'assets/svg/logo-call-me-wine.svg'
 import walletIcon from 'assets/svg/wallet.svg'
 import emailIcon from 'assets/svg/email.svg'
+import paperPlaneIcon from 'assets/svg/paper-plane.svg'
 import themeConfig from '~/config/themeConfig'
 import { initialPageData } from '~/config/prismicConfig'
 import type { IPrismicPageData } from '~/types/prismic'
@@ -12,7 +23,7 @@ import { SweetAlertToast } from '~/utilities/Swal'
 export default defineComponent({
   setup() {
     const { i18n } = useContext()
-    const isDesktop = inject('isDesktop')
+    const isDesktop = inject('isDesktop') as Ref<boolean>
     const footerInfoData = ref<IPrismicPageData>(initialPageData)
     const paymentMethods = ref<any>([])
     const socialLinks = ref<any>([])
@@ -54,19 +65,20 @@ export default defineComponent({
     watch(() => i18n.locale, () => fetch(), { deep: true })
 
     return {
+      emailIcon,
       footerData,
       footerInfoData,
       isDesktop,
+      logo,
       mobileApps,
       paymentMethods,
+      paperPlaneIcon,
       socialLinks,
+      walletIcon,
     }
   },
   data() {
     return {
-      logo,
-      walletIcon,
-      emailIcon,
       newsletter: false,
       marketing: false,
       email: '',
@@ -188,13 +200,15 @@ export default defineComponent({
                   class="flex-1 bg-transparent text-white"
                   required
                 >
-                <Button
+                <CmwButton
+                  v-if="isDesktop"
                   size="xs"
                   type="submit"
-                  class="w-max ml-auto justify-end"
+                  class="w-max ml-auto justify-end  md:(px-8 py-[0.6rem])"
                   variant="default-inverse"
                   :label="$t('common.cta.subscribe')"
                 />
+                <ButtonIcon v-else type="submit" :icon="paperPlaneIcon" variant="filled-white" class="!border-white" color="white" width="30" height="30" />
               </div>
               <div class="mt-3">
                 <div class="custom-checkbox">
@@ -307,17 +321,12 @@ export default defineComponent({
                 Privacy policy
               </NuxtLink>
               <NuxtLink
-                :to="localePath('/cookie')"
-                class="block text-white"
-              >
-                Cookie policy
-              </NuxtLink>
-              <NuxtLink
                 :to="localePath('/contact')"
                 class="block text-white"
               >
                 {{ $t('footer.contacts') }}
               </NuxtLink>
+              <Iubenda />
             </div>
           </div>
         </div>

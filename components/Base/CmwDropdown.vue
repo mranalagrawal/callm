@@ -81,7 +81,7 @@ export default defineComponent({
         <!-- List Items -->
         <slot name="children" />
         <div v-if="footerLabel" class="bg-gray-lightest rounded-b-sm">
-          <Button class="mr-auto w-max" variant="text" :label="footerLabel" @click.native="onFooterClick" />
+          <CmwButton class="mr-auto w-max" variant="text" :label="footerLabel" @click.native="onFooterClick" />
         </div>
       </div>
     </transition>

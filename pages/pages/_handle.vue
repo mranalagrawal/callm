@@ -2,14 +2,13 @@
 import {
   defineComponent,
   inject, onBeforeMount, provide, readonly,
-  ref, useContext,
+  ref, useContext, useMeta,
   useRoute,
   useRouter, watch,
 } from '@nuxtjs/composition-api'
 import chevronLeftIcon from 'assets/svg/chevron-left.svg'
 import chevronRightIcon from 'assets/svg/chevron-right.svg'
 import filterIcon from 'assets/svg/filter.svg'
-import type { RawLocation } from 'vue-router'
 import Loader from '~/components/UI/Loader.vue'
 import { initialShopifyPageData } from '~/config/shopifyConfig'
 import { shopifyRichTextToHTML } from '~/utilities/shopify'
@@ -21,12 +20,10 @@ interface IQuery {
 export default defineComponent({
   components: { Loader },
   setup() {
-    // https://callmewine-api-staging.dojo.sh/api/products/search?stores=4&locale=de
-
-    const { localeLocation, $cmwRepo, $cmwStore, $elastic, i18n } = useContext()
+    const { $cmwRepo, $cmwStore, $elastic, i18n, localePath } = useContext()
     const router = useRouter()
     const route = useRoute()
-    const pageData = ref({})
+    const pageData = ref<Record<string, any>>({})
     const inputParameters = ref({})
     const currentPage = ref({})
     const shortDescription = ref('')
@@ -54,10 +51,10 @@ export default defineComponent({
       // if (id !== this.active)
       if (id !== route.value.query[id]) { query.page = '1' }
 
-      router.push({
-        path: '/catalog',
+      router.push(localePath({
+        name: 'catalog',
         query,
-      })
+      }))
     }
 
     const handleUpdateValue = (val: string) => {
@@ -68,24 +65,24 @@ export default defineComponent({
 
       if (`${query[keyword]}` === id.toString()) { delete query[keyword] } else { query[keyword] = id.toString() }
 
-      router.push({
-        path: '/catalog',
+      router.push(localePath({
+        name: 'catalog',
         query,
-      })
+      }))
     }
 
     const handleOnFooterClick = ({ price_from = '', price_to = '' }) => {
       cmwActiveSelect.value = ''
       showMobileFilters.value = false
-      router.push(localeLocation({
-        path: '/catalog',
+      router.push(localePath({
+        name: 'catalog',
         query: {
           ...route.value.query,
           price_from,
           price_to,
           page: '1',
         },
-      }) as RawLocation)
+      }))
     }
 
     const sortBy = (field: any, direction: any) => {
@@ -95,10 +92,10 @@ export default defineComponent({
         direction,
       }
 
-      router.push({
-        path: '/catalog',
+      router.push(localePath({
+        name: 'catalog',
         query,
-      })
+      }))
     }
 
     const handleUpdateSortValue = (value: string) => {
@@ -189,6 +186,17 @@ export default defineComponent({
       if (Object.keys(aggregations).length) { aggregationsRef.value = aggregations }
     }
 
+    useMeta(() => ({
+      title: pageData.value?.seo?.title || '',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: pageData?.value?.seo?.description || '',
+        },
+      ],
+    }))
+
     onBeforeMount(fetchDataWithFetchState)
 
     watch(() => route.value?.query, () => fetchDataWithFetchState())
@@ -215,6 +223,7 @@ export default defineComponent({
       total,
     }
   },
+  head: {},
 })
 </script>
 
@@ -238,15 +247,16 @@ export default defineComponent({
           @handle-on-footer-click="handleOnFooterClick"
         />
       </div>
-      <div v-html="shortDescription" />
+      <div class="prose <md:hidden" v-html="shortDescription" />
       <ProductsResultsList :results="results" :total="total" @update-sort-value="handleUpdateSortValue" />
       <CategoriesPagination :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters" :base-path="$route.path" />
+      <div class="prose mt-8 sm:hidden" v-html="shortDescription" />
       <div class="py-12" v-html="pageData?.body" />
       <div v-if="!isDesktop" class="sticky bottom-8 w-[min(100%,_14rem)] m-inline-auto">
-        <Button @click.native="showMobileFilters = !showMobileFilters">
+        <CmwButton @click.native="showMobileFilters = !showMobileFilters">
           <VueSvgIcon width="28" height="28" :data="filterIcon" />
           <span class="ml-2">{{ $t('search.showFilters') }}</span>
-        </Button>
+        </CmwButton>
       </div>
       <CategoriesFiltersComponentsMobile
         v-if="!isDesktop && showMobileFilters && Object.keys(inputParameters).length && Object.keys(aggregationsRef).length"

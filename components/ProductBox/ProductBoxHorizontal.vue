@@ -205,7 +205,7 @@ hover:shadow-elevation"
           />
         </button>
       </ClientOnly>
-      <div class="absolute top-4 left-2 flex flex-col gap-y-1">
+      <div v-if="product.availableFeatures.length" class="absolute top-4 left-2 flex flex-col gap-y-1">
         <!-- Todo: create a global tooltip that change position base on mouse position -->
         <ProductBoxFeature v-for="feature in product.availableFeatures" :key="feature" :feature="feature" />
       </div>
@@ -245,17 +245,17 @@ hover:shadow-elevation"
       >
         <div
           class="cmw-font-bold"
-          v-text="$t('product.vines')"
+          v-text="$t('product.grapes')"
         />
         <div>{{ product.tbd.grapes }}</div>
         <div
           class="cmw-font-bold"
-          v-text="$t('product.region')"
+          v-text="$t('product.regionCountry')"
         />
         <div>{{ product.tbd.regionName }}</div>
         <div
           class="cmw-font-bold"
-          v-text="$t('product.format')"
+          v-text="$t('product.size')"
         />
         <div v-if="product.tbd.size.length">
           {{ product.tbd.size }}
@@ -305,14 +305,14 @@ hover:shadow-elevation"
           </template>
         </i18n-n>
         <div v-if="product.availableForSale" class="relative">
-          <Button
+          <CmwButton
             class="gap-2 pl-2 pr-3 py-2"
             :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
             @click.native="addToUserCart"
           >
             <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
-            <span class="text-sm" v-text="$t('product.addToCart')" />
-          </Button>
+            <span class="text-sm" v-text="$t('common.cta.addToCart')" />
+          </CmwButton>
           <Badge
             v-show="cartQuantity && !isOpen"
             class="absolute top-0 left-full transform -translate-x-1/2 -translate-y-1/2"
@@ -348,14 +348,14 @@ hover:shadow-elevation"
           <!-- Clarify: Shall we open a SweetAlert confirmation modal first? or just send the email?  -->
           <!-- Todo: Implement send email functionality on Backend -->
           <!--
-          <Button v-else variant="ghost" class="gap-2 pl-2 pr-3 py-2" @click.native="() => {}">
+          <CmwButton v-else variant="ghost" class="gap-2 pl-2 pr-3 py-2" @click.native="() => {}">
             <VueSvgIcon :data="emailIcon" width="30" height="auto" />
             <span class="text-sm" v-text="$t('product.notifyMe')" />
-          </Button>
+          </CmwButton>
            -->
         </div>
         <div v-else>
-          <Button
+          <CmwButton
             variant="ghost"
             class="gap-2 pl-2 pr-3 py-2"
             :aria-label="$t('enums.accessibility.role.MODAL_OPEN')"
@@ -363,7 +363,7 @@ hover:shadow-elevation"
           >
             <VueSvgIcon :data="emailIcon" width="30" height="auto" />
             <span class="text-sm" v-text="$t('common.cta.notifyMe')" />
-          </Button>
+          </CmwButton>
         </div>
         <div>
           <span v-if="$config.STORE === 'CMW_DE' && priceByLiter" class="text-sm">

@@ -62,7 +62,8 @@ export default defineComponent({
 
     const availableTabs = computed(() => tabs.value.filter(tab => tab.available))
 
-    const currentTab = ref('ProductDetailsTabDescription')
+    // on load, the first available tab
+    const currentTab = ref<string>(tabs.value.find(tab => tab.available)?.component || 'ProductDetailsTabDescription')
 
     const componentMap = {
       ProductDetailsTabDescription: () => import('~/components/ProductDetails/ProductDetailsTabDescription.vue'),
@@ -117,59 +118,10 @@ export default defineComponent({
         />
       </transition>
     </div>
-    <div class="block">
-      <div class="bg-gray-lightest rounded px-6 py-3 mx-auto">
-        <h3 class="mb-5" v-text="$t('product.features')" />
-
-        <div v-if="productDetails.denomination[$i18n.locale]">
-          <p class="cmw-font-bold mb-0" v-text="$t('product.denomination')" />
-          <p class="mb-4" v-text="productDetails.denomination[$i18n.locale]" />
-          <hr class="border-gray-light">
-        </div>
-        <div v-if="productDetails.grapes[$i18n.locale]">
-          <p class="cmw-font-bold mb-0" v-text="$t('product.vines')" />
-          <p class="mb-4" v-text="productDetails.grapes[$i18n.locale]" />
-          <hr class="border-gray-light">
-        </div>
-
-        <div v-if="productDetails.countryName[$i18n.locale] || productDetails.countryRegionName">
-          <p class="cmw-font-bold mb-0" v-text="$t('product.region')" />
-          <p class="mb-4">
-            <NuxtLink :to="localePath('/bla')">
-              {{ productDetails.countryRegionName }}
-            </NuxtLink>
-            <NuxtLink :to="localePath('/foo')">
-              {{ productDetails.countryName[$i18n.locale] }}
-            </NuxtLink>
-          </p>
-          <hr class="border-gray-light">
-        </div>
-        <div v-if="productDetails.alcoholContent">
-          <p class="cmw-font-bold mb-0" v-text="$t('product.alcoholContent')" />
-          <p class="mb-4" v-text="`${productDetails.alcoholContent}%`" />
-          <hr class="border-gray-light">
-        </div>
-        <div v-if="productDetails.size[$i18n.locale]">
-          <p class="cmw-font-bold mb-0" v-text="$t('product.format')" />
-          <p class="mb-4" v-text="productDetails.size[$i18n.locale]" />
-          <hr class="border-gray-light">
-        </div>
-        <div v-if="productDetails.winemaking[$i18n.locale]">
-          <p class="cmw-font-bold mb-0" v-text="$t('product.vinification')" />
-          <p class="mb-4" v-text="productDetails.winemaking[$i18n.locale]" />
-          <hr class="border-gray-light">
-        </div>
-        <div v-if="productDetails.agingDescription[$i18n.locale]">
-          <p class="cmw-font-bold mb-0" v-text="$t('product.refinement')" />
-          <p class="mb-4" v-text="productDetails.agingDescription[$i18n.locale]" />
-          <hr class="border-gray-light">
-        </div>
-        <div v-if="productDetails.productInformations[$i18n.locale]">
-          <p class="cmw-font-bold mb-0" v-text="$t('product.additionalNotes')" />
-          <p class="mb-4" v-text="productDetails.productInformations[$i18n.locale]" />
-        </div>
-      </div>
-    </div>
+    <ProductDetailsCharacteristics
+      v-if="product.characteristics"
+      :product-characteristic="product.characteristics"
+    />
   </div>
 </template>
 

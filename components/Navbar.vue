@@ -51,9 +51,9 @@ export default defineComponent({
       lockBody()
     }
 
-    const handleGoToLogin = () => {
+    const handleGoToRegister = () => {
       mobileLogin.value = false
-      router.push(localeLocation('/login') as RawLocation)
+      router.push(localeLocation('/login#register') as RawLocation)
     }
 
     useFetch(async ({ $cmwRepo }) => {
@@ -110,7 +110,7 @@ export default defineComponent({
       chevronLeftIcon,
       closeIcon,
       customer,
-      handleGoToLogin,
+      handleGoToRegister,
       handleShowMobileButton,
       isDesktop,
       isMobileMenuOpen,
@@ -223,7 +223,7 @@ export default defineComponent({
     </div>
     <transition name="menu-mobile">
       <div v-if="mobileLogin" class="fixed w-screen top-0 left-0 h-screen bg-white z-amenadiel pt-$cmw-top-banner-height">
-        <Button
+        <CmwButton
           variant="text"
           class="gap-2 pl-2 pr-3 py-2 justify-between"
           :aria-label="$t('enums.accessibility.role.MODAL_CLOSE')"
@@ -232,23 +232,23 @@ export default defineComponent({
           <VueSvgIcon :data="chevronLeftIcon" color="#E6362E" width="30" height="auto" />
           <span class="truncate max-w-100px">{{ customer.firstName ? customer.firstName : "Account" }}</span>
           <VueSvgIcon :data="closeIcon" color="#E6362E" width="30" height="auto" />
-        </Button>
+        </CmwButton>
         <div v-if="!customer.id">
           <div class="h3 text-center mt-5">
             {{ $t("navbar.user.signIn") }}
           </div>
-          <div class="px-2">
+          <div class="px-4">
             <LoginForm />
           </div>
           <div class="bg-gray-lightest p-2 text-center flex items-center justify-center">
             {{ $t("navbar.user.notRegisteredYet") }}
-            <Button
+            <CmwButton
               variant="text"
               class="w-max uppercase text-primary-400"
-              @click.native="handleGoToLogin"
+              @click.native="handleGoToRegister"
             >
               {{ $t("navbar.user.register") }}
-            </Button>
+            </CmwButton>
           </div>
         </div>
         <div
