@@ -122,7 +122,7 @@ export default defineComponent({
                   tag="span"
                 >
                   <span
-                    class="font-sans text-primary-400 tracking-normal"
+                    class="font-sans cmw-font-bold tracking-normal"
                     v-text="$t('newsletter.splash.privacyPolicy')"
                   />
                 </i18n>
