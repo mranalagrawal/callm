@@ -3,6 +3,7 @@ import * as common from '@/locales/en/common'
 import * as pages from '@/locales/en/pages'
 
 export default {
+  ...common.validations,
   head: {
     description: 'Online wine for sale on Callmewine, your online wine shop: the best way to buy wines, champagne and distilled on offer at exceptional prices!',
   },
