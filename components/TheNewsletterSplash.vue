@@ -88,7 +88,7 @@ export default defineComponent({
     <p class="text-sm px-4 text-center" v-text="$t('newsletter.splash.headline')" />
     <div class="h4" v-text="$t('newsletter.splash.offer', { discount: $cmwStore.isB2b ? 3 : ($cmwStore.isUk ? 10 : 5) })" />
 
-    <div class="grid grid-cols-[1fr_3fr] px-4">
+    <div class="grid grid-cols-[1fr_3fr] grid-rows-2 px-4">
       <div class="c">
         <!-- Todo: use an image from shopify -->
         <img :src="bannerSplashNewsletter" alt="alt-text">
@@ -151,17 +151,16 @@ export default defineComponent({
             <CmwButton class="w-max ml-auto my-4" size="sm" :label="$t('common.cta.subscribe')" type="submit" />
           </form>
         </ValidationObserver>
-
-        <i18n
-          class="block text-xs"
-          path="newsletter.splash.readMore"
-          tag="span"
-        >
-          <NuxtLink to="/privacy" class="text-xs text-primary hover:(text-primary)">
-            {{ $t('newsletter.splash.privacyPolicy') }}
-          </NuxtLink>
-        </i18n>
       </div>
+      <i18n
+        class="block text-xs col-span-full"
+        path="newsletter.splash.readMore"
+        tag="span"
+      >
+        <NuxtLink to="/privacy" class="text-xs text-primary hover:(text-primary)">
+          {{ $t('newsletter.splash.privacyPolicy') }}
+        </NuxtLink>
+      </i18n>
     </div>
   </div>
 </template>
