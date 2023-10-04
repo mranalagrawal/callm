@@ -88,7 +88,7 @@ export default defineComponent({
     <p class="text-sm px-4 text-center" v-text="$t('newsletter.splash.headline')" />
     <div class="h4" v-text="$t('newsletter.splash.offer', { discount: $cmwStore.isB2b ? 3 : ($cmwStore.isUk ? 10 : 5) })" />
 
-    <div class="grid grid-cols-[1fr_3fr] grid-rows-2 px-4">
+    <div class="grid grid-cols-[1fr_3fr] grid-rows-auto px-4">
       <div class="c">
         <!-- Todo: use an image from shopify -->
         <img :src="bannerSplashNewsletter" alt="alt-text">
