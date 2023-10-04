@@ -2,7 +2,8 @@
 import { defineComponent, inject, useContext } from '@nuxtjs/composition-api'
 import type { TISO639 } from '~/config/themeConfig'
 import type { IProductCharacteristics } from '~/types/product'
-import bioorbiodinamico from '~/assets/images/bioorbiodinamico.webp'
+import bioOrBiodinamico from '~/assets/images/bio-or-biodinamico.webp'
+import { getUniqueListBy } from '~/utilities/arrays'
 
 export default defineComponent({
   setup() {
@@ -12,7 +13,7 @@ export default defineComponent({
 
     let characteristicText = ''
 
-    characteristicText = productInformations?.map((obj) => {
+    characteristicText = getUniqueListBy(productInformations, 'id')?.map((obj) => {
       return obj.name[lang]
     }).join(', ') || ''
 
@@ -20,7 +21,7 @@ export default defineComponent({
       characteristicText,
       organic,
       bioOperator,
-      bioorbiodinamico,
+      bioOrBiodinamico,
     }
   },
 })
@@ -32,7 +33,7 @@ export default defineComponent({
     <p class="mb-4">
       <span v-html="characteristicText" />
       <span v-if="organic">
-        , <img :src="bioorbiodinamico" width="28" class="inline"> {{ $t(`product.bioInfo`) }}
+        , <img :src="bioOrBiodinamico" alt="bio" width="28" class="inline"> {{ $t(`product.bioInfo`) }}
       </span>
       <span v-if="bioOperator">, {{ $t(`product.bioOperator`) }} {{ bioOperator }}</span>
     </p>
