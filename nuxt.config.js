@@ -689,7 +689,7 @@ export default {
       : ['/']
 
     const robotsConfig = {
-      Allow: '*page',
+      Allow: isProd ? '*page' : '',
       UserAgent: '*',
       Disallow: disallowPaths,
     }
