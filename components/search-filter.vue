@@ -466,11 +466,6 @@ export default defineComponent({
       }))
     }
 
-    const handleUpdateSortValue = (value) => {
-      const { field, direction } = JSON.parse(value)
-      this.sortBy(field, direction)
-    }
-
     const resetFilter = () => {
       cmwActiveSelect.value = ''
       showMobileFilters.value = false
@@ -508,6 +503,11 @@ export default defineComponent({
         name: 'catalog',
         query,
       }))
+    }
+
+    const handleUpdateSortValue = (value) => {
+      const { field, direction } = JSON.parse(value)
+      sortBy(field, direction)
     }
 
     // WATCHERS
@@ -627,7 +627,7 @@ export default defineComponent({
         @remove-selection-from-query="removeSelectionFromQuery" @reset-filter="resetFilter"
       />
     </div>
-    <div class="prose <md:hidden" v-html="seoData.pageDescription" />
+    <div class="prose my-4 <md:hidden" v-html="seoData.pageDescription" />
     <ProductsResultsList
       :results="results" :total="total" :loading="loading"
       @update-sort-value="handleUpdateSortValue"
