@@ -41,7 +41,7 @@ const config = {
           type: 'host',
         },
       ],
-      destination: 'https://blog-stage.callmewine.com/:match*/',
+      destination: 'https://blog-stage.callmewine.com/:match*',
     },
     {
       source: '/blog',
@@ -61,7 +61,7 @@ const config = {
           type: 'host',
         },
       ],
-      destination: 'https://blog.callmewine.com/:match*/',
+      destination: 'https://blog.callmewine.com/:match*',
     },
   ],
 

@@ -7,7 +7,7 @@ import { useCustomer } from '~/store/customer'
 
 export default defineComponent({
   setup() {
-    const { localeLocation, $gtm, $cmw, $handleApiErrors, $config } = useContext()
+    const { localeRoute, $gtm, $cmw, $handleApiErrors } = useContext()
     const router = useRouter()
     const customerStore = useCustomer()
     const isSubmitting = ref(false)
@@ -15,7 +15,6 @@ export default defineComponent({
 
     const handleFocus = () => showPasswordToast.value = true
     const handleBlur = () => showPasswordToast.value = false
-    const isCmwItB2b = $config.STORE === 'B2B'
 
     const form = ref({
       firstName: '',
@@ -30,7 +29,6 @@ export default defineComponent({
       acceptsMarketing: false,
     })
 
-    // used in for ref= template in ValidationObserver
     const registrationForm = ref<HTMLFormElement | null>(null)
 
     const onSubmit = async () => {
@@ -50,7 +48,7 @@ export default defineComponent({
 
           if (valid) {
             await customerStore.getCustomer()
-            router.push(localeLocation('/profile/my-orders') as RawLocation)
+            router.push(localeRoute('/profile/my-orders') as RawLocation)
           }
         } else {
           throw new Error('`customer` not found in response.data')
@@ -83,7 +81,6 @@ export default defineComponent({
       form,
       handleBlur,
       handleFocus,
-      isCmwItB2b,
       isSubmitting,
       onSubmit,
       registrationForm,
@@ -98,39 +95,39 @@ export default defineComponent({
     <ValidationObserver v-slot="{ handleSubmit }" ref="registrationForm" slim>
       <form class="px-4 pt-3 py-2 md:w-3/4 mx-auto" @submit.prevent="handleSubmit(onSubmit)">
         <InputField
-          v-model="form.firstName" name="firstName" :label="$t('firstName')"
+          v-model="form.firstName" name="register-user-firstname" :label="$t('firstName')"
           :placeholder="$t('firstName')" rules="required" theme="gray"
         />
 
         <InputField
-          v-model="form.lastName" name="lastName" :label="$t('lastName')"
+          v-model="form.lastName" name="register-user-lastname" :label="$t('lastName')"
           :placeholder="$t('lastName')" rules="required" theme="gray"
         />
 
         <InputField
-          v-model="form.email" type="email" name="email" :label="$t('email')"
+          v-model="form.email" type="email" name="register-user-email" :label="$t('email')"
           :placeholder="$t('email')" rules="required|email" theme="gray"
         />
 
         <CmwStrongPassword v-model="form.password" vid="password" theme="gray" :placeholder="$t('passwordPlaceholder')" />
 
         <InputField
-          v-model="form.businessName" name="businessName" :label="$t('businessName')"
+          v-model="form.businessName" name="register-business-name" :label="$t('businessName')"
           :placeholder="$t('businessName')" :rules="{ required: true }" theme="gray"
         />
 
         <InputField
-          v-model="form.vatNumber" name="vatNumber" :label="$t('vatNumber')"
+          v-model="form.vatNumber" name="register-vat-number" :label="$t('vatNumber')"
           :rules="{ required: true, regex: /^(IT)?[0-9]{11}$/i }" :placeholder="$t('vatNumber')" theme="gray"
         />
 
         <InputField
-          v-model="form.businessType" name="businessType" :label="$t('businessType')"
+          v-model="form.businessType" name="register-business-type" :label="$t('businessType')"
           :rules="{ required: true }" :placeholder="$t('businessType')" theme="gray"
         />
 
         <InputField
-          v-model="form.phone" name="phone" :label="$t('phone')"
+          v-model="form.phone" name="register-phone" :label="$t('phone')"
           :rules="{ required: true, regex: /^[0,3]\d{8,9}$/ }" :placeholder="$t('phonePlaceholder')" theme="gray"
         />
 
