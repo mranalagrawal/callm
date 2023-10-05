@@ -247,7 +247,7 @@ export default defineComponent({
           @handle-on-footer-click="handleOnFooterClick"
         />
       </div>
-      <div class="prose <md:hidden" v-html="shortDescription" />
+      <div class="prose my-4 <md:hidden" v-html="shortDescription" />
       <ProductsResultsList :results="results" :total="total" @update-sort-value="handleUpdateSortValue" />
       <CategoriesPagination :total-pages="Math.ceil(total / 48)" :input-parameters="inputParameters" :base-path="$route.path" />
       <div class="prose mt-8 sm:hidden" v-html="shortDescription" />
