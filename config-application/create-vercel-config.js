@@ -34,6 +34,16 @@ const config = {
       destination: 'https://blog-stage.callmewine.com/',
     },
     {
+      source: '/blog/:match*/',
+      has: [
+        {
+          value: '.*stage.*',
+          type: 'host',
+        },
+      ],
+      destination: 'https://blog-stage.callmewine.com/:match*/',
+    },
+    {
       source: '/blog/:match*',
       has: [
         {
@@ -64,7 +74,6 @@ const config = {
       destination: 'https://blog.callmewine.com/:match*',
     },
   ],
-
 }
 
 fs.writeFileSync('vercel.json', JSON.stringify(config, null, 2))
