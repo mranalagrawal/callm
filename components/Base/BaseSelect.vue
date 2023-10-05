@@ -56,7 +56,7 @@ export default defineComponent({
             @change="$emit('change', $event.target.value)"
           >
             <option value="" disabled selected v-text="label" />
-            <option v-for="option in options" :key="option.value" :disabled="option.disabled" :value="option.value" v-text="option.label" />
+            <option v-for="option in options" :key="option.value" class="text-gray-dark" :disabled="option.disabled" :value="option.value" v-text="option.label" />
           </select>
           <div
             class="absolute transform right-2 top-1/2 -translate-y-1/2 pointer-events-none"
