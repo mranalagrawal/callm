@@ -25,6 +25,16 @@
       "destination": "https://blog-stage.callmewine.com/"
     },
     {
+      "source": "/blog/:match*/",
+      "has": [
+        {
+          "value": ".*stage.*",
+          "type": "host"
+        }
+      ],
+      "destination": "https://blog-stage.callmewine.com/:match*/"
+    },
+    {
       "source": "/blog/:match*",
       "has": [
         {
