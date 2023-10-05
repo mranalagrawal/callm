@@ -172,7 +172,7 @@ export default defineComponent({
       show: ((selectedCountry.value === 'IT'
         && (selectedInvoiceType.value === 'Associazione' || selectedInvoiceType.value === 'Azienda'))),
       inputValue: customerBilling.value?.pec_sdi || '',
-      rules: { required: true, regex: /^(?:[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}|[0-9]{7})$/ },
+      rules: { required: true, regex: /^(?:[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}|[a-zA-Z0-9]{7})$/ },
     }))
 
     // CODICE FISCALE
