@@ -70,7 +70,7 @@ const REDIRECT_SEO_REGEX = {
   // exception for C+V
   [`^\/${SLUG_REGEX}+-(C8V\\d+).htm`]: 200,
   [`^\/${SLUG_REGEX}+-(C9V\\d+).htm`]: 200,
-  [`^\/${SLUG_REGEX}+-((C|M)\\d+V\\d+).htm`]: 301,
+  [`^\/${SLUG_REGEX}+-(C\\d+V\\d+).htm`]: 301,
   // "vini-meursault-C1V166.htm" : 301,
 
   [`^\/${SLUG_REGEX}+-(C\\d+B\\d+).htm`]: 301,
@@ -204,6 +204,10 @@ const REDIRECT_SEO_REGEX = {
   // `^\/$': 200,
 }
 
+const OTHERS_REDIRECT = {
+  '^\/customerorderview/(\\d+)': '/profile/my-orders',
+}
+
 function searchRedirectPuntuali(urlPath) {
   // force to lower case before match search
   if (containsCapitalizedLetters(urlPath)) { urlPath = urlToLowerCase(urlPath) }
@@ -301,16 +305,32 @@ function isBrandUrl(url) {
   return url.match(/[^\/]+-(B\d+)+.htm/)
 }
 
-function clearRoutePath(routePath) {
-  if (routePath !== '/' && routePath.endsWith('/')) {
-    return routePath.slice(0, -1)
+function isCustomRedirect(urlPath) {
+  return Object.keys(OTHERS_REDIRECT).find((regex) => {
+    const regexToCheck = new RegExp(regex, 'g')
+    const matches = urlPath.match(regexToCheck)
+    if (matches) { return true }
+
+    return false
+  })
+}
+
+function removeLocaleFromRoutePath(routePath, localeLang) {
+  const localePrefix = `/${localeLang}/`
+  // if /en
+  if (routePath.startsWith(localePrefix)) {
+    routePath = `/${routePath.replace(localePrefix, '')}`
   }
   return routePath
 }
 
+function needToRemoveFinalSlash(routePath) {
+  return routePath !== '/' && routePath.endsWith('/') && !routePath.startsWith('/blog/')
+}
+
 export default async function ({ redirect, route, $config, error, localePath, i18n }) {
   const queryParams = route.query
-  let routePath = clearRoutePath(route.path)
+  let routePath = removeLocaleFromRoutePath(route.path, i18n.locale)
   // BDP - brand detail page
   if (isBrandUrl(routePath)) {
     // console.log(`${routePath} is a brandPage...`)
@@ -340,7 +360,7 @@ export default async function ({ redirect, route, $config, error, localePath, i1
     const redirectTo = prepareRedirect(getStaticPageRedirectTo(routePath))
     // console.log(`🚥(301) ${routePath} is oldStaticPage redirectTo ...`, redirectTo)
 
-    return redirect(301, redirectTo)
+    return redirect(301, localePath(redirectTo))
   } else if (pageWithFilterCode(routePath) || plpWithOldPagination(routePath)) {
     // PLP - listing pages with at least one filter/code part es C1, M1R13 ecc
     // console.log(`${routePath} is a plp/pageWithFilterCode searching for a match...`)
@@ -368,7 +388,7 @@ export default async function ({ redirect, route, $config, error, localePath, i1
     // 2. searching in redirect seo rules/regex
     const matched = getMatchedRegex(routePath)
     // need backend to get redirectUrl
-    // console.log('redirectByRegex matched', matched, REDIRECT_SEO_REGEX[matched])
+    // console.log('redirectByRegex matched' + routePath , matched, REDIRECT_SEO_REGEX[matched])
 
     if (matched && REDIRECT_SEO_REGEX[matched] === 301) {
       try {
@@ -405,20 +425,27 @@ export default async function ({ redirect, route, $config, error, localePath, i1
       if (containsCapitalizedLetters(routePath) || needLettersReplace(routePath) || isOldPlpPaginationUrl) {
         redirectTo = prepareRedirect(routePath)
         // console.log(`🚥(301) ${routePath} contains capitalized or oldletters, redirect to  -> ${redirectTo}`)
-        redirect(301, redirectTo, queryParams)
-      } else if (routePath !== route.path) {
-        // console.log(`🚥(301) ${routePath} is different from original ${route.path}, redirect to ${routePath}`)
-        redirect(301, localePath(routePath), queryParams)
+        redirect(301, localePath(redirectTo), queryParams)
+      } else if (needToRemoveFinalSlash(localePath(route.path))) {
+        const redirectTo = routePath.slice(0, -1)
+        // console.log(`🚥(301) ${routePath} ends with ${route.path}, redirect to ${routePath}`)
+        redirect(301, localePath(redirectTo), queryParams)
       } else {
         // console.log(`🚥(200) ${routePath} -> continue`)
       }
     } else {
-      // console.log(`🚥${urlPath} doesn't match regex -> 410`)
+      // console.log(`🚥${routePath} doesn't match regex -> 410`)
       error({ statusCode: 410, message: 'Resource is gone.' })
     }
-  } else if (routePath !== route.path) {
+  } else if (isCustomRedirect(routePath)) {
+    const matchedKey = isCustomRedirect(routePath)
+    const redirectTo = OTHERS_REDIRECT[matchedKey]
+    redirect(301, localePath(redirectTo), queryParams)
+  } else if (needToRemoveFinalSlash(localePath(route.path))) {
+    // remove
+    const redirectTo = routePath.slice(0, -1)
     // console.log(`🚥(301) ${routePath} is different from original ${route.path}, redirect to ${routePath}`)
-    redirect(301, localePath(routePath), queryParams)
+    redirect(301, localePath(redirectTo), queryParams)
   }
   // default continue...
   // capitalized letters in PDP e BDP are handled directly in specific pages
