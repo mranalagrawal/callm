@@ -5,7 +5,7 @@
 const MACRO_LETTERS = '(1|2|3|4|54|57|64|66|75|78|87|95|97|99|104|106|109)'
 const COUNTRY_LETTERS = '(1|4|5|6|9|10|11|12|13|14|15|16|17|19|20|21|22|23|24|25|26|28|29|30|31|32|33|34|35|36|38|39|40|42|43|44|45|46|47|48|49|50|51|52|184|186|188|196|203|221|229|233|238|241|247|275|282|291|293|297)'
 
-const URL_WITH_CAPITALIZED_LETTERS = '^\/(.*[A-Z].*)-(.*?)\.htm$'
+const URL_WITH_CAPITALIZED_LETTERS = '^\/([^%]*[A-Z].*)-(.*?)\.htm$'
 
 const STATIC_PAGES = '^\/(vini-artigianali|vini-biodinamici|vini-biologici|vini-e-distillati-da-regalare|vini-in-anfora|vini-in-offerta|vini-lago-di-garda|vini-langhe|vini-maremma|vini-oltrepo-pavese|vini-ossidativi|vini-rari|vini-sassicaia|vini-senza-solfiti|vini-triple-a|vini-valtellina|vini-vegani)(_(\\d+))?.htm'
 
@@ -325,12 +325,15 @@ function removeLocaleFromRoutePath(routePath, localeLang) {
 }
 
 function needToRemoveFinalSlash(routePath) {
-  return routePath !== '/' && routePath.endsWith('/') && !routePath.startsWith('/blog/')
+  const result = routePath !== '/' && routePath.endsWith('/') && !routePath.startsWith('/blog/')
+  // console.log(`needToRemoveFinalSlash ${routePath}`, result)
+  return result
 }
 
 export default async function ({ redirect, route, $config, error, localePath, i18n }) {
   const queryParams = route.query
   let routePath = removeLocaleFromRoutePath(route.path, i18n.locale)
+  // console.log(`routePath to check ${routePath}`)
   // BDP - brand detail page
   if (isBrandUrl(routePath)) {
     // console.log(`${routePath} is a brandPage...`)
@@ -426,7 +429,7 @@ export default async function ({ redirect, route, $config, error, localePath, i1
         redirectTo = prepareRedirect(routePath)
         // console.log(`🚥(301) ${routePath} contains capitalized or oldletters, redirect to  -> ${redirectTo}`)
         redirect(301, localePath(redirectTo), queryParams)
-      } else if (needToRemoveFinalSlash(localePath(route.path))) {
+      } else if (needToRemoveFinalSlash(route.path)) {
         const redirectTo = routePath.slice(0, -1)
         // console.log(`🚥(301) ${routePath} ends with ${route.path}, redirect to ${routePath}`)
         redirect(301, localePath(redirectTo), queryParams)
@@ -441,7 +444,7 @@ export default async function ({ redirect, route, $config, error, localePath, i1
     const matchedKey = isCustomRedirect(routePath)
     const redirectTo = OTHERS_REDIRECT[matchedKey]
     redirect(301, localePath(redirectTo), queryParams)
-  } else if (needToRemoveFinalSlash(localePath(route.path))) {
+  } else if (needToRemoveFinalSlash(route.path)) {
     // remove
     const redirectTo = routePath.slice(0, -1)
     // console.log(`🚥(301) ${routePath} is different from original ${route.path}, redirect to ${routePath}`)
