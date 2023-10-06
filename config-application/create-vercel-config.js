@@ -64,6 +64,16 @@ const config = {
       destination: 'https://blog.callmewine.com/',
     },
     {
+      source: '/blog/:match*/',
+      missing: [
+        {
+          value: '.*stage.*',
+          type: 'host',
+        },
+      ],
+      destination: 'https://blog.callmewine.com/:match*/',
+    },
+    {
       source: '/blog/:match*',
       missing: [
         {
