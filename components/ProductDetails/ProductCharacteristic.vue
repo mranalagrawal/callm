@@ -12,12 +12,16 @@ export default defineComponent({
       type: String as PropType<keyof IProductCharacteristics>,
       required: true,
     },
+    value: {
+      type: String,
+      required: false,
+    },
   },
   setup(props) {
     const productCharacteristic = inject('productCharacteristics') as IProductCharacteristics
     let characteristicText = ''
 
-    const currentCharacteristic = productCharacteristic[props.characteristic]
+    const currentCharacteristic = props.value || productCharacteristic[props.characteristic]
 
     if (currentCharacteristic) {
       const { i18n } = useContext()

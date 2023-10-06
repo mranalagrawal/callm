@@ -316,7 +316,7 @@ export default {
     denomination: 'Denominazione',
     grapes: 'Vitigni',
     regionCountry: 'Regione',
-    alcoholContent: 'Contenuto alcolico',
+    alcoholContent: 'Gradazione alcolica',
     size: 'Formato',
     winemaking: 'Vinificazione',
     vineyards: 'Vigneti',
