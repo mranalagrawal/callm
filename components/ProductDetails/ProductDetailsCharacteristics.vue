@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, provide, toRefs } from '@nuxtjs/composition-api'
+import { defineComponent, provide } from '@nuxtjs/composition-api'
 import type { PropType } from '@nuxtjs/composition-api'
 import type { IProductCharacteristics } from '~/types/product'
 
@@ -12,9 +12,12 @@ export default defineComponent({
   },
   setup(props) {
     provide('productCharacteristics', props.productCharacteristic)
-    const { rarewine } = toRefs(props.productCharacteristic)
+
+    const { rarewine, alcoholContent } = props.productCharacteristic
+
     return {
       rarewine,
+      alcoholContent,
     }
   },
 })
@@ -28,7 +31,7 @@ export default defineComponent({
       <ProductCharacteristic characteristic="grapes" />
       <ProductCharacteristic characteristic="subCategory" />
       <ProductCharacteristicRegionCountry />
-      <ProductCharacteristic characteristic="alcoholContent" />
+      <ProductCharacteristic characteristic="alcoholContent" :value="alcoholContent ? `${alcoholContent} %` : null " />
       <ProductCharacteristic characteristic="size" />
       <ProductCharacteristic characteristic="vineyards" />
       <ProductCharacteristic characteristic="winemaking" />
