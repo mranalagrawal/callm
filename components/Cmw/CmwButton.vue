@@ -2,14 +2,14 @@
 import type { PropType } from '@nuxtjs/composition-api'
 import { defineComponent } from '@nuxtjs/composition-api'
 import type { TranslateResult } from 'vue-i18n'
-import type { RawLocation } from 'vue-router'
+import type { RawLocation, Route } from 'vue-router'
 import type { TButtonVariant, TSizes } from '~/types/types'
 
 export default defineComponent({
   name: 'CmwButton',
   props: {
     to: {
-      type: String as PropType<RawLocation>,
+      type: [String, Object] as PropType<RawLocation | Route>,
       default: '',
     },
     label: {
