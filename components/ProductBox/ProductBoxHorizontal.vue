@@ -305,7 +305,7 @@ hover:shadow-elevation"
           </template>
         </i18n-n>
         <div v-if="$cmwStore.isB2b" class="text-sm text-gray-dark  mb-3">
-          iva escluso
+          iva esclusa
         </div>
         <div v-if="product.availableForSale" class="relative">
           <CmwButton

@@ -318,7 +318,7 @@ export default defineComponent({
         <span v-if="$cmwStore.isDe" class="text-gray">Inkl. MwSt. Und St.</span>
       </div>
       <div v-if="$cmwStore.isB2b" class="text-sm text-gray-dark ml-2">
-        iva escluso
+        iva esclusa
       </div>
     </div>
     <div v-if="isOnSale" class="c-productBox__lapel absolute top-$lapel-top right-8">
