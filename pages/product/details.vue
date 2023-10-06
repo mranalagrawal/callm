@@ -551,7 +551,7 @@ export default defineComponent({
                   </template>
                 </i18n-n>
                 <div v-if="$cmwStore.isB2b" class="text-gray-dark">
-                  iva escluso
+                  iva esclusa
                 </div>
                 <div v-if="$cmwStore.isDe">
                   <span v-if="$cmwStore.isDe && priceByLiter" class="text-sm <md:hidden">
