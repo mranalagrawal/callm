@@ -9,7 +9,7 @@ export default {
     const collectionRef = ref<ICollection>(initialCollectionData)
     useFetch(async ({ $cmwRepo }) => {
       collectionRef.value = await $cmwRepo.products.getCollectionsByHandle({ handle: 'home-shelf-1' })
-      if (collectionRef.value) {
+      if (collectionRef.value?.products) {
         collectionRef.value.products = sortArrayByNumber(collectionRef.value.products, 'availableForSale', 'desc')
       }
     })

@@ -304,6 +304,9 @@ hover:shadow-elevation"
             <span class="text-sm md:text-base">{{ slotProps.fraction }}</span>
           </template>
         </i18n-n>
+        <div v-if="$cmwStore.isB2b" class="text-sm text-gray-dark  mb-3">
+          iva escluso
+        </div>
         <div v-if="product.availableForSale" class="relative">
           <CmwButton
             class="gap-2 pl-2 pr-3 py-2"
@@ -366,9 +369,9 @@ hover:shadow-elevation"
           </CmwButton>
         </div>
         <div>
-          <span v-if="$config.STORE === 'CMW_DE' && priceByLiter" class="text-sm">
+          <span v-if="$cmwStore.isDe && priceByLiter" class="text-sm">
             {{ $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode)) }}/liter</span>
-          <small v-if="$config.STORE === 'CMW_DE'" class="text-gray">Inkl. MwSt. Und St.</small>
+          <small v-if="$cmwStore.isDe" class="text-gray">Inkl. MwSt. Und St.</small>
         </div>
       </div>
       <div class="absolute transform top-px left-1/2 -translate-x-1/2 -translate-y-1/2">

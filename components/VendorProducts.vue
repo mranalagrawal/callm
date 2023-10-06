@@ -1,11 +1,12 @@
 <script lang="ts">
 import { computed, ref, toRefs, useFetch, watch } from '@nuxtjs/composition-api'
+import { sortArrayByNumber } from '~/utilities/arrays'
 import { escapeJsonSingleQuotes } from '~/utilities/strings'
 
 export default {
   props: ['vendor', 'tag'],
   setup(props: any) {
-    const productsRef = ref<Record<string, any>>([])
+    const productsRef = ref<any>([])
     const { vendor: vendorRef, tag } = toRefs(props)
     const query = computed(() => {
       const vendorPart = `tag:active AND vendor:'${escapeJsonSingleQuotes(vendorRef.value)}'`
@@ -21,7 +22,10 @@ export default {
         query: query.value,
       })
         .then(async ({ products = { nodes: [] } }) => {
-          if (products.nodes.length) { productsRef.value = $productMapping.fromShopify(products.nodes) }
+          if (products.nodes.length) {
+            productsRef.value = $productMapping.fromShopify(products.nodes)
+            productsRef.value = sortArrayByNumber(productsRef.value, 'availableForSale', 'desc')
+          }
         })
         .catch((err: Error) => {
           $handleApiErrors(`Catch getting products getAll from shopify: ${err}`)

@@ -43,7 +43,7 @@ export default defineComponent({
 
       if (props.results?.length) {
         mappedProducts = $productMapping.fromElastic(props.results)
-        mappedProducts.sort((a, b) => Number(b.availableForSale) - Number(a.availableForSale))
+        // mappedProducts.sort((a, b) => Number(b.availableForSale) - Number(a.availableForSale))
       }
 
       if (process.browser) {
