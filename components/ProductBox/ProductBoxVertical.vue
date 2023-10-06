@@ -177,12 +177,12 @@ export default defineComponent({
     class="
     c-productBox relative transition transition-box-shadow bg-white rounded-sm border border-gray-light
     hover:shadow-elevation"
-    :class="`-${generateKey($config.STORE)}`"
+    :class="`-${generateKey($cmwStore.settings.store)}`"
     :data-sku="product.sku"
     @mouseenter="isHovering = true"
     @mouseleave="isHovering = false"
   >
-    <div class="c-productBox__grid grid h-full" :class="`-${generateKey($config.STORE)}`">
+    <div class="c-productBox__grid grid h-full" :class="`-${generateKey($cmwStore.settings.store)}`">
       <div class="c-productBox__image relative">
         <ClientOnly>
           <button class="block mx-auto" @click="handleProductCLick">
@@ -315,7 +315,10 @@ export default defineComponent({
       <div v-if="$cmwStore.isDe" class="c-productBox__note mx-2">
         <span v-if="priceByLiter" class="text-gray">
           {{ $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode)) }}/liter</span>
-        <span v-if="$config.STORE === 'CMW_DE'" class="text-gray">Inkl. MwSt. Und St.</span>
+        <span v-if="$cmwStore.isDe" class="text-gray">Inkl. MwSt. Und St.</span>
+      </div>
+      <div v-if="$cmwStore.isB2b" class="text-sm text-gray-dark ml-2">
+        iva escluso
       </div>
     </div>
     <div v-if="isOnSale" class="c-productBox__lapel absolute top-$lapel-top right-8">
@@ -394,12 +397,12 @@ export default defineComponent({
 }
 
 /* DE Modifiers */
-.c-productBox.-cmw-de .c-productBox__grid {
+.c-productBox.-cmw-de .c-productBox__grid, .c-productBox.-b-2-b .c-productBox__grid {
   grid-template-rows: auto 60px 54px 40px;
 }
 /* We are handling this piece skipping mobile-first to reduce the amount of CSS  */
 @container product-box (max-width: 250px) {
-  .c-productBox.-cmw-de .c-productBox__grid {
+  .c-productBox.-cmw-de .c-productBox__grid, .c-productBox.-b-2-b .c-productBox__grid {
     grid-template-rows: auto auto 54px 26px;
   }
 

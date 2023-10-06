@@ -3,6 +3,7 @@ import { computed, ref, useContext, useFetch, watch } from '@nuxtjs/composition-
 import { storeToRefs } from 'pinia'
 import { useRecentProductsStore } from '@/store/recent'
 import type { IProductMapped } from '~/types/product'
+import { sortArrayByNumber } from '~/utilities/arrays'
 
 export default {
   setup() {
@@ -20,7 +21,10 @@ export default {
         query: query.value,
       })
         .then(async ({ products = { nodes: [] } }) => {
-          if (products.nodes.length) { productsRef.value = $productMapping.fromShopify(products.nodes) }
+          if (products.nodes.length) {
+            productsRef.value = $productMapping.fromShopify(products.nodes)
+            productsRef.value = sortArrayByNumber(productsRef.value, 'availableForSale', 'desc')
+          }
         })
         .catch((err: Error) => {
           $handleApiErrors(`Catch getting products getAll from shopify on Recent Products on Vendor Products: ${query.value} ${err}`)

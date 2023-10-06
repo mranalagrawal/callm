@@ -550,6 +550,9 @@ export default defineComponent({
                     <span class="text-sm md:text-base">{{ slotProps.fraction }}</span>
                   </template>
                 </i18n-n>
+                <div v-if="$cmwStore.isB2b" class="text-gray-dark">
+                  iva escluso
+                </div>
                 <div v-if="$cmwStore.isDe">
                   <span v-if="$cmwStore.isDe && priceByLiter" class="text-sm <md:hidden">
                     {{
