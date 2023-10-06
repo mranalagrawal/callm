@@ -23,7 +23,9 @@ export default defineComponent({
       const result = []
       const characteristicsObj: Record<string, any> = pick(props.productDetails, ['color', 'taste', 'aroma'])
       for (const [key, obj] of Object.entries(characteristicsObj)) {
-        result.push({ title: i18n.t(`product.${key}`), description: obj[i18n.locale] })
+        if (obj[i18n.locale]) {
+          result.push({ title: i18n.t(`product.${key}`), description: obj[i18n.locale] })
+        }
       }
       return result
     })
