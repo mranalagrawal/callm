@@ -4,6 +4,7 @@ import type { PropType } from '@nuxtjs/composition-api'
 import type { TISO639 } from '~/config/themeConfig'
 import type { ITranslations } from '~/types/common-objects'
 import type { IProductCharacteristics } from '~/types/product'
+import { getUniqueListBy } from '~/utilities/arrays'
 
 export default defineComponent({
   props: {
@@ -25,12 +26,10 @@ export default defineComponent({
       if (typeof currentCharacteristic === 'string') {
         characteristicText = currentCharacteristic as string
       } else if (Array.isArray(currentCharacteristic)) {
-        characteristicText = currentCharacteristic
-          .map((obj) => {
-            const word = obj.name[lang]
-            return (obj.slug && obj.slug[lang]) ? `<a href="${obj.slug[lang]}">${word}</a>` : word
-          })
-          .join(', ')
+        characteristicText = getUniqueListBy(currentCharacteristic, 'id')?.map((obj) => {
+          const word = obj.name[lang]
+          return (obj.slug && obj.slug[lang]) ? `<a href="${obj.slug[lang]}">${word}</a>` : word
+        }).join(', ') || ''
       // } else if (Object.getOwnPropertyNames(currentCharacteristic).every(item => ['it', 'en', 'de', 'fr'].includes(item))) {
       } else if (typeof currentCharacteristic === 'object' && 'id' in currentCharacteristic) {
         const word = currentCharacteristic.name[lang]
