@@ -5,10 +5,10 @@ export default {
     code: validation.code,
     messages: {
       ...validation.messages,
-      oneLowerCase: 'ein Kleinbuchstabe',
-      oneNumber: 'eine Zahl',
-      oneSpecialChar: 'ein besonderer Charakter',
-      oneUpperCase: 'ein Großbuchstabe',
+      oneLowerCase: 'una lettera minuscola',
+      oneNumber: 'un numero',
+      oneSpecialChar: 'un carattere speciale',
+      oneUpperCase: 'una lettera maiuscola',
     },
     password: {
       effectiveness: 'Efficacia Password',
