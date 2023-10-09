@@ -106,7 +106,9 @@ export const useShopifyCart = defineStore({
         })
         .then(data => data.cartCreate.cart)
 
-      this.$nuxt.$cookies.set('cartId', data.id)
+      this.$nuxt.$cookies.set('cartId', data.id, {
+        maxAge: 60 * 60 * 24 * 7,
+      })
       this.$patch({ shopifyCart: data })
     },
 
@@ -169,6 +171,9 @@ export const useShopifyCart = defineStore({
             if (typeof window !== 'undefined' && window.google_tag_manager && window.google_tag_manager[this.$nuxt.app.$config.gtm.id]) { window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.set('ecommerce', undefined) }
 
             this.$patch({ shopifyCart: cart })
+            this.$nuxt.$cookies.set('cartId', cart.id, {
+              maxAge: 60 * 60 * 24 * 7,
+            })
             successCB()
           } else {
             this.$nuxt.$sentry.captureException(userErrors[0].message)
