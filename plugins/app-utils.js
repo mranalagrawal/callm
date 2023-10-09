@@ -7,9 +7,13 @@ export default (context) => {
 
   store.$subscribe(() => {
     if (window.ReactNativeWebView) {
+      let quantity = 0
+      if (shopifyCart && shopifyCart.value) {
+        quantity = shopifyCart.value.totalQuantity
+      }
       window.ReactNativeWebView.postMessage(JSON.stringify({
         type: 'cartQuantityUpdate',
-        quantity: shopifyCart.value.totalQuantity,
+        quantity,
       }))
     }
   }, { detached: true })
