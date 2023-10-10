@@ -5,7 +5,7 @@ mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
       updatedAt
       totalQuantity
       checkoutUrl
-      lines(first: 10) {
+      lines(first: 200) {
         nodes {
           id
           quantity

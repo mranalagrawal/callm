@@ -62,33 +62,42 @@ export default defineComponent({
   <div class="w-full bg-white">
     <div class="shadow h-[3px]" />
     <div class="overflow-auto h-screen">
-      <component
-        :is="!!mappedMenuItem.items.length ? 'button' : 'NuxtLink'"
-        v-for="(mappedMenuItem) in menu"
-        :key="generateKey(mappedMenuItem.name)"
-        :to="!mappedMenuItem.items.length ? localePath(`/${mappedMenuItem.link}`) : undefined"
-        class="relative flex justify-between items-center w-full py-4 px-2"
-        @click="activeItem = mappedMenuItem"
-      >
-        <span class="uppercase text-sm cmw-font-light tracking-wide" :class="mappedMenuItem.isPromotionTab ? 'text-primary-400' : ''">
-          <VueSvgIcon
-            v-if="mappedMenuItem.isPromotionTab"
-            :data="promoTagIcon"
-            width="26"
-            height="26"
-            class="inline"
-          />
-          {{ mappedMenuItem.name }}
-        </span>
-        <VueSvgIcon
-          v-if="!!mappedMenuItem.items.length"
-          :data="chevronRightIcon"
-          width="16"
-          height="16"
-          color="#d94965"
-        />
-        <span class="absolute w-[calc(100%_-_1rem)] left-2 bottom-0 h-px bg-gray-light" />
-      </component>
+      <div v-for="(mappedMenuItem) in menu" :key="generateKey(`menu-mobile-${mappedMenuItem?.name}`)">
+        <template v-if="mappedMenuItem.name.toLowerCase() === 'blog'">
+          <a href="/blog" class="relative flex justify-between items-center w-full py-4 px-2">
+            <span class="uppercase text-sm cmw-font-light tracking-wide">{{ mappedMenuItem.name }}</span></a>
+        </template>
+        <template v-else>
+          <component
+            :is="!!mappedMenuItem.items.length ? 'button' : 'NuxtLink'"
+            :to="!mappedMenuItem.items.length ? localePath(`/${mappedMenuItem.link}`) : undefined"
+            class="relative flex justify-between items-center w-full py-4 px-2"
+            @click="activeItem = mappedMenuItem"
+          >
+            <span
+              class="uppercase text-sm cmw-font-light tracking-wide"
+              :class="mappedMenuItem.isPromotionTab ? 'text-primary-400' : ''"
+            >
+              <VueSvgIcon
+                v-if="mappedMenuItem.isPromotionTab"
+                :data="promoTagIcon"
+                width="26"
+                height="26"
+                class="inline"
+              />
+              {{ mappedMenuItem.name }}
+            </span>
+            <VueSvgIcon
+              v-if="!!mappedMenuItem.items.length"
+              :data="chevronRightIcon"
+              width="16"
+              height="16"
+              color="#d94965"
+            />
+            <span class="absolute w-[calc(100%_-_1rem)] left-2 bottom-0 h-px bg-gray-light" />
+          </component>
+        </template>
+      </div>
     </div>
     <!--    <transition name="menu-mobile-second-level" @after-enter="handleAfterEnter"> -->
     <div

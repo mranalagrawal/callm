@@ -5,7 +5,7 @@ mutation cartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
       updatedAt
       totalQuantity
       checkoutUrl
-      lines(first: 10) {
+      lines(first: 200) {
         nodes {
           id
           quantity

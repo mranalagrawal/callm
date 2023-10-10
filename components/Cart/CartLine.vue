@@ -81,7 +81,10 @@ export default defineComponent({
     class="c-cartLineItem mx-3 bg-white py-4 border-b border-b-gray-light"
   >
     <div class="c-cartLineItem__image">
-      <img :src="item.merchandise.product.featuredImage.url" alt="" style="height: 50px">
+      <img
+        v-show="item.merchandise.product.featuredImage?.url"
+        :src="item.merchandise.product.featuredImage?.url" alt="" style="height: 50px"
+      >
     </div>
     <div class="c-cartLineItem__description">
       <p class="text-sm cmw-font-bold">
