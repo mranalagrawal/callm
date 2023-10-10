@@ -37,7 +37,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="pageData?.title" class="max-w-screen-xl mx-auto p-4 mt-5">
+  <div v-if="pageData?.title" class="prose max-w-screen-xl mx-auto p-4 mt-5">
     <h1 v-text="pageData.title" />
     <LoadingImage
       v-if="pageData.image"
