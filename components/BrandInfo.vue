@@ -18,7 +18,7 @@ export default {
   <table class="w-full">
     <tbody>
       <tr v-if="region && country">
-        <th scope="row" v-text="$t('product.region')" />
+        <th scope="row" v-text="$t('product.regionCountry')" />
         <td>{{ `${region} (${country})` }}</td>
       </tr>
       <tr v-if="year">
@@ -28,10 +28,6 @@ export default {
       <tr v-if="hectares">
         <th scope="row" v-text="$t('product.vineyardHectares')" />
         <td v-text="hectares" />
-      </tr>
-      <tr v-if="ownedGrapes">
-        <th scope="row" v-text="$t('product.proprietaryGrapes')" />
-        <td v-text="ownedGrapes" />
       </tr>
       <tr v-if="annualProduction">
         <th scope="row" v-text="$t('product.annualProduction')" />
