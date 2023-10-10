@@ -1,6 +1,7 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+import cartEmptyIcon from 'assets/svg/cart-empty.svg'
 import CartLine from '../components/Cart/CartLine.vue'
 import type { IProductBreadcrumbs } from '~/types/product'
 import { useShopifyCart } from '~/store/shopifyCart'
@@ -87,6 +88,7 @@ export default defineComponent({
 
     return {
       breadcrumb,
+      cartEmptyIcon,
       cartTotal,
       checkout,
       computedCartTotal,
@@ -99,11 +101,6 @@ export default defineComponent({
       shipping,
       shopifyCart,
     }
-  },
-  computed: {
-    cart() {
-      return this.shopifyCart ? this.shopifyCart : null
-    },
   },
 
   methods: {
@@ -121,17 +118,17 @@ export default defineComponent({
       />
 
       <ClientOnly>
-        <div v-if="cart && computedCartTotal > 0">
+        <div v-if="shopifyCart && computedCartTotal > 0">
           <h1 class="h2 my-4" v-text="$t('cartDetails')" />
           <div class="grid md:(gap-8 grid-cols-[8fr_4fr]) my-4">
             <div class="">
               <div class="flex items-center justify-between border-b border-b-gray mt-4">
-                <small><strong v-text="cart.totalQuantity" />
+                <small><strong v-text="shopifyCart.totalQuantity" />
                   <span>{{ $tc('profile.orders.card.goods', computedCartTotal) }}</span>
                 </small>
                 <CmwButton class="w-max ml-auto" variant="text" :label="$t('common.cta.emptyCart')" @click.native="emptyCart" />
               </div>
-              <div v-for="item in cart.lines.edges" :key="generateKey(`cart-${item.node.id}`)">
+              <div v-for="item in shopifyCart.lines.edges" :key="generateKey(`cart-${item.node.id}`)">
                 <CartLine :item="item.node" />
               </div>
               <div v-if="!$cmwStore.isUk" class="my-8">
@@ -207,7 +204,7 @@ export default defineComponent({
         <div v-else>
           <h1 class="h2 my-4" v-text="$t('navbar.cart.empty')" />
           <div class="text-center my-12">
-            <VueSvgIcon :data="require(`@/assets/svg/cart-empty.svg`)" width="200" height="200" original />
+            <VueSvgIcon :data="cartEmptyIcon" width="200" height="200" original />
           </div>
           <div class="mt-8">
             <CmwButton :to="localePath('/')" class="w-max mx-auto" :label="$t('common.cta.continueShopping')" />
