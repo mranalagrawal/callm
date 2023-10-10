@@ -16,7 +16,7 @@ function debounce<T extends (...args: any[]) => any>(func: T, wait: number) {
 
 export default defineComponent({
   setup() {
-    const { $config, i18n, $handleApiErrors } = useContext()
+    const { $config, i18n, $handleApiErrors, localePath } = useContext()
     const { ELASTIC_URL, STORE } = $config
     const store = STORE as TStores
     const storeConfigId = themeConfig[store]?.id || 2
@@ -59,10 +59,11 @@ export default defineComponent({
     const startSearch = () => {
       if (!search.value) { return }
 
-      router.push({
+      showSearchSuggestions.value = false
+      router.push(localePath({
         path: '/catalog',
         query: { search: search.value },
-      })
+      }))
     }
 
     return {

@@ -28,7 +28,7 @@ query getCart(
         currencyCode
       }
     }
-    lines(first: 20) {
+    lines(first: 200) {
       nodes {
         id
         quantity

@@ -16,7 +16,7 @@ export default {
       checkout_invoice_private_taxcode: 'Steuernummer',
     },
     cart: {
-      cart_order_note: 'Hinweis',
+      cart_order_note: 'Hinweis für den Kurierdienst',
       cart_order_note_title: 'Hinweis hinzufügen (optional)',
       cart_order_note_placeholder: 'Geben Sie Ihre Nachricht ein',
     },

@@ -39,7 +39,7 @@ export default defineComponent({
       "
       :style="{ backgroundImage: `url('${readMoreBg}')` }"
     >
-      <div class="w-[min(100%,_60rem)] m-inline-auto pr-1/12">
+      <div class="prose w-[min(100%,_60rem)] m-inline-auto pr-1/12">
         <PrismicRichText v-if="componentData.shown" :field="componentData.shown" />
         <transition>
           <PrismicRichText v-if="componentData.hidden && showMoreText" :field="componentData.hidden" />

@@ -16,7 +16,7 @@ export default {
       checkout_invoice_private_taxcode: 'Tax Code',
     },
     cart: {
-      cart_order_note: 'Note',
+      cart_order_note: 'Notes for the courier',
       cart_order_note_title: 'Add a note (optional)',
       cart_order_note_placeholder: 'Enter your message',
     },
