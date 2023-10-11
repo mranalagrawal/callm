@@ -183,7 +183,7 @@ export default defineComponent({
 
 @screen phone {
   .c-bannerCurve {
-    object-position: 0 -60px;
+    object-position: 0 -30px;
   }
 }
 
