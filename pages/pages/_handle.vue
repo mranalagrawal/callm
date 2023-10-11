@@ -1,8 +1,8 @@
 <script lang="ts">
 import {
   defineComponent,
-  inject, onBeforeMount, provide, readonly,
-  ref, useContext, useMeta,
+  inject, provide, readonly,
+  ref, useContext, useFetch, useMeta,
   useRoute,
   useRouter, watch,
 } from '@nuxtjs/composition-api'
@@ -10,7 +10,6 @@ import chevronLeftIcon from 'assets/svg/chevron-left.svg'
 import chevronRightIcon from 'assets/svg/chevron-right.svg'
 import filterIcon from 'assets/svg/filter.svg'
 import Loader from '~/components/UI/Loader.vue'
-import { initialShopifyPageData } from '~/config/shopifyConfig'
 import { shopifyRichTextToHTML } from '~/utilities/shopify'
 
 interface IQuery {
@@ -20,7 +19,7 @@ interface IQuery {
 export default defineComponent({
   components: { Loader },
   setup() {
-    const { $cmwRepo, $cmwStore, $elastic, i18n, localePath } = useContext()
+    const { localePath } = useContext()
     const router = useRouter()
     const route = useRoute()
     const pageData = ref<Record<string, any>>({})
@@ -29,7 +28,7 @@ export default defineComponent({
     const shortDescription = ref('')
     const results = ref([])
     const total = ref(0)
-    const fetchState = ref({ pending: true, error: null })
+    // const fetchState = ref({ pending: true, error: null })
     const aggregationsRef = ref({})
     const cmwActiveSelect = ref('')
     const isDesktop = inject('isDesktop')
@@ -104,16 +103,15 @@ export default defineComponent({
     }
 
     // Fixme: There's something redirecting the API calls on SSR, so these pages will load data on client
-    /* const { fetch } = useFetch(async ({ $config, $elastic, $cmwRepo, $handleApiErrors, $route, $i18n }) => {
-      await $cmwRepo.shopifyPages.getPageByHandle({ handle: $route.params.handle })
-        .then(({ page }) => {
-          if (!page || !Object.keys(page).length)
-            return
+    const { fetch, fetchState } = useFetch(async ({ $cmwStore, $elastic, $cmwRepo, $handleApiErrors, $route, $i18n }) => {
+      await $cmwRepo.shopifyPages.getPageByHandle($route.params.handle)
+        .then((shopifyPage) => {
+          if (!shopifyPage || !Object.keys(shopifyPage).length) { return }
 
-          pageData.value = page
-          inputParameters.value = page?.filters?.value && JSON.parse(page.filters.value)
+          pageData.value = shopifyPage
+          inputParameters.value = shopifyPage?.filters?.value && JSON.parse(shopifyPage.filters.value)
 
-          shortDescription.value = shopifyRichTextToHTML(page.shortDescription.value)
+          shortDescription.value = shopifyRichTextToHTML(shopifyPage.shortDescription.value)
         })
         .catch((err: Error) => $handleApiErrors(`Catch getting getPageByHandle from shopify: ${err}`))
 
@@ -122,10 +120,8 @@ export default defineComponent({
         ...route.value.query,
       }
 
-      const store = $config.STORE as TStores
-      const storeConfigId = themeConfig[store]?.id
       const urlSearchParams = new URLSearchParams(mergedInputParameters)
-      urlSearchParams.set('stores', storeConfigId?.toString() || '')
+      urlSearchParams.set('stores', $cmwStore.settings.id?.toString() || '')
       urlSearchParams.set('locale', $i18n.locale || '')
       const searchParams = urlSearchParams.toString()
 
@@ -135,13 +131,12 @@ export default defineComponent({
           results.value = hits.hits
           total.value = hits.total.value
 
-          if (Object.keys(aggregations).length)
-            aggregationsRef.value = aggregations
+          if (Object.keys(aggregations).length) { aggregationsRef.value = aggregations }
         })
         .catch((err: Error) => $handleApiErrors(`Catch getting results.value = hits.hits from elastic: ${err}`))
-    }) */
+    })
 
-    async function fetchData() {
+    /* async function fetchData() {
       fetchState.value = { pending: true, error: null }
 
       try {
@@ -169,9 +164,9 @@ export default defineComponent({
 
         return { shopifyPage: initialShopifyPageData, productsSearch: {}, links: null }
       }
-    }
+    } */
 
-    async function fetchDataWithFetchState() {
+    /* async function fetchDataWithFetchState() {
       const { shopifyPage, productsSearch } = await fetchData()
 
       if (!shopifyPage || !Object.keys(shopifyPage).length) { return }
@@ -184,7 +179,7 @@ export default defineComponent({
       total.value = hits.total.value
 
       if (Object.keys(aggregations).length) { aggregationsRef.value = aggregations }
-    }
+    } */
 
     useMeta(() => ({
       title: pageData.value?.seo?.title || '',
@@ -197,9 +192,9 @@ export default defineComponent({
       ],
     }))
 
-    onBeforeMount(fetchDataWithFetchState)
+    // onBeforeMount(fetchDataWithFetchState)
 
-    watch(() => route.value?.query, () => fetchDataWithFetchState())
+    watch(() => route.value?.query, () => fetch())
 
     return {
       aggregationsRef,

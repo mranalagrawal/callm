@@ -232,7 +232,7 @@ export const useCustomer = defineStore({
       this.$nuxt.$cookies.remove('b2b-approved')
       this.$nuxt.$graphql.default.setHeader('authorization', '')
       this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', undefined)
-      window.google_tag_manager[this.$nuxt.app.$config.gtm.id] && window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.reset()
+      window.google_tag_manager && window.google_tag_manager[this.$nuxt.app.$config.gtm.id] && window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.reset()
       await this.$nuxt.app.router.push(this.$nuxt.app.localePath('/'))
     },
 

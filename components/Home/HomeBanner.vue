@@ -15,6 +15,8 @@ import chevronLeftIcon from 'assets/svg/chevron-left.svg'
 import chevronRightIcon from 'assets/svg/chevron-right.svg'
 import carouselCurveDesktop from 'assets/svg/carousel-curve-desktop.svg'
 import carouselCurveMobile from 'assets/svg/carousel-curve-mobile.svg'
+import heroBannerCurveLg from '~/assets/images/hero-banner-curve-lg.png'
+import heroBannerCurveSm from '~/assets/images/hero-banner-curve-sm.png'
 import { getMobileOperatingSystem } from '@/utilities/getOS'
 import { generateKey } from '@/utilities/strings'
 
@@ -22,7 +24,7 @@ export default defineComponent({
   setup() {
     const {
       req,
-      localeLocation,
+      localeRoute,
       $cookies,
     } = useContext()
     const router = useRouter()
@@ -48,31 +50,40 @@ export default defineComponent({
     })
 
     const handleMobileClick = (link: RawLocation) => {
-      if (isTablet.value) { return }
+      if (isTablet.value) {
+        return
+      }
 
-      router.push(localeLocation(link) as RawLocation)
+      router.push(localeRoute(link) as RawLocation)
     }
 
     const showDesktopImage = computed(() => {
-      if (hasBeenSet.value) { return isTablet.value } else { return (!isBrowser.value && !OS.value) || (isBrowser.value && isTablet.value) }
+      if (hasBeenSet.value) {
+        return isTablet.value
+      } else {
+        return (!isBrowser.value && !OS.value) || (isBrowser.value && isTablet.value)
+      }
     })
     onBeforeUnmount(() => slides.value = [])
 
     return {
-      showDesktopImage,
-      isTablet,
-      isDesktopWide,
-      hasBeenSet,
       OS,
-      isBrowser,
-      fetch,
+      heroBannerCurveLg,
+      heroBannerCurveSm,
       carousel,
-      slides,
-      chevronLeftIcon,
-      chevronRightIcon,
       carouselCurveDesktop,
       carouselCurveMobile,
+      chevronLeftIcon,
+      chevronRightIcon,
+      fetch,
       handleMobileClick,
+      hasBeenSet,
+      isBrowser,
+      isDesktopWide,
+      isTablet,
+      localeRoute,
+      showDesktopImage,
+      slides,
     }
   },
   methods: {
@@ -85,13 +96,29 @@ export default defineComponent({
   <div v-if="slides.length" class="relative">
     <SsrCarousel ref="carousel" :key="slides.length" loop :show-arrows="isDesktopWide" show-dots class="relative">
       <div
-        v-for="({ text, cta, image, link }) in slides" :key="generateKey(text)" class="slide relative w-full h-[505px] overflow-hidden"
+        v-for="({ text, cta, image, link }) in slides" :key="generateKey(text)"
+        class="slide relative w-full h-[505px] overflow-hidden"
         @click="handleMobileClick(link)"
       >
         <div
           class="absolute top-0 left-0 w-full h-full bg-cover bg-center"
           :style="`backgroundImage: url('${showDesktopImage ? image.url : image.mobile.url}')`"
         />
+        <div class="absolute top-0 left-0 w-full h-full">
+          <picture>
+            <source :srcset="heroBannerCurveLg" media="(min-width: 768px)" width="1200" height="500">
+            <source :srcset="heroBannerCurveSm" width="800" height="400">
+            <img
+              :src="heroBannerCurveSm"
+              class="c-bannerCurve w-full object-contain object-[0_-50px] md:(object-cover w-4/6 h-full)"
+              alt="A geometric shape"
+              width="400"
+              height="400"
+              loading="lazy"
+              decoding="async"
+            >
+          </picture>
+        </div>
         <div
           class="c-carouselWrapper relative z-base grid justify-stretch h-full md:justify-center"
         >
@@ -99,13 +126,13 @@ export default defineComponent({
           <div class="grid grid-rows-2 md:(w-[min(100%,_30vw)]) xl:(w-[min(100%,_20vw)] justify-center)">
             <NuxtLink
               class="block pt-8 w-full self-start leading-none mr-auto h1 -dark md:self-end"
-              :to="localePath(link)"
+              :to="localeRoute(link)"
             >
               {{ text }}
             </NuxtLink>
             <CmwButton
               class="hidden w-max self-end mt-8 text-shadow-none md:(block self-start)"
-              variant="default-inverse" :to="localePath(link)" :label="cta"
+              variant="default-inverse" :to="localeRoute(link)" :label="cta"
             />
           </div>
           <div />
@@ -136,6 +163,10 @@ export default defineComponent({
 </template>
 
 <style scoped>
+.c-bannerCurve {
+  object-position: 0 10px;
+}
+
 .c-carouselWrapper {
   --max-w: theme('screens.md');
   grid-template-columns: minmax(16px, 1fr) minmax(100px, var(--max-w)) minmax(16px, 1fr);
@@ -150,7 +181,23 @@ export default defineComponent({
   transform: translateY(100%);
 }
 
+@screen phone {
+  .c-bannerCurve {
+    object-position: 0 -30px;
+  }
+}
+
+@screen sm {
+  .c-bannerCurve {
+    object-position: 0 -100px;
+  }
+}
+
 @screen md {
+  .c-bannerCurve {
+    object-position: right;
+  }
+
   ::v-deep(.ssr-carousel-dots) {
     width: 100%;
     bottom: 100px;
