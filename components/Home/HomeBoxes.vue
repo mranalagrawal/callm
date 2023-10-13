@@ -11,7 +11,7 @@ export default defineComponent({
     const responsive = [
       {
         minWidth: 0,
-        slidesPerPage: 1,
+        slidesPerPage: 2,
       },
       {
         minWidth: 767,

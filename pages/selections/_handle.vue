@@ -164,8 +164,7 @@ export default defineComponent({
         </div>
       </div>
       <div
-        class="grid grid-cols-1 gap-4 phone:(grid-cols-2 gap-2)
-         sm:(grid-cols-2 gap-3) lg:(grid-cols-3 gap-4) desktop-wide:grid-cols-4"
+        class="products-grid"
       >
         <!-- Todo: Implement horizontal product box <ProductCardHorizontal :product="product" /> -->
         <ProductBoxVertical v-for="product in sorted" :key="product.id" :product="product" />
