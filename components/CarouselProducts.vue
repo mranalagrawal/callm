@@ -18,7 +18,7 @@ export default defineComponent({
       default: () => ([
         {
           minWidth: 0,
-          slidesPerPage: 1,
+          slidesPerPage: 2,
         },
         {
           minWidth: 412,
