@@ -1,8 +1,8 @@
-<script>
-import { ref } from '@nuxtjs/composition-api'
+<script lang="ts">
+import { defineComponent, ref } from '@nuxtjs/composition-api'
 import OrderCard from '~/components/UserProfile/OrderCard.vue'
 
-export default {
+export default defineComponent({
   components: { OrderCard },
   props: {
     orders: {
@@ -12,14 +12,18 @@ export default {
   },
   setup() {
     const tableHeaders = ['order', 'date', 'recipient', 'products', 'total', 'financialStatus', 'fulfillmentStatus']
-    const activeOrder = ref(0)
-    const updateOrderId = (id) => {
+    const activeOrder = ref<number>(0)
+    const updateOrderId = (id: number) => {
       activeOrder.value = activeOrder.value === id ? 0 : id
     }
 
-    return { tableHeaders, activeOrder, updateOrderId }
+    return {
+      activeOrder,
+      tableHeaders,
+      updateOrderId,
+    }
   },
-}
+})
 </script>
 
 <template>
@@ -32,6 +36,7 @@ export default {
         class="c-tableHeaders print:hidden backdrop-filter backdrop-blur bg-gray-lightest rounded
          <md:hidden grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_90px]
        items-center justify-items-center text-center mb-6 py-6 sticky"
+        :class="{ '-fromApp': $store.state.headers.fromApp }"
       >
         <div
           v-for="header in tableHeaders"
@@ -63,5 +68,9 @@ export default {
 <style scoped>
 .c-tableHeaders {
   top: calc(var(--cmw-header-height) + 106px);
+}
+
+.c-tableHeaders.-fromApp {
+  top: 106px;
 }
 </style>
