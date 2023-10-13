@@ -150,6 +150,35 @@ export default defineComponent({
       return selectionsListMapped
     })
 
+    const arrayOrder = ['categories', 'winelists', 'countries', 'regions', 'areas', 'brands']
+    // Create a function that takes an array and an Object and return the object ordered by the array given
+
+    interface ObjectType {
+      [key: string]: any[]
+    }
+
+    const orderByArray = (obj: ObjectType): ObjectType => {
+      const ordered: ObjectType = {}
+
+      // Iterate through the arrayOrder and copy arrays to the ordered object
+      arrayOrder.forEach((key) => {
+        if (obj[key]) {
+          ordered[key] = [...obj[key]] // Create a copy of the array
+        }
+      })
+
+      // Iterate through the original object and copy non-array properties to the ordered object
+      Object.keys(obj).forEach((key) => {
+        if (!arrayOrder.includes(key) && Array.isArray(obj[key])) {
+          ordered[key] = [...obj[key]] // Create a copy of the array
+        } else if (!arrayOrder.includes(key)) {
+          ordered[key] = obj[key]
+        }
+      })
+
+      return ordered
+    }
+
     const computedFilters = computed<IFilters>(() => {
       let filters: any = {}
 
@@ -222,6 +251,8 @@ export default defineComponent({
       minPriceTotal.value = Math.round(+props.aggregations.min_price['agg-min-price'].value)
       minPrice.value = priceFrom || Math.round(+props.aggregations.min_price['agg-min-price'].value)
 
+      // Use the orderByArray function to reorder the filters
+      filters = orderByArray(filters)
       return filters
     })
 
