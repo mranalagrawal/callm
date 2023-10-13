@@ -434,7 +434,7 @@ export default defineComponent({
       cmwActiveSelect.value = ''
       showMobileFilters.value = false
       const { id, keyword } = JSON.parse(val)
-      const query = { ...props.inputParameters.value, ...route.value.query }
+      const query = { ...props.inputParameters, ...route.value.query }
 
       if (`${query[keyword]}` === id.toString()) {
         delete query[keyword]
