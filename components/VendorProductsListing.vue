@@ -1,5 +1,7 @@
 <script lang="ts">
-import { computed, ref, toRefs, useFetch, watch } from '@nuxtjs/composition-api'
+import { computed, inject, ref, toRefs, useFetch, watch } from '@nuxtjs/composition-api'
+import { storeToRefs } from 'pinia'
+import { useFilters } from '~/store/filters'
 import type { IProductMapped } from '~/types/product'
 import { sortArrayByNumber } from '~/utilities/arrays'
 import { escapeJsonSingleQuotes } from '~/utilities/strings'
@@ -7,7 +9,9 @@ import { escapeJsonSingleQuotes } from '~/utilities/strings'
 export default {
   props: ['vendor', 'tag'],
   setup(props: any) {
+    const { selectedLayout, availableLayouts } = storeToRefs(useFilters())
     const productsRef = ref<IProductMapped[]>([])
+    const isDesktop = inject('isDesktop')
     const { vendor: vendorRef, tag } = toRefs(props)
     const query = computed(() => {
       const vendorPart = `tag:active AND vendor:'${escapeJsonSingleQuotes(vendorRef.value)}'`
@@ -19,7 +23,7 @@ export default {
       if (!vendorRef.value) { return }
 
       await $cmwRepo.products.getAll({
-        first: 12,
+        first: 250,
         query: query.value,
       })
         .then(async ({ products = { nodes: [] } }) => {
@@ -35,7 +39,13 @@ export default {
 
     watch(() => query.value, () => fetch())
 
-    return { vendorRef, productsRef }
+    return {
+      availableLayouts,
+      isDesktop,
+      productsRef,
+      selectedLayout,
+      vendorRef,
+    }
   },
 }
 </script>
@@ -45,8 +55,28 @@ export default {
     <p v-if="$fetchState.pending" class="px-4">
       {{ $t("loading") }}
     </p>
-    <template v-else>
-      <CarouselProducts v-if="!!productsRef.length" :products="productsRef" :title="$t('sameProducer')" />
-    </template>
+    <div v-else class="px-4">
+      <div class="h2 text-center py-4" v-text="$t('sameProducer')" />
+      <div v-if="selectedLayout === 'list' && isDesktop">
+        <div
+          v-for="(result, idx) in productsRef"
+          :key="result.shopify_product_id"
+          class="mb-4"
+        >
+          <ProductBoxHorizontal :product="result" :position="idx + 1" />
+        </div>
+      </div>
+      <div
+        v-else class="grid grid-cols-1 gap-4 phone-md:(grid-cols-2 gap-2)
+         sm:(grid-cols-2 gap-3) lg:(grid-cols-3 gap-4) desktop-wide:grid-cols-4"
+      >
+        <div
+          v-for="(result, idx) in productsRef"
+          :key="`desktop${result.shopify_product_id}`"
+        >
+          <ProductBoxVertical :product="result" :position="idx + 1" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>

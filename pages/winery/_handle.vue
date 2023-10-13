@@ -391,7 +391,7 @@ export default defineComponent({
           </div>
         </div>
         <div v-if="brand && brand.title">
-          <VendorProducts :vendor="brand.title" />
+          <VendorProductsListing :vendor="brand.title" />
         </div>
       </div>
       <div v-else class="max-w-screen-xl mx-auto p-4 text-center">
