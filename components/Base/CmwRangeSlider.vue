@@ -89,7 +89,7 @@ export default {
       </div>
     </div>
     <div class="wrap wrap--2x dots">
-      <div class="absolute transform -translate-y-1/2 w-full top-1/2 flex justify-between items-center h-[3px]">
+      <div class="absolute transform -translate-y-1/2 w-full top-1/2 flex justify-between items-center h-[5px]">
         <div class="bg-primary-100 h-px" :style="{ width: `${minWidth}%` }" />
         <div class="bg-primary h-full" :style="{ flex: 1 }" />
         <div class="bg-primary-100 h-px" :style="{ width: `calc(100% - ${maxWidth}%)` }" />
@@ -136,8 +136,8 @@ export default {
 [type=range]::-webkit-slider-thumb {
   box-sizing: border-box;
   border: 1px solid white;
-  width: 0.735em;
-  height: 0.735em;
+  width: 1.235em;
+  height: 1.235em;
   border-radius: 50%;
   background: #992545;
   pointer-events: auto;
@@ -146,8 +146,8 @@ export default {
 [type=range]::-moz-range-thumb {
   box-sizing: border-box;
   border: 1px solid white;
-  width: 0.735em;
-  height: 0.735em;
+  width: 1.235em;
+  height: 1.235em;
   padding: 9px 10px 11px;
   border-radius: 50%;
   background: #992545;
