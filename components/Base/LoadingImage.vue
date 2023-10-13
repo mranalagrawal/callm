@@ -81,8 +81,8 @@ export default {
   <component :is="wrapper" ref="el" class="w-full">
     <img
       ref="imgEl"
-      class="filter transition-lazy-image duration-300 text-xxs"
-      :class="[imageIsLoaded ? 'blur-0' : 'blur-6', imgClasses]"
+      class="filter transition-lazy-image duration-100 text-xxs"
+      :class="[imageIsLoaded ? 'blur-0 opacity-100' : 'opacity-50 blur-1', imgClasses]"
       :data-src="source.url"
       :data-thumbnail="thumbnail.url"
       :alt="thumbnail.altText"

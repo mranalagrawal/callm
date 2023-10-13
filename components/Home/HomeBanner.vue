@@ -93,71 +93,80 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="slides.length" class="relative">
-    <SsrCarousel ref="carousel" :key="slides.length" loop :show-arrows="isDesktopWide" show-dots class="relative">
-      <div
-        v-for="({ text, cta, image, link }) in slides" :key="generateKey(text)"
-        class="slide relative w-full h-[505px] overflow-hidden"
-        @click="handleMobileClick(link)"
+  <div class="relative h-[505px] bg-primary-50">
+    <div v-if="slides.length">
+      <SsrCarousel
+        ref="carousel" :key="slides.length" loop :show-arrows="isDesktopWide" show-dots
+        class="relative h-[505px]"
       >
         <div
-          class="absolute top-0 left-0 w-full h-full bg-cover bg-center"
-          :style="`backgroundImage: url('${showDesktopImage ? image.url : image.mobile.url}')`"
-        />
-        <div class="absolute top-0 left-0 w-full h-full">
-          <picture>
-            <source :srcset="heroBannerCurveLg" media="(min-width: 768px)" width="1200" height="500">
-            <source :srcset="heroBannerCurveSm" width="800" height="400">
-            <img
-              :src="heroBannerCurveSm"
-              class="c-bannerCurve w-full object-contain object-[0_-50px] md:(object-cover w-4/6 h-full)"
-              alt="A geometric shape"
-              width="400"
-              height="400"
-              loading="lazy"
-              decoding="async"
-            >
-          </picture>
-        </div>
-        <div
-          class="c-carouselWrapper relative z-base grid justify-stretch h-full md:justify-center"
+          v-for="({ text, cta, image, link }) in slides" :key="generateKey(text)"
+          class="slide relative w-full h-[505px] overflow-hidden"
+          @click="handleMobileClick(link)"
         >
-          <div />
-          <div class="grid grid-rows-2 md:(w-[min(100%,_30vw)]) xl:(w-[min(100%,_20vw)] justify-center)">
-            <NuxtLink
-              class="block pt-8 w-full self-start leading-none mr-auto h1 -dark md:self-end"
-              :to="localeRoute(link)"
-            >
-              {{ text }}
-            </NuxtLink>
-            <CmwButton
-              class="hidden w-max self-end mt-8 text-shadow-none md:(block self-start)"
-              variant="default-inverse" :to="localeRoute(link)" :label="cta"
-            />
+          <div
+            class="absolute top-0 left-0 w-full h-full bg-cover bg-center"
+          />
+          <PrismicImage
+            class="absolute top-0 left-0 w-full h-full object-cover"
+            :field="showDesktopImage ? image : image.mobile"
+            :imgix-params="{ sat: -100, dpr: 2 }"
+          />
+          <div class="absolute top-0 left-0 w-full h-full">
+            <picture>
+              <source :srcset="heroBannerCurveLg" media="(min-width: 768px)" width="1200" height="500">
+              <source :srcset="heroBannerCurveSm" width="800" height="400">
+              <img
+                :src="heroBannerCurveSm"
+                class="c-bannerCurve w-full object-contain object-[0_-50px] md:(object-cover w-4/6 h-full)"
+                alt="A geometric shape"
+                width="400"
+                height="400"
+                loading="lazy"
+                decoding="async"
+              >
+            </picture>
           </div>
-          <div />
+          <div
+            class="c-carouselWrapper relative z-base grid justify-stretch h-full md:justify-center"
+          >
+            <div />
+            <div class="grid grid-rows-2 md:(w-[min(100%,_30vw)]) xl:(w-[min(100%,_20vw)] justify-center)">
+              <NuxtLink
+                class="block pt-8 w-full self-start leading-none mr-auto h1 -dark md:self-end"
+                :to="localeRoute(link)"
+              >
+                {{ text }}
+              </NuxtLink>
+              <CmwButton
+                class="hidden w-max self-end mt-8 text-shadow-none md:(block self-start)"
+                variant="default-inverse" :to="localeRoute(link)" :label="cta"
+              />
+            </div>
+            <div />
+          </div>
         </div>
+        <template #back-arrow>
+          <span class="w-12 h-12 bg-white rounded-sm flex">
+            <VueSvgIcon :data="chevronLeftIcon" color="#992545" width="20" height="20" class="m-auto" />
+          </span>
+        </template>
+        <template #next-arrow>
+          <span class="w-12 h-12 bg-white rounded-sm flex">
+            <VueSvgIcon :data="chevronRightIcon" color="#992545" width="20" height="20" class="m-auto" />
+          </span>
+        </template>
+      </SsrCarousel>
+      <div class="absolute left-0 bottom-[-2px] w-full h-auto">
+        <VueSvgIcon
+          class="m-auto"
+          :data="showDesktopImage
+            ? carouselCurveDesktop : carouselCurveMobile"
+          width="100%"
+          height="auto"
+          original
+        />
       </div>
-      <template #back-arrow>
-        <span class="w-12 h-12 bg-white rounded-sm flex">
-          <VueSvgIcon :data="chevronLeftIcon" color="#992545" width="20" height="20" class="m-auto" />
-        </span>
-      </template>
-      <template #next-arrow>
-        <span class="w-12 h-12 bg-white rounded-sm flex">
-          <VueSvgIcon :data="chevronRightIcon" color="#992545" width="20" height="20" class="m-auto" />
-        </span>
-      </template>
-    </SsrCarousel>
-    <div class="absolute left-0 bottom-[-2px] w-full h-auto">
-      <VueSvgIcon
-        class="m-auto"
-        :data="showDesktopImage
-          ? carouselCurveDesktop : carouselCurveMobile"
-        width="100%"
-        height="auto"
-        original
-      />
     </div>
   </div>
 </template>
