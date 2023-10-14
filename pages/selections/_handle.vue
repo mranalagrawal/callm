@@ -54,15 +54,15 @@ export default defineComponent({
       sorting.value = false
     }
 
-    useFetch(async ({ $config, $cmwRepo }) => {
+    useFetch(async ({ $cmwStore, $cmwRepo }) => {
       await $cmwRepo.products.getCollectionsByHandle({ handle: params.value.handle })
         .then((collection: ICollection) => {
           collectionRef.value = collection
 
-          sorted.value = collection.products
+          sorted.value = sortArrayByNumber(collection.products, 'availableForSale', 'desc')
           sorted.value = sorted.value.map(p => ({
             ...p,
-            sortPrice: Number(p.priceLists[$config.SALECHANNEL][getCustomerType.value]),
+            sortPrice: Number(p.priceLists[$cmwStore.settings.salesChannel][getCustomerType.value]),
           }))
           sorted.value = sortArrayByName(sorted.value, 'title', 'asc')
         })
