@@ -36,6 +36,8 @@ const cookies: Plugin = ({ app }, inject) => {
     setToken: (token: string) => app.$cookies.set(name, token, {
       path: '/',
       maxAge: 60 * 60 * 24 * 7,
+      sameSite: 'lax',
+      secure: true,
       // expires // Note: we could use customerAccessToken.expiresAt return by Shopify,
     }),
     onLogout: () => app.$cookies.remove(name),

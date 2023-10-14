@@ -42,7 +42,10 @@ export default defineComponent({
       const data = await $cmwRepo.prismic.getSingle('home-carousel')
       if (!process.browser) {
         OS.value = getMobileOperatingSystem(req.headers['user-agent'])
-        $cookies.set('iOS', getMobileOperatingSystem(req.headers['user-agent']))
+        $cookies.set('iOS', getMobileOperatingSystem(req.headers['user-agent']), {
+          sameSite: 'lax',
+          secure: true,
+        })
       }
 
       isBrowser.value = process?.browser
