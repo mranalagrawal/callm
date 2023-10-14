@@ -51,6 +51,8 @@ export default defineComponent({
         ? sortArrayByNumber(sorted.value, order, sort)
         : sortArrayByName(sorted.value, order, sort)
 
+      sorted.value = sortArrayByNumber(sorted.value, 'availableForSale', 'desc')
+
       sorting.value = false
     }
 
@@ -59,12 +61,13 @@ export default defineComponent({
         .then((collection: ICollection) => {
           collectionRef.value = collection
 
-          sorted.value = sortArrayByNumber(collection.products, 'availableForSale', 'desc')
+          sorted.value = collection.products
           sorted.value = sorted.value.map(p => ({
             ...p,
             sortPrice: Number(p.priceLists[$cmwStore.settings.salesChannel][getCustomerType.value]),
           }))
           sorted.value = sortArrayByName(sorted.value, 'title', 'asc')
+          sorted.value = sortArrayByNumber(sorted.value, 'availableForSale', 'desc')
         })
     })
 
