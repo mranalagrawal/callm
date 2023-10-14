@@ -225,7 +225,7 @@ export default defineComponent({
             class="transition-colors text-body text-left hover:(text-primary-400)"
             @click="handleProductCLick"
           >
-            <span class="line-clamp-2">{{ product.title }}</span>
+            <span class="line-clamp-2 text-sm md:text-base">{{ product.title }}</span>
           </button>
           <NuxtLink class="block sr-only" :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')" :to="localeLocation(product.url)" />
         </div>
