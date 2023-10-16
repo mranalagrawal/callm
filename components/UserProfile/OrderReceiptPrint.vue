@@ -98,9 +98,9 @@ export default defineComponent({
       <tbody class="border-y border-gray">
         <tr v-for="(lineItem) in orderLineItems" :key="generateKey(lineItem.title)" class="leading-loose even:bg-gray-lightest">
           <td class="text-sm">
-            {{ lineItem.variant.sku }}
+            {{ lineItem.variant?.sku ? lineItem.variant.sku : '-' }}
           </td><!-- <td>{{ $orderItem->product->sku }}</td> -->
-          <td>{{ lineItem.variant.product.title }}</td><!-- <td>{{ $orderItem->product->name }}</td> -->
+          <td>{{ lineItem.title || '-' }}</td><!-- <td>{{ $orderItem->product->name }}</td> -->
           <td class="text-center">
             {{ lineItem.quantity }}
           </td><!-- <td>{{ $orderItem->amount }}</td> -->
