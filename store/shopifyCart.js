@@ -108,7 +108,7 @@ export const useShopifyCart = defineStore({
 
       this.$nuxt.$cookies.set('cartId', data.id, {
         maxAge: 60 * 60 * 24 * 7,
-        sameSite: 'lax',
+        sameSite: 'none',
         secure: true,
       })
       this.$patch({ shopifyCart: data })
@@ -175,7 +175,7 @@ export const useShopifyCart = defineStore({
             this.$patch({ shopifyCart: cart })
             this.$nuxt.$cookies.set('cartId', cart.id, {
               maxAge: 60 * 60 * 24 * 7,
-              sameSite: 'lax',
+              sameSite: 'none',
               secure: true,
             })
             successCB()

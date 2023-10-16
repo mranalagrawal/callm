@@ -43,7 +43,7 @@ export default defineComponent({
       if (!process.browser) {
         OS.value = getMobileOperatingSystem(req.headers['user-agent'])
         $cookies.set('iOS', getMobileOperatingSystem(req.headers['user-agent']), {
-          sameSite: 'lax',
+          sameSite: 'none',
           secure: true,
         })
       }
