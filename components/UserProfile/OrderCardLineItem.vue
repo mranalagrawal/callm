@@ -23,14 +23,14 @@ export default defineComponent({
 
     const isOnSale = computed(() => {
       // Note: for gift cards compareAtPrice sometimes is null, so we need to check
-      if (!props.orderLineItem.variant.compareAtPrice) { return false }
+      if (!props.orderLineItem.variant?.compareAtPrice) { return false }
 
       return Number(props.orderLineItem.originalTotalPrice.amount) > Number(props.orderLineItem.discountedTotalPrice.amount)
     })
 
     const backofficeId = computed<string>(() => {
       // Get the proper tag 🤦🏻
-      return props.orderLineItem.variant.product.tags.length
+      return props.orderLineItem.variant?.product?.tags?.length
         ? props.orderLineItem.variant.product.tags.find((tag: string) => new RegExp(regexRules('isProduct')).test(tag))
         : 'probably-a-gift-card'
     })
@@ -58,6 +58,7 @@ export default defineComponent({
     <div class="grid grid-cols-[75px_auto_32px] grid-rows-auto md:(grid-cols-[75px_auto_100px_32px] grid-rows-1) items-center px-2">
       <div class="order-1">
         <img
+          v-if="orderLineItem.variant?.image"
           :src="orderLineItem.variant.image.url"
           :alt="orderLineItem.variant.image.altText"
         >
