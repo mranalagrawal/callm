@@ -55,7 +55,7 @@ export default {
     <p v-if="$fetchState.pending" class="px-4">
       {{ $t("loading") }}
     </p>
-    <div v-else class="px-4">
+    <div v-else class="max-w-screen-xl mx-auto py-4 px-4 mt-4">
       <div class="h2 text-center py-4" v-text="$t('sameProducer')" />
       <div v-if="selectedLayout === 'list' && isDesktop">
         <div
@@ -67,8 +67,7 @@ export default {
         </div>
       </div>
       <div
-        v-else class="grid grid-cols-1 gap-4 phone-md:(grid-cols-2 gap-2)
-         sm:(grid-cols-2 gap-3) lg:(grid-cols-3 gap-4) desktop-wide:grid-cols-4"
+        v-else class="products-grid"
       >
         <div
           v-for="(result, idx) in productsRef"
