@@ -7,6 +7,7 @@ import { useShopifyCart } from '~/store/shopifyCart'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 import OrderCardSummary from '~/components/UserProfile/OrderCardSummary.vue'
 import OrderCardLineItem from '~/components/UserProfile/OrderCardLineItem.vue'
+import { generateKey } from '~/utilities/strings'
 import { isObject } from '~/utilities/validators'
 import { useSplash } from '~/store/splash'
 import { useCustomerOrders } from '~/store/customerOrders.ts'
@@ -150,6 +151,7 @@ export default defineComponent({
     },
   },
   methods: {
+    generateKey,
     getLocaleFromCurrencyCode(code) {
       return getLocaleFromCurrencyCode(code)
     },
@@ -200,7 +202,7 @@ export default defineComponent({
             />
             <span
               class="font-sans text-body tracking-normal"
-              v-text="order.shippingAddress.name"
+              v-text="order.shippingAddress?.name ? order.shippingAddress?.name : '-'"
             />
             <span
               class="font-sans text-body tracking-normal"
@@ -372,8 +374,8 @@ export default defineComponent({
           <hr class="print:hidden mx-4 border-gray-light">
           <!-- Products Section -->
           <OrderCardLineItem
-            v-for="lineItem in orderLineItems"
-            :key="`${lineItem.variant.sku}-${lineItem.originalTotalPrice.amount}`"
+            v-for="(lineItem, idx) in orderLineItems"
+            :key="generateKey(`${lineItem.variant ? lineItem.variant.id : `m-${idx}`}-${lineItem.originalTotalPrice.amount}`)"
             :order-line-item="lineItem"
             :discount-applications="order.discountApplications"
           />
