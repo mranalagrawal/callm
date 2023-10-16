@@ -266,7 +266,7 @@ export default {
     lowestPopularity: 'Meno popolare',
     highestPrice: 'Prezzo più alto',
     lowestPrice: 'Prezzo più basso',
-    mostAwarded: 'Più premitati',
+    mostAwarded: 'Più premiati',
     newArrivals: 'Nuovi arrivi',
     popularity: 'Popolarità',
     brandAsc: 'Brand (A-Z)',

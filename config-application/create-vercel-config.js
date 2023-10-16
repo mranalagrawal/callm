@@ -22,6 +22,17 @@ const config = {
       },
     },
   ],
+  headers: [
+    {
+      source: '/',
+      headers: [
+        {
+          key: 'Cache-Control',
+          value: 's-maxage=60, stale-while-revalidate=120',
+        },
+      ],
+    },
+  ],
   rewrites: [
     {
       source: '/blog',

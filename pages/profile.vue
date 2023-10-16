@@ -92,7 +92,10 @@ export default defineComponent({
         />
       </button>
     </div>
-    <div class="print:hidden bg-white/50 backdrop-filter backdrop-blur sticky z-content top-$cmw-header-height pb-1 pt-4 pl-4 md:px-4">
+    <div
+      class="print:hidden bg-white/50 backdrop-filter backdrop-blur sticky z-content pb-1 pt-4 pl-4 md:px-4"
+      :class="(!$store.state.headers.fromApp) ? 'top-$cmw-header-height' : 'top-0'"
+    >
       <nav
         class="
         c-navigationTab font-sans justify-between w-full flex no-wrap overflow-x-auto

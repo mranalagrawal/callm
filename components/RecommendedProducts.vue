@@ -17,6 +17,7 @@ export default {
       await $graphql.default.request(getProductRecommendations, {
         lang: i18n.locale.toUpperCase(),
         productId: idRef.value,
+        intent: 'RELATED',
       })
         .then(async ({ productRecommendations = [] }) => {
           if (productRecommendations.length) {

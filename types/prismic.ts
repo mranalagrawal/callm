@@ -96,7 +96,8 @@ export interface IPrismicPageData {
   content: Record<string, any>
   body?: Record<string, any>[]
   box?: Record<string, any>[]
-  text?: Record<string, any>[]
+  text?: any
+  text_sm?: any
   description?: string
   newsletter_cta?: string
   first_check?: string

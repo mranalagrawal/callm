@@ -43,7 +43,7 @@ export default {
             <a
               v-if="successfulFulfillments.trackingInfo[0]"
               class="text-gray-dark hover:text-primary"
-              :href="successfulFulfillments.trackingInfo[0].url"
+              :href="`https://www.shippypro.com/tracking.html?tracking=${successfulFulfillments.trackingInfo[0].number}`"
               target="_blank"
             ><small> ({{ successfulFulfillments.trackingInfo[0].number }})</small></a>
           </span>

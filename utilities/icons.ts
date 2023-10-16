@@ -40,6 +40,7 @@ export function getIconByFeature(key: DEPRECATED_FEATURES | FEATURES): string {
   // TODO: use enum definitions everywhere and create an Icon viewer for marketing
   return ({
     AWARDS: 'awards',
+    exclusive: 'feature-exclusive',
     EXCLUSIVE: 'feature-exclusive',
     favourite: 'feature-cmw-favourite',
     FAVOURITE: 'feature-cmw-favourite',

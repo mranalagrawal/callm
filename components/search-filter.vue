@@ -3,6 +3,7 @@ import {
   computed,
   defineComponent,
   inject,
+  provide,
   ref,
   useContext,
   useFetch, useMeta,
@@ -539,6 +540,10 @@ export default defineComponent({
         link,
       }
     })
+
+    provide('showMobileFilters', showMobileFilters)
+    provide('total', total)
+
     return {
       activeSelections,
       aggregations,
@@ -667,151 +672,12 @@ export default defineComponent({
     </div>
 
     <ClientOnly>
-      <div v-if="total > 0 && !isDesktop">
-        <transition>
-          <div
-            v-show="showMobileFilters"
-            class="fixed w-screen h-screen top-0 left-0 bg-white z-amenadiel grid grid-rows-[60px_auto_90px]"
-          >
-            <!-- splash-header -->
-            <div class="sticky grid grid-cols-[100px_auto_100px] justify-between items-center px-4 shadow">
-              <div class="text-center w-max text-xs cmw-font-bold" v-text="$t('common.filters.by')" />
-              <div>
-                <CmwButton
-                  v-if="!!activeSelections.length || Object.values(view).some(v => v !== null)" variant="text"
-                  size="sm" :label="$t('search.removeFilters')" @click.native="resetFilter"
-                />
-              </div>
-              <ButtonIcon
-                class="justify-self-end" :icon="closeIcon" variant="icon" size="20"
-                @click.native="showMobileFilters = false"
-              />
-            </div>
-            <!-- splash-body -->
-            <div class="px-2 max-h-screen overflow-auto">
-              <CmwAccordion
-                key="mobile-our-selections" size="sm" :has-item="!!activeSelections?.length"
-                :active="cmwActiveSelect === 'mobile-our-selections'" @update-trigger="handleUpdateTrigger"
-              >
-                <template #default>
-                  <span class="block">
-                    <span class="block text-left" :class="{ 'cmw-font-bold': !!activeSelections?.length }">{{
-                      $t('search.selections')
-                    }}</span>
-                    <small v-if="!!activeSelections?.length" class="block text-primary text-left text-xs">
-                      <span
-                        v-for="selection in activeSelections" :key="selection" data-before="∙ "
-                        class="before:(content-[attr(data-before)] text-primary text-xs) first:before:(content-DEFAULT)"
-                      >
-                        {{ $t(`common.features.${selection}`) }}
-                      </span>
-                    </small>
-                  </span>
-                </template>
-                <template #children>
-                  <CmwSelect size="sm" :options="selections" is-full-width @update-value="handleUpdateValueSelections" />
-                </template>
-              </CmwAccordion>
-              <CmwAccordion
-                v-for="(value, key) in filterCategories" :key="`mobile-${key}`" size="sm"
-                :has-item="Object.keys(inputParameters).includes(key)" :active="cmwActiveSelect === `mobile-${key}`"
-                @update-trigger="handleUpdateTrigger"
-              >
-                <template #default>
-                  <span class="block">
-                    <span
-                      class="block text-left"
-                      :class="{ 'cmw-font-bold': Object.keys(inputParameters).includes(key) }"
-                    >{{
-                      $t(`search.${key}`)
-                    }}</span>
-                    <small v-if="Object.keys(inputParameters).includes(key)" class="block text-primary text-left text-xs">
-                      {{ value.find(v => v.selected) && value.find(v => v.selected).simpleLabel }}
-                    </small>
-                  </span>
-                </template>
-                <template #children>
-                  <div class="">
-                    <CmwSelect size="sm" :options="value" is-full-width @update-value="handleUpdateValue" />
-                  </div>
-                </template>
-              </CmwAccordion>
-              <CmwAccordion
-                key="mobile-prize" size="sm" :has-item="Object.keys(inputParameters).includes('price_from')"
-                :footer-label="$t('common.cta.apply')" :on-footer-click="handleOnFooterClick"
-                :active="cmwActiveSelect === 'mobile-prize'" @update-trigger="handleUpdateTrigger"
-              >
-                <template #default>
-                  <span class="block">
-                    <span
-                      class="block text-left"
-                      :class="{ 'cmw-font-bold': Object.keys(inputParameters).includes('price_from') }"
-                    >{{
-                      $t('search.price')
-                    }}</span>
-                    <small
-                      v-if="Object.keys(inputParameters).includes('price_from')"
-                      class="block text-primary text-left text-xs"
-                    >
-                      <i18n path="search.priceFromTo" tag="span">
-                        <i18n-n
-                          class="inline-block" :value="Number(inputParameters.price_from)"
-                          :format="{ key: 'currency' }"
-                          :locale="getLocaleFromCurrencyCode($config.STORE === 'CMW_UK' ? 'GBP' : 'EUR')"
-                        >
-                          <template #currency="slotProps">
-                            <span class="text-xs">{{ slotProps.currency }}</span>
-                          </template>
-                          <template #integer="slotProps">
-                            <span class="text-xs">{{ slotProps.integer }}</span>
-                          </template>
-                          <template #group="slotProps">
-                            <span class="text-xs">{{ slotProps.group }}</span>
-                          </template>
-                          <template #fraction="slotProps">
-                            <span class="text-xs">{{ slotProps.fraction }}</span>
-                          </template>
-                        </i18n-n>
-                        <i18n-n
-                          class="inline-block" :value="Number(inputParameters.price_to)" :format="{ key: 'currency' }"
-                          :locale="getLocaleFromCurrencyCode($config.STORE === 'CMW_UK' ? 'GBP' : 'EUR')"
-                        >
-                          <template #currency="slotProps">
-                            <span class="text-xs">{{ slotProps.currency }}</span>
-                          </template>
-                          <template #integer="slotProps">
-                            <span class="text-xs">{{ slotProps.integer }}</span>
-                          </template>
-                          <template #group="slotProps">
-                            <span class="text-xs">{{ slotProps.group }}</span>
-                          </template>
-                          <template #fraction="slotProps">
-                            <span class="text-xs">{{ slotProps.fraction }}</span>
-                          </template>
-                        </i18n-n>
-                      </i18n>
-                    </small>
-                  </span>
-                </template>
-                <template #children>
-                  <div class="px-4 pb-4">
-                    <CmwRangeSlider
-                      :min="minPrice" :max="maxPrice" :min-value-total="minPriceTotal"
-                      :max-value-total="maxPriceTotal" @update-values="handleUpdateRangeValues"
-                    />
-                  </div>
-                </template>
-              </CmwAccordion>
-            </div>
-            <!-- splash-footer -->
-            <div class="sticky flex bottom-0 left-0 w-full bg-white z-content shadow-elevation">
-              <div class="w-[min(100%,_14rem)] m-inline-auto place-self-center">
-                <CmwButton :label="$t('search.showResults', { count: total })" @click.native="showMobileFilters = false" />
-              </div>
-            </div>
-          </div>
-        </transition>
-      </div>
+      <CategoriesFiltersComponentsMobile
+        v-if="total > 0 && !isDesktop"
+        :aggregations="aggregations" :input-parameters="inputParameters"
+        @update-value-selections="handleUpdateValueSelections"
+        @update-value="handleUpdateValue"
+      />
     </ClientOnly>
   </div>
 </template>

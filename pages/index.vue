@@ -49,7 +49,12 @@ export default defineComponent({
 
 <template>
   <div>
-    <HomeBanner />
+    <ClientOnly>
+      <HomeBanner />
+      <template #placeholder>
+        <div class="bg-primary-50 w-full h-[505px]" />
+      </template>
+    </ClientOnly>
     <HomeBoxes />
     <!-- Note: LazyHydrate is not working as expected on carousels -->
     <ClientOnly>

@@ -397,12 +397,12 @@ export default defineComponent({
     <div v-else>
       <div v-if="product?.title && brandMetaFields">
         <TheBreadcrumbs v-if="!!productBreadcrumbs.length" :breadcrumbs="productBreadcrumbs" />
-        <div class="md:(grid grid-cols-[40%_60%] min-h-[550px] my-4)">
+        <div class="min-h-[350px] md:(grid grid-cols-[40%_60%] min-h-[550px] my-4)">
           <!-- Image Section -->
-          <div class="relative">
+          <div class="relative min-h-[350px] md:min-h-[550px]">
             <LoadingImage
-              class="h-full"
-              img-classes="max-h-[350px] md:max-h-[550px] mx-auto object-contain"
+              class="min-h-[350px] md:min-h-[550px] h-full"
+              img-classes="min-h-[350px] max-h-[350px] md:max-h-[550px] mx-auto object-contain"
               :thumbnail="product.image.thumbnail"
               :source="product.image.hd"
             />

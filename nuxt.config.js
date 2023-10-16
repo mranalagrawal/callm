@@ -694,7 +694,11 @@ export default {
           '/*?*',
           '/*?*=true',
         ],
-        Allow: '*page',
+        Allow: [
+          '*page',
+          '*/wp-content/',
+          '*/wp-includes/',
+        ],
       },
       {
         Disallow: disallowPaths,

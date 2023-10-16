@@ -1,8 +1,9 @@
 query getProductRecommendations(
   $lang: LanguageCode!
   $productId: ID!,
+  $intent: ProductRecommendationIntent = RELATED,
 ) @inContext(language: $lang) {
-  productRecommendations(productId: $productId) {
+  productRecommendations(productId: $productId, intent: $intent) {
     availableForSale
     handle
     id
