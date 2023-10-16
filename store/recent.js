@@ -9,7 +9,7 @@ export const useRecentProductsStore = defineStore('recentProductsStore', () => {
 
   watch(recentProducts, (val) => {
     $cookies.set('recentProducts', val, {
-      sameSite: 'lax',
+      sameSite: 'none',
       secure: true,
     })
   })
