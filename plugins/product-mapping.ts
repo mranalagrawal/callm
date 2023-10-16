@@ -4,7 +4,7 @@ import type { TISO639, TSalesChannel, TStores } from '~/config/themeConfig'
 import themeConfig from '~/config/themeConfig'
 import { useCustomer } from '~/store/customer'
 import type { IMoneyV2 } from '~/types/common-objects'
-import type { IBaseProductMapped, IGiftCardMapped, IGiftCardVariantMapped, IGtmProductData, IProductBreadcrumbs, IProductCharacteristics, IProductMapped, TProductFeatures } from '~/types/product'
+import type { IBaseProductMapped, IGiftCardMapped, IGiftCardVariantMapped, IGtmProductData, IProductBreadcrumbs, IProductCharacteristics, IProductListing, IProductMapped, TProductFeatures } from '~/types/product'
 import type { ObjType } from '~/types/types'
 import { getUniqueListBy, pick } from '~/utilities/arrays'
 import { getCountryFromStore } from '~/utilities/currency'
@@ -25,7 +25,7 @@ interface IProductMapping {
   ): IBaseProductMapped
   fromElastic<T extends KeyType>(
     arr: ObjType<T>[],
-  ): IProductMapped[]
+  ): IProductListing[]
   fromShopify<T extends KeyType>(
     arr: ObjType<T>[],
   ): IProductMapped[]
@@ -101,7 +101,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
     },
 
     fromElastic: (arr = []) => {
-      const products: IProductMapped[] = arr.map((p: Record<string, any>) => {
+      const products: IProductListing[] = arr.map((p: Record<string, any>) => {
         const compareAtPrice: IMoneyV2 = {
           amount: p._source.price[sale_channel],
           currencyCode: store === 'CMW_UK' ? 'GBP' : 'EUR',
@@ -110,7 +110,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
         const shopify_product_id = `gid://shopify/Product/${p._source.productId[store]}`
         const shopify_product_variant_id = `gid://shopify/ProductVariant/${p._source.variantId[store]}`
         const priceLists = p._source.pricelists
-        const productAwards = p._source.awards.map((award: Record<string, any>) => ({
+        const productAwards = p._source.awards?.map((award: Record<string, any>) => ({
           ...award,
           title: award[`name_${lang}`],
           quote: award[`quote_${lang}`],
@@ -122,7 +122,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
           availableForSale: p._source.quantity[store] > 0,
           awards: getUniqueListBy(productAwards, 'id'),
           compareAtPrice,
-          descriptionHtml: p._source.description,
+          descriptionHtml: p._source.shortDescription,
           priceLists,
           quantityAvailable: p._source.quantity[store],
           details: p._source,
@@ -157,25 +157,21 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
             id,
             name: p._source.name_t[lang].replaceAll('\'', ''),
             brand: p._source.brandname.replaceAll('\'', ''),
-            category: p._source.macros[0] ? p._source.macros[0].name_it : '',
+            category: (p._source.macros && p._source.macros[0]) ? p._source.macros[0].name_it : '',
             subcategory: p._source.categoryname,
-            winelist: p._source.winelists[0] ? p._source.winelists[0].name_it : 'missing',
+            winelist: (p._source.winelists && p._source.winelists[0]) ? p._source.winelists[0].name_it : 'missing',
             vintage: p._source.vintageyear,
             favourite: p._source.favourite ? 'yes' : 'no',
             artisanal: p._source.artisanal ? 'yes' : 'no',
             rarewine: p._source.rarewine ? 'yes' : 'no',
             price: priceLists[sale_channel] && priceLists[sale_channel][getCustomerType.value], // We have no access to pinia here
             compare_at_price: Number(compareAtPrice.amount),
-            stock_status: p._source.quantity[store] > 0 ? 'in_stock' : 'out_of_stock',
+            stock_status: (p._source.quantity && p._source.quantity[store]) > 0 ? 'in_stock' : 'out_of_stock',
             quantity: 1,
-          },
-          seo: {
-            description: p._source.seoDescription[lang],
-            title: p._source.seoTitle[lang],
           },
           sku: p._source.sku,
           tbd: {
-            description: p._source.description ?? '',
+            description: p._source.shortDescription ?? '',
             grapes: p._source.grapes ?? '',
             regionName: p._source.regionname ?? '',
             size: p._source.sizes?.length ? p._source.sizes[`identifier_${lang}`].split('|')[1] : [],
