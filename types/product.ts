@@ -114,6 +114,21 @@ export interface IBaseProductMapped {
   title: string
 }
 
+export interface IProductListing extends IBaseProductMapped {
+  milliliters: any
+  availableFeatures: TProductFeatures[]
+  awards: IProductAward[]
+  compareAtPrice: IMoneyV2
+  descriptionHtml: HTMLElement | string
+  details: Record<string, any> // Todo: type this
+  gtmProductData: any
+  priceLists: Record<string, any>
+  sku: string
+  source_id: string | number
+  url: string
+  characteristics?: IProductCharacteristics
+}
+
 export interface IProductMapped extends IBaseProductMapped {
   milliliters: any
   // availableForSale: boolean
