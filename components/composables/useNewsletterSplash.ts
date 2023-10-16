@@ -12,7 +12,7 @@ export default function () {
     $cookies.set('newsletter', true, {
       expires,
       path: '/',
-      sameSite: 'lax',
+      sameSite: 'none',
       secure: true,
     })
   }
