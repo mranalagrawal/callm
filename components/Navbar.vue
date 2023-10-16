@@ -136,12 +136,12 @@ export default defineComponent({
 <template>
   <div
     ref="navbar"
-    class="fixed w-screen min-h-[135px] px-4 pb-4 top-0 bg-white z-tooltip print:hidden md:pb-0"
+    class="fixed w-screen min-h-[135px] px-4 pb-2 top-0 bg-white z-tooltip print:hidden md:pb-0"
   >
     <div
       class="
-    max-w-screen-xl mx-auto grid grid-cols-1 gap-3 min-h-100px items-center pt-4
-    lg:grid-cols-[25%_40%_35%] 2xl:grid-cols-[25%_48%_32%]"
+    max-w-screen-xl mx-auto grid grid-cols-1 gap-0 min-h-100px items-center
+    lg:(grid-cols-[25%_40%_35%] gap-3 pt-4) 2xl:grid-cols-[25%_48%_32%]"
     >
       <div
         ref="menuBarRef"
@@ -162,7 +162,7 @@ export default defineComponent({
           </button>
 
           <NuxtLink
-            class="flex max-w-150px md:max-w-250px"
+            class="flex max-w-120px md:max-w-250px"
             :aria-label="$t('enums.accessibility.labels.GO_TO_HOME_PAGE')"
             :to="localePath('/')"
           >
@@ -176,25 +176,25 @@ export default defineComponent({
 
           <div class="flex items-center ml-auto lg:hidden">
             <button
-              class="p-3"
+              class="p-2 md:p-3"
               :aria-label="mobileLogin ? $t('enums.accessibility.role.MENU_LOGIN.OPEN') : $t('enums.accessibility.role.MENU_NAVIGATION_USER.OPEN')"
               @click="toggleMobileLogin"
             >
               <VueSvgIcon
                 :data="userIcon"
-                width="36"
-                height="36"
+                :width="isDesktop ? 36 : 28"
+                :height="isDesktop ? 36 : 28"
               />
             </button>
             <NuxtLink
               :to="localePath('/cart')"
               :aria-label="$t('enums.accessibility.labels.GO_TO_CART_PAGE')"
-              class="relative p-3"
+              class="relative p-2 md:p-3"
             >
               <VueSvgIcon
                 :data="cartIcon"
-                width="32px"
-                height="32px"
+                :width="isDesktop ? 32 : 28"
+                :height="isDesktop ? 32 : 28"
               />
               <span class="totalItems">{{ cartTotalQuantity }} </span>
             </NuxtLink>
