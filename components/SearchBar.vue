@@ -88,7 +88,7 @@ export default defineComponent({
       v-model="search"
       type="search"
       class="
-               c-searchInput -hasIcon px-4 text-gray-dark py-3 w-full bg-transparent border border-gray-light rounded
+               c-searchInput -hasIcon px-4 text-gray-dark py-3 w-full bg-transparent border border-gray-light rounded-[12px]
                hover:(border-gray)
                focus:(outline-none border-gray-dark)"
       :placeholder="$t('navbar.search')"
