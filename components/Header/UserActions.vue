@@ -43,6 +43,11 @@ export default {
       hoveringColor: 'primary-400',
     }
   },
+  watch: {
+    $route() {
+      this.currentComponent = false
+    },
+  },
   methods: {
     handleUserActionMouseEnter(key) {
       setTimeout(() => this.hoveringAction = true, 25)
@@ -56,6 +61,13 @@ export default {
       setTimeout(() => {
         if (!this.hoveringAction && !this.hoveringComponent) { this.currentComponent = false }
       }, 75)
+    },
+    handleUserClick() {
+      if (this.customer.id) {
+        this.$router.push(this.localePath('/profile/my-orders'))
+      } else {
+        this.$router.push(this.localePath('/login'))
+      }
     },
     handleUserActionMouseLeave() {
       this.hoveringAction = false
@@ -110,6 +122,7 @@ export default {
         :class="{ 'bg-primary-900 text-white': currentComponent === 'login' }"
         @mouseenter="handleUserActionMouseEnter('login')"
         @mouseleave="handleUserActionMouseLeave"
+        @click="handleUserClick"
       >
         <span>
           <VueSvgIcon
