@@ -109,7 +109,7 @@ export default defineComponent({
       mode="out-in"
     >
       <div
-        v-if="search && results && showSearchSuggestions"
+        v-show="search && results && showSearchSuggestions"
         class="absolute w-full z-100 transform
             transition-transform-opacity translate-x-0 translate-y-full bottom-0 left-0
             "
