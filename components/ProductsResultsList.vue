@@ -4,7 +4,7 @@ import { computed, defineComponent, inject, ref, useContext, useRoute } from '@n
 import { storeToRefs } from 'pinia'
 import type { ObjType } from '~/types/types'
 import { useFilters } from '~/store/filters'
-import type { IProductMapped } from '~/types/product'
+import type { IProductListing } from '~/types/product'
 
 export default defineComponent({
   props: {
@@ -38,8 +38,8 @@ export default defineComponent({
       sorting.value = !sorting.value
     }
 
-    const mappedProducts = computed<IProductMapped[]>(() => {
-      let mappedProducts: IProductMapped[] = []
+    const mappedProducts = computed<IProductListing[]>(() => {
+      let mappedProducts: IProductListing[] = []
 
       if (props.results?.length) {
         mappedProducts = $productMapping.fromElastic(props.results)
