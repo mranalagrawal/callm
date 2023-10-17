@@ -96,7 +96,7 @@ export default defineComponent({
             autocomplete="off"
             @submit.prevent="handleSubmit(onSubmit)"
           >
-            <InputField
+            <!--            <InputField
               v-model="form.email"
               name="user-email-navbar"
               :label="$t('email')"
@@ -115,20 +115,24 @@ export default defineComponent({
               rules="required|min:4"
               :icon="passwordIsVisible ? eyeHideIcon : eyeShowIcon"
               :click-icon="() => passwordIsVisible = !passwordIsVisible"
-            />
-            <p
+            /> -->
+            <!--            <p
               v-if="message"
               class="text-sm text-error mt-3"
             >
               {{ message }}
-            </p>
+            </p> -->
 
-            <CmwButton
+            <!--            <CmwButton
               class="mt-8"
               type="submit"
               :disabled="isSubmitting"
               :label="$t('navbar.user.signIn')"
-            />
+            /> -->
+
+            <CmwButton variant="default" :to="localePath('/login')" class="mt-8">
+              {{ $t('navbar.user.signIn') }}
+            </CmwButton>
 
             <NuxtLink
               to="/recover"
