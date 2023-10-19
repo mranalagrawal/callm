@@ -28,6 +28,8 @@ export default {
 
     const nextChunkId = ref(1)
 
+    const manualLazyLoading = ref(false)
+
     // first visible chunk
     useFetch(async () => {
       if (wishListChunks.length > 0) {
@@ -51,7 +53,7 @@ export default {
 
     const lazyLoadChunkOfProducts = async () => {
       if (nextChunkId.value < wishListChunks.length && nextChunkId.value in wishListChunks) {
-        console.log(`start fetching ${nextChunkId.value} chunk of product...`)
+        // console.log(`start fetching ${nextChunkId.value} chunk of product...`)
         const nextChunk = wishListChunks[nextChunkId.value]
         const nextProducts = await $cmwRepo.products.getAll({
           query: `tag:active AND (${nextChunk.join(' OR ')})`,
@@ -61,10 +63,6 @@ export default {
         wishlistOtherProducts.value = [...wishlistOtherProducts.value, ...mappedProducts]
         nextChunkId.value++
       }
-    }
-
-    const loadAllOthersProducts = async () => {
-      // the promise all version
     }
 
     const handleIntersect = (entries: any[]) => {
@@ -88,8 +86,12 @@ export default {
       if (window.IntersectionObserver) {
         createObserver()
       } else {
-        loadAllOthersProducts()
+        manualLazyLoading.value = true
       }
+    })
+
+    const showMore = computed(() => {
+      return manualLazyLoading.value && (nextChunkId.value < wishListChunks.length && nextChunkId.value in wishListChunks)
     })
 
     return {
@@ -98,9 +100,10 @@ export default {
       customerProducts,
       availableLayouts,
       selectedLayout,
-      wishlistOtherProducts,
       finalProducts,
       trigger,
+      showMore,
+      lazyLoadChunkOfProducts,
     }
   },
 }
@@ -171,15 +174,12 @@ export default {
           <div
             class="products-grid"
           >
-            <div
+            <ProductBoxVertical
               v-for="product in finalProducts"
               :key="product.id"
-            >
-              <ProductBoxVertical
-                :product="product"
-                :is-desktop="isDesktop"
-              />
-            </div>
+              :product="product"
+              :is-desktop="isDesktop"
+            />
           </div>
         </template>
       </div>
@@ -189,9 +189,14 @@ export default {
         </p>
       </div>
     </div>
-    <div ref="trigger" class="w-full h-4 text-trasparent">
+    <div ref="trigger" class="w-full h-4 text-transparent">
       <!-- Note: lazy load trigger, can't hide this because it loses the observer, v-if="limit < data.length" -->
       lazy-loading-trigger
+    </div>
+    <div v-if="showMore" class="flex items-center">
+      <button class="mx-auto btn-text text-sm uppercase" @click="lazyLoadChunkOfProducts">
+        Mostra Altri
+      </button>
     </div>
   </div>
 </template>
