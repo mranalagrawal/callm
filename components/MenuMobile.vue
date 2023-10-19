@@ -9,11 +9,11 @@ import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({
   emits: ['close-sidebar'],
-  setup(props, { emit }) {
+  setup(_, { emit }) {
     const route = useRoute()
     const activeItem = ref({})
     const store: any = useStore()
-    const megaMenu = store.state.megaMenu
+    const megaMenu = computed(() => store.state.megaMenu)
     const closeSidebar = (full: any) => {
       activeItem.value = {}
       if (full) {
@@ -27,7 +27,7 @@ export default defineComponent({
       scrollableEl && scrollableEl.scrollTo({ left: 0, top: 0, behavior: 'smooth' })
     } */
 
-    const mappedMenu = computed(() => megaMenu?.map((menu: { items: { items: any[] }[] }) => ({
+    const mappedMenu = computed(() => megaMenu.value?.map((menu: { items: { items: any[] }[] }) => ({
       ...menu,
       items: menu.items.map((item: { items: any[] }) => ({
         ...item,

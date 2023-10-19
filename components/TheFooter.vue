@@ -5,11 +5,11 @@ import {
   inject,
   ref,
   useContext,
-  useFetch, useStore,
+  useFetch,
   watch,
 } from '@nuxtjs/composition-api'
 import logo from 'assets/svg/logo-call-me-wine.svg'
-import walletIcon from 'assets/svg/wallet.svg'
+
 import emailIcon from 'assets/svg/email.svg'
 import paperPlaneIcon from 'assets/svg/paper-plane.svg'
 import themeConfig from '~/config/themeConfig'
@@ -22,9 +22,7 @@ export default defineComponent({
   setup() {
     const { i18n } = useContext()
     const isDesktop = inject('isDesktop') as Ref<boolean>
-    const store: any = useStore()
     const footerInfoData = ref<IPrismicPageData>(initialPageData)
-    const paymentMethods = ref<any>(store.state.footerData.paymentMethods)
 
     const { fetch } = useFetch(async ({ $cmwRepo }) => {
       footerInfoData.value = await $cmwRepo.prismic.getSingle('footer-info')
@@ -38,8 +36,6 @@ export default defineComponent({
       isDesktop,
       logo,
       paperPlaneIcon,
-      paymentMethods,
-      walletIcon,
     }
   },
   data() {
@@ -190,21 +186,6 @@ export default defineComponent({
                   >{{ footerInfoData.first_check }}
                     <NuxtLink :to="localePath('/privacy')" class="text-white">Privacy Policy</NuxtLink></label>
                 </div>
-                <!--                <div v-show="newsletter" class="mt-3">
-                  <div class="custom-checkbox">
-                    <input
-                      id="customCheck2"
-                      v-model="marketing"
-                      type="checkbox"
-                      class="custom-control-input"
-                    >
-                    <label
-                      class="custom-control-label relative text-sm pl-3"
-                      for="customCheck2"
-                    >{{ footerInfoData.second_check }}
-                      <NuxtLink :to="localePath('/privacy')" class="text-white">Privacy Policy</NuxtLink></label>
-                  </div>
-                </div> -->
               </div>
             </form>
           </div>
@@ -299,22 +280,7 @@ export default defineComponent({
 
         <hr class="bg-secondary-800 my-4 border-0 h-px">
 
-        <div class="md:flex text-center justify-center">
-          <div class="flex gap-2 items-center justify-center">
-            <VueSvgIcon :data="walletIcon" color="white" width="30" height="30" />
-            <span>{{ $t('footer.paymentMethods') }}</span>
-          </div>
-          <div
-            class="grid grid-cols-3 md:grid-cols-8 justify-items-center items-center content-center px-8 py-4"
-          >
-            <PrismicImage
-              v-for="payment in paymentMethods"
-              :key="generateKey(payment.image.url)"
-              :field="payment.image"
-              class="max-w-12"
-            />
-          </div>
-        </div>
+        <FooterPaymentMethods />
 
         <hr class="bg-secondary-800 my-4 border-0 h-px">
         <div class="text-center mt-4 text-xs text-secondary-100 px-4">

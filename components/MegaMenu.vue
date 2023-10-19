@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref, useRoute, useStore, watch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref, useRoute, useStore, watch } from '@nuxtjs/composition-api'
 import promoTagIcon from 'assets/svg/promo-tag.svg'
 import ThirdLevel from '~/components/UI/ThirdLevel.vue'
 import { generateKey } from '~/utilities/strings'
@@ -10,7 +10,7 @@ export default defineComponent({
     const route = useRoute()
     const selectedItem = ref<string>('')
     const store: any = useStore()
-    const megaMenu = store.state.megaMenu
+    const megaMenu = computed(() => store.state.megaMenu)
 
     watch(() => route.value, () => selectedItem.value = '')
     const onTab = (item: string) => selectedItem.value = item

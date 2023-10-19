@@ -13,8 +13,10 @@ export default function ({ app }) {
     },
   })
 
-  app.i18n.onLanguageSwitched = (_, newLocale) => {
+  app.i18n.onLanguageSwitched = async (_, newLocale) => {
     localize(newLocale)
     localeChanged()
+    await app.store.dispatch('loadMenu')
+    await app.store.dispatch('loadFooter')
   }
 }

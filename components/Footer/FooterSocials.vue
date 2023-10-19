@@ -1,11 +1,11 @@
 <script>
-import { useStore } from '@nuxtjs/composition-api'
+import { computed, useStore } from '@nuxtjs/composition-api'
 
 export default {
   setup() {
     const store = useStore()
-    const socialLinks = store.state.footerData.socialLinks
-    const mobileApps = store.state.footerData.mobileApps
+    const socialLinks = computed(() => store.state.footerData.socialLinks)
+    const mobileApps = computed(() => store.state.footerData.mobileApps)
 
     return {
       mobileApps,

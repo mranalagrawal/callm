@@ -627,9 +627,7 @@ export default {
     debug: !process.env.DEPLOY_ENV || process.env.DEPLOY_ENV === 'dev',
   },
 
-  publicRuntimeConfig: {
-    BLOB_READ_WRITE_TOKEN: process.env.BLOB_READ_WRITE_TOKEN,
-    KV_REST_API_READ_ONLY_TOKEN: process.env.KV_REST_API_READ_ONLY_TOKEN,
+  env: {
     KV_REST_API_TOKEN: process.env.KV_REST_API_TOKEN,
     KV_REST_API_URL: process.env.KV_REST_API_URL,
     KV_URL: process.env.KV_URL,
@@ -638,6 +636,9 @@ export default {
     TURBO_RUN_SUMMARY: process.env.TURBO_RUN_SUMMARY,
     VERCEL: process.env.VERCEL,
     VERCEL_ENV: process.env.VERCEL_ENV,
+  },
+
+  publicRuntimeConfig: {
     CMW_API: process.env.CMW_API,
     CMW_API_KEY: process.env.CMW_API_KEY,
     DEPLOY_ENV: process.env.DEPLOY_ENV,
