@@ -45,3 +45,15 @@ export const generateHeadHreflang = (obj = {}) => (
     }),
     )
 )
+
+export const chunkArray = (array, chunkSize) => {
+  if (chunkSize <= 0) {
+    throw new Error('Chunk size should be greater than 0')
+  }
+
+  const chunkedArray = []
+  for (let i = 0; i < array.length; i += chunkSize) {
+    chunkedArray.push(array.slice(i, i + chunkSize))
+  }
+  return chunkedArray
+}

@@ -1,9 +1,11 @@
 <script lang="ts">
-import { computed, onMounted, useContext, useFetch, watch } from '@nuxtjs/composition-api'
+import { computed, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import { useFilters } from '~/store/filters'
 import { useCustomer } from '~/store/customer'
 import { useCustomerWishlist } from '~/store/customerWishlist'
+import { chunkArray } from '~/utilities/arrays'
+import type { IProductMapped } from '~/types/product'
 
 export default {
   props: {
@@ -14,23 +16,29 @@ export default {
     const customerWishlist = useCustomerWishlist()
     const { wishlistArr } = storeToRefs(customerStore)
     const { wishlistProducts } = storeToRefs(customerWishlist)
-    const { $cmwGtmUtils, $productMapping } = useContext()
+    const { $cmwGtmUtils, $productMapping, $cmwRepo } = useContext()
+
+    const wishlistOtherProducts = ref<IProductMapped[]>([])
 
     const filtersStore = useFilters()
     const { selectedLayout, availableLayouts } = storeToRefs(filtersStore)
 
-    const query = computed(() => wishlistArr.value.join(' OR '))
+    const chunkSize = 12
+    const wishListChunks = chunkArray(wishlistArr.value, chunkSize)
 
-    const { fetch } = useFetch(async () => {
-      if (query.value) {
+    const nextChunkId = ref(1)
+
+    const manualLazyLoading = ref(false)
+
+    // first visible chunk
+    useFetch(async () => {
+      if (wishListChunks.length > 0) {
         await customerWishlist.getWishlistProducts({
-          query: `tag:active AND (${query.value})`,
-          first: Number(wishlistArr.value.length) > 200 ? 200 : Number(wishlistArr.value.length),
+          query: `${wishListChunks[0].join(' OR ')}`,
+          first: wishListChunks[0].length,
         })
       }
     })
-
-    watch(() => query.value, () => fetch())
 
     const customerProducts = computed(() => {
       // Note: there's an annoying warning but the page renders perfectly, https://github.com/nuxt-community/composition-api/issues/19
@@ -39,8 +47,51 @@ export default {
       return $productMapping.fromShopify(wishlistProducts.value)
     })
 
+    const finalProducts = computed(() => [...customerProducts.value, ...wishlistOtherProducts.value].slice(0, nextChunkId.value * chunkSize))
+
+    const trigger = ref(null) // used to get the ref of div that manage the intersection
+
+    const lazyLoadChunkOfProducts = async () => {
+      if (nextChunkId.value < wishListChunks.length && nextChunkId.value in wishListChunks) {
+        // console.log(`start fetching ${nextChunkId.value} chunk of product...`)
+        const nextChunk = wishListChunks[nextChunkId.value]
+        const nextProducts = await $cmwRepo.products.getAll({
+          query: `${nextChunk.join(' OR ')}`,
+          first: chunkSize,
+        })
+        const mappedProducts = $productMapping.fromShopify(nextProducts.products.nodes)
+        wishlistOtherProducts.value = [...wishlistOtherProducts.value, ...mappedProducts]
+        nextChunkId.value++
+      }
+    }
+
+    const handleIntersect = (entries: any[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) { lazyLoadChunkOfProducts() }
+      })
+    }
+
+    const createObserver = () => {
+      scrollTo({ left: 0, top: 0, behavior: 'smooth' })
+      const observer = new IntersectionObserver(handleIntersect, {
+        root: null,
+        threshold: 0,
+      })
+      trigger.value && observer.observe(trigger.value)
+    }
+
     onMounted(() => {
+      // resetLazyLoad()
       process.browser && $cmwGtmUtils.pushPage('page')
+      if (window.IntersectionObserver) {
+        createObserver()
+      } else {
+        manualLazyLoading.value = true
+      }
+    })
+
+    const showMore = computed(() => {
+      return manualLazyLoading.value && (nextChunkId.value < wishListChunks.length && nextChunkId.value in wishListChunks)
     })
 
     return {
@@ -49,6 +100,10 @@ export default {
       customerProducts,
       availableLayouts,
       selectedLayout,
+      finalProducts,
+      trigger,
+      showMore,
+      lazyLoadChunkOfProducts,
     }
   },
 }
@@ -108,7 +163,7 @@ export default {
       >
         <template v-if="selectedLayout === 'list' && isDesktop">
           <div
-            v-for="product in customerProducts"
+            v-for="product in finalProducts"
             :key="product.id"
             class="mb-4"
           >
@@ -120,8 +175,8 @@ export default {
             class="products-grid"
           >
             <ProductBoxVertical
-              v-for="product in customerProducts"
-              :key="product.shopify_product_id"
+              v-for="product in finalProducts"
+              :key="product.id"
               :product="product"
               :is-desktop="isDesktop"
             />
@@ -133,6 +188,15 @@ export default {
           {{ $t("profile.noFavourite") }}
         </p>
       </div>
+    </div>
+    <div ref="trigger" class="w-full h-4 text-transparent">
+      <!-- Note: lazy load trigger, can't hide this because it loses the observer, v-if="limit < data.length" -->
+      lazy-loading-trigger
+    </div>
+    <div v-if="showMore" class="flex items-center">
+      <button class="mx-auto btn-text text-sm uppercase" @click="lazyLoadChunkOfProducts">
+        Mostra Altri
+      </button>
     </div>
   </div>
 </template>
