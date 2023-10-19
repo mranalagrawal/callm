@@ -18,21 +18,23 @@ query getCustomerOrders(
           phone
           formattedArea
         }
-        id
-        name
+        cancelReason,
+        canceledAt,
         currencyCode
         currentSubtotalPrice { amount, currencyCode }
         currentTotalDuties { amount, currencyCode }
         currentTotalPrice { amount, currencyCode }
         currentTotalTax { amount, currencyCode }
-        subtotalPrice { amount, currencyCode }
-        totalShippingPrice { amount, currencyCode }
-        totalPrice { amount, currencyCode }
+        financialStatus
         fulfillmentStatus
+        id
+        name
         orderNumber
         processedAt
         statusUrl
-        financialStatus
+        subtotalPrice { amount, currencyCode }
+        totalPrice { amount, currencyCode }
+        totalShippingPrice { amount, currencyCode }
         shippingAddress {
           city
           country
