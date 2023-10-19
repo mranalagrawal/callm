@@ -34,7 +34,7 @@ export default {
     useFetch(async () => {
       if (wishListChunks.length > 0) {
         await customerWishlist.getWishlistProducts({
-          query: `tag:active AND (${wishListChunks[0].join(' OR ')})`,
+          query: `${wishListChunks[0].join(' OR ')}`,
           first: wishListChunks[0].length,
         })
       }
@@ -56,7 +56,7 @@ export default {
         // console.log(`start fetching ${nextChunkId.value} chunk of product...`)
         const nextChunk = wishListChunks[nextChunkId.value]
         const nextProducts = await $cmwRepo.products.getAll({
-          query: `tag:active AND (${nextChunk.join(' OR ')})`,
+          query: `${nextChunk.join(' OR ')}`,
           first: chunkSize,
         })
         const mappedProducts = $productMapping.fromShopify(nextProducts.products.nodes)
