@@ -2,15 +2,14 @@
 import { computed, ref, toRefs, useFetch, watch } from '@nuxtjs/composition-api'
 import type { IProductMapped } from '~/types/product'
 import { sortArrayByNumber } from '~/utilities/arrays'
-import { escapeJsonSingleQuotes } from '~/utilities/strings'
 
 export default {
-  props: ['vendor', 'tag'],
+  props: ['vendor', 'tag', 'vendorFeId'],
   setup(props: any) {
     const productsRef = ref<IProductMapped[]>([])
     const { vendor: vendorRef, tag } = toRefs(props)
     const query = computed(() => {
-      const vendorPart = `tag:active AND vendor:'${escapeJsonSingleQuotes(vendorRef.value)}'`
+      const vendorPart = `tag:active AND tag:brand_${props.vendorFeId}`
       const tagPart = tag.value ? ` AND tag_not:'${tag.value}'` : ''
       return `${vendorPart}${tagPart}`
     })

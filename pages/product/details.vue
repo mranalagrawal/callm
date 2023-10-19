@@ -682,7 +682,7 @@ export default defineComponent({
 
         <ClientOnly>
           <RecentProducts />
-          <VendorProducts :vendor="brand.title" :tag="product.source_id" />
+          <VendorProducts :vendor="brand.title" :tag="product.source_id" :vendor-fe-id="productDetails.brandId" />
           <RecommendedProducts :id="product.shopify_product_id" />
         </ClientOnly>
       </div>
