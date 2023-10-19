@@ -30,6 +30,7 @@ interface IMetaFields {
   images: never[]
   isPartner: boolean
   key: string
+  feId: string
   subtitle: ILocales
   country: string
   region: string
@@ -73,6 +74,7 @@ export default defineComponent({
       hrefLang: {},
       images: [],
       isPartner: false,
+      feId: '',
       key: '',
       subtitle: {
         de: '',
@@ -391,7 +393,7 @@ export default defineComponent({
           </div>
         </div>
         <div v-if="brand && brand.title">
-          <VendorProductsListing :vendor="brand.title" />
+          <VendorProductsListing :vendor="brand.title" :vendor-fe-id="metaFields.feId" />
         </div>
       </div>
       <div v-else class="max-w-screen-xl mx-auto p-4 text-center">
