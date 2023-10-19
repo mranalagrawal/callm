@@ -1,11 +1,11 @@
 <script lang="ts">
-import { computed, onMounted, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api'
+import { computed, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import { useFilters } from '~/store/filters'
 import { useCustomer } from '~/store/customer'
 import { useCustomerWishlist } from '~/store/customerWishlist'
 import { chunkArray } from '~/utilities/arrays'
-import type { IProductListing } from '~/types/product'
+import type { IProductMapped } from '~/types/product'
 
 export default {
   props: {
@@ -18,58 +18,25 @@ export default {
     const { wishlistProducts } = storeToRefs(customerWishlist)
     const { $cmwGtmUtils, $productMapping, $cmwRepo } = useContext()
 
-    const wishlistOtherProducts = ref<IProductListing[]>([])
+    const wishlistOtherProducts = ref<IProductMapped[]>([])
 
     const filtersStore = useFilters()
     const { selectedLayout, availableLayouts } = storeToRefs(filtersStore)
 
-    const query = computed(() => wishlistArr.value.join(' OR '))
+    const chunkSize = 12
+    const wishListChunks = chunkArray(wishlistArr.value, chunkSize)
 
-    const wishListChunks = chunkArray(wishlistArr.value, 100)
+    const nextChunkId = ref(1)
 
-    const wishlistMain = wishListChunks.shift()
-
-    const wishlistOthers = wishListChunks
-
-    console.log('chunks wishlists', wishListChunks)
-
-    const { fetch } = useFetch(async () => {
-      if (query.value) {
+    // first visible chunk
+    useFetch(async () => {
+      if (wishListChunks.length > 0) {
         await customerWishlist.getWishlistProducts({
-          query: `tag:active AND (${wishlistMain.join(' OR ')})`,
-          first: wishlistMain.length,
+          query: `tag:active AND (${wishListChunks[0].join(' OR ')})`,
+          first: wishListChunks[0].length,
         })
       }
     })
-
-    /*
-    const wishlistOthersPromises = wishlistOthers.map((chunk) => {
-      return $cmwRepo.products.getAll({
-        query: `tag:active AND (${chunk.join(' OR ')})`,
-        first: chunk.length,
-      })
-    })
-
-    console.log('wishlistOthersPromises', wishlistOthersPromises)
-
-    Promise.all(wishlistOthersPromises)
-      .then((results) => {
-        // map and save otherProducts
-        const otherProducts = []
-        for (const setProducts of results) {
-          const mappedProducts = $productMapping.fromShopify(setProducts.products.nodes)
-          console.log("mapped products", mappedProducts)
-          otherProducts.push(mappedProducts)
-        }
-        console.log("other prod", otherProducts.flat())
-        wishlistOtherProducts.value = otherProducts.flat()
-      })
-      .catch((error) => {
-        console.error('At least one promise rejected:', error)
-      })
-    */
-
-    watch(() => query.value, () => fetch())
 
     const customerProducts = computed(() => {
       // Note: there's an annoying warning but the page renders perfectly, https://github.com/nuxt-community/composition-api/issues/19
@@ -78,36 +45,51 @@ export default {
       return $productMapping.fromShopify(wishlistProducts.value)
     })
 
-    const finalProducts = computed(() => [...customerProducts.value, ...wishlistOtherProducts.value])
+    const finalProducts = computed(() => [...customerProducts.value, ...wishlistOtherProducts.value].slice(0, nextChunkId.value * chunkSize))
+
+    const trigger = ref(null) // used to get the ref of div that manage the intersection
+
+    const lazyLoadChunkOfProducts = async () => {
+      if (nextChunkId.value < wishListChunks.length && nextChunkId.value in wishListChunks) {
+        console.log(`start fetching ${nextChunkId.value} chunk of product...`)
+        const nextChunk = wishListChunks[nextChunkId.value]
+        const nextProducts = await $cmwRepo.products.getAll({
+          query: `tag:active AND (${nextChunk.join(' OR ')})`,
+          first: chunkSize,
+        })
+        const mappedProducts = $productMapping.fromShopify(nextProducts.products.nodes)
+        wishlistOtherProducts.value = [...wishlistOtherProducts.value, ...mappedProducts]
+        nextChunkId.value++
+      }
+    }
+
+    const loadAllOthersProducts = async () => {
+      // the promise all version
+    }
+
+    const handleIntersect = (entries: any[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) { lazyLoadChunkOfProducts() }
+      })
+    }
+
+    const createObserver = () => {
+      scrollTo({ left: 0, top: 0, behavior: 'smooth' })
+      const observer = new IntersectionObserver(handleIntersect, {
+        root: null,
+        threshold: 0,
+      })
+      trigger.value && observer.observe(trigger.value)
+    }
 
     onMounted(() => {
+      // resetLazyLoad()
       process.browser && $cmwGtmUtils.pushPage('page')
-      console.log('on mounted I will call a method to make other request...')
-
-      const wishlistOthersPromises = wishlistOthers.map((chunk) => {
-        return $cmwRepo.products.getAll({
-          query: `tag:active AND (${chunk.join(' OR ')})`,
-          first: chunk.length,
-        })
-      })
-
-      console.log('wishlistOthersPromises', wishlistOthersPromises)
-
-      Promise.all(wishlistOthersPromises)
-        .then((results) => {
-        // map and save otherProducts
-          const otherProducts = []
-          for (const setProducts of results) {
-            const mappedProducts = $productMapping.fromShopify(setProducts.products.nodes)
-            console.log('mapped products', mappedProducts)
-            otherProducts.push(mappedProducts)
-          }
-          console.log('other prod', otherProducts.flat())
-          wishlistOtherProducts.value = otherProducts.flat()
-        })
-        .catch((error) => {
-          console.error('At least one promise rejected:', error)
-        })
+      if (window.IntersectionObserver) {
+        createObserver()
+      } else {
+        loadAllOthersProducts()
+      }
     })
 
     return {
@@ -118,6 +100,7 @@ export default {
       selectedLayout,
       wishlistOtherProducts,
       finalProducts,
+      trigger,
     }
   },
 }
@@ -177,14 +160,7 @@ export default {
       >
         <template v-if="selectedLayout === 'list' && isDesktop">
           <div
-            v-for="product in customerProducts"
-            :key="product.id"
-            class="mb-4"
-          >
-            <ProductBoxHorizontal :product="product" :is-desktop="isDesktop" />
-          </div>
-          <div
-            v-for="product in wishlistOtherProducts"
+            v-for="product in finalProducts"
             :key="product.id"
             class="mb-4"
           >
@@ -196,16 +172,7 @@ export default {
             class="products-grid"
           >
             <div
-              v-for="product in customerProducts"
-              :key="product.id"
-            >
-              <ProductBoxVertical
-                :product="product"
-                :is-desktop="isDesktop"
-              />
-            </div>
-            <div
-              v-for="product in wishlistOtherProducts"
+              v-for="product in finalProducts"
               :key="product.id"
             >
               <ProductBoxVertical
@@ -221,6 +188,10 @@ export default {
           {{ $t("profile.noFavourite") }}
         </p>
       </div>
+    </div>
+    <div ref="trigger" class="w-full h-4 text-trasparent">
+      <!-- Note: lazy load trigger, can't hide this because it loses the observer, v-if="limit < data.length" -->
+      lazy-loading-trigger
     </div>
   </div>
 </template>
