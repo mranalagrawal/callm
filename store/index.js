@@ -3,6 +3,7 @@ import { findSlice } from '~/utilities/prismic'
 
 export const state = () => ({
   megaMenu: [],
+  preFooterData: [],
   footerData: {
     paymentMethods: [],
     socialLinks: [],
@@ -14,6 +15,9 @@ export const mutations = {
   SET_MEGA_MENU(state, payload) {
     state.megaMenu = payload
   },
+  SET_PRE_FOOTER_DATA(state, payload) {
+    state.preFooterData = payload
+  },
   SET_FOOTER_DATA(state, payload) {
     state.footerData = payload
   },
@@ -24,6 +28,7 @@ export const actions = {
     await dispatch('headers/setFromApp', req.headers['user-agent']?.includes('CMW-App'))
     await dispatch('loadMenu')
     await dispatch('loadFooter')
+    await dispatch('loadPreFooter')
   },
 
   async loadMenu({ commit }) {
@@ -31,6 +36,13 @@ export const actions = {
     const prismicLocale = this.$cmwStore.prismicSettings.isoCode[locale]
     const megaMenuData = await kv.get(`prismic/menu/menu-${prismicLocale}`)
     commit('SET_MEGA_MENU', megaMenuData)
+  },
+
+  async loadPreFooter({ commit }) {
+    const locale = this.$i18n.locale
+    const prismicLocale = this.$cmwStore.prismicSettings.isoCode[locale]
+    const preFooterData = await kv.get(`prismic/pre-footer/pre-footer-${prismicLocale}`)
+    commit('SET_PRE_FOOTER_DATA', preFooterData)
   },
 
   async loadFooter({ commit }) {
@@ -50,3 +62,12 @@ export const actions = {
     commit('SET_FOOTER_DATA', footerData)
   },
 }
+
+// TODO: Create a getter for the prismic locale
+/* export const getters = {
+  prismicLocale() {
+    console.log(cmwProjectConfig.prismicSettings)
+    return cmwProjectConfig.prismicLocale
+    // return this.$cmwStore.prismicSettings.isoCode[this.$i18n.locale]
+  },
+} */

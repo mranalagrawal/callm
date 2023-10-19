@@ -5,6 +5,8 @@ import type { TPrismicIsoCodes } from '~/types/prismic'
 const vercelMiddleware: Middleware = async ({ $cmwRepo }) => {
   const languages: TPrismicIsoCodes[] = ['it-it', 'it-bn', 'en-eu', 'en-gb', 'fr-fr', 'de-de']
 
+  const fetchPreFooter = async (lang: TPrismicIsoCodes) => await $cmwRepo.prismic.getSingle('footer', lang)
+
   const fetchFooter = async (lang: TPrismicIsoCodes) => await $cmwRepo.prismic.getSingle('footer-test', lang)
 
   const fetchMenu = async (lang: TPrismicIsoCodes) => {
@@ -49,11 +51,14 @@ const vercelMiddleware: Middleware = async ({ $cmwRepo }) => {
 
   try {
     for (const lang of languages) {
-      const megaMenuData = await fetchMenu(lang)
-      await kv.set(`prismic/menu/menu-${lang}`, JSON.stringify(megaMenuData), {})
-
       const footerData = await fetchFooter(lang)
       await kv.set(`prismic/footer/footer-${lang}`, JSON.stringify(footerData), {})
+
+      const preFooterData = await fetchPreFooter(lang)
+      await kv.set(`prismic/pre-footer/pre-footer-${lang}`, JSON.stringify(preFooterData?.body || []), {})
+
+      const megaMenuData = await fetchMenu(lang)
+      await kv.set(`prismic/menu/menu-${lang}`, JSON.stringify(megaMenuData), {})
     }
   } catch (error) {
     // Handle errors

@@ -18,5 +18,6 @@ export default function ({ app }) {
     localeChanged()
     await app.store.dispatch('loadMenu')
     await app.store.dispatch('loadFooter')
+    await app.store.dispatch('loadPreFooter')
   }
 }

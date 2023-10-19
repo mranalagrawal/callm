@@ -1,29 +1,38 @@
 <script lang="ts">
-import { defineComponent, inject, onMounted, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api'
+import {
+  computed,
+  defineComponent,
+  inject,
+  onMounted,
+  ref,
+  useStore,
+} from '@nuxtjs/composition-api'
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
 import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({
   setup() {
-    const { i18n } = useContext()
     const isDesktop = inject('isDesktop')
     const currentItem = ref('')
-    const data = ref<Record<string, any> | null>(null)
-    const preFooterMenu = ref({})
     const jsIsDisabled = ref(true)
+    const store: any = useStore()
+    const preFooterMenu = computed(() => store.state.preFooterData)
 
-    const { fetch } = useFetch(async ({ $cmwRepo }) => {
-      data.value = await $cmwRepo.prismic.getSinglePage('footer')
-      preFooterMenu.value = data.value?.body
-    })
-
+    /* {
+    primary: [Getter/Setter],
+    items: [Getter/Setter],
+    id: [Getter/Setter],
+    slice_type: [Getter/Setter],
+    slice_label: [Getter/Setter]
+  }, */
     const handleTriggerClick = (id: string) => {
       currentItem.value = currentItem.value === id ? '' : id
     }
 
-    watch(() => i18n.locale, () => fetch(), { deep: true })
     onMounted(() => {
-      if (process.client) { jsIsDisabled.value = !window.navigator }
+      if (process.client) {
+        jsIsDisabled.value = !window.navigator
+      }
     })
 
     return {
