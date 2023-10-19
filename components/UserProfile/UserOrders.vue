@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref } from '@nuxtjs/composition-api'
 import OrderCard from '~/components/UserProfile/OrderCard.vue'
 
 export default defineComponent({
@@ -10,15 +10,20 @@ export default defineComponent({
       required: true,
     },
   },
-  setup() {
+  setup(props) {
     const tableHeaders = ['order', 'date', 'recipient', 'products', 'total', 'financialStatus', 'fulfillmentStatus']
     const activeOrder = ref<number>(0)
     const updateOrderId = (id: number) => {
       activeOrder.value = activeOrder.value === id ? 0 : id
     }
 
+    const filteredOrders = computed(() => {
+      return props.orders.filter((order: any) => !order.canceledAt)
+    })
+
     return {
       activeOrder,
+      filteredOrders,
       tableHeaders,
       updateOrderId,
     }
@@ -47,7 +52,7 @@ export default defineComponent({
         </div>
       </div>
       <div
-        v-for="item in orders"
+        v-for="item in filteredOrders"
         :key="item.id"
       >
         <OrderCard
