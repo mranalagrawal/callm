@@ -1,9 +1,11 @@
 <script lang="ts">
-import { computed, onMounted, useContext, useFetch, watch } from '@nuxtjs/composition-api'
+import { computed, onMounted, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import { useFilters } from '~/store/filters'
 import { useCustomer } from '~/store/customer'
 import { useCustomerWishlist } from '~/store/customerWishlist'
+import { chunkArray } from '~/utilities/arrays'
+import type { IProductListing } from '~/types/product'
 
 export default {
   props: {
@@ -14,21 +16,58 @@ export default {
     const customerWishlist = useCustomerWishlist()
     const { wishlistArr } = storeToRefs(customerStore)
     const { wishlistProducts } = storeToRefs(customerWishlist)
-    const { $cmwGtmUtils, $productMapping } = useContext()
+    const { $cmwGtmUtils, $productMapping, $cmwRepo } = useContext()
+
+    const wishlistOtherProducts = ref<IProductListing[]>([])
 
     const filtersStore = useFilters()
     const { selectedLayout, availableLayouts } = storeToRefs(filtersStore)
 
     const query = computed(() => wishlistArr.value.join(' OR '))
 
+    const wishListChunks = chunkArray(wishlistArr.value, 100)
+
+    const wishlistMain = wishListChunks.shift()
+
+    const wishlistOthers = wishListChunks
+
+    console.log('chunks wishlists', wishListChunks)
+
     const { fetch } = useFetch(async () => {
       if (query.value) {
         await customerWishlist.getWishlistProducts({
-          query: `tag:active AND (${query.value})`,
-          first: Number(wishlistArr.value.length) > 200 ? 200 : Number(wishlistArr.value.length),
+          query: `tag:active AND (${wishlistMain.join(' OR ')})`,
+          first: wishlistMain.length,
         })
       }
     })
+
+    /*
+    const wishlistOthersPromises = wishlistOthers.map((chunk) => {
+      return $cmwRepo.products.getAll({
+        query: `tag:active AND (${chunk.join(' OR ')})`,
+        first: chunk.length,
+      })
+    })
+
+    console.log('wishlistOthersPromises', wishlistOthersPromises)
+
+    Promise.all(wishlistOthersPromises)
+      .then((results) => {
+        // map and save otherProducts
+        const otherProducts = []
+        for (const setProducts of results) {
+          const mappedProducts = $productMapping.fromShopify(setProducts.products.nodes)
+          console.log("mapped products", mappedProducts)
+          otherProducts.push(mappedProducts)
+        }
+        console.log("other prod", otherProducts.flat())
+        wishlistOtherProducts.value = otherProducts.flat()
+      })
+      .catch((error) => {
+        console.error('At least one promise rejected:', error)
+      })
+    */
 
     watch(() => query.value, () => fetch())
 
@@ -39,8 +78,36 @@ export default {
       return $productMapping.fromShopify(wishlistProducts.value)
     })
 
+    const finalProducts = computed(() => [...customerProducts.value, ...wishlistOtherProducts.value])
+
     onMounted(() => {
       process.browser && $cmwGtmUtils.pushPage('page')
+      console.log('on mounted I will call a method to make other request...')
+
+      const wishlistOthersPromises = wishlistOthers.map((chunk) => {
+        return $cmwRepo.products.getAll({
+          query: `tag:active AND (${chunk.join(' OR ')})`,
+          first: chunk.length,
+        })
+      })
+
+      console.log('wishlistOthersPromises', wishlistOthersPromises)
+
+      Promise.all(wishlistOthersPromises)
+        .then((results) => {
+        // map and save otherProducts
+          const otherProducts = []
+          for (const setProducts of results) {
+            const mappedProducts = $productMapping.fromShopify(setProducts.products.nodes)
+            console.log('mapped products', mappedProducts)
+            otherProducts.push(mappedProducts)
+          }
+          console.log('other prod', otherProducts.flat())
+          wishlistOtherProducts.value = otherProducts.flat()
+        })
+        .catch((error) => {
+          console.error('At least one promise rejected:', error)
+        })
     })
 
     return {
@@ -49,6 +116,8 @@ export default {
       customerProducts,
       availableLayouts,
       selectedLayout,
+      wishlistOtherProducts,
+      finalProducts,
     }
   },
 }
@@ -114,17 +183,36 @@ export default {
           >
             <ProductBoxHorizontal :product="product" :is-desktop="isDesktop" />
           </div>
+          <div
+            v-for="product in wishlistOtherProducts"
+            :key="product.id"
+            class="mb-4"
+          >
+            <ProductBoxHorizontal :product="product" :is-desktop="isDesktop" />
+          </div>
         </template>
         <template v-else>
           <div
             class="products-grid"
           >
-            <ProductBoxVertical
+            <div
               v-for="product in customerProducts"
-              :key="product.shopify_product_id"
-              :product="product"
-              :is-desktop="isDesktop"
-            />
+              :key="product.id"
+            >
+              <ProductBoxVertical
+                :product="product"
+                :is-desktop="isDesktop"
+              />
+            </div>
+            <div
+              v-for="product in wishlistOtherProducts"
+              :key="product.id"
+            >
+              <ProductBoxVertical
+                :product="product"
+                :is-desktop="isDesktop"
+              />
+            </div>
           </div>
         </template>
       </div>

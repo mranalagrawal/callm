@@ -226,7 +226,7 @@ hover:shadow-elevation"
         >
           {{ product.title }}
         </button>
-        <NuxtLink class="block sr-only" :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')" :to="localeLocation(product.url)" />
+        <NuxtLink class="block sr-only" :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')" :to="(product?.url) ? localeLocation(product.url) : '/'" />
       </div>
       <ProductUserRating v-if="customerId" :product-id="`${product.details.feId}`" @click-star="handleStarAndCustomerCommentClick" />
       <div class="flex gap-3 my-8">
@@ -257,7 +257,7 @@ hover:shadow-elevation"
           class="cmw-font-bold"
           v-text="$t('product.size')"
         />
-        <div v-if="product.tbd.size.length">
+        <div v-if="product.tbd.size?.length">
           {{ product.tbd.size }}
         </div>
       </div>

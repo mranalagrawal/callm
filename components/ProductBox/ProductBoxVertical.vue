@@ -227,7 +227,7 @@ export default defineComponent({
           >
             <span class="line-clamp-2 text-sm md:text-base">{{ product.title }}</span>
           </button>
-          <NuxtLink class="block sr-only" :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')" :to="localeLocation(product.url)" />
+          <NuxtLink class="block sr-only" :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')" :to="(product?.url) ? localeLocation(product.url) : '/'" />
         </div>
       </div>
       <div class="c-productBox__price justify-self-baseline self-end">
