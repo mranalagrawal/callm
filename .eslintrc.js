@@ -35,6 +35,8 @@ module.exports = {
     ],
     'vue/multi-word-component-names': ['warn', {
       ignores: [
+        'Error404',
+        'Error410',
         'Navbar',
         '_handle',
         'addresses',
@@ -45,9 +47,8 @@ module.exports = {
         'categories',
         'contact',
         'default',
+        'empty',
         'error',
-        'Error404',
-        'Error410',
         'index',
         'login',
         'preview',

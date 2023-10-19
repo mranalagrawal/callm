@@ -3,22 +3,17 @@ import closeIcon from 'assets/svg/close.svg'
 import promoTagIcon from 'assets/svg/promo-tag.svg'
 import chevronRightIcon from 'assets/svg/chevron-right.svg'
 import chevronLeftIcon from 'assets/svg/chevron-left.svg'
-import type { PropType } from '@nuxtjs/composition-api'
-import { computed, defineComponent, ref, useRoute, watch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref, useRoute, useStore, watch } from '@nuxtjs/composition-api'
 import { getIconByFeature } from '~/utilities/icons'
 import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({
-  props: {
-    menu: {
-      type: Array as PropType<Record<string, any>[]>,
-      required: true,
-    },
-  },
   emits: ['close-sidebar'],
   setup(props, { emit }) {
     const route = useRoute()
     const activeItem = ref({})
+    const store: any = useStore()
+    const megaMenu = store.state.megaMenu
     const closeSidebar = (full: any) => {
       activeItem.value = {}
       if (full) {
@@ -32,7 +27,7 @@ export default defineComponent({
       scrollableEl && scrollableEl.scrollTo({ left: 0, top: 0, behavior: 'smooth' })
     } */
 
-    const mappedMenu = computed(() => props.menu?.map(menu => ({
+    const mappedMenu = computed(() => megaMenu?.map((menu: { items: { items: any[] }[] }) => ({
       ...menu,
       items: menu.items.map((item: { items: any[] }) => ({
         ...item,
@@ -51,6 +46,7 @@ export default defineComponent({
       closeIcon,
       closeSidebar,
       mappedMenu,
+      megaMenu,
       promoTagIcon,
     }
   },
@@ -62,7 +58,7 @@ export default defineComponent({
   <div class="w-full bg-white">
     <div class="shadow h-[3px]" />
     <div class="overflow-auto h-screen">
-      <div v-for="(mappedMenuItem) in menu" :key="generateKey(`menu-mobile-${mappedMenuItem?.name}`)">
+      <div v-for="(mappedMenuItem) in megaMenu" :key="generateKey(`menu-mobile-${mappedMenuItem?.name}`)">
         <template v-if="mappedMenuItem.name.toLowerCase() === 'blog'">
           <a href="/blog" class="relative flex justify-between items-center w-full py-4 px-2">
             <span class="uppercase text-sm cmw-font-light tracking-wide">{{ mappedMenuItem.name }}</span></a>

@@ -1,19 +1,21 @@
 <script lang="ts">
-import { defineComponent, inject, ref, useContext, useFetch, useRoute, useRouter, watch } from '@nuxtjs/composition-api'
+import { defineComponent, inject, ref, useContext, useRoute, useRouter, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import type { RawLocation } from 'vue-router'
+import cartIcon from '~/assets/svg/cart.svg'
+import chevronLeftIcon from '~/assets/svg/chevron-left.svg'
+import closeIcon from '~/assets/svg/close.svg'
+import logoB2b from '~/assets/svg/logo-call-me-wine-b2b.svg'
+import logo from '~/assets/svg/logo-call-me-wine.svg'
+import menuIcon from '~/assets/svg/menu.svg'
+import userIcon from '~/assets/svg/user.svg'
 import UserActions from '~/components/Header/UserActions.vue'
 import LoginForm from '~/components/LoginForm.vue'
 import UserMenu from '~/components/UserMenu.vue'
+
+// import type { TISO639 } from '~/config/themeConfig'
 import { useCustomer } from '~/store/customer'
 import { useShopifyCart } from '~/store/shopifyCart'
-import chevronLeftIcon from '~/assets/svg/chevron-left.svg'
-import logo from '~/assets/svg/logo-call-me-wine.svg'
-import logoB2b from '~/assets/svg/logo-call-me-wine-b2b.svg'
-import cartIcon from '~/assets/svg/cart.svg'
-import closeIcon from '~/assets/svg/close.svg'
-import menuIcon from '~/assets/svg/menu.svg'
-import userIcon from '~/assets/svg/user.svg'
 
 export default defineComponent({
   components: { UserActions, LoginForm, UserMenu },
@@ -26,7 +28,6 @@ export default defineComponent({
     const isDesktop = inject('isDesktop')
     const navbar = ref(null)
     const menuBarRef = ref<HTMLDivElement | null>(null)
-    const menuData = ref<Record<string, any>[]>([])
     const showMobileButton = ref(true)
     const isMobileMenuOpen = ref(false)
     const isSidebarOpen = ref(false)
@@ -56,45 +57,6 @@ export default defineComponent({
       router.push(localeLocation('/login#register') as RawLocation)
     }
 
-    useFetch(async ({ $cmwRepo }) => {
-      const megaMenu = await $cmwRepo.prismic.getSingle('mega-menu-test')
-
-      menuData.value = megaMenu?.body?.length
-        ? megaMenu.body.map((firstLevel) => {
-          const secondLevels = firstLevel.items.map((el: { secondlevelname: any; second_level_position: any }) => {
-            return {
-              name: el.secondlevelname,
-              position: el.second_level_position,
-            // isSelection: !!el.selection,
-            }
-          })
-
-          const secondLevelsSet = [
-            ...new Set(secondLevels.map((el: any) => JSON.stringify(el))),
-          ]
-            .map(el => JSON.parse(el as string))
-            .sort((a, b) => a.position - b.position)
-
-          const items = secondLevelsSet.map((el) => {
-            const temp = firstLevel.items
-              .filter((x: { secondlevelname: any }) => x.secondlevelname === el.name)
-              .sort((a: { third_level_position: number }, b: { third_level_position: number }) => a.third_level_position - b.third_level_position)
-            return { ...el, items: temp }
-          })
-
-          return {
-            name: firstLevel.primary.group_label,
-            link: firstLevel.primary.first_level_link,
-            position: firstLevel.primary.first_level_position,
-            isPromotionTab: firstLevel.primary.is_promotion_tab,
-            display_as_cards: firstLevel.primary.display_as_cards,
-            items,
-          }
-        })
-          .sort((a, b) => a.position - b.position)
-        : []
-    })
-
     watch(() => route.value, () => {
       mobileLogin.value = false
       isSidebarOpen.value = false
@@ -118,7 +80,6 @@ export default defineComponent({
       logo,
       logoB2b,
       menuBarRef,
-      menuData,
       menuIcon,
       mobileLogin,
       navbar,
@@ -214,10 +175,10 @@ export default defineComponent({
       </div>
     </div>
 
-    <div v-if="!isDesktop && !!menuData.length" class="">
+    <div v-if="!isDesktop" class="">
       <transition name="menu-mobile">
         <div v-show="isSidebarOpen" class="absolute left-0 w-full z-base" :style="{ top: sideBarTop }">
-          <MenuMobile :menu="menuData" />
+          <MenuMobile />
         </div>
       </transition>
     </div>
