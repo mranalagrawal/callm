@@ -5,9 +5,9 @@ export const state = () => ({
   megaMenu: [],
   preFooterData: [],
   footerData: {
+    mobileApps: [],
     paymentMethods: [],
     socialLinks: [],
-    mobileApps: [],
   },
 })
 
@@ -46,17 +46,22 @@ export const actions = {
   },
 
   async loadFooter({ commit }) {
+    const footerData = {
+      mobileApp: [],
+      paymentMethods: [],
+      socialLinks: [],
+    }
     const locale = this.$i18n.locale
     const prismicLocale = this.$cmwStore.prismicSettings.isoCode[locale]
-    const footerData = await kv.get(`prismic/footer/footer-${prismicLocale}`)
+    const footerDataFetch = await kv.get(`prismic/footer/footer-${prismicLocale}`)
 
-    const paymentMethodsSlice = await findSlice('payment-methods', footerData)
+    const paymentMethodsSlice = await findSlice('payment-methods', footerDataFetch)
     footerData.paymentMethods = paymentMethodsSlice?.items || []
 
-    const socialLinksSlice = await findSlice('social-links', footerData)
+    const socialLinksSlice = await findSlice('social-links', footerDataFetch)
     footerData.socialLinks = socialLinksSlice?.items || []
 
-    const mobileAppsSlice = await findSlice('mobile-apps', footerData)
+    const mobileAppsSlice = await findSlice('mobile-apps', footerDataFetch)
     footerData.mobileApp = mobileAppsSlice?.items || []
 
     commit('SET_FOOTER_DATA', footerData)
