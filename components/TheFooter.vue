@@ -3,11 +3,9 @@ import type { Ref } from '@nuxtjs/composition-api'
 import {
   defineComponent,
   inject,
-  provide,
-  readonly,
   ref,
   useContext,
-  useFetch,
+  useFetch, useStore,
   watch,
 } from '@nuxtjs/composition-api'
 import logo from 'assets/svg/logo-call-me-wine.svg'
@@ -24,56 +22,23 @@ export default defineComponent({
   setup() {
     const { i18n } = useContext()
     const isDesktop = inject('isDesktop') as Ref<boolean>
+    const store: any = useStore()
     const footerInfoData = ref<IPrismicPageData>(initialPageData)
-    const paymentMethods = ref<any>([])
-    const socialLinks = ref<any>([])
-    const mobileApps = ref<any>([])
-    const footerData = ref<IPrismicPageData>(initialPageData)
-
-    // create a function to find the slice type
-    function findSlice(sliceLabel = '', responseObject: Record<string, any>) {
-      // Loop through all the keys in the object
-      for (const key in responseObject) {
-        if (Array.isArray(responseObject[key])) {
-          // Loop through each 'slice' in the body array
-          for (const slice of responseObject[key]) {
-            // Check if the slice_label matches the one we're looking for
-            if (slice.slice_label === sliceLabel) { return slice }
-          }
-        }
-      }
-      return null
-    }
+    const paymentMethods = ref<any>(store.state.footerData.paymentMethods)
 
     const { fetch } = useFetch(async ({ $cmwRepo }) => {
       footerInfoData.value = await $cmwRepo.prismic.getSingle('footer-info')
-      footerData.value = await $cmwRepo.prismic.getSingle('footer-test')
-
-      const paymentMethodsSlice = await findSlice('payment-methods', footerData.value)
-      paymentMethods.value = paymentMethodsSlice?.items || []
-
-      const socialLinksSlice = await findSlice('social-links', footerData.value)
-      socialLinks.value = socialLinksSlice?.items || []
-
-      const mobileAppsSlice = await findSlice('mobile-apps', footerData.value)
-      mobileApps.value = mobileAppsSlice?.items || []
     })
-
-    provide('socialLinks', readonly(socialLinks))
-    provide('mobileApps', readonly(mobileApps))
 
     watch(() => i18n.locale, () => fetch(), { deep: true })
 
     return {
       emailIcon,
-      footerData,
       footerInfoData,
       isDesktop,
       logo,
-      mobileApps,
-      paymentMethods,
       paperPlaneIcon,
-      socialLinks,
+      paymentMethods,
       walletIcon,
     }
   },

@@ -5,6 +5,8 @@ import type { TPrismicIsoCodes } from '~/types/prismic'
 const vercelMiddleware: Middleware = async ({ $cmwRepo }) => {
   const languages: TPrismicIsoCodes[] = ['it-it', 'it-bn', 'en-eu', 'en-gb', 'fr-fr', 'de-de']
 
+  const fetchFooter = async (lang: TPrismicIsoCodes) => await $cmwRepo.prismic.getSingle('footer-test', lang)
+
   const fetchMenu = async (lang: TPrismicIsoCodes) => {
     const megaMenu = await $cmwRepo.prismic.getSingle('mega-menu-test', lang)
     return megaMenu?.body?.length
@@ -49,6 +51,9 @@ const vercelMiddleware: Middleware = async ({ $cmwRepo }) => {
     for (const lang of languages) {
       const megaMenuData = await fetchMenu(lang)
       await kv.set(`prismic/menu/menu-${lang}`, JSON.stringify(megaMenuData), {})
+
+      const footerData = await fetchFooter(lang)
+      await kv.set(`prismic/footer/footer-${lang}`, JSON.stringify(footerData), {})
     }
   } catch (error) {
     // Handle errors

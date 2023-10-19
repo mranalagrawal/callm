@@ -1,10 +1,12 @@
 <script>
-import { inject } from '@nuxtjs/composition-api'
+import { useStore } from '@nuxtjs/composition-api'
 
 export default {
   setup() {
-    const socialLinks = inject('socialLinks')
-    const mobileApps = inject('mobileApps')
+    const store = useStore()
+    const socialLinks = store.state.footerData.socialLinks
+    const mobileApps = store.state.footerData.mobileApps
+
     return {
       mobileApps,
       socialLinks,
