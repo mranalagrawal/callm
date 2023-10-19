@@ -44,6 +44,7 @@ export default defineComponent({
     const showRequestModal = ref(false)
     const isHovering = ref(false)
 
+    const notActive = computed(() => props.product.tags.includes('not_active'))
     const isOnFavourite = computed(() => wishlistArr.value.includes(props.product.source_id))
     const isOnSale = computed(() => props.product.availableFeatures.includes('isInPromotion'))
     const finalPrice = computed(() => {
@@ -133,6 +134,7 @@ export default defineComponent({
       subtractIcon,
       cartLinesUpdate,
       wishlistArr,
+      notActive,
     }
   },
   methods: {
@@ -227,7 +229,7 @@ export default defineComponent({
           >
             <span class="line-clamp-2 text-sm md:text-base">{{ product.title }}</span>
           </button>
-          <NuxtLink class="block sr-only" :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')" :to="localeLocation(product.url)" />
+          <NuxtLink class="block sr-only" :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')" :to="(product?.url) ? localeLocation(product.url) : '/'" />
         </div>
       </div>
       <div class="c-productBox__price justify-self-baseline self-end">
@@ -262,7 +264,7 @@ export default defineComponent({
           </i18n-n>
         </div>
       </div>
-      <div class="c-productBox__cart justify-self-baseline place-self-end">
+      <div v-if="!notActive" class="c-productBox__cart justify-self-baseline place-self-end">
         <div v-if="product.availableForSale" class="mr-3 relative">
           <ButtonIcon
             variant="ghost"

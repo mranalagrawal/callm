@@ -48,6 +48,7 @@ export default defineComponent({
 
     const isOpen = ref(false)
 
+    const notActive = computed(() => props.product.tags.includes('not_active'))
     const isOnFavourite = computed(() => wishlistArr.value.includes(props.product.source_id))
     const isOnSale = computed(() => props.product.availableFeatures.includes('isInPromotion'))
     const finalPrice = computed(() => {
@@ -147,6 +148,7 @@ export default defineComponent({
       subtractIcon,
       cartLinesUpdate,
       wishlistArr,
+      notActive,
     }
   },
   methods: {
@@ -226,7 +228,7 @@ hover:shadow-elevation"
         >
           {{ product.title }}
         </button>
-        <NuxtLink class="block sr-only" :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')" :to="localeLocation(product.url)" />
+        <NuxtLink class="block sr-only" :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')" :to="(product?.url) ? localeLocation(product.url) : '/'" />
       </div>
       <ProductUserRating v-if="customerId" :product-id="`${product.details.feId}`" @click-star="handleStarAndCustomerCommentClick" />
       <div class="flex gap-3 my-8">
@@ -257,7 +259,7 @@ hover:shadow-elevation"
           class="cmw-font-bold"
           v-text="$t('product.size')"
         />
-        <div v-if="product.tbd.size.length">
+        <div v-if="product.tbd.size?.length">
           {{ product.tbd.size }}
         </div>
       </div>
@@ -307,66 +309,68 @@ hover:shadow-elevation"
         <div v-if="$cmwStore.isB2b" class="text-sm text-gray-dark  mb-3">
           iva esclusa
         </div>
-        <div v-if="product.availableForSale" class="relative">
-          <CmwButton
-            class="gap-2 pl-2 pr-3 py-2"
-            :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
-            @click.native="addToUserCart"
-          >
-            <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
-            <span class="text-sm" v-text="$t('common.cta.addToCart')" />
-          </CmwButton>
-          <Badge
-            v-show="cartQuantity && !isOpen"
-            class="absolute top-0 left-full transform -translate-x-1/2 -translate-y-1/2"
-            bg-color="primary-400" :qty="cartQuantity"
-          />
-          <div
-            v-show="isOpen"
-            class="absolute grid grid-cols-[50px_auto_50px] items-center w-full h-[50px] top-0 left-0"
-            @mouseleave="isOpen = false"
-          >
-            <button
-              class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l hover:(bg-primary)"
-              :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
-              @click="removeFromUserCart"
+        <div v-if="!notActive">
+          <div v-if="product.availableForSale" class="relative">
+            <CmwButton
+              class="gap-2 pl-2 pr-3 py-2"
+              :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
+              @click.native="addToUserCart"
             >
-              <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="white" />
-            </button>
-            <div class="flex h-[40px] bg-primary-400 text-white text-center">
-              <span class="m-auto text-sm">{{ cartQuantity }}</span>
+              <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
+              <span class="text-sm" v-text="$t('common.cta.addToCart')" />
+            </CmwButton>
+            <Badge
+              v-show="cartQuantity && !isOpen"
+              class="absolute top-0 left-full transform -translate-x-1/2 -translate-y-1/2"
+              bg-color="primary-400" :qty="cartQuantity"
+            />
+            <div
+              v-show="isOpen"
+              class="absolute grid grid-cols-[50px_auto_50px] items-center w-full h-[50px] top-0 left-0"
+              @mouseleave="isOpen = false"
+            >
+              <button
+                class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l hover:(bg-primary)"
+                :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
+                @click="removeFromUserCart"
+              >
+                <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="white" />
+              </button>
+              <div class="flex h-[40px] bg-primary-400 text-white text-center">
+                <span class="m-auto text-sm">{{ cartQuantity }}</span>
+              </div>
+              <button
+                class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-r
+                  hover:(bg-primary)
+                  disabled:(bg-primary-100 cursor-not-allowed)"
+                :disabled="!canAddMore"
+                :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
+                @click="addToUserCart"
+              >
+                <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
+              </button>
             </div>
-            <button
-              class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-r
-                hover:(bg-primary)
-                disabled:(bg-primary-100 cursor-not-allowed)"
-              :disabled="!canAddMore"
-              :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
-              @click="addToUserCart"
-            >
-              <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
-            </button>
+            <!-- Clarify: In case the user is not logged we could just ask for his email in the SweetAlert confirm and also invite the user to log  -->
+            <!-- Clarify: Shall we open a SweetAlert confirmation modal first? or just send the email?  -->
+            <!-- Todo: Implement send email functionality on Backend -->
+            <!--
+            <CmwButton v-else variant="ghost" class="gap-2 pl-2 pr-3 py-2" @click.native="() => {}">
+              <VueSvgIcon :data="emailIcon" width="30" height="auto" />
+              <span class="text-sm" v-text="$t('product.notifyMe')" />
+            </CmwButton>
+            -->
           </div>
-          <!-- Clarify: In case the user is not logged we could just ask for his email in the SweetAlert confirm and also invite the user to log  -->
-          <!-- Clarify: Shall we open a SweetAlert confirmation modal first? or just send the email?  -->
-          <!-- Todo: Implement send email functionality on Backend -->
-          <!--
-          <CmwButton v-else variant="ghost" class="gap-2 pl-2 pr-3 py-2" @click.native="() => {}">
-            <VueSvgIcon :data="emailIcon" width="30" height="auto" />
-            <span class="text-sm" v-text="$t('product.notifyMe')" />
-          </CmwButton>
-           -->
-        </div>
-        <div v-else>
-          <CmwButton
-            variant="ghost"
-            class="gap-2 pl-2 pr-3 py-2"
-            :aria-label="$t('enums.accessibility.role.MODAL_OPEN')"
-            @click.native="handleShowRequestModal(product.details.feId)"
-          >
-            <VueSvgIcon :data="emailIcon" width="30" height="auto" />
-            <span class="text-sm" v-text="$t('common.cta.notifyMe')" />
-          </CmwButton>
+          <div v-else>
+            <CmwButton
+              variant="ghost"
+              class="gap-2 pl-2 pr-3 py-2"
+              :aria-label="$t('enums.accessibility.role.MODAL_OPEN')"
+              @click.native="handleShowRequestModal(product.details.feId)"
+            >
+              <VueSvgIcon :data="emailIcon" width="30" height="auto" />
+              <span class="text-sm" v-text="$t('common.cta.notifyMe')" />
+            </CmwButton>
+          </div>
         </div>
         <div>
           <span v-if="$cmwStore.isDe && priceByLiter" class="text-sm">
