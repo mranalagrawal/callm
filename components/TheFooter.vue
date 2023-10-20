@@ -283,9 +283,7 @@ export default defineComponent({
         <FooterPaymentMethods />
 
         <hr class="bg-secondary-800 my-4 border-0 h-px">
-        <div class="text-center mt-4 text-xs text-secondary-100 px-4">
-          {{ footerInfoData.info }}
-        </div>
+        <div class="text-center mt-4 text-xs text-secondary-100 px-4" v-text="$t('common.footer.tagline')" />
       </div>
     </div>
   </footer>

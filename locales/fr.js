@@ -19,6 +19,7 @@ export default {
     ...common.feedback,
     ...common.filters,
     ...common.forms,
+    ...common.info,
     carousel: {
       recommendedProducts: 'Souvent achetés ensemble',
     },
