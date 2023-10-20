@@ -56,11 +56,10 @@ export const actions = {
     const prismicLocale = this.$cmwStore.prismicSettings.isoCode[locale]
     const footerDataFetch = await kv.get(`prismic/footer/footer-${prismicLocale}`)
 
-    footerData.paymentMethods = footerDataFetch['payment-methods'][0]?.items || []
-    footerData.socialLinks = footerDataFetch['social-links'][0]?.items || []
-    footerData.mobileApps = footerDataFetch['mobile-apps'][0]?.items || []
+    footerData.paymentMethods = (footerDataFetch['payment-methods'] ? footerDataFetch['payment-methods'][0]?.items : []) || []
+    footerData.socialLinks = (footerDataFetch['social-links'] ? footerDataFetch['social-links'][0]?.items : []) || []
+    footerData.mobileApps = (footerDataFetch['mobile-apps'] ? footerDataFetch['mobile-apps'][0]?.items : []) || []
     footerData.copyright = footerDataFetch.copyright
-
     commit('SET_FOOTER_DATA', footerData)
   },
 }
