@@ -69,6 +69,7 @@ export default {
     label: 'Newsletter',
     subscribed: 'sottoscritto',
     unsubscribed: 'non iscritto',
+    offer: 'Iscriviti alla nostra Newsletter: ogni giorno info, promozioni e subito per te uno sconto del {discount} sul tuo primo ordine!',
     headline: 'Newsletter con promozioni è novità su tutto il catalogo di Callmewine',
     frequency: {
       DAILY: 'Giornaliera',
@@ -79,7 +80,7 @@ export default {
       offer: 'Subito per te uno sconto del {discount}% sul tuo primo ordine!',
       acceptMarketing: 'Accetto di ricevere newsletter e comunicazioni promozionali da Callmewine, come richiesto dal {0}.',
       profiling: 'Acconsento all\'utilizzo dei miei dati per attività di profilazione finalizzate a migliorare la mia esperienza di navigazione e ricevere offerte relative ai miei interessi e alle mie abitudini di acquisto, come previsto dalla {0}.',
-      readMore: 'Per ulteriori informazioni, leggi il nostro {0}',
+      readMore: 'Per ulteriori informazioni, leggi la nostra {0}',
       privacyPolicy: 'politica sulla riservatezza',
     },
   },

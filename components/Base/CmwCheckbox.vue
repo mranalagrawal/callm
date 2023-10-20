@@ -16,6 +16,7 @@ export default {
     },
     checked: Boolean,
     isRequired: { type: Boolean },
+    theme: { type: String, default: 'light' },
   },
   emits: ['change'],
   setup(_, { attrs, emit }) {
@@ -50,7 +51,10 @@ export default {
           :name="id"
           @change="handleChange($event.target.checked)"
         >
-        <span class="absolute flex text-primary-400 w-[22px] h-[22px] top-0 left-0 pointer-events-none">
+        <span
+          class="absolute flex w-[22px] h-[22px] top-0 left-0 pointer-events-none"
+          :class="theme === 'dark' ? 'text-white' : 'text-primary-400'"
+        >
           <VueSvgIcon :data="($attrs.checked || checked) ? checkboxIcon : checkboxBlankIcon" width="22" height="22" />
         </span>
         <label :for="`${id}-checkbox`" class="m-0">

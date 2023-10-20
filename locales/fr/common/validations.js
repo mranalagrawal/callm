@@ -43,6 +43,7 @@ export default {
       'customer-edit-phone': 'Téléphone',
       'message': 'Message',
       'new-password': 'Mot de passed',
+      'newsletter--footer-checkbox': 'newsletter',
       'newsletter-checkbox': 'newsletter',
       'notify-me-user-email': 'E-mail',
       'privacy': 'privacy',

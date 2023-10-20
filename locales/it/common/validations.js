@@ -44,6 +44,7 @@ export default {
       'message': 'Messaggio',
       'new-password': 'Password',
       'newsletter-checkbox': 'newsletter',
+      'newsletter-footer-checkbox': 'newsletter',
       'notify-me-user-email': 'Email',
       'privacy': 'privacy',
       'register-business-name': 'Ragione Sociale',
