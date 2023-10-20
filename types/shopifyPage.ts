@@ -5,4 +5,8 @@ export interface IShopifyPage {
   rewriteUrl: { value: string }
   shortDescription: { value: string }
   title: string // String!
+  seo: {
+    description: string
+    title: string
+  }
 }
