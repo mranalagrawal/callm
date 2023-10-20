@@ -1,11 +1,11 @@
-<script>
+<script lang="ts">
 import walletIcon from 'assets/svg/wallet.svg'
 import { computed, useStore } from '@nuxtjs/composition-api'
 import { generateKey } from '~/utilities/strings'
 
 export default {
   setup() {
-    const store = useStore()
+    const store: any = useStore()
     const paymentMethods = computed(() => store.state.footerData.paymentMethods)
 
     return {

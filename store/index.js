@@ -1,10 +1,10 @@
 import { kv } from '@vercel/kv'
-import { findSlice } from '~/utilities/prismic'
 
 export const state = () => ({
   megaMenu: [],
   preFooterData: [],
   footerData: {
+    copyright: [],
     mobileApps: [],
     paymentMethods: [],
     socialLinks: [],
@@ -47,7 +47,8 @@ export const actions = {
 
   async loadFooter({ commit }) {
     const footerData = {
-      mobileApp: [],
+      copyright: [],
+      mobileApps: [],
       paymentMethods: [],
       socialLinks: [],
     }
@@ -55,14 +56,10 @@ export const actions = {
     const prismicLocale = this.$cmwStore.prismicSettings.isoCode[locale]
     const footerDataFetch = await kv.get(`prismic/footer/footer-${prismicLocale}`)
 
-    const paymentMethodsSlice = await findSlice('payment-methods', footerDataFetch)
-    footerData.paymentMethods = paymentMethodsSlice?.items || []
-
-    const socialLinksSlice = await findSlice('social-links', footerDataFetch)
-    footerData.socialLinks = socialLinksSlice?.items || []
-
-    const mobileAppsSlice = await findSlice('mobile-apps', footerDataFetch)
-    footerData.mobileApp = mobileAppsSlice?.items || []
+    footerData.paymentMethods = footerDataFetch['payment-methods'][0]?.items || []
+    footerData.socialLinks = footerDataFetch['social-links'][0]?.items || []
+    footerData.mobileApps = footerDataFetch['mobile-apps'][0]?.items || []
+    footerData.copyright = footerDataFetch.copyright
 
     commit('SET_FOOTER_DATA', footerData)
   },

@@ -142,8 +142,8 @@ export default defineConfig({
       typography: {
         DEFAULT: {
           css: {
-            maxWidth: 'unset',
-            a: {
+            'maxWidth': 'unset',
+            'a': {
               'color': themeConfig[store]?.colors.primary[400],
               'textDecoration': 'none',
               '&:link': {
@@ -152,6 +152,9 @@ export default defineConfig({
               '&:hover': {
                 textDecoration: 'underline',
               },
+            },
+            '&.dark p': {
+              color: 'inherit',
             },
           },
         },

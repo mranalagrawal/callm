@@ -1,11 +1,12 @@
 <script lang="ts">
 import type { Ref } from '@nuxtjs/composition-api'
 import {
+  computed,
   defineComponent,
   inject,
   ref,
   useContext,
-  useFetch,
+  useFetch, useStore,
   watch,
 } from '@nuxtjs/composition-api'
 import logo from 'assets/svg/logo-call-me-wine.svg'
@@ -21,8 +22,10 @@ import { SweetAlertToast } from '~/utilities/Swal'
 export default defineComponent({
   setup() {
     const { i18n } = useContext()
+    const store: any = useStore()
     const isDesktop = inject('isDesktop') as Ref<boolean>
     const footerInfoData = ref<IPrismicPageData>(initialPageData)
+    const footerCopyright = computed(() => store.state.footerData.copyright)
 
     const { fetch } = useFetch(async ({ $cmwRepo }) => {
       footerInfoData.value = await $cmwRepo.prismic.getSingle('footer-info')
@@ -32,6 +35,7 @@ export default defineComponent({
 
     return {
       emailIcon,
+      footerCopyright,
       footerInfoData,
       isDesktop,
       logo,
@@ -141,7 +145,7 @@ export default defineComponent({
         </div>
         <div>
           <VueSvgIcon :data="logo" color="white" width="180" height="auto" />
-          <p class="mt-2 text-sm text-secondary-100" v-text="footerInfoData.description" />
+          <p class="mt-2 text-sm text-secondary-100" v-text="$t('common.footer.tagline')" />
         </div>
         <div class="grid gap-8 mt-4 md:grid-cols-2">
           <div>
@@ -283,7 +287,7 @@ export default defineComponent({
         <FooterPaymentMethods />
 
         <hr class="bg-secondary-800 my-4 border-0 h-px">
-        <div class="text-center mt-4 text-xs text-secondary-100 px-4" v-text="$t('common.footer.tagline')" />
+        <PrismicRichText v-if="footerCopyright" class="sm:w-[min(100%,_80%)] m-inline-auto prose dark text-secondary-100 text-center text-xs" :field="footerCopyright" />
       </div>
     </div>
   </footer>
