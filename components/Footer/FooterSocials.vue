@@ -1,9 +1,9 @@
-<script>
-import { computed, useStore } from '@nuxtjs/composition-api'
+<script lang="ts">
+import { computed, defineComponent, useStore } from '@nuxtjs/composition-api'
 
-export default {
+export default defineComponent({
   setup() {
-    const store = useStore()
+    const store: any = useStore()
     const socialLinks = computed(() => store.state.footerData.socialLinks)
     const mobileApps = computed(() => store.state.footerData.mobileApps)
 
@@ -12,7 +12,7 @@ export default {
       socialLinks,
     }
   },
-}
+})
 </script>
 
 <template>
