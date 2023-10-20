@@ -104,6 +104,7 @@ export default {
     contacts: 'Contacts',
     explore: 'Explore Our Catalog',
     paymentMethods: 'Payment Methods',
+    privacyPolicy: 'By clicking on {label}, I declare that I have read the {link}.',
   },
   navbar: {
     search: 'What are you looking for?',

@@ -103,6 +103,7 @@ export default {
     contacts: 'Contacts',
     explore: 'Explorez Notre Catalogue',
     paymentMethods: 'Moyen de paiement',
+    privacyPolicy: 'En cliquant sur {label}, je déclare avoir lu la {link}.',
   },
   navbar: {
     search: 'Recherche ?',

@@ -9,7 +9,6 @@ export default defineComponent({
     const { $cmw, $cmwStore, $gtm, $sentry, i18n } = useContext()
     const form = ref({
       email: '',
-      acceptsMarketing: false,
     })
 
     const getNewsletterDiscountByStore = () => ({
@@ -108,36 +107,19 @@ export default defineComponent({
         />
       </div>
       <div class="mt-3">
-        <CmwCheckbox
-          id="newsletter-footer-checkbox"
-          v-model="form.acceptsMarketing"
-          :checked="form.acceptsMarketing"
-          required
-          is-required
-          theme="dark"
-          @change="form.acceptsMarketing = !form.acceptsMarketing"
-        >
-          <template #label>
-            <i18n
-              class="block text-xs"
-              path="newsletter.splash.acceptMarketing"
-              tag="span"
-            >
-              <span
-                class="font-sans cmw-font-bold tracking-normal"
-                v-text="$t('newsletter.splash.privacyPolicy')"
-              />
-            </i18n>
-          </template>
-        </CmwCheckbox>
         <i18n
           class="block text-xs col-span-full"
-          path="newsletter.splash.readMore"
+          path="footer.privacyPolicy"
           tag="span"
         >
-          <NuxtLink :to="localePath('/privacy')" class="text-xs text-white underline hover:(text-primary)">
-            {{ $t('newsletter.splash.privacyPolicy') }}
-          </NuxtLink>
+          <template #label>
+            <span>{{ $t('common.cta.subscribe') }}</span>
+          </template>
+          <template #link>
+            <NuxtLink :to="localePath('/privacy')" class="text-xs text-white underline hover:(text-primary)">
+              {{ $t('newsletter.splash.privacyPolicy') }}
+            </NuxtLink>
+          </template>
         </i18n>
       </div>
     </form>

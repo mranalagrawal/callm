@@ -105,6 +105,7 @@ export default {
     contacts: 'Contatti',
     explore: 'Esplora il Catalogo',
     paymentMethods: 'Metodi di Pagamento',
+    privacyPolicy: 'Cliccando su {label}, dichiaro di aver letto la nostra {link}.',
   },
   navbar: {
     search: 'Cosa stai cercando?',
