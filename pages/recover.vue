@@ -55,7 +55,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="grid grid-cols-[minmax(auto,_640px)] justify-center justify-items-center mt-20 px-4">
+  <div class="grid grid-cols-[minmax(auto,_640px)] justify-center justify-items-center my-20 px-4">
     <div class="h3 mb-8" v-text="$t('recoverPwd.title')" />
     <div class="text-center" v-text="$t('recoverPwd.paragraph')" />
     <ValidationObserver
@@ -71,12 +71,24 @@ export default defineComponent({
         />
 
         <CmwButton
-          class="mt-8"
+          class="my-8"
           type="submit"
           :disabled="!form.email || !valid"
           :label="$t('common.cta.send')"
         />
       </form>
     </ValidationObserver>
+    <p class="text-center">
+      {{ $t("navbar.user.notRegisteredYet") }}
+      <CmwButton variant="text" class="w-max inline-block" :to="localePath('/register')">
+        <strong class="text-primary-400 uppercase" v-text="$t('common.cta.register')" />
+      </CmwButton>
+    </p>
+    <p class="text-center">
+      {{ $t('navbar.user.alreadyRegistered') }}
+      <CmwButton variant="text" class="w-max inline-block" :to="localePath('/login')">
+        <strong class="text-primary-400 uppercase" v-text="$t('common.cta.signIn')" />
+      </CmwButton>
+    </p>
   </div>
 </template>

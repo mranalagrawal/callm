@@ -21,7 +21,7 @@
 
 /* ScrollBar styles */
 ::-webkit-scrollbar {
-  width: 14px;
+  width: 3px;
 }
 
 ::-webkit-scrollbar-track {
@@ -32,6 +32,12 @@
 ::-webkit-scrollbar-thumb {
   background-color: theme("colors.primary.DEFAULT");
   border-radius: 2px;
+}
+
+@media (min-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 14px;
+  }
 }
 
 html {

@@ -1,16 +1,17 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, useContext } from '@nuxtjs/composition-api'
-import loginImg from '~/assets/images/red-wine.jpg'
+import registerImg from '~/assets/images/red-grapes.jpg'
 
 export default defineComponent({
   setup() {
     const { $cmwGtmUtils } = useContext()
 
-    const loginBg = computed(() => {
+    const registerBg = computed(() => {
       return {
-        backgroundImage: `url(${loginImg})`,
-        backgroundSize: 'cover',
+        backgroundImage: `url(${registerImg})`,
+        backgroundSize: 'contain',
         backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
       }
     })
 
@@ -19,8 +20,8 @@ export default defineComponent({
     })
 
     return {
-      loginBg,
-      loginImg,
+      registerBg,
+      registerImg,
     }
   },
 })
@@ -28,16 +29,17 @@ export default defineComponent({
 
 <template>
   <div class="max-w-screen-xl mx-auto min-h-screen px-4 items-center lg:(grid gap-4 grid-cols-2)">
-    <div class="<lg:hidden self-stretch" :style="loginBg" />
+    <div class="<lg:hidden self-stretch" :style="registerBg" />
     <div class="<lg:mt-8 w-[min(85%,_24rem)] m-inline-auto">
       <ClientOnly>
-        <h3 class="text-center" v-text="$t('navbar.user.alreadyRegistered')" />
-        <LoginForm />
+        <h3 class="text-center pt-8" v-text="$t('createYourAccount')" />
+        <RegisterBox-B2b v-if="$cmwStore.isB2b" />
+        <RegisterBox v-else />
         <div class="py-3">
           <p class="text-center">
-            {{ $t('navbar.user.notRegisteredYet') }}
-            <CmwButton variant="text" class="w-max inline-block" :to="localePath('/register')">
-              <strong class="text-primary-400 uppercase" v-text="$t('common.cta.register')" />
+            {{ $t('navbar.user.alreadyRegistered') }}
+            <CmwButton variant="text" class="w-max inline-block" :to="localePath('/login')">
+              <strong class="text-primary-400 uppercase" v-text="$t('common.cta.signIn')" />
             </CmwButton>
           </p>
         </div>

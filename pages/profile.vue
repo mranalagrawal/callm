@@ -83,7 +83,7 @@ export default defineComponent({
         class="group flex items-center gap-2 text-primary-400 uppercase"
         @click="logout"
       >
-        <span>{{ $t("profile.logout") }}</span>
+        <span>{{ $t("common.cta.exit") }}</span>
         <VueSvgIcon
           class="group-hover:animate-bounce-right"
           :data="arrowRightIcon"

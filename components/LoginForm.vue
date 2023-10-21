@@ -69,10 +69,7 @@ export default defineComponent({
   <div>
     <ClientOnly>
       <ValidationObserver v-slot="{ handleSubmit }" slim>
-        <form
-          class="sm:pt-3 pb-2 md:w-3/5 mx-auto"
-          @submit.prevent="handleSubmit(onSubmit)"
-        >
+        <form @submit.prevent="handleSubmit(onSubmit)">
           <InputField
             v-model="form.email"
             type="email"
@@ -104,7 +101,7 @@ export default defineComponent({
             class="mt-8"
             type="submit"
             :disabled="isSubmitting"
-            :label="$t('navbar.user.signIn')"
+            :label="$t('common.cta.signIn')"
           />
 
           <NuxtLink
@@ -119,26 +116,27 @@ export default defineComponent({
           />
         </form>
       </ValidationObserver>
+
+      <div v-if="!$cmwStore.isB2b" class="">
+        <p class="mb-5">
+          {{ $t("navbar.user.orLoginWith") }}
+        </p>
+        <a
+          :href="`${$config.MULTIPASS_URL}/social-login/${$config.STORE}/facebook/`"
+          class="btn-base cmw-font-bold w-full text-sm text-white btn-base-spacing my-3 facebook"
+        >
+          <VueSvgIcon :data="socialFacebook" color="white" width="30" height="auto" />
+          <span class="px-3">{{ $t("navbar.user.facebookLogin") }}</span>
+        </a>
+        <a
+          :href="`${$config.MULTIPASS_URL}/social-login/${$config.STORE}/google/`"
+          class="btn-base cmw-font-bold w-full text-sm btn-base-spacing mb-3 google"
+        >
+          <VueSvgIcon :data="socialGoogle" original width="30" height="auto" />
+          <span class="px-3">{{ $t("navbar.user.googleLogin") }}</span>
+        </a>
+      </div>
     </ClientOnly>
-    <div v-if="!$cmwStore.isB2b" class="md:w-3/5 mx-auto">
-      <p class="mb-5">
-        {{ $t("navbar.user.orLoginWith") }}
-      </p>
-      <a
-        :href="`${$config.MULTIPASS_URL}/social-login/${$config.STORE}/facebook/`"
-        class="btn-base cmw-font-bold w-full text-sm text-white btn-base-spacing my-3 facebook"
-      >
-        <VueSvgIcon :data="socialFacebook" color="white" width="30" height="auto" />
-        <span class="px-3">{{ $t("navbar.user.facebookLogin") }}</span>
-      </a>
-      <a
-        :href="`${$config.MULTIPASS_URL}/social-login/${$config.STORE}/google/`"
-        class="btn-base cmw-font-bold w-full text-sm btn-base-spacing mb-3 google"
-      >
-        <VueSvgIcon :data="socialGoogle" original width="30" height="auto" />
-        <span class="px-3">{{ $t("navbar.user.googleLogin") }}</span>
-      </a>
-    </div>
   </div>
 </template>
 

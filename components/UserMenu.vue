@@ -58,7 +58,7 @@ export default defineComponent({
     <CmwButton
       variant="ghost"
       class="mt-10"
-      :label="$t('navbar.user.logout')"
+      :label="$t('common.cta.logout')"
       @click.native="logout"
     />
   </div>
