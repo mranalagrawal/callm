@@ -7,6 +7,10 @@ const initialShopifyPageData: IShopifyPage = {
   rewriteUrl: { value: '' },
   shortDescription: { value: '' },
   title: '',
+  seo: {
+    title: '',
+    description: '',
+  },
 }
 
 export { initialShopifyPageData }
