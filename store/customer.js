@@ -135,12 +135,9 @@ export const useCustomer = defineStore({
     },
 
     async getCustomer(event = '') {
-      const customerOrders = useCustomerOrders()
-
       await this.$nuxt.$cmwRepo.customer.getCustomer()
         .then(async ({ customer }) => {
           if (customer) {
-            await customerOrders.getOrders('processed_at:>2010-01-01')
             const customerAccessToken = this.$nuxt.$cookieHelpers.getToken()
             this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
 

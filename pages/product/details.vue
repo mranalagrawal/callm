@@ -24,7 +24,6 @@ import { useCustomer } from '@/store/customer'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import favouriteIcon from '~/assets/svg/selections/favourite.svg'
 import getArticles from '~/graphql/queries/getArticles'
-import { useCustomerOrders } from '~/store/customerOrders'
 import { useShopifyCart } from '~/store/shopifyCart'
 import { generateKey, stripHtmlAnchors } from '~/utilities/strings'
 
@@ -58,9 +57,6 @@ export default defineComponent({
       customerId,
       getCustomerType,
     } = storeToRefs(customerStore)
-
-    const customerOrders = useCustomerOrders()
-    const { getCanOrder } = customerOrders
 
     const { handleWishlist } = customerStore
     const route = useRoute()
@@ -315,7 +311,6 @@ export default defineComponent({
       fetchState,
       finalPrice,
       generateMetaLink,
-      getCanOrder,
       getCustomerType,
       gtmProductData,
       handleShowRequestModal,
