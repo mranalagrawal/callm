@@ -5,14 +5,16 @@ interface IState {
   id: string
   orders: IOrder[]
   requestOrderAssistanceNumber: string
+  requestOrderAssistanceName: string
 }
+
 export const useCustomerOrders = defineStore({
   id: 'customerOrders',
   state: () => <IState>({
     id: '',
-    /** @Type: {OrderType.Order[]} */
     orders: [],
     requestOrderAssistanceNumber: '',
+    requestOrderAssistanceName: '',
   }),
 
   actions: {

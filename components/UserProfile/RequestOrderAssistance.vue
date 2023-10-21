@@ -1,7 +1,7 @@
 <script>
 import { ref, useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import { useSplash } from '@/store/splash'
+import { useSplash } from '~/store/splash'
 import { useCustomer } from '@/store/customer'
 import { useCustomerOrders } from '~/store/customerOrders.ts'
 import { SweetAlertToast } from '~/utilities/Swal'
@@ -14,7 +14,7 @@ export default {
     const splash = useSplash()
     const customerOrders = useCustomerOrders()
     const customerStore = useCustomer()
-    const { requestOrderAssistanceNumber } = storeToRefs(customerOrders)
+    const { requestOrderAssistanceNumber, requestOrderAssistanceName } = storeToRefs(customerOrders)
     const { customer } = storeToRefs(customerStore)
     const formEl = ref(null)
     const customerMessage = ref('')
@@ -25,7 +25,7 @@ export default {
       if (isValid) {
         const { status, message } = await $cmwRepo.orders.requestAssistance({
           message: customerMessage.value,
-          order: requestOrderAssistanceNumber.value,
+          order: requestOrderAssistanceName.value || requestOrderAssistanceNumber.value,
           fullname: `${customer.value.firstName} ${customer.value.lastName}`,
           email: customer.value.email,
           store: $config.STORE,

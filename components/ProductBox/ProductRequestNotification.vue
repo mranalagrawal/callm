@@ -1,7 +1,7 @@
 <script lang="ts">
 import { ref, useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import { useSplash } from '@/store/splash'
+import { useSplash } from '~/store/splash'
 import { useProductAvailability } from '@/store/product-availability'
 import { SweetAlertToast } from '@/utilities/Swal'
 

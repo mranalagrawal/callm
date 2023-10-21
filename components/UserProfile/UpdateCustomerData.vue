@@ -1,8 +1,8 @@
 <script lang="ts">
 import { defineComponent, ref, toRefs, useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import { useSplash } from '@/store/splash'
-import { useCustomer } from '@/store/customer'
+import { useSplash } from '~/store/splash'
+import { useCustomer } from '~/store/customer'
 import radioCheckedIcon from '~/assets/svg/radio-checked.svg'
 import radioUncheckedIcon from '~/assets/svg/radio-unchecked.svg'
 
