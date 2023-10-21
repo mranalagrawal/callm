@@ -1,6 +1,5 @@
 <script lang="ts">
 import { defineComponent, ref, useContext, useRouter } from '@nuxtjs/composition-api'
-// import debounce from 'lodash.debounce'
 import searchIcon from '~/assets/svg/search.svg'
 import type { TStores } from '~/config/themeConfig'
 import themeConfig from '~/config/themeConfig'
@@ -54,6 +53,7 @@ export default defineComponent({
 
     const handleBlur = () => {
       showSearchSuggestions.value = false
+      search.value = ''
     }
 
     const startSearch = () => {
@@ -64,6 +64,7 @@ export default defineComponent({
         path: '/catalog',
         query: { search: search.value },
       }))
+      search.value = ''
     }
 
     return {
