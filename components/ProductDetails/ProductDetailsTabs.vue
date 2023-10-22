@@ -85,8 +85,13 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="mt-6 md:(grid gap-4 grid-cols-[8fr_4fr])">
-    <div>
+  <div class="grid grid-flow-row gap-16 mt-6 md:(grid gap-20 grid-cols-[8fr_4fr] grid-flow-col-dense)">
+    <ProductDetailsCharacteristics
+      v-if="product.characteristics"
+      class="col-start-1 md:col-start-2"
+      :product-characteristic="product.characteristics"
+    />
+    <div class="overflow-x-auto col-start-1">
       <div
         class="c-navigationTab font-sans justify-between w-full flex no-wrap overflow-x-auto
         border-b border-b-gray-dark mb-3 md:(mt-9)"
@@ -118,10 +123,6 @@ export default defineComponent({
         />
       </transition>
     </div>
-    <ProductDetailsCharacteristics
-      v-if="product.characteristics"
-      :product-characteristic="product.characteristics"
-    />
   </div>
 </template>
 

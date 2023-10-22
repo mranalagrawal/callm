@@ -375,7 +375,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="mt-4 max-w-screen-xl mx-auto <md:px-4">
+  <div class="mt-4 max-w-screen-xl mx-auto px-4">
     <div v-if="fetchState.pending" :class="fetchState?.pending" class="sr-only" />
     <div v-else-if="fetchState?.error" class="relative text-center mt-12">
       <div class="md:(grid grid-cols-2 items-center)">
@@ -464,7 +464,7 @@ export default defineComponent({
           </div>
           <!-- Content Section -->
           <div class="flex flex-col">
-            <h1 class="text-secondary <md:pt-8" v-text="product.title" />
+            <h1 class="h2 text-secondary <md:pt-8" v-text="product.title" />
             <NuxtLink
               v-if="!isBundle"
               class="h3 w-max hover:text-primary-400"
