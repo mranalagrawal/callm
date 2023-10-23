@@ -1,20 +1,22 @@
 <script lang="ts">
-import { computed, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import { useRecentProductsStore } from '@/store/recent'
 import type { IProductMapped } from '~/types/product'
 import { sortArrayByNumber } from '~/utilities/arrays'
 
-export default {
-  setup() {
+export default defineComponent({
+  props: ['currentProduct'],
+  setup(props) {
     const recentProductsStore = useRecentProductsStore()
     const { recentProducts } = storeToRefs(recentProductsStore)
     const { $cmwRepo } = useContext()
     const productsRef = ref<IProductMapped[]>([])
-    const query = computed(() => `tag:active AND ${recentProducts.value.join(' OR ')}`)
+    const filterRecentProducts = computed(() => recentProducts.value?.filter((product: any) => product !== props.currentProduct))
+    const query = computed(() => `tag:active AND ${filterRecentProducts.value.join(' OR ')}`)
 
     const { fetch } = useFetch(async ({ $productMapping, $handleApiErrors }) => {
-      if (!recentProducts.value) { return }
+      if (!recentProducts.value || !filterRecentProducts.value?.length) { return }
 
       await $cmwRepo.products.getAll({
         first: recentProducts.value?.length,
@@ -35,7 +37,7 @@ export default {
 
     return { productsRef }
   },
-}
+})
 </script>
 
 <template>
