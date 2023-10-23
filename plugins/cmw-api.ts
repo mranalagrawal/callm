@@ -4,12 +4,23 @@ import type { TSalesChannel, TStores } from '~/config/themeConfig'
 import themeConfig from '~/config/themeConfig'
 import { SweetAlertToast } from '~/utilities/Swal'
 
+interface ICallLogParams {
+  msg: any
+  context?:
+  | 'error'
+  | 'info'
+  | 'log'
+  | 'table'
+  | 'warn'
+}
+
 declare module 'vue/types/vue' {
   // this.$cmw inside Vue components
   interface Vue {
     $cmw: NuxtHTTPInstance
     $elastic: NuxtHTTPInstance
     $handleApiErrors(err: string): void
+    $callLog({ msg, context }: ICallLogParams): void
   }
 }
 
@@ -25,6 +36,7 @@ declare module '@nuxt/types' {
     $elastic: NuxtHTTPInstance
     $cmw: NuxtHTTPInstance
     $handleApiErrors(err: string): void
+    $callLog({ msg, context }: ICallLogParams): void
   }
 }
 
@@ -35,6 +47,7 @@ declare module 'vuex/types/index' {
     $cmw: NuxtHTTPInstance
     $elastic: NuxtHTTPInstance
     $handleApiErrors(err: string): void
+    $callLog({ msg, context }: ICallLogParams): void
   }
 }
 
@@ -42,6 +55,12 @@ const cmwApi: Plugin = ({ $http, i18n, $config, $sentry }, inject) => {
   // See https://github.com/sindresorhus/ky#options
   const $cmw = $http.create({})
   const $elastic = $http.create({})
+  const $callLog = ({ msg, context = 'log' }: ICallLogParams) => {
+    if ($config.DEPLOY_ENV !== 'prod') {
+      // eslint-disable-next-line no-console
+      console[context](msg)
+    }
+  }
 
   const store: TStores = $config.STORE || 'CMW_UK'
   const sale_channel: TSalesChannel = themeConfig[store]?.salesChannel || 'cmw_uk_b2c'
@@ -69,8 +88,10 @@ const cmwApi: Plugin = ({ $http, i18n, $config, $sentry }, inject) => {
 
   inject('cmw', $cmw)
   inject('elastic', $elastic)
+  inject('callLog', $callLog)
 
   inject('handleApiErrors', (err: string) => {
+    $callLog({ msg: err, context: 'warn' })
     SweetAlertToast.fire({
       icon: 'error',
       text: i18n.t('common.feedback.KO.unknown'),
