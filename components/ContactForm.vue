@@ -80,9 +80,9 @@ export default defineComponent({
       const arr: Record<string, any>[] = orders.value || []
 
       return arr.map(order => ({
-        value: order.orderNumber,
+        value: order.name || order.orderNumber,
         label: i18n.t('contactForm.selectedOrder', {
-          orderNumber: order.orderNumber,
+          orderNumber: order.name,
           date: i18n.d(new Date(order.processedAt), 'short', i18n.localeProperties.iso),
           name: order.shippingAddress?.name || '',
           total: order.currentTotalPrice.amount,

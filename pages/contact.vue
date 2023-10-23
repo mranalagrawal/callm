@@ -1,11 +1,17 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
+import { storeToRefs } from 'pinia'
 import { generateHeadHreflang } from '@/utilities/arrays'
 import { initialPageData } from '~/config/prismicConfig'
+import { useCustomer } from '~/store/customer'
+import { useCustomerOrders } from '~/store/customerOrders'
 import type { IPrismicPageData } from '~/types/prismic'
 
 export default defineComponent({
   setup() {
+    const customerStore = useCustomer()
+    const { customer } = storeToRefs(customerStore)
+    const customerOrders = useCustomerOrders()
     const { $cmwGtmUtils } = useContext()
 
     const hrefLang = {
@@ -19,6 +25,9 @@ export default defineComponent({
     const pageData = ref<IPrismicPageData>(initialPageData)
 
     useFetch(async ({ $cmwRepo }) => {
+      if (customer.value?.id) {
+        await customerOrders.getOrders('processed_at:>2010-01-01')
+      }
       pageData.value = await $cmwRepo.prismic.getSingle('contact_us')
     })
 
@@ -30,7 +39,7 @@ export default defineComponent({
       link: generateHeadHreflang(hrefLang),
     }))
 
-    return { pageData }
+    return { customer, pageData }
   },
   head: {},
 })
