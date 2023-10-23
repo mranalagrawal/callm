@@ -1,7 +1,6 @@
 <script lang="ts">
-import { defineComponent, inject, ref, useContext, useRoute, useRouter, watch } from '@nuxtjs/composition-api'
+import { defineComponent, inject, ref, useRoute, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import type { RawLocation } from 'vue-router'
 import cartIcon from '~/assets/svg/cart.svg'
 import chevronLeftIcon from '~/assets/svg/chevron-left.svg'
 import closeIcon from '~/assets/svg/close.svg'
@@ -10,20 +9,14 @@ import logo from '~/assets/svg/logo-call-me-wine.svg'
 import menuIcon from '~/assets/svg/menu.svg'
 import userIcon from '~/assets/svg/user.svg'
 import UserActions from '~/components/Header/UserActions.vue'
-import LoginForm from '~/components/LoginForm.vue'
-import UserMenu from '~/components/UserMenu.vue'
-
-// import type { TISO639 } from '~/config/themeConfig'
 import { useCustomer } from '~/store/customer'
 import { useShopifyCart } from '~/store/shopifyCart'
 
 export default defineComponent({
-  components: { UserActions, LoginForm, UserMenu },
+  components: { UserActions },
   setup() {
-    const { localeLocation } = useContext()
     const { customer } = storeToRefs(useCustomer())
     const { shopifyCart, cartTotal, cartTotalQuantity } = storeToRefs(useShopifyCart())
-    const router = useRouter()
     const route = useRoute()
     const isDesktop = inject('isDesktop')
     const navbar = ref(null)
@@ -31,7 +24,6 @@ export default defineComponent({
     const showMobileButton = ref(true)
     const isMobileMenuOpen = ref(false)
     const isSidebarOpen = ref(false)
-    const mobileLogin = ref(false)
     const sideBarTop = ref('')
 
     const handleShowMobileButton = (val: boolean) => {
@@ -42,23 +34,13 @@ export default defineComponent({
       if (process.browser && document.body) { document.body.classList.toggle('lock-scroll', isMobileMenuOpen.value) }
     }
 
-    const toggleMobileLogin = () => {
-      mobileLogin.value = !mobileLogin.value
-    }
-
     const toggleSidebar = () => {
       sideBarTop.value = `${menuBarRef.value?.getBoundingClientRect().bottom}px`
       isMobileMenuOpen.value = isSidebarOpen.value = !isSidebarOpen.value
       lockBody()
     }
 
-    const handleGoToRegister = () => {
-      mobileLogin.value = false
-      router.push(localeLocation('/login#register') as RawLocation)
-    }
-
     watch(() => route.value, () => {
-      mobileLogin.value = false
       isSidebarOpen.value = false
       isMobileMenuOpen.value = false
       showMobileButton.value = true
@@ -72,7 +54,6 @@ export default defineComponent({
       chevronLeftIcon,
       closeIcon,
       customer,
-      handleGoToRegister,
       handleShowMobileButton,
       isDesktop,
       isMobileMenuOpen,
@@ -81,12 +62,10 @@ export default defineComponent({
       logoB2b,
       menuBarRef,
       menuIcon,
-      mobileLogin,
       navbar,
       shopifyCart,
       showMobileButton,
       sideBarTop,
-      toggleMobileLogin,
       toggleSidebar,
       userIcon,
     }
@@ -136,17 +115,13 @@ export default defineComponent({
           </NuxtLink>
 
           <div class="flex items-center ml-auto lg:hidden">
-            <button
-              class="p-2 md:p-3"
-              :aria-label="mobileLogin ? $t('enums.accessibility.role.MENU_LOGIN.OPEN') : $t('enums.accessibility.role.MENU_NAVIGATION_USER.OPEN')"
-              @click="toggleMobileLogin"
-            >
+            <NuxtLink :to="localePath(customer.id ? '/profile/my-orders' : '/login')">
               <VueSvgIcon
                 :data="userIcon"
-                :width="isDesktop ? 36 : 28"
-                :height="isDesktop ? 36 : 28"
+                :width="28"
+                :height="28"
               />
-            </button>
+            </NuxtLink>
             <NuxtLink
               :to="localePath('/cart')"
               :aria-label="$t('enums.accessibility.labels.GO_TO_CART_PAGE')"
@@ -154,8 +129,8 @@ export default defineComponent({
             >
               <VueSvgIcon
                 :data="cartIcon"
-                :width="isDesktop ? 32 : 28"
-                :height="isDesktop ? 32 : 28"
+                :width="28"
+                :height="28"
               />
               <span class="totalItems">{{ cartTotalQuantity }} </span>
             </NuxtLink>
@@ -182,44 +157,6 @@ export default defineComponent({
         </div>
       </transition>
     </div>
-    <transition name="menu-mobile">
-      <div v-if="mobileLogin" class="fixed w-screen top-0 left-0 h-screen bg-white z-amenadiel pt-$cmw-top-banner-height">
-        <CmwButton
-          variant="text"
-          class="gap-2 pl-2 pr-3 py-2 justify-between"
-          :aria-label="$t('enums.accessibility.role.MODAL_CLOSE')"
-          @click.native="toggleMobileLogin"
-        >
-          <VueSvgIcon :data="chevronLeftIcon" color="#E6362E" width="30" height="auto" />
-          <span class="truncate max-w-100px">{{ customer.firstName ? customer.firstName : "Account" }}</span>
-          <VueSvgIcon :data="closeIcon" color="#E6362E" width="30" height="auto" />
-        </CmwButton>
-        <div v-if="!customer.id">
-          <div class="h3 text-center mt-5">
-            {{ $t("navbar.user.signIn") }}
-          </div>
-          <div class="px-4">
-            <LoginForm />
-          </div>
-          <div class="bg-gray-lightest p-2 text-center flex items-center justify-center">
-            {{ $t("navbar.user.notRegisteredYet") }}
-            <CmwButton
-              variant="text"
-              class="w-max uppercase text-primary-400"
-              @click.native="handleGoToRegister"
-            >
-              {{ $t("navbar.user.register") }}
-            </CmwButton>
-          </div>
-        </div>
-        <div
-          v-else
-          class="mt-5"
-        >
-          <UserMenu />
-        </div>
-      </div>
-    </transition>
   </div>
 </template>
 

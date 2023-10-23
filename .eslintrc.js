@@ -54,6 +54,7 @@ module.exports = {
         'preview',
         'profile',
         'recover',
+        'register',
         'search',
         'shipping',
         'sustainability',
