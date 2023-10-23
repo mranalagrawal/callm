@@ -27,7 +27,7 @@ export default defineComponent({
       valid.value = await customerStore.loginWithMultipass($route.query.cmw_api_token as string)
       if (valid.value) {
         await customerStore.getCustomer('login')
-          .then(() => router.push(localeLocation('/profile/my-orders') as RawLocation))
+          .then(() => router.push(localeLocation('/') as RawLocation))
           .catch(e => $handleApiErrors(`Error while fetching customer data: ${e}`))
       }
     })

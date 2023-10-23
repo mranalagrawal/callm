@@ -36,7 +36,7 @@ export default defineComponent({
 
       if (valid) {
         await customerStore.getCustomer('login')
-          .then(() => router.push(localeLocation('/profile/my-orders') as RawLocation))
+          .then(() => router.push(localeLocation('/') as RawLocation))
       } else {
         message.value = i18n.t('common.feedback.KO.login')
       }

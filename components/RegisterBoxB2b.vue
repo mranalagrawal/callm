@@ -48,7 +48,7 @@ export default defineComponent({
 
           if (valid) {
             await customerStore.getCustomer()
-            router.push(localeRoute('/profile/my-orders') as RawLocation)
+            router.push(localeRoute('/') as RawLocation)
           }
         } else {
           throw new Error('`customer` not found in response.data')

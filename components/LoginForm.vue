@@ -38,7 +38,7 @@ export default defineComponent({
         await customerStore.getCustomer('login')
           .then(async () => {
             emit('login-success', true)
-            !props.skipRedirect && router.push(localeLocation('/profile/my-orders') as RawLocation)
+            !props.skipRedirect && router.push(localeLocation('/') as RawLocation)
           })
       } else {
         message.value = i18n.t('common.feedback.KO.login')

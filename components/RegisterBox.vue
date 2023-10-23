@@ -55,7 +55,7 @@ export default {
 
           if (valid) {
             await customerStore.getCustomer()
-              .then(() => router.push(localeLocation('/profile/my-orders') as RawLocation))
+              .then(() => router.push(localeLocation('/') as RawLocation))
           }
         } else {
           if (customerUserErrors[0].field) {
