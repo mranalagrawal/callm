@@ -412,7 +412,7 @@ export default async function ({ redirect, route, $config, error, localePath, i1
             params: { handle: beRedirectTo },
           })
           // console.log(`🚥(301) redirect url is a brand, redirect to ${brandUrl}`)
-          redirect(301, brandUrl)
+          redirect(301, brandUrl, queryParams)
         } else {
           redirectTo = prepareRedirect(beRedirectTo)
           // console.log(`🚥(301) api redirect response: ${beRedirectTo}, redirectTo --> ${redirectTo}`)
