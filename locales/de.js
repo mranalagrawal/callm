@@ -207,7 +207,7 @@ export default {
     messagePlaceholder: 'Guten Morgen, ich hätte gerne ein Update zu meinem Sendungsstatus, danke.',
     ratingMessage: 'Meine Bewertung (für andere Benutzer nicht sichtbar)',
     ratingDescriptionPlaceholder: 'Bsp. Ausgezeichneter Bio-Wein.',
-    requestAssistanceTitle: 'Unterstützung für Bestellung Nr. {orderId} anfordern',
+    requestAssistanceTitle: 'Unterstützung für Bestellung {orderId} anfordern',
     requestAssistanceSubtitle: 'Senden Sie uns eine Nachricht und fügen Sie ggf. die in Ihrem Besitz befindlichen Unterlagen bei. Wir werden so schnell wie möglich antworten.',
     newPassword: 'Neues Passwort',
     confirmPassword: 'Passwort bestätigen',

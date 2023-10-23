@@ -55,7 +55,7 @@ export default defineComponent({
       splash.$patch({
         // @ts-expect-error TODO: fix this types
         currentSplash: 'RequestOrderAssistance',
-        title: i18n.t('profile.requestAssistanceTitle', { orderId: props.activeOrder }),
+        title: i18n.t('profile.requestAssistanceTitle', { orderId: props.order.name || props.activeOrder }),
         subtitle: i18n.t('profile.requestAssistanceSubtitle'),
         size: 'lg',
       })

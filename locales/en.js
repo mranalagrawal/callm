@@ -206,7 +206,7 @@ export default {
     messagePlaceholder: 'Good morning, I would like an update on my shipment status, thank you.',
     ratingMessage: 'My rating (not visible to other users)',
     ratingDescriptionPlaceholder: 'Ex. Excellent organic wine.',
-    requestAssistanceTitle: 'Request assistance for order No. {orderId}',
+    requestAssistanceTitle: 'Request assistance for order {orderId}',
     requestAssistanceSubtitle: 'Send us a message and, if necessary, attach the documentation in your possession. We will reply as soon as possible.',
     newPassword: 'New password',
     confirmPassword: 'Confirm password',

@@ -205,7 +205,7 @@ export default {
     messagePlaceholder: 'Bonjour, je voudrais une mise à jour sur l\'état de mon envoi, merci.',
     ratingMessage: 'Ma note (non visible par les autres utilisateurs)',
     ratingDescriptionPlaceholder: 'Ex. Excellent vin bio.',
-    requestAssistanceTitle: 'Demander de l\'aide pour la commande n° {orderId}',
+    requestAssistanceTitle: 'Demander de l\'aide pour la commande {orderId}',
     requestAssistanceSubtitle: 'Envoyez-nous un message et, si nécessaire, joignez la documentation en votre possession. Nous vous répondrons dès que possible.',
     newPassword: 'Nouveau mot de passe',
     confirmPassword: 'Confirmer le mot de passe',

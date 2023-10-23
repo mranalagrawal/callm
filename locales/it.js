@@ -207,7 +207,7 @@ export default {
     messagePlaceholder: 'Buon giorno, vorrei un aggiornamento sul mio stato della spedizione, grazie.',
     ratingMessage: 'La mia valutazione (non visibile agli altri utenti)',
     ratingDescriptionPlaceholder: 'Es. Vino eccellente biologico.',
-    requestAssistanceTitle: 'Richiedi assistenza per l\'ordine N° {orderId}',
+    requestAssistanceTitle: 'Richiedi assistenza per l\'ordine {orderId}',
     requestAssistanceSubtitle: 'Inviaci un messagio e se necessario allega la documentazione in tuo possesso. Ti risponderemo prima possibile.',
     newPassword: 'Nuova password',
     confirmPassword: 'Conferma password',
