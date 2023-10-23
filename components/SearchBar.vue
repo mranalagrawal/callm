@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref, useContext, useRouter } from '@nuxtjs/composition-api'
+import { defineComponent, ref, useContext, useRoute, useRouter, watch } from '@nuxtjs/composition-api'
 import searchIcon from '~/assets/svg/search.svg'
 import type { TStores } from '~/config/themeConfig'
 import themeConfig from '~/config/themeConfig'
@@ -16,6 +16,7 @@ function debounce<T extends (...args: any[]) => any>(func: T, wait: number) {
 export default defineComponent({
   setup() {
     const { $config, i18n, $handleApiErrors, localePath } = useContext()
+    const route = useRoute()
     const { ELASTIC_URL, STORE } = $config
     const store = STORE as TStores
     const storeConfigId = themeConfig[store]?.id || 2
@@ -53,7 +54,6 @@ export default defineComponent({
 
     const handleBlur = () => {
       showSearchSuggestions.value = false
-      search.value = ''
     }
 
     const startSearch = () => {
@@ -64,8 +64,15 @@ export default defineComponent({
         path: '/catalog',
         query: { search: search.value },
       }))
-      search.value = ''
     }
+
+    watch(() => route.value, () => {
+      // Check if search param is present in the url
+      const searchParam = route.value.query.search
+      if (!searchParam) {
+        search.value = ''
+      }
+    })
 
     return {
       bolder,
