@@ -52,7 +52,7 @@ export default defineComponent({
 <style scoped>
 .ripple {
   background-position: center;
-  transition: background 0.8s;
+  transition: background 0.8s, transform 0.3s;
 }
 
 .ripple.-icon:hover, .ripple.-icon-primary:hover {

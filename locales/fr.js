@@ -69,6 +69,7 @@ export default {
     label: 'Newsletter',
     subscribed: 'abonné',
     unsubscribed: 'désabonné',
+    offer: 'Abonnez-vous à notre newsletter et recevez une remise de {discount}% sur votre première commande !',
     headline: 'Newsletter avec promotions et nouveautés sur tout le catalogue Callmewine',
     frequency: {
       DAILY: 'Quotidien',

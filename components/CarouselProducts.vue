@@ -70,7 +70,7 @@ export default defineComponent({
       :key="products.length" :responsive="responsive" :show-arrows="isTablet"
       :show-dots="true" class="relative"
     >
-      <div v-for="(product, idx) in products" :key="generateKey(`${title}-${product.id}`)" class="my-8">
+      <div v-for="(product, idx) in products" :key="generateKey(`${title}-${product.id}-${idx}`)" class="my-8">
         <ProductBoxVertical :product="product" :position="idx + 1" />
       </div>
       <!--

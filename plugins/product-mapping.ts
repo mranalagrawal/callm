@@ -1,7 +1,6 @@
 import type { Plugin } from '@nuxt/types'
 import { storeToRefs } from 'pinia'
 import type { TISO639, TSalesChannel, TStores } from '~/config/themeConfig'
-import themeConfig from '~/config/themeConfig'
 import { useCustomer } from '~/store/customer'
 import type { IMoneyV2 } from '~/types/common-objects'
 import type { IBaseProductMapped, IGiftCardMapped, IGiftCardVariantMapped, IGtmProductData, IProductBreadcrumbs, IProductCharacteristics, IProductListing, IProductMapped, TProductFeatures } from '~/types/product'
@@ -57,11 +56,11 @@ declare module 'vuex/types/index' {
   }
 }
 
-const productMapping: Plugin = ({ $config, i18n }, inject) => {
+const productMapping: Plugin = ({ $config, $cmwStore, i18n }, inject) => {
   const customerStore = useCustomer()
   const { getCustomerType } = storeToRefs(customerStore)
   const store: TStores = $config.STORE || 'CMW_UK'
-  const sale_channel: TSalesChannel = themeConfig[store]?.salesChannel || 'cmw_uk_b2c'
+  const sale_channel: TSalesChannel = $cmwStore.settings.salesChannel
   const lang: TISO639 = i18n.locale as TISO639
 
   const productFeatures: TProductFeatures[] = ['exclusive', 'favourite', 'isnew', 'isInPromotion', 'foreveryday', 'togift', 'unusualvariety', 'rarewine', 'artisanal', 'organic', 'topsale']
@@ -103,7 +102,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
     fromElastic: (arr = []) => {
       const products: IProductListing[] = arr.map((p: Record<string, any>) => {
         const compareAtPrice: IMoneyV2 = {
-          amount: p._source.price[sale_channel],
+          amount: (p._source.price && p._source.price[sale_channel]) ? p._source.price[sale_channel] : 0,
           currencyCode: store === 'CMW_UK' ? 'GBP' : 'EUR',
         }
         const id = p._source.feId
@@ -165,7 +164,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
             artisanal: p._source.artisanal ? 'yes' : 'no',
             rarewine: p._source.rarewine ? 'yes' : 'no',
             price: priceLists[sale_channel] && priceLists[sale_channel][getCustomerType.value], // We have no access to pinia here
-            compare_at_price: Number(compareAtPrice.amount),
+            compare_at_price: Number(compareAtPrice?.amount || 0),
             stock_status: (p._source.quantity && p._source.quantity[store]) > 0 ? 'in_stock' : 'out_of_stock',
             quantity: 1,
           },
@@ -254,7 +253,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
             artisanal: details?.artisanal ? 'yes' : 'no',
             rarewine: details?.rarewine ? 'yes' : 'no',
             price: priceLists && priceLists[sale_channel] && priceLists[sale_channel][getCustomerType.value],
-            compare_at_price: Number(compareAtPrice.amount),
+            compare_at_price: Number(compareAtPrice?.amount || 0),
             stock_status: p.totalInventory > 0 ? 'in_stock' : 'out_of_stock',
             quantity: 1, // TODO: update when updating cart quantity
           },
@@ -295,7 +294,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
           id: v.id,
           internal_id: product.id, // ultimi numeri di shopify id
           name: v.title,
-          price: v.price.amount,
+          price: v.price?.amount || 0,
           quantity: 1, // TODO: update when updating cart quantity
           rarewine: 'no',
           stock_id: '', // shopify_IT_7833612517596_43388993994972
@@ -390,7 +389,7 @@ const productMapping: Plugin = ({ $config, i18n }, inject) => {
           artisanal: details?.artisanal ? 'yes' : 'no',
           rarewine: details?.rarewine ? 'yes' : 'no',
           price: priceLists && priceLists[sale_channel] && priceLists[sale_channel][getCustomerType.value],
-          compare_at_price: Number(compareAtPrice.amount),
+          compare_at_price: Number(compareAtPrice?.amount || 0),
           stock_status: p.totalInventory > 0 ? 'in_stock' : 'out_of_stock',
           quantity: 1, // TODO: update when updating cart quantity
         }

@@ -70,6 +70,7 @@ export default {
     subscribed: 'subscribed',
     unsubscribed: 'unsubscribed',
     headline: 'Newsletter with promotions and news on the entire Callmewine catalogue',
+    offer: 'Subscribe to our newsletter and receive a {discount}% discount on your first order!',
     frequency: {
       DAILY: 'Daily',
       WEEKLY: 'Weekly',

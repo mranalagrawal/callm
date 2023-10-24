@@ -473,7 +473,9 @@ export default defineComponent({
             >
               {{ product.vendor }}
             </NuxtLink>
-            <div class="prose" v-html="strippedContent" />
+            <CmwTextAccordion line-clamp="3">
+              <div class="prose text-sm leading-snug" v-html="strippedContent" />
+            </CmwTextAccordion>
             <p v-if="!product.availableForSale" class="text-primary-400">
               {{ $t('product.notAvailable') }}
             </p>
