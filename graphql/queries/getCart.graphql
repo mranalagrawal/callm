@@ -1,3 +1,5 @@
+#import "~/graphql/fragments/productVariant.graphql"
+
 query getCart(
   $lang: LanguageCode!
   $id: ID!
@@ -117,17 +119,7 @@ query getCart(
                 }
                 variants(first: 1) {
                   nodes {
-                    id
-                    compareAtPrice {
-                      amount
-                      currencyCode
-                    }
-                    price {
-                      amount
-                      currencyCode
-                    }
-                    quantityAvailable
-                    sku
+                    ...PRODUCT_VARIANT_FRAGMENT
                   }
                 }
               }

@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import { generateHeadHreflang } from '@/utilities/arrays'
+import { generateHeadHreflang } from '~/utilities/arrays'
 import { initialPageData } from '~/config/prismicConfig'
 import { useCustomer } from '~/store/customer'
 import { useCustomerOrders } from '~/store/customerOrders'

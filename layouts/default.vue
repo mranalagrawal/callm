@@ -9,7 +9,7 @@ import {
   useFetch,
   useMeta,
   useRoute,
-  watch,
+  watch, watchEffect,
 } from '@nuxtjs/composition-api'
 // import LazyHydrate from 'vue-lazy-hydration'
 
@@ -29,7 +29,7 @@ export default defineComponent({
     Navbar,
   },
   setup() {
-    const { i18n, $cookies, req, store } = useContext()
+    const { i18n, $cookies, req, store, getRouteBaseName } = useContext()
     const route = useRoute()
     const { getCustomer } = useCustomer()
     const { getShopifyCart } = useShopifyCart()
@@ -50,17 +50,18 @@ export default defineComponent({
       const accessToken = $cookieHelpers.getToken()
       accessToken && await getCustomer()
 
-      const cartId = $cookies.get('cartId')
-      cartId && await getShopifyCart(cartId)
-
-      const isFromApp = req.headers['user-agent']?.includes('CMW-App')
+      const isFromApp = req?.headers['user-agent']?.includes('CMW-App')
 
       if (isFromApp) { store.commit('headers/SET_FROM_APP', { fromApp: true }) }
     })
 
     const isFromApp = computed(() => store.state.headers.fromApp)
+    const isHomePage = computed(() => getRouteBaseName(route.value) === 'index')
+    const showTopBar = computed(() => (isFromApp.value && isHomePage.value) || !isFromApp.value)
 
-    onMounted(() => {
+    onMounted(async () => {
+      const cartId = $cookies.get('cartId')
+      cartId && await getShopifyCart(cartId)
       handleNewsletterSplash()
     })
 
@@ -73,6 +74,12 @@ export default defineComponent({
         },
       ],
     }))
+
+    watchEffect(() => {
+      if (!process.client) { return }
+      const root = document.documentElement
+      root.style.setProperty('--cmw-top-banner-height', showTopBar.value ? '26px' : '0px')
+    })
 
     watch(() => route.value, () => {
       if (process.client && !isTablet.value) {
@@ -87,6 +94,7 @@ export default defineComponent({
       isDesktopWide,
       isFromApp,
       isTablet,
+      showTopBar,
     }
   },
   head: {},
@@ -95,7 +103,7 @@ export default defineComponent({
 
 <template>
   <div>
-    <TopBar />
+    <TopBar v-if="showTopBar" />
     <Navbar v-if="!isFromApp" class="cmw-navbar " />
 
     <nuxt :class="isFromApp ? 'cmw-app-main' : 'cmw-main'" />

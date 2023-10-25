@@ -12,11 +12,8 @@ import {
 
 import plusIcon from 'assets/svg/plus.svg'
 import closeIcon from '~/assets/svg/close.svg'
+import { orderByArray } from '~/utilities/arrays'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
-
-// interface Query {
-//   [key: string]: string | undefined
-// }
 
 interface IFilters {
   winelists: []
@@ -231,27 +228,13 @@ export default defineComponent({
       const priceFrom = props.inputParameters.price_from
       const priceTo = props.inputParameters.price_to
 
-      /* this.view.priceFrom = priceFrom
-        ? {
-          key: 'priceFrom',
-          name: `From ${priceFrom}`,
-          field: 'price_from',
-        }
-        : null
-      this.view.priceTo = priceTo
-        ? {
-          key: 'priceTo',
-          name: `To ${priceTo}`,
-          field: 'price_to',
-        }
-        : null */
-
       maxPriceTotal.value = Math.round(+props.aggregations.max_price['agg-max-price'].value)
       maxPrice.value = priceTo || Math.round(+props.aggregations.max_price['agg-max-price'].value)
 
       minPriceTotal.value = Math.round(+props.aggregations.min_price['agg-min-price'].value)
       minPrice.value = priceFrom || Math.round(+props.aggregations.min_price['agg-min-price'].value)
 
+      filters = orderByArray(filters)
       return filters
     })
 
@@ -351,39 +334,6 @@ export default defineComponent({
             </template>
           </CmwAccordion>
           <CmwAccordion
-            v-for="(value, key) in filteredCategories"
-            :key="`mobile-${key}`"
-            size="sm"
-            :has-item="Object.keys(inputParameters).includes(key)"
-            :active="cmwActiveSelect === `mobile-${key}`"
-            @update-trigger="handleUpdateTrigger"
-          >
-            <template #default>
-              <span class="block">
-                <span
-                  class="block text-left"
-                  :class="{ 'cmw-font-bold': Object.keys(inputParameters).includes(key) }"
-                >{{ $t(`search.${key}`) }}</span>
-                <small
-                  v-if="Object.keys(inputParameters).includes(key)"
-                  class="block text-primary text-left text-xs"
-                >
-                  {{ value.find(v => v.selected) && value.find(v => v.selected).simpleLabel }}
-                </small>
-              </span>
-            </template>
-            <template #children>
-              <div class="">
-                <CmwSelect
-                  size="sm"
-                  :options="value"
-                  is-full-width
-                  @update-value="handleUpdateValue"
-                />
-              </div>
-            </template>
-          </CmwAccordion>
-          <CmwAccordion
             key="mobile-prize"
             size="sm"
             :has-item="Object.keys(inputParameters).includes('price_from')"
@@ -450,6 +400,39 @@ export default defineComponent({
                 <CmwRangeSlider
                   :min="minPrice" :max="maxPrice" :min-value-total="minPriceTotal" :max-value-total="maxPriceTotal"
                   @update-values="handleUpdateRangeValues"
+                />
+              </div>
+            </template>
+          </CmwAccordion>
+          <CmwAccordion
+            v-for="(value, key) in filteredCategories"
+            :key="`mobile-${key}`"
+            size="sm"
+            :has-item="Object.keys(inputParameters).includes(key)"
+            :active="cmwActiveSelect === `mobile-${key}`"
+            @update-trigger="handleUpdateTrigger"
+          >
+            <template #default>
+              <span class="block">
+                <span
+                  class="block text-left"
+                  :class="{ 'cmw-font-bold': Object.keys(inputParameters).includes(key) }"
+                >{{ $t(`search.${key}`) }}</span>
+                <small
+                  v-if="Object.keys(inputParameters).includes(key)"
+                  class="block text-primary text-left text-xs"
+                >
+                  {{ value.find(v => v.selected) && value.find(v => v.selected).simpleLabel }}
+                </small>
+              </span>
+            </template>
+            <template #children>
+              <div class="">
+                <CmwSelect
+                  size="sm"
+                  :options="value"
+                  is-full-width
+                  @update-value="handleUpdateValue"
                 />
               </div>
             </template>

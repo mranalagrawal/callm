@@ -1,0 +1,13 @@
+fragment PRODUCT_VARIANT_FRAGMENT on ProductVariant {
+		id
+		compareAtPrice {
+				amount
+				currencyCode
+		}
+		price {
+				amount
+				currencyCode
+		}
+		quantityAvailable
+		sku
+}

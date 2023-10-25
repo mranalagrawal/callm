@@ -115,34 +115,38 @@ export default defineComponent({
           </NuxtLink>
 
           <div class="flex items-center ml-auto lg:hidden">
-            <NuxtLink :to="localePath(customer.id ? '/profile/my-orders' : '/login')">
-              <VueSvgIcon
-                :data="userIcon"
-                :width="28"
-                :height="28"
-              />
-            </NuxtLink>
-            <NuxtLink
-              :to="localePath('/cart')"
-              :aria-label="$t('enums.accessibility.labels.GO_TO_CART_PAGE')"
-              class="relative p-2 md:p-3"
-            >
-              <VueSvgIcon
-                :data="cartIcon"
-                :width="28"
-                :height="28"
-              />
-              <span class="totalItems">{{ cartTotalQuantity }} </span>
-            </NuxtLink>
+            <ClientOnly>
+              <NuxtLink :to="localePath(customer.id ? '/profile/my-orders' : '/login')">
+                <VueSvgIcon
+                  :data="userIcon"
+                  :width="28"
+                  :height="28"
+                />
+              </NuxtLink>
+              <NuxtLink
+                :to="localePath('/cart')"
+                :aria-label="$t('enums.accessibility.labels.GO_TO_CART_PAGE')"
+                class="relative p-2 md:p-3"
+              >
+                <VueSvgIcon
+                  :data="cartIcon"
+                  :width="28"
+                  :height="28"
+                />
+                <span class="totalItems">{{ cartTotalQuantity }} </span>
+              </NuxtLink>
+            </ClientOnly>
           </div>
         </div>
       </div>
 
       <SearchBar />
 
-      <div v-if="isDesktop" class="md:(place-self-end self-center)">
-        <UserActions />
-      </div>
+      <ClientOnly>
+        <div v-if="isDesktop" class="md:(place-self-end self-center)">
+          <UserActions />
+        </div>
+      </ClientOnly>
     </div>
     <div class="c-megaMenu fixed left-0 w-full bg-white <md:hidden">
       <div class="shadow-menu">

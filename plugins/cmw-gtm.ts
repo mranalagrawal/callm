@@ -3,7 +3,6 @@ import { storeToRefs } from 'pinia'
 import type { TStores } from '~/config/themeConfig'
 import themeConfig from '~/config/themeConfig'
 import { useCustomer } from '~/store/customer'
-import { cleanRoutesLocales } from '~/utilities/strings'
 
 interface ICmwGtmUtils {
   getActionField(route: any): string
@@ -37,7 +36,7 @@ declare module 'vuex/types/index' {
   }
 }
 
-const cmwGtm: Plugin = ({ $cmwStore, $config, $gtm }, inject) => {
+const cmwGtm: Plugin = ({ $cmwStore, $config, $gtm, getRouteBaseName }, inject) => {
   const customerStore = useCustomer()
   const { customer } = storeToRefs(customerStore)
 
@@ -49,7 +48,7 @@ const cmwGtm: Plugin = ({ $cmwStore, $config, $gtm }, inject) => {
         return 'home'
       } else if (Object.keys(route.query).includes('search')) {
         return 'search_results'
-      } else { return route.meta?.actionField || cleanRoutesLocales(route.name as string) }
+      } else { return route.meta?.actionField || getRouteBaseName(route) }
     },
     pushPage: () => {},
     getCustomerGtmData: () => {},

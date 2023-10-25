@@ -27,14 +27,14 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="characteristicText">
-    <h3 class="font-bold mb-0" v-text="$t(`product.productInformations`)" />
-    <p class="mb-4">
-      <span v-html="characteristicText" />
+  <div v-if="characteristicText" class="text-sm">
+    <h3 class="text-sm mb-0" v-text="$t(`product.productInformations`)" />
+    <div class="text-sm mb-4">
+      <div v-html="characteristicText" />
       <span v-if="organic">
         , <img :src="bioOrBiodinamico" alt="bio" width="28" class="inline"> {{ $t(`product.bioInfo`) }}
       </span>
-      <span v-if="bioOperator">, {{ $t(`product.bioOperator`) }} {{ bioOperator }}</span>
-    </p>
+      <span v-if="bioOperator" class="text-sm">, {{ $t(`product.bioOperator`) }} {{ bioOperator }}</span>
+    </div>
   </div>
 </template>

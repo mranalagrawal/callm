@@ -272,7 +272,7 @@ export default {
     brandAsc: 'Brand (A-Z)',
     brandDesc: 'Brand (Z-A)',
     giftCards: 'Gift Cards',
-    chooseGiftCard: 'choose your gift card',
+    chooseGiftCard: 'Choose your gift card',
   },
   product: {
     otherVintages: 'Other vintages: ',

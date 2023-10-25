@@ -15,7 +15,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-gray-lightest rounded p-4">
+  <div class="bg-gray-lightest rounded px-4 pt-4 pb-6">
     <h2 class="mb-5" v-text="$t('product.features')" />
     <ProductCharacteristic characteristic="denomination" />
     <ProductCharacteristic characteristic="grapes" />
@@ -28,8 +28,6 @@ export default defineComponent({
     <ProductCharacteristic characteristic="agingDescription" />
     <ProductCharacteristic characteristic="productionPhilosophies" />
     <ProductCharacteristicNotes />
-    <div v-if="rarewine">
-      <div class="mb-4" v-html="$t('product.collectionBottle')" />
-    </div>
+    <div v-if="rarewine" class="text-sm" v-text="$t('product.collectionBottle')" />
   </div>
 </template>

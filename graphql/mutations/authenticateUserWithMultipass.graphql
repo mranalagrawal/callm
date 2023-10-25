@@ -1,4 +1,3 @@
-
 mutation customerAccessTokenCreateWithMultipass($multipassToken: String!) {
   customerAccessTokenCreateWithMultipass(multipassToken: $multipassToken) {
     customerAccessToken {

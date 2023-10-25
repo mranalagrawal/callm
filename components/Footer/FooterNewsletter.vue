@@ -108,7 +108,7 @@ export default defineComponent({
       </div>
       <div class="mt-3">
         <i18n
-          class="block text-xs col-span-full"
+          class="block text-xs"
           path="footer.privacyPolicy"
           tag="span"
         >
@@ -116,7 +116,7 @@ export default defineComponent({
             <span>{{ $t('common.cta.subscribe') }}</span>
           </template>
           <template #link>
-            <NuxtLink :to="localePath('/privacy')" class="text-xs text-white underline hover:(text-primary)">
+            <NuxtLink :to="localePath('/privacy')" class="text-xs text-white underline hover:(text-secondary-100)">
               {{ $t('newsletter.splash.privacyPolicy') }}
             </NuxtLink>
           </template>

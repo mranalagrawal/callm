@@ -176,7 +176,7 @@ export default defineComponent({
 
 <style scoped>
 .c-bannerCurve {
-  object-position: 0 10px;
+  object-position: 0 0;
 }
 
 .c-carouselWrapper {

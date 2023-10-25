@@ -32,7 +32,7 @@ export default defineComponent({
         key: 'description',
         label: i18n.t('product.description'),
         component: 'ProductDetailsTabDescription',
-        available: props.product.descriptionHtml,
+        available: !!props.product.descriptionHtml?.toString()?.length,
       },
       {
         key: 'toEnjoyBetter',
@@ -50,20 +50,20 @@ export default defineComponent({
         key: 'producer',
         label: i18n.t('product.producer'),
         component: 'ProductDetailsTabProducer',
-        available: props.brand,
+        available: props.brandMetaFields?.key,
       },
       {
         key: 'pairings',
         label: i18n.t('product.pairings'),
         component: 'ProductDetailsTabPairings',
-        available: props.productDetails && getUniqueListBy(props.productDetails.foodPairings, 'id'),
+        available: props.productDetails && !!getUniqueListBy(props.productDetails.foodPairings, 'id').length,
       },
     ]))
 
     const availableTabs = computed(() => tabs.value.filter(tab => tab.available))
 
     // on load, the first available tab
-    const currentTab = ref<string>(tabs.value.find(tab => tab.available)?.component || 'ProductDetailsTabDescription')
+    const currentTab = ref<string>(tabs.value.find(tab => tab.available)?.component || '')
 
     const componentMap = {
       ProductDetailsTabDescription: () => import('~/components/ProductDetails/ProductDetailsTabDescription.vue'),
@@ -79,6 +79,7 @@ export default defineComponent({
       availableTabs,
       componentMap,
       currentTab,
+      getUniqueListBy,
       tabs,
     }
   },

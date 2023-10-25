@@ -1,3 +1,5 @@
+#import "~/graphql/fragments/productVariant.graphql"
+
 mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
   cartLinesAdd(cartId: $cartId, lines: $lines) {
     cart {
@@ -47,17 +49,7 @@ mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
                 }
                 variants(first: 1) {
                   nodes {
-                    id
-                    compareAtPrice {
-                      amount
-                      currencyCode
-                    }
-                    price {
-                      amount
-                      currencyCode
-                    }
-                    quantityAvailable
-                    sku
+                    ...PRODUCT_VARIANT_FRAGMENT
                   }
                 }
               }
@@ -110,17 +102,7 @@ mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
                   }
                   variants(first: 1) {
                     nodes {
-                      id
-                      compareAtPrice {
-                        amount
-                        currencyCode
-                      }
-                      price {
-                        amount
-                        currencyCode
-                      }
-                      quantityAvailable
-                      sku
+                      ...PRODUCT_VARIANT_FRAGMENT
                     }
                   }
                 }

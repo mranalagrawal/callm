@@ -60,7 +60,7 @@ export default defineComponent({
       canonicalUrl.value = `${origin}${encodedPath}${encodedSearch}`
     }
 
-    useFetch(async ({ $cmwRepo, $productMapping, $handleApiErrors }) => {
+    const { fetchState } = useFetch(async ({ $cmwRepo, $productMapping, $handleApiErrors }) => {
       await $cmwRepo.products.getGiftCardByHandle({
         handle: 'gift-cards', // or by route $route.value.name,
       })
@@ -126,15 +126,17 @@ export default defineComponent({
     }))
     return {
       addIcon,
-      cartLinesAdd,
       amountMax,
       canAddMore,
       cartIcon,
+      cartLinesAdd,
+      cartLinesUpdate,
       cartQuantity,
       createShopifyCart,
       customer,
       customerId,
       emailIcon,
+      fetchState,
       generateMetaLink,
       getCustomerType,
       giftCardVariantSelected,
@@ -148,7 +150,6 @@ export default defineComponent({
       shopifyCart,
       strippedContent,
       subtractIcon,
-      cartLinesUpdate,
     }
   },
   head: {},
@@ -193,7 +194,8 @@ export default defineComponent({
 
 <template>
   <div class="mt-4 max-w-screen-xl mx-auto <md:px-4">
-    <div v-if="$fetchState.error" class="relative text-center mt-12">
+    <div v-if="fetchState?.pending" :class="fetchState?.pending" class="sr-only" />
+    <div v-else-if="fetchState?.error" class="relative text-center mt-12">
       <div class="md:(grid grid-cols-2 items-center)">
         <img
           class="w-3/4 mx-auto" src="https://cdn.shopify.com/s/files/1/0668/1860/5335/files/wine-stain.png?width=900"
@@ -346,8 +348,8 @@ export default defineComponent({
         </div>
 
         <ClientOnly>
-          <RecentProducts />
           <RecommendedProducts v-if="product.shopify_product_id" :id="product.shopify_product_id" />
+          <RecentProducts :current-product="product.source_id" />
         </ClientOnly>
       </div>
     </template>

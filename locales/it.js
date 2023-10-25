@@ -272,7 +272,7 @@ export default {
     brandAsc: 'Brand (A-Z)',
     brandDesc: 'Brand (Z-A)',
     giftCards: 'Buoni Regalo',
-    chooseGiftCard: 'choose your gift card',
+    chooseGiftCard: 'Scegli il buono regalo',
   },
   product: {
     otherVintages: 'Altre annate: ',

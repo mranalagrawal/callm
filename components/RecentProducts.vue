@@ -3,7 +3,6 @@ import { computed, defineComponent, ref, useContext, useFetch, watch } from '@nu
 import { storeToRefs } from 'pinia'
 import { useRecentProductsStore } from '@/store/recent'
 import type { IProductMapped } from '~/types/product'
-import { sortArrayByNumber } from '~/utilities/arrays'
 
 export default defineComponent({
   props: ['currentProduct'],
@@ -25,7 +24,7 @@ export default defineComponent({
         .then(async ({ products = { nodes: [] } }) => {
           if (products.nodes.length) {
             productsRef.value = $productMapping.fromShopify(products.nodes)
-            productsRef.value = sortArrayByNumber(productsRef.value, 'availableForSale', 'desc')
+            productsRef.value = productsRef.value.filter(p => !!p.availableForSale)
           }
         })
         .catch((err: Error) => {

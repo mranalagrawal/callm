@@ -273,7 +273,7 @@ export default {
     brandAsc: 'Brand (A-Z)',
     brandDesc: 'Brand (Z-A)',
     giftCards: 'Geschenkgutschein',
-    chooseGiftCard: 'choose your gift card',
+    chooseGiftCard: 'Wählen Sie den Betrag des Geschenkgutscheins',
   },
   product: {
     otherVintages: 'Andere Jahrgänge: ',

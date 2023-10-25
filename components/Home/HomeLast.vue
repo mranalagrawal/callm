@@ -2,16 +2,12 @@
 import { ref, useFetch } from '@nuxtjs/composition-api'
 import type { ICollection } from '~/types/collection'
 import { initialCollectionData } from '~/types/collection'
-import { sortArrayByNumber } from '~/utilities/arrays'
 
 export default {
   setup() {
     const collectionRef = ref<ICollection>(initialCollectionData)
     useFetch(async ({ $cmwRepo }) => {
       collectionRef.value = await $cmwRepo.products.getCollectionsByHandle({ handle: 'home-shelf-2' })
-      if (collectionRef.value?.products) {
-        collectionRef.value.products = sortArrayByNumber(collectionRef.value.products, 'availableForSale', 'desc')
-      }
     })
     return { collectionRef }
   },

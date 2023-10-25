@@ -466,7 +466,7 @@ export default defineComponent({
           <div class="flex flex-col">
             <h1 class="h2 text-secondary <md:pt-8" v-text="product.title" />
             <NuxtLink
-              v-if="!isBundle"
+              v-if="!isBundle && product.vendor.toUpperCase() !== 'CALLMEWINE'"
               class="h3 w-max hover:text-primary-400"
               :to="localePath({ name: 'winery-handle', params: { handle: `${brand.handle}-${brandMetaFields.key}.htm` } })"
               prefetch
@@ -481,7 +481,7 @@ export default defineComponent({
             </p>
             <div v-if="isBundle" class="mb-4">
               <div class="h4 my-4" v-text="$t('bundle.whatIsInTheBox')" />
-              <ul class="my-4 text-sm">
+              <ul class="mb-4 text-sm text-body">
                 <li v-for="({ product_name, quantity }) in product.bundle" :key="generateKey(product_name)">
                   {{ quantity }} {{ product_name }}
                 </li>
