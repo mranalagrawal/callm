@@ -18,16 +18,22 @@ export default defineComponent({
     const store: any = useStore()
     const preFooterMenu = computed(() => store.state.preFooterData)
 
-    /* {
-    primary: [Getter/Setter],
-    items: [Getter/Setter],
-    id: [Getter/Setter],
-    slice_type: [Getter/Setter],
-    slice_label: [Getter/Setter]
-  }, */
     const handleTriggerClick = (id: string) => {
       currentItem.value = currentItem.value === id ? '' : id
     }
+
+    const filteredItems = computed(() => {
+      // Filter out items with undefined or null name or link values
+      return preFooterMenu.value.map((menuItem: { items: any[]; primary: any }) => {
+        const filteredItems = menuItem.items.filter(
+          (item: { name: null | undefined; link: null | undefined }) => item.name !== null && item.name !== undefined && item.link !== null && item.link !== undefined,
+        )
+        return {
+          primary: menuItem.primary,
+          items: filteredItems,
+        }
+      })
+    })
 
     onMounted(() => {
       if (process.client) {
@@ -38,6 +44,7 @@ export default defineComponent({
     return {
       chevronDownIcon,
       currentItem,
+      filteredItems,
       handleTriggerClick,
       isDesktop,
       jsIsDisabled,
@@ -55,7 +62,7 @@ export default defineComponent({
       {{ $t('footer.explore') }}
     </div>
     <div class="grid justify-stretch lg:grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))]">
-      <div v-for="item in preFooterMenu" :key="item.id" class="px-2">
+      <div v-for="item in filteredItems" :key="item.id" class="px-2">
         <div
           class="w-full flex justify-between items-center border-b border-b-transparent"
           :class="{ 'border-b-gray': !isDesktop }"
@@ -87,15 +94,12 @@ export default defineComponent({
           class="transition transition-max-h"
           :class="currentItem === item.id || isDesktop || jsIsDisabled ? 'max-h-screen' : 'max-h-1px overflow-hidden'"
         >
-          <p
-            v-for="link in item.items"
-            :key="generateKey(`inner_${link.name}`)"
-            class="px-2"
+          <NuxtLink
+            v-for="link in item.items" :key="generateKey(`inner_${link.name}`)"
+            :to="localePath(link.link || '/')" class="block px-2 my-2 text-body"
           >
-            <NuxtLink v-if="link?.link && link?.name" :to="localePath(link.link || '/')">
-              {{ link.name }}
-            </NuxtLink>
-          </p>
+            {{ link.name }}
+          </NuxtLink>
         </div>
       </div>
     </div>

@@ -1,15 +1,13 @@
 <script lang="ts">
 import { defineComponent, inject, useContext } from '@nuxtjs/composition-api'
-import type { PropType } from '@nuxtjs/composition-api'
 import type { TISO639 } from '~/config/themeConfig'
 import type { ITranslations } from '~/types/common-objects'
-import type { IProductCharacteristics } from '~/types/product'
 import { getUniqueListBy } from '~/utilities/arrays'
 
 export default defineComponent({
   props: {
     characteristic: {
-      type: String as PropType<keyof IProductCharacteristics>,
+      type: String,
       required: true,
     },
     value: {
@@ -18,7 +16,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const productCharacteristic = inject('productCharacteristics') as IProductCharacteristics
+    const productCharacteristic = inject('productCharacteristics') as any
     let characteristicText = ''
 
     const currentCharacteristic = props.value || productCharacteristic[props.characteristic]
@@ -54,7 +52,7 @@ export default defineComponent({
 
 <template>
   <div v-if="characteristicText">
-    <h3 class="font-bold mb-0" v-text="$t(`product.${characteristic}`)" />
-    <div class="mb-4" v-html="characteristicText" />
+    <h3 class="text-sm mb-0" v-text="$t(`product.${characteristic}`)" />
+    <div class="text-sm mb-4" v-html="characteristicText" />
   </div>
 </template>

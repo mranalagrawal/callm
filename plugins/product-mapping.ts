@@ -3,7 +3,7 @@ import { storeToRefs } from 'pinia'
 import type { TISO639, TSalesChannel, TStores } from '~/config/themeConfig'
 import { useCustomer } from '~/store/customer'
 import type { IMoneyV2 } from '~/types/common-objects'
-import type { IBaseProductMapped, IGiftCardMapped, IGiftCardVariantMapped, IGtmProductData, IProductBreadcrumbs, IProductCharacteristics, IProductListing, IProductMapped, TProductFeatures } from '~/types/product'
+import type { IBaseProductMapped, IGiftCardMapped, IGiftCardVariantMapped, IGtmProductData, IProductBreadcrumbs, IProductListing, IProductMapped, TProductFeatures } from '~/types/product'
 import type { ObjType } from '~/types/types'
 import { getUniqueListBy, pick } from '~/utilities/arrays'
 import { getCountryFromStore } from '~/utilities/currency'
@@ -18,7 +18,7 @@ interface IProductMapping {
   ): IProductBreadcrumbs[]
   pickProductCharacteristics<T extends KeyType>(
     obj: ObjType<T>,
-  ): IProductCharacteristics
+  ): any
   giftCard(
     product: Record<string, any>,
   ): IBaseProductMapped
@@ -95,7 +95,7 @@ const productMapping: Plugin = ({ $config, $cmwStore, i18n }, inject) => {
       )
     },
 
-    pickProductCharacteristics(obj): IProductCharacteristics {
+    pickProductCharacteristics(obj) {
       return pick(obj, ['denomination', 'subCategory', 'region', 'country', 'grapes', 'alcoholContent', 'size', 'winemaking', 'agingDescription', 'productionPhilosophies', 'productInformations', 'tipology', 'color', 'taste', 'aroma', 'organic', 'bioOperator', 'rarewine'])
     },
 
