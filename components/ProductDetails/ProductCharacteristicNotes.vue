@@ -1,7 +1,6 @@
 <script lang="ts">
 import { defineComponent, inject, useContext } from '@nuxtjs/composition-api'
 import type { TISO639 } from '~/config/themeConfig'
-import type { IProductCharacteristics } from '~/types/product'
 import bioOrBiodinamico from '~/assets/images/bio-or-biodinamico.webp'
 import { getUniqueListBy } from '~/utilities/arrays'
 
@@ -9,7 +8,7 @@ export default defineComponent({
   setup() {
     const { i18n } = useContext()
     const lang: TISO639 = i18n.locale as TISO639
-    const { productInformations, organic, bioOperator } = inject('productCharacteristics') as IProductCharacteristics
+    const { productInformations, organic, bioOperator } = inject('productCharacteristics') as any
 
     let characteristicText = ''
 

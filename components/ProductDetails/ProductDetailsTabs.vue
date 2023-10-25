@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, ref, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, provide, ref, useContext } from '@nuxtjs/composition-api'
 import type { PropType } from '@nuxtjs/composition-api'
 import type { IProductMapped } from '~/types/product'
 import { getUniqueListBy } from '~/utilities/arrays'
@@ -73,6 +73,8 @@ export default defineComponent({
       ProductDetailsTabPairings: () => import('~/components/ProductDetails/ProductDetailsTabPairings.vue'),
     }
 
+    provide('productCharacteristics', props.product.characteristics)
+
     return {
       availableTabs,
       componentMap,
@@ -89,7 +91,6 @@ export default defineComponent({
     <ProductDetailsCharacteristics
       v-if="product.characteristics"
       class="col-start-1 md:col-start-2"
-      :product-characteristic="product.characteristics"
     />
     <div class="overflow-x-auto col-start-1">
       <div
