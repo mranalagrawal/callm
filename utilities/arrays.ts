@@ -1,42 +1,52 @@
-export const getUniqueListBy = (arr: Record<string, any>, key: string): any[] =>
+const getUniqueListBy = (arr: Record<string, any>, key: string): any[] =>
   ([...new Map(arr.map((item: { [x: string]: any }) => [item[key], item])).values()])
 
-export const pick = (obj: Record<string, any> = {}, keys: string[] = []) => Object.fromEntries(
+const pick = (obj: Record<string, any> = {}, keys: string[] = []) => Object.fromEntries(
   keys
     .filter(key => key in obj)
     .map(key => [key, obj[key]]),
 )
 
-export const sortArrayByNumber = (arr: any[] = [], order = '', sort = 'asc') => {
+const sortArrayByNumber = (arr: any[] = [], order = '', sort = 'asc') => {
   return arr.sort((a, b) => {
     if (sort === 'asc') {
       return a[order] - b[order]
-    } else { return b[order] - a[order] }
+    } else {
+      return b[order] - a[order]
+    }
   })
 }
 
-export const sortArrayByName = (arr: any[] = [], order = '', sort = 'asc') => {
+const sortArrayByName = (arr: any[] = [], order = '', sort = 'asc') => {
   return arr.sort((a: any, b: any) => {
     const nameA = a[order].toUpperCase() // ignore upper and lowercase
     const nameB = b[order].toUpperCase() // ignore upper and lowercase
 
     if (sort === 'asc') {
-      if (nameA < nameB) { return -1 }
+      if (nameA < nameB) {
+        return -1
+      }
 
-      if (nameA > nameB) { return 1 }
+      if (nameA > nameB) {
+        return 1
+      }
 
       return 0
     } else {
-      if (nameA > nameB) { return -1 }
+      if (nameA > nameB) {
+        return -1
+      }
 
-      if (nameA < nameB) { return 1 }
+      if (nameA < nameB) {
+        return 1
+      }
 
       return 0
     }
   })
 }
 
-export const generateHeadHreflang = (obj = {}) => (
+const generateHeadHreflang = (obj = {}) => (
   Object.entries(obj)
     .map(([hreflang, href]) => ({
       hid: `alternate-${hreflang}`,
@@ -47,7 +57,7 @@ export const generateHeadHreflang = (obj = {}) => (
     )
 )
 
-export const chunkArray = (array: any, chunkSize: any) => {
+const chunkArray = (array: any, chunkSize: any) => {
   if (chunkSize <= 0) {
     throw new Error('Chunk size should be greater than 0')
   }
@@ -60,13 +70,14 @@ export const chunkArray = (array: any, chunkSize: any) => {
 }
 
 const arrayOrder = ['categories', 'winelists', 'countries', 'regions', 'areas', 'brands']
+
 // Create a function that takes an array and an Object and return the object ordered by the array given
 
 interface ObjectType {
   [key: string]: any[]
 }
 
-export const orderByArray = (obj: ObjectType): ObjectType => {
+const orderByArray = (obj: ObjectType): ObjectType => {
   const ordered: ObjectType = {}
 
   // Iterate through the arrayOrder and copy arrays to the ordered object
@@ -86,4 +97,14 @@ export const orderByArray = (obj: ObjectType): ObjectType => {
   })
 
   return ordered
+}
+
+export {
+  chunkArray,
+  generateHeadHreflang,
+  getUniqueListBy,
+  orderByArray,
+  pick,
+  sortArrayByName,
+  sortArrayByNumber,
 }
