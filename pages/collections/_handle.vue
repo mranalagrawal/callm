@@ -326,6 +326,7 @@ export default defineComponent({
     <h1 class="h3" v-text="collectionRef.title" />
     <LoadingImage
       v-if="collectionRef.image"
+      img-classes="w-full"
       :thumbnail="{
         url: collectionRef.image.url ? `${collectionRef.image.url}?&width=20&height=12` : 'https://picsum.photos/id/75/20/12',
         width: 20,
