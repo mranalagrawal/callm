@@ -7,21 +7,19 @@
 
 @media (min-width: 768px) {
   :root {
-    --cmw-top-banner-height: 26px;
     --cmw-header-height: 174px;
   }
 }
 
 @media (min-width: 992px) {
   :root {
-    --cmw-top-banner-height: 26px;
     --cmw-header-height: 170px;
   }
 }
 
 /* ScrollBar styles */
 ::-webkit-scrollbar {
-  width: 14px;
+  width: 3px;
 }
 
 ::-webkit-scrollbar-track {
@@ -32,6 +30,12 @@
 ::-webkit-scrollbar-thumb {
   background-color: theme("colors.primary.DEFAULT");
   border-radius: 2px;
+}
+
+@media (min-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 14px;
+  }
 }
 
 html {
@@ -69,16 +73,15 @@ h4, .h4 {
 }
 
 h1, .h1 {
-  /*@apply cmw-text-3xl leading-tight tracking-0px cmw-font-bold md:cmw-text-5xl;*/
+  @apply leading-snug tracking-0px;
   font-size: theme("fontSize.3xl");
   line-height: theme("leading.tight");
   letter-spacing: 0;
 }
 
 h2, .h2 {
-  /*@apply cmw-text-2xl leading-tight tracking-0px cmw-font-bold md:cmw-text-4xl;*/
+  @apply leading-snug tracking-0px;
   font-size: theme("fontSize.2xl");
-  line-height: theme("leading.tight");
   letter-spacing: 0;
 }
 
@@ -178,6 +181,11 @@ input:-webkit-autofill:active {
 
   &.is-gray {
     -webkit-box-shadow: 0 0 0 30px #F8F8F8 inset;
+  }
+
+  &.-secondary{
+    -webkit-box-shadow: 0 0 0 30px #10312b inset;
+    -webkit-text-fill-color: #ffffff;
   }
 }
 

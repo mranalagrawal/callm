@@ -19,6 +19,7 @@ export default {
     ...common.feedback,
     ...common.filters,
     ...common.forms,
+    ...common.info,
     carousel: {
       recommendedProducts: 'Oft zusammen gekauft',
     },
@@ -69,6 +70,7 @@ export default {
     subscribed: 'gezeichnet',
     unsubscribed: 'abgemeldet',
     headline: 'Newsletter mit Aktionen und Neuigkeiten zum gesamten Callmewine-Katalog',
+    offer: 'Abonnieren Sie unseren Newsletter und erhalten Sie {discount}% Rabatt auf Ihre erste Bestellung!',
     frequency: {
       DAILY: 'Täglich',
       WEEKLY: 'Wöchentlich',
@@ -104,6 +106,7 @@ export default {
     contacts: 'Kontaktseite',
     explore: 'Entdecken Sie Unseren Katalog',
     paymentMethods: 'Zahlungsarten',
+    privacyPolicy: 'Klicken Sie auf {label}, um unsere {link} zu lesen.',
   },
   navbar: {
     search: 'Wonach suchst du?',
@@ -125,9 +128,6 @@ export default {
       accessData: 'Zugangsdaten',
       billing: 'Abrechnung',
       cards: 'Saved cards',
-      logout: 'Logout',
-      signIn: 'Anmeldung',
-      register: 'Registrieren',
       notRegisteredYet: 'Sie haben noch kein Account?',
       alreadyRegistered: 'Ich habe bereits einen Account',
       socialLogin: 'Soziales Login',
@@ -208,7 +208,7 @@ export default {
     messagePlaceholder: 'Guten Morgen, ich hätte gerne ein Update zu meinem Sendungsstatus, danke.',
     ratingMessage: 'Meine Bewertung (für andere Benutzer nicht sichtbar)',
     ratingDescriptionPlaceholder: 'Bsp. Ausgezeichneter Bio-Wein.',
-    requestAssistanceTitle: 'Unterstützung für Bestellung Nr. {orderId} anfordern',
+    requestAssistanceTitle: 'Unterstützung für Bestellung {orderId} anfordern',
     requestAssistanceSubtitle: 'Senden Sie uns eine Nachricht und fügen Sie ggf. die in Ihrem Besitz befindlichen Unterlagen bei. Wir werden so schnell wie möglich antworten.',
     newPassword: 'Neues Passwort',
     confirmPassword: 'Passwort bestätigen',
@@ -273,7 +273,7 @@ export default {
     brandAsc: 'Brand (A-Z)',
     brandDesc: 'Brand (Z-A)',
     giftCards: 'Geschenkgutschein',
-    chooseGiftCard: 'choose your gift card',
+    chooseGiftCard: 'Wählen Sie den Betrag des Geschenkgutscheins',
   },
   product: {
     otherVintages: 'Andere Jahrgänge: ',

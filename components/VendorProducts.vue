@@ -1,7 +1,6 @@
 <script lang="ts">
 import { computed, ref, toRefs, useFetch, watch } from '@nuxtjs/composition-api'
 import type { IProductMapped } from '~/types/product'
-import { sortArrayByNumber } from '~/utilities/arrays'
 
 export default {
   props: ['vendor', 'tag', 'vendorFeId'],
@@ -24,7 +23,7 @@ export default {
         .then(async ({ products = { nodes: [] } }) => {
           if (products.nodes.length) {
             productsRef.value = $productMapping.fromShopify(products.nodes)
-            productsRef.value = sortArrayByNumber(productsRef.value, 'availableForSale', 'desc')
+            productsRef.value = productsRef.value.filter(p => !!p.availableForSale)
           }
         })
         .catch((err: Error) => {

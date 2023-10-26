@@ -10,7 +10,6 @@ import subtractIcon from 'assets/svg/subtract.svg'
 import { storeToRefs } from 'pinia'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import { useCustomer } from '~/store/customer'
-import { useCustomerOrders } from '~/store/customerOrders.ts'
 import { useShopifyCart } from '~/store/shopifyCart'
 import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { stripHtml } from '~/utilities/strings'
@@ -36,8 +35,6 @@ export default defineComponent({
   setup(props) {
     const { $config, localeLocation, $gtm, $cmwGtmUtils } = useContext()
     const customerStore = useCustomer()
-    const customerOrders = useCustomerOrders()
-    const { getCanOrder } = storeToRefs(customerOrders)
     const { shopifyCart } = storeToRefs(useShopifyCart())
     const { cartLinesAdd, createShopifyCart, cartLinesUpdate } = useShopifyCart()
     const { wishlistArr, getCustomerType, customerId } = storeToRefs(customerStore)
@@ -130,7 +127,6 @@ export default defineComponent({
       customerId,
       emailIcon,
       finalPrice,
-      getCanOrder,
       getCustomerType,
       gtmProductData,
       handleHeartClick,

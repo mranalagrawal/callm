@@ -1,6 +1,8 @@
-<script>
-import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
+<script lang="ts">
+import type { PropType } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref, useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+import type { IOrder } from '~/types/order'
 import OrderReceiptPrint from '~/components/UserProfile/OrderReceiptPrint.vue'
 import { useShopifyCart } from '~/store/shopifyCart'
 
@@ -8,9 +10,9 @@ import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 import OrderCardSummary from '~/components/UserProfile/OrderCardSummary.vue'
 import OrderCardLineItem from '~/components/UserProfile/OrderCardLineItem.vue'
 import { generateKey } from '~/utilities/strings'
-import { isObject } from '~/utilities/validators'
 import { useSplash } from '~/store/splash'
-import { useCustomerOrders } from '~/store/customerOrders.ts'
+import { useCustomerOrders } from '~/store/customerOrders'
+import chevronDownIcon from '~/assets/svg/chevron-down.svg'
 
 export default defineComponent({
   components: {
@@ -19,29 +21,29 @@ export default defineComponent({
     OrderCardSummary,
   },
   props: {
-    /** @Type: {OrderType.Order} */
     order: {
+      type: Object as PropType<IOrder>,
       required: true,
-      validator(value) {
-        return isObject(value)
-      },
     },
     activeOrder: {
-      type: Number,
+      type: [Number, String],
       required: true,
     },
   },
   emits: ['update-order-id'],
-  setup(props) {
+  setup(props, { emit }) {
     const {
       i18n,
       $config,
       $productMapping,
     } = useContext()
+
     const splash = useSplash()
     const customerOrders = useCustomerOrders()
     const { shopifyCart } = storeToRefs(useShopifyCart())
     const { cartLinesAdd, cartLinesUpdateV2, createShopifyCart } = useShopifyCart()
+    const upperButton = ref<HTMLElement | null>(null)
+    const { iso } = i18n.localeProperties
 
     const orderLineItems = computed(() => {
       const lineItems = props.order?.lineItems && props.order.lineItems.nodes?.map(node => node)
@@ -51,14 +53,18 @@ export default defineComponent({
 
     const handleRequestAssistance = () => {
       splash.$patch({
+        // @ts-expect-error TODO: fix this types
         currentSplash: 'RequestOrderAssistance',
-        title: i18n.t('profile.requestAssistanceTitle', { orderId: props.activeOrder }),
+        title: i18n.t('profile.requestAssistanceTitle', { orderId: props.order.name || props.activeOrder }),
         subtitle: i18n.t('profile.requestAssistanceSubtitle'),
         size: 'lg',
       })
 
       customerOrders.$patch(
-        { requestOrderAssistanceNumber: props.activeOrder },
+        {
+          requestOrderAssistanceNumber: `${props.activeOrder}`,
+          requestOrderAssistanceName: props.order.name,
+        },
       )
     }
 
@@ -71,23 +77,56 @@ export default defineComponent({
     })[key] || 'Callmewine'
 
     const handlePrint = () => {
-      document.title = `cmw-${props.order.orderNumber}`
+      document.title = `cmw-${props.order?.orderNumber}`
       window.onafterprint = () => {
         document.title = getTitle($config.STORE)
       }
       window.print()
     }
 
+    const totalItems = computed(() => {
+      return props.order?.lineItems.nodes
+        .map(el => el.quantity)
+        .reduce((t, n) => t + n)
+    })
+
+    const canBuyAgain = computed(() => {
+      return props.order.lineItems && props.order.lineItems.nodes
+        .map((el) => {
+          if (el.variant) { return el.variant.product.availableForSale } else { return false }
+        })
+        .every(el => el === true)
+    })
+
+    const handleClick = (id: any) => {
+      emit('update-order-id', id)
+    }
+
+    const afterEnter = (el: HTMLElement) => {
+      el.style.height = ''
+
+      if (!upperButton.value) { return }
+
+      upperButton.value.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      })
+    }
+
     const handleReorderProducts = async () => {
       // If there's no cart create one
+      // @ts-expect-error TODO: fix this types
       if (!shopifyCart.value?.id) { await createShopifyCart() }
 
       // Check every Item in orderLineItems,
       for (const orderLine of orderLineItems.value) {
-        const isOnCart = shopifyCart.value.lines?.nodes?.some(shopifyCartLine => shopifyCartLine.merchandise.id === orderLine.variant.id)
+        // @ts-expect-error TODO: fix this types
+        const isOnCart = shopifyCart.value?.lines?.nodes?.some((shopifyCartLine: { merchandise: { id: any } }) => shopifyCartLine.merchandise.id === orderLine.variant.id)
 
         if (isOnCart) {
-          const shopifyCartLine = shopifyCart.value.lines.nodes.find(shopifyCartLine => shopifyCartLine.merchandise.id === orderLine.variant.id)
+          // @ts-expect-error TODO: fix this types
+          const shopifyCartLine = shopifyCart.value?.lines.nodes
+            .find((shopifyCartLine: { merchandise: { id: any } }) => shopifyCartLine.merchandise.id === orderLine.variant.id)
           // Todo: handle this in bulk, shopify accepts an array of lines, so, we can group all existing lines and later edit them in bulk
           // if the item is already on the cart then use the cartLineUpdate method
 
@@ -98,7 +137,7 @@ export default defineComponent({
               attributes: [
                 {
                   key: 'gtmProductData',
-                  value: shopifyCartLine.attributes.find(el => el.key === 'gtmProductData').value,
+                  value: shopifyCartLine.attributes.find((el: { key: string }) => el.key === 'gtmProductData').value,
                 },
                 {
                   key: 'bundle',
@@ -126,51 +165,32 @@ export default defineComponent({
     }
 
     return {
+      afterEnter,
+      canBuyAgain,
       cartLinesAdd,
       cartLinesUpdateV2,
+      chevronDownIcon,
       createShopifyCart,
+      handleClick,
       handlePrint,
       handleReorderProducts,
       handleRequestAssistance,
       isActive,
+      iso,
       orderLineItems,
+      totalItems,
+      upperButton,
     }
-  },
-  computed: {
-    totalItems() {
-      return this.order.lineItems.nodes
-        .map(el => el.quantity)
-        .reduce((t, n) => t + n)
-    },
-    canBuyAgain() {
-      return this.order.lineItems && this.order.lineItems.nodes
-        .map((el) => {
-          if (el.variant) { return el.variant.product.availableForSale } else { return false }
-        })
-        .every(el => el === true)
-    },
   },
   methods: {
     generateKey,
-    getLocaleFromCurrencyCode(code) {
-      return getLocaleFromCurrencyCode(code)
-    },
-    handleClick(id) {
-      this.$emit('update-order-id', id)
-    },
-    start(el) {
+    getLocaleFromCurrencyCode,
+    start(el: { style: { height: string }; scrollHeight: any }) {
       el.style.height = `${el.scrollHeight}px`
     },
 
-    end(el) {
+    end(el: { style: { height: string } }) {
       el.style.height = ''
-    },
-    afterEnter(el) {
-      el.style.height = ''
-      this.$refs.upperButton && this.$refs.upperButton.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-      })
     },
   },
 })
@@ -198,7 +218,7 @@ export default defineComponent({
             />
             <span
               class="font-sans text-body tracking-normal"
-              v-text="$d(new Date(order.processedAt), 'short', $i18n.localeProperties.iso)"
+              v-text="$d(new Date(order.processedAt), 'short', iso)"
             />
             <span
               class="font-sans text-body tracking-normal"
@@ -233,7 +253,7 @@ export default defineComponent({
               :class="isActive ? 'rotate-180' : 'rotate-0'"
               width="18"
               height="18"
-              :data="require(`@/assets/svg/chevron-down.svg`)"
+              :data="chevronDownIcon"
             />
           </button>
         </div>
@@ -262,7 +282,7 @@ export default defineComponent({
           >
             <span
               class="font-sans text-body tracking-normal"
-              v-text="$d(new Date(order.processedAt), 'short', $i18n.localeProperties.iso)"
+              v-text="$d(new Date(order.processedAt), 'short', iso)"
             />
           </i18n>
 
@@ -426,7 +446,7 @@ export default defineComponent({
           :class="isActive ? 'rotate-180' : 'rotate-0'"
           width="18"
           height="18"
-          :data="require(`@/assets/svg/chevron-down.svg`)"
+          :data="chevronDownIcon"
         />
       </button>
     </div>

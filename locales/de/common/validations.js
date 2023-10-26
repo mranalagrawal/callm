@@ -44,6 +44,7 @@ export default {
       'message': 'Nachricht',
       'new-password': 'Passwortd',
       'newsletter-checkbox': 'newsletter',
+      'newsletter-footer-checkbox': 'newsletter',
       'notify-me-user-email': 'Email',
       'privacy': 'Datenschutz',
       'register-business-name': 'Firmenname',

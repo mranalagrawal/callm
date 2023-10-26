@@ -52,10 +52,13 @@ export default defineComponent({
       return props.product.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0
     })
 
-    const amountMax = computed(() => (Object.keys(props.product.details).length && props.product.details.amountMax[$config.SALECHANNEL]
+    const amountMax = computed(() =>
+      (Object.keys(props.product.details).length
+          && props.product.details.amountMax
+          && props.product.details.amountMax[$config.SALECHANNEL]
         && props.product.details.amountMax[$config.SALECHANNEL] <= props.product.quantityAvailable)
-      ? props.product.details.amountMax[$config.SALECHANNEL]
-      : props.product.quantityAvailable,
+        ? props.product.details.amountMax[$config.SALECHANNEL]
+        : props.product.quantityAvailable,
     )
 
     const isOnCart = computed(() => {

@@ -17,7 +17,7 @@ import closeIcon from '~/assets/svg/close.svg'
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
 import { useFilters } from '~/store/filters'
 import { getLocaleFromCurrencyCode } from '@/utilities/currency'
-import { pick } from '~/utilities/arrays'
+import { pick } from '~/utilities/arrays.ts'
 
 export default defineComponent({
   components: { Loader },

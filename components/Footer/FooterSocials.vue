@@ -1,16 +1,18 @@
-<script>
-import { inject } from '@nuxtjs/composition-api'
+<script lang="ts">
+import { computed, defineComponent, useStore } from '@nuxtjs/composition-api'
 
-export default {
+export default defineComponent({
   setup() {
-    const socialLinks = inject('socialLinks')
-    const mobileApps = inject('mobileApps')
+    const store: any = useStore()
+    const socialLinks = computed(() => store.state.footerData.socialLinks)
+    const mobileApps = computed(() => store.state.footerData.mobileApps)
+
     return {
       mobileApps,
       socialLinks,
     }
   },
-}
+})
 </script>
 
 <template>

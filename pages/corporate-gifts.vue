@@ -1,13 +1,13 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
-import { generateHeadHreflang } from '@/utilities/arrays'
+import { generateHeadHreflang } from '~/utilities/arrays'
 import type { IPrismicPageData } from '~/types/prismic'
 import { initialPageData } from '~/config/prismicConfig'
 import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({
   middleware({ $cmwStore, localeRoute, redirect }) {
-    if (!$cmwStore.isIt) { return redirect(localeRoute('/') as unknown as string) }
+    if (!($cmwStore.isIt || $cmwStore.isB2b)) { return redirect(localeRoute('/') as unknown as string) }
   },
   setup() {
     const { $cmwGtmUtils } = useContext()
@@ -62,8 +62,8 @@ export default defineComponent({
         url: pageData.main_banner.url
           ? `${pageData.main_banner.url}?&width=${pageData.main_banner.dimensions.width}&height=${pageData.main_banner.dimensions.height}`
           : 'https://picsum.photos/id/75/265/164',
-        width: pageData.main_banner.dimensions.width,
-        height: pageData.main_banner.dimensions.height,
+        width: pageData.main_banner.dimensions?.width,
+        height: pageData.main_banner.dimensions?.height,
         altText: pageData.main_banner.alt,
       }"
     />

@@ -1,13 +1,13 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
-import { generateHeadHreflang } from '@/utilities/arrays'
+import { generateHeadHreflang } from '~/utilities/arrays'
 import type { IPrismicPageData } from '~/types/prismic'
 import { initialPageData } from '~/config/prismicConfig'
 import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({
   middleware({ $cmwStore, localeRoute, redirect }) {
-    if (!$cmwStore.isIt) { return redirect(localeRoute('/') as unknown as string) }
+    if (!($cmwStore.isIt || $cmwStore.isB2b)) { return redirect(localeRoute('/') as unknown as string) }
   },
   setup() {
     const { $cmwGtmUtils } = useContext()
@@ -66,14 +66,14 @@ export default defineComponent({
     <div v-if="pageData.body?.[0]?.items" class="w-[min(100%,_62rem)] m-inline-auto py-12 grid gap-8 md:grid-cols-[100px_auto]">
       <template v-for="({ image, description }) in pageData.body?.[0].items">
         <PrismicImage :key="generateKey(image.url)" class="mx-auto" :field="image" width="100" height="100" />
-        <PrismicRichText :key="generateKey(image.url)" :field="description" />
+        <PrismicRichText :key="generateKey(description[0]?.text)" :field="description" />
       </template>
     </div>
     <PrismicRichText v-if="!!midParagraph.items.length" :field="midParagraph.items[0].paragraph" />
     <div v-if="pageData.body?.[2]?.items" class="w-[min(100%,_62rem)] m-inline-auto py-12 grid gap-8 md:grid-cols-[100px_auto]">
       <template v-for="({ image, description }) in pageData.body?.[2].items">
         <PrismicImage :key="generateKey(image.url)" class="mx-auto" :field="image" width="100" height="100" />
-        <PrismicRichText :key="generateKey(image.url)" :field="description" />
+        <PrismicRichText :key="generateKey(description[0]?.text)" :field="description" />
       </template>
     </div>
     <!-- Todo: Use Slice Machine properly -->

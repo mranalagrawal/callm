@@ -59,4 +59,5 @@ export interface IOrder {
   totalShippingPrice: IMoneyV2
   totalTaxV2: IMoneyV2
   lineItems: { nodes: ILineItem[] }
+  discountApplications: any
 }

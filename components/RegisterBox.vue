@@ -55,7 +55,7 @@ export default {
 
           if (valid) {
             await customerStore.getCustomer()
-              .then(() => router.push(localeLocation('/profile/my-orders') as RawLocation))
+              .then(() => router.push(localeLocation('/') as RawLocation))
           }
         } else {
           if (customerUserErrors[0].field) {
@@ -99,7 +99,7 @@ export default {
 <template>
   <div>
     <ValidationObserver v-slot="{ handleSubmit }" slim>
-      <form class="pt-3 py-2 md:w-3/5 mx-auto" @submit.prevent="handleSubmit(onSubmit)">
+      <form @submit.prevent="handleSubmit(onSubmit)">
         <InputField
           v-model="form.firstName"
           name="register-user-firstname" :label="$t('firstName')"
@@ -143,11 +143,11 @@ export default {
           class="mt-8"
           type="submit"
           :disabled="isSubmitting"
-          :label="$t('navbar.user.register')"
+          :label="$t('common.cta.register')"
         />
       </form>
     </ValidationObserver>
-    <div v-if="$config.STORE !== 'B2B'" class="pt-3 pb-2 md:w-3/5 mx-auto">
+    <div v-if="$config.STORE !== 'B2B'">
       <p class="mb-5">
         {{ $t("navbar.user.orRegisterWith") }}
       </p>

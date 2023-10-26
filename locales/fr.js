@@ -19,6 +19,7 @@ export default {
     ...common.feedback,
     ...common.filters,
     ...common.forms,
+    ...common.info,
     carousel: {
       recommendedProducts: 'Souvent achetés ensemble',
     },
@@ -68,6 +69,7 @@ export default {
     label: 'Newsletter',
     subscribed: 'abonné',
     unsubscribed: 'désabonné',
+    offer: 'Abonnez-vous à notre newsletter et recevez une remise de {discount}% sur votre première commande !',
     headline: 'Newsletter avec promotions et nouveautés sur tout le catalogue Callmewine',
     frequency: {
       DAILY: 'Quotidien',
@@ -102,6 +104,7 @@ export default {
     contacts: 'Contacts',
     explore: 'Explorez Notre Catalogue',
     paymentMethods: 'Moyen de paiement',
+    privacyPolicy: 'En cliquant sur {label}, je déclare avoir lu la {link}.',
   },
   navbar: {
     search: 'Recherche ?',
@@ -123,9 +126,6 @@ export default {
       accessData: 'Données d\'accès',
       billing: 'Facturation',
       cards: 'Cartes enregistrées',
-      logout: 'Se déconnecter',
-      signIn: 'S\'identifier',
-      register: 'Enregistrer',
       notRegisteredYet: 'Vous n\'avez pas encore de profil ?',
       alreadyRegistered: 'J\'ai déjà un compte',
       socialLogin: 'Connexion sociale',
@@ -206,7 +206,7 @@ export default {
     messagePlaceholder: 'Bonjour, je voudrais une mise à jour sur l\'état de mon envoi, merci.',
     ratingMessage: 'Ma note (non visible par les autres utilisateurs)',
     ratingDescriptionPlaceholder: 'Ex. Excellent vin bio.',
-    requestAssistanceTitle: 'Demander de l\'aide pour la commande n° {orderId}',
+    requestAssistanceTitle: 'Demander de l\'aide pour la commande {orderId}',
     requestAssistanceSubtitle: 'Envoyez-nous un message et, si nécessaire, joignez la documentation en votre possession. Nous vous répondrons dès que possible.',
     newPassword: 'Nouveau mot de passe',
     confirmPassword: 'Confirmer le mot de passe',

@@ -132,7 +132,7 @@ export default {
             height="32px"
           />
           <span class="block my-0 cmw-font-light text-sm truncate max-w-100px">
-            {{ customer.id ? (customer.firstName || customer.email.split('@')[0]) : $t('navbar.user.signIn') }}
+            {{ customer.id ? (customer.firstName || customer.email.split('@')[0]) : $t('common.cta.signIn') }}
           </span>
         </span>
       </button>

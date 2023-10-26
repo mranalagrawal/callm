@@ -10,10 +10,7 @@ import {
   // useRouter,
 } from '@nuxtjs/composition-api'
 import plusIcon from 'assets/svg/plus.svg'
-
-// interface Query {
-//   [key: string]: string | undefined
-// }
+import { orderByArray } from '~/utilities/arrays'
 
 interface IFilters {
   winelists: []
@@ -150,35 +147,6 @@ export default defineComponent({
       return selectionsListMapped
     })
 
-    const arrayOrder = ['categories', 'winelists', 'countries', 'regions', 'areas', 'brands']
-    // Create a function that takes an array and an Object and return the object ordered by the array given
-
-    interface ObjectType {
-      [key: string]: any[]
-    }
-
-    const orderByArray = (obj: ObjectType): ObjectType => {
-      const ordered: ObjectType = {}
-
-      // Iterate through the arrayOrder and copy arrays to the ordered object
-      arrayOrder.forEach((key) => {
-        if (obj[key]) {
-          ordered[key] = [...obj[key]] // Create a copy of the array
-        }
-      })
-
-      // Iterate through the original object and copy non-array properties to the ordered object
-      Object.keys(obj).forEach((key) => {
-        if (!arrayOrder.includes(key) && Array.isArray(obj[key])) {
-          ordered[key] = [...obj[key]] // Create a copy of the array
-        } else if (!arrayOrder.includes(key)) {
-          ordered[key] = obj[key]
-        }
-      })
-
-      return ordered
-    }
-
     const computedFilters = computed<IFilters>(() => {
       let filters: any = {}
 
@@ -230,21 +198,6 @@ export default defineComponent({
       const priceFrom = props.inputParameters.price_from
       const priceTo = props.inputParameters.price_to
 
-      /* this.view.priceFrom = priceFrom
-        ? {
-          key: 'priceFrom',
-          name: `From ${priceFrom}`,
-          field: 'price_from',
-        }
-        : null
-      this.view.priceTo = priceTo
-        ? {
-          key: 'priceTo',
-          name: `To ${priceTo}`,
-          field: 'price_to',
-        }
-        : null */
-
       maxPriceTotal.value = Math.round(+props.aggregations.max_price['agg-max-price'].value)
       maxPrice.value = priceTo || Math.round(+props.aggregations.max_price['agg-max-price'].value)
 
@@ -258,7 +211,7 @@ export default defineComponent({
 
     const filteredCategories = computed(() => {
       return Object.entries(computedFilters.value)
-        .slice(0, !(showMoreFilters.value || !isDesktop.value) ? 4 : undefined)
+        .slice(0, !(showMoreFilters.value || !isDesktop.value) ? 6 : undefined)
         .reduce((acc: { [key: string]: any[] }, [k, v]) => {
           if (v.length) { acc[k] = v }
 
@@ -311,25 +264,6 @@ export default defineComponent({
           />
         </template>
       </CmwDropdown>
-      <!-- Note: we can also have an array :use-search-field="$options.searchableFilters.includes(key)" -->
-      <CmwDropdown
-        v-for="(value, key) in filteredCategories"
-        :key="key"
-        size="sm"
-        :active="cmwActiveSelect === key"
-        @update-trigger="handleUpdateTrigger"
-      >
-        <template #default>
-          <span>{{ $t(`search.${key}`) }}</span>
-        </template>
-        <template #children>
-          <CmwSelect
-            size="sm"
-            :options="value"
-            @update-value="handleUpdateValue"
-          />
-        </template>
-      </CmwDropdown>
       <CmwDropdown
         key="prize"
         size="sm"
@@ -348,6 +282,24 @@ export default defineComponent({
               @update-values="handleUpdateRangeValues"
             />
           </div>
+        </template>
+      </CmwDropdown>
+      <CmwDropdown
+        v-for="(value, key) in filteredCategories"
+        :key="key"
+        size="sm"
+        :active="cmwActiveSelect === key"
+        @update-trigger="handleUpdateTrigger"
+      >
+        <template #default>
+          <span>{{ $t(`search.${key}`) }}</span>
+        </template>
+        <template #children>
+          <CmwSelect
+            size="sm"
+            :options="value"
+            @update-value="handleUpdateValue"
+          />
         </template>
       </CmwDropdown>
     </div>

@@ -1,143 +1,23 @@
 <script lang="ts">
 import type { Ref } from '@nuxtjs/composition-api'
 import {
+  computed,
   defineComponent,
-  inject,
-  provide,
-  readonly,
-  ref,
-  useContext,
-  useFetch,
-  watch,
+  inject, useStore,
 } from '@nuxtjs/composition-api'
 import logo from 'assets/svg/logo-call-me-wine.svg'
-import walletIcon from 'assets/svg/wallet.svg'
-import emailIcon from 'assets/svg/email.svg'
-import paperPlaneIcon from 'assets/svg/paper-plane.svg'
-import themeConfig from '~/config/themeConfig'
-import { initialPageData } from '~/config/prismicConfig'
-import type { IPrismicPageData } from '~/types/prismic'
-import { generateKey } from '~/utilities/strings'
-import { SweetAlertToast } from '~/utilities/Swal'
 
 export default defineComponent({
   setup() {
-    const { i18n } = useContext()
+    const store: any = useStore()
     const isDesktop = inject('isDesktop') as Ref<boolean>
-    const footerInfoData = ref<IPrismicPageData>(initialPageData)
-    const paymentMethods = ref<any>([])
-    const socialLinks = ref<any>([])
-    const mobileApps = ref<any>([])
-    const footerData = ref<IPrismicPageData>(initialPageData)
-
-    // create a function to find the slice type
-    function findSlice(sliceLabel = '', responseObject: Record<string, any>) {
-      // Loop through all the keys in the object
-      for (const key in responseObject) {
-        if (Array.isArray(responseObject[key])) {
-          // Loop through each 'slice' in the body array
-          for (const slice of responseObject[key]) {
-            // Check if the slice_label matches the one we're looking for
-            if (slice.slice_label === sliceLabel) { return slice }
-          }
-        }
-      }
-      return null
-    }
-
-    const { fetch } = useFetch(async ({ $cmwRepo }) => {
-      footerInfoData.value = await $cmwRepo.prismic.getSingle('footer-info')
-      footerData.value = await $cmwRepo.prismic.getSingle('footer-test')
-
-      const paymentMethodsSlice = await findSlice('payment-methods', footerData.value)
-      paymentMethods.value = paymentMethodsSlice?.items || []
-
-      const socialLinksSlice = await findSlice('social-links', footerData.value)
-      socialLinks.value = socialLinksSlice?.items || []
-
-      const mobileAppsSlice = await findSlice('mobile-apps', footerData.value)
-      mobileApps.value = mobileAppsSlice?.items || []
-    })
-
-    provide('socialLinks', readonly(socialLinks))
-    provide('mobileApps', readonly(mobileApps))
-
-    watch(() => i18n.locale, () => fetch(), { deep: true })
+    const footerCopyright = computed(() => store.state.footerData.copyright)
 
     return {
-      emailIcon,
-      footerData,
-      footerInfoData,
+      footerCopyright,
       isDesktop,
       logo,
-      mobileApps,
-      paymentMethods,
-      paperPlaneIcon,
-      socialLinks,
-      walletIcon,
     }
-  },
-  data() {
-    return {
-      newsletter: false,
-      marketing: false,
-      email: '',
-    }
-  },
-  computed: {
-    themeConfig() {
-      return themeConfig
-    },
-  },
-  methods: {
-    generateKey,
-    async handleSubmit() {
-      await this.$cmw.$post('/customers/subscribe-nl', {
-        email: this.email,
-      })
-        .then(({ data }: any) => {
-          const {
-            errors = {},
-            customer = {},
-            nlSent = false,
-          } = data
-
-          if (Object.keys(errors).length) {
-            SweetAlertToast.fire({
-              icon: 'error',
-              text: errors.email,
-            })
-            return
-          }
-
-          if (nlSent) {
-            this.$gtm.push({
-              event: 'newsletterSubscription',
-              leadId: customer.id,
-              userEmail: this.email,
-            })
-
-            SweetAlertToast.fire({
-              icon: 'success',
-              text: this.$i18n.t('common.feedback.OK.newsletterSubscribed'),
-            })
-          } else {
-            SweetAlertToast.fire({
-              icon: 'warning',
-              text: this.$i18n.t('common.feedback.KO.newsletterSubscribed'),
-            })
-          }
-
-          this.email = ''
-        })
-        .catch((err) => {
-          this.$sentry.captureException(new Error((`Catch on newsletterSubscription: ${err}`)))
-          SweetAlertToast.fire({
-            icon: 'error',
-            text: this.$i18n.t('common.feedback.KO.unknown'),
-          })
-        })
-    },
   },
 })
 </script>
@@ -146,23 +26,22 @@ export default defineComponent({
   <footer class="bg-gray-lightest print:hidden">
     <ThePreFooter v-if="!$cmwStore.isUk" />
     <div
-      v-if="footerInfoData"
       class="bg-secondary text-secondary-100 p-4 mt-4"
     >
       <div class="max-w-screen-xl mx-auto py-4 px-4 mt-4">
         <div v-if="$cmwStore.isIt" class="flex justify-end">
           <NuxtLink
             class="uppercase text-white text-sm mr-3"
-            :to="switchLocalePath(themeConfig[$config.STORE].defaultLocale)"
+            :to="switchLocalePath($cmwStore.settings.defaultLocale)"
             :class="
-              $i18n.locale === themeConfig[$config.STORE].defaultLocale ? 'cmw-font-bold' : ''
+              $i18n.locale === $cmwStore.settings.defaultLocale ? 'cmw-font-bold' : ''
             "
           >
-            {{ themeConfig[$config.STORE].defaultLocale }}
+            {{ $cmwStore.settings.defaultLocale }}
           </NuxtLink>
 
           <NuxtLink
-            v-if="themeConfig[$config.STORE].defaultLocale !== 'en'"
+            v-if="$cmwStore.settings.defaultLocale !== 'en'"
             class="text-uppercase text-white text-sm mr-3"
             :to="switchLocalePath('en')"
             :class="$i18n.locale === 'en' ? 'cmw-font-bold' : ''"
@@ -180,69 +59,12 @@ export default defineComponent({
         </div>
         <div>
           <VueSvgIcon :data="logo" color="white" width="180" height="auto" />
-          <p class="mt-2 text-sm text-secondary-100" v-text="footerInfoData.description" />
+          <p class="mt-2 text-sm text-secondary-100" v-text="$t('common.footer.tagline')" />
         </div>
         <div class="grid gap-8 mt-4 md:grid-cols-2">
-          <div>
-            <VueSvgIcon :data="emailIcon" class="mr-2" color="white" width="30" height="30" />
-            <span class="text-secondary-100 text-sm">{{ $t('newsletter.label') }}</span>
-            <p class="text-secondary-100">
-              {{ footerInfoData.newsletter_cta }}
-            </p>
-            <form class="mb-4" @submit.prevent="handleSubmit">
-              <div class="flex gap-2 items-stretch p-2 border border-gray-light rounded-sm">
-                <label for="newsletter-email" class="sr-only">newsletter-email</label>
-                <input
-                  id="newsletter-email"
-                  v-model="email"
-                  aria-label="enter email"
-                  type="email"
-                  class="flex-1 bg-transparent text-white"
-                  required
-                >
-                <CmwButton
-                  v-if="isDesktop"
-                  size="xs"
-                  type="submit"
-                  class="w-max ml-auto justify-end  md:(px-8 py-[0.6rem])"
-                  variant="default-inverse"
-                  :label="$t('common.cta.subscribe')"
-                />
-                <ButtonIcon v-else type="submit" :icon="paperPlaneIcon" variant="filled-white" class="!border-white" color="white" width="30" height="30" />
-              </div>
-              <div class="mt-3">
-                <div class="custom-checkbox">
-                  <input
-                    id="customCheck1"
-                    v-model="newsletter"
-                    type="checkbox"
-                    class="custom-control-input"
-                    required
-                  >
-                  <label
-                    class="custom-control-label text-sm pl-3"
-                    for="customCheck1"
-                  >{{ footerInfoData.first_check }}
-                    <NuxtLink :to="localePath('/privacy')" class="text-white">Privacy Policy</NuxtLink></label>
-                </div>
-                <!--                <div v-show="newsletter" class="mt-3">
-                  <div class="custom-checkbox">
-                    <input
-                      id="customCheck2"
-                      v-model="marketing"
-                      type="checkbox"
-                      class="custom-control-input"
-                    >
-                    <label
-                      class="custom-control-label relative text-sm pl-3"
-                      for="customCheck2"
-                    >{{ footerInfoData.second_check }}
-                      <NuxtLink :to="localePath('/privacy')" class="text-white">Privacy Policy</NuxtLink></label>
-                  </div>
-                </div> -->
-              </div>
-            </form>
-          </div>
+          <ClientOnly>
+            <FooterNewsletter />
+          </ClientOnly>
           <div class="grid gap-4 md:grid-cols-3 text-sm">
             <div class="flex flex-col gap-2">
               <div class="h5 !text-secondary-100 mb-4">
@@ -334,47 +156,11 @@ export default defineComponent({
 
         <hr class="bg-secondary-800 my-4 border-0 h-px">
 
-        <div class="md:flex text-center justify-center">
-          <div class="flex gap-2 items-center justify-center">
-            <VueSvgIcon :data="walletIcon" color="white" width="30" height="30" />
-            <span>{{ $t('footer.paymentMethods') }}</span>
-          </div>
-          <div
-            class="grid grid-cols-3 md:grid-cols-8 justify-items-center items-center content-center px-8 py-4"
-          >
-            <PrismicImage
-              v-for="payment in paymentMethods"
-              :key="generateKey(payment.image.url)"
-              :field="payment.image"
-              class="max-w-12"
-            />
-          </div>
-        </div>
+        <FooterPaymentMethods />
 
         <hr class="bg-secondary-800 my-4 border-0 h-px">
-        <div class="text-center mt-4 text-xs text-secondary-100 px-4">
-          {{ footerInfoData.info }}
-        </div>
+        <PrismicRichText v-if="footerCopyright" class="sm:w-[min(100%,_80%)] m-inline-auto prose dark text-secondary-100 text-center text-xs" :field="footerCopyright" />
       </div>
     </div>
   </footer>
 </template>
-
- <style scoped>
-.custom-control-label:before {
-  background-color: transparent;
-  border-radius: 2px;
-  border: 2px solid #add3d1;
-  width: 18px;
-  height: 18px;
-}
-.custom-control-label::after {
-  width: 18px;
-  height: 18px;
-}
-
-.custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
-  background-color: transparent;
-  border-color: #add3d1;
-}
-</style>

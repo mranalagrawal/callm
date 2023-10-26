@@ -1,33 +1,49 @@
 <script lang="ts">
-import { defineComponent, inject, useContext } from '@nuxtjs/composition-api'
-import type { TISO639 } from '~/config/themeConfig'
-import type { IProductCharacteristics } from '~/types/product'
+import { defineComponent, inject } from '@nuxtjs/composition-api'
+import i18n from '~/plugins/i18n'
 
 export default defineComponent({
+  name: 'ProductCharacteristicRegionCountry',
   setup() {
-    const { i18n } = useContext()
-    const lang: TISO639 = i18n.locale as TISO639
-    const { region, country } = inject('productCharacteristics') as IProductCharacteristics
-
-    let characteristicText = ''
-    if (region && region.name[lang]) {
-      characteristicText = (region.slug && region.slug[lang]) ? `<a href="${region.slug[lang]}">${region.name[lang]}</a>` : region.name[lang]
-    }
-    if (country) {
-      const countryText = (country.slug && country.slug[lang]) ? `<a href="${country.slug[lang]}">${country.name[lang]}</a>` : country.name[lang]
-      characteristicText += (characteristicText !== '') ? ` (${countryText})` : `${countryText}`
-    }
+    const { region, country } = inject('productCharacteristics') as { region: any; country: any }
 
     return {
-      characteristicText,
+      region,
+      country,
     }
   },
+  methods: { i18n },
 })
 </script>
 
 <template>
-  <div v-if="characteristicText">
-    <h3 class="font-bold mb-0" v-text="$t(`product.regionCountry`)" />
-    <p class="mb-4" v-html="characteristicText" />
+  <div v-if="region?.name?.[$i18n.locale] || country?.name?.[$i18n.locale]">
+    <h3 class="text-sm mb-0" v-text="$t(`product.regionCountry`)" />
+    <div class="text-sm mb-4">
+      <component
+        :is="(region?.slug?.[$i18n.locale]) ? 'NuxtLink' : 'span'"
+        v-if="region?.name?.[$i18n.locale]"
+        :to="region?.slug?.[$i18n.locale] ? localePath(region.slug[$i18n.locale]) : null"
+      >
+        {{ region.name[$i18n.locale] }}
+      </component>
+      <template v-if="country?.name?.[$i18n.locale]">
+        (
+        <component
+          :is="(country?.slug?.[$i18n.locale]) ? 'NuxtLink' : 'span'"
+          v-if="country?.name?.[$i18n.locale]"
+          :to="country?.slug?.[$i18n.locale] ? localePath(country.slug[$i18n.locale]) : null"
+        >
+          {{ country.name[$i18n.locale] }}
+        </component>
+        )
+      </template>
+    </div>
   </div>
 </template>
+
+<style scoped>
+a {
+  color: theme('colors.primary.400');
+}
+</style>

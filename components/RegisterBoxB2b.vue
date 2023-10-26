@@ -48,7 +48,7 @@ export default defineComponent({
 
           if (valid) {
             await customerStore.getCustomer()
-            router.push(localeRoute('/profile/my-orders') as RawLocation)
+            router.push(localeRoute('/') as RawLocation)
           }
         } else {
           throw new Error('`customer` not found in response.data')
@@ -93,7 +93,7 @@ export default defineComponent({
 <template>
   <div>
     <ValidationObserver v-slot="{ handleSubmit }" ref="registrationForm" slim>
-      <form class="px-4 pt-3 py-2 md:w-3/4 mx-auto" @submit.prevent="handleSubmit(onSubmit)">
+      <form @submit.prevent="handleSubmit(onSubmit)">
         <InputField
           v-model="form.firstName" name="register-user-firstname" :label="$t('firstName')"
           :placeholder="$t('firstName')" rules="required" theme="gray"
@@ -152,7 +152,7 @@ export default defineComponent({
         <CmwButton
           class="sm:max-w-330px mt-8" type="submit"
           :disabled="isSubmitting"
-          :label="$t('navbar.user.register')"
+          :label="$t('common.cta.register')"
         />
       </form>
     </ValidationObserver>

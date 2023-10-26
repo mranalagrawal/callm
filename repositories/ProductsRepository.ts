@@ -19,10 +19,11 @@ export default (ctx: Context) => ({
       handle,
     })
   },
-  async getCollectionsByHandle({ handle = '' }): Promise<ICollection> {
+  async getCollectionsByHandle({ handle = '', productFilters = [{ available: true }] }): Promise<ICollection> {
     return ctx.$graphql.default.request(getCollection, {
       lang: ctx.i18n.locale.toUpperCase(),
       handle,
+      productFilters,
     })
       .then(({ collection }) => {
         if (collection) {

@@ -2,7 +2,6 @@
 import { ref, toRefs, useContext, useFetch, watch } from '@nuxtjs/composition-api'
 import type { IProductMapped } from '~/types/product'
 import getProductRecommendations from '@/graphql/queries/getProductRecommendations.graphql'
-import { sortArrayByNumber } from '~/utilities/arrays'
 
 export default {
   props: ['id'],
@@ -22,7 +21,7 @@ export default {
         .then(async ({ productRecommendations = [] }) => {
           if (productRecommendations.length) {
             productsRef.value = $productMapping.fromShopify(productRecommendations)
-            productsRef.value = sortArrayByNumber(productsRef.value, 'availableForSale', 'desc')
+            productsRef.value = productsRef.value.filter(p => !!p.availableForSale)
           }
         })
         .catch((err: Error) => {

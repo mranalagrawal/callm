@@ -1,6 +1,6 @@
 {
   "name": "callmewine-frontend",
-  "version": "1.19.9",
+  "version": "1.20.0",
   "private": true,
   "engines": {
     "node": ">=16.0.0 <17.0.0"
@@ -45,6 +45,7 @@
     "@smartweb/vue-flash-message": "^0.6.10",
     "@types/lodash.debounce": "^4.0.7",
     "@types/lodash.kebabcase": "^4.1.7",
+    "@vercel/kv": "^0.2.3",
     "@yzfe/svgicon": "^1.1.0",
     "@yzfe/vue-svgicon": "^4.0.3",
     "commitlint": "^17.6.7",

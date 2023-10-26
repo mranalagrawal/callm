@@ -64,13 +64,15 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="max-w-screen-xl mx-auto py-4 px-4">
-    <div class="h2 text-center py-4" v-text="title" />
+  <div class="max-w-screen-xl mx-auto py-4 md:px-4">
+    <div v-if="title" class="h2 text-center py-4" v-text="title" />
     <SsrCarousel
-      :key="products.length" :responsive="responsive" :show-arrows="isTablet"
+      :key="products.length"
+      :responsive="responsive" :show-arrows="isTablet"
       :show-dots="true" class="relative"
+      :gutter="2"
     >
-      <div v-for="(product, idx) in products" :key="generateKey(`${title}-${product.id}`)" class="my-8">
+      <div v-for="(product, idx) in products" :key="generateKey(`${title}-${product.id}-${idx}`)" class="my-8 px-1">
         <ProductBoxVertical :product="product" :position="idx + 1" />
       </div>
       <!--

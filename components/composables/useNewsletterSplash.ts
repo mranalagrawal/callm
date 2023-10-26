@@ -30,6 +30,7 @@ export default function () {
       } else if (!customer.value.id) {
         const oneDayLater = new Date()
         oneDayLater.setDate(oneDayLater.getDate() + 1)
+        // @ts-expect-error we need to define customer type
         splash.$patch({
           currentSplash: 'TheNewsletterSplash',
           onBeforeCloseModal: () => {
@@ -40,6 +41,7 @@ export default function () {
       } else if (!customer.value.acceptsMarketing) {
         const thirtyDaysLater = new Date()
         thirtyDaysLater.setDate(thirtyDaysLater.getDate() + 30)
+        // @ts-expect-error we need to define customer type
         splash.$patch({
           currentSplash: 'TheNewsletterSplash',
           onBeforeCloseModal: () => {

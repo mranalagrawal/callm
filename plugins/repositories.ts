@@ -1,5 +1,5 @@
 import type { Plugin } from '@nuxt/types'
-import type { IPrismicPageData, IPrismicPageParams, TPrismicComponentsNames } from '~/types/prismic'
+import type { IPrismicPageData, IPrismicPageParams, TPrismicComponentsNames, TPrismicIsoCodes } from '~/types/prismic'
 import createRepository from '~/repositories'
 import type { IShopifyPage } from '~/types/shopifyPage'
 
@@ -14,7 +14,7 @@ interface ICmwRepo {
   prismic: {
     getPageByUID(page: IPrismicPageParams): Promise<any>
     getSinglePage(page: TPrismicComponentsNames,): Promise<Record<string, any>>
-    getSingle(page: TPrismicComponentsNames): Promise<IPrismicPageData>
+    getSingle(page: TPrismicComponentsNames, lang?: TPrismicIsoCodes): Promise<IPrismicPageData>
   }
   products: any
 }

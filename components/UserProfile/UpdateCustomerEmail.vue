@@ -1,8 +1,8 @@
 <script>
 import { ref, toRefs, useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import { useSplash } from '@/store/splash'
-import { useCustomer } from '@/store/customer'
+import { useSplash } from '~/store/splash'
+import { useCustomer } from '~/store/customer'
 // noinspection JSUnusedGlobalSymbols
 export default {
   name: 'UpdateCustomerEmail',

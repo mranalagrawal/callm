@@ -8,10 +8,16 @@ import themeConfig from './config/themeConfig'
 
 const store: TStores = process.env.STORE as TStores
 
+function range(size: number, startAt = 1) {
+  return Array.from(Array(size).keys()).map(i => i + startAt)
+}
+
 export default defineConfig({
   attributify: true,
   safelist: ['nuxt-link-exact-active', 'peer-focus:bg-white', 'peer-focus:bg-black', 'peer-focus:bg-gray-lightest',
-    'btn-base', 'btn-base-spacing', 'btn-default', 'btn-text'],
+    'btn-base', 'btn-base-spacing', 'btn-default', 'btn-text',
+    range(10).map(i => `line-clamp-${i}`),
+  ],
   preflight: {
     alias: {
       // add nuxt aliases
@@ -116,6 +122,7 @@ export default defineConfig({
       },
       transitionProperty: {
         'max-h': 'max-height',
+        'accordion': 'max-height, height, opacity',
         'height': 'height',
         'width': 'width',
         'transform-opacity': 'transform, opacity',
@@ -142,8 +149,8 @@ export default defineConfig({
       typography: {
         DEFAULT: {
           css: {
-            maxWidth: 'unset',
-            a: {
+            'maxWidth': 'unset',
+            'a': {
               'color': themeConfig[store]?.colors.primary[400],
               'textDecoration': 'none',
               '&:link': {
@@ -152,6 +159,9 @@ export default defineConfig({
               '&:hover': {
                 textDecoration: 'underline',
               },
+            },
+            '&.dark p': {
+              color: 'inherit',
             },
           },
         },

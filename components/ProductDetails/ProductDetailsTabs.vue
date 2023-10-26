@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, ref, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, provide, ref, useContext } from '@nuxtjs/composition-api'
 import type { PropType } from '@nuxtjs/composition-api'
 import type { IProductMapped } from '~/types/product'
 import { getUniqueListBy } from '~/utilities/arrays'
@@ -32,7 +32,7 @@ export default defineComponent({
         key: 'description',
         label: i18n.t('product.description'),
         component: 'ProductDetailsTabDescription',
-        available: props.product.descriptionHtml,
+        available: !!props.product.descriptionHtml?.toString()?.length,
       },
       {
         key: 'toEnjoyBetter',
@@ -50,20 +50,20 @@ export default defineComponent({
         key: 'producer',
         label: i18n.t('product.producer'),
         component: 'ProductDetailsTabProducer',
-        available: props.brand,
+        available: props.brandMetaFields?.key,
       },
       {
         key: 'pairings',
         label: i18n.t('product.pairings'),
         component: 'ProductDetailsTabPairings',
-        available: props.productDetails && getUniqueListBy(props.productDetails.foodPairings, 'id'),
+        available: props.productDetails && !!getUniqueListBy(props.productDetails.foodPairings, 'id').length,
       },
     ]))
 
     const availableTabs = computed(() => tabs.value.filter(tab => tab.available))
 
     // on load, the first available tab
-    const currentTab = ref<string>(tabs.value.find(tab => tab.available)?.component || 'ProductDetailsTabDescription')
+    const currentTab = ref<string>(tabs.value.find(tab => tab.available)?.component || '')
 
     const componentMap = {
       ProductDetailsTabDescription: () => import('~/components/ProductDetails/ProductDetailsTabDescription.vue'),
@@ -73,10 +73,13 @@ export default defineComponent({
       ProductDetailsTabPairings: () => import('~/components/ProductDetails/ProductDetailsTabPairings.vue'),
     }
 
+    provide('productCharacteristics', props.product.characteristics)
+
     return {
       availableTabs,
       componentMap,
       currentTab,
+      getUniqueListBy,
       tabs,
     }
   },
@@ -85,8 +88,12 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="mt-6 md:(grid gap-4 grid-cols-[8fr_4fr])">
-    <div>
+  <div class="grid grid-flow-row gap-16 mt-6 md:(grid gap-20 grid-cols-[8fr_4fr] grid-flow-col-dense)">
+    <ProductDetailsCharacteristics
+      v-if="product.characteristics"
+      class="col-start-1 md:col-start-2"
+    />
+    <div class="overflow-x-auto col-start-1">
       <div
         class="c-navigationTab font-sans justify-between w-full flex no-wrap overflow-x-auto
         border-b border-b-gray-dark mb-3 md:(mt-9)"
@@ -118,10 +125,6 @@ export default defineComponent({
         />
       </transition>
     </div>
-    <ProductDetailsCharacteristics
-      v-if="product.characteristics"
-      :product-characteristic="product.characteristics"
-    />
   </div>
 </template>
 

@@ -1,7 +1,7 @@
 import type { Context } from '@nuxt/types'
 import { initialPageData } from '~/config/prismicConfig'
 import type { TISO639 } from '~/config/themeConfig'
-import type { IPrismicPageData, IPrismicPageParams } from '~/types/prismic'
+import type { IPrismicPageData, IPrismicPageParams, TPrismicIsoCodes } from '~/types/prismic'
 
 export default ({ $prismic, $cmwStore, i18n, $handleApiErrors }: Context) => ({
   async getSinglePage(page = ''): Promise<Record<string, any>> {
@@ -18,12 +18,12 @@ export default ({ $prismic, $cmwStore, i18n, $handleApiErrors }: Context) => ({
       return {}
     }
   },
-  async getSingle(page = ''): Promise<IPrismicPageData> {
+  async getSingle(page = '', lang?: TPrismicIsoCodes): Promise<IPrismicPageData> {
     try {
       const locale = i18n.locale as TISO639
 
       const { data } = await $prismic.api.getSingle(page, {
-        lang: $cmwStore.prismicSettings.isoCode[locale],
+        lang: lang || $cmwStore.prismicSettings.isoCode[locale],
       })
 
       return data

@@ -157,7 +157,7 @@ export default defineComponent({
         path="newsletter.splash.readMore"
         tag="span"
       >
-        <NuxtLink to="/privacy" class="text-xs text-primary hover:(text-primary)">
+        <NuxtLink :to="localePath('/privacy')" class="text-xs text-primary hover:(text-primary)">
           {{ $t('newsletter.splash.privacyPolicy') }}
         </NuxtLink>
       </i18n>

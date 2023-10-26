@@ -10,6 +10,7 @@ import chevronLeftIcon from 'assets/svg/chevron-left.svg'
 import chevronRightIcon from 'assets/svg/chevron-right.svg'
 import filterIcon from 'assets/svg/filter.svg'
 import Loader from '~/components/UI/Loader.vue'
+import type { IShopifyPage } from '~/types/shopifyPage'
 import { shopifyRichTextToHTML } from '~/utilities/shopify'
 
 interface IQuery {
@@ -28,11 +29,14 @@ export default defineComponent({
     const shortDescription = ref('')
     const results = ref([])
     const total = ref(0)
-    // const fetchState = ref({ pending: true, error: null })
     const aggregationsRef = ref({})
     const cmwActiveSelect = ref('')
     const isDesktop = inject('isDesktop')
     const showMobileFilters = ref(false)
+    const pageSeo = ref<IShopifyPage['seo']>({
+      title: '',
+      description: '',
+    })
     provide('showMobileFilters', showMobileFilters)
     provide('total', readonly(total))
 
@@ -102,13 +106,13 @@ export default defineComponent({
       sortBy(field, direction)
     }
 
-    // Fixme: There's something redirecting the API calls on SSR, so these pages will load data on client
     const { fetch, fetchState } = useFetch(async ({ $cmwStore, $elastic, $cmwRepo, $handleApiErrors, $route, $i18n }) => {
       await $cmwRepo.shopifyPages.getPageByHandle($route.params.handle)
         .then((shopifyPage) => {
           if (!shopifyPage || !Object.keys(shopifyPage).length) { return }
 
           pageData.value = shopifyPage
+          pageSeo.value = { ...shopifyPage.seo }
           inputParameters.value = shopifyPage?.filters?.value && JSON.parse(shopifyPage.filters.value)
 
           shortDescription.value = shopifyRichTextToHTML(shopifyPage.shortDescription.value)
@@ -136,63 +140,16 @@ export default defineComponent({
         .catch((err: Error) => $handleApiErrors(`Catch getting results.value = hits.hits from elastic: ${err}`))
     })
 
-    /* async function fetchData() {
-      fetchState.value = { pending: true, error: null }
-
-      try {
-        const shopifyPage = await $cmwRepo.shopifyPages.getPageByHandle(route.value.params.handle)
-
-        inputParameters.value = shopifyPage?.filters?.value && JSON.parse(shopifyPage.filters.value)
-
-        const mergedInputParameters = {
-          ...inputParameters.value,
-          ...route.value.query,
-        }
-
-        const urlSearchParams = new URLSearchParams(mergedInputParameters)
-        urlSearchParams.set('stores', $cmwStore.settings.id.toString())
-        urlSearchParams.set('locale', i18n.locale || '')
-        const searchParams = urlSearchParams.toString()
-
-        const productsSearch = await $elastic.$get('/products/search', { searchParams })
-        fetchState.value.pending = false
-
-        return { shopifyPage, productsSearch }
-      } catch (error: any) {
-        fetchState.value.pending = false
-        fetchState.value.error = error
-
-        return { shopifyPage: initialShopifyPageData, productsSearch: {}, links: null }
-      }
-    } */
-
-    /* async function fetchDataWithFetchState() {
-      const { shopifyPage, productsSearch } = await fetchData()
-
-      if (!shopifyPage || !Object.keys(shopifyPage).length) { return }
-
-      pageData.value = shopifyPage
-      shortDescription.value = shopifyRichTextToHTML(shopifyPage.shortDescription.value)
-
-      const { hits, aggregations } = productsSearch as Record<string, any>
-      results.value = hits.hits
-      total.value = hits.total.value
-
-      if (Object.keys(aggregations).length) { aggregationsRef.value = aggregations }
-    } */
-
     useMeta(() => ({
-      title: pageData.value?.seo?.title || '',
+      title: pageSeo.value.title,
       meta: [
         {
           hid: 'description',
           name: 'description',
-          content: pageData?.value?.seo?.description || '',
+          content: pageSeo.value.description,
         },
       ],
     }))
-
-    // onBeforeMount(fetchDataWithFetchState)
 
     watch(() => route.value?.query, () => fetch())
 
@@ -212,6 +169,7 @@ export default defineComponent({
       inputParameters,
       isDesktop,
       pageData,
+      pageSeo,
       results,
       shortDescription,
       showMobileFilters,

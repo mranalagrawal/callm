@@ -6,7 +6,6 @@ import deleteIcon from 'assets/svg/delete.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
 import { storeToRefs } from 'pinia'
 import { useCustomer } from '~/store/customer'
-import { useCustomerOrders } from '~/store/customerOrders'
 import { useShopifyCart } from '~/store/shopifyCart'
 import type { ICartLineItem } from '~/types/order'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
@@ -22,7 +21,6 @@ export default defineComponent({
   setup(props) {
     const { customerId } = storeToRefs(useCustomer())
     const { shopifyCart } = storeToRefs(useShopifyCart())
-    const { getCanOrder } = useCustomerOrders()
     const { merchandise } = toRefs(props.item)
     const {
       cartLinesAdd,
@@ -61,7 +59,6 @@ export default defineComponent({
       decreaseQuantity,
       deleteIcon,
       finalPrice,
-      getCanOrder,
       getFinalPrice,
       increaseQuantity,
       isOnSale,

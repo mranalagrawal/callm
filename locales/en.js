@@ -19,6 +19,7 @@ export default {
     ...common.feedback,
     ...common.filters,
     ...common.forms,
+    ...common.info,
     carousel: {
       recommendedProducts: 'Often bought together',
     },
@@ -69,6 +70,7 @@ export default {
     subscribed: 'subscribed',
     unsubscribed: 'unsubscribed',
     headline: 'Newsletter with promotions and news on the entire Callmewine catalogue',
+    offer: 'Subscribe to our newsletter and receive a {discount}% discount on your first order!',
     frequency: {
       DAILY: 'Daily',
       WEEKLY: 'Weekly',
@@ -103,6 +105,7 @@ export default {
     contacts: 'Contacts',
     explore: 'Explore Our Catalog',
     paymentMethods: 'Payment Methods',
+    privacyPolicy: 'By clicking on {label}, I declare that I have read the {link}.',
   },
   navbar: {
     search: 'What are you looking for?',
@@ -124,9 +127,6 @@ export default {
       accessData: 'Access Data',
       billing: 'Billing',
       cards: 'Saved cards',
-      logout: 'Logout',
-      signIn: 'Sign in',
-      register: 'Register',
       notRegisteredYet: 'Don\'t have a profile yet?',
       alreadyRegistered: 'I already have an account',
       socialLogin: 'Social login',
@@ -207,7 +207,7 @@ export default {
     messagePlaceholder: 'Good morning, I would like an update on my shipment status, thank you.',
     ratingMessage: 'My rating (not visible to other users)',
     ratingDescriptionPlaceholder: 'Ex. Excellent organic wine.',
-    requestAssistanceTitle: 'Request assistance for order No. {orderId}',
+    requestAssistanceTitle: 'Request assistance for order {orderId}',
     requestAssistanceSubtitle: 'Send us a message and, if necessary, attach the documentation in your possession. We will reply as soon as possible.',
     newPassword: 'New password',
     confirmPassword: 'Confirm password',
@@ -272,7 +272,7 @@ export default {
     brandAsc: 'Brand (A-Z)',
     brandDesc: 'Brand (Z-A)',
     giftCards: 'Gift Cards',
-    chooseGiftCard: 'choose your gift card',
+    chooseGiftCard: 'Choose your gift card',
   },
   product: {
     otherVintages: 'Other vintages: ',

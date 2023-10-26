@@ -545,6 +545,8 @@ export default {
     publicPath: '/_cmw/',
     transpile: [
       '@prismicio/vue',
+      '@vercel/kv',
+      '/@upstash/redis',
       'swiper', 'vue-svg-icon',
       'vee-validate/dist/rules',
       'vee-validate/dist/locale/de.json',
@@ -623,6 +625,17 @@ export default {
     pageViewEventName: 'nuxtRoute',
     autoInit: process.env.DEPLOY_ENV === 'prod' || process.env.DEPLOY_ENV === 'staging',
     debug: !process.env.DEPLOY_ENV || process.env.DEPLOY_ENV === 'dev',
+  },
+
+  env: {
+    KV_REST_API_TOKEN: process.env.KV_REST_API_TOKEN,
+    KV_REST_API_URL: process.env.KV_REST_API_URL,
+    KV_URL: process.env.KV_URL,
+    NX_DAEMON: process.env.NX_DAEMON,
+    TURBO_REMOTE_ONLY: process.env.TURBO_REMOTE_ONLY,
+    TURBO_RUN_SUMMARY: process.env.TURBO_RUN_SUMMARY,
+    VERCEL: process.env.VERCEL,
+    VERCEL_ENV: process.env.VERCEL_ENV,
   },
 
   publicRuntimeConfig: {

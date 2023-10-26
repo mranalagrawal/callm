@@ -1,69 +1,23 @@
 <script lang="ts">
-import { defineComponent, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref, useRoute, useStore, watch } from '@nuxtjs/composition-api'
 import promoTagIcon from 'assets/svg/promo-tag.svg'
 import ThirdLevel from '~/components/UI/ThirdLevel.vue'
 import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({
-  name: 'MegaMenu',
   components: { ThirdLevel },
   setup() {
-    const { i18n } = useContext()
     const route = useRoute()
-    const megaMenu = ref(null)
     const selectedItem = ref<string>('')
-    const pageData = ref<any>()
-
-    const { fetch } = useFetch(async ({ $cmwRepo }) => {
-      await $cmwRepo.prismic.getSingle('mega-menu-test')
-        .then((data) => {
-          pageData.value = data.body && data.body
-            .map((firstLevel) => {
-              const secondLevels = firstLevel.items.map((el: { secondlevelname: any; second_level_position: any }) => {
-                return {
-                  name: el.secondlevelname,
-                  position: el.second_level_position,
-                }
-              })
-              const secondLevelsSet = [
-                ...new Set(secondLevels.map((el: any) => JSON.stringify(el))),
-              ]
-                .map(el => JSON.parse(el as string))
-                .sort((a, b) => a.position - b.position)
-
-              const items = secondLevelsSet.map((el) => {
-                const temp = firstLevel.items
-                  .filter((x: { secondlevelname: any }) => x.secondlevelname === el.name)
-                  .sort((a: { third_level_position: number }, b: { third_level_position: number }) => a.third_level_position - b.third_level_position)
-
-                return {
-                  ...el,
-                  items: temp,
-                }
-              })
-
-              return {
-                name: firstLevel.primary.group_label,
-                link: firstLevel.primary.first_level_link,
-                position: firstLevel.primary.first_level_position,
-                isPromotionTab: firstLevel.primary.is_promotion_tab,
-                display_as_cards: firstLevel.primary.display_as_cards,
-                items,
-              }
-            })
-            .sort((a: { position: number }, b: { position: number }) => a.position - b.position)
-        })
-    })
+    const store: any = useStore()
+    const megaMenu = computed(() => store.state.megaMenu)
 
     watch(() => route.value, () => selectedItem.value = '')
-    watch(() => i18n.locale, () => fetch(), { deep: true })
-
     const onTab = (item: string) => selectedItem.value = item
 
     return {
       megaMenu,
       onTab,
-      pageData,
       promoTagIcon,
       selectedItem,
     }
@@ -74,10 +28,10 @@ export default defineComponent({
 
 <template>
   <div @mouseleave="onTab('')">
-    <div ref="megaMenu" class="flex items-center">
+    <div class="flex items-center">
       <div class="max-w-screen-xl mx-auto flex items-center justify-evenly w-full">
         <div
-          v-for="(firstLevel, i) in pageData"
+          v-for="(firstLevel, i) in megaMenu"
           :key="i"
           class="text-center text-uppercase py-2"
           @mouseenter="onTab(firstLevel.name)"
@@ -107,7 +61,7 @@ export default defineComponent({
     </div>
     <div class="relative">
       <div
-        v-for="items in pageData" :key="generateKey(items.name)" class="absolute top-0 left-0 w-full"
+        v-for="items in megaMenu" :key="generateKey(items.name)" class="absolute top-0 left-0 w-full"
         :class="selectedItem === items.name ? 'visible' : 'invisible'"
       >
         <div

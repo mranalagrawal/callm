@@ -17,14 +17,6 @@ const stripHtmlAnchors = (str = '') => {
 }
 const generateKey = (str = '') => kebabCase(str)
 
-const cleanRoutesLocales = (str = '') =>
-  (str
-    .replaceAll('___en', '')
-    .replaceAll('___it', '')
-    .replaceAll('___fr', '')
-    .replaceAll('___de', '')
-  )
-
 const cleanUrl = (str = '') =>
   (str
     .replaceAll(' ', '')
@@ -38,4 +30,4 @@ const sleep = (ms: number) => new Promise(
 
 const escapeJsonSingleQuotes = (str: string) => str.replace(/'/g, '\\\'')
 
-export { djb2Hash, stripHtml, stripHtmlAnchors, generateKey, cleanRoutesLocales, cleanUrl, sleep, escapeJsonSingleQuotes }
+export { djb2Hash, stripHtml, stripHtmlAnchors, generateKey, cleanUrl, sleep, escapeJsonSingleQuotes }

@@ -1,36 +1,29 @@
 <script lang="ts">
-import { defineComponent, inject, ref, useContext, useFetch, useRoute, useRouter, watch } from '@nuxtjs/composition-api'
+import { defineComponent, inject, ref, useRoute, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import type { RawLocation } from 'vue-router'
-import UserActions from '~/components/Header/UserActions.vue'
-import LoginForm from '~/components/LoginForm.vue'
-import UserMenu from '~/components/UserMenu.vue'
-import { useCustomer } from '~/store/customer'
-import { useShopifyCart } from '~/store/shopifyCart'
-import chevronLeftIcon from '~/assets/svg/chevron-left.svg'
-import logo from '~/assets/svg/logo-call-me-wine.svg'
-import logoB2b from '~/assets/svg/logo-call-me-wine-b2b.svg'
 import cartIcon from '~/assets/svg/cart.svg'
+import chevronLeftIcon from '~/assets/svg/chevron-left.svg'
 import closeIcon from '~/assets/svg/close.svg'
+import logoB2b from '~/assets/svg/logo-call-me-wine-b2b.svg'
+import logo from '~/assets/svg/logo-call-me-wine.svg'
 import menuIcon from '~/assets/svg/menu.svg'
 import userIcon from '~/assets/svg/user.svg'
+import UserActions from '~/components/Header/UserActions.vue'
+import { useCustomer } from '~/store/customer'
+import { useShopifyCart } from '~/store/shopifyCart'
 
 export default defineComponent({
-  components: { UserActions, LoginForm, UserMenu },
+  components: { UserActions },
   setup() {
-    const { localeLocation } = useContext()
     const { customer } = storeToRefs(useCustomer())
     const { shopifyCart, cartTotal, cartTotalQuantity } = storeToRefs(useShopifyCart())
-    const router = useRouter()
     const route = useRoute()
     const isDesktop = inject('isDesktop')
     const navbar = ref(null)
     const menuBarRef = ref<HTMLDivElement | null>(null)
-    const menuData = ref<Record<string, any>[]>([])
     const showMobileButton = ref(true)
     const isMobileMenuOpen = ref(false)
     const isSidebarOpen = ref(false)
-    const mobileLogin = ref(false)
     const sideBarTop = ref('')
 
     const handleShowMobileButton = (val: boolean) => {
@@ -41,62 +34,13 @@ export default defineComponent({
       if (process.browser && document.body) { document.body.classList.toggle('lock-scroll', isMobileMenuOpen.value) }
     }
 
-    const toggleMobileLogin = () => {
-      mobileLogin.value = !mobileLogin.value
-    }
-
     const toggleSidebar = () => {
       sideBarTop.value = `${menuBarRef.value?.getBoundingClientRect().bottom}px`
       isMobileMenuOpen.value = isSidebarOpen.value = !isSidebarOpen.value
       lockBody()
     }
 
-    const handleGoToRegister = () => {
-      mobileLogin.value = false
-      router.push(localeLocation('/login#register') as RawLocation)
-    }
-
-    useFetch(async ({ $cmwRepo }) => {
-      const megaMenu = await $cmwRepo.prismic.getSingle('mega-menu-test')
-
-      menuData.value = megaMenu?.body?.length
-        ? megaMenu.body.map((firstLevel) => {
-          const secondLevels = firstLevel.items.map((el: { secondlevelname: any; second_level_position: any }) => {
-            return {
-              name: el.secondlevelname,
-              position: el.second_level_position,
-            // isSelection: !!el.selection,
-            }
-          })
-
-          const secondLevelsSet = [
-            ...new Set(secondLevels.map((el: any) => JSON.stringify(el))),
-          ]
-            .map(el => JSON.parse(el as string))
-            .sort((a, b) => a.position - b.position)
-
-          const items = secondLevelsSet.map((el) => {
-            const temp = firstLevel.items
-              .filter((x: { secondlevelname: any }) => x.secondlevelname === el.name)
-              .sort((a: { third_level_position: number }, b: { third_level_position: number }) => a.third_level_position - b.third_level_position)
-            return { ...el, items: temp }
-          })
-
-          return {
-            name: firstLevel.primary.group_label,
-            link: firstLevel.primary.first_level_link,
-            position: firstLevel.primary.first_level_position,
-            isPromotionTab: firstLevel.primary.is_promotion_tab,
-            display_as_cards: firstLevel.primary.display_as_cards,
-            items,
-          }
-        })
-          .sort((a, b) => a.position - b.position)
-        : []
-    })
-
     watch(() => route.value, () => {
-      mobileLogin.value = false
       isSidebarOpen.value = false
       isMobileMenuOpen.value = false
       showMobileButton.value = true
@@ -110,7 +54,6 @@ export default defineComponent({
       chevronLeftIcon,
       closeIcon,
       customer,
-      handleGoToRegister,
       handleShowMobileButton,
       isDesktop,
       isMobileMenuOpen,
@@ -118,14 +61,11 @@ export default defineComponent({
       logo,
       logoB2b,
       menuBarRef,
-      menuData,
       menuIcon,
-      mobileLogin,
       navbar,
       shopifyCart,
       showMobileButton,
       sideBarTop,
-      toggleMobileLogin,
       toggleSidebar,
       userIcon,
     }
@@ -175,38 +115,38 @@ export default defineComponent({
           </NuxtLink>
 
           <div class="flex items-center ml-auto lg:hidden">
-            <button
-              class="p-2 md:p-3"
-              :aria-label="mobileLogin ? $t('enums.accessibility.role.MENU_LOGIN.OPEN') : $t('enums.accessibility.role.MENU_NAVIGATION_USER.OPEN')"
-              @click="toggleMobileLogin"
-            >
-              <VueSvgIcon
-                :data="userIcon"
-                :width="isDesktop ? 36 : 28"
-                :height="isDesktop ? 36 : 28"
-              />
-            </button>
-            <NuxtLink
-              :to="localePath('/cart')"
-              :aria-label="$t('enums.accessibility.labels.GO_TO_CART_PAGE')"
-              class="relative p-2 md:p-3"
-            >
-              <VueSvgIcon
-                :data="cartIcon"
-                :width="isDesktop ? 32 : 28"
-                :height="isDesktop ? 32 : 28"
-              />
-              <span class="totalItems">{{ cartTotalQuantity }} </span>
-            </NuxtLink>
+            <ClientOnly>
+              <NuxtLink :to="localePath(customer.id ? '/profile/my-orders' : '/login')">
+                <VueSvgIcon
+                  :data="userIcon"
+                  :width="28"
+                  :height="28"
+                />
+              </NuxtLink>
+              <NuxtLink
+                :to="localePath('/cart')"
+                :aria-label="$t('enums.accessibility.labels.GO_TO_CART_PAGE')"
+                class="relative p-2 md:p-3"
+              >
+                <VueSvgIcon
+                  :data="cartIcon"
+                  :width="28"
+                  :height="28"
+                />
+                <span class="totalItems">{{ cartTotalQuantity }} </span>
+              </NuxtLink>
+            </ClientOnly>
           </div>
         </div>
       </div>
 
       <SearchBar />
 
-      <div v-if="isDesktop" class="md:(place-self-end self-center)">
-        <UserActions />
-      </div>
+      <ClientOnly>
+        <div v-if="isDesktop" class="md:(place-self-end self-center)">
+          <UserActions />
+        </div>
+      </ClientOnly>
     </div>
     <div class="c-megaMenu fixed left-0 w-full bg-white <md:hidden">
       <div class="shadow-menu">
@@ -214,51 +154,13 @@ export default defineComponent({
       </div>
     </div>
 
-    <div v-if="!isDesktop && !!menuData.length" class="">
+    <div v-if="!isDesktop" class="">
       <transition name="menu-mobile">
         <div v-show="isSidebarOpen" class="absolute left-0 w-full z-base" :style="{ top: sideBarTop }">
-          <MenuMobile :menu="menuData" />
+          <MenuMobile />
         </div>
       </transition>
     </div>
-    <transition name="menu-mobile">
-      <div v-if="mobileLogin" class="fixed w-screen top-0 left-0 h-screen bg-white z-amenadiel pt-$cmw-top-banner-height">
-        <CmwButton
-          variant="text"
-          class="gap-2 pl-2 pr-3 py-2 justify-between"
-          :aria-label="$t('enums.accessibility.role.MODAL_CLOSE')"
-          @click.native="toggleMobileLogin"
-        >
-          <VueSvgIcon :data="chevronLeftIcon" color="#E6362E" width="30" height="auto" />
-          <span class="truncate max-w-100px">{{ customer.firstName ? customer.firstName : "Account" }}</span>
-          <VueSvgIcon :data="closeIcon" color="#E6362E" width="30" height="auto" />
-        </CmwButton>
-        <div v-if="!customer.id">
-          <div class="h3 text-center mt-5">
-            {{ $t("navbar.user.signIn") }}
-          </div>
-          <div class="px-4">
-            <LoginForm />
-          </div>
-          <div class="bg-gray-lightest p-2 text-center flex items-center justify-center">
-            {{ $t("navbar.user.notRegisteredYet") }}
-            <CmwButton
-              variant="text"
-              class="w-max uppercase text-primary-400"
-              @click.native="handleGoToRegister"
-            >
-              {{ $t("navbar.user.register") }}
-            </CmwButton>
-          </div>
-        </div>
-        <div
-          v-else
-          class="mt-5"
-        >
-          <UserMenu />
-        </div>
-      </div>
-    </transition>
   </div>
 </template>
 

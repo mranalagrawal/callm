@@ -24,7 +24,6 @@ import { useCustomer } from '@/store/customer'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import favouriteIcon from '~/assets/svg/selections/favourite.svg'
 import getArticles from '~/graphql/queries/getArticles'
-import { useCustomerOrders } from '~/store/customerOrders'
 import { useShopifyCart } from '~/store/shopifyCart'
 import { generateKey, stripHtmlAnchors } from '~/utilities/strings'
 
@@ -58,9 +57,6 @@ export default defineComponent({
       customerId,
       getCustomerType,
     } = storeToRefs(customerStore)
-
-    const customerOrders = useCustomerOrders()
-    const { getCanOrder } = customerOrders
 
     const { handleWishlist } = customerStore
     const route = useRoute()
@@ -315,7 +311,6 @@ export default defineComponent({
       fetchState,
       finalPrice,
       generateMetaLink,
-      getCanOrder,
       getCustomerType,
       gtmProductData,
       handleShowRequestModal,
@@ -380,7 +375,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="mt-4 max-w-screen-xl mx-auto <md:px-4">
+  <div class="mt-4 max-w-screen-xl mx-auto px-4">
     <div v-if="fetchState.pending" :class="fetchState?.pending" class="sr-only" />
     <div v-else-if="fetchState?.error" class="relative text-center mt-12">
       <div class="md:(grid grid-cols-2 items-center)">
@@ -469,22 +464,24 @@ export default defineComponent({
           </div>
           <!-- Content Section -->
           <div class="flex flex-col">
-            <h1 class="text-secondary <md:pt-8" v-text="product.title" />
+            <h1 class="h2 text-secondary <md:pt-8" v-text="product.title" />
             <NuxtLink
-              v-if="!isBundle"
+              v-if="!isBundle && product.vendor.toUpperCase() !== 'CALLMEWINE'"
               class="h3 w-max hover:text-primary-400"
               :to="localePath({ name: 'winery-handle', params: { handle: `${brand.handle}-${brandMetaFields.key}.htm` } })"
               prefetch
             >
               {{ product.vendor }}
             </NuxtLink>
-            <div class="prose" v-html="strippedContent" />
+            <CmwTextAccordion line-clamp="3">
+              <div class="prose text-sm leading-snug" v-html="strippedContent" />
+            </CmwTextAccordion>
             <p v-if="!product.availableForSale" class="text-primary-400">
               {{ $t('product.notAvailable') }}
             </p>
             <div v-if="isBundle" class="mb-4">
               <div class="h4 my-4" v-text="$t('bundle.whatIsInTheBox')" />
-              <ul class="my-4 text-sm">
+              <ul class="mb-4 text-sm text-body">
                 <li v-for="({ product_name, quantity }) in product.bundle" :key="generateKey(product_name)">
                   {{ quantity }} {{ product_name }}
                 </li>
@@ -681,9 +678,9 @@ export default defineComponent({
         />
 
         <ClientOnly>
-          <RecentProducts />
           <VendorProducts :vendor="brand.title" :tag="product.source_id" :vendor-fe-id="productDetails.brandId" />
           <RecommendedProducts :id="product.shopify_product_id" />
+          <RecentProducts :current-product="product.source_id" />
         </ClientOnly>
       </div>
     </div>

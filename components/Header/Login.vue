@@ -36,7 +36,7 @@ export default defineComponent({
 
       if (valid) {
         await customerStore.getCustomer('login')
-          .then(() => router.push(localeLocation('/profile/my-orders') as RawLocation))
+          .then(() => router.push(localeLocation('/') as RawLocation))
       } else {
         message.value = i18n.t('common.feedback.KO.login')
       }
@@ -127,11 +127,11 @@ export default defineComponent({
               class="mt-8"
               type="submit"
               :disabled="isSubmitting"
-              :label="$t('navbar.user.signIn')"
+              :label="$t('common.cta.signIn')"
             /> -->
 
             <CmwButton variant="default" :to="localePath('/login')" class="mt-8">
-              {{ $t('navbar.user.signIn') }}
+              {{ $t('common.cta.signIn') }}
             </CmwButton>
 
             <NuxtLink
@@ -181,24 +181,18 @@ export default defineComponent({
               variant="ghost"
               @click.native="logout"
             >
-              {{ $t("navbar.user.logout") }}
+              {{ $t("common.cta.logout") }}
             </CmwButton>
           </div>
         </nav>
       </template>
     </div>
-    <div
-      v-if="!customer.id"
-      class="min-w-[425px] bg-gray-lightest py-4 flex justify-center gap-4 text-sm px-8 w-max"
-    >
-      <div>{{ $t("navbar.user.notRegisteredYet") }}</div>
-      <NuxtLink
-        :to="localePath('/login')"
-        class="text-uppercase text-primary-400"
-      >
-        {{ $t("navbar.user.register") }}
+    <span v-if="!customer.id" class="min-w-[425px] bg-gray-lightest py-4 flex justify-center gap-4 text-sm px-8 w-max">
+      <span>{{ $t('navbar.user.notRegisteredYet') }}</span>
+      <NuxtLink variant="text" class="w-max inline-block" :to="localePath('/register')">
+        <strong class="text-primary-400 uppercase" v-text="$t('common.cta.register')" />
       </NuxtLink>
-    </div>
+    </span>
   </div>
 </template>
 
