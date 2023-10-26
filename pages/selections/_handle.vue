@@ -109,7 +109,7 @@ export default defineComponent({
         width="12"
         height="12"
       />
-      <span class="text-gray-dark">{{ params.handle }}</span>
+      <span class="text-gray-dark">{{ collectionRef.title }}</span>
     </nav>
 
     <h1>{{ collectionRef.title }}</h1>
