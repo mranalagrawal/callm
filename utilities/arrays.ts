@@ -7,8 +7,7 @@ const pick = (obj: Record<string, any> = {}, keys: string[] = []) => Object.from
     .map(key => [key, obj[key]]),
 )
 
-const sortArrayByNumber = (arr: any[] = [], order = '', sort = 'asc'): any[] => {
-  console.log('sortArrayByNumber', order, sort)
+const sortArrayByNumber = (arr: any[] = [], order = '', sort = 'asc') => {
   return arr.sort((a, b) => {
     if (sort === 'asc') {
       return a[order] - b[order]
@@ -19,7 +18,6 @@ const sortArrayByNumber = (arr: any[] = [], order = '', sort = 'asc'): any[] => 
 }
 
 const sortArrayByName = (arr: any[] = [], order = '', sort = 'asc') => {
-  console.log('sortArrayByName', order, sort)
   return arr.sort((a: any, b: any) => {
     const nameA = a[order].toUpperCase() // ignore upper and lowercase
     const nameB = b[order].toUpperCase() // ignore upper and lowercase
