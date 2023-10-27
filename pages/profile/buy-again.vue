@@ -19,29 +19,21 @@ export default defineComponent({
     const selectedSort = ref('most-recent')
     const sort = ref<{ label: TranslateResult; value: string }[]>([
       {
-        label: i18n.t('common.filters.sort.mostRecent'),
+        label: i18n.t('common.filters.sort.recent.most'),
         value: 'most-recent',
       },
       {
-        label: i18n.t('common.filters.sort.lessRecent'),
+        label: i18n.t('common.filters.sort.recent.least'),
         value: '2022-12-01',
         // value: 'lessRecent',
       },
       {
-        label: i18n.t('common.filters.sort.lowestPrice'),
+        label: i18n.t('common.filters.sort.price.lowest'),
         value: 'lowestPrice',
       },
       {
-        label: i18n.t('common.filters.sort.highestPrice'),
+        label: i18n.t('common.filters.sort.price.highest'),
         value: 'highestPrice',
-      },
-      {
-        label: i18n.t('common.filters.sort.nameAsc'),
-        value: 'nameAsc',
-      },
-      {
-        label: i18n.t('common.filters.sort.nameDesc'),
-        value: 'nameDesc',
       },
     ]) // processed_at:>2022-12-01
     const selectedLabel = computed(() => {
