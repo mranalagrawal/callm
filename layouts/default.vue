@@ -8,7 +8,7 @@ import {
   useContext,
   useFetch,
   useMeta,
-  useRoute,
+  useRoute, useStore,
   watch, watchEffect,
 } from '@nuxtjs/composition-api'
 // import LazyHydrate from 'vue-lazy-hydration'
@@ -29,7 +29,8 @@ export default defineComponent({
     Navbar,
   },
   setup() {
-    const { i18n, $cookies, req, store, getRouteBaseName } = useContext()
+    const { i18n, $cookies, req, getRouteBaseName } = useContext()
+    const store: any = useStore()
     const route = useRoute()
     const { getCustomer } = useCustomer()
     const { getShopifyCart } = useShopifyCart()
