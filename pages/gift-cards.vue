@@ -227,7 +227,7 @@ export default defineComponent({
 
             <div v-html="strippedContent" />
             <div>
-              <div class="py-4 h4" v-text="$t('search.chooseGiftCard')" />
+              <div class="py-4 h4" v-text="$t('chooseGiftCard')" />
               <div class="items-center mr-auto gap-2 flex flex-wrap">
                 <div
                   v-for="variant in product.variants"

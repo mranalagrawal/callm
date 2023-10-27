@@ -15,7 +15,7 @@ import { storeToRefs } from 'pinia'
 import Loader from '@/components/UI/Loader.vue'
 import closeIcon from '~/assets/svg/close.svg'
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
-import { useFilters } from '~/store/filters'
+import { useFilters } from '~/store/filters.ts'
 import { getLocaleFromCurrencyCode } from '@/utilities/currency'
 import { pick } from '~/utilities/arrays.ts'
 

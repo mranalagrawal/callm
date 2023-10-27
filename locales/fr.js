@@ -29,6 +29,8 @@ export default {
     ...pages.gone,
     ...pages.billing,
   },
+  giftCards: 'Chèque cadeau',
+  chooseGiftCard: 'Choisissez votre chèque cadeau',
   searchResultLabel: 'Les résultats de votre recherche',
   loading: 'Récupération des données...',
   fetchError: 'Une erreur s\'est produite',
@@ -214,9 +216,6 @@ export default {
   collections: {
     breadcrumb: 'Toutes les sélections',
   },
-  selections: {
-
-  },
   search: {
     search: 'Recherche',
     showMore: 'Montre plus',
@@ -259,22 +258,6 @@ export default {
     activeFilters: 'Filtres actifs',
     removeAll: 'Enlever tout',
     removeFilters: 'Supprimer les filtres',
-    sortBy: 'Trier par',
-    sort: {
-      name: 'Nom',
-      price: 'Prix',
-    },
-    highestPopularity: 'Les plus populaires',
-    lowestPopularity: 'Le moins populaire',
-    highestPrice: 'Le plus cher',
-    lowestPrice: 'Le moins cher',
-    mostAwarded: 'Les plus récompensés',
-    newArrivals: 'Nouveautés',
-    popularity: 'Popularité',
-    brandAsc: 'Marque (A-Z)',
-    brandDesc: 'Marque (Z-A)',
-    giftCards: 'Chèque cadeau',
-    chooseGiftCard: 'Choisissez votre chèque cadeau',
   },
   product: {
     otherVintages: 'Autres millésimes :',
