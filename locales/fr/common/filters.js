@@ -11,6 +11,7 @@ export default {
     },
     sort: {
       awarded: { most: 'Les Plus récompensé' },
+      bestSeller: 'Meilleures ventes',
       by: 'Trier par',
       nameAsc: 'Marque a-z',
       nameDesc: 'Marque z-a',

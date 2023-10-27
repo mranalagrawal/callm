@@ -11,6 +11,7 @@ export default {
     },
     sort: {
       awarded: { most: 'Più premiati' },
+      bestSeller: 'Best Seller',
       by: 'Ordina Per',
       nameAsc: 'Nome a-z',
       nameDesc: 'Nome z-a',

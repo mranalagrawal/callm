@@ -20,16 +20,17 @@ export default defineComponent({
     const { selectedLayout, availableLayouts } = storeToRefs(filtersStore)
 
     const collectionRef = ref<ICollection>(initialCollectionData)
-    const sorted = ref<IProductMapped[]>([])
-    const selectedFilter = ref(JSON.stringify({ order: 'title', sort: 'asc' }))
-    const periods = ref([
+    const sortedProducts = ref<IProductMapped[]>([])
+    const selectedFilter = ref(JSON.stringify({ order: 'BEST_SELLING', sort: 'asc' }))
+    const selectedSortKey = ref('BEST_SELLING')
+    const sortOptions = ref([
+      {
+        label: i18n.t('common.filters.sort.bestSeller'),
+        value: JSON.stringify({ order: 'BEST_SELLING', sort: 'asc' }),
+      },
       {
         label: i18n.t('common.filters.sort.price.lowest'),
         value: JSON.stringify({ order: 'sortPrice', sort: 'asc' }),
-      },
-      {
-        label: i18n.t('common.filters.sort.price.highest'),
-        value: JSON.stringify({ order: 'sortPrice', sort: 'desc' }),
       },
       {
         label: i18n.t('common.filters.sort.nameAsc'),
@@ -39,37 +40,46 @@ export default defineComponent({
         label: i18n.t('common.filters.sort.nameDesc'),
         value: JSON.stringify({ order: 'title', sort: 'desc' }),
       },
+      {
+        label: i18n.t('common.filters.sort.novelty'),
+        value: JSON.stringify({ order: 'CREATED', sort: 'asc' }),
+      },
     ])
 
-    const selectedLabel = computed(() => periods.value.find(period => period.value === selectedFilter.value)?.label)
+    const selectedLabel = computed(() => sortOptions.value.find(sortOption => sortOption.value === selectedFilter.value)?.label)
+
+    const { fetch } = useFetch(async ({ $cmwStore, $cmwRepo }) => {
+      await $cmwRepo.products.getCollectionsByHandle({
+        handle: params.value.handle,
+        sortKey: selectedSortKey.value,
+      })
+        .then((collection: ICollection) => {
+          collectionRef.value = collection
+
+          sortedProducts.value = collection.products
+          sortedProducts.value = sortedProducts.value.map(p => ({
+            ...p,
+            sortPrice: Number(p.priceLists[$cmwStore.settings.salesChannel][getCustomerType.value]),
+          }))
+        })
+    })
 
     const handleUpdateValue = (value: string) => {
       selectedFilter.value = value
 
       const { order, sort } = JSON.parse(value)
-      sorted.value = (['price', 'sortPrice'].includes(order))
-        ? sortArrayByNumber(sorted.value, order, sort)
-        : sortArrayByName(sorted.value, order, sort)
 
-      sorted.value = sortArrayByNumber(sorted.value, 'availableForSale', 'desc')
+      if (['sortPrice'].includes(order)) {
+        sortArrayByNumber(sortedProducts.value, order, sort)
+      } else if (['BEST_SELLING', 'CREATED'].includes(order)) {
+        selectedSortKey.value = order
+        fetch()
+      } else {
+        sortArrayByName(sortedProducts.value, order, sort)
+      }
 
       sorting.value = false
     }
-
-    useFetch(async ({ $cmwStore, $cmwRepo }) => {
-      await $cmwRepo.products.getCollectionsByHandle({ handle: params.value.handle })
-        .then((collection: ICollection) => {
-          collectionRef.value = collection
-
-          sorted.value = collection.products
-          sorted.value = sorted.value.map(p => ({
-            ...p,
-            sortPrice: Number(p.priceLists[$cmwStore.settings.salesChannel][getCustomerType.value]),
-          }))
-          sorted.value = sortArrayByName(sorted.value, 'title', 'asc')
-          sorted.value = sortArrayByNumber(sorted.value, 'availableForSale', 'desc')
-        })
-    })
 
     const handleUpdateTrigger = () => sorting.value = !sorting.value
 
@@ -81,14 +91,15 @@ export default defineComponent({
       availableLayouts,
       chevronRightIcon,
       collectionRef,
+      fetch,
       handleUpdateTrigger,
       handleUpdateValue,
       params,
-      periods,
+      periods: sortOptions,
       selectedFilter,
       selectedLabel,
       selectedLayout,
-      sorted,
+      sortedProducts,
       sorting,
     }
   },
@@ -116,7 +127,7 @@ export default defineComponent({
     <img v-if="collectionRef.image" :src="collectionRef.image.url" :alt="collectionRef.image.altText">
     <div v-html="collectionRef.descriptionHtml" />
 
-    <div v-if="!!sorted?.length">
+    <div v-if="!!sortedProducts?.length">
       <div class="hidden items-center gap-2 lg:flex">
         <!-- Todo: Implement availableLayouts when we can use the newest product box -->
         <!--        <div
@@ -170,7 +181,7 @@ export default defineComponent({
         class="products-grid"
       >
         <!-- Todo: Implement horizontal product box <ProductCardHorizontal :product="product" /> -->
-        <ProductBoxVertical v-for="product in sorted" :key="product.id" :product="product" />
+        <ProductBoxVertical v-for="product in sortedProducts" :key="product.id" :product="product" />
       </div>
     </div>
   </div>

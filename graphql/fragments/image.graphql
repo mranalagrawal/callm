@@ -1,0 +1,7 @@
+fragment IMAGE_FRAGMENT on Image {
+  altText
+  height
+  id
+  url
+  width
+}
