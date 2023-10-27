@@ -24,11 +24,11 @@ export default defineComponent({
     const selectedFilter = ref(JSON.stringify({ order: 'title', sort: 'asc' }))
     const periods = ref([
       {
-        label: i18n.t('common.filters.sort.lowestPrice'),
+        label: i18n.t('common.filters.sort.price.lowest'),
         value: JSON.stringify({ order: 'sortPrice', sort: 'asc' }),
       },
       {
-        label: i18n.t('common.filters.sort.highestPrice'),
+        label: i18n.t('common.filters.sort.price.highest'),
         value: JSON.stringify({ order: 'sortPrice', sort: 'desc' }),
       },
       {

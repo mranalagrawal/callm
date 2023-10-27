@@ -136,7 +136,7 @@ export default defineComponent({
             <div />
             <div class="grid grid-rows-2 md:(w-[min(100%,_30vw)]) xl:(w-[min(100%,_20vw)] justify-center)">
               <NuxtLink
-                class="block pt-8 w-full self-start leading-none mr-auto h1 -dark md:self-end"
+                class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end"
                 :to="localeRoute(link)"
               >
                 {{ text }}

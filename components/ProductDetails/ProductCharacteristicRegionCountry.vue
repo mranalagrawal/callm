@@ -23,7 +23,7 @@ export default defineComponent({
       <component
         :is="(region?.slug?.[$i18n.locale]) ? 'NuxtLink' : 'span'"
         v-if="region?.name?.[$i18n.locale]"
-        :to="region?.slug?.[$i18n.locale] ? localePath(region.slug[$i18n.locale]) : null"
+        :to="region?.slug?.[$i18n.locale] ? localePath(`/${region.slug[$i18n.locale]}`) : null"
       >
         {{ region.name[$i18n.locale] }}
       </component>
@@ -32,7 +32,7 @@ export default defineComponent({
         <component
           :is="(country?.slug?.[$i18n.locale]) ? 'NuxtLink' : 'span'"
           v-if="country?.name?.[$i18n.locale]"
-          :to="country?.slug?.[$i18n.locale] ? localePath(country.slug[$i18n.locale]) : null"
+          :to="country?.slug?.[$i18n.locale] ? localePath(`/${country.slug[$i18n.locale]}`) : null"
         >
           {{ country.name[$i18n.locale] }}
         </component>

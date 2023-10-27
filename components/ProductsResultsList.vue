@@ -5,6 +5,8 @@ import { storeToRefs } from 'pinia'
 import type { ObjType } from '~/types/types'
 import { useFilters } from '~/store/filters'
 import type { IProductListing } from '~/types/product'
+import gridIcon from '~/assets/svg/layout-grid.svg'
+import listIcon from '~/assets/svg/layout-list.svg'
 
 export default defineComponent({
   props: {
@@ -69,8 +71,14 @@ export default defineComponent({
       return mappedProducts
     })
 
+    const getLayoutIcon = (layout: 'grid' | 'list') => ({
+      grid: gridIcon,
+      list: listIcon,
+    }[layout] || gridIcon)
+
     return {
       availableLayouts,
+      getLayoutIcon,
       handleUpdateSortTrigger,
       handleUpdateSortValue,
       isDesktop,
@@ -112,7 +120,7 @@ export default defineComponent({
             >
               <VueSvgIcon
                 class="m-auto"
-                :data="require(`@/assets/svg/layout-${layout}.svg`)"
+                :data="getLayoutIcon(layout)"
                 width="20"
                 height="20"
                 color="#992545"
@@ -128,38 +136,30 @@ export default defineComponent({
           @update-trigger="handleUpdateSortTrigger"
         >
           <template #default>
-            <span>{{ $t('search.sortBy') }}</span>
+            <span>{{ $t('common.filters.sort.by') }}</span>
           </template>
           <template #children>
             <CmwSelect
               position="right"
               :options="[{
-                           label: $t('search.highestPopularity'),
+                           label: $t('common.filters.sort.popularity.most'),
                            value: JSON.stringify({ field: 'popularity', direction: 'desc' }),
                          },
                          {
-                           label: $t('search.lowestPopularity'),
-                           value: JSON.stringify({ field: 'popularity', direction: 'asc' }),
-                         },
-                         {
-                           label: $t('search.highestPrice'),
+                           label: $t('common.filters.sort.price.highest'),
                            value: JSON.stringify({ field: 'price', direction: 'desc' }),
                          },
                          {
-                           label: $t('search.lowestPrice'),
+                           label: $t('common.filters.sort.price.lowest'),
                            value: JSON.stringify({ field: 'price', direction: 'asc' }),
                          },
                          {
-                           label: $t('search.mostAwarded'),
+                           label: $t('common.filters.sort.awarded.most'),
                            value: JSON.stringify({ field: 'awardcount', direction: 'desc' }),
                          },
                          {
-                           label: $t('search.brandAsc'),
-                           value: JSON.stringify({ field: 'brandname', direction: 'asc' }),
-                         },
-                         {
-                           label: $t('search.brandDesc'),
-                           value: JSON.stringify({ field: 'brandname', direction: 'desc' }),
+                           label: $t('common.filters.sort.novelty'),
+                           value: JSON.stringify({ field: 'isnew', direction: 'desc' }),
                          },
               ]"
               @update-value="handleUpdateSortValue"
@@ -190,9 +190,9 @@ export default defineComponent({
     <div v-else>
       <div v-if="!loading">
         <p class="text-lg cmw-font-light mt-5">
-          {{ $t('search.noResultsAlert') }}
+          {{ $t('common.filters.sort.noResultsAlert') }}
         </p>
-        <div v-html="$t('search.noResultsMessage')" />
+        <div v-html="$t('common.filters.sort.noResultsMessage')" />
       </div>
     </div>
   </div>
