@@ -11,6 +11,7 @@ export default {
     },
     sort: {
       awarded: { most: 'Most Awarded' },
+      bestSeller: 'Best Seller',
       by: 'Sort By',
       nameAsc: 'Name a-z',
       nameDesc: 'Name z-a',

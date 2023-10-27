@@ -149,5 +149,5 @@ type Collection {
   title:String!
   updatedAt:DateTime!
   # Connections
-  products(first: Int, reverse: Boolean, filters: [ProductFilter!]): ProductConnection
+  products(first: Int, reverse: Boolean, filters: [ProductFilter!], sortKey: ProductCollectionSortKeys): ProductConnection
 }

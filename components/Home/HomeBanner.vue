@@ -134,7 +134,7 @@ export default defineComponent({
             class="c-carouselWrapper relative z-base grid justify-stretch h-full md:justify-center"
           >
             <div />
-            <div class="grid grid-rows-2 md:(w-[min(100%,_30vw)]) xl:(w-[min(100%,_20vw)] justify-center)">
+            <div class="grid grid-rows-auto md:(w-[min(100%,_30vw)]) xl:(w-[min(100%,_20vw)] justify-center)">
               <NuxtLink
                 class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end"
                 :to="localeRoute(link)"
