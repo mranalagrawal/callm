@@ -1,9 +1,11 @@
 #import "~/graphql/fragments/productVariant.graphql"
+#import "~/graphql/fragments/image.graphql"
 
 query getCollection(
   $lang: LanguageCode!,
   $handle: String, $id: ID,
-  $productFilters: [ProductFilter!]
+  $filters: [ProductFilter!]
+  $sortKey: ProductCollectionSortKeys = COLLECTION_DEFAULT
 )
 @inContext(language: $lang) {
   collection(handle: $handle, id: $id) {
@@ -11,17 +13,13 @@ query getCollection(
     descriptionHtml
     handle
     image {
-      altText
-      height
-      id
-      url
-      width
+      ...IMAGE_FRAGMENT
     }
     title
     link: metafield(namespace: "custom", key: "link_home") {
       value
     }
-    products(first: 250, filters: $productFilters) {
+    products(first: 250, filters: $filters, sortKey: $sortKey) {
       # How can we reuse the objects on graphql?
       nodes {
         availableForSale
@@ -29,10 +27,7 @@ query getCollection(
         id
         isGiftCard
         featuredImage {
-          altText
-          height
-          url
-          width
+          ...IMAGE_FRAGMENT
         }
         seo {
           description

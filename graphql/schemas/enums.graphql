@@ -152,8 +152,29 @@ enum CartErrorCode {
 }
 
 enum ProductRecommendationIntent {
-#  Offer customers products that are complementary to a product for which recommendations are to be fetched. An example is add-on products that display in a Pair it with section.
+  #  Offer customers products that are complementary to a product for which recommendations are to be fetched. An example is add-on products that display in a Pair it with section.
   COMPLEMENTARY
-#  Offer customers a mix of products that are similar or complementary to a product for which recommendations are to be fetched. An example is substitutable products that display in a You may also like section.
+  #  Offer customers a mix of products that are similar or complementary to a product for which recommendations are to be fetched. An example is substitutable products that display in a You may also like section.
   RELATED
 }
+
+# The set of valid sort keys for the ProductCollection query.
+enum ProductCollectionSortKeys {
+  # Sort by the best-selling value.
+  BEST_SELLING
+  # Sort by the collection-default value.
+  COLLECTION_DEFAULT
+  # Sort by the created value.
+  CREATED
+  # Sort by the id value.
+  ID
+  # Sort by the manual value.
+  MANUAL
+  # Sort by the price value.
+  PRICE
+  # Sort by relevance to the search terms when the query parameter is specified on the connection. Don't use this sort key when no search query is specified.
+  RELEVANCE
+  # Sort by the title value.
+  TITLE
+}
+

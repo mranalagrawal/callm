@@ -192,8 +192,11 @@ export default defineComponent({
         <ClientOnly>
           <button class="block mx-auto" @click="handleProductCLick">
             <LoadingImage
-              class="filter hover:contrast-150 mx-auto mt-4"
-              :class="{ 'opacity-50': !product.availableForSale }"
+              class="filter mx-auto mt-4"
+              :class="[
+                { 'opacity-50': !product.availableForSale },
+                { 'hover:contrast-150': !product.image?.thumbnail.url?.includes('no-product-image') },
+              ]"
               :thumbnail="product.image.thumbnail"
               :source="product.image.source"
               wrapper="span"

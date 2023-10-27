@@ -79,7 +79,3 @@ input ProductFilter {
 		#A variant option to filter on.
 		#variantOption: VariantOptionFilter TODO: Implement VariantOptionFilter
 }
-
-
-
-
