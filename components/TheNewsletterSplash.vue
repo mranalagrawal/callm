@@ -9,7 +9,7 @@ import { SweetAlertToast } from '~/utilities/Swal'
 
 export default defineComponent({
   setup() {
-    const { i18n, $cmw, $gtm, $handleApiErrors } = useContext()
+    const { i18n, $cmw, $cmwStore, $gtm, $handleApiErrors } = useContext()
     const splash = useSplash()
     const customerStore = useCustomer()
     const { customer } = storeToRefs(customerStore)
@@ -19,6 +19,22 @@ export default defineComponent({
       acceptsMarketing: false,
       // profiling: false,
     })
+
+    const getDiscount = () => ({
+      CMW: 5,
+      B2B: 3,
+      CMW_UK: 10,
+      CMW_FR: 5,
+      CMW_DE: 5,
+    })[$cmwStore.settings.store]
+
+    const getGoal = () => ({
+      CMW: '59,90€',
+      B2B: '100€',
+      CMW_UK: '£100',
+      CMW_FR: '100€',
+      CMW_DE: '100€',
+    })[$cmwStore.settings.store]
 
     const onSubmit = async () => {
       if (!formEl.value) { return }
@@ -69,7 +85,16 @@ export default defineComponent({
       }
     }
 
-    return { customer, logo, bannerSplashNewsletter, formData, formEl, onSubmit }
+    return {
+      bannerSplashNewsletter,
+      customer,
+      formData,
+      formEl,
+      getDiscount,
+      getGoal,
+      logo,
+      onSubmit,
+    }
   },
 })
 </script>
@@ -86,7 +111,12 @@ export default defineComponent({
       />
     </div>
     <p class="text-sm px-4 text-center" v-text="$t('newsletter.splash.headline')" />
-    <div class="h4" v-text="$t('newsletter.splash.offer', { discount: $cmwStore.isB2b ? 3 : ($cmwStore.isUk ? 10 : 5) })" />
+    <div
+      class="h4" v-text="$t('newsletter.splash.offer', {
+        discount: getDiscount(),
+        goal: getGoal(),
+      })"
+    />
 
     <div class="grid grid-cols-[1fr_3fr] grid-rows-auto px-4">
       <div class="c">
