@@ -59,6 +59,7 @@ export default defineComponent({
     const isFromApp = computed(() => store.state.headers.fromApp)
     const isHomePage = computed(() => getRouteBaseName(route.value) === 'index')
     const showTopBar = computed(() => (isFromApp.value && isHomePage.value) || !isFromApp.value)
+    const showAppHeader = computed(() => (isFromApp.value && isHomePage.value))
 
     onMounted(async () => {
       const cartId = $cookies.get('cartId')
@@ -95,6 +96,7 @@ export default defineComponent({
       isDesktopWide,
       isFromApp,
       isTablet,
+      showAppHeader,
       showTopBar,
     }
   },
@@ -105,7 +107,8 @@ export default defineComponent({
 <template>
   <div>
     <TopBar v-if="showTopBar" />
-    <Navbar v-if="!isFromApp" class="cmw-navbar " />
+    <Navbar v-if="!isFromApp" class="cmw-navbar" />
+    <AppHeader v-if="showAppHeader" />
 
     <nuxt :class="isFromApp ? 'cmw-app-main' : 'cmw-main'" />
 
