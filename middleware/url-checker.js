@@ -395,8 +395,8 @@ export default async function ({ redirect, route, $config, error, localePath, i1
 
     if (matched && REDIRECT_SEO_REGEX[matched] === 301) {
       try {
-        // console.log(`🚥(301) need redirect get ${$config.ELASTIC_URL}seo/get-redirect-url?urlPath=${routePath}`)
-        const url = `${$config.ELASTIC_URL}seo/get-redirect-url?urlPath=${routePath}`
+        // console.log(`🚥(301) need redirect get ${$config.ELASTIC_URL}/seo/get-redirect-url?urlPath=${routePath}`)
+        const url = `${$config.ELASTIC_URL}/seo/get-redirect-url?urlPath=${routePath}`
         const headers = {
           'x-cmw-locale': i18n.locale,
           'x-cmw-store': $config.STORE,

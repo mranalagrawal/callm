@@ -140,12 +140,12 @@ export default defineComponent({
 
       const elastic_url
         = `${$config.ELASTIC_URL
-      }products/search?stores=${$cmwStore.settings.id}&locale=${i18n.locale
+      }/products/search?stores=${$cmwStore.settings.id}&locale=${i18n.locale
       }&`
 
       $elastic.setHeader('Accept-Encoding', 'gzip')
-      const searchResult = await $elastic.$get(`${elastic_url}${queryToString}${sel}`)
-      const seo = await $elastic.$get(`${$config.ELASTIC_URL}product-list/seo?stores=${$cmwStore.settings.id}&locale=${i18n.locale}&${queryToString}${sel}`)
+      const searchResult = await $elastic.$get(`${elastic_url}/${queryToString}${sel}`)
+      const seo = await $elastic.$get(`${$config.ELASTIC_URL}/product-list/seo?stores=${$cmwStore.settings.id}&locale=${i18n.locale}&${queryToString}${sel}`)
 
       if (seo) {
         const pickedSeo = pick(seo, ['pageTitle', 'pageDescription', 'seoTitle', 'seoDescription', 'pageFullDescription'])

@@ -94,7 +94,7 @@ async function getSitemapProducts(lang) {
 
 async function getBrands(query) {
   let response = {}
-  await fetch(`${process.env.ELASTIC_URL}brands/sitemap?${query}`, { method: 'GET' })
+  await fetch(`${process.env.ELASTIC_URL}/brands/sitemap?${query}`, { method: 'GET' })
     .then(async res => await res.json())
     .then(data => response = data || {})
     .catch(() => { response = {} })
@@ -644,7 +644,6 @@ export default {
     DEPLOY_ENV: process.env.DEPLOY_ENV,
     DOMAIN: process.env.DOMAIN,
     ELASTIC_URL: process.env.ELASTIC_URL,
-    ELASTIC_URL_TEST: process.env.ELASTIC_URL_TEST,
     MULTIPASS_URL: process.env.MULTIPASS_URL,
     SALECHANNEL: process.env.SALECHANNEL,
     STORE: process.env.STORE,

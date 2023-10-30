@@ -44,7 +44,7 @@ export default defineComponent({
 
       if (search.value.length <= 3) { return }
 
-      await fetch(`${ELASTIC_URL}autocomplete/search/?stores=${storeConfigId}&locale=${i18n.locale}&search=${search.value}`)
+      await fetch(`${ELASTIC_URL}/autocomplete/search/?stores=${storeConfigId}&locale=${i18n.locale}&search=${search.value}`)
         .then(r => r.json())
         .then((data) => {
           results.value = data
