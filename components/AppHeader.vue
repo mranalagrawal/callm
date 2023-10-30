@@ -31,7 +31,3 @@ export default defineComponent({
     </div>
   </div>
 </template>
-
-<style scoped>
-
-</style>
