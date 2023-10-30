@@ -79,7 +79,7 @@ export default {
     },
     splash: {
       headline: 'Abonnieren Sie unseren Newsletter, um täglich Rabatte, Aktionen und Neuigkeiten zu erhalten!',
-      offer: 'Ab sofort für Sie {discount}% Rabatt auf Ihre erste Bestellung!',
+      offer: 'Ab sofort für Sie {discount}% Rabatt auf Ihre erste Bestellung von mindestens {goal}!',
       acceptMarketing: 'Ich bin damit einverstanden, Newsletter und Werbemitteilungen von Callmewine gemäß den {0}-Vorschriften zu erhalten.',
       profiling: 'Ich stimme der Verwendung meiner Daten für Profiling-Aktivitäten zu, die darauf abzielen, mein Surferlebnis zu verbessern und Angebote im Zusammenhang mit meinen Interessen und meinen Kaufgewohnheiten zu erhalten, wie in der {0} vorgeschrieben.',
       readMore: 'Weitere Informationen finden Sie in unserem {0}',
