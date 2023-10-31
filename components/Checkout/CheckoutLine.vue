@@ -5,82 +5,93 @@ import addIcon from 'assets/svg/add.svg'
 import deleteIcon from 'assets/svg/delete.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
 import { storeToRefs } from 'pinia'
+import { useCheckout } from '~/store/checkout'
 import { useCustomer } from '~/store/customer'
-import { useShopifyCart } from '~/store/shopifyCart'
-import type { ICartLineItem } from '~/types/order'
+import type { ICheckoutLineItemMapped } from '~/types/checkout'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 
 export default defineComponent({
   props: {
-    item: {
-      type: Object as PropType<ICartLineItem>,
+    checkoutLineItem: {
+      type: Object as PropType<ICheckoutLineItemMapped>,
       required: true,
     },
     isLast: Boolean,
   },
   setup(props) {
-    const { i18n } = useContext()
-    const { customerId } = storeToRefs(useCustomer())
-    const { shopifyCart } = storeToRefs(useShopifyCart())
-    const { merchandise } = toRefs(props.item)
-    const {
-      cartLinesAdd,
-      getFinalPrice,
-      cartLinesRemove,
-      cartLinesUpdate,
-    } = useShopifyCart()
+    const { i18n, $cmwStore } = useContext()
+    const { customerId, getCustomerType } = storeToRefs(useCustomer())
+    const { checkout } = storeToRefs(useCheckout())
+    const { checkoutLineItemsUpdate, checkoutLineItemsRemove } = useCheckout()
     const { $cmwStore: { settings: { salesChannel } } } = useContext()
 
-    const finalPrice = getFinalPrice(props.item)
+    const { product, quantityAvailable } = toRefs(props.checkoutLineItem.variant)
+    const productDetails = computed(() => product.value?.details?.value ? JSON.parse(product.value.details.value) : undefined)
+    const cartQuantity = computed(() => props.checkoutLineItem.quantity)
+    const canRemoveOne = computed(() => props.checkoutLineItem.quantity > 0)
 
     const amountMax = computed(() => {
-      if (!props.item.merchandise?.product?.details?.value) { return 0 }
+      if (!productDetails.value) { return 0 }
 
-      const productDetails = JSON.parse(props.item.merchandise.product.details.value)
-      const productVariant = props.item.merchandise.product?.variants?.nodes[0]
-
-      return (productDetails.amountMax[salesChannel]
-        && productDetails.amountMax[salesChannel] <= productVariant?.quantityAvailable)
-        ? productDetails.amountMax[salesChannel]
-        : productVariant?.quantityAvailable
+      return (productDetails.value.amountMax[salesChannel]
+          && productDetails.value.amountMax[salesChannel] <= quantityAvailable.value)
+        ? productDetails.value.amountMax[salesChannel]
+        : (quantityAvailable.value || 0)
     })
 
-    const cartQuantity = computed(() => props.item.quantity)
-    const canAddMore = computed(() => merchandise.value.product.isGiftCard || (amountMax.value - cartQuantity.value) > 0)
-    const isOnSale = computed(() => finalPrice < +merchandise.value.price.amount)
-    const productDetails = computed(() => JSON.parse(props.item?.merchandise?.product?.details?.value))
+    const canAddMore = computed(() => product.value.isGiftCard
+        || (amountMax.value - cartQuantity.value) > 0)
+
+    const finalPrice = computed(() => !product.value.isGiftCard
+      ? JSON.parse(product.value.details.value).priceLists[$cmwStore.settings.salesChannel][getCustomerType.value]
+      : props.checkoutLineItem.variant.price.amount)
+
+    const isOnSale = computed(() => finalPrice.value < +props.checkoutLineItem.variant.price.amount)
     const productUrl = computed(() => `/${productDetails.value?.handle[i18n.locale]}-${productDetails.value?.key}.htm`)
 
-    const increaseQuantity = async () => {
-      if (!canAddMore.value) { return }
+    const updateLineItemQuantity = async (quantity: number, isRemoving = false) => {
+      const lineItems = [{
+        customAttributes: props.checkoutLineItem.customAttributes,
+        id: props.checkoutLineItem.id,
+        quantity,
+        variantId: props.checkoutLineItem.variant.id,
+      }]
 
-      await cartLinesAdd(props.item, true)
+      await checkoutLineItemsUpdate(checkout.value.id, lineItems, isRemoving)
     }
 
-    const decreaseQuantity = async () => {
-      if (props.item.quantity === 0) { return }
+    const addQuantity = async () => {
+      if (!canAddMore.value) { return }
 
-      await cartLinesUpdate(props.item, props.item.quantity - 1, true)
+      const updatedQuantity = props.checkoutLineItem.quantity + 1
+      await updateLineItemQuantity(updatedQuantity, false)
+    }
+
+    const subtractQuantity = async () => {
+      if (!canRemoveOne.value) { return }
+
+      const updatedQuantity = props.checkoutLineItem.quantity - 1
+      await updateLineItemQuantity(updatedQuantity, true)
+    }
+
+    const removeLineItem = async () => {
+      await checkoutLineItemsRemove(checkout.value.id, [props.checkoutLineItem])
     }
 
     return {
       addIcon,
+      addQuantity,
       canAddMore,
-      cartLinesAdd,
-      cartLinesRemove,
-      cartLinesUpdate,
-      cartQuantity,
       customerId,
-      decreaseQuantity,
       deleteIcon,
       finalPrice,
-      getFinalPrice,
-      increaseQuantity,
       isOnSale,
+      product,
       productDetails,
       productUrl,
-      shopifyCart,
+      removeLineItem,
       subtractIcon,
+      subtractQuantity,
       amountMax,
     }
   },
@@ -92,20 +103,21 @@ export default defineComponent({
 
 <template>
   <div
-    v-if="item?.quantity > 0"
+    v-if="checkoutLineItem?.quantity > 0"
     class="c-cartLineItem mx-3 bg-white py-4 border-b border-b-gray-light"
   >
     <div class="c-cartLineItem__image">
       <NuxtLink v-if="productUrl" :to="localePath(productUrl)">
         <img
-          v-show="item.merchandise.product.featuredImage?.url"
-          :src="item.merchandise.product.featuredImage?.url" alt="" class="max-h-90px"
+          v-show="product.featuredImage?.url"
+          :src="product.featuredImage?.url"
+          :alt="product.featuredImage?.altText" class="max-h-90px"
         >
       </NuxtLink>
     </div>
     <div class="c-cartLineItem__description">
-      <NuxtLink v-if="productUrl" :to="localePath(productUrl)" class="text-sm cmw-font-bold">
-        {{ item.merchandise.product.title }}
+      <NuxtLink v-if="productUrl" :to="localePath(productUrl)" class="text-sm cmw-font-bold leading-none">
+        {{ product.title }}
       </NuxtLink>
     </div>
     <div class="c-cartLineItem__quantity">
@@ -114,17 +126,17 @@ export default defineComponent({
           class="flex transition-colors w-full h-full bg-white rounded-sm border-2 border-primary
             disabled:(border-gray-light opacity-50 cursor-not-allowed)"
           :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
-          @click="decreaseQuantity"
+          @click="subtractQuantity"
         >
           <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="#992545" />
         </button>
-        <span class="text-center">{{ item.quantity }}</span>
+        <span class="text-center">{{ checkoutLineItem.quantity }}</span>
         <button
           class="flex transition-colors w-full h-full bg-white rounded-sm border-2 border-primary
                disabled:(border-gray-light opacity-50 cursor-not-allowed)"
           :disabled="!canAddMore"
           :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
-          @click="increaseQuantity"
+          @click="addQuantity"
         >
           <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="#992545" />
         </button>
@@ -136,13 +148,15 @@ export default defineComponent({
         class="block line-through text-gray text-sm text-right"
       >
         {{
-          $n(Number(item.quantity * +item.merchandise.price.amount), 'currency', getLocaleFromCurrencyCode(item.merchandise.price.currencyCode))
+          $n(Number(checkoutLineItem.quantity * +checkoutLineItem.variant.price.amount),
+             'currency',
+             getLocaleFromCurrencyCode(checkoutLineItem.variant.price.currencyCode))
         }}
       </span>
       <i18n-n
         v-if="finalPrice"
-        class="block text-right" :value="item.quantity * finalPrice" :format="{ key: 'currency' }"
-        :locale="getLocaleFromCurrencyCode(item.merchandise.price.currencyCode)"
+        class="block text-right" :value="checkoutLineItem.quantity * finalPrice" :format="{ key: 'currency' }"
+        :locale="getLocaleFromCurrencyCode(checkoutLineItem.variant.price.currencyCode)"
       >
         <template #currency="slotProps">
           <span class="text-lg cmw-font-bold !leading-none">{{ slotProps.currency }}</span>
@@ -158,8 +172,8 @@ export default defineComponent({
         </template>
       </i18n-n>
     </div>
-    <div class="c-cartLineItem__cta absolute md:relative top-4 right-0">
-      <ButtonIcon class="m-auto" :icon="deleteIcon" variant="icon" size="28" @click.native="cartLinesRemove([item])" />
+    <div class="c-cartLineItem__cta absolute top-4 right-0 md:(relative top-0)">
+      <ButtonIcon class="m-auto" :icon="deleteIcon" variant="icon" size="28" @click.native="removeLineItem" />
     </div>
   </div>
 </template>

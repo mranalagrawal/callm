@@ -3,21 +3,42 @@ type CustomerAccessToken {
   expiresAt: DateTime!
 }
 
+# Customer
+# Requires unauthenticated_read_customers access scope.
+# A customer represents a customer account with the shop.
+# Customer accounts store contact information for the customer, saving logged-in customers the trouble of having to provide it at every checkout.
 type Customer {
+# Indicates whether the customer has consented to be sent marketing material via email.
   acceptsMarketing: Boolean!
+# The date and time when the customer was created.
   createdAt: DateTime!
+# The customer’s default address.
   defaultAddress: MailingAddress
+# The customer’s name, email or phone number.
   displayName: String!
+# The customer’s email address.
   email: String
+# The customer’s first name.
   firstName: String
+# A unique ID for the customer.
   id: ID!
-  lastIncompleteCheckout: String # Todo: Checkout
+# The customer's most recently updated, incomplete checkout.
+  lastIncompleteCheckout: Checkout
+# The customer’s last name.
   lastName: String
+# Returns a metafield found by namespace and key.
+  metafield: Metafield
+# Returns a metafield found by namespace and key.
   metafield(namespace:String!,key:String!): Metafield
+# The metafields associated with the resource matching the supplied list of namespaces and keys.
   metafields: [Metafield]!
-  numberOfOrders: String # Todo: UnsignedInt64!
+# The number of orders that the customer has made at the store in their lifetime.
+  numberOfOrders: UnsignedInt64!
+# The customer’s phone number.
   phone: String
+# A comma separated list of tags that have been added to the customer. Additional access scope required: unauthenticated_read_customer_tags.
   tags: [String!]!
+# The date and time when the customer information was updated.
   updatedAt: DateTime!
   # Connections
   orders(first: Int, reverse: Boolean, query: String):OrderConnection

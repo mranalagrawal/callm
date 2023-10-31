@@ -1,8 +1,11 @@
 type Mutation {
-  cartLinesAdd(cartId: ID!, lines: [CartLineInput!]!): CartLinesAddPayload
-  cartLinesRemove(cartId: ID!, lineIds: [ID!]!): CartLinesRemovePayload
-  cartLinesUpdate(cartId: ID!, lines: [CartLineUpdateInput!]!): CartLinesUpdatePayload
   cartNoteUpdate(cartId: ID!, note: String): CartNoteUpdatePayload
+  checkoutAttributesUpdateV2(checkoutId: ID!, input: CheckoutAttributesUpdateV2Input!): CheckoutAttributesUpdateV2Payload
+  checkoutCreate(input: CheckoutCreateInput!): CheckoutCreatePayload
+  checkoutEmailUpdateV2(checkoutId: ID!, email: String!): CheckoutEmailUpdateV2Payload
+  checkoutLineItemsAdd(checkoutId: ID!, lineItems: [CheckoutLineItemInput!]!): CheckoutLineItemsAddPayload
+  checkoutLineItemsRemove(checkoutId: ID!, lineItemIds: [ID!]!): CheckoutLineItemsRemovePayload
+  checkoutLineItemsUpdate(checkoutId: ID!, lineItems: [CheckoutLineItemUpdateInput!]!): CheckoutLineItemsUpdatePayload
   customerAccessTokenCreate(input: CustomerAccessTokenCreateInput): CustomerAccessTokenCreatePayload
   customerAccessTokenCreate(input: CustomerAccessTokenCreateInput): CustomerAccessTokenCreatePayload
   customerAccessTokenCreateWithMultipass(multipassToken: String!): CustomerAccessTokenCreateWithMultipassPayload
