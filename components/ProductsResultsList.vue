@@ -192,7 +192,7 @@ export default defineComponent({
         <p class="text-lg cmw-font-light mt-5">
           {{ $t('common.filters.sort.noResultsAlert') }}
         </p>
-        <div v-html="$t('common.filters.sort.noResultsMessage')" />
+        <div v-html="$t('search.noResultsMessage')" />
       </div>
     </div>
   </div>
