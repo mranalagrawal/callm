@@ -1,7 +1,7 @@
 <script lang="ts">
 import {
   computed,
-  defineComponent,
+  defineComponent, nextTick,
   onMounted,
   provide,
   readonly,
@@ -11,15 +11,16 @@ import {
   useRoute, useStore,
   watch, watchEffect,
 } from '@nuxtjs/composition-api'
+import { storeToRefs } from 'pinia'
 // import LazyHydrate from 'vue-lazy-hydration'
 
 import useScreenSize from '~/components/composables/useScreenSize'
 import useNewsletterSplash from '~/components/composables/useNewsletterSplash'
 import Navbar from '~/components/Navbar.vue'
 import TopBar from '~/components/TopBar.vue'
+import { useCheckout } from '~/store/checkout'
 
 import { useCustomer } from '~/store/customer'
-import { useShopifyCart } from '~/store/shopifyCart'
 
 export default defineComponent({
   components: {
@@ -32,8 +33,10 @@ export default defineComponent({
     const { i18n, $cookies, req, getRouteBaseName } = useContext()
     const store: any = useStore()
     const route = useRoute()
-    const { getCustomer } = useCustomer()
-    const { getShopifyCart } = useShopifyCart()
+    const { getCustomer, customer } = useCustomer()
+    const { getCheckoutById, mergeCheckoutStoreWithCheckout } = useCheckout()
+    const { checkout } = storeToRefs(useCheckout())
+    const { handleTemporaryCartReplace } = useCheckout()
     const { handleNewsletterSplash } = useNewsletterSplash()
     const {
       isTablet,
@@ -64,7 +67,25 @@ export default defineComponent({
     onMounted(async () => {
       await store.dispatch('user/setUser', null)
       const cartId = $cookies.get('cartId')
-      cartId && await getShopifyCart(cartId)
+      if (cartId) {
+        await handleTemporaryCartReplace(cartId)
+      }
+
+      nextTick(async () => {
+        const checkoutId = $cookies.get('checkoutId')
+
+        if (!customer.id && checkoutId) {
+          await getCheckoutById(checkoutId)
+        }
+
+        if (customer.id && checkoutId) {
+          await getCheckoutById(checkoutId)
+
+          if (customer.lastIncompleteCheckout?.id && customer.lastIncompleteCheckout.id !== checkoutId) {
+            await mergeCheckoutStoreWithCheckout(customer.lastIncompleteCheckout.id)
+          }
+        }
+      })
       handleNewsletterSplash()
     })
 
@@ -99,6 +120,7 @@ export default defineComponent({
       isTablet,
       showAppHeader,
       showTopBar,
+      checkout,
     }
   },
   head: {},

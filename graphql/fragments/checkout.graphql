@@ -1,0 +1,38 @@
+#import "~/graphql/fragments/attributes.graphql"
+#import "~/graphql/fragments/image.graphql"
+
+fragment CHECKOUT_LINE_ITEMS_FRAGMENT on CheckoutLineItemConnection {
+  nodes {
+    customAttributes { ...ATTRIBUTES_FRAGMENT }
+    id
+    quantity
+    title
+    unitPrice { amount, currencyCode }
+    variant {
+      id
+      price {
+        amount
+        currencyCode
+      }
+      product {
+        details: metafield(namespace: "custom", key: "details") { value }
+        featuredImage {...IMAGE_FRAGMENT}
+        isGiftCard
+        title
+        totalInventory,
+      }
+    }
+  }
+}
+
+fragment CHECKOUT_FRAGMENT on Checkout {
+  buyerIdentity { countryCode }
+  completedAt
+  email
+  id
+  note
+  webUrl
+  lineItems(first: 50) {
+    ...CHECKOUT_LINE_ITEMS_FRAGMENT
+  }
+}

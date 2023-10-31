@@ -9,14 +9,14 @@ import logo from '~/assets/svg/logo-call-me-wine.svg'
 import menuIcon from '~/assets/svg/menu.svg'
 import userIcon from '~/assets/svg/user.svg'
 import UserActions from '~/components/Header/UserActions.vue'
+import { useCheckout } from '~/store/checkout'
 import { useCustomer } from '~/store/customer'
-import { useShopifyCart } from '~/store/shopifyCart'
 
 export default defineComponent({
   components: { UserActions },
   setup() {
     const { customer } = storeToRefs(useCustomer())
-    const { shopifyCart, cartTotal, cartTotalQuantity } = storeToRefs(useShopifyCart())
+    const { checkoutTotalQuantity } = storeToRefs(useCheckout())
     const route = useRoute()
     const isDesktop = inject('isDesktop')
     const navbar = ref(null)
@@ -49,8 +49,7 @@ export default defineComponent({
 
     return {
       cartIcon,
-      cartTotal,
-      cartTotalQuantity,
+      checkoutTotalQuantity,
       chevronLeftIcon,
       closeIcon,
       customer,
@@ -63,7 +62,6 @@ export default defineComponent({
       menuBarRef,
       menuIcon,
       navbar,
-      shopifyCart,
       showMobileButton,
       sideBarTop,
       toggleSidebar,
@@ -133,7 +131,7 @@ export default defineComponent({
                   :width="28"
                   :height="28"
                 />
-                <span class="totalItems">{{ cartTotalQuantity }} </span>
+                <span class="totalItems">{{ checkoutTotalQuantity }} </span>
               </NuxtLink>
             </ClientOnly>
           </div>

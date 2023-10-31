@@ -190,3 +190,98 @@ enum MediaContentType {
 }
 
 
+#Possible error codes that can be returned by CheckoutUserError.
+enum CheckoutErrorCode {
+  # Checkout is already completed.
+  ALREADY_COMPLETED
+  # Input email contains an invalid domain name.
+  BAD_DOMAIN
+  # The input value is blank.
+  BLANK
+  # Checkout does not meet discount requirements notice.
+  CART_DOES_NOT_MEET_DISCOUNT_REQUIREMENTS_NOTICE
+  # Customer already used once per customer discount notice.
+  CUSTOMER_ALREADY_USED_ONCE_PER_CUSTOMER_DISCOUNT_NOTICE
+  # Discount already applied.
+  DISCOUNT_ALREADY_APPLIED
+  # Discount code isn't working right now. Please contact us for help.
+  DISCOUNT_CODE_APPLICATION_FAILED
+  # Discount disabled.
+  DISCOUNT_DISABLED
+  # Discount expired.
+  DISCOUNT_EXPIRED
+  # Discount limit reached.
+  DISCOUNT_LIMIT_REACHED
+  # Discount not found.
+  DISCOUNT_NOT_FOUND
+  # Checkout is already completed.
+  EMPTY
+  # Queue token has expired.
+  EXPIRED_QUEUE_TOKEN
+  # Gift card has already been applied.
+  GIFT_CARD_ALREADY_APPLIED
+  # Gift card code is invalid.
+  GIFT_CARD_CODE_INVALID
+  # Gift card currency does not match checkout currency.
+  GIFT_CARD_CURRENCY_MISMATCH
+  # Gift card has no funds left.
+  GIFT_CARD_DEPLETED
+  # Gift card is disabled.
+  GIFT_CARD_DISABLED
+  # Gift card is expired.
+  GIFT_CARD_EXPIRED
+  # Gift card was not found.
+  GIFT_CARD_NOT_FOUND
+  # Gift card cannot be applied to a checkout that contains a gift card.
+  GIFT_CARD_UNUSABLE
+  # The input value should be greater than or equal to the minimum value allowed.
+  GREATER_THAN_OR_EQUAL_TO
+  # Higher value discount applied.
+  HIGHER_VALUE_DISCOUNT_APPLIED
+  # The input value is invalid.
+  INVALID
+  # Cannot specify country and presentment currency code.
+  INVALID_COUNTRY_AND_CURRENCY
+  # Input Zip is invalid for country provided.
+  INVALID_FOR_COUNTRY
+  # Input Zip is invalid for country and province provided.
+  INVALID_FOR_COUNTRY_AND_PROVINCE
+  # Invalid province in country.
+  INVALID_PROVINCE_IN_COUNTRY
+  # Queue token is invalid.
+  INVALID_QUEUE_TOKEN
+  # Invalid region in country.
+  INVALID_REGION_IN_COUNTRY
+  # Invalid state in country.
+  INVALID_STATE_IN_COUNTRY
+  # The input value should be less than the maximum value allowed.
+  LESS_THAN
+  # The input value should be less than or equal to the maximum value allowed.
+  LESS_THAN_OR_EQUAL_TO
+  # Line item was not found in checkout.
+  LINE_ITEM_NOT_FOUND
+  # Checkout is locked.
+  LOCKED
+  # Maximum number of discount codes limit reached.
+  MAXIMUM_DISCOUNT_CODE_LIMIT_REACHED
+  # Missing payment input.
+  MISSING_PAYMENT_INPUT
+  # Not enough in stock.
+  NOT_ENOUGH_IN_STOCK
+  # Input value is not supported.
+  NOT_SUPPORTED
+  # The input value needs to be blank.
+  PRESENT
+  # Product is not published for this customer.
+  PRODUCT_NOT_AVAILABLE
+  # Shipping rate expired.
+  SHIPPING_RATE_EXPIRED
+  # Throttled during checkout.
+  THROTTLED_DURING_CHECKOUT
+  # The input value is too long.
+  TOO_LONG
+  # The amount of the payment does not match the value to be paid.
+  TOTAL_PRICE_MISMATCH
+  # Unable to apply discount.
+  UNABLE_TO_APPLY
+}

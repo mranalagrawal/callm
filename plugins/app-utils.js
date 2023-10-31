@@ -1,16 +1,12 @@
 import { storeToRefs } from 'pinia'
-import { useShopifyCart } from '~/store/shopifyCart'
+import { useCheckout } from '~/store/checkout'
 
 export default (context) => {
-  const store = useShopifyCart()
-  const { shopifyCart } = storeToRefs(useShopifyCart())
+  const checkoutStore = useCheckout()
+  const { checkoutTotalQuantity: quantity } = storeToRefs(useCheckout())
 
-  store.$subscribe(() => {
+  checkoutStore.$subscribe(() => {
     if (window.ReactNativeWebView) {
-      let quantity = 0
-      if (shopifyCart && shopifyCart.value) {
-        quantity = shopifyCart.value.totalQuantity
-      }
       window.ReactNativeWebView.postMessage(JSON.stringify({
         type: 'cartQuantityUpdate',
         quantity,

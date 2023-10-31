@@ -1,0 +1,4 @@
+fragment ATTRIBUTES_FRAGMENT on Attribute {
+  key
+  value
+}
