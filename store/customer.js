@@ -80,9 +80,9 @@ export const useCustomer = defineStore({
 
       const { customerAccessToken, customerUserErrors } = data
       if (customerAccessToken && customerAccessToken.accessToken && typeof customerAccessToken.accessToken === 'string') {
-        const token = customerAccessToken.accessToken
-        this.$nuxt.$cookieHelpers.setToken(token)
-        this.$nuxt.$graphql.default.setHeader('authorization', `Bearer ${token}`)
+        const { accessToken, expiresAt } = customerAccessToken
+        this.$nuxt.$cookieHelpers.setToken(accessToken, expiresAt)
+        this.$nuxt.$graphql.default.setHeader('authorization', `Bearer ${accessToken}`)
         valid = true
       } else {
         SweetAlertToast.fire({
@@ -120,9 +120,9 @@ export const useCustomer = defineStore({
       const { customerAccessToken, customerUserErrors } = data
 
       if (customerAccessToken && customerAccessToken.accessToken && typeof customerAccessToken.accessToken === 'string') {
-        const token = customerAccessToken.accessToken
-        this.$nuxt.$cookieHelpers.setToken(token)
-        this.$nuxt.$graphql.default.setHeader('authorization', `Bearer ${token}`)
+        const { accessToken, expiresAt } = customerAccessToken
+        this.$nuxt.$cookieHelpers.setToken(accessToken, expiresAt)
+        this.$nuxt.$graphql.default.setHeader('authorization', `Bearer ${accessToken}`)
         valid = true
       } else {
         SweetAlertToast.fire({
@@ -138,6 +138,7 @@ export const useCustomer = defineStore({
       await this.$nuxt.$cmwRepo.customer.getCustomer()
         .then(async ({ customer }) => {
           if (customer) {
+            // Todo: Implement shopify customerAccessTokenRenew
             const customerAccessToken = this.$nuxt.$cookieHelpers.getToken()
             this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
 
