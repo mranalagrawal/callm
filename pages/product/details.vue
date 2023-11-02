@@ -479,7 +479,7 @@ export default defineComponent({
             <p v-if="!product.availableForSale" class="text-primary-400">
               {{ $t('product.notAvailable') }}
             </p>
-            <div v-if="isBundle" class="mb-4">
+            <div v-if="isBundle && productDetails.subCategoryName !== 'Mystery Box'" class="mb-4">
               <div class="h4 my-4" v-text="$t('bundle.whatIsInTheBox')" />
               <ul class="mb-4 text-sm text-body">
                 <li v-for="({ product_name, quantity }) in product.bundle" :key="generateKey(product_name)">
