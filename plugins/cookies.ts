@@ -2,7 +2,7 @@ import type { Plugin } from '@nuxt/types'
 
 interface ICookieHelpers {
   getToken(): string
-  setToken(token: string): void
+  setToken(token: string, expires?: Date): void
   onLogout(pageType: string, data?: Record<string, any>): void
 }
 declare module 'vue/types/vue' {
@@ -33,13 +33,19 @@ const cookies: Plugin = ({ app }, inject) => {
 
   const $cookieHelpers: ICookieHelpers = {
     getToken: () => app.$cookies.get(name),
-    setToken: (token: string) => app.$cookies.set(name, token, {
-      path: '/',
-      maxAge: 60 * 60 * 24 * 7,
-      sameSite: 'none',
-      secure: true,
-      // expires // Note: we could use customerAccessToken.expiresAt return by Shopify,
-    }),
+    setToken: (token: string, expiresAt: Date) => {
+      const expires = new Date(expiresAt)
+      const currentDate = new Date()
+      const maxAge = Math.floor((+expires - +currentDate) / 1000)
+
+      app.$cookies.set(name, token, {
+        path: '/',
+        maxAge,
+        sameSite: 'none',
+        secure: true,
+        expires,
+      })
+    },
     onLogout: () => app.$cookies.remove(name),
   }
 
