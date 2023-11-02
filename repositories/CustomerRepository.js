@@ -17,7 +17,7 @@ export default ctx => ({
     }
   },
 
-  // TODO: Move this to the right repository
+  // TODO: Move this to the right repository (CartRepository)
   async getCart(id) {
     try {
       const { cart } = await ctx.$graphql.default.request(getCart, {
