@@ -57,7 +57,7 @@ export default defineComponent({
           collectionRef.value = collection
 
           sortedProducts.value = collection.products
-          sortedProducts.value = sortedProducts.value.map(p => ({
+          sortedProducts.value = sortedProducts.value?.map(p => ({
             ...p,
             sortPrice: Number(p.priceLists[$cmwStore.settings.salesChannel][getCustomerType.value]),
           }))

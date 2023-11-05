@@ -348,4 +348,7 @@ export default {
     whatIsInTheBox: 'The products that you will receive:',
   },
   productDescriptionTab: '{productTitle} DESCRIPTION',
+  eventTitle: 'Callmewine Advent Calendar',
+  eventProductsTitle: 'Try our wine advent calendars',
+
 }

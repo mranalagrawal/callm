@@ -350,4 +350,6 @@ export default {
     whatIsInTheBox: 'I prodotti che riceverai:',
   },
   productDescriptionTab: 'DESCRIZIONE DEL {productTitle}',
+  eventTitle: 'Il Calendario dell’Avvento di Callmewine',
+  eventProductsTitle: 'Prova anche le nostre wine box dell\'Avvento',
 }

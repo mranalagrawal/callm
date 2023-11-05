@@ -33,7 +33,8 @@
       "@nuxt/http",
       "@nuxtjs/sentry",
       "@pinia/nuxt",
-      "cookie-universal-nuxt"
+      "cookie-universal-nuxt",
+      "@nuxtjs/dayjs"
     ]
   },
   "exclude": [

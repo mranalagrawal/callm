@@ -1,81 +1,88 @@
 input MailingAddressInput  {
-		address1: String
-		address2: String
-		city: String
-		company: String
-		country: String
-		firstName: String
-		lastName: String
-		phone: String
-		province: String
-		zip: String
+  address1: String
+  address2: String
+  city: String
+  company: String
+  country: String
+  firstName: String
+  lastName: String
+  phone: String
+  province: String
+  zip: String
 }
 
 input CustomerUpdateInput  {
-		acceptsMarketing: Boolean
-		email: String
-		firstName: String
-		lastName: String
-		password: String
-		phone: String
+  acceptsMarketing: Boolean
+  email: String
+  firstName: String
+  lastName: String
+  password: String
+  phone: String
 }
 
 input CustomerAccessTokenCreateInput {
-		email: String!
-		password: String!
+  email: String!
+  password: String!
 }
 
 input CustomerCreateInput {
-		acceptsMarketing: Boolean
-		email: String!
-		firstName: String
-		lastName: String
-		password: String!
-		phone: String
+  acceptsMarketing: Boolean
+  email: String!
+  firstName: String
+  lastName: String
+  password: String!
+  phone: String
 }
 
 #The input fields to create a merchandise line on a cart.
 input CartLineInput {
-		# An array of key-value pairs that contains additional information about the merchandise line.
-		attributes: [AttributeInput!]
-		# The ID of the merchandise that the buyer intends to purchase.
-		merchandiseId: ID!
-		# The quantity of the merchandise.
-		quantity: Int
-		# The ID of the selling plan that the merchandise is being purchased with.
-		sellingPlanId: ID
+  # An array of key-value pairs that contains additional information about the merchandise line.
+  attributes: [AttributeInput!]
+  # The ID of the merchandise that the buyer intends to purchase.
+  merchandiseId: ID!
+  # The quantity of the merchandise.
+  quantity: Int
+  # The ID of the selling plan that the merchandise is being purchased with.
+  sellingPlanId: ID
 }
 
 # The input fields to update a line item on a cart.
 input CartLineUpdateInput {
-		# An array of key-value pairs that contains additional information about the merchandise line.
-		attributes: [AttributeInput!]
-		# The ID of the merchandise line.
-		id: ID!
-		# The ID of the merchandise for the line item.
-		merchandiseId: ID
-		# The quantity of the line item.
-		quantity: Int
-		# The ID of the selling plan that the merchandise is being purchased with.
-		sellingPlanId: ID
+  # An array of key-value pairs that contains additional information about the merchandise line.
+  attributes: [AttributeInput!]
+  # The ID of the merchandise line.
+  id: ID!
+  # The ID of the merchandise for the line item.
+  merchandiseId: ID
+  # The quantity of the line item.
+  quantity: Int
+  # The ID of the selling plan that the merchandise is being purchased with.
+  sellingPlanId: ID
 }
 
 # The input fields for a filter used to view a subset of products in a collection. By default, the available and price filters are enabled. Filters are customized with the Shopify Search & Discovery app. Learn more about customizing storefront filtering.
 input ProductFilter {
-		# Filter on if the product is available for sale.
-		available: Boolean
-		# A range of prices to filter with-in.
-		#price: PriceRangeFilter TODO: Implement PriceRangeFilter
-		# A product metafield to filter on. TODO: Implement MetafieldFilter
-		#productMetafield: MetafieldFilter
-		# The product type to filter on.
-		productType: String
-		#The product vendor to filter on.
-		productVendor: String
-		#A product tag to filter on.
-		tag: String
-		#A variant metafield to filter on.
-		#variantMetafield: MetafieldFilter TODO: Implement MetafieldFilter
-		#A variant option to filter on.
-		#variantOption: VariantOptionFilter TODO: Implement VariantOptionFilter
+  # Filter on if the product is available for sale.
+  available: Boolean
+  # A range of prices to filter with-in.
+  #price: PriceRangeFilter TODO: Implement PriceRangeFilter
+  # A product metafield to filter on. TODO: Implement MetafieldFilter
+  #productMetafield: MetafieldFilter
+  # The product type to filter on.
+  productType: String
+  #The product vendor to filter on.
+  productVendor: String
+  #A product tag to filter on.
+  tag: String
+  #A variant metafield to filter on.
+  #variantMetafield: MetafieldFilter TODO: Implement MetafieldFilter
+  #A variant option to filter on.
+  #variantOption: VariantOptionFilter TODO: Implement VariantOptionFilter
+}
+
+input MetaobjectHandleInput {
+  # The handle of the metaobject.
+  handle: String!
+  # The type of the metaobject.
+  type: String!
 }

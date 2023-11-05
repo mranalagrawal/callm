@@ -351,4 +351,6 @@ export default {
     whatIsInTheBox: 'Produkte der Degustationskasse:',
   },
   productDescriptionTab: 'BESCHREIBUNG DES {productTitle}',
+  eventTitle: 'Der Callmewine Adventskalender',
+  eventProductsTitle: 'Probieren Sie auch unsere Adventskalender-Weinkisten',
 }
