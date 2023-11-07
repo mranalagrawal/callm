@@ -62,6 +62,8 @@ export default defineComponent({
       }
       if (!this.shopifyCart) { await this.createShopifyCart() }
 
+      // Fixme: make flashMessage work along with typescript or use a better plugin
+      /* @ts-expect-error flashMessage doesn't seem to handle typescript */
       await this.cartLinesAdd(this.product, false, () => this.flashMessage.show({
         status: '',
         message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title}` }),
