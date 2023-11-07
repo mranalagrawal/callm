@@ -781,6 +781,14 @@ export default defineComponent({
             </NuxtLink>
           </div>
         </div>
+        <CmwButton
+          v-if="collectionRef.products?.length"
+          :to="localePath('/collections/calendario-avvento')"
+          class="w-max m-inline-auto my-8"
+          variant="ghost"
+        >
+          <span>{{ $t('common.cta.viewAll') }}</span>
+        </CmwButton>
       </div>
     </div>
     <transition
