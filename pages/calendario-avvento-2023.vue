@@ -283,6 +283,7 @@ export default defineComponent({
         <span class="text-primary">{{ $t('eventTitle') }}</span>
       </h1>
       <div class="w-10/12 m-inline-auto md:w-2/6">
+        <!-- eslint-disable max-len -->
         <svg id="Layer_1" class="overflow-visible" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1242 1683">
           <g id="rectangles">
             <rect
@@ -748,6 +749,7 @@ export default defineComponent({
             </g>
           </g>
         </svg>
+        <!-- eslint-enable max-len -->
       </div>
       <!-- Todo: Call API to get mystery wine boxes -->
       <div>
