@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, ref, useFetch } from '@nuxtjs/composition-api'
 import { generateKey } from '~/utilities/strings'
-import { inRange } from '@/utilities/math'
+import { inRange } from '~/utilities/math'
 
 export default defineComponent({
   setup() {

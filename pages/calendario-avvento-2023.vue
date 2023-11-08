@@ -1,9 +1,10 @@
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useFetch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import metaobject from '~/graphql/queries/metaobject.graphql'
 import type { ICollection } from '~/types/collection'
 import { initialCollectionData } from '~/types/collection'
 import type { ObjType, TImage } from '~/types/types'
+import { getRandNumber } from '~/utilities/math'
 
 export interface IEventDay {
   key: string
@@ -39,6 +40,8 @@ export default defineComponent({
     const currentEvent = ref<IEventDay | undefined>(undefined)
     const date = ref($dayjs().format('YYYY-MM-DD'))
     const collectionRef = ref<ICollection>(initialCollectionData)
+    const forwardAnimationsRef = ref<SVGAnimateElement[]>([])
+    const reverseAnimationsRef = ref<SVGAnimateElement[]>([])
 
     useFetch(async ({ $graphql, $cmwRepo }) => {
       metaObjectRef.value = await $graphql.default.request(metaobject, {
@@ -57,175 +60,175 @@ export default defineComponent({
     const eventClasses = computed(() => ({
       'day-01': {
         cursor: currentDay.value >= 1 ? 'cursor-pointer' : 'cursor-default',
-        translate: currentEvent.value ? 'translate(-50 -200)' : 'translate(0 0)',
+        translate: '-50 -200',
         bg: '#b60101',
         circle: currentDay.value >= 1 ? 'white' : 'none',
         number: currentDay.value >= 1 ? '#b60101' : 'none',
       },
       'day-02': {
         cursor: currentDay.value >= 2 ? 'cursor-pointer' : 'cursor-default',
-        translate: currentEvent.value ? 'translate(-500 0)' : 'translate(0 0)',
+        translate: '-500 0',
         bg: '#b60101',
         circle: currentDay.value >= 2 ? 'white' : 'none',
         number: currentDay.value >= 2 ? '#b60101' : 'none',
       },
       'day-03': {
         cursor: currentDay.value >= 3 ? 'cursor-pointer' : 'cursor-default',
-        translate: currentEvent.value ? 'translate(-500 0)' : 'translate(0 0)',
+        translate: '-500 0',
         bg: '#c63f63',
         circle: currentDay.value >= 3 ? 'white' : 'none',
         number: currentDay.value >= 3 ? '#c63f63' : 'none',
       },
       'day-04': {
         cursor: currentDay.value >= 4 ? 'cursor-pointer' : 'cursor-default',
-        translate: currentEvent.value ? 'translate(-500 0)' : 'translate(0 0)',
+        translate: '-500 0',
         bg: '#c63f63',
         circle: currentDay.value >= 4 ? 'white' : 'none',
         number: currentDay.value >= 4 ? '#c63f63' : 'none',
       },
       'day-05': {
         cursor: currentDay.value >= 5 ? 'cursor-pointer' : 'cursor-default',
-        translate: currentEvent.value ? 'translate(500 50) rotate(20)' : 'translate(0 0)',
+        translate: '500 50',
         bg: '#9a2645',
         circle: currentDay.value >= 5 ? 'white' : 'none',
         number: currentDay.value >= 5 ? '#9a2645' : 'none',
       },
       'day-06': {
         cursor: currentDay.value >= 6 ? 'cursor-pointer' : 'cursor-default',
-        translate: currentEvent.value ? 'translate(-500 0)' : 'translate(0 0)',
+        translate: '-500 0',
         bg: '#7b0404',
         circle: currentDay.value >= 6 ? 'white' : 'none',
         number: currentDay.value >= 6 ? '#7b0404' : 'none',
       },
       'day-07': {
         cursor: currentDay.value >= 7 ? 'cursor-pointer' : 'cursor-default',
-        translate: currentEvent.value ? 'translate(-500 0)' : 'translate(0 0)',
+        translate: '-500 0',
         bg: '#7b0404',
         circle: currentDay.value >= 7 ? 'white' : 'none',
         number: currentDay.value >= 7 ? '#7b0404' : 'none',
       },
       'day-08': {
         cursor: currentDay.value >= 8 ? 'cursor-pointer' : 'cursor-default',
-        translate: currentEvent.value ? 'translate(0 -400)' : 'translate(0 0)',
+        translate: '0 -400',
         bg: '#7b0404',
         circle: currentDay.value >= 8 ? 'white' : 'none',
         number: currentDay.value >= 8 ? '#7b0404' : 'none',
       },
       'day-09': {
         cursor: currentDay.value >= 9 ? 'cursor-pointer' : 'cursor-default',
-        translate: currentEvent.value ? 'translate(-500 0)' : 'translate(0 0)',
+        translate: '-500 0',
         bg: '#9a2645',
         circle: currentDay.value >= 9 ? 'white' : 'none',
         number: currentDay.value >= 9 ? '#9a2645' : 'none',
       },
       'day-10': {
         cursor: currentDay.value >= 10 ? 'cursor-pointer' : 'cursor-default',
-        translate: currentEvent.value ? 'translate(-500 -100) rotate(30)' : 'translate(0 0)',
+        translate: '-500 -100',
         bg: '#c63f63',
         circle: currentDay.value >= 10 ? 'white' : 'none',
         number: currentDay.value >= 10 ? '#c63f63' : 'none',
       },
       'day-11': {
         cursor: currentDay.value >= 11 ? 'cursor-pointer' : 'cursor-default',
-        translate: currentEvent.value ? 'translate(-500 0)' : 'translate(0 0)',
+        translate: '-500 0',
         bg: '#b60101',
         circle: currentDay.value >= 11 ? 'white' : 'none',
         number: currentDay.value >= 11 ? '#b60101' : 'none',
       },
       'day-12': {
         cursor: currentDay.value >= 12 ? 'cursor-pointer' : 'cursor-default',
-        translate: currentEvent.value ? 'translate(-500 0)' : 'translate(0 0)',
+        translate: '-500 0',
         bg: '#9a2645',
         circle: currentDay.value >= 12 ? 'white' : 'none',
         number: currentDay.value >= 12 ? '#9a2645' : 'none',
       },
       'day-13': {
         cursor: currentDay.value >= 13 ? 'cursor-pointer' : 'cursor-default',
-        translate: currentEvent.value ? 'translate(-500 0)' : 'translate(0 0)',
+        translate: '-500 0',
         bg: '#b60101',
         circle: currentDay.value >= 13 ? 'white' : 'none',
         number: currentDay.value >= 13 ? '#b60101' : 'none',
       },
       'day-14': {
         cursor: currentDay.value >= 14 ? 'cursor-pointer' : 'cursor-default',
-        translate: currentEvent.value ? 'translate(-500 0)' : 'translate(0 0)',
+        translate: '-500 0',
         bg: '#7b0404',
         circle: currentDay.value >= 14 ? 'white' : 'none',
         number: currentDay.value >= 14 ? '#7b0404' : 'none',
       },
       'day-15': {
         cursor: currentDay.value >= 15 ? 'cursor-pointer' : 'cursor-default',
-        translate: currentEvent.value ? 'translate(-500 0)' : 'translate(0 0)',
+        translate: '-500 0',
         bg: '#c63f63',
         circle: currentDay.value >= 11 ? 'white' : 'none',
         number: currentDay.value >= 11 ? '#c63f63' : 'none',
       },
       'day-16': {
         cursor: currentDay.value >= 16 ? 'cursor-pointer' : 'cursor-default',
-        translate: currentEvent.value ? 'translate(-20 -500)' : 'translate(0 0)',
+        translate: '-500 0',
         bg: '#9a2645',
         circle: currentDay.value >= 16 ? 'white' : 'none',
         number: currentDay.value >= 16 ? '#9a2645' : 'none',
       },
       'day-17': {
         cursor: currentDay.value >= 17 ? 'cursor-pointer' : 'cursor-default',
-        translate: currentEvent.value ? 'translate(-400 -50)' : 'translate(0 0)',
+        translate: '-400 -50',
         bg: '#b60101',
         circle: currentDay.value >= 17 ? 'white' : 'none',
         number: currentDay.value >= 17 ? '#b60101' : 'none',
       },
       'day-18': {
         cursor: currentDay.value >= 18 ? 'cursor-pointer' : 'cursor-default',
-        translate: currentEvent.value ? 'translate(-500 0)' : 'translate(0 0)',
+        translate: '-500 0',
         bg: '#7b0404',
         circle: currentDay.value >= 18 ? 'white' : 'none',
         number: currentDay.value >= 18 ? '#7b0404' : 'none',
       },
       'day-19': {
         cursor: currentDay.value >= 19 ? 'cursor-pointer' : 'cursor-default',
-        translate: currentEvent.value ? 'translate(-500 0)' : 'translate(0 0)',
+        translate: '-500 0',
         bg: '#9a2645',
         circle: currentDay.value >= 19 ? 'white' : 'none',
         number: currentDay.value >= 19 ? '#9a2645' : 'none',
       },
       'day-20': {
         cursor: currentDay.value >= 20 ? 'cursor-pointer' : 'cursor-default',
-        translate: currentEvent.value ? 'translate(500 -20)' : 'translate(0 0)',
+        translate: '500 -20',
         bg: '#7b0404',
         circle: currentDay.value >= 20 ? 'white' : 'none',
         number: currentDay.value >= 20 ? '#7b0404' : 'none',
       },
       'day-21': {
         cursor: currentDay.value >= 21 ? 'cursor-pointer' : 'cursor-default',
-        translate: currentEvent.value ? 'translate(300 0)' : 'translate(0 0)',
+        translate: '300 0',
         bg: '#c63f63',
         circle: currentDay.value >= 21 ? 'white' : 'none',
         number: currentDay.value >= 21 ? '#c63f63' : 'none',
       },
       'day-22': {
         cursor: currentDay.value >= 22 ? 'cursor-pointer' : 'cursor-default',
-        translate: currentEvent.value ? 'translate(-500 0)' : 'translate(0 0)',
+        translate: '-500 0',
         bg: '#7b0404',
         circle: currentDay.value >= 22 ? 'white' : 'none',
         number: currentDay.value >= 22 ? '#7b0404' : 'none',
       },
       'day-23': {
         cursor: currentDay.value >= 23 ? 'cursor-pointer' : 'cursor-default',
-        translate: currentEvent.value ? 'translate(-500 0)' : 'translate(0 0)',
+        translate: '-500 0',
         bg: '#9a2645',
         circle: currentDay.value >= 22 ? 'white' : 'none',
         number: currentDay.value >= 22 ? '#9a2645' : 'none',
       },
       'day-24': {
         cursor: currentDay.value >= 24 ? 'cursor-pointer' : 'cursor-default',
-        translate: currentEvent.value ? 'translate(-500 0)' : 'translate(0 0)',
+        translate: '-500 0',
         bg: '#7b0404',
         circle: currentDay.value >= 24 ? 'white' : 'none',
         number: currentDay.value >= 24 ? '#7b0404' : 'none',
       },
       'day-25': {
         cursor: currentDay.value >= 25 ? 'cursor-pointer' : 'cursor-default',
-        translate: currentEvent.value ? 'translate(-50 -500)' : 'translate(0 0)',
+        translate: '-50 -500',
         bg: '#b60101',
         circle: currentDay.value >= 25 ? 'white' : 'none',
         number: currentDay.value >= 25 ? '#b60101' : 'none',
@@ -256,7 +259,29 @@ export default defineComponent({
       currentEventDay.value = eventDay
       currentEvent.value = eventDays.value.find(e =>
         $dayjs(e.reference.date.value).format('[day-]DD') === id)
+
+      if (currentEvent.value) {
+        forwardAnimationsRef.value.forEach((animation, index) => {
+          setTimeout(() => {
+            animation.beginElement()
+          }, getRandNumber() * index)
+        })
+      }
     }
+
+    const handleCloseEvent = () => {
+      currentEvent.value = undefined
+      reverseAnimationsRef.value.forEach((animation, index) => {
+        setTimeout(() => {
+          animation.beginElement()
+        }, getRandNumber() * index)
+      })
+    }
+
+    onMounted(() => {
+      forwardAnimationsRef.value = Array.from(document.querySelectorAll('[data-animate-direction="forward"]'))
+      reverseAnimationsRef.value = Array.from(document.querySelectorAll('[data-animate-direction="reverse"]'))
+    })
 
     return {
       collectionRef,
@@ -265,9 +290,12 @@ export default defineComponent({
       currentEventDay,
       date,
       eventClasses,
+      forwardAnimationsRef,
       handleCalendarChange,
       handleClick,
+      handleCloseEvent,
       metaObjectRef,
+      reverseAnimationsRef,
     }
   },
 })
@@ -323,7 +351,11 @@ export default defineComponent({
               transform="translate(833 1528) rotate(-180)" fill="#c63f63" stroke-width="0"
             />
           </g>
-          <g id="day-03" class="cursor-pointer" :class="eventClasses['day-03']['cursor-pointer']" :transform="`${eventClasses['day-03'].translate}`" @click.stop="handleClick">
+          <g id="day-03" :class="eventClasses['day-03'].cursor" @click.stop="handleClick">
+            <AnimateTransformDay from="0 0" :to="eventClasses['day-03'].translate" />
+            <AnimateTransformDay translate="rotate" from="0" to="90" />
+            <AnimateTransformDay :from="eventClasses['day-03'].translate" to="0 0" direction="reverse" />
+            <AnimateTransformDay translate="rotate" from="90" to="0" direction="reverse" />
             <rect
               x="84" y="70" width="208" height="208" rx="63.03" ry="63.03" :fill="eventClasses['day-03'].bg"
               stroke-width="0"
@@ -340,7 +372,9 @@ export default defineComponent({
               />
             </g>
           </g>
-          <g id="day-16" :class="eventClasses['day-16'].cursor" :transform="eventClasses['day-16'].translate" @click.stop="handleClick">
+          <g id="day-16" :class="eventClasses['day-16'].cursor" @click.stop="handleClick">
+            <AnimateTransformDay from="0 0" :to="eventClasses['day-16'].translate" />
+            <AnimateTransformDay :from="eventClasses['day-16'].translate" to="0 0" direction="reverse" />
             <rect
               x="302" y="43" width="208" height="208" rx="63.03" ry="63.03" :fill="eventClasses['day-16'].bg"
               stroke-width="0"
@@ -357,7 +391,9 @@ export default defineComponent({
               />
             </g>
           </g>
-          <g id="day-24" :class="eventClasses['day-24'].cursor" :transform="eventClasses['day-24'].translate" @click.stop="handleClick">
+          <g id="day-24" :class="eventClasses['day-24'].cursor" @click.stop="handleClick">
+            <AnimateTransformDay from="0 0" :to="eventClasses['day-24'].translate" />
+            <AnimateTransformDay :from="eventClasses['day-24'].translate" to="0 0" direction="reverse" />
             <rect
               x="548" y="717" width="385" height="193" rx="64.07" ry="64.07"
               transform="translate(1481 1627) rotate(-180)" :fill="eventClasses['day-24'].bg" stroke-width="0"
@@ -374,7 +410,9 @@ export default defineComponent({
               />
             </g>
           </g>
-          <g id="day-08" :class="eventClasses['day-08'].cursor" :transform="eventClasses['day-08'].translate" @click.stop="handleClick">
+          <g id="day-08" :class="eventClasses['day-08'].cursor" @click.stop="handleClick">
+            <AnimateTransformDay from="0 0" :to="eventClasses['day-08'].translate" />
+            <AnimateTransformDay :from="eventClasses['day-08'].translate" to="0 0" direction="reverse" />
             <rect
               x="947.18" y="30.03" width="208" height="208" rx="63.03" ry="63.03" :fill="eventClasses['day-08'].bg"
               stroke-width="0"
@@ -391,7 +429,9 @@ export default defineComponent({
               />
             </g>
           </g>
-          <g id="day-25" :class="eventClasses['day-25'].cursor" :transform="eventClasses['day-25'].translate" @click.stop="handleClick">
+          <g id="day-25" :class="eventClasses['day-25'].cursor" @click.stop="handleClick">
+            <AnimateTransformDay from="0 0" :to="eventClasses['day-25'].translate" />
+            <AnimateTransformDay :from="eventClasses['day-25'].translate" to="0 0" direction="reverse" />
             <rect
               x="516" y="70" width="415" height="196" rx="63.03" ry="63.03" :fill="eventClasses['day-25'].bg"
               stroke-width="0"
@@ -408,7 +448,9 @@ export default defineComponent({
               />
             </g>
           </g>
-          <g id="day-10" :class="eventClasses['day-10'].cursor" :transform="eventClasses['day-10'].translate" @click.stop="handleClick">
+          <g id="day-10" :class="eventClasses['day-10'].cursor" @click.stop="handleClick">
+            <AnimateTransformDay from="0 0" :to="eventClasses['day-10'].translate" />
+            <AnimateTransformDay :from="eventClasses['day-10'].translate" to="0 0" direction="reverse" />
             <rect
               x="109" y="294" width="208" height="208" rx="63.03" ry="63.03" :fill="eventClasses['day-10'].bg"
               stroke-width="0"
@@ -425,7 +467,9 @@ export default defineComponent({
               />
             </g>
           </g>
-          <g id="day-17" :class="eventClasses['day-17'].cursor" :transform="eventClasses['day-17'].translate" @click.stop="handleClick">
+          <g id="day-17" :class="eventClasses['day-17'].cursor" @click.stop="handleClick">
+            <AnimateTransformDay from="0 0" :to="eventClasses['day-17'].translate" />
+            <AnimateTransformDay :from="eventClasses['day-17'].translate" to="0 0" direction="reverse" />
             <rect
               x="499" y="292" width="205" height="208" rx="64.07" ry="64.07" :fill="eventClasses['day-17'].bg"
               stroke-width="0"
@@ -442,7 +486,9 @@ export default defineComponent({
               />
             </g>
           </g>
-          <g id="day-01" :class="eventClasses['day-01'].cursor" :transform="eventClasses['day-01'].translate" @click.stop="handleClick">
+          <g id="day-01" :class="eventClasses['day-01'].cursor" @click.stop="handleClick">
+            <AnimateTransformDay from="0 0" :to="eventClasses['day-01'].translate" />
+            <AnimateTransformDay :from="eventClasses['day-01'].translate" to="0 0" direction="reverse" />
             <rect
               x="711" y="292" width="190" height="300" rx="64.07" ry="64.07" :fill="eventClasses['day-01'].bg"
               stroke-width="0"
@@ -459,7 +505,9 @@ export default defineComponent({
               />
             </g>
           </g>
-          <g id="day-20" :class="eventClasses['day-20'].cursor" :transform="eventClasses['day-20'].translate" @click.stop="handleClick">
+          <g id="day-20" :class="eventClasses['day-20'].cursor" @click.stop="handleClick">
+            <AnimateTransformDay from="0 0" :to="eventClasses['day-20'].translate" />
+            <AnimateTransformDay :from="eventClasses['day-20'].translate" to="0 0" direction="reverse" />
             <rect
               x="912" y="294" width="184" height="186" rx="64.07" ry="64.07" :fill="eventClasses['day-20'].bg"
               stroke-width="0"
@@ -476,7 +524,9 @@ export default defineComponent({
               />
             </g>
           </g>
-          <g id="day-04" :class="eventClasses['day-04'].cursor" :transform="eventClasses['day-04'].translate" @click.stop="handleClick">
+          <g id="day-04" :class="eventClasses['day-04'].cursor" @click.stop="handleClick">
+            <AnimateTransformDay from="0 0" :to="eventClasses['day-04'].translate" />
+            <AnimateTransformDay :from="eventClasses['day-04'].translate" to="0 0" direction="reverse" />
             <rect
               x="84" y="738" width="184" height="186" rx="64.07" ry="64.07"
               transform="translate(352 1662) rotate(180)" :fill="eventClasses['day-04'].bg" stroke-width="0"
@@ -493,7 +543,9 @@ export default defineComponent({
               />
             </g>
           </g>
-          <g id="day-02" :class="eventClasses['day-02'].cursor" :transform="eventClasses['day-02'].translate" @click.stop="handleClick">
+          <g id="day-02" :class="eventClasses['day-02'].cursor" @click.stop="handleClick">
+            <AnimateTransformDay from="0 0" :to="eventClasses['day-02'].translate" />
+            <AnimateTransformDay :from="eventClasses['day-02'].translate" to="0 0" direction="reverse" />
             <rect
               x="88" y="518" width="188" height="193" rx="64.07" ry="64.07" :fill="eventClasses['day-02'].bg"
               stroke-width="0"
@@ -510,7 +562,9 @@ export default defineComponent({
               />
             </g>
           </g>
-          <g id="day-07" :class="eventClasses['day-07'].cursor" :transform="eventClasses['day-07'].translate" @click.stop="handleClick">
+          <g id="day-07" :class="eventClasses['day-07'].cursor" @click.stop="handleClick">
+            <AnimateTransformDay from="0 0" :to="eventClasses['day-07'].translate" />
+            <AnimateTransformDay :from="eventClasses['day-07'].translate" to="0 0" direction="reverse" />
             <rect
               x="307" y="513" width="385" height="193" rx="64.07" ry="64.07" :fill="eventClasses['day-07'].bg"
               stroke-width="0"
@@ -527,7 +581,9 @@ export default defineComponent({
               />
             </g>
           </g>
-          <g id="day-21" :class="eventClasses['day-21'].cursor" :transform="eventClasses['day-21'].translate" @click.stop="handleClick">
+          <g id="day-21" :class="eventClasses['day-21'].cursor" @click.stop="handleClick">
+            <AnimateTransformDay from="0 0" :to="eventClasses['day-21'].translate" />
+            <AnimateTransformDay :from="eventClasses['day-21'].translate" to="0 0" direction="reverse" />
             <rect
               x="972" y="499" width="184" height="186" rx="64.07" ry="64.07" :fill="eventClasses['day-21'].bg"
               stroke-width="0"
@@ -544,7 +600,9 @@ export default defineComponent({
               />
             </g>
           </g>
-          <g id="day-15" :class="eventClasses['day-15'].cursor" :transform="eventClasses['day-15'].translate" @click.stop="handleClick">
+          <g id="day-15" :class="eventClasses['day-15'].cursor" @click.stop="handleClick">
+            <AnimateTransformDay from="0 0" :to="eventClasses['day-15'].translate" />
+            <AnimateTransformDay :from="eventClasses['day-15'].translate" to="0 0" direction="reverse" />
             <rect
               x="948" y="1145" width="208" height="208" rx="63.03" ry="63.03"
               transform="translate(2104 2498) rotate(180)" :fill="eventClasses['day-15'].bg" stroke-width="0"
@@ -561,7 +619,9 @@ export default defineComponent({
               />
             </g>
           </g>
-          <g id="day-05" :class="eventClasses['day-05'].cursor" :transform="eventClasses['day-05'].translate" @click.stop="handleClick">
+          <g id="day-05" :class="eventClasses['day-05'].cursor" @click.stop="handleClick">
+            <AnimateTransformDay from="0 0" :to="eventClasses['day-05'].translate" />
+            <AnimateTransformDay :from="eventClasses['day-05'].translate" to="0 0" direction="reverse" />
             <rect
               x="960" y="1409" width="184" height="186" rx="64.07" ry="64.07" :fill="eventClasses['day-05'].bg"
               stroke-width="0"
@@ -578,7 +638,9 @@ export default defineComponent({
               />
             </g>
           </g>
-          <g id="day-11" :class="eventClasses['day-11'].cursor" :transform="eventClasses['day-11'].translate" @click.stop="handleClick">
+          <g id="day-11" :class="eventClasses['day-11'].cursor" @click.stop="handleClick">
+            <AnimateTransformDay from="0 0" :to="eventClasses['day-11'].translate" />
+            <AnimateTransformDay :from="eventClasses['day-11'].translate" to="0 0" direction="reverse" />
             <rect
               x="964" y="712" width="188" height="193" rx="64.07" ry="64.07"
               transform="translate(2116 1617) rotate(-180)" :fill="eventClasses['day-11'].bg" stroke-width="0"
@@ -595,7 +657,9 @@ export default defineComponent({
               />
             </g>
           </g>
-          <g id="day-06" :class="eventClasses['day-06'].cursor" :transform="eventClasses['day-06'].translate" @click.stop="handleClick">
+          <g id="day-06" :class="eventClasses['day-06'].cursor" @click.stop="handleClick">
+            <AnimateTransformDay from="0 0" :to="eventClasses['day-06'].translate" />
+            <AnimateTransformDay :from="eventClasses['day-06'].translate" to="0 0" direction="reverse" />
             <rect
               x="923" y="921" width="208" height="208" rx="63.03" ry="63.03"
               transform="translate(2054 2050) rotate(180)" :fill="eventClasses['day-06'].bg" stroke-width="0"
@@ -612,7 +676,9 @@ export default defineComponent({
               />
             </g>
           </g>
-          <g id="day-23" :class="eventClasses['day-23'].cursor" :transform="eventClasses['day-23'].translate" @click.stop="handleClick">
+          <g id="day-23" :class="eventClasses['day-23'].cursor" @click.stop="handleClick">
+            <AnimateTransformDay from="0 0" :to="eventClasses['day-23'].translate" />
+            <AnimateTransformDay :from="eventClasses['day-23'].translate" to="0 0" direction="reverse" />
             <rect
               x="730" y="1172" width="208" height="208" rx="63.03" ry="63.03"
               transform="translate(1668 2552) rotate(180)" :fill="eventClasses['day-23'].bg" stroke-width="0"
@@ -629,7 +695,9 @@ export default defineComponent({
               />
             </g>
           </g>
-          <g id="day-09" :class="eventClasses['day-09'].cursor" :transform="eventClasses['day-09'].translate" @click.stop="handleClick">
+          <g id="day-09" :class="eventClasses['day-09'].cursor" @click.stop="handleClick">
+            <AnimateTransformDay from="0 0" :to="eventClasses['day-09'].translate" />
+            <AnimateTransformDay :from="eventClasses['day-09'].translate" to="0 0" direction="reverse" />
             <rect
               x="536" y="923" width="205" height="208" rx="64.07" ry="64.07"
               transform="translate(1277 2054) rotate(-180)" :fill="eventClasses['day-09'].bg" stroke-width="0"
@@ -646,7 +714,9 @@ export default defineComponent({
               />
             </g>
           </g>
-          <g id="day-22" :class="eventClasses['day-22'].cursor" :transform="eventClasses['day-22'].translate" @click.stop="handleClick">
+          <g id="day-22" :class="eventClasses['day-22'].cursor" @click.stop="handleClick">
+            <AnimateTransformDay from="0 0" :to="eventClasses['day-22'].translate" />
+            <AnimateTransformDay :from="eventClasses['day-22'].translate" to="0 0" direction="reverse" />
             <rect
               x="339.36" y="831" width="190" height="300" rx="64.07" ry="64.07"
               transform="translate(868.72 1962) rotate(-180)" :fill="eventClasses['day-22'].bg" stroke-width="0"
@@ -663,7 +733,9 @@ export default defineComponent({
               />
             </g>
           </g>
-          <g id="day-12" :class="eventClasses['day-12'].cursor" :transform="eventClasses['day-12'].translate" @click.stop="handleClick">
+          <g id="day-12" :class="eventClasses['day-12'].cursor" @click.stop="handleClick">
+            <AnimateTransformDay from="0 0" :to="eventClasses['day-12'].translate" />
+            <AnimateTransformDay :from="eventClasses['day-12'].translate" to="0 0" direction="reverse" />
             <rect
               x="144" y="943" width="184" height="186" rx="64.07" ry="64.07"
               transform="translate(472 2072) rotate(180)" :fill="eventClasses['day-12'].bg" stroke-width="0"
@@ -680,7 +752,9 @@ export default defineComponent({
               />
             </g>
           </g>
-          <g id="day-18" :class="eventClasses['day-18'].cursor" :transform="eventClasses['day-18'].translate" @click.stop="handleClick">
+          <g id="day-18" :class="eventClasses['day-18'].cursor" @click.stop="handleClick">
+            <AnimateTransformDay from="0 0" :to="eventClasses['day-18'].translate" />
+            <AnimateTransformDay :from="eventClasses['day-18'].translate" to="0 0" direction="reverse" />
             <rect
               x="86" y="1184" width="208" height="208" rx="63.03" ry="63.03"
               transform="translate(380 2576) rotate(180)" :fill="eventClasses['day-18'].bg" stroke-width="0"
@@ -697,7 +771,9 @@ export default defineComponent({
               />
             </g>
           </g>
-          <g id="day-13" :class="eventClasses['day-13'].cursor" :transform="eventClasses['day-13'].translate" @click.stop="handleClick">
+          <g id="day-13" :class="eventClasses['day-13'].cursor" @click.stop="handleClick">
+            <AnimateTransformDay from="0 0" :to="eventClasses['day-13'].translate" />
+            <AnimateTransformDay :from="eventClasses['day-13'].translate" to="0 0" direction="reverse" />
             <rect
               x="309" y="1157" width="415" height="196" rx="63.03" ry="63.03"
               transform="translate(1033 2510) rotate(180)" :fill="eventClasses['day-13'].bg" stroke-width="0"
@@ -714,7 +790,9 @@ export default defineComponent({
               />
             </g>
           </g>
-          <g id="day-19" :class="eventClasses['day-19'].cursor" :transform="eventClasses['day-19'].translate" @click.stop="handleClick">
+          <g id="day-19" :class="eventClasses['day-19'].cursor" @click.stop="handleClick">
+            <AnimateTransformDay from="0 0" :to="eventClasses['day-19'].translate" />
+            <AnimateTransformDay :from="eventClasses['day-19'].translate" to="0 0" direction="reverse" />
             <rect
               x="534" y="1407" width="205" height="208" rx="64.07" ry="64.07" :fill="eventClasses['day-19'].bg"
               stroke-width="0"
@@ -731,7 +809,9 @@ export default defineComponent({
               />
             </g>
           </g>
-          <g id="day-14" :class="eventClasses['day-14'].cursor" :transform="eventClasses['day-14'].translate" @click.stop="handleClick">
+          <g id="day-14" :class="eventClasses['day-14'].cursor" @click.stop="handleClick">
+            <AnimateTransformDay from="0 0" :to="eventClasses['day-14'].translate" />
+            <AnimateTransformDay :from="eventClasses['day-14'].translate" to="0 0" direction="reverse" />
             <rect
               x="144" y="1409" width="208" height="208" rx="63.03" ry="63.03" :fill="eventClasses['day-14'].bg"
               stroke-width="0"
@@ -795,7 +875,7 @@ export default defineComponent({
     </div>
     <transition
       name="custom-classes-transition"
-      enter-active-class="animated animate-zoomInUp animate-delay-300"
+      enter-active-class="animated animate-zoomInUp animate-delay-100"
       leave-active-class="animated animate-zoomOutDown"
     >
       <div v-if="currentEvent?.key" class="splash absolute w-screen h-full">
@@ -803,7 +883,7 @@ export default defineComponent({
           :current-event="currentEvent.reference"
           :current-day="currentDay"
           :current-event-day="currentEventDay"
-          @close-event="currentEvent = undefined"
+          @close-event="handleCloseEvent"
         />
       </div>
     </transition>
@@ -836,6 +916,6 @@ export default defineComponent({
 }
 
 svg g {
-  transition: transform 0.6s ease-in-out;
+  transition-timing-function: ease-in-out;
 }
 </style>
