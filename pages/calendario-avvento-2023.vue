@@ -12,8 +12,8 @@ export interface IEventDay {
     product: {
       reference: ObjType<KeyType> // IProductMapped
     }
-    date: { value: string }
     description: { value: string }
+    date: { value: string }
     image: { reference: { image: TImage } }
     title: { value: string }
     type: { value: string }
@@ -26,7 +26,12 @@ export default defineComponent({
       return redirect(localeRoute('/') as unknown as string)
     }
 
+    const startDate = $dayjs('2023-12-01')
     const endDate = $dayjs('2023-12-31')
+
+    if ($cmwStore.isProd && $dayjs().isBefore(startDate)) {
+      return error({ statusCode: 404, message: 'Resource is not found.' })
+    }
 
     if ($dayjs().isAfter(endDate)) {
       return error({ statusCode: 410, message: 'Resource is gone.' })
@@ -59,179 +64,179 @@ export default defineComponent({
 
     const eventClasses = computed(() => ({
       'day-01': {
-        cursor: currentDay.value >= 1 ? 'cursor-pointer' : 'cursor-default',
+        cursor: currentDay.value >= 1 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '-50 -200',
         bg: '#b60101',
-        circle: currentDay.value >= 1 ? 'white' : 'none',
-        number: currentDay.value >= 1 ? '#b60101' : 'none',
+        circle: currentDay.value === 1 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 1 ? '#b60101' : 'var(--inactive-number)',
       },
       'day-02': {
-        cursor: currentDay.value >= 2 ? 'cursor-pointer' : 'cursor-default',
+        cursor: currentDay.value >= 2 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '-500 0',
         bg: '#b60101',
-        circle: currentDay.value >= 2 ? 'white' : 'none',
-        number: currentDay.value >= 2 ? '#b60101' : 'none',
+        circle: currentDay.value === 2 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 2 ? '#b60101' : 'var(--inactive-number)',
       },
       'day-03': {
-        cursor: currentDay.value >= 3 ? 'cursor-pointer' : 'cursor-default',
+        cursor: currentDay.value >= 3 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '-500 0',
         bg: '#c63f63',
-        circle: currentDay.value >= 3 ? 'white' : 'none',
-        number: currentDay.value >= 3 ? '#c63f63' : 'none',
+        circle: currentDay.value === 3 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 3 ? '#c63f63' : 'var(--inactive-number)',
       },
       'day-04': {
-        cursor: currentDay.value >= 4 ? 'cursor-pointer' : 'cursor-default',
+        cursor: currentDay.value >= 4 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '-500 0',
         bg: '#c63f63',
-        circle: currentDay.value >= 4 ? 'white' : 'none',
-        number: currentDay.value >= 4 ? '#c63f63' : 'none',
+        circle: currentDay.value === 4 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 4 ? '#c63f63' : 'var(--inactive-number)',
       },
       'day-05': {
-        cursor: currentDay.value >= 5 ? 'cursor-pointer' : 'cursor-default',
+        cursor: currentDay.value >= 5 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '500 50',
         bg: '#9a2645',
-        circle: currentDay.value >= 5 ? 'white' : 'none',
-        number: currentDay.value >= 5 ? '#9a2645' : 'none',
+        circle: currentDay.value === 5 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 5 ? '#9a2645' : 'var(--inactive-number)',
       },
       'day-06': {
-        cursor: currentDay.value >= 6 ? 'cursor-pointer' : 'cursor-default',
+        cursor: currentDay.value >= 6 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '-500 0',
         bg: '#7b0404',
-        circle: currentDay.value >= 6 ? 'white' : 'none',
-        number: currentDay.value >= 6 ? '#7b0404' : 'none',
+        circle: currentDay.value === 6 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 6 ? '#7b0404' : 'var(--inactive-number)',
       },
       'day-07': {
-        cursor: currentDay.value >= 7 ? 'cursor-pointer' : 'cursor-default',
+        cursor: currentDay.value >= 7 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '-500 0',
         bg: '#7b0404',
-        circle: currentDay.value >= 7 ? 'white' : 'none',
-        number: currentDay.value >= 7 ? '#7b0404' : 'none',
+        circle: currentDay.value === 7 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 7 ? '#7b0404' : 'var(--inactive-number)',
       },
       'day-08': {
-        cursor: currentDay.value >= 8 ? 'cursor-pointer' : 'cursor-default',
+        cursor: currentDay.value >= 8 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '0 -400',
         bg: '#7b0404',
-        circle: currentDay.value >= 8 ? 'white' : 'none',
-        number: currentDay.value >= 8 ? '#7b0404' : 'none',
+        circle: currentDay.value === 8 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 8 ? '#7b0404' : 'var(--inactive-number)',
       },
       'day-09': {
-        cursor: currentDay.value >= 9 ? 'cursor-pointer' : 'cursor-default',
+        cursor: currentDay.value >= 9 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '-500 0',
         bg: '#9a2645',
-        circle: currentDay.value >= 9 ? 'white' : 'none',
-        number: currentDay.value >= 9 ? '#9a2645' : 'none',
+        circle: currentDay.value === 9 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 9 ? '#9a2645' : 'var(--inactive-number)',
       },
       'day-10': {
-        cursor: currentDay.value >= 10 ? 'cursor-pointer' : 'cursor-default',
+        cursor: currentDay.value >= 10 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '-500 -100',
         bg: '#c63f63',
-        circle: currentDay.value >= 10 ? 'white' : 'none',
-        number: currentDay.value >= 10 ? '#c63f63' : 'none',
+        circle: currentDay.value === 10 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 10 ? '#c63f63' : 'var(--inactive-number)',
       },
       'day-11': {
-        cursor: currentDay.value >= 11 ? 'cursor-pointer' : 'cursor-default',
+        cursor: currentDay.value >= 11 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '-500 0',
         bg: '#b60101',
-        circle: currentDay.value >= 11 ? 'white' : 'none',
-        number: currentDay.value >= 11 ? '#b60101' : 'none',
+        circle: currentDay.value === 11 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 11 ? '#b60101' : 'var(--inactive-number)',
       },
       'day-12': {
-        cursor: currentDay.value >= 12 ? 'cursor-pointer' : 'cursor-default',
+        cursor: currentDay.value >= 12 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '-500 0',
         bg: '#9a2645',
-        circle: currentDay.value >= 12 ? 'white' : 'none',
-        number: currentDay.value >= 12 ? '#9a2645' : 'none',
+        circle: currentDay.value === 12 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 12 ? '#9a2645' : 'var(--inactive-number)',
       },
       'day-13': {
-        cursor: currentDay.value >= 13 ? 'cursor-pointer' : 'cursor-default',
+        cursor: currentDay.value >= 13 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '-500 0',
         bg: '#b60101',
-        circle: currentDay.value >= 13 ? 'white' : 'none',
-        number: currentDay.value >= 13 ? '#b60101' : 'none',
+        circle: currentDay.value === 13 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 13 ? '#b60101' : 'var(--inactive-number)',
       },
       'day-14': {
-        cursor: currentDay.value >= 14 ? 'cursor-pointer' : 'cursor-default',
+        cursor: currentDay.value >= 14 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '-500 0',
         bg: '#7b0404',
-        circle: currentDay.value >= 14 ? 'white' : 'none',
-        number: currentDay.value >= 14 ? '#7b0404' : 'none',
+        circle: currentDay.value === 14 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 14 ? '#7b0404' : 'var(--inactive-number)',
       },
       'day-15': {
-        cursor: currentDay.value >= 15 ? 'cursor-pointer' : 'cursor-default',
+        cursor: currentDay.value >= 15 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '-500 0',
         bg: '#c63f63',
-        circle: currentDay.value >= 11 ? 'white' : 'none',
-        number: currentDay.value >= 11 ? '#c63f63' : 'none',
+        circle: currentDay.value === 11 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 11 ? '#c63f63' : 'var(--inactive-number)',
       },
       'day-16': {
-        cursor: currentDay.value >= 16 ? 'cursor-pointer' : 'cursor-default',
+        cursor: currentDay.value >= 16 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '-500 0',
         bg: '#9a2645',
-        circle: currentDay.value >= 16 ? 'white' : 'none',
-        number: currentDay.value >= 16 ? '#9a2645' : 'none',
+        circle: currentDay.value === 16 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 16 ? '#9a2645' : 'var(--inactive-number)',
       },
       'day-17': {
-        cursor: currentDay.value >= 17 ? 'cursor-pointer' : 'cursor-default',
+        cursor: currentDay.value >= 17 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '-400 -50',
         bg: '#b60101',
-        circle: currentDay.value >= 17 ? 'white' : 'none',
-        number: currentDay.value >= 17 ? '#b60101' : 'none',
+        circle: currentDay.value === 17 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 17 ? '#b60101' : 'var(--inactive-number)',
       },
       'day-18': {
-        cursor: currentDay.value >= 18 ? 'cursor-pointer' : 'cursor-default',
+        cursor: currentDay.value >= 18 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '-500 0',
         bg: '#7b0404',
-        circle: currentDay.value >= 18 ? 'white' : 'none',
-        number: currentDay.value >= 18 ? '#7b0404' : 'none',
+        circle: currentDay.value === 18 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 18 ? '#7b0404' : 'var(--inactive-number)',
       },
       'day-19': {
-        cursor: currentDay.value >= 19 ? 'cursor-pointer' : 'cursor-default',
+        cursor: currentDay.value >= 19 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '-500 0',
         bg: '#9a2645',
-        circle: currentDay.value >= 19 ? 'white' : 'none',
-        number: currentDay.value >= 19 ? '#9a2645' : 'none',
+        circle: currentDay.value === 19 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 19 ? '#9a2645' : 'var(--inactive-number)',
       },
       'day-20': {
-        cursor: currentDay.value >= 20 ? 'cursor-pointer' : 'cursor-default',
+        cursor: currentDay.value >= 20 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '500 -20',
         bg: '#7b0404',
-        circle: currentDay.value >= 20 ? 'white' : 'none',
-        number: currentDay.value >= 20 ? '#7b0404' : 'none',
+        circle: currentDay.value === 20 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 20 ? '#7b0404' : 'var(--inactive-number)',
       },
       'day-21': {
-        cursor: currentDay.value >= 21 ? 'cursor-pointer' : 'cursor-default',
+        cursor: currentDay.value >= 21 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '300 0',
         bg: '#c63f63',
-        circle: currentDay.value >= 21 ? 'white' : 'none',
-        number: currentDay.value >= 21 ? '#c63f63' : 'none',
+        circle: currentDay.value === 21 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 21 ? '#c63f63' : 'var(--inactive-number)',
       },
       'day-22': {
-        cursor: currentDay.value >= 22 ? 'cursor-pointer' : 'cursor-default',
+        cursor: currentDay.value >= 22 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '-500 0',
         bg: '#7b0404',
-        circle: currentDay.value >= 22 ? 'white' : 'none',
-        number: currentDay.value >= 22 ? '#7b0404' : 'none',
+        circle: currentDay.value === 22 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 22 ? '#7b0404' : 'var(--inactive-number)',
       },
       'day-23': {
-        cursor: currentDay.value >= 23 ? 'cursor-pointer' : 'cursor-default',
+        cursor: currentDay.value >= 23 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '-500 0',
         bg: '#9a2645',
-        circle: currentDay.value >= 22 ? 'white' : 'none',
-        number: currentDay.value >= 22 ? '#9a2645' : 'none',
+        circle: currentDay.value === 22 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 22 ? '#9a2645' : 'var(--inactive-number)',
       },
       'day-24': {
-        cursor: currentDay.value >= 24 ? 'cursor-pointer' : 'cursor-default',
+        cursor: currentDay.value >= 24 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '-500 0',
         bg: '#7b0404',
-        circle: currentDay.value >= 24 ? 'white' : 'none',
-        number: currentDay.value >= 24 ? '#7b0404' : 'none',
+        circle: currentDay.value === 24 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 24 ? '#7b0404' : 'var(--inactive-number)',
       },
       'day-25': {
-        cursor: currentDay.value >= 25 ? 'cursor-pointer' : 'cursor-default',
+        cursor: currentDay.value >= 25 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '-50 -500',
         bg: '#b60101',
-        circle: currentDay.value >= 25 ? 'white' : 'none',
-        number: currentDay.value >= 25 ? '#b60101' : 'none',
+        circle: currentDay.value === 25 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 25 ? '#b60101' : 'var(--inactive-number)',
       },
     }))
 
@@ -242,6 +247,7 @@ export default defineComponent({
     const handleClick = ({ currentTarget }: PointerEvent) => {
       const { id } = currentTarget as HTMLElement
 
+      console.log({ id })
       if (currentEvent.value) {
         currentEvent.value = undefined
         return
@@ -913,6 +919,11 @@ export default defineComponent({
 
 .splash {
   top: calc(var(--cmw-header-height) + 4rem);
+}
+
+svg {
+  --inactive-bg: none;
+  --inactive-number: rgba(255, 255, 255, 0.2);
 }
 
 svg g {
