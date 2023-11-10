@@ -48,8 +48,8 @@ body.swal2-shown {
 }
 
 .swal2-actions {
-  @apply grid grid-cols-2 gap-4 mt-6 !important;
-  width: min(100%, 20rem);
+  @apply flex gap-4 mt-6 !important;
+  width: min(100%, 30rem);
   margin-inline: auto;
 }
 

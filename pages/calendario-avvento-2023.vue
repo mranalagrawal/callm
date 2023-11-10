@@ -5,6 +5,7 @@ import type { ICollection } from '~/types/collection'
 import { initialCollectionData } from '~/types/collection'
 import type { ObjType, TImage } from '~/types/types'
 import { getRandNumber } from '~/utilities/math'
+import { SweetAlertConfirm } from '~/utilities/Swal'
 
 export interface IEventDay {
   key: string
@@ -21,9 +22,9 @@ export interface IEventDay {
 }
 
 export default defineComponent({
-  middleware({ $cmwStore, $dayjs, localeRoute, redirect, error }) {
+  middleware({ $cmwStore, $dayjs, localePath, redirect, error }) {
     if (!($cmwStore.isIt || $cmwStore.isB2b)) {
-      return redirect(localeRoute('/') as unknown as string)
+      return redirect(localePath('/') as unknown as string)
     }
 
     const startDate = $dayjs('2023-12-01')
@@ -40,6 +41,7 @@ export default defineComponent({
   setup() {
     const { i18n, $dayjs, $cmwStore } = useContext()
     const metaObjectRef = ref<any>([])
+    const showUpcomingSplash = ref<boolean>(false)
     const currentDay = ref($dayjs().get('D'))
     const currentEventDay = ref<number>(0)
     const currentEvent = ref<IEventDay | undefined>(undefined)
@@ -165,8 +167,8 @@ export default defineComponent({
         cursor: currentDay.value >= 15 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '-500 0',
         bg: '#c63f63',
-        circle: currentDay.value === 11 ? 'white' : 'var(--inactive-bg)',
-        number: currentDay.value === 11 ? '#c63f63' : 'var(--inactive-number)',
+        circle: currentDay.value === 15 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 15 ? '#c63f63' : 'var(--inactive-number)',
       },
       'day-16': {
         cursor: currentDay.value >= 16 ? 'cursor-pointer' : 'cursor-pointer',
@@ -247,7 +249,6 @@ export default defineComponent({
     const handleClick = ({ currentTarget }: PointerEvent) => {
       const { id } = currentTarget as HTMLElement
 
-      console.log({ id })
       if (currentEvent.value) {
         currentEvent.value = undefined
         return
@@ -259,6 +260,13 @@ export default defineComponent({
 
       if (eventDay > currentDay.value) {
         currentEvent.value = undefined
+        showUpcomingSplash.value = true
+        SweetAlertConfirm.fire({
+          text: i18n.t('eventUpcomingText'),
+          icon: 'info',
+          cancelButtonText: i18n.t('eventCancelButton'),
+          showConfirmButton: false,
+        })
         return
       }
 
@@ -316,7 +324,7 @@ export default defineComponent({
       <h1 class="h3 text-primary text-center pt-10">
         <span class="text-primary">{{ $t('eventTitle') }}</span>
       </h1>
-      <div class="w-10/12 m-inline-auto md:w-2/6">
+      <div class="w-10/12 m-inline-auto md:w-2/7">
         <!-- eslint-disable max-len -->
         <svg id="Layer_1" class="overflow-visible" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1242 1683">
           <g id="rectangles">
@@ -837,47 +845,52 @@ export default defineComponent({
         </svg>
         <!-- eslint-enable max-len -->
       </div>
-      <!-- Todo: Call API to get mystery wine boxes -->
-      <div>
-        <h2 class="h4 text-primary text-center pt-10">
-          <span class="text-primary">{{ $t('eventProductsTitle') }}</span>
-        </h2>
-        <div
-          v-if="collectionRef.products?.length"
-          class="w-[min(100%,_50rem)] m-inline-auto flex gap-4 overflow-x-auto overflow-y-hidden p-4"
-        >
+      <p class="w-[min(100%,_40rem)] m-inline-auto" v-text="$t('eventNote')" />
+      <ClientOnly>
+        <div>
+          <h2 class="h4 text-primary text-center pt-10">
+            <span class="text-primary">{{ $t('eventProductsTitle') }}</span>
+          </h2>
           <div
-            v-for="product in collectionRef.products"
-            :key="product.shopify_product_id"
-            class="flex-[0_0_160px] h-auto transition transition-box-shadow bg-white rounded-sm border border-gray-light p-2 hover:shadow-elevation"
+            v-if="collectionRef.products?.length"
+            class="w-[min(100%,_50rem)] m-inline-auto flex gap-4 overflow-x-auto overflow-y-hidden p-4"
           >
-            <NuxtLink
-              class="block"
-              :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')"
-              :to="(product?.url) ? localeLocation(product.url) : '/'"
+            <div
+              v-for="product in collectionRef.products"
+              :key="product.shopify_product_id"
+              class="flex-[0_0_160px] h-auto transition transition-box-shadow bg-white rounded-sm border border-gray-light p-2 hover:shadow-elevation"
             >
-              <img :src="product.image.source.url" :alt="product.image.thumbnail.altText" class="w-full h-auto object-contain">
-            </NuxtLink>
-            <NuxtLink
-              class="block"
-              :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')"
-              :to="(product?.url) ? localeLocation(product.url) : '/'"
-            >
-              <span class="line-clamp-3 mt-2 text-center text-xs text-gray-600">
-                {{ product.title }}
-              </span>
-            </NuxtLink>
+              <NuxtLink
+                class="block"
+                :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')"
+                :to="(product?.url) ? localeLocation(product.url) : '/'"
+              >
+                <img
+                  :src="product.image.source.url" :alt="product.image.thumbnail.altText"
+                  class="w-full h-auto object-contain"
+                >
+              </NuxtLink>
+              <NuxtLink
+                class="block"
+                :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')"
+                :to="(product?.url) ? localeLocation(product.url) : '/'"
+              >
+                <span class="line-clamp-3 mt-2 text-center text-xs text-gray-600">
+                  {{ product.title }}
+                </span>
+              </NuxtLink>
+            </div>
           </div>
+          <CmwButton
+            v-if="collectionRef.products?.length"
+            :to="localePath('/collections/calendario-avvento')"
+            class="w-max m-inline-auto my-8"
+            variant="ghost"
+          >
+            <span>{{ $t('common.cta.viewAll') }}</span>
+          </CmwButton>
         </div>
-        <CmwButton
-          v-if="collectionRef.products?.length"
-          :to="localePath('/collections/calendario-avvento')"
-          class="w-max m-inline-auto my-8"
-          variant="ghost"
-        >
-          <span>{{ $t('common.cta.viewAll') }}</span>
-        </CmwButton>
-      </div>
+      </ClientOnly>
     </div>
     <transition
       name="custom-classes-transition"

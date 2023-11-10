@@ -350,5 +350,9 @@ export default {
   productDescriptionTab: '{productTitle} DESCRIPTION',
   eventTitle: 'Callmewine Advent Calendar',
   eventProductsTitle: 'Try our wine advent calendars',
-
+  eventUpcomingText: `The promotion of this day is not yet available!.
+    Click on the cell corresponding to today's date to discover new and fantastic surprises signed Callmewine!`,
+  eventCancelButton: 'Back to calendar',
+  eventNote: `With the Callmewine Advent Calendar every day is a surprise! Behind each box are discounted
+      bottles, gadgets, free samples and much more: for an advent made of great toasts with Callmewine!`,
 }

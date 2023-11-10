@@ -35,6 +35,7 @@ export default defineComponent({
   emits: ['close-event'],
   setup(props) {
     const isDesktop = inject('isDesktop')
+    const { $dayjs } = useContext()
     const { $productMapping, i18n, $cmwStore: { settings: { salesChannel } } } = useContext()
     const { shopifyCart } = storeToRefs(useShopifyCart())
     const { cartLinesAdd, createShopifyCart, cartLinesUpdate } = useShopifyCart()
@@ -44,7 +45,12 @@ export default defineComponent({
     const product = computed<IProductMapped>(() => $productMapping.fromShopify([props.currentEvent.product.reference])[0] || [])
     const description = computed(() => product.value.details?.shortDescription[i18n.locale] || '')
     const giftDescription = computed(() => props.currentEvent.description?.value && shopifyRichTextToHTML(props.currentEvent.description.value))
-
+    const isToday = computed(() => props.currentDay === $dayjs(props.currentEvent.date.value).get('D'))
+    const isGift = computed(() => props.currentEvent.type.value === 'Gift')
+    const productImage = computed(() => props.currentEvent.image
+      ? props.currentEvent.image.reference.image
+      : (product.value.image.source || ''),
+    )
     const amountMax = computed(() => {
       if (!product.value.details.amountMax) { return 0 }
 
@@ -86,15 +92,19 @@ export default defineComponent({
       handleEmailClick,
       handleShowRequestModal,
       isDesktop,
+      isGift,
       isOpen,
+      isToday,
       product,
+      productImage,
       shopifyCart,
       subtractIcon,
     }
   },
   methods: {
-    shopifyRichTextToHTML,
     async addToUserCart() {
+      this.isOpen = true
+
       if (this.currentEventDay !== this.currentDay) {
         await SweetAlertToast.fire({
           icon: 'warning',
@@ -139,19 +149,24 @@ export default defineComponent({
     <div class="">
       <div class="text-2xl text-primary text-center cmw-font-bold py-4" v-text="currentEvent.title.value" />
       <img
-        class="max-w-40 m-inline-auto" :src="currentEvent.image.reference.image.url" :alt="currentEvent.image.reference.image.altText"
+        v-if="productImage?.url"
+        class="max-w-40 m-inline-auto" :src="productImage.url" :alt="productImage.altText"
       >
-      <CmwTextAccordion line-clamp="3">
+      <CmwTextAccordion v-if="!isGift" line-clamp="3">
         <div v-html="description" />
       </CmwTextAccordion>
       <div v-if="currentEvent.type.value === 'Gift'" class="mt-8">
         <div class="text-xs" v-html="giftDescription" />
-        <CmwButton variant="ghost" :to="localePath('/')" class="w-max m-inline-auto">
+        <div v-if="!isToday">
+          La promozione di questo giorno è terminata! Clicca sulla cella corrispondente alla data di oggi per
+          scoprire nuove e fantastiche sorprese firmate Callmewine!
+        </div>
+        <!--        <CmwButton variant="ghost" :to="localePath('/')" class="w-max m-inline-auto">
           <span>{{ $t('common.cta.continueShopping') }}</span>
-        </CmwButton>
+        </CmwButton> -->
       </div>
       <div v-else class="mt-8">
-        <div v-if="currentDay === $dayjs(currentEvent.date.value).get('D')" class="w-[min(100%,_60%)] m-inline-auto">
+        <div v-if="isToday" class="w-[min(100%,_60%)] m-inline-auto">
           <div v-if="!amountMax">
             <p
               v-if="product.quantityAvailable > 0" class="text-success text-center"
@@ -257,9 +272,12 @@ export default defineComponent({
             </CmwButton>
           </div>
         </div>
-      </div>
-      <div>
-        <div>YOU MISS IT MESSAGE HERE?</div>
+        <div v-else>
+          <div>
+            La promozione di questo giorno è terminata! Clicca sulla cella corrispondente alla data di oggi per
+            scoprire nuove e fantastiche sorprese firmate Callmewine!
+          </div>
+        </div>
       </div>
       <CmwButton :to="localePath('/')" variant="text" class="w-max m-inline-auto" @click.native="addToUserCart">
         <span>{{ $t('common.cta.continueShopping') }}</span>
