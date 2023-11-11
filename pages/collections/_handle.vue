@@ -149,15 +149,17 @@ export default defineComponent({
     const handleOnFooterClick = ({ price_from = '', price_to = '' }) => {
       cmwActiveSelect.value = ''
       showMobileFilters.value = false
+      const query = { ...inputParameters.value, ...route.value.query }
+
       router.push(localePath({
-        path: `/collections/${route.value.params.handle}`,
+        name: 'catalog',
         query: {
-          ...route.value.query,
-          price_from,
-          price_to,
+          ...query,
+          price_from, // : this.minPrice,
+          price_to, // : this.maxPrice,
           page: '1',
         },
-      }) as RawLocation)
+      }))
     }
 
     const resetFilter = () => {
@@ -373,6 +375,7 @@ export default defineComponent({
       :aggregations="aggregationsRef" :input-parameters="inputParameters"
       @update-value-selections="handleUpdateValueSelections"
       @update-value="handleUpdateValue"
+      @handle-on-footer-click="handleOnFooterClick"
     />
   </div>
 </template>
