@@ -7,7 +7,6 @@ import {
   ref,
   useContext,
   useRoute,
-  useRouter,
 } from '@nuxtjs/composition-api'
 
 import plusIcon from 'assets/svg/plus.svg'
@@ -39,10 +38,9 @@ export default defineComponent({
       required: true,
     },
   },
-  emits: ['update-value-selections', 'update-value'],
+  emits: ['update-value-selections', 'update-value', 'handle-on-footer-click'],
   setup(props, { emit }) {
     const { i18n } = useContext()
-    const router = useRouter()
     const route = useRoute()
     const isDesktop = inject('isDesktop') as Ref<boolean>
     const showMobileFilters = inject('showMobileFilters') as Ref<boolean>
@@ -108,15 +106,9 @@ export default defineComponent({
 
     const handleOnFooterClick = () => {
       cmwActiveSelect.value = ''
-      showMobileFilters.value = false
-      router.push({
-        path: '/catalog',
-        query: {
-          ...route.value.query,
-          price_from: minPrice.value.toString(),
-          price_to: maxPrice.value.toString(),
-          page: '1',
-        },
+      emit('handle-on-footer-click', {
+        price_from: minPrice.value.toString(),
+        price_to: maxPrice.value.toString(),
       })
     }
 

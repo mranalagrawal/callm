@@ -105,16 +105,6 @@ export default defineComponent({
         price_from: minPrice.value.toString(),
         price_to: maxPrice.value.toString(),
       })
-      // this.showMobileFilters = false
-      /* router.push({
-        path: '/catalog',
-        query: {
-          ...route.value.query,
-          price_from: minPrice.value.toString(),
-          price_to: maxPrice.value.toString(),
-          page: '1',
-        },
-      }) */
     }
 
     const handleUpdateRangeValues = ({ minValue, maxValue }: { minValue: number | string; maxValue: number | string }) => {

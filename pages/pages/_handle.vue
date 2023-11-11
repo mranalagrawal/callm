@@ -77,10 +77,12 @@ export default defineComponent({
     const handleOnFooterClick = ({ price_from = '', price_to = '' }) => {
       cmwActiveSelect.value = ''
       showMobileFilters.value = false
+      const query = { ...inputParameters.value, ...route.value.query }
+
       router.push(localePath({
         name: 'catalog',
         query: {
-          ...route.value.query,
+          ...query,
           price_from,
           price_to,
           page: '1',
