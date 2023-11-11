@@ -409,10 +409,12 @@ export default defineComponent({
     const handleOnFooterClick = ({ price_from = '', price_to = '' }) => {
       cmwActiveSelect.value = ''
       showMobileFilters.value = false
+      const query = { ...props.inputParameters, ...route.value.query }
+
       router.push(localePath({
         name: 'catalog',
         query: {
-          ...route.value.query,
+          ...query,
           price_from, // : this.minPrice,
           price_to, // : this.maxPrice,
           page: '1',
@@ -675,6 +677,7 @@ export default defineComponent({
         :aggregations="aggregations" :input-parameters="inputParameters"
         @update-value-selections="handleUpdateValueSelections"
         @update-value="handleUpdateValue"
+        @handle-on-footer-click="handleOnFooterClick"
       />
     </ClientOnly>
   </div>
