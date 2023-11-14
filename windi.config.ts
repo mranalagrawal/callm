@@ -3,6 +3,7 @@ import { defineConfig } from 'windicss/helpers'
 
 import colors from 'windicss/colors'
 import plugin from 'windicss/plugin'
+// import { } from '@windicss/plugin-animations'
 import type { TStores } from './config/themeConfig'
 import themeConfig from './config/themeConfig'
 
@@ -129,6 +130,7 @@ export default defineConfig({
         'floating-label': 'transform, font-size, opacity',
         'lazy-image': 'opacity, filter',
         'progress-bar': 'width, color, background-color',
+        'filter': 'filter',
       },
       transitionDuration: {
         DEFAULT: '300ms',
@@ -213,6 +215,17 @@ export default defineConfig({
   plugins: [
     require('windicss/plugin/typography'),
     require('windicss/plugin/line-clamp'),
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    require('@windicss/plugin-animations')({
+      settings: {
+        animatedSpeed: 1000,
+        heartBeatSpeed: 1000,
+        hingeSpeed: 2000,
+        bounceInSpeed: 750,
+        bounceOutSpeed: 750,
+        animationDelaySpeed: 1000,
+      },
+    }),
     plugin(({ addComponents }) => {
       const margins = {
         '.m-inline-auto': {

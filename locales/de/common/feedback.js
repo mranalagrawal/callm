@@ -21,6 +21,7 @@ export default {
       customerUpdatePassword: 'Ihr Passwort konnte nicht aktualisiert werden, bitte versuchen Sie es später erneut',
       customerUpdateData: 'Ihre persönlichen Daten konnten nicht aktualisiert werden, bitte versuchen Sie es später erneut',
       addToCartReachLimit: 'Es sind keine Produkte mehr verfügbar',
+      addToCartNotAvailable: 'Dieses Produkt kann nicht gekauft werden',
       newsletterSubscribed: 'Sie sind bereits für unseren Newsletter registriert!',
     },
   },

@@ -190,7 +190,7 @@ export default defineComponent({
     <div v-else>
       <div v-if="!loading">
         <p class="text-lg cmw-font-light mt-5">
-          {{ $t('common.filters.sort.noResultsAlert') }}
+          {{ $t('search.noResultsAlert') }}
         </p>
         <div v-html="$t('search.noResultsMessage')" />
       </div>

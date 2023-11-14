@@ -21,6 +21,7 @@ export default {
       customerUpdatePassword: 'Non è stato possibile aggiornare la tua password, riprova piu tardi',
       customerUpdateData: 'Non è stato possibile aggiornare i tuoi dati personali, riprova piu tardi',
       addToCartReachLimit: 'Non ci sono più prodotti disponibili',
+      addToCartNotAvailable: 'Questo prodotto non è acquistabile',
       newsletterSubscribed: 'Sei già registrato alla nostra newsletter!',
       maxQuantityReached: 'Hai già acquistato la quantità massima per questo prodotto!',
     },

@@ -195,7 +195,11 @@ export default defineComponent({
 
     const strippedContent = computed(() => {
       if (productDetails.value.shortDescription[i18n.locale]) {
-        if ($config.SALECHANNEL === 'cmw_uk_b2c') { return stripHtmlAnchors(productDetails.value.shortDescription[i18n.locale]) } else { return productDetails.value.shortDescription[i18n.locale] }
+        if ($config.SALECHANNEL === 'cmw_uk_b2c') {
+          return stripHtmlAnchors(productDetails.value.shortDescription[i18n.locale])
+        } else {
+          return productDetails.value.shortDescription[i18n.locale]
+        }
         /*
         return productDetails.value.shortDescription[i18n.locale]
           .replace('href', '')

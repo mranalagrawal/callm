@@ -78,6 +78,7 @@
     "@nuxt/types": "2.15.8",
     "@nuxt/typescript-build": "^3.0.1",
     "@nuxtjs/google-fonts": "^2.0.0",
+    "@windicss/plugin-animations": "^1.0.9",
     "@yzfe/svgicon-loader": "^1.2.0",
     "eslint": "^8.38.0",
     "graphql": "^15.8.0",
