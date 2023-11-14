@@ -60,6 +60,7 @@ export default defineComponent({
     const showTopBar = computed(() => (isFromApp.value && isHomePage.value) || !isFromApp.value)
 
     onMounted(async () => {
+      await store.dispatch('user/setUser', null)
       const cartId = $cookies.get('cartId')
       cartId && await getShopifyCart(cartId)
       handleNewsletterSplash()
