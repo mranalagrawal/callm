@@ -69,7 +69,6 @@ table {
   border-collapse: collapse;
   border: 2px solid transparent;
   letter-spacing: 1px;
-  font-family: sans-serif;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
 }
 </style>
