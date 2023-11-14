@@ -14,8 +14,8 @@ export const SweetAlertConfirm = Swal.mixin({
   reverseButtons: true,
   showCloseButton: true,
   // TODO: Implement a nice wine glass loader
-  loaderHtml: '<div class="loader loader--style2" title="1">\n'
-    + '  <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"\n'
+  loaderHtml: '<div class="loader loader--style2 m-auto" title="1">\n'
+    + '  <svg version="1.1" class="m-inline-auto" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"\n'
     + '     width="40px" height="40px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">\n'
     + '  <path fill="#2c8982" d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z">\n'
     + '    <animateTransform attributeType="xml"\n'
@@ -31,11 +31,11 @@ export const SweetAlertConfirm = Swal.mixin({
   customClass: {
     title: 'h3',
     htmlContainer: 'text-body',
-    actions: 'grid grid-cols-2 gap-4 w-3/4',
+    actions: 'w-3/4',
     confirmButton: 'btn-base btn-default',
     denyButton: 'btn-base btn-text',
     cancelButton: 'btn-base btn-text',
-    loader: 'cmw',
+    loader: 'cmw w-full',
   },
 })
 
