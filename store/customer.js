@@ -154,12 +154,6 @@ export const useCustomer = defineStore({
                 }
               })
 
-            // Todo: Remove this when done with Vuex
-            this.$nuxt.store.commit('user/setUser', {
-              token: this.$nuxt.$cookieHelpers.getToken(),
-              customer,
-            })
-
             const approved = (customer.approved && customer.approved.value) ? JSON.parse(customer.approved.value) : false
 
             this.$patch({
@@ -225,7 +219,7 @@ export const useCustomer = defineStore({
         userEmail: this.customer.email,
         userPhone: this.customer.phone,
       })
-      this.$nuxt.store.commit('user/setUser', null)
+      this.$nuxt.store.dispatch('user/setUser', null)
       await this.$nuxt.$cookieHelpers.onLogout()
       this.$reset()
       customerOrders.$reset()
@@ -322,11 +316,6 @@ export const useCustomer = defineStore({
       await this.$nuxt.$cmwRepo.customer.customerUpdate(customer)
         .then(({ customerUpdate: { customer, customerAccessToken, customerUserErrors } }) => {
           if (customer && customer.id) {
-            // Todo: Remove this when done with Vuex
-            this.$nuxt.store.commit('user/setUser', {
-              token: this.$nuxt.$cookieHelpers.getToken(),
-              customer: { ...customer },
-            })
             this.$patch({
               customer: {
                 ...customer,
