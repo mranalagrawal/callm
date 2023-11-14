@@ -78,7 +78,7 @@ export default {
     },
     splash: {
       headline: 'Iscriviti alla nostra Newsletter per ricevere ogni giorno sconti, promozioni e novità!',
-      offer: 'Iscriviti alla nostra Newsletter: ogni giorno info, promozioni e subito per te uno sconto del {discount}% sul tuo primo ordine con un carrello minimo {goal}!',
+      offer: 'Iscriviti alla nostra Newsletter: ogni giorno info, promozioni e subito per te uno sconto del {discount} sul tuo primo ordine con un carrello minimo {goal}!',
       acceptMarketing: 'Accetto di ricevere newsletter e comunicazioni promozionali da Callmewine, come richiesto dal {0}.',
       profiling: 'Acconsento all\'utilizzo dei miei dati per attività di profilazione finalizzate a migliorare la mia esperienza di navigazione e ricevere offerte relative ai miei interessi e alle mie abitudini di acquisto, come previsto dalla {0}.',
       readMore: 'Per ulteriori informazioni, leggi la nostra {0}',

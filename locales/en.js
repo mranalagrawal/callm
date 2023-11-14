@@ -72,14 +72,14 @@ export default {
     subscribed: 'subscribed',
     unsubscribed: 'unsubscribed',
     headline: 'Newsletter with promotions and news on the entire Callmewine catalogue',
-    offer: 'Subscribe to our newsletter and receive a {discount}% discount on your first order!',
+    offer: 'Subscribe to our newsletter and receive a {discount} discount on your first order!',
     frequency: {
       DAILY: 'Daily',
       WEEKLY: 'Weekly',
     },
     splash: {
       headline: 'Subscribe to our newsletter to receive discounts, promotions and news every day!',
-      offer: 'Subscribe to our Newsletter: every day info, promotions and immediately for you a discount of {discount}% on your first order with a minimum cart {goal}!',
+      offer: 'Subscribe to our Newsletter: every day info, promotions and immediately for you a discount of {discount} on your first order with a minimum cart {goal}!',
       acceptMarketing: 'I agree to receive newsletters and promotional communications from Callmewine, as required by the {0}.',
       profiling: 'I consent to the use of my data for profiling activities aimed at improving my browsing experience and receiving offers related to my interests and my purchasing habits, as required by the {0}.',
       readMore: 'For more information, please read our {0}',
