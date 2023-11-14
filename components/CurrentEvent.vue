@@ -11,6 +11,7 @@ import useShowRequestModal from '~/components/ProductBox/useShowRequestModal'
 import { useShopifyCart } from '~/store/shopifyCart'
 import type { IEventDay } from '~/pages/calendario-avvento-2023.vue'
 import type { IProductMapped } from '~/types/product'
+import type { TImage } from '~/types/types'
 import { shopifyRichTextToHTML } from '~/utilities/shopify'
 import { SweetAlertToast } from '~/utilities/Swal'
 
@@ -47,9 +48,9 @@ export default defineComponent({
     const giftDescription = computed(() => props.currentEvent.description?.value && shopifyRichTextToHTML(props.currentEvent.description.value))
     const isToday = computed(() => props.currentDay === $dayjs(props.currentEvent.date.value).get('D'))
     const isGift = computed(() => props.currentEvent.type.value === 'Gift')
-    const productImage = computed(() => props.currentEvent.image
+    const productImage = computed<TImage>(() => props.currentEvent.image
       ? props.currentEvent.image.reference.image
-      : (product.value.image.source || ''),
+      : (product.value.image.source || undefined),
     )
     const amountMax = computed(() => {
       if (!product.value.details.amountMax) { return 0 }
