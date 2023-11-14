@@ -261,6 +261,7 @@ export default {
     removeFilters: 'Remove filters',
   },
   product: {
+    otherVintagesSale: 'Vintage on sale {vintage}',
     otherVintages: 'Other vintages: ',
     tooltip: {
       guide: 'Guide {guide}',

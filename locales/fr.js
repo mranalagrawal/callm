@@ -260,6 +260,7 @@ export default {
     removeFilters: 'Supprimer les filtres',
   },
   product: {
+    otherVintagesSale: 'Millésime en vente {vintage}',
     otherVintages: 'Autres millésimes :',
     tooltip: {
       guide: 'Guide {guide}',

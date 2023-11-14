@@ -27,6 +27,10 @@ export default defineComponent({
         return isObject(value)
       },
     },
+    relatedVintage: {
+      type: Object,
+      default: null,
+    },
     position: {
       type: [String, Number],
       default: '',
@@ -92,7 +96,11 @@ export default defineComponent({
         },
       })
 
-      router.push(localeLocation(props.product.url))
+      const url = props.relatedVintage?.handle
+        ? `/${props.relatedVintage.handle}-P${props.relatedVintage.feId}.htm`
+        : props.product.url
+
+      router.push(localeLocation(url))
     }
 
     const amountMax = computed(() => (Object.keys(props.product.details).length && props.product.details.amountMax[$config.SALECHANNEL]
@@ -219,9 +227,16 @@ hover:shadow-elevation"
     </div>
     <!-- Content Section -->
     <div class="p-2">
-      <div class="relative h4 mt-4">
+      <div class="relative mt-4">
+        <NuxtLink
+          v-if="relatedVintage?.handle"
+          :to="localePath(`/${relatedVintage.handle}-P${relatedVintage.feId}.htm`)"
+          class="block text-xs text-gray-dark"
+        >
+          {{ $t('product.otherVintagesSale', { vintage: relatedVintage.vintageyear }) }}
+        </NuxtLink>
         <button
-          class="text-body text-left hover:(text-primary-400)"
+          class="h4 mt-4 text-body text-left hover:(text-primary-400)"
           :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')"
           @click="handleProductCLick"
         >

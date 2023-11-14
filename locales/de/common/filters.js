@@ -21,5 +21,8 @@ export default {
       price: { highest: 'Höherer Preis', lowest: 'Geringster Preis' },
       recent: { most: 'Neueste', least: 'Älteste' },
     },
+    category: 'Kategorien',
+    subcategory: 'Unterkategorien',
+    wineList: 'Weinkarte',
   },
 }
