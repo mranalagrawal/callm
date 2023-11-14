@@ -21,11 +21,11 @@ export default defineComponent({
     })
 
     const getDiscount = () => ({
-      CMW: 5,
-      B2B: 3,
-      CMW_UK: 10,
-      CMW_FR: 5,
-      CMW_DE: 5,
+      B2B: '3%',
+      CMW: '5%',
+      CMW_DE: '5%',
+      CMW_FR: '5%',
+      CMW_UK: '10%',
     })[$cmwStore.settings.store]
 
     const getGoal = () => ({

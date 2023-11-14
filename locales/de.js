@@ -72,14 +72,14 @@ export default {
     subscribed: 'gezeichnet',
     unsubscribed: 'abgemeldet',
     headline: 'Newsletter mit Aktionen und Neuigkeiten zum gesamten Callmewine-Katalog',
-    offer: 'Abonnieren Sie unseren Newsletter und erhalten Sie {discount}% Rabatt auf Ihre erste Bestellung!',
+    offer: 'Abonnieren Sie unseren Newsletter und erhalten Sie {discount} Rabatt auf Ihre erste Bestellung!',
     frequency: {
       DAILY: 'Täglich',
       WEEKLY: 'Wöchentlich',
     },
     splash: {
       headline: 'Abonnieren Sie unseren Newsletter, um täglich Rabatte, Aktionen und Neuigkeiten zu erhalten!',
-      offer: 'Ab sofort für Sie {discount}% Rabatt auf Ihre erste Bestellung von mindestens {goal}!',
+      offer: 'Ab sofort für Sie {discount} Rabatt auf Ihre erste Bestellung von mindestens {goal}!',
       acceptMarketing: 'Ich bin damit einverstanden, Newsletter und Werbemitteilungen von Callmewine gemäß den {0}-Vorschriften zu erhalten.',
       profiling: 'Ich stimme der Verwendung meiner Daten für Profiling-Aktivitäten zu, die darauf abzielen, mein Surferlebnis zu verbessern und Angebote im Zusammenhang mit meinen Interessen und meinen Kaufgewohnheiten zu erhalten, wie in der {0} vorgeschrieben.',
       readMore: 'Weitere Informationen finden Sie in unserem {0}',
