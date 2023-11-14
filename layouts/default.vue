@@ -62,6 +62,7 @@ export default defineComponent({
     const showAppHeader = computed(() => (isFromApp.value && isHomePage.value))
 
     onMounted(async () => {
+      await store.dispatch('user/setUser', null)
       const cartId = $cookies.get('cartId')
       cartId && await getShopifyCart(cartId)
       handleNewsletterSplash()
