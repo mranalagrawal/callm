@@ -135,6 +135,7 @@ export const useCustomer = defineStore({
     },
 
     async getCustomer(event = '') {
+      this.$nuxt.store.dispatch('user/setUser', null)
       await this.$nuxt.$cmwRepo.customer.getCustomer()
         .then(async ({ customer }) => {
           if (customer) {
