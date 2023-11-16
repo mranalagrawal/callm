@@ -48,6 +48,7 @@ export default defineComponent({
     provide('hasBeenSet', readonly(hasBeenSet))
 
     useFetch(async ({ $cookieHelpers }) => {
+      await store.dispatch('user/setUser', null)
       const accessToken = $cookieHelpers.getToken()
       accessToken && await getCustomer()
 
