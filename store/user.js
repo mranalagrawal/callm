@@ -1,15 +1,15 @@
 export const state = () => ({
-  user: null,
+  user: {},
 })
 
 export const mutations = {
-  SET_USER(state, user) {
-    state.user = user
+  SET_USER(state, payload) {
+    state.user = payload
   },
 }
 
 export const actions = {
-  async setUser({ commit }, user) {
-    commit('SET_USER', user)
+  async setUser({ commit }, payload) {
+    commit('SET_USER', payload)
   },
 }
