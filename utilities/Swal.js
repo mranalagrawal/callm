@@ -30,7 +30,7 @@ export const SweetAlertConfirm = Swal.mixin({
     + '</div>',
   customClass: {
     title: 'h3',
-    htmlContainer: 'text-body',
+    htmlContainer: 'text-body mt-4',
     actions: 'w-3/4',
     confirmButton: 'btn-base btn-default',
     denyButton: 'btn-base btn-text',

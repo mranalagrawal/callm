@@ -10,12 +10,12 @@ import { SweetAlertConfirm } from '~/utilities/Swal'
 export interface IEventDay {
   key: string
   reference: {
-    product: {
-      reference: ObjType<KeyType> // IProductMapped
-    }
-    description: { value: string }
     date: { value: string }
+    description: { value: string }
+    discount: { value: string }
     image: { reference: { image: TImage } }
+    price: { value: string }
+    product: { reference: ObjType<KeyType> } // IProductMapped
     title: { value: string }
     type: { value: string }
   }
@@ -263,9 +263,10 @@ export default defineComponent({
         showUpcomingSplash.value = true
         SweetAlertConfirm.fire({
           text: i18n.t('eventUpcomingText'),
-          icon: 'info',
+          icon: '',
           cancelButtonText: i18n.t('eventCancelButton'),
           showConfirmButton: false,
+
         })
         return
       }

@@ -7,6 +7,8 @@ import addIcon from 'assets/svg/add.svg'
 import cartIcon from 'assets/svg/cart.svg'
 import emailIcon from 'assets/svg/email.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
+import { getLocaleFromCurrencyCode } from '~/utilities/currency'
+import Alert from '~/components/FeedBack/Alert.vue'
 import useShowRequestModal from '~/components/ProductBox/useShowRequestModal'
 import { useShopifyCart } from '~/store/shopifyCart'
 import type { IEventDay } from '~/pages/calendario-avvento-2023.vue'
@@ -18,6 +20,7 @@ import { SweetAlertToast } from '~/utilities/Swal'
 export default defineComponent({
 
   name: 'CurrentEvent',
+  components: { Alert },
   inheritAttrs: false,
   props: {
     currentEvent: {
@@ -37,14 +40,14 @@ export default defineComponent({
   setup(props) {
     const isDesktop = inject('isDesktop')
     const { $dayjs } = useContext()
-    const { $productMapping, i18n, $cmwStore: { settings: { salesChannel } } } = useContext()
+    const { $productMapping, $cmwStore: { settings: { salesChannel } } } = useContext()
     const { shopifyCart } = storeToRefs(useShopifyCart())
     const { cartLinesAdd, createShopifyCart, cartLinesUpdate } = useShopifyCart()
     const { handleShowRequestModal } = useShowRequestModal()
 
     const isOpen = ref(false)
     const product = computed<IProductMapped>(() => $productMapping.fromShopify([props.currentEvent.product.reference])[0] || [])
-    const description = computed(() => product.value.details?.shortDescription[i18n.locale] || '')
+    const description = computed(() => shopifyRichTextToHTML(props.currentEvent.description.value || ''))
     const giftDescription = computed(() => props.currentEvent.description?.value && shopifyRichTextToHTML(props.currentEvent.description.value))
     const isToday = computed(() => props.currentDay === $dayjs(props.currentEvent.date.value).get('D'))
     const isGift = computed(() => props.currentEvent.type.value === 'Gift')
@@ -73,6 +76,18 @@ export default defineComponent({
 
     const canAddMore = computed(() => (amountMax.value - cartQuantity.value) > 0)
 
+    const price = computed(() => {
+      if (props.currentEvent.price?.value) {
+        return JSON.parse(props.currentEvent.price.value)
+      }
+    })
+
+    const discount = computed(() => {
+      if (props.currentEvent.discount?.value) {
+        return JSON.parse(props.currentEvent.discount.value)
+      }
+    })
+
     const handleEmailClick = () => {
       handleShowRequestModal(product.value.details.feId)
     }
@@ -88,6 +103,7 @@ export default defineComponent({
       closeIcon,
       createShopifyCart,
       description,
+      discount,
       emailIcon,
       giftDescription,
       handleEmailClick,
@@ -96,6 +112,7 @@ export default defineComponent({
       isGift,
       isOpen,
       isToday,
+      price,
       product,
       productImage,
       shopifyCart,
@@ -103,6 +120,7 @@ export default defineComponent({
     }
   },
   methods: {
+    getLocaleFromCurrencyCode,
     async addToUserCart() {
       this.isOpen = true
 
@@ -145,26 +163,43 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="w-[min(100%,_40rem)] m-inline-auto bg-white relative p-4 rounded my-4 border border-primary">
+  <div class="c-calendar w-[min(100%,_40rem)] m-inline-auto bg-white relative p-4 rounded my-4 border border-primary">
     <ButtonIcon class="absolute top-2 right-2" :icon="closeIcon" variant="filled-white" @click.native="$emit('close-event')" />
     <div class="">
-      <div class="text-2xl text-primary text-center cmw-font-bold py-4" v-text="currentEvent.title.value" />
-      <img
-        v-if="productImage?.url"
-        class="max-w-40 m-inline-auto" :src="productImage.url" :alt="productImage.altText"
+      <div class="text-2xl text-primary text-center cmw-font-bold py-4 px-4" v-text="currentEvent.title.value" />
+      <div class="relative">
+        <img
+          v-if="productImage?.url"
+          class="max-w-40 m-inline-auto" :src="productImage.url" :alt="productImage.altText"
+        >
+        <Alert
+          v-if="!isToday"
+          class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 -rotate-12 w-max m-inline-auto"
+          severity="error"
+        >
+          La promozione di questo giorno è terminata!
+        </Alert>
+      </div>
+      <div v-if="!isGift" class="text-center" v-html="description" />
+      <div
+        v-if="!isGift && currentEvent.price.value && currentEvent.discount.value"
+        class="flex items-center justify-center gap-4"
       >
-      <CmwTextAccordion v-if="!isGift" line-clamp="3">
-        <div v-html="description" />
-      </CmwTextAccordion>
+        <span class="text-xl">
+          {{
+            $n(Number(discount.amount), 'currency',
+               getLocaleFromCurrencyCode(discount?.currency_code))
+          }}
+        </span>
+        <span class="line-through text-gray text-sm">
+          {{
+            $n(Number(price.amount), 'currency',
+               getLocaleFromCurrencyCode(price?.currency_code))
+          }}
+        </span>
+      </div>
       <div v-if="currentEvent.type.value === 'Gift'" class="mt-8">
         <div class="text-xs" v-html="giftDescription" />
-        <div v-if="!isToday">
-          La promozione di questo giorno è terminata! Clicca sulla cella corrispondente alla data di oggi per
-          scoprire nuove e fantastiche sorprese firmate Callmewine!
-        </div>
-        <!--        <CmwButton variant="ghost" :to="localePath('/')" class="w-max m-inline-auto">
-          <span>{{ $t('common.cta.continueShopping') }}</span>
-        </CmwButton> -->
       </div>
       <div v-else class="mt-8">
         <div v-if="isToday" class="w-[min(100%,_60%)] m-inline-auto">
@@ -273,12 +308,6 @@ export default defineComponent({
             </CmwButton>
           </div>
         </div>
-        <div v-else>
-          <div>
-            La promozione di questo giorno è terminata! Clicca sulla cella corrispondente alla data di oggi per
-            scoprire nuove e fantastiche sorprese firmate Callmewine!
-          </div>
-        </div>
       </div>
       <CmwButton :to="localePath('/')" variant="text" class="w-max m-inline-auto" @click.native="addToUserCart">
         <span>{{ $t('common.cta.continueShopping') }}</span>
@@ -286,3 +315,17 @@ export default defineComponent({
     </div>
   </div>
 </template>
+
+<style>
+.c-calendar h1,
+.c-calendar h2,
+.c-calendar h3,
+.c-calendar h4 {
+  text-align: center;
+}
+
+.c-calendar em {
+  color: lightgray;
+  text-decoration: line-through;
+}
+</style>

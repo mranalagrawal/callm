@@ -351,7 +351,7 @@ export default {
   productDescriptionTab: 'DESCRIPTION DU {productTitle}',
   eventTitle: 'Le Calendrier de l\'Avent de Callmewine',
   eventProductsTitle: 'Essayez également nos coffrets de vin de l\'Avent',
-  eventUpcomingText: `The promotion of this day is not yet available!.
+  eventUpcomingText: `The promotion of this day is not yet available!
     Click on the cell corresponding to today's date to discover new and fantastic surprises signed Callmewine!`,
   eventCancelButton: 'Back to calendar',
   eventNote: `With the Callmewine Advent Calendar every day is a surprise! Behind each box are discounted

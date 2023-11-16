@@ -28,6 +28,12 @@ query metaobject(
           description: field(key: "description") {
             value
           }
+          price: field(key: "price") {
+            value
+          }
+          discount: field(key: "discount") {
+            value
+          }
           type: field(key: "type") {
             value
           }
