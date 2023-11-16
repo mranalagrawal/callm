@@ -5,82 +5,70 @@ import addIcon from 'assets/svg/add.svg'
 import deleteIcon from 'assets/svg/delete.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
 import { storeToRefs } from 'pinia'
-import { useCheckout } from '~/store/checkout'
 import { useCustomer } from '~/store/customer'
-import type { ICheckoutLineItemMapped } from '~/types/checkout'
+import { useShopifyCart } from '~/store/shopifyCart'
+import type { ICartLineItem } from '~/types/order'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 
 export default defineComponent({
   props: {
-    checkoutLineItem: {
-      type: Object as PropType<ICheckoutLineItemMapped>,
+    item: {
+      type: Object as PropType<ICartLineItem>,
       required: true,
     },
     isLast: Boolean,
   },
   setup(props) {
-    const { i18n, $cmwStore } = useContext()
-    const { customerId, getCustomerType } = storeToRefs(useCustomer())
-    const { checkout } = storeToRefs(useCheckout())
-    const { checkoutLineItemsUpdate, checkoutLineItemsRemove } = useCheckout()
-    const { product } = toRefs(props.checkoutLineItem.variant)
+    const { i18n } = useContext()
+    const { customerId } = storeToRefs(useCustomer())
+    const { shopifyCart } = storeToRefs(useShopifyCart())
+    const { merchandise } = toRefs(props.item)
+    const {
+      cartLinesAdd,
+      getFinalPrice,
+      cartLinesRemove,
+      cartLinesUpdate,
+    } = useShopifyCart()
 
-    const cartQuantity = computed(() => props.checkoutLineItem.quantity)
-    const canRemoveOne = computed(() => props.checkoutLineItem.quantity > 0)
-    const canAddMore = computed(() => product.value.isGiftCard
-        || product.value.totalInventory - cartQuantity.value > 0)
+    const finalPrice = getFinalPrice(props.item)
 
-    const finalPrice = computed(() => !product.value.isGiftCard
-      ? JSON.parse(product.value.details.value).priceLists[$cmwStore.settings.salesChannel][getCustomerType.value]
-      : props.checkoutLineItem.variant.price.amount)
-
-    const isOnSale = computed(() => finalPrice.value < +props.checkoutLineItem.variant.price.amount)
-    const productDetails = computed(() => JSON.parse(props.checkoutLineItem.variant?.product?.details?.value))
+    const cartQuantity = computed(() => props.item.quantity)
+    const canAddMore = computed(() => merchandise.value.product.isGiftCard
+      || merchandise.value.product.totalInventory - cartQuantity.value > 0)
+    const isOnSale = computed(() => finalPrice < +merchandise.value.price.amount)
+    const productDetails = computed(() => JSON.parse(props.item?.merchandise?.product?.details?.value))
     const productUrl = computed(() => `/${productDetails.value?.handle[i18n.locale]}-${productDetails.value?.key}.htm`)
 
-    const updateLineItemQuantity = async (quantity: number, isRemoving = false) => {
-      const lineItems = [{
-        customAttributes: props.checkoutLineItem.customAttributes,
-        id: props.checkoutLineItem.id,
-        quantity,
-        variantId: props.checkoutLineItem.variant.id,
-      }]
-
-      await checkoutLineItemsUpdate(checkout.value.id, lineItems, isRemoving)
-    }
-
-    const addQuantity = async () => {
+    const increaseQuantity = async () => {
       if (!canAddMore.value) { return }
 
-      const updatedQuantity = props.checkoutLineItem.quantity + 1
-      await updateLineItemQuantity(updatedQuantity, false)
+      await cartLinesAdd(props.item, true)
     }
 
-    const subtractQuantity = async () => {
-      if (!canRemoveOne.value) { return }
+    const decreaseQuantity = async () => {
+      if (props.item.quantity === 0) { return }
 
-      const updatedQuantity = props.checkoutLineItem.quantity - 1
-      await updateLineItemQuantity(updatedQuantity, true)
-    }
-
-    const removeLineItem = async () => {
-      await checkoutLineItemsRemove(checkout.value.id, [props.checkoutLineItem])
+      await cartLinesUpdate(props.item, props.item.quantity - 1, true)
     }
 
     return {
       addIcon,
-      addQuantity,
       canAddMore,
+      cartLinesAdd,
+      cartLinesRemove,
+      cartLinesUpdate,
+      cartQuantity,
       customerId,
+      decreaseQuantity,
       deleteIcon,
       finalPrice,
+      getFinalPrice,
+      increaseQuantity,
       isOnSale,
-      product,
       productDetails,
       productUrl,
-      removeLineItem,
+      shopifyCart,
       subtractIcon,
-      subtractQuantity,
     }
   },
   methods: {
@@ -91,21 +79,20 @@ export default defineComponent({
 
 <template>
   <div
-    v-if="checkoutLineItem?.quantity > 0"
+    v-if="item?.quantity > 0"
     class="c-cartLineItem mx-3 bg-white py-4 border-b border-b-gray-light"
   >
     <div class="c-cartLineItem__image">
       <NuxtLink v-if="productUrl" :to="localePath(productUrl)">
         <img
-          v-show="product.featuredImage?.url"
-          :src="product.featuredImage?.url"
-          :alt="product.featuredImage?.altText" class="max-h-90px"
+          v-show="item.merchandise.product.featuredImage?.url"
+          :src="item.merchandise.product.featuredImage?.url" alt="" class="max-h-90px"
         >
       </NuxtLink>
     </div>
     <div class="c-cartLineItem__description">
-      <NuxtLink v-if="productUrl" :to="localePath(productUrl)" class="text-sm cmw-font-bold leading-none">
-        {{ product.title }}
+      <NuxtLink v-if="productUrl" :to="localePath(productUrl)" class="text-sm cmw-font-bold">
+        {{ item.merchandise.product.title }}
       </NuxtLink>
     </div>
     <div class="c-cartLineItem__quantity">
@@ -114,17 +101,17 @@ export default defineComponent({
           class="flex transition-colors w-full h-full bg-white rounded-sm border-2 border-primary
             disabled:(border-gray-light opacity-50 cursor-not-allowed)"
           :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
-          @click="subtractQuantity"
+          @click="decreaseQuantity"
         >
           <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="#992545" />
         </button>
-        <span class="text-center">{{ checkoutLineItem.quantity }}</span>
+        <span class="text-center">{{ item.quantity }}</span>
         <button
           class="flex transition-colors w-full h-full bg-white rounded-sm border-2 border-primary
                disabled:(border-gray-light opacity-50 cursor-not-allowed)"
           :disabled="!canAddMore"
           :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
-          @click="addQuantity"
+          @click="increaseQuantity"
         >
           <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="#992545" />
         </button>
@@ -136,15 +123,13 @@ export default defineComponent({
         class="block line-through text-gray text-sm text-right"
       >
         {{
-          $n(Number(checkoutLineItem.quantity * +checkoutLineItem.variant.price.amount),
-             'currency',
-             getLocaleFromCurrencyCode(checkoutLineItem.variant.price.currencyCode))
+          $n(Number(item.quantity * +item.merchandise.price.amount), 'currency', getLocaleFromCurrencyCode(item.merchandise.price.currencyCode))
         }}
       </span>
       <i18n-n
         v-if="finalPrice"
-        class="block text-right" :value="checkoutLineItem.quantity * finalPrice" :format="{ key: 'currency' }"
-        :locale="getLocaleFromCurrencyCode(checkoutLineItem.variant.price.currencyCode)"
+        class="block text-right" :value="item.quantity * finalPrice" :format="{ key: 'currency' }"
+        :locale="getLocaleFromCurrencyCode(item.merchandise.price.currencyCode)"
       >
         <template #currency="slotProps">
           <span class="text-lg cmw-font-bold !leading-none">{{ slotProps.currency }}</span>
@@ -160,8 +145,8 @@ export default defineComponent({
         </template>
       </i18n-n>
     </div>
-    <div class="c-cartLineItem__cta absolute top-4 right-0 md:(relative top-0)">
-      <ButtonIcon class="m-auto" :icon="deleteIcon" variant="icon" size="28" @click.native="removeLineItem" />
+    <div class="c-cartLineItem__cta absolute md:relative top-4 right-0">
+      <ButtonIcon class="m-auto" :icon="deleteIcon" variant="icon" size="28" @click.native="cartLinesRemove([item])" />
     </div>
   </div>
 </template>

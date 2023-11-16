@@ -138,12 +138,3 @@ type MediaImage {
 }
 
 
-
-type CheckoutUserError {
-#  The error code.
-  code: CheckoutErrorCode
-#  The path to the input field that caused the error.
-  field: [String!]
-#  The error message.
-  message: String!
-}

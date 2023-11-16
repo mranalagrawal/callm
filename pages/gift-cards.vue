@@ -7,18 +7,18 @@ import heartFullIcon from 'assets/svg/heart-full.svg'
 import heartIcon from 'assets/svg/heart.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
 import { storeToRefs } from 'pinia'
-import { getCountryFromStore, getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
+import { getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
 import { useCustomer } from '@/store/customer'
-import { useCheckout } from '~/store/checkout'
+import { useShopifyCart } from '~/store/shopifyCart'
 import { generateKey } from '~/utilities/strings'
 import { SweetAlertToast } from '~/utilities/Swal'
 
 export default defineComponent({
   setup() {
     const { $config, $cmwGtmUtils, req } = useContext()
+    const { shopifyCart } = storeToRefs(useShopifyCart())
+    const { createShopifyCart, cartLinesAdd, cartLinesUpdate } = useShopifyCart()
     const { customer, customerId, getCustomerType } = storeToRefs(useCustomer())
-    const { checkout } = storeToRefs(useCheckout())
-    const { checkoutCreate, checkoutLineItemsAdd, checkoutLineItemsUpdate } = useCheckout()
     const isOpen = ref(false)
     const product = ref({})
     const productVariant = ref()
@@ -37,8 +37,11 @@ export default defineComponent({
 
     const amountMax = ref(50)
 
-    const isOnCart = computed(() =>
-      checkout.value.lineItems.find(el => el.variant.id === giftCardVariantSelected.value.id))
+    const isOnCart = computed(() => {
+      const productIncart = shopifyCart.value?.lines?.edges.find(el => el.node.merchandise.id === giftCardVariantSelected.value.id)
+      if (productIncart) { return productIncart.node }
+      return null
+    })
 
     const cartQuantity = computed(() => isOnCart.value ? isOnCart.value.quantity : 0)
 
@@ -95,27 +98,6 @@ export default defineComponent({
       ]
     }
 
-    const removeProductFromCustomerCheckout = async () => {
-      if (cartQuantity.value < 1) {
-        return
-      }
-
-      const currentLineItem = checkout.value.lineItems.find(el => el.variant.id === giftCardVariantSelected.value.id)
-
-      if (!currentLineItem) {
-        return
-      }
-
-      const lineItems = [{
-        customAttributes: currentLineItem.customAttributes,
-        id: currentLineItem.id,
-        quantity: +currentLineItem.quantity - 1,
-        variantId: currentLineItem.variant.id,
-      }]
-
-      await checkoutLineItemsUpdate(checkout.value.id, lineItems)
-    }
-
     onMounted(() => {
       process.browser && $cmwGtmUtils.pushPage('product', {
         event: 'giftCardDetailView',
@@ -147,10 +129,10 @@ export default defineComponent({
       amountMax,
       canAddMore,
       cartIcon,
+      cartLinesAdd,
+      cartLinesUpdate,
       cartQuantity,
-      checkout,
-      checkoutCreate,
-      checkoutLineItemsAdd,
+      createShopifyCart,
       customer,
       customerId,
       emailIcon,
@@ -165,7 +147,7 @@ export default defineComponent({
       product,
       productDetails,
       productVariant,
-      removeProductFromCustomerCheckout,
+      shopifyCart,
       strippedContent,
       subtractIcon,
     }
@@ -175,7 +157,7 @@ export default defineComponent({
     generateKey,
     getPercent,
     getLocaleFromCurrencyCode,
-    async addProductToCustomerCheckout() {
+    async addToUserCart() {
       this.isOpen = true
 
       // check for availability
@@ -187,43 +169,24 @@ export default defineComponent({
         return
       }
 
-      const checkoutCreateInput = {
-        buyerIdentity: {
-          countryCode: getCountryFromStore(this.$cmwStore.settings.store),
-        },
-        ...(this.customer.email && { email: this.customer.email }),
-        note: this.checkout.note,
-        lineItems: [{
-          customAttributes: [
-            {
-              key: 'gtmProductData',
-              value: this.product.gtmProductData ? JSON.stringify(this.product.gtmProductData) : 'false',
-            },
-            {
-              key: 'bundle',
-              value: (this.product.tags) ? this.product.tags.includes('BUNDLE').toString() : 'false',
-            },
-          ],
-          quantity: this.product.quantity || 1,
-          variantId: this.giftCardVariantSelected.id,
-        }],
-      }
+      if (!this.shopifyCart) { await this.createShopifyCart() }
 
-      if (!this.checkout.id) {
-        await this.checkoutCreate(checkoutCreateInput)
-      }
+      await this.cartLinesAdd(this.giftCardVariantSelected)
 
-      this.checkoutLineItemsAdd(this.checkout.id, checkoutCreateInput.lineItems)
-        .then(async () => {
-          this.flashMessage.show({
-            status: '',
-            message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title} ${this.giftCardVariantSelected.title}` }),
-            icon: this.product.image.source.url,
-            iconClass: 'bg-transparent ',
-            time: 8000,
-            blockClass: 'add-product-notification',
-          })
-        })
+      this.flashMessage.show({
+        status: '',
+        message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title} ${this.giftCardVariantSelected.title}` }),
+        icon: this.product.image.source.url,
+        iconClass: 'bg-transparent ',
+        time: 8000,
+        blockClass: 'add-product-notification',
+      })
+    },
+
+    async removeFromUserCart() {
+      if (this.cartQuantity === 0) { return }
+
+      await this.cartLinesUpdate(this.giftCardVariantSelected, this.cartQuantity - 1)
     },
   },
 })
@@ -342,7 +305,7 @@ export default defineComponent({
                       class="gap-2 pl-2 pr-3 py-2"
                       :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
                       :disabled="!giftCardVariantSelected.id"
-                      @click.native="addProductToCustomerCheckout"
+                      @click.native="addToUserCart"
                     >
                       <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
                       <span class="text-sm" v-text="$t('common.cta.addToCart')" />
@@ -360,7 +323,7 @@ export default defineComponent({
                       <button
                         class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l hover:(bg-primary)"
                         :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
-                        @click="removeProductFromCustomerCheckout"
+                        @click="removeFromUserCart"
                       >
                         <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="white" />
                       </button>
@@ -372,7 +335,7 @@ export default defineComponent({
                         hover:(bg-primary)
                         disabled:(bg-primary-100 cursor-not-allowed)"
                         :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
-                        @click="addProductToCustomerCheckout"
+                        @click="addToUserCart"
                       >
                         <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
                       </button>

@@ -2,9 +2,9 @@
 import { computed, defineComponent, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import cartEmptyIcon from 'assets/svg/cart-empty.svg'
-import CheckoutLine from '../components/Checkout/CheckoutLine.vue'
-import { useCheckout } from '~/store/checkout'
+import CartLine from '../components/Cart/CartLine.vue'
 import type { IProductBreadcrumbs } from '~/types/product'
+import { useShopifyCart } from '~/store/shopifyCart'
 
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { generateKey } from '~/utilities/strings'
@@ -12,17 +12,17 @@ import { SweetAlertConfirm } from '~/utilities/Swal'
 import { useCustomer } from '~/store/customer'
 
 export default defineComponent({
-  components: { CheckoutLine },
+  components: { CartLine },
   setup() {
-    const { $cookies, $cmwStore, $config, $cmwGtmUtils, i18n } = useContext()
-    const shipping = ref<any>({})
-    const { getCustomerType } = storeToRefs(useCustomer())
-    const checkoutStore = useCheckout()
-    const { checkout, checkoutTotalPrice, checkoutTotalQuantity } = storeToRefs(checkoutStore)
-    const { goToCheckout } = checkoutStore
+    const { $cookies, $config, $cmwGtmUtils, i18n } = useContext()
+    const shipping = ref({})
+    const shopifyCartStore = useShopifyCart()
+    const { checkout } = useShopifyCart()
+    const { shopifyCart, cartTotal } = storeToRefs(useShopifyCart())
     const customerStore = useCustomer()
     const { customer, customerId } = storeToRefs(customerStore)
-    const orderNote = ref(checkout.value?.note)
+    // @ts-expect-error we need to define shopifyCart type
+    const orderNote = ref(shopifyCart.value?.note)
     const breadcrumb: IProductBreadcrumbs[] = [
       { handle: '/', label: i18n.t('home'), to: '/' },
       { handle: '/cart', label: i18n.t('cart'), to: '/cart' },
@@ -33,7 +33,6 @@ export default defineComponent({
     })
 
     const emptyCart = () => {
-      // Todo: use checkoutLineItemsRemove mutation
       SweetAlertConfirm.fire({
         icon: 'warning',
         text: i18n.t('common.confirm.deleteCart'),
@@ -41,33 +40,35 @@ export default defineComponent({
         confirmButtonText: i18n.t('common.cta.confirm'),
         preConfirm: () => {
           $cookies.remove('cartId')
-          checkoutStore.$reset()
+          shopifyCart.value = null
         },
       })
     }
 
     const handleKeyUp = () => {
-      checkoutStore.$patch({
-        checkout: {
-          ...checkout.value,
+      shopifyCartStore.$patch({
+        shopifyCart: {
+          ...shopifyCart.value as any,
           note: orderNote.value,
         },
       })
     }
 
-    const computedCheckoutTotalPrice = computed(() => checkoutTotalPrice.value($cmwStore.settings.salesChannel, getCustomerType.value))
+    const computedCartTotal = computed(() => cartTotal.value($config.SALECHANNEL))
 
     onMounted(() => {
-      const products = checkout.value?.lineItems?.map((node) => {
-        const gtmProductData = node.customAttributes.find(v => v.key === 'gtmProductData')
-        const productDataJson = gtmProductData?.value ?? null
-        return productDataJson
-          ? {
-              ...JSON.parse(productDataJson),
-              quantity: node.quantity,
-            }
-          : {}
-      },
+      // @ts-expect-error we need to define shopifyCart type
+      const products = shopifyCart.value?.lines?.nodes?.map(
+        (node: { attributes: any[]; quantity: any }) => {
+          const gtmProductData = node.attributes.find(v => v.key === 'gtmProductData')
+          const productDataJson = gtmProductData?.value ?? null
+          return productDataJson
+            ? {
+                ...JSON.parse(productDataJson),
+                quantity: node.quantity,
+              }
+            : {}
+        },
       )
 
       process.browser && $cmwGtmUtils.pushPage('product', {
@@ -88,18 +89,17 @@ export default defineComponent({
     return {
       breadcrumb,
       cartEmptyIcon,
+      cartTotal,
       checkout,
-      checkoutTotalPrice,
-      checkoutTotalQuantity,
-      computedCheckoutTotalPrice,
+      computedCartTotal,
       customer,
       customerId,
       emptyCart,
       fetch,
-      goToCheckout,
       handleKeyUp,
       orderNote,
       shipping,
+      shopifyCart,
     }
   },
 
@@ -118,18 +118,18 @@ export default defineComponent({
       />
 
       <ClientOnly>
-        <div v-if="checkout && computedCheckoutTotalPrice > 0">
+        <div v-if="shopifyCart && computedCartTotal > 0">
           <h1 class="h2 my-4" v-text="$t('cartDetails')" />
           <div class="grid md:(gap-8 grid-cols-[8fr_4fr]) my-4">
             <div class="">
               <div class="flex items-center justify-between border-b border-b-gray mt-4">
-                <small><strong v-text="checkoutTotalQuantity" />
-                  <span>{{ $tc('profile.orders.card.goods', computedCheckoutTotalPrice) }}</span>
+                <small><strong v-text="shopifyCart.totalQuantity" />
+                  <span>{{ $tc('profile.orders.card.goods', computedCartTotal) }}</span>
                 </small>
                 <CmwButton class="w-max ml-auto" variant="text" :label="$t('common.cta.emptyCart')" @click.native="emptyCart" />
               </div>
-              <div v-for="lineItem in checkout.lineItems" :key="generateKey(`checkout-${lineItem.id}`)">
-                <CheckoutLine :checkout-line-item="lineItem" />
+              <div v-for="item in shopifyCart.lines.edges" :key="generateKey(`cart-${item.node.id}`)">
+                <CartLine :item="item.node" />
               </div>
               <div v-if="!$cmwStore.isUk" class="my-8">
                 <div class="h4" v-text="$t('common.forms.cart.cart_order_note_title')" />
@@ -176,7 +176,7 @@ export default defineComponent({
             <div>
               <div class="text-center my-2 overline-2 uppercase text-secondary-700">
                 {{
-                  computedCheckoutTotalPrice < shipping.threshold ? shipping.threshold_not_reached : shipping.threshold_reached
+                  computedCartTotal < shipping.threshold ? shipping.threshold_not_reached : shipping.threshold_reached
                 }}
               </div>
               <div class="shadow mx-auto border border-gray-light rounded overflow-hidden">
@@ -184,7 +184,7 @@ export default defineComponent({
                   <div class="h5">
                     {{ $t('cartTotal') }}
                     <span class="float-right">{{
-                      $n(Number(computedCheckoutTotalPrice), 'currency', getLocaleFromCurrencyCode($cmwStore.isUk ? "GBP" : "EUR"))
+                      $n(Number(computedCartTotal), 'currency', getLocaleFromCurrencyCode($config.STORE === "CMW_UK" ? "GBP" : "EUR"))
                     }}</span>
                   </div>
                   <hr>
@@ -192,7 +192,7 @@ export default defineComponent({
                   <p class="text-sm text-gray-darkest" v-html="$t('shippingCost')" />
                   <CmwButton
                     type="button" variant="default"
-                    @click.native="goToCheckout"
+                    @click.native="checkout()"
                   >
                     {{ $t('common.cta.goToCheckout') }}
                   </CmwButton>
@@ -211,7 +211,6 @@ export default defineComponent({
           </div>
         </div>
       </ClientOnly>
-      <pre class="text-xs">{{ checkout }}</pre>
     </div>
   </div>
 </template>

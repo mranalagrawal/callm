@@ -1,87 +1,89 @@
-<script lang="ts">
-import { computed, ref, useContext, useRoute, useRouter, watch } from '@nuxtjs/composition-api'
+<script>
+import { computed, useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import heartIcon from '~/assets/svg/heart.svg'
 import userIcon from '~/assets/svg/user.svg'
 import cartIcon from '~/assets/svg/cart.svg'
-import { useCheckout } from '~/store/checkout'
 import { useCustomer } from '~/store/customer'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
+import { useShopifyCart } from '~/store/shopifyCart'
 
-type TComponents = 'login' | 'cart' | ''
 export default {
   name: 'UserActions',
   setup() {
-    const { $cmwStore, localePath } = useContext()
-    const route = useRoute()
-    const router = useRouter()
+    const { $config } = useContext()
     const customerStore = useCustomer()
-    const { customer, favoritesCount, getCustomerType } = storeToRefs(customerStore)
-    const { checkoutTotalPrice, checkoutTotalQuantity } = storeToRefs(useCheckout())
-
-    const currentComponent = ref<TComponents>('')
-    const hoveringAction = ref(false)
-    const hoveringComponent = ref(false)
-
-    const handleUserActionMouseEnter = (key: TComponents) => {
-      setTimeout(() => hoveringAction.value = true, 25)
-
-      if (currentComponent.value === key) { return }
-
-      currentComponent.value = key
-    }
-
-    const handleMouseAction = (show = false) => {
-      hoveringAction.value = show
-
-      setTimeout(() => {
-        if (!hoveringAction.value && !hoveringComponent.value) { currentComponent.value = '' }
-      }, 120)
-    }
-
-    const handleUserClick = () => {
-      router.push(localePath(customer.value.id ? '/profile/my-orders' : '/login'))
-    }
-
-    const handleUserActionMouseLeave = () => {
-      hoveringAction.value = false
-
-      setTimeout(() => {
-        if (hoveringComponent.value) { return }
-
-        if (!hoveringComponent.value && !hoveringAction.value) { currentComponent.value = '' }
-      }, 150)
-    }
-
-    const lookUpComponent = (k: 'cart' | 'login') => ({
-      cart: 'HeaderMiniCart',
-      login: 'HeaderLogin',
-    })[k]
-
-    const computedCheckoutTotalPrice = computed(() => checkoutTotalPrice.value($cmwStore.settings.salesChannel, getCustomerType.value))
-    const localeFromCurrency = getLocaleFromCurrencyCode($cmwStore.isUk ? 'GBP' : 'EUR')
-
-    watch(() => route.value, () => {
-      currentComponent.value = ''
-    })
+    const {
+      customer,
+      favoritesCount,
+    } = storeToRefs(customerStore)
+    const shopifyCartStore = useShopifyCart()
+    const { cartTotal, cartTotalQuantity } = storeToRefs(useShopifyCart())
+    const computedCartTotal = computed(() => cartTotal.value($config.SALECHANNEL))
 
     return {
-      cartIcon,
-      checkoutTotalQuantity,
-      computedCheckoutTotalPrice,
-      currentComponent,
+      cartTotal,
+      cartTotalQuantity,
+      computedCartTotal,
       customer,
       customerStore,
       favoritesCount,
-      handleMouseAction,
-      handleUserActionMouseEnter,
-      handleUserActionMouseLeave,
-      handleUserClick,
-      heartIcon,
-      localeFromCurrency,
-      lookUpComponent,
-      userIcon,
+      getLocaleFromCurrencyCode,
+      shopifyCartStore,
     }
+  },
+  data() {
+    return {
+      heartIcon,
+      userIcon,
+      cartIcon,
+      currentComponent: '',
+      hoveringComponent: false,
+      hoveringAction: false,
+      hoveringColor: 'primary-400',
+    }
+  },
+  watch: {
+    $route() {
+      this.currentComponent = false
+    },
+  },
+  methods: {
+    handleUserActionMouseEnter(key) {
+      setTimeout(() => this.hoveringAction = true, 25)
+
+      if (this.currentComponent === key) { return }
+
+      this.currentComponent = key
+    },
+    handleMouseAction(show) {
+      this.hoveringComponent = show
+      setTimeout(() => {
+        if (!this.hoveringAction && !this.hoveringComponent) { this.currentComponent = false }
+      }, 75)
+    },
+    handleUserClick() {
+      if (this.customer.id) {
+        this.$router.push(this.localePath('/profile/my-orders'))
+      } else {
+        this.$router.push(this.localePath('/login'))
+      }
+    },
+    handleUserActionMouseLeave() {
+      this.hoveringAction = false
+
+      setTimeout(() => {
+        if (this.hoveringComponent) { return }
+
+        if (!this.hoveringComponent && !this.hoveringAction) { this.currentComponent = false }
+      }, 150)
+    },
+    lookUpComponent(k) {
+      return ({
+        login: 'HeaderLogin',
+        cart: 'HeaderMiniCart',
+      })[k]
+    },
   },
 }
 </script>
@@ -93,8 +95,8 @@ export default {
         v-if="customer.id"
         :to="localePath('/profile/wishlist')"
         class="peer transition-colors rounded py-3 px-6 bg-white text-center text-body hover:(bg-primary-900 text-white)"
-        @mouseenter.native="handleUserActionMouseEnter('')"
-        @mouseleave.native="handleUserActionMouseLeave"
+        @mouseenter="hoveringColor = 'white'"
+        @mouseleave="hoveringColor = 'primary-400'"
       >
         <span class="relative">
           <VueSvgIcon
@@ -110,7 +112,7 @@ export default {
           <Badge
             v-if="favoritesCount"
             :qty="favoritesCount"
-            bg-color="primary-400"
+            :bg-color="hoveringColor"
             class="transform absolute top-[-6px] right-[-4px]"
           />
         </span>
@@ -137,17 +139,17 @@ export default {
       <button
         class="transition-colors rounded-t py-4 px-8 bg-white hover:(bg-primary-900 text-white)"
         :class="currentComponent === 'cart' ? 'bg-primary-900 text-white' : ''"
-        @click="$router.push(localePath('/cart'))"
+        @click="$router.push(localeLocation('/cart'))"
         @mouseenter="handleUserActionMouseEnter('cart')"
         @mouseleave="handleUserActionMouseLeave"
       >
         <span class="flex gap-1 items-center">
-          <span v-if="checkoutTotalQuantity">
+          <span v-if="cartTotalQuantity">
             <span class="block text-xxs text-left mb-1">{{ $t('cartTotal') }}</span>
             <i18n-n
-              class="flex items-end leading-none" :value="Number(computedCheckoutTotalPrice)"
+              class="flex items-end leading-none" :value="Number(computedCartTotal)"
               :format="{ key: 'currency' }"
-              :locale="localeFromCurrency"
+              :locale="getLocaleFromCurrencyCode($config.STORE === 'CMW_UK' ? 'GBP' : 'EUR')"
             >
               <template #currency="slotProps">
                 <span class="text-sm md:text-base">{{ slotProps.currency }}</span>
@@ -171,14 +173,14 @@ export default {
               height="32px"
             />
             <span
-              v-if="!checkoutTotalQuantity"
+              v-if="!cartTotalQuantity"
               class="block my-0 cmw-font-light text-sm"
             >
               {{ $t('cart') }}
             </span>
             <Badge
-              v-if="checkoutTotalQuantity"
-              :qty="checkoutTotalQuantity"
+              v-if="cartTotalQuantity"
+              :qty="cartTotalQuantity"
               :bg-color="currentComponent === 'cart' ? 'white' : 'primary-400'"
               class="transform absolute top-[-10px] right-[-10px]"
             />

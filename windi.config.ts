@@ -12,7 +12,7 @@ const store: TStores = process.env.STORE as TStores
 function range(size: number, startAt = 1) {
   return Array.from(Array(size).keys()).map(i => i + startAt)
 }
-// ...Array.from({ length: 4 }, (_, i) => `p-${i + 1}`),
+
 export default defineConfig({
   attributify: true,
   safelist: ['nuxt-link-exact-active', 'peer-focus:bg-white', 'peer-focus:bg-black', 'peer-focus:bg-gray-lightest',

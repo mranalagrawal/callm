@@ -1,5 +1,5 @@
-<script lang="ts">
-import type { PropType } from '@nuxtjs/composition-api'
+<script>
+// import type { PropType } from '@nuxtjs/composition-api'
 import { computed, defineComponent, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api'
 import addIcon from 'assets/svg/add.svg'
 import cartIcon from 'assets/svg/cart.svg'
@@ -9,10 +9,11 @@ import heartFullIcon from 'assets/svg/heart-full.svg'
 import heartIcon from 'assets/svg/heart.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
 import { storeToRefs } from 'pinia'
-import type { IProductMapped } from '~/types/product'
+// import type { RawLocation } from 'vue-router'
+// import type { IProductMapped } from '~/types/product'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
-import { useCheckout } from '~/store/checkout'
 import { useCustomer } from '~/store/customer'
+import { useShopifyCart } from '~/store/shopifyCart'
 import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { generateKey } from '~/utilities/strings'
 import { SweetAlertToast } from '~/utilities/Swal'
@@ -22,7 +23,7 @@ export default defineComponent({
   props: {
     product: {
       required: true,
-      type: Object as PropType<IProductMapped>,
+      type: Object, // as PropType<IProductMapped>,
     },
     position: {
       type: [String, Number],
@@ -30,20 +31,10 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const {
-      $config,
-      localePath,
-      $gtm,
-      $cmwGtmUtils,
-    } = useContext()
-    const {
-      customer,
-      customerId,
-      getCustomerType,
-      wishlistArr,
-    } = storeToRefs(useCustomer())
-    const { checkout } = storeToRefs(useCheckout())
-    const { checkoutCreate, checkoutLineItemsAdd, checkoutLineItemsUpdate } = useCheckout()
+    const { $config, localeLocation, $gtm, $cmwGtmUtils } = useContext()
+    const { wishlistArr, getCustomerType, customerId } = storeToRefs(useCustomer())
+    const { shopifyCart } = storeToRefs(useShopifyCart())
+    const { cartLinesAdd, createShopifyCart, cartLinesUpdate } = useShopifyCart()
     const { handleWishlist } = useCustomer()
     const { handleShowRequestModal } = useShowRequestModal()
     const router = useRouter()
@@ -54,27 +45,28 @@ export default defineComponent({
     const isHovering = ref(false)
 
     const notActive = computed(() => props.product.tags.includes('not_active'))
-    // @ts-expect-error When we type customer store we should get the right type from wishlistArr
     const isOnFavourite = computed(() => wishlistArr.value.includes(props.product.source_id))
     const isOnSale = computed(() => props.product.availableFeatures.includes('isInPromotion'))
     const finalPrice = computed(() => {
-      if (!props.product.priceLists || !props.product.priceLists[$config.SALECHANNEL]) {
-        return 0
-      }
+      if (!props.product.priceLists || !props.product.priceLists[$config.SALECHANNEL]) { return 0 }
       return props.product.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0
     })
 
     const amountMax = computed(() =>
       (Object.keys(props.product.details).length
-        && props.product.details.amountMax
-        && props.product.details.amountMax[$config.SALECHANNEL]
+          && props.product.details.amountMax
+          && props.product.details.amountMax[$config.SALECHANNEL]
         && props.product.details.amountMax[$config.SALECHANNEL] <= props.product.quantityAvailable)
         ? props.product.details.amountMax[$config.SALECHANNEL]
         : props.product.quantityAvailable,
     )
 
-    const isOnCart = computed(() =>
-      checkout.value.lineItems.find(el => el.variant.id === props.product.shopify_product_variant_id))
+    const isOnCart = computed(() => {
+      const product = shopifyCart.value?.lines?.edges
+        .find(el => el.node.merchandise.id === props.product.shopify_product_variant_id)
+      if (product) { return product.node }
+      return null
+    })
 
     const cartQuantity = computed(() => isOnCart.value ? isOnCart.value.quantity : 0)
 
@@ -86,40 +78,11 @@ export default defineComponent({
     }))
 
     const priceByLiter = computed(() => {
-      if ($config.STORE !== 'CMW_DE') {
-        return 0
-      } else {
-        return ((finalPrice.value / props.product.milliliters) * 1000)
-      }
+      if ($config.STORE !== 'CMW_DE') { return 0 } else { return ((finalPrice.value / props.product.milliliters) * 1000) }
     })
 
     const handleWishlistClick = () => {
-      handleWishlist({
-        id: props.product.id,
-        isOnFavourite: isOnFavourite.value,
-        gtmProductData: gtmProductData.value,
-      })
-    }
-
-    const removeProductFromCustomerCheckout = async () => {
-      if (cartQuantity.value < 1) {
-        return
-      }
-
-      const currentLineItem = checkout.value.lineItems.find(el => el.variant.id === props.product.shopify_product_variant_id)
-
-      if (!currentLineItem) {
-        return
-      }
-
-      const lineItems = [{
-        customAttributes: currentLineItem.customAttributes,
-        id: currentLineItem.id,
-        quantity: +currentLineItem.quantity - 1,
-        variantId: currentLineItem.variant.id,
-      }]
-
-      await checkoutLineItemsUpdate(checkout.value.id, lineItems, true)
+      handleWishlist({ id: props.product.id, isOnFavourite: isOnFavourite.value, gtmProductData: gtmProductData.value })
     }
 
     const handleProductCLick = async () => {
@@ -140,34 +103,24 @@ export default defineComponent({
         },
       })
 
-      if (!props.product.url) {
-        return
-      }
-
-      router.push(localePath(props.product?.url))
-    }
-
-    const handleEmailClick = () => {
-      handleShowRequestModal(props.product.details.feId)
+      router.push(localeLocation(props.product.url))
     }
 
     return {
       addIcon,
+      cartLinesAdd,
+      priceByLiter,
       amountMax,
       canAddMore,
       cartIcon,
       cartQuantity,
-      checkout,
-      checkoutCreate,
-      checkoutLineItemsAdd,
       closeIcon,
-      customer,
+      createShopifyCart,
       customerId,
       emailIcon,
       finalPrice,
       getCustomerType,
       gtmProductData,
-      handleEmailClick,
       handleProductCLick,
       handleShowRequestModal,
       handleWishlist,
@@ -179,19 +132,19 @@ export default defineComponent({
       isOnFavourite,
       isOnSale,
       isOpen,
-      notActive,
-      priceByLiter,
-      removeProductFromCustomerCheckout,
+      shopifyCart,
       showRequestModal,
       subtractIcon,
+      cartLinesUpdate,
       wishlistArr,
+      notActive,
     }
   },
   methods: {
     generateKey,
     getLocaleFromCurrencyCode,
     getCountryFromStore,
-    async addProductToCustomerCheckout() {
+    async addToUserCart() {
       this.isOpen = true
 
       // check for availability
@@ -203,45 +156,21 @@ export default defineComponent({
         return
       }
 
-      const checkoutCreateInput = {
-        buyerIdentity: {
-          countryCode: getCountryFromStore(this.$cmwStore.settings.store),
-        },
-        ...(this.customer.email && { email: this.customer.email }),
-        note: this.checkout.note,
-        lineItems: [{
-          customAttributes: [
-            {
-              key: 'gtmProductData',
-              value: this.product.gtmProductData ? JSON.stringify(this.product.gtmProductData) : 'false',
-            },
-            {
-              key: 'bundle',
-              value: (this.product.tags) ? this.product.tags.includes('BUNDLE').toString() : 'false',
-            },
-          ],
-          quantity: 1,
-          variantId: this.product.shopify_product_variant_id,
-        }],
-      }
+      if (!this.shopifyCart) { await this.createShopifyCart() }
 
-      if (!this.checkout.id) {
-        await this.checkoutCreate(checkoutCreateInput)
-      }
+      await this.cartLinesAdd(this.product, false, () => this.flashMessage.show({
+        status: '',
+        message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title}` }),
+        icon: this.product.image.source.url,
+        iconClass: 'bg-transparent ',
+        time: 8000,
+        blockClass: 'add-product-notification',
+      }))
+    },
+    async removeFromUserCart() {
+      if (this.cartQuantity === 0) { return }
 
-      this.checkoutLineItemsAdd(this.checkout.id, checkoutCreateInput.lineItems)
-        .then(async () => {
-          // Fixme: make flashMessage work along with typescript or use a better plugin
-          /* @ts-expect-error flashMessage doesn't seem to handle typescript */
-          this.flashMessage.show({
-            status: '',
-            message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title}` }),
-            icon: this.product.image.source.url,
-            iconClass: 'bg-transparent ',
-            time: 8000,
-            blockClass: 'add-product-notification',
-          })
-        })
+      await this.cartLinesUpdate(this.product, this.cartQuantity - 1)
     },
   },
 })
@@ -347,7 +276,7 @@ export default defineComponent({
             variant="ghost"
             :icon="cartIcon"
             :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
-            @click.native="addProductToCustomerCheckout"
+            @click.native="addToUserCart"
           />
           <Badge
             v-show="cartQuantity && !isOpen"
@@ -365,7 +294,7 @@ export default defineComponent({
                  disabled:(bg-primary-100 cursor-not-allowed)"
               :disabled="!canAddMore"
               :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
-              @click="addProductToCustomerCheckout"
+              @click="addToUserCart"
             >
               <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
             </button>
@@ -375,7 +304,7 @@ export default defineComponent({
             <button
               class="flex transition-colors w-[44px] h-[44px] bg-primary-400 rounded-b-sm hover:(bg-primary)"
               :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
-              @click="removeProductFromCustomerCheckout"
+              @click="removeFromUserCart"
             >
               <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="white" />
             </button>
@@ -387,7 +316,7 @@ export default defineComponent({
             class="mr-3 relative"
             :icon="emailIcon"
             :aria-label="$t('enums.accessibility.role.MODAL_OPEN')"
-            @click.native="handleEmailClick"
+            @click.native="() => handleShowRequestModal(product.details.feId)"
           />
         </div>
       </div>

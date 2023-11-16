@@ -5,29 +5,6 @@ import type { TImage } from '~/types/types'
 type TChoice = 'yes' | 'no'
 type TStock = 'in_stock' | 'out_of_stock'
 
-export interface IShopifyProductVariant {
-  availableForSale: boolean
-  barcode: string
-  compareAtPrice: IMoneyV2
-  currentlyNotInStock: boolean
-  id: string // ID!
-  image: TImage
-  details: { value: string }
-  // metafield: Metafield
-  // metafields: String # Todo: [Metafield]!
-  price: IMoneyV2
-  product: any // TODO: Product
-  quantityAvailable?: number
-  requiresShipping?: boolean
-  selectedOptions?: string // Todo: [selectedOptions!]!
-  sku?: string // Todo: [selectedOptions!]!
-  title: string // Todo: [selectedOptions!]!
-  unitPrice?: IMoneyV2
-  unitPriceMeasurement?: string // Todo: UnitPriceMeasurement
-  weight?: string // TODO: Float
-  weightUnit?: string // TODO: WeightUnit
-}
-
 export interface IGtmProductData {
   internal_id: string
   stock_id: string

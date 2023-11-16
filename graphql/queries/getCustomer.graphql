@@ -8,9 +8,6 @@ query getCustomer($customerAccessToken: String!, $lang: LanguageCode!)
     email
     phone
     tags
-    lastIncompleteCheckout {
-      id
-    }
     billing: metafield(namespace: "custom", key: "billing") {
       value
     }

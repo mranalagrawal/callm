@@ -1,9 +1,8 @@
 <script lang="ts">
 import { computed, defineComponent, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import { useCheckout } from '~/store/checkout'
-import { useCustomer } from '~/store/customer'
 import type { IPrismicPageData } from '~/types/prismic'
+import { useShopifyCart } from '~/store/shopifyCart'
 import { initialPageData } from '~/config/prismicConfig'
 import { generateKey } from '~/utilities/strings'
 import deliveryIcon from '~/assets/svg/delivery.svg'
@@ -13,9 +12,8 @@ export default defineComponent({
   name: 'HeaderMiniCart',
   setup() {
     const { $cmwStore } = useContext()
-    const { getCustomerType } = storeToRefs(useCustomer())
-    const { goToCheckout } = useCheckout()
-    const { checkout, checkoutTotalPrice, checkoutTotalQuantity } = storeToRefs(useCheckout())
+    const { checkout } = useShopifyCart()
+    const { shopifyCart, cartTotal } = storeToRefs(useShopifyCart())
 
     const shipping = ref<IPrismicPageData>(initialPageData)
 
@@ -23,16 +21,16 @@ export default defineComponent({
       shipping.value = await $cmwRepo.prismic.getSingle('shipping')
     })
 
-    const computedCheckoutTotalPrice = computed(() => checkoutTotalPrice.value($cmwStore.settings.salesChannel, getCustomerType.value))
+    const computedCartTotal = computed(() => cartTotal.value($cmwStore.settings.salesChannel))
 
     return {
+      cartTotal,
       checkCircularIcon,
       checkout,
-      checkoutTotalQuantity,
-      computedCheckoutTotalPrice,
+      computedCartTotal,
       deliveryIcon,
-      goToCheckout,
       shipping,
+      shopifyCart,
     }
   },
   methods: { generateKey },
@@ -44,29 +42,29 @@ export default defineComponent({
     <div class="border-t-4 border-t-primary-900 pt-4">
       <div>
         <div v-if="shipping?.threshold">
-          <div v-if="checkoutTotalQuantity > 0" class="min-w-[640px]">
+          <div v-if="shopifyCart && shopifyCart.totalQuantity > 0" class="min-w-[640px]">
             <div
               class="text-secondary-700 flex items-center justify-center gap-2 text-sm uppercase pb-4"
             >
               <VueSvgIcon
-                :data="computedCheckoutTotalPrice < shipping.threshold ? deliveryIcon : checkCircularIcon" width="24"
+                :data="computedCartTotal < shipping.threshold ? deliveryIcon : checkCircularIcon" width="24"
                 height="24"
               />
               <span>{{
-                computedCheckoutTotalPrice < shipping.threshold ? shipping.threshold_not_reached : shipping.threshold_reached
+                computedCartTotal < shipping.threshold ? shipping.threshold_not_reached : shipping.threshold_reached
               }}</span>
             </div>
             <div class="px-4">
               <hr class="border-gray-light">
             </div>
             <div class="max-h-[360px] overflow-y-auto overflow-x-hidden">
-              <div v-for="lineItem in checkout.lineItems" :key="generateKey(`mini-cart-${lineItem.id}`)">
-                <CheckoutLine :checkout-line-item="lineItem" />
+              <div v-for="item in shopifyCart.lines.edges" :key="generateKey(`mini-cart-${item.node.id}`)">
+                <CartLine :item="item.node" />
               </div>
             </div>
             <div class="grid grid-cols-2 gap-4 bg-gray-lightest p-4">
               <CmwButton variant="ghost" :to="localePath('/cart')" :label="$t('navbar.cart.detail')" />
-              <CmwButton :label="$t('navbar.cart.checkout')" @click.native="goToCheckout" />
+              <CmwButton :label="$t('navbar.cart.checkout')" @click.native="checkout" />
             </div>
           </div>
           <div v-else class="min-w-[425px] text-center px-6 pb-4">

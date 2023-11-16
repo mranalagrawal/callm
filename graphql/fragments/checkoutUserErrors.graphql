@@ -1,3 +1,0 @@
-fragment CHECKOUT_USER_ERRORS_FRAGMENT on CheckoutUserError {
-    message
-}

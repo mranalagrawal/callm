@@ -1,7 +1,7 @@
 mutation cartNoteUpdate($cartId: ID!, $note: String) {
   cartNoteUpdate(cartId: $cartId, note: $note) {
     cart {
-      # Checkout fields
+      # Cart fields
       note
     }
     userErrors {

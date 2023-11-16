@@ -3,4 +3,3 @@ scalar Decimal
 scalar HTML
 scalar JSON
 scalar URL
-scalar UnsignedInt64
