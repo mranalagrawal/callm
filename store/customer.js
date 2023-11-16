@@ -220,8 +220,8 @@ export const useCustomer = defineStore({
         userEmail: this.customer.email,
         userPhone: this.customer.phone,
       })
-      this.$nuxt.store.dispatch('user/setUser', {})
-      await this.$nuxt.$cookieHelpers.onLogout()
+      await this.$nuxt.store.dispatch('user/setUser', {})
+      this.$nuxt.$cookieHelpers.onLogout()
       this.$reset()
       customerOrders.$reset()
       this.$nuxt.$cookies.remove('newsletter')
