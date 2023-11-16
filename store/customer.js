@@ -135,7 +135,7 @@ export const useCustomer = defineStore({
     },
 
     async getCustomer(event = '') {
-      this.$nuxt.store.dispatch('user/setUser', null)
+      this.$nuxt.store.dispatch('user/setUser', {})
       await this.$nuxt.$cmwRepo.customer.getCustomer()
         .then(async ({ customer }) => {
           if (customer) {
@@ -220,7 +220,7 @@ export const useCustomer = defineStore({
         userEmail: this.customer.email,
         userPhone: this.customer.phone,
       })
-      this.$nuxt.store.dispatch('user/setUser', null)
+      this.$nuxt.store.dispatch('user/setUser', {})
       await this.$nuxt.$cookieHelpers.onLogout()
       this.$reset()
       customerOrders.$reset()

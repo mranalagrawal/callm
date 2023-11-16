@@ -26,7 +26,7 @@ export const mutations = {
 export const actions = {
   async nuxtServerInit({ dispatch }, { req }) {
     // Todo: Remove this dispatch in about 3 months from today (March 2024)
-    await dispatch('user/setUser', null)
+    await dispatch('user/setUser', {})
     await dispatch('headers/setFromApp', req.headers['user-agent']?.includes('CMW-App'))
     await dispatch('loadMenu')
     await dispatch('loadFooter')
