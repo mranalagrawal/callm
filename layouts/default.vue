@@ -47,7 +47,7 @@ export default defineComponent({
     provide('hasBeenSet', readonly(hasBeenSet))
 
     useFetch(async ({ $cookieHelpers }) => {
-      await store.dispatch('user/setUser', null)
+      await store.dispatch('user/setUser', {})
       const accessToken = $cookieHelpers.getToken()
       accessToken && await getCustomer()
 
@@ -61,7 +61,7 @@ export default defineComponent({
     const showTopBar = computed(() => (isFromApp.value && isHomePage.value) || !isFromApp.value)
 
     onMounted(async () => {
-      await store.dispatch('user/setUser', null)
+      await store.dispatch('user/setUser', {})
       const cartId = $cookies.get('cartId')
       cartId && await getShopifyCart(cartId)
       handleNewsletterSplash()
