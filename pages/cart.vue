@@ -15,7 +15,7 @@ export default defineComponent({
   components: { CartLine },
   setup() {
     const { $cookies, $config, $cmwGtmUtils, i18n } = useContext()
-    const shipping = ref({})
+    const shipping = ref<any>({})
     const shopifyCartStore = useShopifyCart()
     const { checkout } = useShopifyCart()
     const { shopifyCart, cartTotal } = storeToRefs(useShopifyCart())
@@ -177,7 +177,7 @@ export default defineComponent({
             <div>
               <div class="text-center my-2 overline-2 uppercase text-secondary-700">
                 {{
-                  computedCartTotal < shipping.threshold ? shipping.threshold_not_reached : shipping.threshold_reached
+                  computedCartTotal < shipping.threshold ? shipping?.threshold_not_reached : shipping?.threshold_reached
                 }}
               </div>
               <div class="shadow mx-auto border border-gray-light rounded overflow-hidden">
