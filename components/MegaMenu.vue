@@ -1,7 +1,9 @@
 <script lang="ts">
-import { computed, defineComponent, ref, useRoute, useStore, watch } from '@nuxtjs/composition-api'
+import { defineComponent, ref, useRoute, watch } from '@nuxtjs/composition-api'
 import promoTagIcon from 'assets/svg/promo-tag.svg'
+import { storeToRefs } from 'pinia'
 import ThirdLevel from '~/components/UI/ThirdLevel.vue'
+import { useVercelKv } from '~/store/vercelKv'
 import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({
@@ -9,8 +11,7 @@ export default defineComponent({
   setup() {
     const route = useRoute()
     const selectedItem = ref<string>('')
-    const store: any = useStore()
-    const megaMenu = computed(() => store.state.megaMenu)
+    const { megaMenu } = storeToRefs(useVercelKv())
 
     watch(() => route.value, () => selectedItem.value = '')
     const onTab = (item: string) => selectedItem.value = item
