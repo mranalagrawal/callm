@@ -180,7 +180,7 @@ export default defineComponent({
           La promozione di questo giorno è terminata!
         </Alert>
       </div>
-      <div v-if="!isGift" class="text-center" v-html="description" />
+      <div v-if="!isGift" class="text-center px-4" v-html="description" />
       <div
         v-if="!isGift && currentEvent.price.value && currentEvent.discount.value"
         class="flex items-center justify-center gap-4"
@@ -199,7 +199,7 @@ export default defineComponent({
         </span>
       </div>
       <div v-if="currentEvent.type.value === 'Gift'" class="mt-8">
-        <div class="text-xs" v-html="giftDescription" />
+        <div class="text-center px-4" v-html="giftDescription" />
       </div>
       <div v-else class="mt-8">
         <div v-if="isToday" class="w-[min(100%,_60%)] m-inline-auto">
@@ -309,7 +309,7 @@ export default defineComponent({
           </div>
         </div>
       </div>
-      <CmwButton :to="localePath('/')" variant="text" class="w-max m-inline-auto" @click.native="addToUserCart">
+      <CmwButton :to="localePath('/')" variant="text" class="w-max m-inline-auto">
         <span>{{ $t('common.cta.continueShopping') }}</span>
       </CmwButton>
     </div>

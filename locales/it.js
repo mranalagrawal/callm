@@ -351,7 +351,7 @@ export default {
   },
   productDescriptionTab: 'DESCRIZIONE DEL {productTitle}',
   eventTitle: 'Il Calendario dell’Avvento di Callmewine',
-  eventProductsTitle: 'Prova anche le nostre wine box dell\'Avvento',
+  eventProductsTitle: 'Prova anche le nostre Mystery Box dell\'Avvento',
   eventUpcomingText: `La promozione di questo giorno non è ancora disponibile!
    Clicca sulla cella corrispondente alla data di oggi per scoprire nuove e fantastiche sorprese firmate Callmewine!`,
   eventCancelButton: 'torna al calendario',

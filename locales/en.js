@@ -349,7 +349,7 @@ export default {
   },
   productDescriptionTab: '{productTitle} DESCRIPTION',
   eventTitle: 'Callmewine Advent Calendar',
-  eventProductsTitle: 'Try our wine advent calendars',
+  eventProductsTitle: 'Try our Mystery Box calendars',
   eventUpcomingText: `The promotion of this day is not yet available!
     Click on the cell corresponding to today's date to discover new and fantastic surprises signed Callmewine!`,
   eventCancelButton: 'Back to calendar',

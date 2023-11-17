@@ -223,8 +223,8 @@ export default defineComponent({
         cursor: currentDay.value >= 23 ? 'cursor-pointer' : 'cursor-pointer',
         translate: '-500 0',
         bg: '#9a2645',
-        circle: currentDay.value === 22 ? 'white' : 'var(--inactive-bg)',
-        number: currentDay.value === 22 ? '#9a2645' : 'var(--inactive-number)',
+        circle: currentDay.value === 23 ? 'white' : 'var(--inactive-bg)',
+        number: currentDay.value === 23 ? '#9a2645' : 'var(--inactive-number)',
       },
       'day-24': {
         cursor: currentDay.value >= 24 ? 'cursor-pointer' : 'cursor-pointer',
