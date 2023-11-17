@@ -139,6 +139,7 @@ export default defineComponent({
                     v-model="orderNote"
                     :placeholder="$t('common.forms.cart.cart_order_note_placeholder')"
                     rows="4"
+                    maxlength="50"
                     class="
               peer px-4 text-gray-dark py-3 w-full bg-transparent border border-gray-light
               rounded transition-colors
