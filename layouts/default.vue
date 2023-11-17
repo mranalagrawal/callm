@@ -20,6 +20,7 @@ import TopBar from '~/components/TopBar.vue'
 
 import { useCustomer } from '~/store/customer'
 import { useShopifyCart } from '~/store/shopifyCart'
+import { useVercelKv } from '~/store/vercelKv'
 
 export default defineComponent({
   components: {
@@ -33,6 +34,8 @@ export default defineComponent({
     const route = useRoute()
     const { getCustomer } = useCustomer()
     const { getShopifyCart } = useShopifyCart()
+    const { loadMenu } = useVercelKv()
+    loadMenu()
     const { handleNewsletterSplash } = useNewsletterSplash()
     const {
       isTablet,
