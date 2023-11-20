@@ -327,21 +327,19 @@ export default defineComponent({
   <div class="max-w-screen-xl mx-auto py-4 px-4 mt-4">
     <h1 class="h3" v-text="collectionRef.title" />
     <LoadingImage
-      v-if="collectionRef.image"
+      v-if="collectionRef.image?.url"
       img-classes="w-full"
       :thumbnail="{
-        url: collectionRef.image.url ? `${collectionRef.image.url}?&width=20&height=12` : 'https://picsum.photos/id/75/20/12',
+        url: `${collectionRef.image.url}?&width=20&height=12`,
         width: 20,
         height: 12,
-        altText: collectionRef.image.altText,
+        altText: collectionRef.image.altText || 'missing',
       }"
       :source="{
-        url: collectionRef.image.url
-          ? `${collectionRef.image.url}?&width=${collectionRef.image.width}&height=${collectionRef.image.height}`
-          : 'https://picsum.photos/id/75/265/164',
+        url: `${collectionRef.image.url}?&width=${collectionRef.image.width}&height=${collectionRef.image.height}`,
         width: collectionRef.image.width,
         height: collectionRef.image.height,
-        altText: collectionRef.image.altText,
+        altText: collectionRef.image.altText || 'missing',
       }"
     />
     <div v-html="collectionRef.descriptionHtml" />
