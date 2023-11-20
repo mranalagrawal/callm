@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { PropType } from '@nuxtjs/composition-api'
-import { computed, defineComponent, toRefs } from '@nuxtjs/composition-api'
+import { computed, defineComponent, toRefs, useContext } from '@nuxtjs/composition-api'
 import addIcon from 'assets/svg/add.svg'
 import deleteIcon from 'assets/svg/delete.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
@@ -28,12 +28,23 @@ export default defineComponent({
       cartLinesRemove,
       cartLinesUpdate,
     } = useShopifyCart()
+    const { $cmwStore: { settings: { salesChannel } } } = useContext()
 
     const finalPrice = getFinalPrice(props.item)
 
+    const amountMax = computed(() => {
+      if (!props.item.merchandise.value?.product?.details) { return 0 }
+
+      const productDetails = JSON.parse(props.item.merchandise.value.product.details)
+
+      return (productDetails.amountMax[salesChannel]
+        && productDetails.amountMax[salesChannel] <= props.item.merchandise.value.product.quantityAvailable)
+        ? productDetails.amountMax[salesChannel]
+        : props.item.merchandise.value.product.quantityAvailable
+    })
+
     const cartQuantity = computed(() => props.item.quantity)
-    const canAddMore = computed(() => merchandise.value.product.isGiftCard
-      || merchandise.value.product.totalInventory - cartQuantity.value > 0)
+    const canAddMore = computed(() => merchandise.value.product.isGiftCard || (amountMax.value - cartQuantity.value) > 0)
     const isOnSale = computed(() => finalPrice < +merchandise.value.price.amount)
 
     const increaseQuantity = async () => {
