@@ -29,12 +29,23 @@ export default defineComponent({
       cartLinesRemove,
       cartLinesUpdate,
     } = useShopifyCart()
+    const { $cmwStore: { settings: { salesChannel } } } = useContext()
 
     const finalPrice = getFinalPrice(props.item)
 
+    const amountMax = computed(() => {
+      if (!props.item.merchandise.value?.product?.details) { return 0 }
+
+      const productDetails = JSON.parse(props.item.merchandise.value.product.details)
+
+      return (productDetails.amountMax[salesChannel]
+        && productDetails.amountMax[salesChannel] <= props.item.merchandise.value.product.quantityAvailable)
+        ? productDetails.amountMax[salesChannel]
+        : props.item.merchandise.value.product.quantityAvailable
+    })
+
     const cartQuantity = computed(() => props.item.quantity)
-    const canAddMore = computed(() => merchandise.value.product.isGiftCard
-      || merchandise.value.product.totalInventory - cartQuantity.value > 0)
+    const canAddMore = computed(() => merchandise.value.product.isGiftCard || (amountMax.value - cartQuantity.value) > 0)
     const isOnSale = computed(() => finalPrice < +merchandise.value.price.amount)
     const productDetails = computed(() => JSON.parse(props.item?.merchandise?.product?.details?.value))
     const productUrl = computed(() => `/${productDetails.value?.handle[i18n.locale]}-${productDetails.value?.key}.htm`)
