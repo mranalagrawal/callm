@@ -33,14 +33,15 @@ export default defineComponent({
     const finalPrice = getFinalPrice(props.item)
 
     const amountMax = computed(() => {
-      if (!props.item.merchandise.value?.product?.details) { return 0 }
+      if (!props.item.merchandise?.product?.details?.value) { return 0 }
 
-      const productDetails = JSON.parse(props.item.merchandise.value.product.details)
+      const productDetails = JSON.parse(props.item.merchandise.product.details.value)
+      const productVariant = props.item.merchandise.product?.variants?.nodes[0]
 
       return (productDetails.amountMax[salesChannel]
-        && productDetails.amountMax[salesChannel] <= props.item.merchandise.value.product.quantityAvailable)
+        && productDetails.amountMax[salesChannel] <= productVariant?.quantityAvailable)
         ? productDetails.amountMax[salesChannel]
-        : props.item.merchandise.value.product.quantityAvailable
+        : productVariant?.quantityAvailable
     })
 
     const cartQuantity = computed(() => props.item.quantity)
@@ -75,6 +76,7 @@ export default defineComponent({
       isOnSale,
       shopifyCart,
       subtractIcon,
+      amountMax,
     }
   },
   methods: {
