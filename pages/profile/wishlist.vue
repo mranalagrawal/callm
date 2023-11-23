@@ -93,8 +93,9 @@ export default {
     })
 
     const findRelatedVintage = (productId: string) => {
+      if (!customerWishlistProducts?.value?.length) { return null }
       // @ts-expect-error TODO: type this
-      const element = customerWishlistProducts.value.find(product => product.productFeId === productId)
+      const element = customerWishlistProducts.value?.find(product => product.productFeId === productId)
       // @ts-expect-error TODO: type this
       return element?.relatedVintage || null
     }
