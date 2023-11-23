@@ -19,7 +19,7 @@ export default defineComponent({
         const qry = await $elastic.$get(`/product-related-vintages/${props.sku}`) // 13V91338
         const { data = [] } = await qry as Record<string, any>
 
-        if (data.length > 1) { vintages.value = data }
+        if (data.length > 0) { vintages.value = data }
       }
     })
 
