@@ -39,6 +39,7 @@ export const useCustomer = defineStore({
       phone: '',
       total_spent: '',
       wishlist: { value: '' },
+      tags: [],
     },
     // FixMe: on Nuxt 3 or using GraphQl local storage properly we shouldn't need this,
     //  we need to reduce the extra objects and relay on the state,
@@ -46,7 +47,6 @@ export const useCustomer = defineStore({
     approved: false,
     wishlistArr: [],
     customerWishlistProducts: [],
-    /** @type: {InputObjects.CustomerUpdateInput} */
     editingCustomer: {
       acceptsMarketing: false,
       email: '',
@@ -62,7 +62,7 @@ export const useCustomer = defineStore({
     customerId: (state) => {
       return `${state.customer.id}`.substring(`${state.customer.id}`.lastIndexOf('/') + 1)
     },
-    getCustomerType(state) {
+    getCustomerType: (state) => {
       const userType = (state.customer.tags && state.customer.tags.find(k => Object.keys(availableUsers).includes(k))) || 'main'
       return availableUsers[userType]
     },
