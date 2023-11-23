@@ -63,3 +63,78 @@ type CartUserError {
   # The error message.
   message: String!
 }
+
+# Provides the value of a Metaobject field.
+type MetaobjectField {
+  # The field key.
+  key: String!
+  # A referenced object if the field type is a resource reference.
+  reference: MetafieldReference
+  # The type name of the field. See the list of supported types.
+  type: String!
+  # The field value.
+  value: String
+  # Connections
+  # A list of referenced objects if the field type is a resource reference list.
+  references(first: Int):MetafieldReferenceConnection
+}
+
+type MetafieldReferenceConnection {
+  nodes: [MetafieldReference!]!
+}
+
+# SEO information for a metaobject.
+type MetaobjectSEO {
+  # The meta description.
+  description: MetaobjectField
+  # The SEO title.
+  title: MetaobjectField
+}
+
+# An instance of a user-defined model based on a MetaobjectDefinition.
+type Metaobject {
+  # Accesses a field of the object by key.
+#  field: MetaobjectField
+#  Connections
+  # The metafields associated with the metaobject.
+  field(key: String!): MetaobjectField
+  # All object fields with defined values. Omitted object keys can be assumed null, and no guarantees are made about field order.
+  fields: [MetaobjectField!]!
+  # The unique handle of the metaobject. Useful as a custom ID.
+  handle: String!
+  # A globally-unique ID.
+  id: ID!
+  # The URL used for viewing the metaobject on the shop's Online Store. Returns null if the metaobject definition doesn't have the online_store capability.
+  onlineStoreUrl: URL
+  # The metaobject's SEO information. Returns null if the metaobject definition doesn't have the renderable capability.
+  seo: MetaobjectSEO
+  # The type of the metaobject. Defines the namespace of its associated metafields.
+  type: String!
+  # The date and time when the metaobject was last updated.
+  updatedAt: DateTime!
+}
+
+type MediaPresentation {
+  # A JSON object representing a presentation view.
+  asJson: JSON!
+  # A globally-unique ID.
+  id: ID!
+}
+
+# Represents a Shopify hosted image.
+type MediaImage {
+  # A word or phrase to share the nature or contents of a media.
+  alt: String
+  # A globally-unique ID.
+  id: ID!
+  # The image for the media.
+  image: Image!
+  # The media content type.
+  mediaContentType: MediaContentType!
+  # The presentation for a media.
+  presentation: MediaPresentation
+  # The preview image for the media.
+  previewImage: Image!
+}
+
+

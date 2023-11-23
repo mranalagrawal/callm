@@ -21,5 +21,8 @@ export default {
       price: { highest: 'Highest Price', lowest: 'Lowest Price' },
       recent: { most: 'Most Recent', least: 'Least Recent' },
     },
+    category: 'Category',
+    subcategory: 'Subcategory',
+    wineList: 'WineList',
   },
 }

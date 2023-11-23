@@ -8,7 +8,7 @@ import {
   useContext,
   useFetch,
   useMeta,
-  useRoute,
+  useRoute, useStore,
   watch, watchEffect,
 } from '@nuxtjs/composition-api'
 // import LazyHydrate from 'vue-lazy-hydration'
@@ -30,7 +30,8 @@ export default defineComponent({
     Navbar,
   },
   setup() {
-    const { i18n, $cookies, req, store, getRouteBaseName } = useContext()
+    const { i18n, $cookies, req, getRouteBaseName } = useContext()
+    const store: any = useStore()
     const route = useRoute()
     const { getCustomer } = useCustomer()
     const { getShopifyCart } = useShopifyCart()
@@ -62,6 +63,7 @@ export default defineComponent({
     const isFromApp = computed(() => store.state.headers.fromApp)
     const isHomePage = computed(() => getRouteBaseName(route.value) === 'index')
     const showTopBar = computed(() => (isFromApp.value && isHomePage.value) || !isFromApp.value)
+    const showAppHeader = computed(() => (isFromApp.value && isHomePage.value))
 
     onMounted(async () => {
       await store.dispatch('user/setUser', {})
@@ -99,6 +101,7 @@ export default defineComponent({
       isDesktopWide,
       isFromApp,
       isTablet,
+      showAppHeader,
       showTopBar,
     }
   },
@@ -109,7 +112,8 @@ export default defineComponent({
 <template>
   <div>
     <TopBar v-if="showTopBar" />
-    <Navbar v-if="!isFromApp" class="cmw-navbar " />
+    <Navbar v-if="!isFromApp" class="cmw-navbar" />
+    <AppHeader v-if="showAppHeader" />
 
     <nuxt :class="isFromApp ? 'cmw-app-main' : 'cmw-main'" />
 

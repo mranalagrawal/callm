@@ -24,7 +24,7 @@ export default defineComponent({
   scrollToTop: true,
   props: ['inputParameters'],
   setup(props) {
-    const { redirect, $config, i18n, localePath } = useContext()
+    const { redirect, i18n, localePath } = useContext()
     const route = useRoute()
     const router = useRouter()
     const filtersStore = useFilters()
@@ -138,14 +138,11 @@ export default defineComponent({
           .join('&')
       }
 
-      const elastic_url
-        = `${$config.ELASTIC_URL
-      }products/search?stores=${$cmwStore.settings.id}&locale=${i18n.locale
-      }&`
+      const elastic_url = `/products/search?stores=${$cmwStore.settings.id}&locale=${i18n.locale}&`
 
       $elastic.setHeader('Accept-Encoding', 'gzip')
       const searchResult = await $elastic.$get(`${elastic_url}${queryToString}${sel}`)
-      const seo = await $elastic.$get(`${$config.ELASTIC_URL}product-list/seo?stores=${$cmwStore.settings.id}&locale=${i18n.locale}&${queryToString}${sel}`)
+      const seo = await $elastic.$get(`/product-list/seo?stores=${$cmwStore.settings.id}&locale=${i18n.locale}&${queryToString}${sel}`)
 
       if (seo) {
         const pickedSeo = pick(seo, ['pageTitle', 'pageDescription', 'seoTitle', 'seoDescription', 'pageFullDescription'])

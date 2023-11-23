@@ -261,6 +261,7 @@ export default {
     removeFilters: 'Rimuovi i filtri',
   },
   product: {
+    otherVintagesSale: 'Annata in vendita {vintage}',
     otherVintages: 'Altre annate: ',
     tooltip: {
       guide: 'Guida {guide}',
@@ -350,4 +351,12 @@ export default {
     whatIsInTheBox: 'I prodotti che riceverai:',
   },
   productDescriptionTab: 'DESCRIZIONE DEL {productTitle}',
+  eventTitle: 'Il Calendario dell’Avvento di Callmewine',
+  eventProductsTitle: 'Prova anche le nostre Mystery Box dell\'Avvento',
+  eventUpcomingText: `La promozione di questo giorno non è ancora disponibile!
+   Clicca sulla cella corrispondente alla data di oggi per scoprire nuove e fantastiche sorprese firmate Callmewine!`,
+  eventCancelButton: 'torna al calendario',
+  eventNote: `Con il Calendario dell'Avvento di Callmewine ogni giorno è una sorpresa! Dietro ogni casella si
+      nascondono bottiglie scontate, gadget, samples in omaggio e tanto altro: per un avvento fatto di
+      grandi brindisi insieme a Callmewine!`,
 }

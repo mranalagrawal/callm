@@ -1,4 +1,5 @@
 export function shopifyRichTextToHTML(content: string): string {
+  if (!content) { return '' }
   const parsed = JSON.parse(content)
   return parsed.children.map((node: { type: string; level: any; children: any[]; listType: string }) => {
     if (node.type === 'heading') {

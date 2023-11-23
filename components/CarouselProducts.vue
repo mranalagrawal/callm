@@ -3,7 +3,7 @@ import type { PropType } from '@nuxtjs/composition-api'
 import { defineComponent, inject, onMounted, useContext, useRoute } from '@nuxtjs/composition-api'
 import chevronLeftIcon from 'assets/svg/chevron-left.svg'
 import chevronRightIcon from 'assets/svg/chevron-right.svg'
-import { inRange } from '@/utilities/math'
+import { inRange } from '~/utilities/math'
 import type { IProductMapped } from '~/types/product'
 import { generateKey } from '~/utilities/strings'
 

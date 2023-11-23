@@ -48,16 +48,14 @@ body.swal2-shown {
 }
 
 .swal2-actions {
-  @apply grid grid-cols-2 gap-4 mt-6 !important;
-  width: min(100%, 20rem);
+  @apply flex gap-4 mt-6 !important;
+  width: min(100%, 30rem);
   margin-inline: auto;
 }
 
 .swal2-loader {
   display: none;
-  width: 2.2em;
-  height: 2.2em;
-  margin: 0 1.875em;
+  margin-inline: auto;
   animation: swal2-rotate-loading 1.5s linear 0s infinite normal;
   border-width: 0;
 }

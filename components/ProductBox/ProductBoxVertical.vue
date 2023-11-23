@@ -25,6 +25,10 @@ export default defineComponent({
       required: true,
       type: Object, // as PropType<IProductMapped>,
     },
+    relatedVintage: {
+      type: Object,
+      default: null,
+    },
     position: {
       type: [String, Number],
       default: '',
@@ -103,7 +107,11 @@ export default defineComponent({
         },
       })
 
-      router.push(localeLocation(props.product.url))
+      const url = props.relatedVintage?.handle
+        ? `/${props.relatedVintage.handle}-P${props.relatedVintage.feId}.htm`
+        : props.product.url
+
+      router.push(localeLocation(url))
     }
 
     return {
@@ -228,6 +236,13 @@ export default defineComponent({
       </div>
       <div class="c-productBox__title">
         <div class="relative mx-4 mt-1">
+          <NuxtLink
+            v-if="relatedVintage?.handle"
+            :to="localePath(`/${relatedVintage.handle}-P${relatedVintage.feId}.htm`)"
+            class="block text-xs text-gray-dark"
+          >
+            {{ $t('product.otherVintagesSale', { vintage: relatedVintage.vintageyear }) }}
+          </NuxtLink>
           <button
             :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')"
             class="transition-colors text-body text-left hover:(text-primary-400)"

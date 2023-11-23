@@ -1,0 +1,56 @@
+#import "~/graphql/fragments/product.graphql"
+#import "~/graphql/fragments/image.graphql"
+
+query metaobject(
+  $lang: LanguageCode!
+  $handle: MetaobjectHandleInput
+) @inContext(language: $lang) {
+  metaobject(handle: $handle) {
+    id
+    handle
+    type
+    fields {
+      key
+      reference {
+        ... on Metaobject {
+          id
+          handle
+          product: field(key: "product") {
+            reference {
+              ...on Product {
+                ...PRODUCT_FRAGMENT
+              }
+            }
+          }
+          date: field(key: "date") {
+            value
+          }
+          description: field(key: "description") {
+            value
+          }
+          price: field(key: "price") {
+            value
+          }
+          discount: field(key: "discount") {
+            value
+          }
+          type: field(key: "type") {
+            value
+          }
+          title: field(key: "title") {
+            value
+          }
+          image: field(key: "image") {
+            reference {
+              ...on MediaImage {
+                image {
+                  ...IMAGE_FRAGMENT
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 <script lang="ts">
 import { storeToRefs } from 'pinia'
 import closeIcon from 'assets/svg/close.svg'
-import { defineComponent, ref, watchEffect } from '@nuxtjs/composition-api'
+import { defineComponent, ref } from '@nuxtjs/composition-api'
 import { useSplash } from '~/store/splash'
 
 export default defineComponent({
@@ -36,9 +36,9 @@ export default defineComponent({
       TheNewsletterSplash: () => import('~/components/TheNewsletterSplash.vue'),
     }
 
-    watchEffect(() => {
+    /* watchEffect(() => {
       if (process.browser && document.body) { document.body.classList.toggle('lock-scroll', !!currentSplash.value) }
-    })
+    }) */
 
     return {
       currentSplash,

@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import themeConfig from '~/config/themeConfig'
 import { useCustomerOrders } from '~/store/customerOrders.ts'
+import { useCustomerWishlist } from '~/store/customerWishlist'
 import { getIconAsImg } from '~/utilities/icons.ts'
 import { djb2Hash } from '~/utilities/strings'
 import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
@@ -141,9 +142,10 @@ export const useCustomer = defineStore({
           if (customer) {
             // Todo: Implement shopify customerAccessTokenRenew
             const customerAccessToken = this.$nuxt.$cookieHelpers.getToken()
+            const customerId = `${customer.id}`.substring(`${customer.id}`.lastIndexOf('/') + 1)
             this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
 
-            await this.$nuxt.$cmw.$get(`/customers/${customer.id.substring(`${customer.id}`.lastIndexOf('/') + 1)}/user-info`)
+            await this.$nuxt.$cmw.$get(`/customers/${customerId}/user-info`)
               .then(({ data = {}, errors = [] }) => {
                 if (errors.length) {
                   this.$nuxt.$handleApiErrors('error getCustomer')
@@ -173,9 +175,15 @@ export const useCustomer = defineStore({
             }
 
             this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
-            await this.$nuxt.$cmw.$get(`/wishlists?shopifyCustomerId=${customer.id.substring(`${customer.id}`.lastIndexOf('/') + 1)}`)
+            await this.$nuxt.$cmw.$get(`/wishlists?shopifyCustomerId=${customerId}`)
               .then(({ data }) => {
+                const customerWishlistStore = useCustomerWishlist()
+                // TODO: remove this patch when we have the wishlist in the customerWishlistStore
                 this.$patch({
+                  customerWishlistProducts: data.elements,
+                })
+
+                customerWishlistStore.$patch({
                   customerWishlistProducts: data.elements,
                 })
               })
@@ -236,13 +244,16 @@ export const useCustomer = defineStore({
       const customerAccessToken = this.$nuxt.$cookieHelpers.getToken()
       const shopifyCustomerId = `${this.customer.id}`.substring(`${this.customer.id}`.lastIndexOf('/') + 1)
       this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
-      await this.$nuxt.$cmw.$post('/wishlists', {
+      await this.$nuxt.$cmw.$post(`/wishlists?shopifyCustomerId=${shopifyCustomerId}`, {
         shopifyCustomerId,
         productFeId: args.id,
         score: args.score || 0,
         description: args.description,
-      }).then(async () => {
-        await this.getCustomer().then(async () => {
+      }).then(async (data) => {
+        const { responseCode, data: { elements } } = data
+
+        // This means success :)
+        if (responseCode === 0) {
           SweetAlertToast.fire({
             iconHtml: getIconAsImg('success'),
             text: this.$nuxt.app.i18n.t('common.feedback.OK.wishlistAdded'),
@@ -258,7 +269,20 @@ export const useCustomer = defineStore({
               }],
             },
           })
-        })
+
+          // Create a function to generate the same value from shopify with these elements 🤦🏻‍️🙈🫣
+          const productFeIds = elements.map(p => `P${p.productFeId}`)
+          const wishlistArr = setCustomerWishlist(JSON.stringify(productFeIds))
+
+          this.$patch({
+            wishlistArr,
+            customerWishlistProducts: elements,
+            customer: {
+              ...this.customer,
+              wishlist: { value: JSON.stringify(productFeIds) },
+            },
+          })
+        }
       })
         .catch(() => {
           SweetAlertToast.fire({
@@ -275,13 +299,29 @@ export const useCustomer = defineStore({
       await this.$nuxt.$cmw.$put('/wishlists', {
         shopifyCustomerId,
         productFeId: args.id,
-      }).then(async () => {
-        await this.getCustomer().then(async () => {
+      }).then(async (data) => {
+        const { responseCode } = data
+        // This means success :)
+        if (responseCode === 0) {
           SweetAlertToast.fire({
             iconHtml: getIconAsImg('success'),
             text: this.$nuxt.app.i18n.t('common.feedback.OK.wishlistRemoved'),
           })
-        })
+
+          // Create a function to generate the same value from shopify with these elements 🤦🏻‍️🙈🫣
+          const filteredArr = this.wishlistArr.filter(p => p !== `P${args.id}`)
+          const customerWishlistProducts = this.customerWishlistProducts.filter(p => p.productFeId !== args.id)
+          const wishlistArr = setCustomerWishlist(JSON.stringify(filteredArr))
+
+          this.$patch({
+            wishlistArr,
+            customerWishlistProducts,
+            customer: {
+              ...this.customer,
+              wishlist: { value: JSON.stringify(filteredArr) },
+            },
+          })
+        }
       })
         .catch(() => {
           SweetAlertToast.fire({

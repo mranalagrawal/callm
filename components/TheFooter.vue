@@ -3,19 +3,25 @@ import type { Ref } from '@nuxtjs/composition-api'
 import {
   computed,
   defineComponent,
-  inject, useStore,
+  inject, useContext, useRoute, useStore,
 } from '@nuxtjs/composition-api'
 import logo from 'assets/svg/logo-call-me-wine.svg'
 
 export default defineComponent({
   setup() {
+    const { getRouteBaseName } = useContext()
     const store: any = useStore()
+    const route = useRoute()
     const isDesktop = inject('isDesktop') as Ref<boolean>
     const footerCopyright = computed(() => store.state.footerData.copyright)
+    const isFromApp = computed(() => store.state.headers.fromApp)
+    const isHomePage = computed(() => getRouteBaseName(route.value) === 'index')
 
     return {
       footerCopyright,
       isDesktop,
+      isFromApp,
+      isHomePage,
       logo,
     }
   },
@@ -23,8 +29,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <footer class="bg-gray-lightest print:hidden">
-    <ThePreFooter v-if="!$cmwStore.isUk" />
+  <footer v-if="!isFromApp || isFromApp && isHomePage" class="bg-gray-lightest print:hidden">
+    <ThePreFooter v-if="!$cmwStore.isUk && !isFromApp" />
     <div
       class="bg-secondary text-secondary-100 p-4 mt-4"
     >

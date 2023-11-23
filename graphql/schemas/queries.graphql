@@ -9,4 +9,5 @@ type Query {
   product(handle: String): Product
   productRecommendations(productId: ID!, intent: ProductRecommendationIntent): [Product!]!
   products(first: Int, reverse: Boolean, query: String, after: String): ProductConnection
+  metaobject(handle: MetaobjectHandleInput): Metaobject
 }

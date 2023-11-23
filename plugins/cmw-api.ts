@@ -76,7 +76,7 @@ const cmwApi: Plugin = ({ $http, i18n, $config, $sentry }, inject) => {
     $sentry.captureException(new Error(`$cmw catch ${err}`))
   })
 
-  $elastic.setBaseURL($config.ELASTIC_URL_TEST)
+  $elastic.setBaseURL($config.ELASTIC_URL)
   $elastic.setHeader('X-Cmw-Store', $config.STORE)
   $elastic.setHeader('X-Cmw-Sales-Channel', sale_channel)
   $elastic.setHeader('X-Cmw-Locale', i18n.locale)

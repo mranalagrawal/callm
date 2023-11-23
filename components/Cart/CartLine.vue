@@ -19,6 +19,7 @@ export default defineComponent({
     isLast: Boolean,
   },
   setup(props) {
+    const { i18n } = useContext()
     const { customerId } = storeToRefs(useCustomer())
     const { shopifyCart } = storeToRefs(useShopifyCart())
     const { merchandise } = toRefs(props.item)
@@ -47,6 +48,8 @@ export default defineComponent({
     const cartQuantity = computed(() => props.item.quantity)
     const canAddMore = computed(() => merchandise.value.product.isGiftCard || (amountMax.value - cartQuantity.value) > 0)
     const isOnSale = computed(() => finalPrice < +merchandise.value.price.amount)
+    const productDetails = computed(() => JSON.parse(props.item?.merchandise?.product?.details?.value))
+    const productUrl = computed(() => `/${productDetails.value?.handle[i18n.locale]}-${productDetails.value?.key}.htm`)
 
     const increaseQuantity = async () => {
       if (!canAddMore.value) { return }
@@ -74,6 +77,8 @@ export default defineComponent({
       getFinalPrice,
       increaseQuantity,
       isOnSale,
+      productDetails,
+      productUrl,
       shopifyCart,
       subtractIcon,
       amountMax,
@@ -91,15 +96,17 @@ export default defineComponent({
     class="c-cartLineItem mx-3 bg-white py-4 border-b border-b-gray-light"
   >
     <div class="c-cartLineItem__image">
-      <img
-        v-show="item.merchandise.product.featuredImage?.url"
-        :src="item.merchandise.product.featuredImage?.url" alt="" style="height: 50px"
-      >
+      <NuxtLink v-if="productUrl" :to="localePath(productUrl)">
+        <img
+          v-show="item.merchandise.product.featuredImage?.url"
+          :src="item.merchandise.product.featuredImage?.url" alt="" class="max-h-90px"
+        >
+      </NuxtLink>
     </div>
     <div class="c-cartLineItem__description">
-      <p class="text-sm cmw-font-bold">
+      <NuxtLink v-if="productUrl" :to="localePath(productUrl)" class="text-sm cmw-font-bold">
         {{ item.merchandise.product.title }}
-      </p>
+      </NuxtLink>
     </div>
     <div class="c-cartLineItem__quantity">
       <div class="grid grid-cols-[32px_40px_32px] h-[32px] items-center">
@@ -151,7 +158,7 @@ export default defineComponent({
         </template>
       </i18n-n>
     </div>
-    <div class="c-cartLineItem__cta absolute md:relative top-0 right-0">
+    <div class="c-cartLineItem__cta absolute md:relative top-4 right-0">
       <ButtonIcon class="m-auto" :icon="deleteIcon" variant="icon" size="28" @click.native="cartLinesRemove([item])" />
     </div>
   </div>
@@ -176,7 +183,7 @@ export default defineComponent({
 }
 
 .c-cartLineItem__image {
-  width: 50px;
+  max-width: 70px;
   grid-area: image;
   justify-self: center;
 }
