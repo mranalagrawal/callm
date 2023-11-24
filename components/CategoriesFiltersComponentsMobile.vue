@@ -38,7 +38,7 @@ export default defineComponent({
       required: true,
     },
   },
-  emits: ['update-value-selections', 'update-value', 'handle-on-footer-click'],
+  emits: ['update-value-selections', 'update-value', 'handle-on-footer-click', 'reset-filter'],
   setup(props, { emit }) {
     const { i18n } = useContext()
     const route = useRoute()
@@ -119,7 +119,8 @@ export default defineComponent({
 
     const resetFilter = () => {
       cmwActiveSelect.value = ''
-      // this.showMobileFilters = false
+      showMobileFilters.value = false
+      emit('reset-filter')
       // this.minPrice = this.minPriceTotal
       // this.maxPrice = this.maxPriceTotal
       // this.$router.push({
