@@ -164,7 +164,7 @@ export default defineComponent({
 
     const resetFilter = () => {
       cmwActiveSelect.value = ''
-      showMobileFilters.value = false
+      // showMobileFilters.value = false
       // this.minPrice = this.minPriceTotal
       // this.maxPrice = this.maxPriceTotal
       router.push(localePath({
@@ -374,6 +374,7 @@ export default defineComponent({
       @update-value-selections="handleUpdateValueSelections"
       @update-value="handleUpdateValue"
       @handle-on-footer-click="handleOnFooterClick"
+      @reset-filter="resetFilter"
     />
   </div>
 </template>

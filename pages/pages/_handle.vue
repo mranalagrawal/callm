@@ -90,6 +90,14 @@ export default defineComponent({
       }))
     }
 
+    const resetFilter = () => {
+      cmwActiveSelect.value = ''
+      showMobileFilters.value = false
+      router.push(localePath({
+        name: 'catalog',
+      }))
+    }
+
     const sortBy = (field: any, direction: any) => {
       const query = {
         ...inputParameters.value,
@@ -172,6 +180,7 @@ export default defineComponent({
       isDesktop,
       pageData,
       pageSeo,
+      resetFilter,
       results,
       shortDescription,
       showMobileFilters,
@@ -218,6 +227,7 @@ export default defineComponent({
         :aggregations="aggregationsRef" :input-parameters="inputParameters"
         @update-value-selections="handleUpdateValueSelections"
         @update-value="handleUpdateValue"
+        @reset-filter="resetFilter"
       />
     </template>
     <template v-else-if="!fetchState.pending">
