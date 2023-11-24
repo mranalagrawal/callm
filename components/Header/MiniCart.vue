@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useFetch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import { useCheckout } from '~/store/checkout'
 import { useCustomer } from '~/store/customer'
@@ -12,9 +12,9 @@ import checkCircularIcon from '~/assets/svg/check-circular.svg'
 export default defineComponent({
   name: 'HeaderMiniCart',
   setup() {
-    const { $cmwStore } = useContext()
+    const { $cmwStore, $cookies } = useContext()
     const { getCustomerType } = storeToRefs(useCustomer())
-    const { goToCheckout } = useCheckout()
+    const { goToCheckout, getCheckoutById } = useCheckout()
     const { checkout, checkoutTotalPrice, checkoutTotalQuantity } = storeToRefs(useCheckout())
 
     const shipping = ref<IPrismicPageData>(initialPageData)
@@ -24,6 +24,14 @@ export default defineComponent({
     })
 
     const computedCheckoutTotalPrice = computed(() => checkoutTotalPrice.value($cmwStore.settings.salesChannel, getCustomerType.value))
+
+    onMounted(async () => {
+      const checkoutId = $cookies.get('checkoutId')
+
+      if (checkoutId) {
+        await getCheckoutById(checkoutId)
+      }
+    })
 
     return {
       checkCircularIcon,

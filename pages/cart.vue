@@ -2,11 +2,13 @@
 import { computed, defineComponent, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import cartEmptyIcon from 'assets/svg/cart-empty.svg'
+import addIcon from 'assets/svg/add.svg'
+import toGiftIcon from 'assets/svg/feature-to-gift.svg'
 import CheckoutLine from '../components/Checkout/CheckoutLine.vue'
 import { useCheckout } from '~/store/checkout'
 import type { IProductBreadcrumbs } from '~/types/product'
 
-import { getLocaleFromCurrencyCode } from '~/utilities/currency'
+import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { generateKey } from '~/utilities/strings'
 import { SweetAlertConfirm } from '~/utilities/Swal'
 import { useCustomer } from '~/store/customer'
@@ -15,12 +17,12 @@ export default defineComponent({
   components: { CheckoutLine },
   setup() {
     const { $cookies, $cmwStore, $config, $cmwGtmUtils, i18n } = useContext()
+    const customerStore = useCustomer()
     const shipping = ref<any>({})
     const { getCustomerType } = storeToRefs(useCustomer())
     const checkoutStore = useCheckout()
-    const { checkout, checkoutTotalPrice, checkoutTotalQuantity } = storeToRefs(checkoutStore)
-    const { goToCheckout } = checkoutStore
-    const customerStore = useCustomer()
+    const { checkout, suitableGift, checkoutTotalPrice, checkoutTotalQuantity } = storeToRefs(checkoutStore)
+    const { getCheckoutById, goToCheckout, checkoutLineItemsAdd } = checkoutStore
     const { customer, customerId } = storeToRefs(customerStore)
     const orderNote = ref(checkout.value?.note)
     const breadcrumb: IProductBreadcrumbs[] = [
@@ -55,9 +57,50 @@ export default defineComponent({
       })
     }
 
+    const suitableGiftIsOnCart = computed(() =>
+      checkout.value?.lineItems?.some(item => item.variant.id === suitableGift.value?.shopify_product_variant_id))
+
+    const handleAddGift = async () => {
+      const checkoutCreateInput = {
+        buyerIdentity: {
+          countryCode: getCountryFromStore($cmwStore.settings.store),
+        },
+        ...(customer.value.email && { email: customer.value.email }),
+        note: checkout.value.note,
+        lineItems: [
+          {
+            variantId: suitableGift.value?.shopify_product_variant_id,
+            quantity: 1,
+            customAttributes: [
+              {
+                key: 'gift',
+                value: 'true',
+              },
+              {
+                key: 'gtmProductData',
+                value: suitableGift.value?.gtmProductData ? JSON.stringify(suitableGift.value.gtmProductData) : 'false',
+              },
+              {
+                key: 'bundle',
+                value: 'false',
+              },
+            ],
+          },
+        ],
+      }
+
+      await checkoutLineItemsAdd(checkout.value.id, checkoutCreateInput.lineItems)
+    }
+
     const computedCheckoutTotalPrice = computed(() => checkoutTotalPrice.value($cmwStore.settings.salesChannel, getCustomerType.value))
 
-    onMounted(() => {
+    onMounted(async () => {
+      const checkoutId = $cookies.get('checkoutId')
+
+      if (checkoutId) {
+        await getCheckoutById(checkoutId)
+      }
+
       const products = checkout.value?.lineItems?.map((node) => {
         const gtmProductData = node.customAttributes.find(v => v.key === 'gtmProductData')
         const productDataJson = gtmProductData?.value ?? null
@@ -67,8 +110,7 @@ export default defineComponent({
               quantity: node.quantity,
             }
           : {}
-      },
-      )
+      })
 
       process.browser && $cmwGtmUtils.pushPage('product', {
         event: 'cartView',
@@ -86,6 +128,7 @@ export default defineComponent({
     })
 
     return {
+      addIcon,
       breadcrumb,
       cartEmptyIcon,
       checkout,
@@ -97,9 +140,13 @@ export default defineComponent({
       emptyCart,
       fetch,
       goToCheckout,
+      handleAddGift,
       handleKeyUp,
       orderNote,
       shipping,
+      suitableGift,
+      suitableGiftIsOnCart,
+      toGiftIcon,
     }
   },
 
@@ -127,6 +174,25 @@ export default defineComponent({
                   <span>{{ $tc('profile.orders.card.goods', computedCheckoutTotalPrice) }}</span>
                 </small>
                 <CmwButton class="w-max ml-auto" variant="text" :label="$t('common.cta.emptyCart')" @click.native="emptyCart" />
+              </div>
+              <div v-if="suitableGift?.id && !suitableGiftIsOnCart">
+                <div class="bg-secondary-50 rounded my-2 mx-3 grid grid-cols-[70px_1fr_auto] gap-4 items-center justify-start">
+                  <div class="w-70px p-2">
+                    <img
+                      v-show="suitableGift.image?.source?.url"
+                      :src="suitableGift.image.source.url"
+                      :alt="suitableGift.image.source.altText" class="max-h-90px"
+                    >
+                  </div>
+                  <div class="text-sm leading-none flex items-center gap-1">
+                    <span>{{ suitableGift?.title }}</span>
+                    <VueSvgIcon :data="toGiftIcon" width="24" height="24" color="#134c45" />
+                  </div>
+                  <CmwButton variant="text" class="mr-8" @click.native="handleAddGift">
+                    <VueSvgIcon :data="addIcon" width="18" height="18" color="#d94965" />
+                    <span class="ml-2">{{ $t('common.cta.add') }}</span>
+                  </CmwButton>
+                </div>
               </div>
               <div v-for="lineItem in checkout.lineItems" :key="generateKey(`checkout-${lineItem.id}`)">
                 <CheckoutLine :checkout-line-item="lineItem" />

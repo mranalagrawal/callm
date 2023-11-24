@@ -1,7 +1,9 @@
 import { defineStore } from 'pinia'
 import type { TSalesChannel } from '~/config/themeConfig'
+import getProductsById from '~/graphql/queries/getProductsById.graphql'
 import { useCustomer } from '~/store/customer'
 import type { CheckoutMapped, ICheckoutLineItemMapped, IShopifyCheckout } from '~/types/checkout'
+import type { IProductMapped } from '~/types/product'
 import { getCountryFromStore } from '~/utilities/currency'
 import checkoutAttributesUpdateV2 from '~/graphql/mutations/checkout/checkoutAttributesUpdateV2.graphql'
 import checkoutCreate from '~/graphql/mutations/checkout/checkoutCreate.graphql'
@@ -13,6 +15,7 @@ import { SweetAlertToast } from '~/utilities/Swal'
 
 interface IState {
   checkout: CheckoutMapped
+  suitableGift: IProductMapped | undefined
 }
 export const useCheckout = defineStore({
   id: 'checkout',
@@ -28,6 +31,7 @@ export const useCheckout = defineStore({
       note: null,
       webUrl: undefined,
     },
+    suitableGift: undefined,
   }),
 
   getters: {
@@ -49,7 +53,21 @@ export const useCheckout = defineStore({
             : n.variant.price.amount,
         })) || []
 
-        return checkoutLines.reduce((t, n) => t + n.quantity * n.price, 0)
+        const subtotal = checkoutLines.reduce((t, n) => t + n.quantity * n.price, 0)
+
+        let giftTotal = 0
+        // If the suitableGift is in the checkout lines, sum their price
+        // run a loop to subtract all the suitableGift lines
+        if (this.checkout.lineItems.length) {
+          for (const lineItem of this.checkout.lineItems) {
+            const customAttribute = lineItem.customAttributes.find(el => el.key === 'gift')
+            if (customAttribute) {
+              giftTotal += lineItem.priceLists[salesChannel][customerType] * lineItem.quantity
+            }
+          }
+        }
+
+        return subtotal - giftTotal
       }
     },
   },
@@ -74,6 +92,56 @@ export const useCheckout = defineStore({
       }
 
       this.$patch({ checkout: checkoutMapped })
+    },
+
+    async checkSuitableGift(checkout: IShopifyCheckout) {
+      const lines_items = checkout.lineItems.nodes.map(lineItem => ({
+        product_name: lineItem.title,
+        product_id: `${lineItem.variant.product.id}`.substring(`${lineItem.variant.product.id}`.lastIndexOf('/') + 1),
+        variant_id: `${lineItem.variant.id}`.substring(`${lineItem.variant.id}`.lastIndexOf('/') + 1),
+        quantity: lineItem.quantity,
+        price: lineItem.variant.price.amount,
+      }))
+
+      if (!lines_items.length) { return }
+
+      await this.$nuxt.$cmw.$post('/checkouts/discounts/gift-eligible', {
+        lines_items,
+      })
+        .then(async (response: any) => {
+          const { data, responseCode } = response
+
+          if (responseCode === 0) {
+            if (data && (data.type === 'gift' || data.type === 'GIFT')) {
+              if (data.eligibles?.length) {
+                await this.$nuxt.$graphql.default.request(getProductsById, {
+                  lang: this.$nuxt.i18n.locale.toUpperCase(),
+                  id: data.eligibles[0].id,
+                })
+                  .then(async ({ product }) => {
+                    if (product) {
+                      const suitableGift = this.$nuxt.$productMapping.fromShopify([product])[0]
+                      // @ts-expect-error TODO: fix this type
+                      this.$patch({ suitableGift })
+                    }
+                  })
+              }
+            } else {
+              // If the suitableGift is in the checkout lines, remove it
+              // run a loop to remove all the suitableGift lines
+              if (this.checkout.lineItems.length) {
+                for (const lineItem of this.checkout.lineItems) {
+                  const customAttribute = lineItem.customAttributes.find(el => el.key === 'gift')
+                  if (customAttribute) {
+                    await this.checkoutLineItemsRemove(this.checkout.id, [lineItem])
+                  }
+                }
+              }
+
+              this.$patch({ suitableGift: undefined })
+            }
+          }
+        })
     },
 
     async goToCheckout() {
@@ -266,6 +334,7 @@ export const useCheckout = defineStore({
 
           if (!checkoutUserErrors.length) {
             this.setMappedCheckout(checkout)
+            this.checkSuitableGift(checkout)
 
             this.$nuxt.$gtm.push({
               event: 'addToCart',
@@ -297,8 +366,8 @@ export const useCheckout = defineStore({
           const { checkout, checkoutUserErrors } = checkoutLineItemsUpdate
 
           if (!checkoutUserErrors.length) {
-            // this.$patch({ checkout })
             this.setMappedCheckout(checkout)
+            this.checkSuitableGift(checkout)
 
             this.$nuxt.$gtm.push({
               event: isRemoving ? 'removeFromCart' : 'addToCart',
@@ -332,8 +401,8 @@ export const useCheckout = defineStore({
           const { checkout, checkoutUserErrors } = checkoutLineItemsRemove
 
           if (!checkoutUserErrors.length) {
-            // this.$patch({ checkout })
             this.setMappedCheckout(checkout)
+            this.checkSuitableGift(checkout)
 
             this.$nuxt.$gtm.push({
               event: 'removeFromCart',
@@ -358,6 +427,7 @@ export const useCheckout = defineStore({
           }
 
           this.setMappedCheckout(node)
+          this.checkSuitableGift(node)
         })
     },
 

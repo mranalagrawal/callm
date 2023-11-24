@@ -1,5 +1,6 @@
 export default {
   cta: {
+    add: 'Aggiungi',
     addAddress: 'Aggiungi indirizzo',
     addToCart: 'Aggiungi al carrello',
     addToCartSm: 'Aggiungi al carrello',
