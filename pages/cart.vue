@@ -176,7 +176,7 @@ export default defineComponent({
                 <CmwButton class="w-max ml-auto" variant="text" :label="$t('common.cta.emptyCart')" @click.native="emptyCart" />
               </div>
               <div v-if="suitableGift?.id && !suitableGiftIsOnCart">
-                <div class="bg-secondary-50 rounded my-2 mx-3 grid grid-cols-[70px_1fr_auto] gap-4 items-center justify-start">
+                <div class="bg-secondary-50 rounded my-2 mx-3 grid grid-cols-[70px_1fr_40px] gap-4 items-center justify-start md:(grid-cols-[70px_1fr_auto])">
                   <div class="w-70px p-2">
                     <img
                       v-show="suitableGift.image?.source?.url"
@@ -184,13 +184,18 @@ export default defineComponent({
                       :alt="suitableGift.image.source.altText" class="max-h-90px"
                     >
                   </div>
-                  <div class="text-sm leading-none flex items-center gap-1">
-                    <span>{{ suitableGift?.title }}</span>
-                    <VueSvgIcon :data="toGiftIcon" width="24" height="24" color="#134c45" />
+                  <div class="py-2">
+                    <div class="text-sm leading-snug">
+                      {{ suitableGift?.title }}
+                    </div>
+                    <div class="flex items-center gap-1 my-1">
+                      <VueSvgIcon :data="toGiftIcon" class="flex-shrink-0" width="20" height="20" color="#134c45" />
+                      <span class="text-xs text-secondary-700">{{ $t('eventGiftNote') }}</span>
+                    </div>
                   </div>
                   <CmwButton variant="text" class="mr-8" @click.native="handleAddGift">
                     <VueSvgIcon :data="addIcon" width="18" height="18" color="#d94965" />
-                    <span class="ml-2">{{ $t('common.cta.add') }}</span>
+                    <span class="ml-2 <md:hidden">{{ $t('common.cta.add') }}</span>
                   </CmwButton>
                 </div>
               </div>
