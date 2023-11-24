@@ -678,6 +678,7 @@ export default defineComponent({
         @update-value-selections="handleUpdateValueSelections"
         @update-value="handleUpdateValue"
         @handle-on-footer-click="handleOnFooterClick"
+        @reset-filter="resetFilter"
       />
     </ClientOnly>
   </div>
