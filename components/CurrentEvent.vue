@@ -200,7 +200,7 @@ export default defineComponent({
   <div class="c-calendar w-[min(100%,_40rem)] m-inline-auto bg-white relative p-4 rounded my-4 border border-primary">
     <ButtonIcon class="absolute top-2 right-2" :icon="closeIcon" variant="filled-white" @click.native="$emit('close-event')" />
     <div class="">
-      <div class="text-2xl text-primary text-center cmw-font-bold py-4 px-4" v-text="currentEvent.title.value" />
+      <div class="text-2xl text-primary text-center cmw-font-bold py-4 px-4 md:px-8" v-text="currentEvent.title.value" />
       <div class="relative">
         <img
           v-if="productImage?.url"
