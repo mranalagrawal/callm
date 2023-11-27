@@ -210,7 +210,10 @@ export default defineComponent({
       }
 
       if (!this.checkout.id) {
-        await this.checkoutCreate(checkoutCreateInput)
+        await this.checkoutCreate({
+          ...checkoutCreateInput,
+          lineItems: [],
+        })
       }
 
       this.checkoutLineItemsAdd(this.checkout.id, checkoutCreateInput.lineItems)
