@@ -259,13 +259,13 @@ export const useCheckout = defineStore({
       const { node: lastCheckout } = await this.$nuxt.$cmwRepo.customer.getCheckout(lastIncompleteCheckout)
 
       const storeLineItems = this.checkout.lineItems || []
-      const checkoutLineItems = lastCheckout.lineItems || []
+      const lastCheckoutLineItems = lastCheckout.lineItems || []
 
       // TODO: implement types
       // Separate lineItems into alreadyInCheckoutItems and notInCheckoutItems
       const { alreadyInCheckoutItems, notInCheckoutItems } = storeLineItems.reduce(
         (result: any, storeLineItem: any) => {
-          const checkoutLineItem = checkoutLineItems.nodes.find(
+          const checkoutLineItem = lastCheckoutLineItems.nodes.find(
             (checkoutItem: any) => checkoutItem.variant.id === storeLineItem.variant.id,
           )
 
@@ -300,8 +300,7 @@ export const useCheckout = defineStore({
       }
 
       // Todo: update checkout, shippingAddress, billingAddress, discountCodes, note...
-      // use checkoutAttributesUpdateV2
-      await this.checkoutEmailUpdateV2(lastCheckout.id, this.checkout.email)
+      await this.checkoutEmailUpdateV2(lastCheckout.id, lastCheckout.email)
 
       this.setCheckoutIdCookie(lastCheckout.id)
     },
