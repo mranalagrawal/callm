@@ -3,9 +3,8 @@ import themeConfig from '~/config/themeConfig'
 import { useCheckout } from '~/store/checkout'
 import { useCustomerOrders } from '~/store/customerOrders.ts'
 import { useCustomerWishlist } from '~/store/customerWishlist'
-import { getIconAsImg } from '~/utilities/icons.ts'
 import { djb2Hash } from '~/utilities/strings'
-import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
+import { SweetAlertToast } from '~/utilities/Swal'
 import customerAccessTokenCreate from '~/graphql/mutations/authenticateUser'
 import customerAccessTokenCreateWithMultipass from '~/graphql/mutations/authenticateUserWithMultipass'
 // import { useCustomerWishlist } from '@/store/customerWishlist'
@@ -179,24 +178,8 @@ export const useCustomer = defineStore({
             }
 
             this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
-            await this.$nuxt.$cmw.$get(`/wishlists?shopifyCustomerId=${customerId}`)
-              .then(({ data }) => {
-                const customerWishlistStore = useCustomerWishlist()
-                // TODO: remove this patch when we have the wishlist in the customerWishlistStore
-                this.$patch({
-                  customerWishlistProducts: data.elements,
-                })
-
-                customerWishlistStore.$patch({
-                  customerWishlistProducts: data.elements,
-                })
-              })
-              .catch(() => {
-                SweetAlertToast.fire({
-                  icon: 'error',
-                  text: this.$nuxt.app.i18n.t('common.feedback.KO.unknown'),
-                })
-              })
+            const customerWishlistStore = useCustomerWishlist()
+            await customerWishlistStore.getCustomerWishlist(customerId)
 
             const checkoutId = this.$nuxt.$cookies.get('checkoutId')
 
@@ -263,120 +246,6 @@ export const useCustomer = defineStore({
       this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', undefined)
       window.google_tag_manager && window.google_tag_manager[this.$nuxt.app.$config.gtm.id] && window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.reset()
       await this.$nuxt.app.router.push(this.$nuxt.app.localePath('/'))
-    },
-
-    async addToWishlist(args) {
-      const customerAccessToken = this.$nuxt.$cookieHelpers.getToken()
-      const shopifyCustomerId = `${this.customer.id}`.substring(`${this.customer.id}`.lastIndexOf('/') + 1)
-      this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
-      await this.$nuxt.$cmw.$post(`/wishlists?shopifyCustomerId=${shopifyCustomerId}`, {
-        shopifyCustomerId,
-        productFeId: args.id,
-        score: args.score || 0,
-        description: args.description,
-      }).then(async (data) => {
-        const { responseCode, data: { elements } } = data
-
-        // This means success :)
-        if (responseCode === 0) {
-          SweetAlertToast.fire({
-            iconHtml: getIconAsImg('success'),
-            text: this.$nuxt.app.i18n.t('common.feedback.OK.wishlistAdded'),
-          })
-
-          await this.$nuxt.$cmwGtmUtils.resetDatalayerFields()
-
-          this.$nuxt.$gtm.push({
-            event: 'addToWishlist',
-            wishlistAddedProduct: {
-              products: [{
-                ...args.gtmProductData,
-              }],
-            },
-          })
-
-          // Create a function to generate the same value from shopify with these elements 🤦🏻‍️🙈🫣
-          const productFeIds = elements.map(p => `P${p.productFeId}`)
-          const wishlistArr = setCustomerWishlist(JSON.stringify(productFeIds))
-
-          this.$patch({
-            wishlistArr,
-            customerWishlistProducts: elements,
-            customer: {
-              ...this.customer,
-              wishlist: { value: JSON.stringify(productFeIds) },
-            },
-          })
-        }
-      })
-        .catch(() => {
-          SweetAlertToast.fire({
-            icon: 'error',
-            text: this.$nuxt.app.i18n.t('common.feedback.KO.unknown'),
-          })
-        })
-    },
-
-    async removeFromWishlist(args) {
-      const customerAccessToken = this.$nuxt.$cookieHelpers.getToken()
-      const shopifyCustomerId = `${this.customer.id}`.substring(`${this.customer.id}`.lastIndexOf('/') + 1)
-      this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
-      await this.$nuxt.$cmw.$put('/wishlists', {
-        shopifyCustomerId,
-        productFeId: args.id,
-      }).then(async (data) => {
-        const { responseCode } = data
-        // This means success :)
-        if (responseCode === 0) {
-          SweetAlertToast.fire({
-            iconHtml: getIconAsImg('success'),
-            text: this.$nuxt.app.i18n.t('common.feedback.OK.wishlistRemoved'),
-          })
-
-          // Create a function to generate the same value from shopify with these elements 🤦🏻‍️🙈🫣
-          const filteredArr = this.wishlistArr.filter(p => p !== `P${args.id}`)
-          const customerWishlistProducts = this.customerWishlistProducts.filter(p => p.productFeId !== args.id)
-          const wishlistArr = setCustomerWishlist(JSON.stringify(filteredArr))
-
-          this.$patch({
-            wishlistArr,
-            customerWishlistProducts,
-            customer: {
-              ...this.customer,
-              wishlist: { value: JSON.stringify(filteredArr) },
-            },
-          })
-        }
-      })
-        .catch(() => {
-          SweetAlertToast.fire({
-            icon: 'error',
-            text: this.$nuxt.app.i18n.t('common.feedback.KO.unknown'),
-          })
-        })
-    },
-
-    handleWishlist(args) {
-      if (!this.customer.id) {
-        // TODO: Find a better UX for no logged users, maybe a login modal
-        this.$nuxt.app.router.push('/login')
-        return
-      }
-
-      if (!this.customerId || !args.id) { throw new Error('missing arguments') }
-
-      if (args.isOnFavourite) {
-        SweetAlertConfirm.fire({
-          // TODO: Add some cool animated icons and the use with iconHtml: getIconAsImg('error'),
-          icon: 'question',
-          text: this.$nuxt.app.i18n.t('common.confirm.wishlistRemove'),
-          cancelButtonText: this.$nuxt.app.i18n.t('common.cta.cancel'),
-          confirmButtonText: this.$nuxt.app.i18n.t('common.cta.confirm'),
-          preConfirm: () => this.removeFromWishlist(args),
-        }).then(() => {})
-      } else {
-        this.addToWishlist(args).then(() => {})
-      }
     },
 
     async customerUpdateData(customer = {}, feedbackOk = '', feedbackKo = '') {

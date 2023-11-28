@@ -110,28 +110,8 @@ export interface IBaseProductMapped {
   title: string
 }
 
-export interface IProductListing extends IBaseProductMapped {
-  milliliters: any
-  availableFeatures: TProductFeatures[]
-  awards: IProductAward[]
-  compareAtPrice: IMoneyV2
-  descriptionHtml: HTMLElement | string
-  details: Record<string, any> // Todo: type this
-  gtmProductData: any
-  priceLists: Record<string, any>
-  sku: string
-  source_id: string | number
-  url: string
-  characteristics?: any
-}
-
 export interface IProductMapped extends IBaseProductMapped {
   milliliters: any
-  // availableForSale: boolean
-  // awards: []
-  // handle: []
-  // shopify_product_id: string
-  // shopify_product_variant_id: string
   availableFeatures: TProductFeatures[]
   awards: IProductAward[]
   compareAtPrice: IMoneyV2
@@ -139,7 +119,7 @@ export interface IProductMapped extends IBaseProductMapped {
   details: Record<string, any> // Todo: type this
   gtmProductData: any
   priceLists: Record<string, any>
-  seo: IProductSeo
+  seo?: IProductSeo
   sku: string
   source_id: string | number
   url: string

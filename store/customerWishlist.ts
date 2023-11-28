@@ -1,14 +1,12 @@
 import { defineStore } from 'pinia'
-import type { IOptions } from '~/types/types'
-// import { regexRules } from '@/utilities/validators'
+import { useCustomer } from '~/store/customer'
+import type { IOptions, ObjType } from '~/types/types'
+import { getIconAsImg } from '~/utilities/icons'
+import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
 
-/* const setCustomerWishlist = (value: string) => {
-  const json = JSON.parse(value)
-  return json.filter((product: string) => new RegExp(regexRules('isProduct')).test(product))
-} */
 interface IState {
-  wishlistArr: any[]
-  wishlistProducts: any[]
+  elements: any[]
+  filteredElements: any[]
   filters: {
     categoriesFilters: {
       'id': number
@@ -23,21 +21,37 @@ interface IState {
       'name': string
     }[]
   }
+  wishlistShopifyProducts: ObjType<any>[]
 }
 
 export const useCustomerWishlist = defineStore({
   id: 'customerWishlist',
   state: () => <IState>({
-    wishlistArr: [],
-    wishlistProducts: [],
-    filters: {
-      categoriesFilters: [],
-      wineListsFilters: [],
-    },
+    elements: [],
+    filteredElements: [],
+    filters: { categoriesFilters: [], wineListsFilters: [] },
+    wishlistShopifyProducts: [],
   }),
 
   getters: {
-    favoritesCount: state => state.wishlistArr.length,
+
+    wishlistArr(state): string[] | number[] {
+      const ids = state.elements.flatMap(({ productFeId, relatedVintage }) =>
+        (relatedVintage ? [productFeId] : [productFeId]))
+
+      return [...new Set(ids.map(id => `'P${id}'`))]
+    },
+
+    filteredWishlistArr(state): string[] | number[] {
+      const ids = state.filteredElements.flatMap(({ productFeId, relatedVintage }) =>
+        (relatedVintage ? [productFeId] : [productFeId]))
+
+      return [...new Set(ids.map(id => `'P${id}'`))]
+    },
+
+    favoritesCount(): number {
+      return this.wishlistArr.length
+    },
 
     categoriesFilters: (state): IOptions[] =>
       state.filters.categoriesFilters?.map(({ id: categoryId, name: label }) => ({
@@ -61,12 +75,23 @@ export const useCustomerWishlist = defineStore({
   },
 
   actions: {
-    /* async getCustomerWishlist() {
+    async getCustomerWishlist(id: string) {
       const { customer } = useCustomer()
-      this.$patch({
-        wishlistArr: (customer.value.wishlist && customer.value.wishlist.value) ? setCustomerWishlist(customer.customer.wishlist.value) : [],
-      })
-    }, */
+      const customerId = id || `${customer.id}`.substring(`${customer.id}`.lastIndexOf('/') + 1)
+
+      await this.$nuxt.$cmw.$get(`/wishlists/full?shopifyCustomerId=${customerId}&sortingDirection=ASC&sortingField=createdat`)
+        .then(({ data, responseCode }: any) => {
+          if (responseCode === 0) {
+            this.$patch({ elements: data.elements, filteredElements: data.elements })
+          }
+        })
+        .catch(() => {
+          SweetAlertToast.fire({
+            icon: 'error',
+            text: this.$nuxt.app.i18n.t('common.feedback.KO.unknown'),
+          })
+        })
+    },
 
     async getWishlistProducts({ query = '', first = 30 }) {
       await this.$nuxt.$cmwRepo.products.getAll({
@@ -75,9 +100,124 @@ export const useCustomerWishlist = defineStore({
       })
         .then(({ products }: any) => {
           this.$patch({
-            wishlistProducts: products.nodes,
+            wishlistShopifyProducts: products.nodes,
           })
         })
+    },
+
+    async addToWishlist(args: any) {
+      const customerStore = useCustomer()
+      const customerAccessToken = this.$nuxt.$cookieHelpers.getToken()
+      const shopifyCustomerId = `${customerStore.customer.id}`.substring(`${customerStore.customer.id}`.lastIndexOf('/') + 1)
+      this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
+      await this.$nuxt.$cmw.$post(`/wishlists?shopifyCustomerId=${shopifyCustomerId}`, {
+        shopifyCustomerId,
+        productFeId: args.id,
+        score: args.score || 0,
+        description: args.description,
+      })
+        .then(async (data: any) => {
+          const { responseCode } = data
+
+          // This means success :)
+          if (responseCode === 0) {
+            SweetAlertToast.fire({
+              iconHtml: getIconAsImg('success'),
+              text: this.$nuxt.app.i18n.t('common.feedback.OK.wishlistAdded'),
+            })
+
+            /* const XXdata = {
+              responseCode: 0,
+              data: {
+                productFeId: 32467,
+                description: null,
+                score: null,
+                relatedVintage: {
+                  feId: 41304,
+                  handle: 'anjou-blanc-attention-chenin-mechant-clos-des-treilles-2021',
+                  vintageyear: '2021',
+                },
+              },
+
+            } */
+            // Create a function to add args.id to state.elements and state.filteredElements 🤦🏻‍️🙈🫣
+            // Find the object in data.elements with the same productFeId as args.id
+            // const newElement = data.data?.elements.find((p: any) => p.productFeId === args.id)
+            const elements = [...this.elements, data.data.elements]
+            this.$patch({ elements, filteredElements: elements })
+
+            await this.$nuxt.$cmwGtmUtils.resetDatalayerFields()
+
+            this.$nuxt.$gtm.push({
+              event: 'addToWishlist',
+              wishlistAddedProduct: {
+                products: [{
+                  ...args.gtmProductData,
+                }],
+              },
+            })
+          }
+        })
+        .catch(() => {
+          SweetAlertToast.fire({
+            icon: 'error',
+            text: this.$nuxt.app.i18n.t('common.feedback.KO.unknown'),
+          })
+        })
+    },
+
+    async removeFromWishlist(args: any) {
+      const customerStore = useCustomer()
+      const customerAccessToken = this.$nuxt.$cookieHelpers.getToken()
+      const shopifyCustomerId = `${customerStore.customer.id}`.substring(`${customerStore.customer.id}`.lastIndexOf('/') + 1)
+      this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
+      await this.$nuxt.$cmw.$put('/wishlists', {
+        shopifyCustomerId,
+        productFeId: args.id,
+      }).then((data: any) => {
+        const { responseCode } = data
+        // This means success :)
+        if (responseCode === 0) {
+          SweetAlertToast.fire({
+            iconHtml: getIconAsImg('success'),
+            text: this.$nuxt.app.i18n.t('common.feedback.OK.wishlistRemoved'),
+          })
+
+          // Create a function to remove args.id from state.elements and state.filteredElements 🤦🏻‍️🙈🫣
+          const filteredArr = this.elements.filter(p => p.productFeId !== args.id)
+          this.$patch({ elements: filteredArr, filteredElements: filteredArr })
+        }
+      })
+        .catch(() => {
+          SweetAlertToast.fire({
+            icon: 'error',
+            text: this.$nuxt.app.i18n.t('common.feedback.KO.unknown'),
+          })
+        })
+    },
+
+    handleWishlist(args: any) {
+      const customerStore = useCustomer()
+      if (!customerStore.customer.id) {
+        // TODO: Find a better UX for no logged users, maybe a login modal
+        this.$nuxt.app.router?.push('/login')
+        return
+      }
+
+      if (!customerStore.customerId || !args.id) { throw new Error('missing arguments') }
+
+      if (args.isOnFavourite) {
+        SweetAlertConfirm.fire({
+          // TODO: Add some cool animated icons and the use with iconHtml: getIconAsImg('error'),
+          icon: 'question',
+          text: this.$nuxt.app.i18n.t('common.confirm.wishlistRemove'),
+          cancelButtonText: this.$nuxt.app.i18n.t('common.cta.cancel'),
+          confirmButtonText: this.$nuxt.app.i18n.t('common.cta.confirm'),
+          preConfirm: () => this.removeFromWishlist(args),
+        }).then(() => {})
+      } else {
+        this.addToWishlist(args).then(() => {})
+      }
     },
   },
 })

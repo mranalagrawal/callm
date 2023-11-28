@@ -18,10 +18,12 @@ export default {
     const customerStore = useCustomer()
     const { customerWishlistProducts } = storeToRefs(customerStore)
     const { getWishlistProducts } = customerWishlistStore
-    const { wishlistArr, customer, customerId } = storeToRefs(useCustomer())
+    const { customer, customerId } = storeToRefs(useCustomer())
     const { selectedLayout, availableLayouts } = storeToRefs(useFilters())
-    const { wishlistProducts, filters, categoriesFilters, subcategoriesFilters, wineListsFilters } = storeToRefs(customerWishlistStore)
+    const { filteredWishlistArr, wishlistShopifyProducts, elements, filters, categoriesFilters, subcategoriesFilters, wineListsFilters } = storeToRefs(customerWishlistStore)
 
+    // P19052 2019
+    // P39364 2021
     const isReady = ref(false)
     const selectedCategory = ref('')
     const selectedSubcategory = ref('')
@@ -36,7 +38,7 @@ export default {
     const wishlistOtherProducts = ref<IProductMapped[]>([])
 
     const chunkSize = 12
-    const wishListChunks = chunkArray(wishlistArr.value, chunkSize)
+    const wishListChunks = ref(chunkArray(filteredWishlistArr.value, chunkSize))
     const nextChunkId = ref(1)
     const manualLazyLoading = ref(false)
 
@@ -52,22 +54,18 @@ export default {
             const { elements, filters } = data
 
             if (responseCode === 0) {
-              customerStore.$patch({
-                customerWishlistProducts: elements,
-              })
-
               customerWishlistStore.$patch({
+                filteredElements: elements,
                 filters,
-                wishlistProducts: elements,
               })
             }
           })
       }
 
-      if (wishListChunks.length > 0) {
+      if (wishListChunks.value.length > 0) {
         await getWishlistProducts({
-          query: `${wishListChunks[0].join(' OR ')}`,
-          first: wishListChunks[0].length,
+          query: `${wishListChunks.value[0].join(' OR ')}`,
+          first: wishListChunks.value[0].length,
         })
       }
     })
@@ -84,19 +82,25 @@ export default {
 
     const activeFilters = computed(() => [])
 
-    watch(() => queryUrl.value, () => fetch())
+    watch([
+      () => queryUrl.value,
+      () => filteredWishlistArr.value,
+    ], () => {
+      wishlistOtherProducts.value = []
+      wishListChunks.value = chunkArray(filteredWishlistArr.value, chunkSize)
+      fetch()
+    })
+
     const customerProducts = computed(() => {
       // Note: there's an annoying warning but the page renders perfectly, https://github.com/nuxt-community/composition-api/issues/19
-      if (!wishlistProducts.value || !wishlistProducts.value.length) { return [] }
+      if (!elements.value || !elements.value.length) { return [] }
 
-      return $productMapping.fromShopify(wishlistProducts.value)
+      return $productMapping.fromShopify(wishlistShopifyProducts.value)
     })
 
     const findRelatedVintage = (productId: string) => {
-      if (!customerWishlistProducts?.value?.length) { return null }
-      // @ts-expect-error TODO: type this
-      const element = customerWishlistProducts.value?.find(product => product.productFeId === productId)
-      // @ts-expect-error TODO: type this
+      if (!elements?.value?.length) { return null }
+      const element = elements.value?.find(product => product.productFeId === productId)
       return element?.relatedVintage || null
     }
 
@@ -105,9 +109,9 @@ export default {
     const trigger = ref(null) // used to get the ref of div that manage the intersection
 
     const lazyLoadChunkOfProducts = async () => {
-      if (nextChunkId.value < wishListChunks.length && nextChunkId.value in wishListChunks) {
-        // console.log(`start fetching ${nextChunkId.value} chunk of product...`)
-        const nextChunk = wishListChunks[nextChunkId.value]
+      if (nextChunkId.value < wishListChunks.value.length && nextChunkId.value in wishListChunks.value) {
+        // start fetching ${nextChunkId.value} chunk of product...
+        const nextChunk = wishListChunks.value[nextChunkId.value]
         const nextProducts = await $cmwRepo.products.getAll({
           query: `${nextChunk.join(' OR ')}`,
           first: chunkSize,
@@ -144,7 +148,7 @@ export default {
     })
 
     const showMore = computed(() => {
-      return manualLazyLoading.value && (nextChunkId.value < wishListChunks.length && nextChunkId.value in wishListChunks)
+      return manualLazyLoading.value && (nextChunkId.value < wishListChunks.value.length && nextChunkId.value in wishListChunks.value)
     })
 
     const handleUpdateTrigger = (key: string) => {
@@ -179,6 +183,7 @@ export default {
       closeIcon,
       customer,
       customerProducts,
+      customerWishlistProducts,
       filters,
       finalProducts,
       findRelatedVintage,
@@ -191,13 +196,15 @@ export default {
       selectedCategory,
       selectedLayout,
       selectedSubcategory,
-      selectedwineList: selectedWineList,
+      selectedWineList,
       showMore,
       subcategoriesFilters,
       trigger,
       wineListsFilters,
-      wishlistArr,
-      wishlistProducts,
+      wishListChunks,
+      filteredWishlistArr,
+      wishlistShopifyProducts,
+      elements,
     }
   },
 }
