@@ -154,7 +154,7 @@ export default defineComponent({
           <CalendarSm v-else :current-day="currentDay" @handle-click="handleClick" />
         </ClientOnly>
       </div>
-      <p class="w-[min(100%,_40rem)] m-inline-auto" v-text="$t('eventNote')" />
+      <p class="w-[min(100%,_40rem)] m-inline-auto text-center" v-text="$t('eventNote')" />
       <ClientOnly>
         <div>
           <h2 class="h4 text-primary text-center pt-10">
@@ -184,7 +184,7 @@ export default defineComponent({
                 :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')"
                 :to="(product?.url) ? localeLocation(product.url) : '/'"
               >
-                <span class="line-clamp-3 mt-2 text-center text-xs text-gray-600">
+                <span class="line-clamp-3 mt-2 text-center text-xs text-body">
                   {{ product.title }}
                 </span>
               </NuxtLink>
