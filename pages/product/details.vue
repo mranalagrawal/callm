@@ -18,7 +18,7 @@ import heartIcon from 'assets/svg/heart.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
 import { storeToRefs } from 'pinia'
 import { SweetAlertToast } from '@/utilities/Swal'
-import { getCountryFromStore, getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
+import { getCountryFromStore, getCurrencySymbol, getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
 import { useRecentProductsStore } from '@/store/recent'
 import { useCustomer } from '@/store/customer'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
@@ -35,6 +35,7 @@ export default defineComponent({
       i18n,
       $config,
       $graphql,
+      $cmwStore,
       $cmwRepo,
       error,
       redirect,
@@ -185,6 +186,10 @@ export default defineComponent({
           $sentry.captureException(new Error(`Something went wrong ${err}`))
         })
     })
+
+    const showScalaPay = computed(() => $cmwStore.isIt || $cmwStore.isB2b)
+
+    const showKlarna = computed(() => $cmwStore.isUk || $cmwStore.isFr || $cmwStore.isDe)
 
     const isOnSale = computed(() => {
       if (!productVariant.value) { return false }
@@ -349,7 +354,9 @@ export default defineComponent({
       productDetails,
       productVariant,
       removeProductFromCustomerCheckout,
+      showKlarna,
       showRequestModal,
+      showScalaPay,
       strippedContent,
       subtractIcon,
       wishlistArr,
@@ -357,6 +364,7 @@ export default defineComponent({
   },
   head: {},
   methods: {
+    getCurrencySymbol,
     generateKey,
     getPercent,
     getLocaleFromCurrencyCode,
@@ -530,20 +538,62 @@ export default defineComponent({
                 </li>
               </ul>
             </div>
-            <script
-              v-if="$cmwStore.isUk"
-              data-environment="production" src="https://osm.klarnaservices.com/lib.js"
-              data-client-id="c72bae1f-0d1c-5ed1-a3bb-b0fa3d12e442"
-              async
-            />
-            <ClientOnly>
-              <klarna-placement
+            <!-- Klarna Scripts -->
+            <template v-if="showKlarna">
+              <script
                 v-if="$cmwStore.isUk"
-                data-key="credit-promotion-badge"
-                data-locale="en-GB"
-                :data-purchase-amount="String(Number(finalPrice)).replace(/[^0-9]/g, '')"
+                data-environment="production" src="https://osm.klarnaservices.com/lib.js"
+                data-client-id="c72bae1f-0d1c-5ed1-a3bb-b0fa3d12e442"
+                async
               />
-            </ClientOnly>
+
+              <script
+                v-else-if="$cmwStore.isDe"
+                async
+                data-environment="production" src="https://js.klarna.com/web-sdk/v1/klarna.js"
+                data-client-id="11e7a9bf-129c-580b-9095-0d578515d571"
+              />
+
+              <script
+                v-else-if="$cmwStore.isFr"
+                async
+                data-environment="production" src="https://js.klarna.com/web-sdk/v1/klarna.js"
+                data-client-id="1e41d5a7-a0aa-55e1-86f2-00a1e155ac60"
+              />
+
+              <ClientOnly>
+                <div v-if="finalPrice" class="my-4">
+                  <klarna-placement
+                    data-key="credit-promotion-badge"
+                    :data-locale="$i18n.localeProperties.iso"
+                    :data-purchase-amount="finalPrice.toFixed(2).replace(/[^0-9]/g, '')"
+                  />
+                </div>
+              </ClientOnly>
+            </template>
+            <template v-else-if="showScalaPay">
+              <script type="module" src="https://cdn.scalapay.com/widget/v3/js/scalapay-widget.esm.js" />
+              <script nomodule src="https://cdn.scalapay.com/widget/v3/js/scalapay-widget.js" />
+
+              <ClientOnly>
+                <div class="my-4">
+                  <scalapay-widget
+                    frequency-number="30"
+                    number-of-installments="3"
+                    hide="false"
+                    hide-price="false"
+                    min="5"
+                    max="1500"
+                    :amount="`${getCurrencySymbol('EUR')} ${finalPrice}`"
+                    currency-position="before"
+                    currency-display="symbol"
+                    logo-size="100"
+                    theme="primary"
+                    :locale="$i18n.locale"
+                  />
+                </div>
+              </ClientOnly>
+            </template>
             <ProductDetailsVintages :sku="product.sku" />
             <!-- MOBILE ADD_TO_CART BUTTON -->
             <div
