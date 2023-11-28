@@ -22,7 +22,7 @@ export default defineComponent({
     const { getCustomerType } = storeToRefs(useCustomer())
     const checkoutStore = useCheckout()
     const { checkout, suitableGift, checkoutTotalPrice, checkoutTotalQuantity } = storeToRefs(checkoutStore)
-    const { getCheckoutById, goToCheckout, checkoutLineItemsAdd } = checkoutStore
+    const { getCheckoutById, goToCheckout, checkoutLineItemsAdd, checkoutLineItemsRemove } = checkoutStore
     const { customer, customerId } = storeToRefs(customerStore)
     const orderNote = ref(checkout.value?.note)
     const breadcrumb: IProductBreadcrumbs[] = [
@@ -35,13 +35,13 @@ export default defineComponent({
     })
 
     const emptyCart = () => {
-      // Todo: use checkoutLineItemsRemove mutation
       SweetAlertConfirm.fire({
         icon: 'warning',
         text: i18n.t('common.confirm.deleteCart'),
         cancelButtonText: i18n.t('common.cta.cancel'),
         confirmButtonText: i18n.t('common.cta.confirm'),
         preConfirm: () => {
+          checkoutLineItemsRemove(checkout.value.id, checkout.value.lineItems)
           $cookies.remove('cartId')
           checkoutStore.$reset()
         },
