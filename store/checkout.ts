@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import dayjs from 'dayjs'
 import type { TSalesChannel } from '~/config/themeConfig'
 import getProductsById from '~/graphql/queries/getProductsById.graphql'
 import { useCustomer } from '~/store/customer'
@@ -433,7 +432,10 @@ export const useCheckout = defineStore({
     },
 
     setCheckoutIdCookie(id: string, createdAt: string) {
-      const expires = dayjs(createdAt).add(45, 'day').toDate()
+      const createdAtTimestamp = new Date(createdAt).getTime() // Convert createdAt to milliseconds
+      const expiresTimestamp = createdAtTimestamp + (45 * 24 * 60 * 60 * 1000) // Add 45 days in milliseconds
+
+      const expires = new Date(expiresTimestamp)
       const currentDate = new Date()
       const maxAge = Math.floor((expires.getTime() - currentDate.getTime()) / 1000)
 
