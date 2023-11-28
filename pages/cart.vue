@@ -181,7 +181,7 @@ export default defineComponent({
                     <img
                       v-show="suitableGift.image?.source?.url"
                       :src="suitableGift.image.source.url"
-                      :alt="suitableGift.image.source.altText" class="max-h-90px"
+                      :alt="suitableGift.image.source.altText" class="max-h-90px mix-blend-darken"
                     >
                   </div>
                   <div class="py-2">
@@ -190,7 +190,15 @@ export default defineComponent({
                     </div>
                     <div class="flex items-center gap-1 my-1">
                       <VueSvgIcon :data="toGiftIcon" class="flex-shrink-0" width="20" height="20" color="#134c45" />
-                      <span class="text-xs text-secondary-700">{{ $t('eventGiftNote') }}</span>
+                      <i18n
+                        class="block text-xs col-span-full"
+                        path="eventGiftNote"
+                        tag="span"
+                      >
+                        <NuxtLink :to="localePath('/calendario-avvento-2023')" class="cmw-font-bold text-secondary-700 hover:(text-secondary-700)">
+                          {{ $t('eventGiftNoteLinkLabel') }}
+                        </NuxtLink>
+                      </i18n>
                     </div>
                   </div>
                   <CmwButton variant="text" class="mr-8" @click.native="handleAddGift">

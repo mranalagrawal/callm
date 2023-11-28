@@ -209,7 +209,6 @@ export const useCustomer = defineStore({
 
             if (!checkoutId && customer.lastIncompleteCheckout?.id) {
               const { getCheckoutById } = useCheckout()
-              // FixMe: For some reason getter getCustomerType is not updating properly, so the price on the items is not updated
               await getCheckoutById(customer.lastIncompleteCheckout.id)
             }
 

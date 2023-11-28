@@ -92,6 +92,7 @@ export const useCheckout = defineStore({
       }
 
       this.$patch({ checkout: checkoutMapped })
+      this.setCheckoutIdCookie(checkout.id)
     },
 
     async checkSuitableGift(checkout: IShopifyCheckout) {

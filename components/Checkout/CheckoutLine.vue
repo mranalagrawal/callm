@@ -196,7 +196,15 @@ export default defineComponent({
           <span>{{ product.title }}</span>
           <div class="flex items-center gap-1 my-1">
             <VueSvgIcon :data="toGiftIcon" class="flex-shrink-0" width="20" height="20" color="#134c45" />
-            <span class="text-xs text-secondary-700">{{ $t('eventGiftNote') }}</span>
+            <i18n
+              class="block text-xs col-span-full"
+              path="eventGiftNote"
+              tag="span"
+            >
+              <NuxtLink :to="localePath('/calendario-avvento-2023')" class="cmw-font-bold text-secondary-700 hover:(text-secondary-700)">
+                {{ $t('eventGiftNoteLinkLabel') }}
+              </NuxtLink>
+            </i18n>
           </div>
         </NuxtLink>
         <span class="<md:hidden text-right overline-2 text-secondary-700 uppercase">{{ $t('eventGiftFree') }}</span>
