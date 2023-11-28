@@ -26,6 +26,7 @@ fragment CHECKOUT_LINE_ITEMS_FRAGMENT on CheckoutLineItemConnection {
 
 fragment CHECKOUT_FRAGMENT on Checkout {
   buyerIdentity { countryCode }
+  createdAt
   completedAt
   email
   id

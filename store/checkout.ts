@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import dayjs from 'dayjs'
 import type { TSalesChannel } from '~/config/themeConfig'
 import getProductsById from '~/graphql/queries/getProductsById.graphql'
 import { useCustomer } from '~/store/customer'
@@ -92,7 +93,7 @@ export const useCheckout = defineStore({
       }
 
       this.$patch({ checkout: checkoutMapped })
-      this.setCheckoutIdCookie(checkout.id)
+      this.setCheckoutIdCookie(checkout.id, checkout.createdAt)
     },
 
     async checkSuitableGift(checkout: IShopifyCheckout) {
@@ -189,7 +190,7 @@ export const useCheckout = defineStore({
 
           if (!checkoutUserErrors.length) {
             this.setMappedCheckout(checkout)
-            this.setCheckoutIdCookie(checkout.id)
+            this.setCheckoutIdCookie(checkout.id, checkout.createdAt)
 
             this.$nuxt.$cookies.remove('cartId')
             // Todo: use checkoutCustomerAssociateV2 to associate the customer to the checkout
@@ -303,7 +304,7 @@ export const useCheckout = defineStore({
       // Todo: update checkout, shippingAddress, billingAddress, discountCodes, note...
       await this.checkoutEmailUpdateV2(lastCheckout.id, lastCheckout.email)
 
-      this.setCheckoutIdCookie(lastCheckout.id)
+      this.setCheckoutIdCookie(lastCheckout.id, lastCheckout.createdAt)
     },
 
     async checkoutEmailUpdateV2(checkoutId: string, email: string) {
@@ -431,11 +432,17 @@ export const useCheckout = defineStore({
         })
     },
 
-    setCheckoutIdCookie(id: string) {
+    setCheckoutIdCookie(id: string, createdAt: string) {
+      const expires = dayjs(createdAt).add(45, 'day').toDate()
+      const currentDate = new Date()
+      const maxAge = Math.floor((expires.getTime() - currentDate.getTime()) / 1000)
+
       this.$nuxt.$cookies.set('checkoutId', id, {
-        maxAge: 60 * 60 * 24 * 7,
+        path: '/',
+        maxAge,
         sameSite: 'none',
         secure: true,
+        expires,
       })
     },
   },

@@ -39,7 +39,7 @@ export interface IShopifyCheckout {
   /* The date and time when the checkout was completed. */
   completedAt: string // DateTime
   /* The date and time when the checkout was created. */
-  createdAt?: string // DateTime!
+  createdAt: string // DateTime!
   /* The currency code for the checkout. */
   currencyCode?: 'EUR' | 'GBP' // CurrencyCode!
   /* A list of extra information that's added to the checkout. */
