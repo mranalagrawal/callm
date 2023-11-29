@@ -433,7 +433,7 @@ export const useCheckout = defineStore({
 
     setCheckoutIdCookie(id: string, createdAt: string) {
       const createdAtTimestamp = new Date(createdAt).getTime() // Convert createdAt to milliseconds
-      const expiresTimestamp = createdAtTimestamp + (45 * 24 * 60 * 60 * 1000) // Add 45 days in milliseconds
+      const expiresTimestamp = createdAtTimestamp + (90 * 24 * 60 * 60 * 1000) // Add 45 days in milliseconds
 
       const expires = new Date(expiresTimestamp)
       const currentDate = new Date()
