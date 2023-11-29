@@ -307,6 +307,8 @@ export const useCheckout = defineStore({
     },
 
     async checkoutEmailUpdateV2(checkoutId: string, email: string) {
+      if (!email) { return }
+
       await this.$nuxt.$graphql.default
         .request(checkoutEmailUpdateV2, {
           lang: this.$nuxt.app.i18n.locale.toUpperCase(),
@@ -335,6 +337,7 @@ export const useCheckout = defineStore({
           if (!checkoutUserErrors.length) {
             this.setMappedCheckout(checkout)
             this.checkSuitableGift(checkout)
+            this.checkoutEmailUpdateV2(checkout.id, checkout.email)
 
             this.$nuxt.$gtm.push({
               event: 'addToCart',
@@ -368,6 +371,7 @@ export const useCheckout = defineStore({
           if (!checkoutUserErrors.length) {
             this.setMappedCheckout(checkout)
             this.checkSuitableGift(checkout)
+            this.checkoutEmailUpdateV2(checkout.id, checkout.email)
 
             this.$nuxt.$gtm.push({
               event: isRemoving ? 'removeFromCart' : 'addToCart',
@@ -403,6 +407,7 @@ export const useCheckout = defineStore({
           if (!checkoutUserErrors.length) {
             this.setMappedCheckout(checkout)
             this.checkSuitableGift(checkout)
+            this.checkoutEmailUpdateV2(checkout.id, checkout.email)
 
             this.$nuxt.$gtm.push({
               event: 'removeFromCart',
