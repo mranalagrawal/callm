@@ -31,7 +31,7 @@ export default defineComponent({
     Navbar,
   },
   setup() {
-    const { i18n, $cookies, req, getRouteBaseName } = useContext()
+    const { i18n, $cookies, getRouteBaseName } = useContext()
     const store: any = useStore()
     const route = useRoute()
     const { loadMenu } = useVercelKv()
@@ -57,10 +57,6 @@ export default defineComponent({
       await store.dispatch('user/setUser', {})
       const accessToken = $cookieHelpers.getToken()
       accessToken && await getCustomer()
-
-      const isFromApp = req?.headers['user-agent']?.includes('CMW-App')
-
-      if (isFromApp) { store.commit('headers/SET_FROM_APP', { fromApp: true }) }
     })
 
     const isFromApp = computed(() => store.state.headers.fromApp)
@@ -107,6 +103,10 @@ export default defineComponent({
       if (!process.client) { return }
       const root = document.documentElement
       root.style.setProperty('--cmw-top-banner-height', showTopBar.value ? '26px' : '0px')
+
+      if (isFromApp.value) {
+        root.style.setProperty('--cmw-header-height', showTopBar.value ? '72px' : '0px')
+      }
     })
 
     watch(() => route.value, () => {
