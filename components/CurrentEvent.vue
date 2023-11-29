@@ -7,10 +7,11 @@ import addIcon from 'assets/svg/add.svg'
 import cartIcon from 'assets/svg/cart.svg'
 import emailIcon from 'assets/svg/email.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
-import { getLocaleFromCurrencyCode } from '~/utilities/currency'
+import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
 import Alert from '~/components/FeedBack/Alert.vue'
 import useShowRequestModal from '~/components/ProductBox/useShowRequestModal'
-import { useShopifyCart } from '~/store/shopifyCart'
+import { useCheckout } from '~/store/checkout'
+import { useCustomer } from '~/store/customer'
 import type { IEventDay } from '~/pages/calendario-avvento-2023.vue'
 import type { IProductMapped } from '~/types/product'
 import type { TImage } from '~/types/types'
@@ -41,8 +42,9 @@ export default defineComponent({
     const isDesktop = inject('isDesktop')
     const { $dayjs } = useContext()
     const { $productMapping, $cmwStore: { settings: { salesChannel } } } = useContext()
-    const { shopifyCart } = storeToRefs(useShopifyCart())
-    const { cartLinesAdd, createShopifyCart, cartLinesUpdate } = useShopifyCart()
+    const { customer } = storeToRefs(useCustomer())
+    const { checkout } = storeToRefs(useCheckout())
+    const { checkoutCreate, checkoutLineItemsAdd, checkoutLineItemsUpdate } = useCheckout()
     const { handleShowRequestModal } = useShowRequestModal()
 
     const isOpen = ref(false)
@@ -64,17 +66,33 @@ export default defineComponent({
         : product.value.quantityAvailable
     })
 
-    const isOnCart = computed(() => {
-      // @ts-expect-error implicit type
-      const productIncart = shopifyCart.value?.lines?.edges.find(el => el.node.merchandise.id === product.value.shopify_product_variant_id)
-      if (productIncart) { return productIncart.node }
-
-      return null
-    })
+    const isOnCart = computed(() =>
+      checkout.value.lineItems.find(el => el.variant.id === product.value.shopify_product_variant_id))
 
     const cartQuantity = computed(() => isOnCart.value ? isOnCart.value.quantity : 0)
 
     const canAddMore = computed(() => (amountMax.value - cartQuantity.value) > 0)
+
+    const removeProductFromCustomerCheckout = async () => {
+      if (cartQuantity.value < 1) {
+        return
+      }
+
+      const currentLineItem = checkout.value.lineItems.find(el => el.variant.id === product.value.shopify_product_variant_id)
+
+      if (!currentLineItem) {
+        return
+      }
+
+      const lineItems = [{
+        customAttributes: currentLineItem.customAttributes,
+        id: currentLineItem.id,
+        quantity: +currentLineItem.quantity - 1,
+        variantId: currentLineItem.variant.id,
+      }]
+
+      await checkoutLineItemsUpdate(checkout.value.id, lineItems, true)
+    }
 
     const price = computed(() => {
       if (props.currentEvent.price?.value) {
@@ -97,11 +115,12 @@ export default defineComponent({
       amountMax,
       canAddMore,
       cartIcon,
-      cartLinesAdd,
-      cartLinesUpdate,
       cartQuantity,
+      checkout,
+      checkoutCreate,
+      checkoutLineItemsAdd,
       closeIcon,
-      createShopifyCart,
+      customer,
       description,
       discount,
       emailIcon,
@@ -115,48 +134,66 @@ export default defineComponent({
       price,
       product,
       productImage,
-      shopifyCart,
+      removeProductFromCustomerCheckout,
       subtractIcon,
     }
   },
   methods: {
     getLocaleFromCurrencyCode,
-    async addToUserCart() {
+    async addProductToCustomerCheckout() {
       this.isOpen = true
 
-      if (this.currentEventDay !== this.currentDay) {
+      // check for availability
+      if (!this.canAddMore) {
         await SweetAlertToast.fire({
           icon: 'warning',
-          text: this.$i18n.t('common.feedback.KO.addToCartNotAvailable'),
+          text: this.$i18n.t('common.feedback.KO.addToCartReachLimit'),
         })
         return
       }
 
-      if (!this.product) {
-        await SweetAlertToast.fire({
-          icon: 'warning',
-          text: this.$i18n.t('common.feedback.KO.unknown'),
-        })
-        return
+      const checkoutCreateInput = {
+        buyerIdentity: {
+          countryCode: getCountryFromStore(this.$cmwStore.settings.store),
+        },
+        ...(this.customer.email && { email: this.customer.email }),
+        note: this.checkout.note,
+        lineItems: [{
+          customAttributes: [
+            {
+              key: 'gtmProductData',
+              value: this.product.gtmProductData ? JSON.stringify(this.product.gtmProductData) : 'false',
+            },
+            {
+              key: 'bundle',
+              value: (this.product.tags) ? this.product.tags.includes('BUNDLE').toString() : 'false',
+            },
+          ],
+          quantity: 1,
+          variantId: this.product.shopify_product_variant_id,
+        }],
       }
-      if (!this.shopifyCart) { await this.createShopifyCart() }
 
-      // Fixme: make flashMessage work along with typescript or use a better plugin
-      /* @ts-expect-error flashMessage doesn't seem to handle typescript */
-      await this.cartLinesAdd(this.product, false, () => this.flashMessage.show({
-        status: '',
-        message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title}` }),
-        icon: this.product.image.source.url,
-        iconClass: 'bg-transparent ',
-        time: 8000,
-        blockClass: 'add-product-notification',
-      }))
-    },
+      if (!this.checkout.id) {
+        await this.checkoutCreate({
+          ...checkoutCreateInput,
+          lineItems: [],
+        })
+      }
 
-    async removeFromUserCart() {
-      if (this.cartQuantity === 0) { return }
-
-      await this.cartLinesUpdate(this.product, this.cartQuantity - 1)
+      this.checkoutLineItemsAdd(this.checkout.id, checkoutCreateInput.lineItems)
+        .then(async () => {
+          // Fixme: make flashMessage work along with typescript or use a better plugin
+          /* @ts-expect-error flashMessage doesn't seem to handle typescript */
+          this.flashMessage.show({
+            status: '',
+            message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title}` }),
+            icon: this.product.image.source.url,
+            iconClass: 'bg-transparent ',
+            time: 8000,
+            blockClass: 'add-product-notification',
+          })
+        })
     },
   },
 })
@@ -166,7 +203,7 @@ export default defineComponent({
   <div class="c-calendar w-[min(100%,_40rem)] m-inline-auto bg-white relative p-4 rounded my-4 border border-primary">
     <ButtonIcon class="absolute top-2 right-2" :icon="closeIcon" variant="filled-white" @click.native="$emit('close-event')" />
     <div class="">
-      <div class="text-2xl text-primary text-center cmw-font-bold py-4 px-4" v-text="currentEvent.title.value" />
+      <div class="text-2xl text-primary text-center cmw-font-bold py-4 px-4 md:px-8" v-text="currentEvent.title.value" />
       <div class="relative">
         <img
           v-if="productImage?.url"
@@ -216,7 +253,7 @@ export default defineComponent({
               <CmwButton
                 class="gap-2 pl-2 pr-3 py-2"
                 :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
-                @click.native="addToUserCart"
+                @click.native="addProductToCustomerCheckout"
               >
                 <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
                 <span class="text-sm" v-text="isDesktop ? $t('common.cta.addToCart') : $t('common.cta.addToCartSm')" />
@@ -234,7 +271,7 @@ export default defineComponent({
                 <button
                   class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l hover:(bg-primary)"
                   :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
-                  @click="removeFromUserCart"
+                  @click="removeProductFromCustomerCheckout"
                 >
                   <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="white" />
                 </button>
@@ -247,7 +284,7 @@ export default defineComponent({
                           disabled:(bg-primary-100 cursor-not-allowed)"
                   :disabled="!canAddMore"
                   :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
-                  @click="addToUserCart"
+                  @click="addProductToCustomerCheckout"
                 >
                   <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
                 </button>
@@ -257,7 +294,7 @@ export default defineComponent({
               <CmwButton
                 class="gap-2 pl-2 pr-3 py-2"
                 :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
-                @click.native="addToUserCart"
+                @click.native="addProductToCustomerCheckout"
               >
                 <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
                 <span class="text-sm" v-text="isDesktop ? $t('common.cta.addToCart') : $t('common.cta.addToCartSm')" />
@@ -275,7 +312,7 @@ export default defineComponent({
                 <button
                   class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l hover:(bg-primary)"
                   :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
-                  @click="removeFromUserCart"
+                  @click="removeProductFromCustomerCheckout"
                 >
                   <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="white" />
                 </button>
@@ -288,7 +325,7 @@ export default defineComponent({
                               disabled:(bg-primary-100 cursor-not-allowed)"
                   :disabled="!canAddMore"
                   :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
-                  @click="addToUserCart"
+                  @click="addProductToCustomerCheckout"
                 >
                   <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
                 </button>

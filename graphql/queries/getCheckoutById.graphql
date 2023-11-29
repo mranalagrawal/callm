@@ -1,0 +1,12 @@
+#import "~/graphql/fragments/checkout.graphql"
+
+query getCheckoutById(
+  $lang: LanguageCode!
+  $id: ID!
+) @inContext(language: $lang) {
+  node(id: $id){
+    ... on Checkout {
+      ...CHECKOUT_FRAGMENT
+    }
+  }
+}

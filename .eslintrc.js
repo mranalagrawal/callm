@@ -68,7 +68,7 @@ module.exports = {
     'antfu/top-level-function': 'off',
     'curly': ['error', 'multi-line', 'consistent'],
     'max-statements-per-line': ['error', { max: 3 }],
-    'max-depth': ['error', 4],
+    'max-depth': ['error', 5],
     /* TYPESCRIPT ESLINT RULES */
     '@typescript-eslint/brace-style': ['error', '1tbs', { allowSingleLine: true }],
     '@typescript-eslint/no-unused-vars': ['error', { ignoreRestSiblings: true }],

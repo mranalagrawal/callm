@@ -1,6 +1,7 @@
 import getCustomer from '@/graphql/queries/getCustomer'
 import getCart from '@/graphql/queries/getCart'
 import customerUpdate from '@/graphql/mutations/customerUpdate'
+import getCheckoutById from '@/graphql/queries/getCheckoutById'
 
 export default ctx => ({
   async getCustomer() {
@@ -26,6 +27,19 @@ export default ctx => ({
       })
 
       return { cart }
+    } catch (e) {
+      throw new Error(ctx.$i18n.t('feedback.KO.unknown').toString())
+    }
+  },
+
+  async getCheckout(id) {
+    try {
+      const { node } = await ctx.$graphql.default.request(getCheckoutById, {
+        lang: ctx.i18n.locale.toUpperCase(),
+        id,
+      })
+
+      return { node }
     } catch (e) {
       throw new Error(ctx.$i18n.t('feedback.KO.unknown').toString())
     }

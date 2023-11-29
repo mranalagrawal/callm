@@ -70,14 +70,14 @@ input ProductFilter {
   #productMetafield: MetafieldFilter
   # The product type to filter on.
   productType: String
-  #The product vendor to filter on.
+  # The product vendor to filter on.
   productVendor: String
-  #A product tag to filter on.
+  # A product tag to filter on.
   tag: String
-  #A variant metafield to filter on.
+  # A variant metafield to filter on.
   #variantMetafield: MetafieldFilter TODO: Implement MetafieldFilter
-  #A variant option to filter on.
-  #variantOption: VariantOptionFilter TODO: Implement VariantOptionFilter
+  # A variant option to filter on.
+  # variantOption: VariantOptionFilter TODO: Implement VariantOptionFilter
 }
 
 input MetaobjectHandleInput {
@@ -85,4 +85,67 @@ input MetaobjectHandleInput {
   handle: String!
   # The type of the metaobject.
   type: String!
+}
+
+#The input fields required to create a checkout.
+input CheckoutCreateInput {
+		# Allows setting partial addresses on a Checkout, skipping the full validation of attributes.
+		# The required attributes are city, province, and country. Full validation of addresses is still done at completion time. Defaults to null.
+		allowPartialAddresses: Boolean
+		# The identity of the customer associated with the checkout.
+		buyerIdentity: String # CheckoutBuyerIdentityInput TODO: Implement CheckoutBuyerIdentityInput
+		# A list of extra information that's added to the checkout.
+		customAttributes: [AttributeInput!]
+		# The email with which the customer wants to checkout.
+		email: String
+		# A list of line item objects, each one containing information about an item in the checkout.
+		lineItems: String # [CheckoutLineItemInput!] TODO: Implement CheckoutLineItemInput
+		# The text of an optional note that a shop owner can attach to the checkout.
+		note: String
+		# The three-letter currency code of one of the shop's enabled presentment currencies.
+		# Including this field creates a checkout in the specified currency.
+		# By default, new checkouts are created in the shop's primary currency.
+		# Deprecated: Use the buyerIdentity.countryCode field instead.
+		presentmentCurrencyCode: CurrencyCode
+		# The shipping address to where the line items will be shipped.
+		shippingAddress: MailingAddressInput
+}
+
+# The input fields for the identity of the customer associated with the checkout.
+interface CheckoutBuyerIdentityInput {
+		# The country code of one of the shop's enabled countries. For example, CA. Including this field creates a checkout in the specified country's currency.
+		countryCode: CountryCode!
+}
+
+# The input fields to update a line item on the checkout.
+input CheckoutLineItemUpdateInput {
+		# Extra information in the form of an array of Key-Value pairs about the line item.
+		customAttributes:[AttributeInput!]
+		# The ID of the line item.
+		id: ID
+		# The quantity of the line item.
+		quantity: Int
+		# The variant ID of the line item.
+		variantId: ID
+}
+
+# The input fields to create a line item on a checkout.
+input CheckoutLineItemInput {
+		# Extra information in the form of an array of Key-Value pairs about the line item.
+		customAttributes:[AttributeInput!]
+		# The quantity of the line item.
+		quantity: Int
+		# The variant ID of the line item.
+		variantId: ID
+}
+
+# The input fields required to update a checkout's attributes.
+input CheckoutAttributesUpdateV2Input {
+		#	Allows setting partial addresses on a Checkout, skipping the full validation of attributes.
+		#	The required attributes are city, province, and country. Full validation of the addresses is still done at completion time. Defaults to false with each operation.
+		allowPartialAddresses: Boolean
+		# A list of extra information that is added to the checkout.
+		customAttributes: [AttributeInput!]
+		# The text of an optional note that a shop owner can attach to the checkout.
+		note: String
 }

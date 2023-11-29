@@ -2,11 +2,12 @@
 import type { PropType } from '@nuxtjs/composition-api'
 import { computed, defineComponent, ref, useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import type { IOrder } from '~/types/order'
+import { useCheckout } from '~/store/checkout'
+import { useCustomer } from '~/store/customer'
+import type { ILineItem, IOrder } from '~/types/order'
 import OrderReceiptPrint from '~/components/UserProfile/OrderReceiptPrint.vue'
-import { useShopifyCart } from '~/store/shopifyCart'
 
-import { getLocaleFromCurrencyCode } from '~/utilities/currency'
+import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
 import OrderCardSummary from '~/components/UserProfile/OrderCardSummary.vue'
 import OrderCardLineItem from '~/components/UserProfile/OrderCardLineItem.vue'
 import { generateKey } from '~/utilities/strings'
@@ -36,12 +37,14 @@ export default defineComponent({
       i18n,
       $config,
       $productMapping,
+      $cmwStore,
     } = useContext()
 
     const splash = useSplash()
+    const { customer } = storeToRefs(useCustomer())
     const customerOrders = useCustomerOrders()
-    const { shopifyCart } = storeToRefs(useShopifyCart())
-    const { cartLinesAdd, cartLinesUpdateV2, createShopifyCart } = useShopifyCart()
+    const { checkout } = storeToRefs(useCheckout())
+    const { checkoutCreate, checkoutLineItemsAdd, checkoutLineItemsUpdate } = useCheckout()
     const upperButton = ref<HTMLElement | null>(null)
     const { iso } = i18n.localeProperties
 
@@ -115,62 +118,74 @@ export default defineComponent({
 
     const handleReorderProducts = async () => {
       // If there's no cart create one
-      // @ts-expect-error TODO: fix this types
-      if (!shopifyCart.value?.id) { await createShopifyCart() }
+      if (!checkout.value?.id) {
+        const checkoutCreateInput = {
+          buyerIdentity: {
+            countryCode: getCountryFromStore($cmwStore.settings.store),
+          },
+          ...(customer.value.email && { email: customer.value.email }),
+        }
+        await checkoutCreate(checkoutCreateInput)
+      }
 
       // Check every Item in orderLineItems,
-      for (const orderLine of orderLineItems.value) {
-        // @ts-expect-error TODO: fix this types
-        const isOnCart = shopifyCart.value?.lines?.nodes?.some((shopifyCartLine: { merchandise: { id: any } }) => shopifyCartLine.merchandise.id === orderLine.variant.id)
+      const checkoutLineItems = checkout.value.lineItems || []
 
-        if (isOnCart) {
-          // @ts-expect-error TODO: fix this types
-          const shopifyCartLine = shopifyCart.value?.lines.nodes
-            .find((shopifyCartLine: { merchandise: { id: any } }) => shopifyCartLine.merchandise.id === orderLine.variant.id)
-          // Todo: handle this in bulk, shopify accepts an array of lines, so, we can group all existing lines and later edit them in bulk
-          // if the item is already on the cart then use the cartLineUpdate method
+      // Separate line items into alreadyInCheckoutItems and notInCheckoutItems
+      const { alreadyInCheckoutItems, notInCheckoutItems } = orderLineItems.value.reduce(
+        (result: any, orderLineItem: ILineItem) => {
+          const checkoutLineItem = checkoutLineItems.find(
+            checkoutItem => checkoutItem.variant.id === orderLineItem.variant.id,
+          )
 
-          // Fixme: there's a shopify bug using cartLinesUpdate when the user add more than 1 it creates 2 or more cartLines
-
-          const lines = [
-            {
-              attributes: [
+          if (checkoutLineItem) {
+            // If the line item is the same, add it to alreadyInCheckoutItems
+            result.alreadyInCheckoutItems.push({
+              customAttributes: checkoutLineItem.customAttributes,
+              id: checkoutLineItem.id,
+              quantity: checkoutLineItem.quantity + orderLineItem.quantity,
+              variantId: checkoutLineItem.variant.id,
+            })
+          } else {
+            // If the line item is not in the checkout, add it to notInCheckoutItems
+            const gtmProductData = $productMapping.getGtmProductDataFromCartLine(orderLineItem.variant.product)
+            result.notInCheckoutItems.push({
+              customAttributes: [
                 {
                   key: 'gtmProductData',
-                  value: shopifyCartLine.attributes.find((el: { key: string }) => el.key === 'gtmProductData').value,
+                  value: gtmProductData ? JSON.stringify(gtmProductData) : 'false',
                 },
                 {
                   key: 'bundle',
-                  value: shopifyCartLine.merchandise.product.tags.includes('BUNDLE').toString(),
+                  value: (orderLineItem.variant?.product?.tags) ? orderLineItem.variant.product.tags.includes('BUNDLE').toString() : 'false',
                 },
               ],
-              id: shopifyCartLine.id,
-              merchandiseId: orderLine.variant.id,
-              quantity: shopifyCartLine.quantity + orderLine.quantity,
-            },
-          ]
+              quantity: orderLineItem.quantity,
+              variantId: orderLineItem.variant.id,
+            })
+          }
 
-          await cartLinesUpdateV2(lines)
-        } else {
-          // if it is not on cart use the addCartLine method
-          const gtmProductData = $productMapping.getGtmProductDataFromCartLine(orderLine.variant.product)
-          await cartLinesAdd({
-            shopify_product_variant_id: orderLine.variant.id,
-            quantity: orderLine.quantity,
-            gtmProductData,
-            tags: orderLine.variant.product.tags,
-          })
-        }
+          return result
+        },
+        { alreadyInCheckoutItems: [], notInCheckoutItems: [] },
+      )
+
+      if (notInCheckoutItems.length) {
+        await checkoutLineItemsAdd(checkout.value.id, notInCheckoutItems)
+      }
+
+      if (alreadyInCheckoutItems.length) {
+        await checkoutLineItemsUpdate(checkout.value.id, alreadyInCheckoutItems)
       }
     }
 
     return {
       afterEnter,
       canBuyAgain,
-      cartLinesAdd,
-      cartLinesUpdateV2,
+      checkoutLineItemsAdd,
+      checkoutLineItemsUpdate,
       chevronDownIcon,
-      createShopifyCart,
+      customer,
       handleClick,
       handlePrint,
       handleReorderProducts,

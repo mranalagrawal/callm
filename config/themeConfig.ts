@@ -54,6 +54,7 @@ const defaultColors = {
     700: '#155B53',
     400: '#2C8982',
     100: '#ADD3D1',
+    50: '#deeded',
   },
   body: colors.zinc[700],
   success: '#299100',

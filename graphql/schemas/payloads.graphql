@@ -44,29 +44,73 @@ type CustomerUpdatePayload {
 }
 
 type CartNoteUpdatePayload {
-# The updated cart.
+  # The updated cart.
   cart: Cart
-# The list of errors that occurred from executing the mutation.
+  # The list of errors that occurred from executing the mutation.
   userErrors: [CartUserError!]!
 }
 
 type CartLinesAddPayload {
-# The updated cart.
+  # The updated cart.
   cart: Cart
-# The list of errors that occurred from executing the mutation.
+  # The list of errors that occurred from executing the mutation.
   userErrors: [CartUserError!]!
 }
 
 type CartLinesRemovePayload {
-# The updated cart.
+  # The updated cart.
   cart: Cart
-# The list of errors that occurred from executing the mutation.
+  # The list of errors that occurred from executing the mutation.
   userErrors: [CartUserError!]!
 }
 
 type CartLinesUpdatePayload {
-# The updated cart.
+  # The updated cart.
   cart: Cart
-# The list of errors that occurred from executing the mutation.
+  # The list of errors that occurred from executing the mutation.
   userErrors: [CartUserError!]!
+}
+
+type CheckoutCreatePayload {
+  # The new checkout object.
+  checkout: Checkout
+  # The list of errors that occurred from executing the mutation.
+  checkoutUserErrors:  [CheckoutUserError!]!
+  # The checkout queue token. Available only to selected stores.
+  queueToken:String
+}
+
+type CheckoutLineItemsUpdatePayload {
+  # The updated checkout object.
+  checkout: Checkout
+  # The list of errors that occurred from executing the mutation.
+  checkoutUserErrors: [CheckoutUserError!]!
+}
+
+type CheckoutLineItemsAddPayload {
+  # The updated checkout object.
+  checkout: Checkout
+  # The list of errors that occurred from executing the mutation.
+  checkoutUserErrors: [CheckoutUserError!]!
+}
+
+type CheckoutEmailUpdateV2Payload {
+  # The checkout object with the updated email.
+  checkout: Checkout
+  # The list of errors that occurred from executing the mutation.
+  checkoutUserErrors: [CheckoutUserError!]!
+}
+
+type CheckoutAttributesUpdateV2Payload {
+  # The updated checkout object.
+  checkout: Checkout
+  # The list of errors that occurred from executing the mutation.
+  checkoutUserErrors: [CheckoutUserError!]!
+}
+
+type CheckoutLineItemsRemovePayload {
+  # The updated checkout object.
+  checkout: Checkout
+  # The list of errors that occurred from executing the mutation.
+  checkoutUserErrors: [CheckoutUserError!]!
 }

@@ -18,13 +18,13 @@ import heartIcon from 'assets/svg/heart.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
 import { storeToRefs } from 'pinia'
 import { SweetAlertToast } from '@/utilities/Swal'
-import { getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
+import { getCountryFromStore, getCurrencySymbol, getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
 import { useRecentProductsStore } from '@/store/recent'
 import { useCustomer } from '@/store/customer'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import favouriteIcon from '~/assets/svg/selections/favourite.svg'
 import getArticles from '~/graphql/queries/getArticles'
-import { useShopifyCart } from '~/store/shopifyCart'
+import { useCheckout } from '~/store/checkout'
 import { generateKey, stripHtmlAnchors } from '~/utilities/strings'
 
 export default defineComponent({
@@ -35,6 +35,7 @@ export default defineComponent({
       i18n,
       $config,
       $graphql,
+      $cmwStore,
       $cmwRepo,
       error,
       redirect,
@@ -44,12 +45,11 @@ export default defineComponent({
       req,
     } = useContext()
     const customerStore = useCustomer()
+    const { checkout } = storeToRefs(useCheckout())
+    const { checkoutCreate, checkoutLineItemsAdd, checkoutLineItemsUpdate } = useCheckout()
     const isDesktop = inject('isDesktop')
     const recentProductsStore = useRecentProductsStore()
     const { recentProducts } = storeToRefs(recentProductsStore)
-
-    const { shopifyCart } = storeToRefs(useShopifyCart())
-    const { createShopifyCart, cartLinesAdd, cartLinesUpdate } = useShopifyCart()
 
     const {
       customer,
@@ -187,6 +187,10 @@ export default defineComponent({
         })
     })
 
+    const showScalaPay = computed(() => $cmwStore.isIt || $cmwStore.isB2b)
+
+    const showKlarna = computed(() => $cmwStore.isUk || $cmwStore.isFr || $cmwStore.isDe)
+
     const isOnSale = computed(() => {
       if (!productVariant.value) { return false }
 
@@ -219,12 +223,8 @@ export default defineComponent({
         : product.value.quantityAvailable
     })
 
-    const isOnCart = computed(() => {
-      const productIncart = shopifyCart.value?.lines?.edges.find(el => el.node.merchandise.id === product.value.shopify_product_variant_id)
-      if (productIncart) { return productIncart.node }
-
-      return null
-    })
+    const isOnCart = computed(() =>
+      checkout.value.lineItems.find(el => el.variant.id === product.value.shopify_product_variant_id))
 
     const cartQuantity = computed(() => isOnCart.value ? isOnCart.value.quantity : 0)
 
@@ -250,6 +250,27 @@ export default defineComponent({
       ...product.value.gtmProductData,
       price: finalPrice.value,
     }))
+
+    const removeProductFromCustomerCheckout = async () => {
+      if (cartQuantity.value < 1) {
+        return
+      }
+
+      const currentLineItem = checkout.value.lineItems.nodes.find(el => el.variant.id === product.value.shopify_product_variant_id)
+
+      if (!currentLineItem) {
+        return
+      }
+
+      const lineItems = [{
+        customAttributes: currentLineItem.customAttributes,
+        id: currentLineItem.id,
+        quantity: +currentLineItem.quantity - 1,
+        variantId: currentLineItem.variant.id,
+      }]
+
+      await checkoutLineItemsUpdate(checkout.value.id, lineItems)
+    }
 
     const generateMetaLink = (arr = []) => {
       const hrefLangArr = !!arr.length && arr.map(el => ({
@@ -304,10 +325,10 @@ export default defineComponent({
       brandMetaFields,
       canAddMore,
       cartIcon,
-      cartLinesAdd,
-      cartLinesUpdate,
       cartQuantity,
-      createShopifyCart,
+      checkout,
+      checkoutCreate,
+      checkoutLineItemsAdd,
       customer,
       customerId,
       emailIcon,
@@ -332,8 +353,10 @@ export default defineComponent({
       productBreadcrumbs,
       productDetails,
       productVariant,
-      shopifyCart,
+      removeProductFromCustomerCheckout,
+      showKlarna,
       showRequestModal,
+      showScalaPay,
       strippedContent,
       subtractIcon,
       wishlistArr,
@@ -341,12 +364,14 @@ export default defineComponent({
   },
   head: {},
   methods: {
+    getCurrencySymbol,
     generateKey,
     getPercent,
     getLocaleFromCurrencyCode,
-    async addToUserCart() {
+    async addProductToCustomerCheckout() {
       this.isOpen = true
 
+      // check for availability
       if (!this.canAddMore) {
         await SweetAlertToast.fire({
           icon: 'warning',
@@ -355,24 +380,46 @@ export default defineComponent({
         return
       }
 
-      if (!this.shopifyCart?.id) { await this.createShopifyCart() }
+      const checkoutCreateInput = {
+        buyerIdentity: {
+          countryCode: getCountryFromStore(this.$cmwStore.settings.store),
+        },
+        ...(this.customer.email && { email: this.customer.email }),
+        note: this.checkout.note,
+        lineItems: {
+          customAttributes: [
+            {
+              key: 'gtmProductData',
+              value: this.product.gtmProductData ? JSON.stringify(this.product.gtmProductData) : 'false',
+            },
+            {
+              key: 'bundle',
+              value: (this.product.tags) ? this.product.tags.includes('BUNDLE').toString() : 'false',
+            },
+          ],
+          quantity: this.product.quantity || 1,
+          variantId: this.product.shopify_product_variant_id,
+        },
+      }
 
-      await this.cartLinesAdd(this.product)
+      if (!this.checkout.id) {
+        await this.checkoutCreate({
+          ...checkoutCreateInput,
+          lineItems: [],
+        })
+      }
 
-      this.flashMessage.show({
-        status: '',
-        message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title}` }),
-        icon: this.product.image.source.url,
-        iconClass: 'bg-transparent',
-        time: 8000,
-        blockClass: 'add-product-notification',
-      })
-    },
-
-    async removeFromUserCart() {
-      if (this.cartQuantity === 0) { return }
-
-      await this.cartLinesUpdate(this.product, this.cartQuantity - 1)
+      this.checkoutLineItemsAdd(this.checkout.id, checkoutCreateInput.lineItems)
+        .then(async () => {
+          this.flashMessage.show({
+            status: '',
+            message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title}` }),
+            icon: this.product.image.source.url,
+            iconClass: 'bg-transparent ',
+            time: 8000,
+            blockClass: 'add-product-notification',
+          })
+        })
     },
   },
 })
@@ -491,20 +538,62 @@ export default defineComponent({
                 </li>
               </ul>
             </div>
-            <script
-              v-if="$cmwStore.isUk"
-              data-environment="production" src="https://osm.klarnaservices.com/lib.js"
-              data-client-id="c72bae1f-0d1c-5ed1-a3bb-b0fa3d12e442"
-              async
-            />
-            <ClientOnly>
-              <klarna-placement
+            <!-- Klarna Scripts -->
+            <template v-if="showKlarna">
+              <script
                 v-if="$cmwStore.isUk"
-                data-key="credit-promotion-badge"
-                data-locale="en-GB"
-                :data-purchase-amount="String(Number(finalPrice)).replace(/[^0-9]/g, '')"
+                data-environment="production" src="https://osm.klarnaservices.com/lib.js"
+                data-client-id="c72bae1f-0d1c-5ed1-a3bb-b0fa3d12e442"
+                async
               />
-            </ClientOnly>
+
+              <script
+                v-else-if="$cmwStore.isDe"
+                async
+                data-environment="production" src="https://js.klarna.com/web-sdk/v1/klarna.js"
+                data-client-id="11e7a9bf-129c-580b-9095-0d578515d571"
+              />
+
+              <script
+                v-else-if="$cmwStore.isFr"
+                async
+                data-environment="production" src="https://js.klarna.com/web-sdk/v1/klarna.js"
+                data-client-id="1e41d5a7-a0aa-55e1-86f2-00a1e155ac60"
+              />
+
+              <ClientOnly>
+                <div v-if="finalPrice" class="my-4">
+                  <klarna-placement
+                    data-key="credit-promotion-badge"
+                    :data-locale="$i18n.localeProperties.iso"
+                    :data-purchase-amount="finalPrice.toFixed(2).replace(/[^0-9]/g, '')"
+                  />
+                </div>
+              </ClientOnly>
+            </template>
+            <template v-else-if="showScalaPay">
+              <script type="module" src="https://cdn.scalapay.com/widget/v3/js/scalapay-widget.esm.js" />
+              <script nomodule src="https://cdn.scalapay.com/widget/v3/js/scalapay-widget.js" />
+
+              <ClientOnly>
+                <div class="my-4">
+                  <scalapay-widget
+                    frequency-number="30"
+                    number-of-installments="3"
+                    hide="false"
+                    hide-price="false"
+                    min="5"
+                    max="1500"
+                    :amount="`${getCurrencySymbol('EUR')} ${finalPrice}`"
+                    currency-position="before"
+                    currency-display="symbol"
+                    logo-size="100"
+                    theme="primary"
+                    :locale="$i18n.locale"
+                  />
+                </div>
+              </ClientOnly>
+            </template>
             <ProductDetailsVintages :sku="product.sku" />
             <!-- MOBILE ADD_TO_CART BUTTON -->
             <div
@@ -579,7 +668,7 @@ export default defineComponent({
                       <CmwButton
                         class="gap-2 pl-2 pr-3 py-2"
                         :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
-                        @click.native="addToUserCart"
+                        @click.native="addProductToCustomerCheckout"
                       >
                         <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
                         <span class="text-sm" v-text="isDesktop ? $t('common.cta.addToCart') : $t('common.cta.addToCartSm')" />
@@ -597,7 +686,7 @@ export default defineComponent({
                         <button
                           class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l hover:(bg-primary)"
                           :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
-                          @click="removeFromUserCart"
+                          @click="removeProductFromCustomerCheckout"
                         >
                           <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="white" />
                         </button>
@@ -610,7 +699,7 @@ export default defineComponent({
                           disabled:(bg-primary-100 cursor-not-allowed)"
                           :disabled="!canAddMore"
                           :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
-                          @click="addToUserCart"
+                          @click="addProductToCustomerCheckout"
                         >
                           <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
                         </button>
@@ -620,7 +709,7 @@ export default defineComponent({
                       <CmwButton
                         class="gap-2 pl-2 pr-3 py-2"
                         :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
-                        @click.native="addToUserCart"
+                        @click.native="addProductToCustomerCheckout"
                       >
                         <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
                         <span class="text-sm" v-text="isDesktop ? $t('common.cta.addToCart') : $t('common.cta.addToCartSm')" />
@@ -638,7 +727,7 @@ export default defineComponent({
                         <button
                           class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l hover:(bg-primary)"
                           :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
-                          @click="removeFromUserCart"
+                          @click="removeProductFromCustomerCheckout"
                         >
                           <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="white" />
                         </button>
@@ -651,7 +740,7 @@ export default defineComponent({
                               disabled:(bg-primary-100 cursor-not-allowed)"
                           :disabled="!canAddMore"
                           :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
-                          @click="addToUserCart"
+                          @click="addProductToCustomerCheckout"
                         >
                           <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
                         </button>

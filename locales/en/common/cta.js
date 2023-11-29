@@ -1,5 +1,6 @@
 export default {
   cta: {
+    add: 'Add',
     addAddress: 'add address',
     addToCart: 'Add to Cart',
     addToCartSm: 'Add to Cart',

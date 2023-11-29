@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import themeConfig from '~/config/themeConfig'
+import { useCheckout } from '~/store/checkout'
 import { useCustomerOrders } from '~/store/customerOrders.ts'
 import { useCustomerWishlist } from '~/store/customerWishlist'
 import { getIconAsImg } from '~/utilities/icons.ts'
@@ -33,6 +34,7 @@ export const useCustomer = defineStore({
       email: '',
       firstName: '',
       id: '',
+      lastIncompleteCheckout: { id: '' },
       lastName: '',
       newsletterFrequency: { value: '' },
       orders_count: '',
@@ -194,6 +196,22 @@ export const useCustomer = defineStore({
                 })
               })
 
+            const checkoutId = this.$nuxt.$cookies.get('checkoutId')
+
+            if (checkoutId) {
+              const { getCheckoutById, mergeCheckoutStoreWithCheckout } = useCheckout()
+              await getCheckoutById(checkoutId)
+
+              if (customer.lastIncompleteCheckout?.id && customer.lastIncompleteCheckout.id !== checkoutId) {
+                await mergeCheckoutStoreWithCheckout(customer.lastIncompleteCheckout.id)
+              }
+            }
+
+            if (!checkoutId && customer.lastIncompleteCheckout?.id) {
+              const { getCheckoutById } = useCheckout()
+              await getCheckoutById(customer.lastIncompleteCheckout.id)
+            }
+
             if (event) {
               await this.$nuxt.$cmwGtmUtils.resetDatalayerFields()
 
@@ -217,8 +235,10 @@ export const useCustomer = defineStore({
           SweetAlertToast.fire({ text: this.$nuxt.app.i18n.t('common.feedback.KO.login') })
         })
     },
+
     async logout() {
       const customerOrders = useCustomerOrders()
+      const checkoutStore = useCheckout()
       this.$nuxt.$gtm.push({
         event: 'logout',
         userType: themeConfig[this.$nuxt.$config.STORE].customerType,
@@ -232,6 +252,9 @@ export const useCustomer = defineStore({
       this.$nuxt.$cookieHelpers.onLogout()
       this.$reset()
       customerOrders.$reset()
+      // TODO: Create a fresh checkout and add current items to it
+      checkoutStore.$reset()
+      this.$nuxt.$cookies.remove('checkoutId')
       this.$nuxt.$cookies.remove('newsletter')
       this.$nuxt.$cookies.remove('b2b-approved')
       this.$nuxt.$graphql.default.setHeader('authorization', '')
@@ -353,6 +376,7 @@ export const useCustomer = defineStore({
         this.addToWishlist(args).then(() => {})
       }
     },
+
     async customerUpdateData(customer = {}, feedbackOk = '', feedbackKo = '') {
       await this.$nuxt.$cmwRepo.customer.customerUpdate(customer)
         .then(({ customerUpdate: { customer, customerAccessToken, customerUserErrors } }) => {
