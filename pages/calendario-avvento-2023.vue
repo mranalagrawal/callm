@@ -23,7 +23,7 @@ export interface IEventDay {
 
 export default defineComponent({
   middleware({ $cmwStore, $dayjs, localePath, redirect, error }) {
-    if (!($cmwStore.isIt || $cmwStore.isB2b)) {
+    if (!$cmwStore.isIt) {
       return redirect(localePath('/') as unknown as string)
     }
 
