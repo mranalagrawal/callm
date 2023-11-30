@@ -214,7 +214,7 @@ export default defineComponent({
           class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 -rotate-12 w-max m-inline-auto"
           severity="error"
         >
-          La promozione di questo giorno è terminata!
+          {{ $t('eventProductExpired') }}
         </Alert>
       </div>
       <div v-if="!isGift" class="text-center px-4" v-html="description" />

@@ -362,4 +362,5 @@ export default {
   eventGiftNote: 'Congratulazioni, hai diritto a quest\'omaggio del {0}!',
   eventGiftNoteLinkLabel: 'calendario dell\'avvento',
   eventGiftFree: 'Gratis',
+  eventProductExpired: 'La promozione di questo giorno è terminata!',
 }
