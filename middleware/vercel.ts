@@ -42,6 +42,7 @@ const vercelMiddleware: Middleware = async ({ $cmwRepo }) => {
           position: firstLevel.primary.first_level_position,
           isPromotionTab: firstLevel.primary.is_promotion_tab,
           display_as_cards: firstLevel.primary.display_as_cards,
+          hide_menu_item: firstLevel.primary.hide_menu_item,
           items,
         }
       })

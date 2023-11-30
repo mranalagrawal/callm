@@ -14,7 +14,8 @@ export default defineComponent({
   setup(_, { emit }) {
     const route = useRoute()
     const activeItem = ref({})
-    const { megaMenu } = storeToRefs(useVercelKv())
+    const { filteredMegaMenu } = storeToRefs(useVercelKv())
+
     const closeSidebar = (full: any) => {
       activeItem.value = {}
       if (full) {
@@ -28,7 +29,7 @@ export default defineComponent({
       scrollableEl && scrollableEl.scrollTo({ left: 0, top: 0, behavior: 'smooth' })
     } */
 
-    const mappedMenu = computed(() => megaMenu.value?.map((menu: { items: { items: any[] }[] }) => ({
+    const mappedMenu = computed(() => filteredMegaMenu.value?.map((menu: { items: { items: any[] }[] }) => ({
       ...menu,
       items: menu.items.map((item: { items: any[] }) => ({
         ...item,
@@ -47,7 +48,7 @@ export default defineComponent({
       closeIcon,
       closeSidebar,
       mappedMenu,
-      megaMenu,
+      filteredMegaMenu,
       promoTagIcon,
     }
   },
@@ -59,7 +60,7 @@ export default defineComponent({
   <div class="w-full bg-white">
     <div class="shadow h-[3px]" />
     <div class="overflow-auto h-screen">
-      <div v-for="(mappedMenuItem) in megaMenu" :key="generateKey(`menu-mobile-${mappedMenuItem?.name}`)">
+      <div v-for="(mappedMenuItem) in filteredMegaMenu" :key="generateKey(`menu-mobile-${mappedMenuItem?.name}`)">
         <template v-if="mappedMenuItem.name.toLowerCase() === 'blog'">
           <a href="/blog" class="relative flex justify-between items-center w-full py-4 px-2">
             <span class="uppercase text-sm cmw-font-light tracking-wide">{{ mappedMenuItem.name }}</span></a>

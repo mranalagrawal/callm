@@ -11,13 +11,13 @@ export default defineComponent({
   setup() {
     const route = useRoute()
     const selectedItem = ref<string>('')
-    const { megaMenu } = storeToRefs(useVercelKv())
+    const { filteredMegaMenu } = storeToRefs(useVercelKv())
 
     watch(() => route.value, () => selectedItem.value = '')
     const onTab = (item: string) => selectedItem.value = item
 
     return {
-      megaMenu,
+      filteredMegaMenu,
       onTab,
       promoTagIcon,
       selectedItem,
@@ -32,7 +32,7 @@ export default defineComponent({
     <div class="flex items-center">
       <div class="max-w-screen-xl mx-auto flex items-center justify-evenly w-full">
         <div
-          v-for="(firstLevel, i) in megaMenu"
+          v-for="(firstLevel, i) in filteredMegaMenu"
           :key="i"
           class="text-center text-uppercase py-2"
           @mouseenter="onTab(firstLevel.name)"
@@ -62,7 +62,7 @@ export default defineComponent({
     </div>
     <div class="relative">
       <div
-        v-for="items in megaMenu" :key="generateKey(items.name)" class="absolute top-0 left-0 w-full"
+        v-for="items in filteredMegaMenu" :key="generateKey(items.name)" class="absolute top-0 left-0 w-full"
         :class="selectedItem === items.name ? 'visible' : 'invisible'"
       >
         <div

@@ -29,6 +29,8 @@ export const useVercelKv = defineStore({
   }),
 
   getters: {
+    filteredMegaMenu: state => state.megaMenu.filter(item => !item.hide_menu_item),
+
     getPrismicLocale: (): TPrismicIsoCodes => {
       const { i18n, $cmwStore } = useContext()
       const locale = i18n.locale as TISO639
