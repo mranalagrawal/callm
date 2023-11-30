@@ -359,4 +359,5 @@ export default {
   eventGiftNote: 'Congratulations, you are eligible for this {0}',
   eventGiftNoteLinkLabel: 'advent calendar gift',
   eventGiftFree: 'Free',
+  eventProductExpired: 'The promotion of this day is over!',
 }

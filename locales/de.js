@@ -362,4 +362,5 @@ export default {
   eventGiftNote: 'Herzlichen Glückwunsch, Sie haben Anspruch auf dieses {0}',
   eventGiftNoteLinkLabel: 'Adventskalender-Geschenk',
   eventGiftFree: 'KOSTENLOS',
+  eventProductExpired: 'Die Werbeaktion dieses Tages ist abgelaufen!',
 }
