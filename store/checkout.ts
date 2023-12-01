@@ -301,7 +301,7 @@ export const useCheckout = defineStore({
       }
 
       // Todo: update checkout, shippingAddress, billingAddress, discountCodes, note...
-      await this.checkoutEmailUpdateV2(lastCheckout.id, lastCheckout.email)
+      await this.checkoutEmailUpdateV2(lastCheckout.id, useCustomer().customer?.email || lastCheckout.email)
 
       this.setCheckoutIdCookie(lastCheckout.id, lastCheckout.createdAt)
     },
@@ -337,7 +337,7 @@ export const useCheckout = defineStore({
           if (!checkoutUserErrors.length) {
             this.setMappedCheckout(checkout)
             this.checkSuitableGift(checkout)
-            this.checkoutEmailUpdateV2(checkout.id, checkout.email)
+            this.checkoutEmailUpdateV2(checkout.id, useCustomer().customer?.email || checkout.email)
 
             this.$nuxt.$gtm.push({
               event: 'addToCart',
@@ -371,7 +371,7 @@ export const useCheckout = defineStore({
           if (!checkoutUserErrors.length) {
             this.setMappedCheckout(checkout)
             this.checkSuitableGift(checkout)
-            this.checkoutEmailUpdateV2(checkout.id, checkout.email)
+            this.checkoutEmailUpdateV2(checkout.id, useCustomer().customer?.email || checkout.email)
 
             this.$nuxt.$gtm.push({
               event: isRemoving ? 'removeFromCart' : 'addToCart',
@@ -407,7 +407,7 @@ export const useCheckout = defineStore({
           if (!checkoutUserErrors.length) {
             this.setMappedCheckout(checkout)
             this.checkSuitableGift(checkout)
-            this.checkoutEmailUpdateV2(checkout.id, checkout.email)
+            this.checkoutEmailUpdateV2(checkout.id, useCustomer().customer?.email || checkout.email)
 
             this.$nuxt.$gtm.push({
               event: 'removeFromCart',
@@ -433,6 +433,7 @@ export const useCheckout = defineStore({
 
           this.setMappedCheckout(node)
           this.checkSuitableGift(node)
+          this.checkoutEmailUpdateV2(node.id, useCustomer().customer?.email || node.email)
         })
     },
 
