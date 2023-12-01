@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent } from '@nuxtjs/composition-api'
+import { computed, defineComponent, onMounted } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   props: {
@@ -8,7 +8,7 @@ export default defineComponent({
       required: true,
     },
   },
-  emits: ['handle-click'],
+  emits: ['handle-click', 'child-mounted'],
   setup(props, { emit }) {
     const eventClasses = computed(() => ({
       'day-01': {
@@ -191,6 +191,8 @@ export default defineComponent({
     const handleClick = ($evt: Event) => {
       emit('handle-click', $evt)
     }
+
+    onMounted(() => { emit('child-mounted') })
 
     return {
       handleClick,
