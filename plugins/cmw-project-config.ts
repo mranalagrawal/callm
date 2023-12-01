@@ -23,7 +23,7 @@ import type { IPrismicConfig } from '~/types/prismic'
 *   global: IStoreConfig
 */
 
-interface ICmwStore {
+export interface ICmwStore {
   isB2b: boolean
   isDe: boolean
   isFr: boolean

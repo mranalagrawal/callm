@@ -11,6 +11,7 @@ import checkoutEmailUpdateV2 from '~/graphql/mutations/checkout/checkoutEmailUpd
 import checkoutLineItemsAdd from '~/graphql/mutations/checkout/checkoutLineItemsAdd.graphql'
 import checkoutLineItemsRemove from '~/graphql/mutations/checkout/checkoutLineItemsRemove.graphql'
 import checkoutLineItemsUpdate from '~/graphql/mutations/checkout/checkoutLineItemsUpdate.graphql'
+import { getCheckoutHostname } from '~/utilities/shopify'
 import { SweetAlertToast } from '~/utilities/Swal'
 
 interface IState {
@@ -154,10 +155,15 @@ export const useCheckout = defineStore({
         })
       }
 
-      let redirectUrl = this.checkout.webUrl
+      let redirectUrl = this.checkout?.webUrl
+
+      if (!redirectUrl) { return }
 
       if (!customer.id && typeof window !== 'undefined' && redirectUrl) {
-        window.location = redirectUrl
+        const url = new URL(redirectUrl.toString())
+        url.hostname = new URL(getCheckoutHostname(this.$nuxt.$cmwStore)).hostname
+
+        window.location.href = url.toString()
         return
       }
 
@@ -174,7 +180,9 @@ export const useCheckout = defineStore({
         this.$nuxt.$handleApiErrors(`Catch on checkout: ${error}`)
       }
 
-      window.location = redirectUrl as Location
+      if (!redirectUrl) { return }
+
+      window.location.href = redirectUrl.toString()
     },
 
     async checkoutCreate(input: any) {
