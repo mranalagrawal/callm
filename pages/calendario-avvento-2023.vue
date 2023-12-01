@@ -1,5 +1,12 @@
 <script lang="ts">
-import { computed, defineComponent, inject, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
+import {
+  computed,
+  defineComponent,
+  inject,
+  ref,
+  useContext,
+  useFetch,
+} from '@nuxtjs/composition-api'
 import metaobject from '~/graphql/queries/metaobject.graphql'
 import type { ICollection } from '~/types/collection'
 import { initialCollectionData } from '~/types/collection'
@@ -116,10 +123,10 @@ export default defineComponent({
       })
     }
 
-    onMounted(() => {
+    const getAnimationRefs = () => {
       forwardAnimationsRef.value = Array.from(document.querySelectorAll('[data-animate-direction="forward"]'))
       reverseAnimationsRef.value = Array.from(document.querySelectorAll('[data-animate-direction="reverse"]'))
-    })
+    }
 
     return {
       collectionRef,
@@ -128,6 +135,7 @@ export default defineComponent({
       currentEventDay,
       date,
       forwardAnimationsRef,
+      getAnimationRefs,
       handleCalendarChange,
       handleClick,
       handleCloseEvent,
@@ -150,8 +158,8 @@ export default defineComponent({
       </h1>
       <div class="w-9/12 sm:w-8/12 md:w-7/12 lg:w-8/12 m-inline-auto">
         <ClientOnly>
-          <CalendarLg v-if="isDesktop" :current-day="currentDay" @handle-click="handleClick" />
-          <CalendarSm v-else :current-day="currentDay" @handle-click="handleClick" />
+          <CalendarLg v-if="isDesktop" :current-day="currentDay" @handle-click="handleClick" @child-mounted="getAnimationRefs" />
+          <CalendarSm v-else :current-day="currentDay" @handle-click="handleClick" @child-mounted="getAnimationRefs" />
         </ClientOnly>
       </div>
       <p class="w-[min(100%,_40rem)] m-inline-auto text-center" v-text="$t('eventNote')" />
