@@ -386,7 +386,7 @@ export default defineComponent({
         },
         ...(this.customer.email && { email: this.customer.email }),
         note: this.checkout.note,
-        lineItems: {
+        lineItems: [{
           customAttributes: [
             {
               key: 'gtmProductData',
@@ -399,7 +399,7 @@ export default defineComponent({
           ],
           quantity: this.product.quantity || 1,
           variantId: this.product.shopify_product_variant_id,
-        },
+        }],
       }
 
       if (!this.checkout.id) {
