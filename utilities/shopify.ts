@@ -1,3 +1,6 @@
+import type { TStores } from '~/config/themeConfig'
+import type { ICmwStore } from '~/plugins/cmw-project-config'
+
 export function shopifyRichTextToHTML(content: string): string {
   if (!content) { return '' }
   const parsed = JSON.parse(content)
@@ -32,3 +35,36 @@ export function shopifyRichTextToHTML(content: string): string {
     }
   }).join('')
 }
+
+function getCheckoutHostname(cmwStore: ICmwStore): string {
+  const { isProd, settings } = cmwStore
+
+  const env = isProd ? 'PROD' : 'STAGE'
+
+  const hostMap: { [k in TStores]: { [k in 'PROD' | 'STAGE']: string } } = {
+    CMW: {
+      PROD: 'https://checkout.callmewine.com',
+      STAGE: 'https://checkout-stage.callmewine.com',
+    },
+    CMW_FR: {
+      PROD: 'https://checkout.callmewine.fr',
+      STAGE: 'https://checkout-stage.callmewine.fr',
+    },
+    CMW_DE: {
+      PROD: 'https://checkout.callmewine.de',
+      STAGE: 'https://checkout-stage.callmewine.de',
+    },
+    CMW_UK: {
+      PROD: 'https://checkout.callmewine.co.uk',
+      STAGE: 'https://checkout-stage.callmewine.co.uk',
+    },
+    B2B: {
+      PROD: 'https://b2b-checkout.callmewine.com',
+      STAGE: 'https://b2b-checkout-stage.callmewine.com',
+    },
+  }
+
+  return hostMap[settings.store][env] || ''
+}
+
+export { getCheckoutHostname }
