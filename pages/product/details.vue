@@ -571,29 +571,6 @@ export default defineComponent({
                 </div>
               </ClientOnly>
             </template>
-            <template v-else-if="showScalaPay">
-              <script type="module" src="https://cdn.scalapay.com/widget/v3/js/scalapay-widget.esm.js" />
-              <script nomodule src="https://cdn.scalapay.com/widget/v3/js/scalapay-widget.js" />
-
-              <ClientOnly>
-                <div class="my-4">
-                  <scalapay-widget
-                    frequency-number="30"
-                    number-of-installments="3"
-                    hide="false"
-                    hide-price="false"
-                    min="5"
-                    max="1500"
-                    :amount="`${getCurrencySymbol('EUR')} ${finalPrice}`"
-                    currency-position="before"
-                    currency-display="symbol"
-                    logo-size="100"
-                    theme="primary"
-                    :locale="$i18n.locale"
-                  />
-                </div>
-              </ClientOnly>
-            </template>
             <ProductDetailsVintages :sku="product.sku" />
             <!-- MOBILE ADD_TO_CART BUTTON -->
             <div
@@ -762,6 +739,28 @@ export default defineComponent({
                 </div>
               </div>
             </div>
+            <template v-if="showScalaPay">
+              <script type="module" src="https://cdn.scalapay.com/widget/v3/js/scalapay-widget.esm.js" />
+              <script nomodule src="https://cdn.scalapay.com/widget/v3/js/scalapay-widget.js" />
+              <ClientOnly>
+                <div class="my-4">
+                  <scalapay-widget
+                    frequency-number="30"
+                    number-of-installments="3"
+                    hide="false"
+                    hide-price="false"
+                    min="5"
+                    max="1500"
+                    :amount="`${getCurrencySymbol('EUR')} ${finalPrice}`"
+                    currency-position="before"
+                    currency-display="symbol"
+                    logo-size="100"
+                    theme="primary"
+                    :locale="$i18n.locale"
+                  />
+                </div>
+              </ClientOnly>
+            </template>
           </div>
         </div>
 
