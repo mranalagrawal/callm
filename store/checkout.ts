@@ -74,7 +74,7 @@ export const useCheckout = defineStore({
   },
 
   actions: {
-    setMappedCheckout(checkout: IShopifyCheckout) {
+    setMappedCheckout(checkout: IShopifyCheckout, skipSetCookie?: boolean) {
       const checkoutMapped: CheckoutMapped = {
         buyerIdentity: checkout.buyerIdentity,
         completedAt: checkout.completedAt,
@@ -93,6 +93,9 @@ export const useCheckout = defineStore({
       }
 
       this.$patch({ checkout: checkoutMapped })
+
+      if (skipSetCookie) { return }
+
       this.setCheckoutIdCookie(checkout.id, checkout.createdAt)
     },
 
@@ -197,7 +200,7 @@ export const useCheckout = defineStore({
 
           if (!checkoutUserErrors.length) {
             this.setMappedCheckout(checkout)
-            this.setCheckoutIdCookie(checkout.id, checkout.createdAt)
+            // this.setCheckoutIdCookie(checkout.id, checkout.createdAt)
 
             this.$nuxt.$cookies.remove('cartId')
             // Todo: use checkoutCustomerAssociateV2 to associate the customer to the checkout
@@ -327,7 +330,7 @@ export const useCheckout = defineStore({
           const { checkout, checkoutUserErrors } = checkoutEmailUpdateV2
 
           if (!checkoutUserErrors.length) {
-            this.setMappedCheckout(checkout)
+            this.setMappedCheckout(checkout, true)
           }
         })
         .catch((error) => {
@@ -346,7 +349,7 @@ export const useCheckout = defineStore({
           const { checkout, checkoutUserErrors } = checkoutLineItemsAdd
 
           if (!checkoutUserErrors.length) {
-            this.setMappedCheckout(checkout)
+            this.setMappedCheckout(checkout, true)
             this.checkSuitableGift(checkout)
             this.checkoutEmailUpdateV2(checkout.id, useCustomer().customer?.email || checkout.email)
 
@@ -380,7 +383,7 @@ export const useCheckout = defineStore({
           const { checkout, checkoutUserErrors } = checkoutLineItemsUpdate
 
           if (!checkoutUserErrors.length) {
-            this.setMappedCheckout(checkout)
+            this.setMappedCheckout(checkout, true)
             this.checkSuitableGift(checkout)
             this.checkoutEmailUpdateV2(checkout.id, useCustomer().customer?.email || checkout.email)
 
@@ -416,7 +419,7 @@ export const useCheckout = defineStore({
           const { checkout, checkoutUserErrors } = checkoutLineItemsRemove
 
           if (!checkoutUserErrors.length) {
-            this.setMappedCheckout(checkout)
+            this.setMappedCheckout(checkout, true)
             this.checkSuitableGift(checkout)
             this.checkoutEmailUpdateV2(checkout.id, useCustomer().customer?.email || checkout.email)
 
