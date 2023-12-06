@@ -205,6 +205,16 @@ const REDIRECT_SEO_REGEX = {
 }
 
 const OTHERS_REDIRECT = {
+  '/collections/inizia-la-black-week-scopri-le-origini-e-primi-passi-di-callmewine': '/pages/black-friday',
+  '/collections/black-week-giorno-2-uno-sguardo-verso-i-piccoli-produttori-e-i-grandi-nomi': '/pages/black-friday',
+  '/collections/black-week-giorno-3-apriamo-le-porte-non-solo-al-vino': '/pages/black-friday',
+  '/collections/black-week-giorno-4-oltre-i-confini-sbarchiamo-in-germania-e-francia': '/pages/black-friday',
+  '/collections/black-weekend-giorno-6-in-viaggio-per-il-mondo': '/pages/black-friday',
+  '/collections/black-weekend-giorno-7-un-nuovo-volto-per-callmewine': '/pages/black-friday',
+  '/collections/cyber-monday-brindiamo-al-futuro': '/pages/black-friday',
+  '/collections/vino-in-total-black-elegante-e-raffinatezza-per-la-black-week': '/pages/black-friday',
+  '/collections/coupon-preblack20-sconti-esclusivi-in-anticipo-dalla-black-week': '/pages/black-friday',
+  '/collections/black-friday-nulla-di-piu-esclusivo-di-queste-irrinunciabili-occasioni': '/pages/black-friday',
   '^\/customerorderview/(\\d+)': '/profile/my-orders',
 }
 
