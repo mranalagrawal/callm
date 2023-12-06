@@ -330,6 +330,9 @@ export const useCheckout = defineStore({
             this.setMappedCheckout(checkout)
           }
         })
+        .catch((error) => {
+          this.$nuxt.$handleApiErrors(`checkoutEmailUpdateV2 Catch: ${error}`)
+        })
     },
 
     async checkoutLineItemsAdd(checkoutId: string, lineItems: any[]) {
