@@ -239,7 +239,7 @@ export default defineComponent({
     })
 
     const isOnFavourite = computed(() => {
-      return [...wishlistArr.value].includes(product.value.source_id)
+      return [...wishlistArr.value].includes(`'${product.value.source_id}'`)
     })
 
     const priceByLiter = computed(() => {

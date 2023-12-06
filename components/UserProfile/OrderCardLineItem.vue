@@ -35,7 +35,7 @@ export default defineComponent({
         : 'probably-a-gift-card'
     })
 
-    const isOnFavourite = computed(() => wishlistArr.value.includes(backofficeId.value as never)) // Todo: Remove assertion when typing customerStore
+    const isOnFavourite = computed(() => wishlistArr.value.includes(`'${backofficeId.value}'` as never)) // Todo: Remove assertion when typing customerStore
     return {
       backofficeId,
       handleWishlist,

@@ -14,7 +14,9 @@ import { regexRules } from '@/utilities/validators'
 
 function setCustomerWishlist(value) {
   const json = JSON.parse(value)
-  return json.filter(product => new RegExp(regexRules('isProduct')).test(product))
+  json.filter(product => new RegExp(regexRules('isProduct')).test(product))
+
+  return json.map(p => (`'${p}'`))
 }
 
 // Note: Backend should use enums here 'GOLD' | 'B2B' | 'MAIN', this way we could simplify this to an array
