@@ -59,7 +59,7 @@ export default defineComponent({
 
     const notActive = computed(() => props.product.tags.includes('not_active'))
     // @ts-expect-error When we type customer store we should get the right type from wishlistArr
-    const isOnFavourite = computed(() => wishlistArr.value.includes(props.product.source_id))
+    const isOnFavourite = computed(() => wishlistArr.value.includes(`'${props.product.source_id}'`))
     const isOnSale = computed(() => props.product.availableFeatures.includes('isInPromotion'))
     const finalPrice = computed(() => {
       if (!props.product.priceLists || !props.product.priceLists[$config.SALECHANNEL]) {

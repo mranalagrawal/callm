@@ -50,7 +50,7 @@ export default defineComponent({
     const isOpen = ref(false)
 
     const notActive = computed(() => props.product.tags.includes('not_active'))
-    const isOnFavourite = computed(() => wishlistArr.value.includes(props.product.source_id))
+    const isOnFavourite = computed(() => wishlistArr.value.includes(`'${props.product.source_id}'`))
     const isOnSale = computed(() => props.product.availableFeatures.includes('isInPromotion'))
     const finalPrice = computed(() => {
       if (!props.product.priceLists || !props.product.priceLists[$config.SALECHANNEL]) { return 0 }
