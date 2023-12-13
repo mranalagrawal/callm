@@ -268,7 +268,13 @@ export default defineComponent({
     <div class="c-productBox__grid grid h-full" :class="`-${generateKey($cmwStore.settings.store)}`">
       <div class="c-productBox__image relative">
         <ClientOnly>
-          <button class="block mx-auto" @click="handleProductCLick">
+          <NuxtLink
+            :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')"
+            event="" class="block mx-auto" :to="localePath(relatedVintage?.handle
+              ? `/${relatedVintage.handle}-P${relatedVintage.feId}.htm`
+              : product.url)"
+            @click.native="handleProductCLick"
+          >
             <LoadingImage
               class="filter mx-auto mt-4"
               :class="[
@@ -279,7 +285,7 @@ export default defineComponent({
               :source="product.image.source"
               wrapper="span"
             />
-          </button>
+          </NuxtLink>
         </ClientOnly>
         <div v-if="product.availableFeatures.length" class="c-productBox__features absolute top-2 left-2 md:left-4">
           <div class="flex flex-col gap-y-1 w-max">
@@ -313,13 +319,17 @@ export default defineComponent({
           >
             {{ $t('product.otherVintagesSale', { vintage: relatedVintage.vintageyear }) }}
           </NuxtLink>
-          <button
+          <NuxtLink
             :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')"
+            event=""
+            :to="localePath(relatedVintage?.handle
+              ? `/${relatedVintage.handle}-P${relatedVintage.feId}.htm`
+              : product.url)"
             class="transition-colors text-body text-left hover:(text-primary-400)"
-            @click="handleProductCLick"
+            @click.native="handleProductCLick"
           >
             <span class="line-clamp-2 text-sm md:text-base">{{ product.title }}</span>
-          </button>
+          </NuxtLink>
           <NuxtLink class="block sr-only" :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')" :to="(product?.url) ? localeLocation(product.url) : '/'" />
         </div>
       </div>

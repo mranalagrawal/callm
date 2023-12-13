@@ -245,7 +245,13 @@ hover:shadow-elevation"
     <!-- Image Section -->
     <div class="relative p-2">
       <ClientOnly>
-        <button class="block mx-auto" @click="handleProductCLick">
+        <NuxtLink
+          :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')"
+          event="" class="block mx-auto" :to="localePath(relatedVintage?.handle
+            ? `/${relatedVintage.handle}-P${relatedVintage.feId}.htm`
+            : product.url)"
+          @click.native="handleProductCLick"
+        >
           <LoadingImage
             class="filter mx-auto mt-4"
             img-classes="w-full h-auto"
@@ -257,7 +263,7 @@ hover:shadow-elevation"
             :source="product.image.source"
             wrapper="span"
           />
-        </button>
+        </NuxtLink>
       </ClientOnly>
       <div v-if="product.availableFeatures.length" class="absolute top-4 left-2 flex flex-col gap-y-1">
         <!-- Todo: create a global tooltip that change position base on mouse position -->
@@ -280,13 +286,16 @@ hover:shadow-elevation"
         >
           {{ $t('product.otherVintagesSale', { vintage: relatedVintage.vintageyear }) }}
         </NuxtLink>
-        <button
-          class="h4 mt-4 text-body text-left hover:(text-primary-400)"
+        <NuxtLink
           :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')"
-          @click="handleProductCLick"
+          event="" class="h4 mt-4 text-body text-left hover:(text-primary-400)"
+          :to="localePath(relatedVintage?.handle
+            ? `/${relatedVintage.handle}-P${relatedVintage.feId}.htm`
+            : product.url)"
+          @click.native="handleProductCLick"
         >
           {{ product.title }}
-        </button>
+        </NuxtLink>
         <NuxtLink class="block sr-only" :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')" :to="(product?.url) ? localeLocation(product.url) : '/'" />
       </div>
       <ProductUserRating v-if="customerId" :product-id="`${product.details.feId}`" @click-star="handleStarAndCustomerCommentClick" />
