@@ -129,24 +129,9 @@ export const useCustomerWishlist = defineStore({
               text: this.$nuxt.app.i18n.t('common.feedback.OK.wishlistAdded'),
             })
 
-            /* const XXdata = {
-              responseCode: 0,
-              data: {
-                productFeId: 32467,
-                description: null,
-                score: null,
-                relatedVintage: {
-                  feId: 41304,
-                  handle: 'anjou-blanc-attention-chenin-mechant-clos-des-treilles-2021',
-                  vintageyear: '2021',
-                },
-              },
-
-            } */
             // Create a function to add args.id to state.elements and state.filteredElements 🤦🏻‍️🙈🫣
             // Find the object in data.elements with the same productFeId as args.id
-            // const newElement = data.data?.elements.find((p: any) => p.productFeId === args.id)
-            const elements = [...this.elements, data.data.elements]
+            const elements = [...this.elements, ...data.data.elements]
             this.$patch({ elements, filteredElements: elements })
 
             await this.$nuxt.$cmwGtmUtils.resetDatalayerFields()
