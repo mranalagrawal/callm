@@ -256,7 +256,7 @@ export default defineComponent({
         return
       }
 
-      const currentLineItem = checkout.value.lineItems.nodes.find(el => el.variant.id === product.value.shopify_product_variant_id)
+      const currentLineItem = checkout.value.lineItems.find(el => el.variant.id === product.value.shopify_product_variant_id)
 
       if (!currentLineItem) {
         return
@@ -269,7 +269,7 @@ export default defineComponent({
         variantId: currentLineItem.variant.id,
       }]
 
-      await checkoutLineItemsUpdate(checkout.value.id, lineItems)
+      await checkoutLineItemsUpdate(checkout.value.id, lineItems, true)
     }
 
     const generateMetaLink = (arr = []) => {
