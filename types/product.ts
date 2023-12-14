@@ -124,6 +124,7 @@ export interface IProductMapped extends IBaseProductMapped {
   source_id: string | number
   url: string
   characteristics?: any
+  tbd?: any
 }
 
 export interface IGiftCardVariantMapped extends IBaseProductMapped {

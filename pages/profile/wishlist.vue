@@ -15,8 +15,6 @@ export default {
   setup() {
     const { $cmwGtmUtils, $productMapping, $cmwRepo, i18n } = useContext()
     const customerWishlistStore = useCustomerWishlist()
-    const customerStore = useCustomer()
-    const { customerWishlistProducts } = storeToRefs(customerStore)
     const { getWishlistProducts } = customerWishlistStore
     const { customer, customerId } = storeToRefs(useCustomer())
     const { selectedLayout, availableLayouts } = storeToRefs(useFilters())
@@ -183,7 +181,6 @@ export default {
       closeIcon,
       customer,
       customerProducts,
-      customerWishlistProducts,
       filters,
       finalProducts,
       findRelatedVintage,

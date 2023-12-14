@@ -7,16 +7,6 @@ import { djb2Hash } from '~/utilities/strings'
 import { SweetAlertToast } from '~/utilities/Swal'
 import customerAccessTokenCreate from '~/graphql/mutations/authenticateUser'
 import customerAccessTokenCreateWithMultipass from '~/graphql/mutations/authenticateUserWithMultipass'
-// import { useCustomerWishlist } from '@/store/customerWishlist'
-
-import { regexRules } from '@/utilities/validators'
-
-function setCustomerWishlist(value) {
-  const json = JSON.parse(value)
-  json.filter(product => new RegExp(regexRules('isProduct')).test(product))
-
-  return json.map(p => (`'${p}'`))
-}
 
 // Note: Backend should use enums here 'GOLD' | 'B2B' | 'MAIN', this way we could simplify this to an array
 const availableUsers = {
@@ -41,15 +31,12 @@ export const useCustomer = defineStore({
       orders_count: '',
       phone: '',
       total_spent: '',
-      wishlist: { value: '' },
       tags: [],
     },
     // FixMe: on Nuxt 3 or using GraphQl local storage properly we shouldn't need this,
     //  we need to reduce the extra objects and relay on the state,
     //  I believe there is an issue with deep watch, for some reason getters are not updating accordingly
     approved: false,
-    wishlistArr: [],
-    customerWishlistProducts: [],
     editingCustomer: {
       acceptsMarketing: false,
       email: '',
@@ -61,7 +48,6 @@ export const useCustomer = defineStore({
   }),
 
   getters: {
-    favoritesCount: state => state.wishlistArr.length,
     customerId: (state) => {
       return `${state.customer.id}`.substring(`${state.customer.id}`.lastIndexOf('/') + 1)
     },
@@ -165,7 +151,6 @@ export const useCustomer = defineStore({
             this.$patch({
               customer,
               billing: (customer.billing && customer.billing.value) ? JSON.parse(customer.billing.value) : [],
-              wishlistArr: (customer.wishlist && customer.wishlist.value) ? setCustomerWishlist(customer.wishlist.value) : [],
               approved,
             })
 

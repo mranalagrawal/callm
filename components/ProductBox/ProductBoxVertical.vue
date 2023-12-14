@@ -83,7 +83,6 @@ export default defineComponent({
     const templateProduct = computed(() => mappedRelatedVintage.value || props.product)
 
     const notActive = computed(() => props.product.tags.includes('not_active'))
-    // @ts-expect-error When we type customer store we should get the right type from wishlistArr
     const isOnFavourite = computed(() => filteredWishlistArr.value.includes(`'${props.product.source_id}'`))
     const isOnSale = computed(() => {
       const currentProduct = mappedRelatedVintage.value || props.product
@@ -319,7 +318,9 @@ export default defineComponent({
         <ClientOnly>
           <NuxtLink
             :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')"
-            event="" class="block mx-auto" :to="localePath(templateProduct.url)"
+            event=""
+            class="block mx-auto"
+            :to="localePath(templateProduct.url)"
             @click.native="handleProductCLick"
           >
             <LoadingImage
@@ -375,7 +376,6 @@ export default defineComponent({
           >
             <span class="line-clamp-2 text-sm md:text-base">{{ product.title }}</span>
           </NuxtLink>
-          <NuxtLink class="block sr-only" :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')" :to="(product?.url) ? localeLocation(product.url) : '/'" />
         </div>
       </div>
       <div class="c-productBox__price justify-self-baseline self-end">

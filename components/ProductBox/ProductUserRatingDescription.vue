@@ -3,7 +3,7 @@ import { computed, defineComponent, ref } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import ratingEmpty from 'assets/svg/rating-empty.svg'
 import ratingFilled from 'assets/svg/rating-filled.svg'
-import { useCustomer } from '~/store/customer'
+import { useCustomerWishlist } from '~/store/customerWishlist'
 import type { IProductRating } from '~/types/product'
 import { generateKey } from '~/utilities/strings'
 
@@ -16,8 +16,8 @@ export default defineComponent({
   },
   emits: ['submit-comment'],
   setup(props, { emit }) {
-    const customerStore = useCustomer()
-    const { customerWishlistProducts } = storeToRefs(customerStore)
+    const customerWishlist = useCustomerWishlist()
+    const { customerWishlistProducts } = storeToRefs(customerWishlist)
     const currentHoveredStar = ref(0)
     const hasFocus = ref(false)
     const formEl = ref<HTMLFormElement | null>(null)

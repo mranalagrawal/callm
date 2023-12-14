@@ -1,10 +1,12 @@
 import { defineStore } from 'pinia'
 import { useCustomer } from '~/store/customer'
+import type { IProductRating } from '~/types/product'
 import type { IOptions, ObjType } from '~/types/types'
 import { getIconAsImg } from '~/utilities/icons'
 import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
 
 interface IState {
+  customerWishlistProducts: IProductRating[]
   elements: any[]
   filteredElements: any[]
   filters: {
@@ -27,6 +29,7 @@ interface IState {
 export const useCustomerWishlist = defineStore({
   id: 'customerWishlist',
   state: () => <IState>({
+    customerWishlistProducts: [],
     elements: [],
     filteredElements: [],
     filters: { categoriesFilters: [], wineListsFilters: [] },
@@ -42,7 +45,7 @@ export const useCustomerWishlist = defineStore({
       return [...new Set(ids.map(id => `'P${id}'`))]
     },
 
-    filteredWishlistArr(state): string[] | number[] {
+    filteredWishlistArr(state): string[] {
       const ids = state.filteredElements.flatMap(({ productFeId, relatedVintage }) =>
         (relatedVintage ? [productFeId] : [productFeId]))
 
@@ -112,7 +115,7 @@ export const useCustomerWishlist = defineStore({
       this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
       await this.$nuxt.$cmw.$post(`/wishlists?shopifyCustomerId=${shopifyCustomerId}`, {
         shopifyCustomerId,
-        productFeId: args.id,
+        productFeId: args.id, // 19052, //
         score: args.score || 0,
         description: args.description,
       })
