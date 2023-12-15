@@ -60,7 +60,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="pageData.title" class="max-w-screen-xl mx-auto mt-5 p-4">
+  <div v-if="pageData.title" class="prose max-w-screen-xl mx-auto mt-5 p-4">
     <PrismicRichText v-if="pageData.title" :field="pageData.title" />
     <PrismicRichText :field="pageData.content" />
     <div v-if="pageData.body?.[0]?.items" class="w-[min(100%,_62rem)] m-inline-auto py-12 grid gap-8 md:grid-cols-[100px_auto]">

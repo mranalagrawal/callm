@@ -48,7 +48,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="pageData.title" class="max-w-screen-xl mx-auto mt-5 p-4">
+  <div v-if="pageData.title" class="prose max-w-screen-xl mx-auto mt-5 p-4">
     <PrismicRichText v-if="pageData.title" :field="pageData.title" />
     <LoadingImage
       v-if="pageData.main_banner"
