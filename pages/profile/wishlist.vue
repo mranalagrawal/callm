@@ -84,6 +84,7 @@ export default {
       () => queryUrl.value,
       () => filteredWishlistArr.value,
     ], () => {
+      nextChunkId.value = 1
       wishlistOtherProducts.value = []
       wishListChunks.value = chunkArray(filteredWishlistArr.value, chunkSize)
       fetch()
