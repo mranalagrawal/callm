@@ -10,18 +10,18 @@ export default defineComponent({
   name: 'ProductUserRating',
   props: {
     productId: {
-      type: String,
+      type: [Number, String],
       required: true,
     },
   },
   emits: ['click-star'],
   setup(props, { emit }) {
     const customerWishlist = useCustomerWishlist()
-    const { customerWishlistProducts } = storeToRefs(customerWishlist)
+    const { elements } = storeToRefs(customerWishlist)
     const currentHoveredStar = ref(0)
 
-    const currentProduct = computed<IProductRating | undefined>(() => customerWishlistProducts.value.find(
-      (w: Record<string, any>) => w.productFeId.toString() === props.productId.toString()))
+    const currentProduct = computed<IProductRating | undefined>(() => elements.value.find(
+      (w: Record<string, any>) => `'P${props.productId}'` === `'P${w.productFeId}'`))
 
     const currentRating = computed(() => currentProduct.value?.score || 0)
 
@@ -36,7 +36,7 @@ export default defineComponent({
       currentHoveredStar,
       currentProduct,
       currentRating,
-      customerWishlistProducts,
+      elements,
       handleStarClick,
       ratingEmpty,
       ratingFilled,

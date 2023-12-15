@@ -192,6 +192,7 @@ export const useCustomerWishlist = defineStore({
         return
       }
 
+      console.log('HERE')
       if (!customerStore.customerId || !args.id) { throw new Error('missing arguments') }
 
       if (args.isOnFavourite) {
