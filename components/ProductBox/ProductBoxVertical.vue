@@ -83,6 +83,7 @@ export default defineComponent({
     const templateProduct = computed(() => mappedRelatedVintage.value || props.product)
 
     const notActive = computed(() => props.product.tags.includes('not_active'))
+    const isRelatedVintageWithHandle = computed(() => !!props.relatedVintage?.handle)
     const isOnFavourite = computed(() => filteredWishlistArr.value.includes(`'${props.product.source_id}'`))
     const isOnSale = computed(() => {
       const currentProduct = mappedRelatedVintage.value || props.product
@@ -228,6 +229,7 @@ export default defineComponent({
       isOnFavourite,
       isOnSale,
       isOpen,
+      isRelatedVintageWithHandle,
       mappedRelatedVintage,
       notActive,
       priceByLiter,
@@ -410,8 +412,8 @@ export default defineComponent({
           </i18n-n>
         </div>
       </div>
-      <div v-if="mappedRelatedVintage || !notActive" class="c-productBox__cart justify-self-baseline place-self-end">
-        <div v-if="mappedRelatedVintage || product.availableForSale" class="mr-3 relative">
+      <div v-if="!notActive || isRelatedVintageWithHandle" class="c-productBox__cart justify-self-baseline place-self-end">
+        <div v-if="product.availableForSale || isRelatedVintageWithHandle" class="mr-3 relative">
           <ButtonIcon
             variant="ghost"
             :icon="cartIcon"

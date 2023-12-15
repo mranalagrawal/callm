@@ -89,6 +89,7 @@ export default defineComponent({
     const templateProduct = computed(() => mappedRelatedVintage.value || props.product)
 
     const notActive = computed(() => props.product.tags.includes('not_active'))
+    const isRelatedVintageWithHandle = computed(() => !!props.relatedVintage?.handle)
     const isOnFavourite = computed(() => filteredWishlistArr.value.includes(`'${props.product.source_id}'`))
     const isOnSale = computed(() => {
       const currentProduct = mappedRelatedVintage.value || props.product
@@ -236,6 +237,7 @@ export default defineComponent({
       isOnFavourite,
       isOnSale,
       isOpen,
+      isRelatedVintageWithHandle,
       mappedRelatedVintage,
       notActive,
       priceByLiter,
@@ -449,8 +451,8 @@ hover:shadow-elevation"
         <div v-if="$cmwStore.isB2b" class="text-sm text-gray-dark  mb-3">
           iva esclusa
         </div>
-        <div v-if="mappedRelatedVintage || !notActive">
-          <div v-if="mappedRelatedVintage || product.availableForSale" class="relative">
+        <div v-if="!notActive || isRelatedVintageWithHandle">
+          <div v-if="product.availableForSale || isRelatedVintageWithHandle" class="relative">
             <CmwButton
               class="gap-2 pl-2 pr-3 py-2"
               :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
