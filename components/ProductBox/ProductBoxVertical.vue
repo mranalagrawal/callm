@@ -197,7 +197,9 @@ export default defineComponent({
     }
 
     const handleEmailClick = () => {
-      handleShowRequestModal(props.product.details.feId)
+      handleShowRequestModal(!isRelatedVintageWithHandle
+        ? props.product.details.feId
+        : props.relatedVintage.feId)
     }
 
     return {
@@ -413,7 +415,7 @@ export default defineComponent({
         </div>
       </div>
       <div v-if="!notActive || isRelatedVintageWithHandle" class="c-productBox__cart justify-self-baseline place-self-end">
-        <div v-if="product.availableForSale || isRelatedVintageWithHandle" class="mr-3 relative">
+        <div v-if="product.availableForSale || (isRelatedVintageWithHandle && mappedRelatedVintage?.availableForSale)" class="mr-3 relative">
           <ButtonIcon
             variant="ghost"
             :icon="cartIcon"
