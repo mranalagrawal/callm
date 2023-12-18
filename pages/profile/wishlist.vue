@@ -20,8 +20,6 @@ export default {
     const { selectedLayout, availableLayouts } = storeToRefs(useFilters())
     const { filteredWishlistArr, wishlistShopifyProducts, elements, filters, categoriesFilters, subcategoriesFilters, wineListsFilters } = storeToRefs(customerWishlistStore)
 
-    // P19052 2019
-    // P39364 2021
     const isReady = ref(false)
     const selectedCategory = ref('')
     const selectedSubcategory = ref('')
@@ -90,7 +88,7 @@ export default {
       fetch()
     })
 
-    const customerProducts = computed(() => {
+    const customerProducts = computed<IProductMapped[]>(() => {
       // Note: there's an annoying warning but the page renders perfectly, https://github.com/nuxt-community/composition-api/issues/19
       if (!elements.value || !elements.value.length) { return [] }
 
@@ -103,7 +101,10 @@ export default {
       return element?.relatedVintage || null
     }
 
-    const finalProducts = computed(() => [...customerProducts.value, ...wishlistOtherProducts.value].slice(0, nextChunkId.value * chunkSize))
+    const finalProducts = computed<IProductMapped[]>(() => [
+      ...customerProducts.value,
+      ...wishlistOtherProducts.value,
+    ].slice(0, nextChunkId.value * chunkSize))
 
     const trigger = ref(null) // used to get the ref of div that manage the intersection
 
@@ -342,7 +343,7 @@ export default {
             :key="product.id"
             class="mb-4"
           >
-            <ProductBoxHorizontal :product="product" :is-desktop="isDesktop" :related-vintage="findRelatedVintage(product.id)" />
+            <ProductBoxHorizontal :product="product" :is-desktop="isDesktop" :related-vintage="findRelatedVintage(product.id.toString())" />
           </div>
         </template>
         <template v-else>
@@ -354,7 +355,7 @@ export default {
               :key="product.id"
               :product="product"
               :is-desktop="isDesktop"
-              :related-vintage="findRelatedVintage(product.id)"
+              :related-vintage="findRelatedVintage(product.id.toString())"
             />
           </div>
         </template>
