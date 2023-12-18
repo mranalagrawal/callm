@@ -130,8 +130,9 @@ export const useCustomerWishlist = defineStore({
             })
 
             // Create a function to add args.id to state.elements and state.filteredElements 🤦🏻‍️🙈🫣
-            // Find the object in data.elements with the same productFeId as args.id
-            const elements = [...this.elements, ...data.data.elements]
+            // Find the object in data.elements with the same productFeId as args.id and remove it
+            let elements = this.elements.filter(p => p.productFeId !== args.id)
+            elements = [...elements, ...data.data.elements]
             this.$patch({ elements, filteredElements: elements })
 
             await this.$nuxt.$cmwGtmUtils.resetDatalayerFields()
@@ -192,7 +193,6 @@ export const useCustomerWishlist = defineStore({
         return
       }
 
-      console.log('HERE')
       if (!customerStore.customerId || !args.id) { throw new Error('missing arguments') }
 
       if (args.isOnFavourite) {
