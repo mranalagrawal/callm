@@ -97,7 +97,7 @@ export default {
 
     const findRelatedVintage = (productId: string) => {
       if (!elements?.value?.length) { return null }
-      const element = elements.value?.find(product => product.productFeId === productId)
+      const element = elements.value?.find(product => product.productFeId.toString() === productId)
       return element?.relatedVintage || null
     }
 
@@ -159,8 +159,6 @@ export default {
     const handleUpdateQuery = (jsonString: string) => {
       selectedCategory.value = '' // Reset the selected category
 
-      // console.log(jsonString)
-      // console.log(JSON.parse(jsonString))
       queryParams.value = ({
         ...queryParams.value,
         ...JSON.parse(jsonString),
