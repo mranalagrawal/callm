@@ -126,7 +126,7 @@ export const useCustomerWishlist = defineStore({
           if (responseCode === 0) {
             SweetAlertToast.fire({
               iconHtml: getIconAsImg('success'),
-              text: this.$nuxt.app.i18n.t('common.feedback.OK.wishlistAdded'),
+              text: this.$nuxt.app.i18n.t(args.isUpdating ? 'common.feedback.OK.wishlistUpdated' : 'common.feedback.OK.wishlistAdded'),
             })
 
             // Create a function to add args.id to state.elements and state.filteredElements 🤦🏻‍️🙈🫣

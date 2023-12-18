@@ -178,6 +178,7 @@ export default defineComponent({
       handleWishlist({
         id: props.product.id,
         isOnFavourite: false,
+        isUpdating: true,
         gtmProductData: gtmProductData.value,
         score,
         description,
