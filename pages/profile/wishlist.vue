@@ -82,7 +82,7 @@ export default {
 
     watch([
       () => queryUrl.value,
-      () => filteredWishlistArr.value,
+      // () => filteredWishlistArr.value,
     ], () => {
       nextChunkId.value = 1
       wishlistOtherProducts.value = []
