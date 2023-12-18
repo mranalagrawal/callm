@@ -39,6 +39,7 @@ export default defineComponent({
 
     return {
       backofficeId,
+      filteredWishlistArr,
       handleWishlist,
       heartFullIcon,
       heartIcon,

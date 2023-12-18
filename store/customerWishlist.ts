@@ -173,7 +173,7 @@ export const useCustomerWishlist = defineStore({
           })
 
           // Create a function to remove args.id from state.elements and state.filteredElements 🤦🏻‍️🙈🫣
-          const filteredArr = this.elements.filter(p => p.productFeId !== args.id)
+          const filteredArr = this.elements.filter(p => `${p.productFeId}` !== `${args.id}`)
           this.$patch({ elements: filteredArr, filteredElements: filteredArr })
         }
       })
