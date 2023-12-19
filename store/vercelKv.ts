@@ -45,11 +45,16 @@ export const useVercelKv = defineStore({
         prismicLocale = this.getPrismicLocale
       }
 
-      const megaMenuData: any = await kv.get(`prismic/menu/menu-${prismicLocale}`)
-
-      this.$patch({
-        megaMenu: megaMenuData,
-      })
+      await kv
+        .get(`prismic/menu/menu-${prismicLocale}`)
+        .then((megaMenu: any) => {
+          this.$patch({
+            megaMenu,
+          })
+        })
+        .catch((err) => {
+          this.$nuxt.$handleApiErrors(`Catch on loadMenu from KV Vercel: ${err}`)
+        })
     },
   },
 })

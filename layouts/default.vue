@@ -18,6 +18,7 @@ import useScreenSize from '~/components/composables/useScreenSize'
 import useNewsletterSplash from '~/components/composables/useNewsletterSplash'
 import Navbar from '~/components/Navbar.vue'
 import TopBar from '~/components/TopBar.vue'
+import type { TISO639 } from '~/config/themeConfig'
 import { useCheckout } from '~/store/checkout'
 
 import { useCustomer } from '~/store/customer'
@@ -35,7 +36,6 @@ export default defineComponent({
     const store: any = useStore()
     const route = useRoute()
     const { loadMenu } = useVercelKv()
-    loadMenu()
     const { getCustomer, customer } = useCustomer()
     const { getCheckoutById, mergeCheckoutStoreWithCheckout } = useCheckout()
     const { checkout } = storeToRefs(useCheckout())
@@ -53,7 +53,8 @@ export default defineComponent({
     provide('isDesktopWide', readonly(isDesktopWide))
     provide('hasBeenSet', readonly(hasBeenSet))
 
-    useFetch(async ({ $cookieHelpers }) => {
+    useFetch(async ({ $cmwStore, $cookieHelpers }) => {
+      await loadMenu($cmwStore.prismicSettings.isoCode[i18n.locale as TISO639])
       await store.dispatch('user/setUser', {})
       const accessToken = $cookieHelpers.getToken()
       accessToken && await getCustomer()
