@@ -176,7 +176,7 @@ export default defineComponent({
 
     const handleStarAndCustomerCommentClick = ({ score = null, description = '' }) => {
       handleWishlist({
-        id: props.product.id,
+        id: templateProduct.value.id,
         isOnFavourite: false,
         isUpdating: true,
         gtmProductData: gtmProductData.value,
