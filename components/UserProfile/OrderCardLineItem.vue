@@ -67,9 +67,12 @@ export default defineComponent({
         >
       </div>
       <div class="order-2 pr-4">
-        <NuxtLink :to="localePath(`/${orderLineItem.variant.product.handle}-P${productDetails.feId}.htm`)">
+        <component
+          :is="orderLineItem.variant?.product?.handle ? 'NuxtLink' : 'div'"
+          :to="orderLineItem.variant?.product?.handle ? localePath(`/${orderLineItem.variant?.product?.handle}-P${productDetails?.feId}.htm`) : null"
+        >
           {{ orderLineItem.title }}
-        </NuxtLink>
+        </component>
         <small class="text-gray-dark">{{ $t('profile.orders.card.quantity') }} {{ orderLineItem.quantity }}</small>
       </div>
       <div class="<md:(row-start-2 col-span-full place-self-end) md:(order-3 place-self-auto text-right pr-4)">
