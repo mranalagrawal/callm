@@ -197,7 +197,7 @@ export default defineComponent({
     }
 
     const handleEmailClick = () => {
-      handleShowRequestModal(!isRelatedVintageWithHandle
+      handleShowRequestModal(!isRelatedVintageWithHandle.value
         ? props.product.details.feId
         : props.relatedVintage.feId)
     }

@@ -463,7 +463,7 @@ hover:shadow-elevation"
           iva esclusa
         </div>
         <div v-if="!notActive || isRelatedVintageWithHandle">
-          <div v-if="product.availableForSale || isRelatedVintageWithHandle" class="relative">
+          <div v-if="product.availableForSale || (isRelatedVintageWithHandle && mappedRelatedVintage?.availableForSale)" class="relative">
             <CmwButton
               class="gap-2 pl-2 pr-3 py-2"
               :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
@@ -518,7 +518,7 @@ hover:shadow-elevation"
               variant="ghost"
               class="gap-2 pl-2 pr-3 py-2"
               :aria-label="$t('enums.accessibility.role.MODAL_OPEN')"
-              @click.native="handleShowRequestModal(product.details.feId)"
+              @click.native="handleShowRequestModal(templateProduct.details.feId)"
             >
               <VueSvgIcon :data="emailIcon" width="30" height="auto" />
               <span class="text-sm" v-text="$t('common.cta.notifyMe')" />
