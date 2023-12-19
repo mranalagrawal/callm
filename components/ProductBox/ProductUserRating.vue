@@ -3,24 +3,25 @@ import { computed, defineComponent, ref } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import ratingEmpty from 'assets/svg/rating-empty.svg'
 import ratingFilled from 'assets/svg/rating-filled.svg'
-import { useCustomer } from '~/store/customer'
+import { useCustomerWishlist } from '~/store/customerWishlist'
 import type { IProductRating } from '~/types/product'
 
 export default defineComponent({
+  name: 'ProductUserRating',
   props: {
     productId: {
-      type: String,
+      type: [Number, String],
       required: true,
     },
   },
   emits: ['click-star'],
   setup(props, { emit }) {
-    const customerStore = useCustomer()
-    const { customerWishlistProducts } = storeToRefs(customerStore)
+    const customerWishlist = useCustomerWishlist()
+    const { elements } = storeToRefs(customerWishlist)
     const currentHoveredStar = ref(0)
 
-    const currentProduct = computed<IProductRating | undefined>(() => customerWishlistProducts.value.find(
-      (w: Record<string, any>) => w.productFeId.toString() === props.productId.toString()))
+    const currentProduct = computed<IProductRating | undefined>(() => elements.value.find(
+      (w: Record<string, any>) => `'P${props.productId}'` === `'P${w.productFeId}'`))
 
     const currentRating = computed(() => currentProduct.value?.score || 0)
 
@@ -35,7 +36,7 @@ export default defineComponent({
       currentHoveredStar,
       currentProduct,
       currentRating,
-      customerWishlistProducts,
+      elements,
       handleStarClick,
       ratingEmpty,
       ratingFilled,

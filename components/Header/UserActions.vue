@@ -6,6 +6,7 @@ import userIcon from '~/assets/svg/user.svg'
 import cartIcon from '~/assets/svg/cart.svg'
 import { useCheckout } from '~/store/checkout'
 import { useCustomer } from '~/store/customer'
+import { useCustomerWishlist } from '~/store/customerWishlist'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 
 type TComponents = 'login' | 'cart' | ''
@@ -16,7 +17,8 @@ export default {
     const route = useRoute()
     const router = useRouter()
     const customerStore = useCustomer()
-    const { customer, favoritesCount, getCustomerType } = storeToRefs(customerStore)
+    const { customer, getCustomerType } = storeToRefs(customerStore)
+    const { favoritesCount } = storeToRefs(useCustomerWishlist())
     const { checkoutTotalPrice, checkoutTotalQuantity } = storeToRefs(useCheckout())
 
     const currentComponent = ref<TComponents>('')

@@ -4,7 +4,7 @@ import { computed, defineComponent, inject, ref, useContext, useRoute } from '@n
 import { storeToRefs } from 'pinia'
 import type { ObjType } from '~/types/types'
 import { useFilters } from '~/store/filters'
-import type { IProductListing } from '~/types/product'
+import type { IProductMapped } from '~/types/product'
 import gridIcon from '~/assets/svg/layout-grid.svg'
 import listIcon from '~/assets/svg/layout-list.svg'
 
@@ -40,8 +40,8 @@ export default defineComponent({
       sorting.value = !sorting.value
     }
 
-    const mappedProducts = computed<IProductListing[]>(() => {
-      let mappedProducts: IProductListing[] = []
+    const mappedProducts = computed<IProductMapped[]>(() => {
+      let mappedProducts: IProductMapped[] = []
 
       if (props.results?.length) {
         mappedProducts = $productMapping.fromElastic(props.results)
