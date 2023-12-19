@@ -36,6 +36,7 @@ export default defineComponent({
     })
 
     const isOnFavourite = computed(() => filteredWishlistArr.value.includes(`'${backofficeId.value}'`))
+    const productDetails = computed(() => JSON.parse(props.orderLineItem.variant?.product?.details?.value || ''))
 
     return {
       backofficeId,
@@ -45,6 +46,7 @@ export default defineComponent({
       heartIcon,
       isOnFavourite,
       isOnSale,
+      productDetails,
     }
   },
   methods: {
@@ -65,7 +67,9 @@ export default defineComponent({
         >
       </div>
       <div class="order-2 pr-4">
-        <div>{{ orderLineItem.title }}</div>
+        <NuxtLink :to="localePath(`/${orderLineItem.variant.product.handle}-P${productDetails.feId}.htm`)">
+          {{ orderLineItem.title }}
+        </NuxtLink>
         <small class="text-gray-dark">{{ $t('profile.orders.card.quantity') }} {{ orderLineItem.quantity }}</small>
       </div>
       <div class="<md:(row-start-2 col-span-full place-self-end) md:(order-3 place-self-auto text-right pr-4)">

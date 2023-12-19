@@ -86,7 +86,7 @@ export default defineComponent({
       }
     })
 
-    const templateProduct = computed(() => mappedRelatedVintage.value || props.product)
+    const templateProduct = computed<IProductMapped>(() => mappedRelatedVintage.value || props.product)
 
     const notActive = computed(() => props.product.tags.includes('not_active'))
     const isRelatedVintageWithHandle = computed(() => !!props.relatedVintage?.handle)
@@ -374,7 +374,7 @@ hover:shadow-elevation"
         </NuxtLink>
       </div>
       <ProductUserRating v-if="customerId" :product-id="`${templateProduct.details.feId}`" @click-star="handleStarAndCustomerCommentClick" />
-      <div class="flex gap-3 my-8">
+      <div class="flex gap-3" :class="!templateProduct.awards.length ? 'my-2' : 'my-8'">
         <div
           v-for="(award, i) in templateProduct.awards.slice(0, 4)"
           :key="`${award.id}-${i}`"
@@ -385,24 +385,34 @@ hover:shadow-elevation"
         </div>
       </div>
       <div
-        class="grid gap-x-8 gap-y-2 my-8 grid-cols-[auto_1fr] text-sm"
-        :class="{ 'opacity-50': !product.availableForSale }"
+        class="grid gap-x-8 gap-y-2 grid-cols-[auto_1fr] text-sm"
+        :class="{
+          'opacity-50': !product.availableForSale,
+          'my-8': templateProduct.tbd?.grapes || templateProduct.tbd?.regionName || templateProduct.tbd?.size?.id,
+        }"
       >
         <div
+          v-if="templateProduct.tbd?.grapes"
           class="cmw-font-bold"
           v-text="$t('product.grapes')"
         />
-        <div>{{ templateProduct.tbd?.grapes }}</div>
+        <div v-if="templateProduct.tbd?.grapes">
+          {{ templateProduct.tbd?.grapes }}
+        </div>
         <div
+          v-if="templateProduct.tbd?.regionName"
           class="cmw-font-bold"
           v-text="$t('product.regionCountry')"
         />
-        <div>{{ templateProduct.tbd?.regionName }}</div>
+        <div v-if="templateProduct.tbd?.regionName">
+          {{ templateProduct.tbd?.regionName }}
+        </div>
         <div
+          v-if="templateProduct.tbd && templateProduct.tbd.size?.id"
           class="cmw-font-bold"
           v-text="$t('product.size')"
         />
-        <div v-if="templateProduct.tbd && templateProduct.tbd.size?.length">
+        <div v-if="templateProduct.tbd && templateProduct.tbd.size?.id">
           {{ product.tbd.size }}
         </div>
       </div>
