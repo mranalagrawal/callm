@@ -49,6 +49,7 @@ module.exports = {
         'default',
         'empty',
         'error',
+        'faq',
         'index',
         'login',
         'preview',

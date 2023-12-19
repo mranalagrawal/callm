@@ -94,6 +94,7 @@ export default {
     company: 'Société',
     who: 'Qui Nous Sommes',
     sustainability: 'Durabilité',
+    faq: 'FAQ',
     services: 'Nos Services',
     restaurantsAndWineShops: 'Bar à vins & Restaurants',
     corporateGifts: 'Cadeaux d\'entreprise',

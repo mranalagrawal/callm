@@ -88,6 +88,12 @@ export default defineComponent({
               >
                 {{ $t('footer.sustainability') }}
               </NuxtLink>
+              <NuxtLink
+                :to="localePath('/faq')"
+                class="block text-white"
+              >
+                {{ $t('footer.faq') }}
+              </NuxtLink>
             </div>
             <div class="flex flex-col gap-2">
               <div class="h5 !text-secondary-100 mb-4">
