@@ -1,5 +1,14 @@
-<script>
-import { computed, defineComponent, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api'
+<script lang="ts">
+import {
+  type PropType,
+  computed,
+  defineComponent,
+  ref,
+  useContext,
+  useFetch,
+  useRoute,
+  useRouter,
+} from '@nuxtjs/composition-api'
 import addIcon from 'assets/svg/add.svg'
 import cartIcon from 'assets/svg/cart.svg'
 import closeIcon from 'assets/svg/close.svg'
@@ -11,24 +20,21 @@ import { storeToRefs } from 'pinia'
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import { useCheckout } from '~/store/checkout'
 import { useCustomer } from '~/store/customer'
+import { useCustomerWishlist } from '~/store/customerWishlist'
+import type { IProductMapped } from '~/types/product'
 import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { stripHtml } from '~/utilities/strings'
 import { SweetAlertToast } from '~/utilities/Swal'
-import { isObject } from '~/utilities/validators'
 
-// noinspection JSUnusedGlobalSymbols
 export default defineComponent({
   name: 'ProductBoxHorizontal',
   props: {
-    /** @Type: {ProductVariantType.ProductVariant} */
     product: {
       required: true,
-      validator(value) {
-        return isObject(value)
-      },
+      type: Object as PropType<IProductMapped>,
     },
     relatedVintage: {
-      type: Object,
+      type: Object as any,
       default: null,
     },
     position: {
@@ -37,30 +43,107 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { $config, localeLocation, $gtm, $cmwGtmUtils } = useContext()
-    const customerStore = useCustomer()
+    const {
+      $config,
+      $cmwStore,
+      localePath,
+      $gtm,
+      $cmwGtmUtils,
+    } = useContext()
+    const {
+      customer,
+      customerId,
+      getCustomerType,
+    } = storeToRefs(useCustomer())
+
+    const { filteredWishlistArr } = storeToRefs(useCustomerWishlist())
     const { checkout } = storeToRefs(useCheckout())
     const { checkoutCreate, checkoutLineItemsAdd, checkoutLineItemsUpdate } = useCheckout()
-    const { wishlistArr, getCustomerType, customer, customerId } = storeToRefs(customerStore)
-    const { handleWishlist } = customerStore
+    const { handleWishlist } = useCustomerWishlist()
     const { handleShowRequestModal } = useShowRequestModal()
-    const route = useRoute()
     const router = useRouter()
+    const route = useRoute()
 
     const isOpen = ref(false)
+    const mappedRelatedVintage = ref<IProductMapped | null>(null)
+
+    // get a mapped product from shopify if relatedVintage is passed
+    useFetch(({ $cmwRepo, $productMapping }) => {
+      if (props.relatedVintage?.handle) {
+        $cmwRepo.products.getAll({
+          first: 1,
+          query: `tag:P${props.relatedVintage.feId}`,
+        })
+          .then(async ({ products = { nodes: [] } }) => {
+            if (!products.nodes.length) { return }
+
+            const { handle } = products.nodes[0]
+
+            if (handle) {
+              mappedRelatedVintage.value = $productMapping.fromShopify([products.nodes[0]])[0]
+            }
+          })
+      }
+    })
+
+    const templateProduct = computed<IProductMapped>(() => mappedRelatedVintage.value || props.product)
 
     const notActive = computed(() => props.product.tags.includes('not_active'))
-    const isOnFavourite = computed(() => wishlistArr.value.includes(`'${props.product.source_id}'`))
-    const isOnSale = computed(() => props.product.availableFeatures.includes('isInPromotion'))
-    const finalPrice = computed(() => {
-      if (!props.product.priceLists || !props.product.priceLists[$config.SALECHANNEL]) { return 0 }
-      return props.product.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0
+    const isRelatedVintageWithHandle = computed(() => !!props.relatedVintage?.handle)
+    const isOnFavourite = computed(() => filteredWishlistArr.value.includes(`'${props.product.source_id}'`))
+    const isOnSale = computed(() => {
+      const currentProduct = mappedRelatedVintage.value || props.product
+      return currentProduct.availableFeatures.includes('isInPromotion')
     })
-    const gtmProductData = computed(() => ({
-      ...props.product.gtmProductData,
-      price: finalPrice.value,
-    }))
-    const handleHeartClick = () => {
+
+    const finalPrice = computed(() => {
+      const currentProduct = mappedRelatedVintage.value || props.product
+
+      if (!currentProduct.priceLists || !currentProduct.priceLists[$config.SALECHANNEL]) {
+        return 0
+      }
+      return currentProduct.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0
+    })
+
+    const amountMax = computed(() => {
+      const currentProduct = mappedRelatedVintage.value || props.product
+
+      return (Object.keys(currentProduct.details).length
+        && currentProduct.details.amountMax
+        && currentProduct.details.amountMax[$config.SALECHANNEL]
+        && currentProduct.details.amountMax[$config.SALECHANNEL] <= currentProduct.quantityAvailable)
+        ? currentProduct.details.amountMax[$config.SALECHANNEL]
+        : currentProduct.quantityAvailable
+    })
+
+    const isOnCart = computed(() => {
+      const currentProduct = mappedRelatedVintage.value || props.product
+      return checkout.value.lineItems.find(el => el.variant.id === currentProduct.shopify_product_variant_id)
+    })
+
+    const cartQuantity = computed(() => isOnCart.value ? isOnCart.value.quantity : 0)
+    const canAddMore = computed(() => (amountMax.value - cartQuantity.value) > 0)
+
+    const gtmProductData = computed(() => {
+      const currentProduct = mappedRelatedVintage.value || props.product
+
+      return {
+        ...currentProduct.gtmProductData,
+        price: finalPrice.value,
+      }
+    })
+
+    const priceByLiter = computed(() => {
+      const currentProduct = mappedRelatedVintage.value || props.product
+
+      if (!$cmwStore.isDe) {
+        return 0
+      } else {
+        return ((finalPrice.value / currentProduct.milliliters) * 1000)
+      }
+    })
+
+    const handleWishlistClick = () => {
       handleWishlist({
         id: props.product.id,
         isOnFavourite: isOnFavourite.value,
@@ -68,64 +151,14 @@ export default defineComponent({
       })
     }
 
-    const handleStarAndCustomerCommentClick = ({ score = null, description = '' }) => {
-      handleWishlist({
-        id: props.product.id,
-        isOnFavourite: false,
-        gtmProductData: gtmProductData.value,
-        score,
-        description,
-      })
-    }
-
-    const handleProductCLick = async (position = '') => {
-      await $cmwGtmUtils.resetDatalayerFields()
-
-      $gtm.push({
-        event: 'productClick',
-        ecommerce: {
-          currencyCode: $nuxt.$config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
-          click: {
-            actionField: { list: $cmwGtmUtils.getActionField(route.value) },
-            products: [{
-              ...props.product.gtmProductData,
-              price: finalPrice.value,
-              position,
-            }],
-          },
-        },
-      })
-
-      const url = props.relatedVintage?.handle
-        ? `/${props.relatedVintage.handle}-P${props.relatedVintage.feId}.htm`
-        : props.product.url
-
-      router.push(localeLocation(url))
-    }
-
-    const amountMax = computed(() => (Object.keys(props.product.details).length && props.product.details.amountMax[$config.SALECHANNEL]
-      && props.product.details.amountMax[$config.SALECHANNEL] <= props.product.quantityAvailable)
-      ? props.product.details.amountMax[$config.SALECHANNEL]
-      : props.product.quantityAvailable,
-    )
-
-    const isOnCart = computed(() =>
-      checkout.value.lineItems.find(el => el.variant.id === props.product.shopify_product_variant_id))
-
-    const cartQuantity = computed(() => isOnCart.value ? isOnCart.value.quantity : 0)
-
-    const canAddMore = computed(() => (amountMax.value - cartQuantity.value) > 0)
-
-    const priceByLiter = computed(() => {
-      if ($config.STORE !== 'CMW_DE') { return 0 } else { return ((finalPrice.value / props.product.milliliters) * 1000) }
-    })
-
     const removeProductFromCustomerCheckout = async () => {
       if (cartQuantity.value < 1) {
         return
       }
 
-      const currentLineItem = checkout.value.lineItems.find(el => el.variant.id === props.product.shopify_product_variant_id)
+      const currentProduct = mappedRelatedVintage.value || props.product
+
+      const currentLineItem = checkout.value.lineItems.find(el => el.variant.id === currentProduct.shopify_product_variant_id)
 
       if (!currentLineItem) {
         return
@@ -138,7 +171,45 @@ export default defineComponent({
         variantId: currentLineItem.variant.id,
       }]
 
-      await checkoutLineItemsUpdate(checkout.value.id, lineItems)
+      await checkoutLineItemsUpdate(checkout.value.id, lineItems, true)
+    }
+
+    const handleStarAndCustomerCommentClick = ({ score = null, description = '' }) => {
+      handleWishlist({
+        id: templateProduct.value.id,
+        isOnFavourite: false,
+        isUpdating: true,
+        gtmProductData: gtmProductData.value,
+        score,
+        description,
+      })
+    }
+
+    const handleProductCLick = async () => {
+      await $cmwGtmUtils.resetDatalayerFields()
+
+      const currentProduct = mappedRelatedVintage.value || props.product
+
+      $gtm.push({
+        event: 'productClick',
+        ecommerce: {
+          currencyCode: $cmwStore.isUk ? 'GBP' : 'EUR',
+          click: {
+            actionField: { list: $cmwGtmUtils.getActionField(route.value) },
+            products: [{
+              ...currentProduct.gtmProductData,
+              price: finalPrice.value,
+              position: props.position,
+            }],
+          },
+        },
+      })
+
+      const url = props.relatedVintage?.handle
+        ? `/${props.relatedVintage.handle}-P${props.relatedVintage.feId}.htm`
+        : props.product.url
+
+      router.push(localePath(url))
     }
 
     return {
@@ -157,21 +228,23 @@ export default defineComponent({
       finalPrice,
       getCustomerType,
       gtmProductData,
-      handleHeartClick,
       handleProductCLick,
       handleShowRequestModal,
       handleStarAndCustomerCommentClick,
       handleWishlist,
+      handleWishlistClick,
       heartFullIcon,
       heartIcon,
       isOnFavourite,
       isOnSale,
       isOpen,
+      isRelatedVintageWithHandle,
+      mappedRelatedVintage,
       notActive,
       priceByLiter,
       removeProductFromCustomerCheckout,
       subtractIcon,
-      wishlistArr,
+      templateProduct,
     }
   },
   methods: {
@@ -190,26 +263,28 @@ export default defineComponent({
         return
       }
 
+      const currentProduct = this.mappedRelatedVintage || this.product
+
       const checkoutCreateInput = {
         buyerIdentity: {
           countryCode: getCountryFromStore(this.$cmwStore.settings.store),
         },
         ...(this.customer.email && { email: this.customer.email }),
         note: this.checkout.note,
-        lineItems: {
+        lineItems: [{
           customAttributes: [
             {
               key: 'gtmProductData',
-              value: this.product.gtmProductData ? JSON.stringify(this.product.gtmProductData) : 'false',
+              value: currentProduct.gtmProductData ? JSON.stringify(currentProduct.gtmProductData) : 'false',
             },
             {
               key: 'bundle',
-              value: (this.product.tags) ? this.product.tags.includes('BUNDLE').toString() : 'false',
+              value: (currentProduct.tags) ? currentProduct.tags.includes('BUNDLE').toString() : 'false',
             },
           ],
-          quantity: this.product.quantity || 1,
-          variantId: this.product.shopify_product_variant_id,
-        },
+          quantity: 1,
+          variantId: currentProduct.shopify_product_variant_id,
+        }],
       }
 
       if (!this.checkout.id) {
@@ -221,12 +296,14 @@ export default defineComponent({
 
       this.checkoutLineItemsAdd(this.checkout.id, checkoutCreateInput.lineItems)
         .then(async () => {
+          // Fixme: make flashMessage work along with typescript or use a better plugin
+          /* @ts-expect-error flashMessage doesn't seem to handle typescript */
           this.flashMessage.show({
             status: '',
-            message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title}` }),
-            icon: this.product.image.source.url,
+            message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${currentProduct.title}` }),
+            icon: currentProduct.image.source.url,
             iconClass: 'bg-transparent ',
-            time: 8000,
+            time: 4000,
             blockClass: 'add-product-notification',
           })
         })
@@ -237,37 +314,43 @@ export default defineComponent({
 
 <template>
   <div
-    v-if="product.shopify_product_id"
+    v-if="templateProduct.shopify_product_id"
     class="relative transition transition-box-shadow bg-white rounded-sm border border-gray-light p-2 grid grid-cols-[220px_auto_320px]
 hover:shadow-elevation"
-    :data-sku="product.sku"
+    :data-sku="templateProduct.sku"
   >
     <!-- Image Section -->
     <div class="relative p-2">
       <ClientOnly>
-        <button class="block mx-auto" @click="handleProductCLick">
+        <NuxtLink
+          :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')"
+          event=""
+          class="block mx-auto"
+          :to="localePath(templateProduct.url)"
+          @click.native="handleProductCLick"
+        >
           <LoadingImage
             class="filter mx-auto mt-4"
             img-classes="w-full h-auto"
             :class="[
-              { 'opacity-50': !product.availableForSale },
-              { 'hover:contrast-150': !product.image?.thumbnail.url?.includes('no-product-image') },
+              { 'opacity-50': !templateProduct.availableForSale },
+              { 'hover:contrast-150': !templateProduct.image?.thumbnail.url?.includes('no-product-image') },
             ]"
-            :thumbnail="product.image.thumbnail"
-            :source="product.image.source"
+            :thumbnail="templateProduct.image.thumbnail"
+            :source="templateProduct.image.source"
             wrapper="span"
           />
-        </button>
+        </NuxtLink>
       </ClientOnly>
-      <div v-if="product.availableFeatures.length" class="absolute top-4 left-2 flex flex-col gap-y-1">
+      <div v-if="templateProduct.availableFeatures.length" class="absolute top-4 left-2 flex flex-col gap-y-1">
         <!-- Todo: create a global tooltip that change position base on mouse position -->
-        <ProductBoxFeature v-for="feature in product.availableFeatures" :key="feature" :feature="feature" />
+        <ProductBoxFeature v-for="feature in templateProduct.availableFeatures" :key="feature" :feature="feature" />
       </div>
       <ButtonIcon
         :icon="isOnFavourite ? heartFullIcon : heartIcon"
         class="absolute top-4 right-2" :variant="isOnFavourite ? 'icon-primary' : 'icon'"
         :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
-        @click.native="handleHeartClick"
+        @click.native="handleWishlistClick"
       />
     </div>
     <!-- Content Section -->
@@ -280,45 +363,56 @@ hover:shadow-elevation"
         >
           {{ $t('product.otherVintagesSale', { vintage: relatedVintage.vintageyear }) }}
         </NuxtLink>
-        <button
-          class="h4 mt-4 text-body text-left hover:(text-primary-400)"
+        <NuxtLink
           :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')"
-          @click="handleProductCLick"
+          event=""
+          class="h4 mt-4 text-body text-left hover:(text-primary-400)"
+          :to="localePath(templateProduct.url)"
+          @click.native="handleProductCLick"
         >
           {{ product.title }}
-        </button>
-        <NuxtLink class="block sr-only" :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')" :to="(product?.url) ? localeLocation(product.url) : '/'" />
+        </NuxtLink>
       </div>
-      <ProductUserRating v-if="customerId" :product-id="`${product.details.feId}`" @click-star="handleStarAndCustomerCommentClick" />
-      <div class="flex gap-3 my-8">
+      <ProductUserRating v-if="customerId" :product-id="`${templateProduct.details.feId}`" @click-star="handleStarAndCustomerCommentClick" />
+      <div class="flex gap-3" :class="!templateProduct.awards.length ? 'my-2' : 'my-8'">
         <div
-          v-for="(award, i) in product.awards.slice(0, 4)"
+          v-for="(award, i) in templateProduct.awards.slice(0, 4)"
           :key="`${award.id}-${i}`"
           class="flex gap-1 items-center pr-1.5"
-          :class="{ 'border-r border-r-gray': ((i + 1) < product.awards.length) }"
+          :class="{ 'border-r border-r-gray': ((i + 1) < templateProduct.awards.length) }"
         >
           <ProductBoxAward :award="award" />
         </div>
       </div>
       <div
-        class="grid gap-x-8 gap-y-2 my-8 grid-cols-[auto_1fr] text-sm"
-        :class="{ 'opacity-50': !product.availableForSale }"
+        class="grid gap-x-8 gap-y-2 grid-cols-[auto_1fr] text-sm"
+        :class="{
+          'opacity-50': !product.availableForSale,
+          'my-8': templateProduct.tbd?.grapes || templateProduct.tbd?.regionName || templateProduct.tbd?.size?.id,
+        }"
       >
         <div
+          v-if="templateProduct.tbd?.grapes"
           class="cmw-font-bold"
           v-text="$t('product.grapes')"
         />
-        <div>{{ product.tbd.grapes }}</div>
+        <div v-if="templateProduct.tbd?.grapes">
+          {{ templateProduct.tbd?.grapes }}
+        </div>
         <div
+          v-if="templateProduct.tbd?.regionName"
           class="cmw-font-bold"
           v-text="$t('product.regionCountry')"
         />
-        <div>{{ product.tbd.regionName }}</div>
+        <div v-if="templateProduct.tbd?.regionName">
+          {{ templateProduct.tbd?.regionName }}
+        </div>
         <div
+          v-if="templateProduct.tbd && templateProduct.tbd.size?.id"
           class="cmw-font-bold"
           v-text="$t('product.size')"
         />
-        <div v-if="product.tbd.size?.length">
+        <div v-if="templateProduct.tbd && templateProduct.tbd.size?.id">
           {{ product.tbd.size }}
         </div>
       </div>
@@ -327,18 +421,18 @@ hover:shadow-elevation"
       <div>{{ product.descriptionHtml }}</div> -->
       <div
         class="c-productBox__desc mb-4 line-clamp-6"
-        :class="{ 'opacity-50': !product.availableForSale }"
-        v-html="stripHtml(product.tbd.description)"
+        :class="{ 'opacity-50': !templateProduct.availableForSale }"
+        v-html="stripHtml(templateProduct.tbd.description)"
       />
-      <ProductUserRatingDescription v-if="customerId" :product-id="`${product.details.feId}`" @submit-comment="handleStarAndCustomerCommentClick" />
+      <ProductUserRatingDescription v-if="customerId" :product-id="`${templateProduct.details.feId}`" @submit-comment="handleStarAndCustomerCommentClick" />
     </div>
     <!-- CTA Section -->
     <div class="relative flex">
       <div class="m-auto text-center w-full px-4">
         <p
-          v-if="!!product.quantityAvailable && product.quantityAvailable < 6"
+          v-if="!!templateProduct.quantityAvailable && templateProduct.quantityAvailable < 6"
           class="overline-2 text-success font-medium text-center uppercase"
-          v-text="$t('product.available', { quantity: product.quantityAvailable })"
+          v-text="$t('product.available', { quantity: templateProduct.quantityAvailable })"
         />
 
         <span
@@ -368,8 +462,8 @@ hover:shadow-elevation"
         <div v-if="$cmwStore.isB2b" class="text-sm text-gray-dark  mb-3">
           iva esclusa
         </div>
-        <div v-if="!notActive">
-          <div v-if="product.availableForSale" class="relative">
+        <div v-if="!notActive || isRelatedVintageWithHandle">
+          <div v-if="product.availableForSale || isRelatedVintageWithHandle" class="relative">
             <CmwButton
               class="gap-2 pl-2 pr-3 py-2"
               :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
@@ -442,7 +536,7 @@ hover:shadow-elevation"
       </div>
     </div>
     <div
-      v-if="!product.availableForSale"
+      v-if="!templateProduct.availableForSale"
       class="absolute transform bg-black/70 rounded top-1/2 left-12 -translate-y-1/2 py-4 px-24 overline-2 uppercase text-white"
       v-text="$t('product.notAvailable2')"
     />

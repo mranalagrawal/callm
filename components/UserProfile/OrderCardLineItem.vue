@@ -4,9 +4,9 @@ import { computed, defineComponent } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import heartIcon from '~/assets/svg/heart.svg'
 import heartFullIcon from '~/assets/svg/heart-full.svg'
+import { useCustomerWishlist } from '~/store/customerWishlist'
 import type { ILineItem } from '~/types/order'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
-import { useCustomer } from '~/store/customer'
 import { regexRules } from '~/utilities/validators'
 
 export default defineComponent({
@@ -17,9 +17,9 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const customerStore = useCustomer()
-    const { wishlistArr } = storeToRefs(customerStore)
-    const { handleWishlist } = customerStore
+    const customerWishlist = useCustomerWishlist()
+    const { filteredWishlistArr } = storeToRefs(customerWishlist)
+    const { handleWishlist } = customerWishlist
 
     const isOnSale = computed(() => {
       // Note: for gift cards compareAtPrice sometimes is null, so we need to check
@@ -35,15 +35,18 @@ export default defineComponent({
         : 'probably-a-gift-card'
     })
 
-    const isOnFavourite = computed(() => wishlistArr.value.includes(`'${backofficeId.value}'` as never)) // Todo: Remove assertion when typing customerStore
+    const isOnFavourite = computed(() => filteredWishlistArr.value.includes(`'${backofficeId.value}'`))
+    const productDetails = computed(() => JSON.parse(props.orderLineItem.variant?.product?.details?.value || ''))
+
     return {
       backofficeId,
+      filteredWishlistArr,
       handleWishlist,
       heartFullIcon,
       heartIcon,
       isOnFavourite,
       isOnSale,
-      wishlistArr,
+      productDetails,
     }
   },
   methods: {
@@ -64,7 +67,9 @@ export default defineComponent({
         >
       </div>
       <div class="order-2 pr-4">
-        <div>{{ orderLineItem.title }}</div>
+        <NuxtLink :to="localePath(`/${orderLineItem.variant.product.handle}-P${productDetails.feId}.htm`)">
+          {{ orderLineItem.title }}
+        </NuxtLink>
         <small class="text-gray-dark">{{ $t('profile.orders.card.quantity') }} {{ orderLineItem.quantity }}</small>
       </div>
       <div class="<md:(row-start-2 col-span-full place-self-end) md:(order-3 place-self-auto text-right pr-4)">

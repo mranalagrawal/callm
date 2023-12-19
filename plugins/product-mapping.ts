@@ -3,7 +3,7 @@ import { storeToRefs } from 'pinia'
 import type { TISO639, TSalesChannel, TStores } from '~/config/themeConfig'
 import { useCustomer } from '~/store/customer'
 import type { IMoneyV2 } from '~/types/common-objects'
-import type { IBaseProductMapped, IGiftCardMapped, IGiftCardVariantMapped, IGtmProductData, IProductBreadcrumbs, IProductListing, IProductMapped, TProductFeatures } from '~/types/product'
+import type { IBaseProductMapped, IGiftCardMapped, IGiftCardVariantMapped, IGtmProductData, IProductBreadcrumbs, IProductMapped, TProductFeatures } from '~/types/product'
 import type { ObjType } from '~/types/types'
 import { getUniqueListBy, pick } from '~/utilities/arrays'
 import { getCountryFromStore } from '~/utilities/currency'
@@ -24,7 +24,7 @@ interface IProductMapping {
   ): IBaseProductMapped
   fromElastic<T extends KeyType>(
     arr: ObjType<T>[],
-  ): IProductListing[]
+  ): IProductMapped[]
   fromShopify<T extends KeyType>(
     arr: ObjType<T>[],
   ): IProductMapped[]
@@ -100,7 +100,7 @@ const productMapping: Plugin = ({ $config, $cmwStore, i18n }, inject) => {
     },
 
     fromElastic: (arr = []) => {
-      const products: IProductListing[] = arr.map((p: Record<string, any>) => {
+      const products: IProductMapped[] = arr.map((p: Record<string, any>) => {
         const compareAtPrice: IMoneyV2 = {
           amount: (p._source.price && p._source.price[sale_channel]) ? p._source.price[sale_channel] : 0,
           currencyCode: store === 'CMW_UK' ? 'GBP' : 'EUR',
@@ -173,7 +173,7 @@ const productMapping: Plugin = ({ $config, $cmwStore, i18n }, inject) => {
             description: p._source.shortDescription ?? '',
             grapes: p._source.grapes ?? '',
             regionName: p._source.regionname ?? '',
-            size: p._source.sizes?.length ? p._source.sizes[`identifier_${lang}`].split('|')[1] : [],
+            size: p._source.sizes?.id ? p._source.sizes[`identifier_${lang}`].split('|')[1] : {},
           },
         })
       })

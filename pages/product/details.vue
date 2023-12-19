@@ -25,6 +25,7 @@ import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 import favouriteIcon from '~/assets/svg/selections/favourite.svg'
 import getArticles from '~/graphql/queries/getArticles'
 import { useCheckout } from '~/store/checkout'
+import { useCustomerWishlist } from '~/store/customerWishlist'
 import { generateKey, stripHtmlAnchors } from '~/utilities/strings'
 
 export default defineComponent({
@@ -53,12 +54,12 @@ export default defineComponent({
 
     const {
       customer,
-      wishlistArr,
       customerId,
       getCustomerType,
     } = storeToRefs(customerStore)
 
-    const { handleWishlist } = customerStore
+    const { handleWishlist } = useCustomerWishlist()
+    const { filteredWishlistArr } = storeToRefs(useCustomerWishlist())
     const route = useRoute()
     const isOpen = ref(false)
     const showRequestModal = ref(false)
@@ -238,9 +239,7 @@ export default defineComponent({
       return productDetails.value.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0
     })
 
-    const isOnFavourite = computed(() => {
-      return [...wishlistArr.value].includes(`'${product.value.source_id}'`)
-    })
+    const isOnFavourite = computed(() => filteredWishlistArr.value.includes(`'${product.value.source_id}'`))
 
     const priceByLiter = computed(() => {
       if ($config.STORE !== 'CMW_DE') { return 0 } else { return ((finalPrice.value / productDetails.value.milliliters) * 1000) }
@@ -334,6 +333,7 @@ export default defineComponent({
       emailIcon,
       favouriteIcon,
       fetchState,
+      filteredWishlistArr,
       finalPrice,
       generateMetaLink,
       getCustomerType,
@@ -359,7 +359,6 @@ export default defineComponent({
       showScalaPay,
       strippedContent,
       subtractIcon,
-      wishlistArr,
     }
   },
   head: {},
