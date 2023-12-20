@@ -151,6 +151,7 @@ const REDIRECT_SEO_REGEX = {
   // non serve + spostato nel prepareRedirect '^\/${SLUG_REGEX}+-(C(?:1|2|3|4|54|57|64|66|75|78|87|95|97|99|104|106|109))(.*?).htm': '/customRedirectMacrocategories',
 
   // new letters are ok, if is not required a 301
+  [`^\/${SLUG_REGEX}+-(R|N)\\d+.htm`]: 410,
   [`^\/${SLUG_REGEX}+M${MACRO_LETTERS}[A-Z.]`]: 200,
   [`^\/${SLUG_REGEX}+N${COUNTRY_LETTERS}[A-Z.]`]: 200,
 
