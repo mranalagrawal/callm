@@ -49,6 +49,8 @@ export default defineComponent({
 
     const isOpen = ref(false)
     const product = computed<IProductMapped>(() => $productMapping.fromShopify([props.currentEvent.product.reference])[0] || [])
+    const productVariant = computed<any>(() => props.currentEvent.productVariant?.reference || undefined)
+
     const description = computed(() => shopifyRichTextToHTML(props.currentEvent.description.value || ''))
     const giftDescription = computed(() => props.currentEvent.description?.value && shopifyRichTextToHTML(props.currentEvent.description.value))
     const isToday = computed(() => props.currentDay === $dayjs(props.currentEvent.date.value).get('D'))
@@ -58,11 +60,13 @@ export default defineComponent({
       : (product.value.image.source || undefined),
     )
     const amountMax = computed(() => {
-      if (!product.value.details.amountMax) { return 0 }
+      if (product.value.isGiftCard) { return 50 }
 
-      return (product.value.details.amountMax[salesChannel]
-          && product.value.details.amountMax[salesChannel] <= product.value.quantityAvailable)
-        ? product.value.details.amountMax[salesChannel]
+      if (!product.value?.details.amountMax) { return 0 }
+
+      return (product.value?.details.amountMax[salesChannel]
+        && product.value?.details.amountMax[salesChannel] <= product.value.quantityAvailable)
+        ? product.value?.details.amountMax[salesChannel]
         : product.value.quantityAvailable
     })
 
@@ -134,6 +138,7 @@ export default defineComponent({
       price,
       product,
       productImage,
+      productVariant,
       removeProductFromCustomerCheckout,
       subtractIcon,
     }
@@ -144,13 +149,17 @@ export default defineComponent({
       this.isOpen = true
 
       // check for availability
-      if (!this.canAddMore) {
+      if (!this.canAddMore && !this.product.isGiftCard) {
         await SweetAlertToast.fire({
           icon: 'warning',
           text: this.$i18n.t('common.feedback.KO.addToCartReachLimit'),
         })
         return
       }
+
+      const variantId = !this.product.isGiftCard
+        ? this.product.shopify_product_variant_id
+        : this.productVariant.id
 
       const checkoutCreateInput = {
         buyerIdentity: {
@@ -170,7 +179,7 @@ export default defineComponent({
             },
           ],
           quantity: 1,
-          variantId: this.product.shopify_product_variant_id,
+          variantId,
         }],
       }
 

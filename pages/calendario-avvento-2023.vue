@@ -23,6 +23,7 @@ export interface IEventDay {
     image: { reference: { image: TImage } }
     price: { value: string }
     product: { reference: ObjType<KeyType> } // IProductMapped
+    productVariant: { reference: any } // IProductMapped
     title: { value: string }
     type: { value: string }
   }
