@@ -7,12 +7,16 @@ export default {
       required: true,
     },
     successfulFulfillments: {
-      type: Object,
+      type: [Object, null],
       default: () => {},
     },
     shippingAddress: {
       type: Object,
       required: true,
+    },
+    sourceTrackingNumber: {
+      type: String,
+      required: false,
     },
   },
 }
@@ -43,7 +47,7 @@ export default {
             <a
               v-if="successfulFulfillments.trackingInfo[0]"
               class="text-gray-dark hover:text-primary"
-              :href="`https://www.shippypro.com/tracking.html?tracking=${successfulFulfillments.trackingInfo[0].number}`"
+              :href="`https://www.shippypro.com/tracking.html?tracking=${sourceTrackingNumber || successfulFulfillments.trackingInfo[0].number}`"
               target="_blank"
             ><small> ({{ successfulFulfillments.trackingInfo[0].number }})</small></a>
           </span>

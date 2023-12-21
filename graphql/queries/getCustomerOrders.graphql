@@ -52,6 +52,9 @@ query getCustomerOrders(
             url
           }
         }
+        sourceTrackingNumber: metafield(namespace: "logistic", key: "source_tracking_number") {
+          value
+        }
         lineItems(first: 250) {
           nodes {
             quantity
