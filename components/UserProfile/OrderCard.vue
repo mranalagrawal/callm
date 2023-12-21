@@ -369,6 +369,7 @@ export default defineComponent({
               :fulfillment-status="order.fulfillmentStatus"
               :successful-fulfillments="order.successfulFulfillments[0] ? order.successfulFulfillments[0] : null"
               :shipping-address="order.shippingAddress"
+              :source-tracking-number="order.sourceTrackingNumber?.value"
             />
             <!-- Note: ?? doesn't work well on the current configuration :successful-fulfillments="order.successfulFulfillments[0] ?? null" -->
           </div>

@@ -60,4 +60,5 @@ export interface IOrder {
   totalTaxV2: IMoneyV2
   lineItems: { nodes: ILineItem[] }
   discountApplications: any
+  sourceTrackingNumber: any
 }
