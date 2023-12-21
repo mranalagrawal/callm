@@ -51,7 +51,11 @@ export default defineComponent({
 
     const isOnSale = computed(() => finalPrice.value < +props.checkoutLineItem.variant.price.amount)
 
-    const productUrl = computed(() => `/${productDetails.value?.handle[i18n.locale]}-${productDetails.value?.key}.htm`)
+    const productUrl = computed(() =>
+      !product.value.isGiftCard
+        ? `/${productDetails.value?.handle[i18n.locale]}-${productDetails.value?.key}.htm`
+        : `/${productDetails.value?.handle[i18n.locale]}`,
+    )
 
     const updateLineItemQuantity = async (quantity: number, isRemoving = false) => {
       const lineItems = [{
@@ -112,18 +116,24 @@ export default defineComponent({
     <template v-if="!isSuitableGift">
       <div class="c-cartLineItem mx-3 py-4 bg-white border-b border-b-gray-light">
         <div class="c-cartLineItem__image">
-          <NuxtLink v-if="productUrl" :to="localePath(productUrl)">
+          <component
+            :is="productUrl ? 'NuxtLink' : 'div'"
+            :to="productUrl ? localePath(productUrl) : null"
+          >
             <img
               v-show="product.featuredImage?.url"
               :src="product.featuredImage?.url"
               :alt="product.featuredImage?.altText" class="max-h-90px"
             >
-          </NuxtLink>
+          </component>
         </div>
         <div class="c-cartLineItem__description">
-          <NuxtLink v-if="productUrl" :to="localePath(productUrl)" class="text-sm cmw-font-bold leading-none">
+          <component
+            :is="productUrl ? 'NuxtLink' : 'div'" :to="productUrl ? localePath(productUrl) : null"
+            class="text-sm cmw-font-bold leading-none"
+          >
             {{ product.title }}
-          </NuxtLink>
+          </component>
         </div>
         <div class="c-cartLineItem__quantity">
           <div class="grid grid-cols-[32px_40px_32px] h-[32px] items-center">
@@ -184,16 +194,18 @@ export default defineComponent({
     </template>
     <template v-else>
       <div class="bg-secondary-50 rounded my-2 mx-3 grid grid-cols-[70px_1fr_60px] items-center justify-start md:(grid-cols-[70px_1fr_120px_60px] gap-4)">
-        <NuxtLink v-if="productUrl" :to="localePath(productUrl)" class="w-70px p-2">
+        <component :is="productUrl ? 'NuxtLink' : 'div'" :to="productUrl ? localePath(productUrl) : null" class="w-70px p-2">
           <img
             v-show="product.featuredImage?.url"
             :src="product.featuredImage?.url"
             :alt="product.featuredImage?.altText"
             class="max-h-90px mix-blend-darken"
           >
-        </NuxtLink>
-        <NuxtLink v-if="productUrl" :to="localePath(productUrl)" class="text-sm leading-snug">
-          <span>{{ product.title }}</span>
+        </component>
+        <div class="text-sm leading-snug">
+          <component :is="productUrl ? 'NuxtLink' : 'div'" :to="productUrl ? localePath(productUrl) : null">
+            <span>{{ product.title }}</span>
+          </component>
           <div class="flex items-center gap-1 my-1">
             <VueSvgIcon :data="toGiftIcon" class="flex-shrink-0" width="20" height="20" color="#134c45" />
             <i18n
@@ -206,7 +218,7 @@ export default defineComponent({
               </NuxtLink>
             </i18n>
           </div>
-        </NuxtLink>
+        </div>
         <span class="<md:hidden text-right overline-2 text-secondary-700 uppercase">{{ $t('eventGiftFree') }}</span>
         <ButtonIcon class="m-inline-auto" :icon="deleteIcon" variant="icon" size="28" @click.native="removeLineItem" />
       </div>
