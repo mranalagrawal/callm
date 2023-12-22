@@ -3,7 +3,7 @@ import { storeToRefs } from 'pinia'
 import type { TISO639, TSalesChannel, TStores } from '~/config/themeConfig'
 import { useCustomer } from '~/store/customer'
 import type { IMoneyV2 } from '~/types/common-objects'
-import type { IBaseProductMapped, IGiftCardMapped, IGiftCardVariantMapped, IGtmProductData, IProductBreadcrumbs, IProductMapped, TProductFeatures } from '~/types/product'
+import type { IGiftCardMapped, IGiftCardVariantMapped, IGtmProductData, IProductBreadcrumbs, IProductMapped, TProductFeatures } from '~/types/product'
 import type { ObjType } from '~/types/types'
 import { getUniqueListBy, pick } from '~/utilities/arrays'
 import { getCountryFromStore } from '~/utilities/currency'
@@ -21,7 +21,7 @@ interface IProductMapping {
   ): any
   giftCard(
     product: Record<string, any>,
-  ): IBaseProductMapped
+  ): IGiftCardMapped
   fromElastic<T extends KeyType>(
     arr: ObjType<T>[],
   ): IProductMapped[]
@@ -170,10 +170,10 @@ const productMapping: Plugin = ({ $config, $cmwStore, i18n }, inject) => {
           },
           sku: p._source.sku,
           tbd: {
+            countryName: p._source.countries[`identifier_${lang}`] ? p._source.countries[`identifier_${lang}`].split('|')[1] : '',
             description: p._source.shortDescription ?? '',
             grapes: p._source.grapes ?? '',
             regionName: p._source.regionname ?? '',
-            countryName: p._source.countries[`identifier_${lang}`] ? p._source.countries[`identifier_${lang}`].split('|')[1] : '',
             size: p._source.sizes[`identifier_${lang}`] ? p._source.sizes[`identifier_${lang}`].split('|')[1] : '',
           },
         })
@@ -264,6 +264,7 @@ const productMapping: Plugin = ({ $config, $cmwStore, i18n }, inject) => {
           },
           sku: p.variants.nodes[0].sku,
           tbd: {
+            countryName: details?.countryName && details?.countryName[lang],
             description: details?.shortDescription && details?.shortDescription[lang],
             grapes: details?.grapes && details?.grapes[lang],
             regionName: details?.regionName && details?.regionName[lang],

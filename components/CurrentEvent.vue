@@ -1,20 +1,20 @@
 <script lang="ts">
 import type { PropType } from '@nuxtjs/composition-api'
 import { computed, defineComponent, inject, ref, useContext } from '@nuxtjs/composition-api'
-import closeIcon from 'assets/svg/close.svg'
-import { storeToRefs } from 'pinia'
 import addIcon from 'assets/svg/add.svg'
 import cartIcon from 'assets/svg/cart.svg'
+import closeIcon from 'assets/svg/close.svg'
 import emailIcon from 'assets/svg/email.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
-import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
+import { storeToRefs } from 'pinia'
 import Alert from '~/components/FeedBack/Alert.vue'
 import useShowRequestModal from '~/components/ProductBox/useShowRequestModal'
+import type { IEventDay } from '~/pages/calendario-avvento-2023.vue'
 import { useCheckout } from '~/store/checkout'
 import { useCustomer } from '~/store/customer'
-import type { IEventDay } from '~/pages/calendario-avvento-2023.vue'
-import type { IProductMapped } from '~/types/product'
+import type { IGiftCardMapped, IProductMapped } from '~/types/product'
 import type { TImage } from '~/types/types'
+import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { shopifyRichTextToHTML } from '~/utilities/shopify'
 import { SweetAlertToast } from '~/utilities/Swal'
 
@@ -50,6 +50,17 @@ export default defineComponent({
     const isOpen = ref(false)
     const product = computed<IProductMapped>(() => $productMapping.fromShopify([props.currentEvent.product.reference])[0] || [])
     const productVariant = computed<any>(() => props.currentEvent.productVariant?.reference || undefined)
+    const giftCardProduct = computed<IGiftCardMapped | undefined>(() => {
+      if (!product.value.isGiftCard) { return undefined }
+
+      const fakeGiftCard = {
+        ...props.currentEvent.product.reference,
+        variants: {
+          nodes: [productVariant.value],
+        },
+      }
+      return $productMapping.giftCard(fakeGiftCard)
+    })
 
     const description = computed(() => shopifyRichTextToHTML(props.currentEvent.description.value || ''))
     const giftDescription = computed(() => props.currentEvent.description?.value && shopifyRichTextToHTML(props.currentEvent.description.value))
@@ -70,8 +81,13 @@ export default defineComponent({
         : product.value.quantityAvailable
     })
 
-    const isOnCart = computed(() =>
-      checkout.value.lineItems.find(el => el.variant.id === product.value.shopify_product_variant_id))
+    const isOnCart = computed(() => {
+      if (product.value.isGiftCard) {
+        return checkout.value.lineItems.find(el => el.variant.id === productVariant.value.id)
+      } else {
+        return checkout.value.lineItems.find(el => el.variant.id === product.value.shopify_product_variant_id)
+      }
+    })
 
     const cartQuantity = computed(() => isOnCart.value ? isOnCart.value.quantity : 0)
 
@@ -128,6 +144,7 @@ export default defineComponent({
       description,
       discount,
       emailIcon,
+      giftCardProduct,
       giftDescription,
       handleEmailClick,
       handleShowRequestModal,
@@ -161,6 +178,20 @@ export default defineComponent({
         ? this.product.shopify_product_variant_id
         : this.productVariant.id
 
+      const getGtmProductData = () => {
+        if (this.product.isGiftCard && this.productVariant) {
+          return {
+            key: 'gtmProductData',
+            value: this.product.gtmProductData ? JSON.stringify(this.product.gtmProductData) : 'false',
+          }
+        } else {
+          return {
+            key: 'gtmProductData',
+            value: this.giftCardProduct?.variants[0]?.gtmProductData ? JSON.stringify(this.giftCardProduct.variants[0].gtmProductData) : 'false',
+          }
+        }
+      }
+
       const checkoutCreateInput = {
         buyerIdentity: {
           countryCode: getCountryFromStore(this.$cmwStore.settings.store),
@@ -169,10 +200,7 @@ export default defineComponent({
         note: this.checkout.note,
         lineItems: [{
           customAttributes: [
-            {
-              key: 'gtmProductData',
-              value: this.product.gtmProductData ? JSON.stringify(this.product.gtmProductData) : 'false',
-            },
+            getGtmProductData(),
             {
               key: 'bundle',
               value: (this.product.tags) ? this.product.tags.includes('BUNDLE').toString() : 'false',

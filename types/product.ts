@@ -130,6 +130,7 @@ export interface IProductMapped extends IBaseProductMapped {
 export interface IGiftCardVariantMapped extends IBaseProductMapped {
   compareAtPrice: IMoneyV2
   price: IMoneyV2
+  gtmProductData: any
 }
 
 export interface IGiftCardMapped extends IBaseProductMapped {
