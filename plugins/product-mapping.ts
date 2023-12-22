@@ -173,7 +173,8 @@ const productMapping: Plugin = ({ $config, $cmwStore, i18n }, inject) => {
             description: p._source.shortDescription ?? '',
             grapes: p._source.grapes ?? '',
             regionName: p._source.regionname ?? '',
-            size: p._source.sizes?.id ? p._source.sizes[`identifier_${lang}`].split('|')[1] : {},
+            countryName: p._source.countries[`identifier_${lang}`] ? p._source.countries[`identifier_${lang}`].split('|')[1] : '',
+            size: p._source.sizes[`identifier_${lang}`] ? p._source.sizes[`identifier_${lang}`].split('|')[1] : '',
           },
         })
       })
