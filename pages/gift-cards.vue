@@ -197,11 +197,11 @@ export default defineComponent({
           customAttributes: [
             {
               key: 'gtmProductData',
-              value: this.product.gtmProductData ? JSON.stringify(this.product.gtmProductData) : 'false',
+              value: this.giftCardVariantSelected.gtmProductData ? JSON.stringify(this.giftCardVariantSelected.gtmProductData) : 'false',
             },
             {
               key: 'bundle',
-              value: (this.product.tags) ? this.product.tags.includes('BUNDLE').toString() : 'false',
+              value: (this.giftCardVariantSelected.tags) ? this.product.tags.includes('BUNDLE').toString() : 'false',
             },
           ],
           quantity: this.product.quantity || 1,
