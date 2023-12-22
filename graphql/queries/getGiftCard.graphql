@@ -33,6 +33,7 @@ query getGiftCard(
     }
     variants(first: 10) {
       nodes {
+        availableForSale
         id
         compareAtPrice {
           amount
@@ -44,6 +45,7 @@ query getGiftCard(
         }
         quantityAvailable
         sku
+        title
       }
     }
   }
