@@ -408,11 +408,11 @@ hover:shadow-elevation"
           {{ templateProduct.tbd?.regionName }}
         </div>
         <div
-          v-if="templateProduct.tbd && templateProduct.tbd.size?.id"
+          v-if="templateProduct.tbd?.size"
           class="cmw-font-bold"
           v-text="$t('product.size')"
         />
-        <div v-if="templateProduct.tbd && templateProduct.tbd.size?.id">
+        <div v-if="templateProduct.tbd?.size">
           {{ product.tbd.size }}
         </div>
       </div>
