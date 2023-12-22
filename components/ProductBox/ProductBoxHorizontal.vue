@@ -405,7 +405,7 @@ hover:shadow-elevation"
           v-text="$t('product.regionCountry')"
         />
         <div v-if="templateProduct.tbd?.regionName">
-          {{ templateProduct.tbd?.regionName }}
+          {{ templateProduct.tbd.regionName }} <span v-if="templateProduct.tbd?.countryName">( {{ templateProduct.tbd.countryName }} )</span>
         </div>
         <div
           v-if="templateProduct.tbd?.size"
