@@ -36,7 +36,7 @@ export default defineComponent({
     }
 
     const startDate = $dayjs('2023-12-01')
-    const endDate = $dayjs('2023-12-25')
+    const endDate = $dayjs('2023-12-26')
 
     if ($cmwStore.isProd && $dayjs().isBefore(startDate)) {
       return error({ statusCode: 404, message: 'Resource is not found.' })
