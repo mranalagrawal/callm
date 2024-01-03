@@ -339,51 +339,117 @@ export default defineComponent({
               <span class="block">
                 <span
                   class="block text-left"
-                  :class="{ 'cmw-font-bold': Object.keys(inputParameters).includes('price_from') }"
+                  :class="{ 'cmw-font-bold': Object.keys(inputParameters).includes('price_from') || Object.keys(inputParameters).includes('price_to') }"
                 >{{ $t('search.price') }}</span>
                 <small
-                  v-if="Object.keys(inputParameters).includes('price_from')"
+                  v-if="Object.keys(inputParameters).includes('price_from') && Object.keys(inputParameters).includes('price_to')"
                   class="block text-primary text-left text-xs"
                 >
                   <i18n
                     path="search.priceFromTo"
                     tag="span"
                   >
-                    <i18n-n
-                      class="inline-block" :value="Number(inputParameters.price_from)"
-                      :format="{ key: 'currency' }"
-                      :locale="getLocaleFromCurrencyCode($config.STORE === 'CMW_UK' ? 'GBP' : 'EUR')"
-                    >
-                      <template #currency="slotProps">
-                        <span class="text-xs">{{ slotProps.currency }}</span>
-                      </template>
-                      <template #integer="slotProps">
-                        <span class="text-xs">{{ slotProps.integer }}</span>
-                      </template>
-                      <template #group="slotProps">
-                        <span class="text-xs">{{ slotProps.group }}</span>
-                      </template>
-                      <template #fraction="slotProps">
-                        <span class="text-xs">{{ slotProps.fraction }}</span>
-                      </template>
-                    </i18n-n>
-                    <i18n-n
-                      class="inline-block" :value="Number(inputParameters.price_to)" :format="{ key: 'currency' }"
-                      :locale="getLocaleFromCurrencyCode($config.STORE === 'CMW_UK' ? 'GBP' : 'EUR')"
-                    >
-                      <template #currency="slotProps">
-                        <span class="text-xs">{{ slotProps.currency }}</span>
-                      </template>
-                      <template #integer="slotProps">
-                        <span class="text-xs">{{ slotProps.integer }}</span>
-                      </template>
-                      <template #group="slotProps">
-                        <span class="text-xs">{{ slotProps.group }}</span>
-                      </template>
-                      <template #fraction="slotProps">
-                        <span class="text-xs">{{ slotProps.fraction }}</span>
-                      </template>
-                    </i18n-n>
+                    <template #from>
+                      <i18n-n
+                        v-if="Object.keys(inputParameters).includes('price_from')"
+                        class="inline-block" :value="Number(inputParameters.price_from)"
+                        :format="{ key: 'currency' }"
+                        :locale="getLocaleFromCurrencyCode($cmwStore.isUk ? 'GBP' : 'EUR')"
+                      >
+                        <template #currency="slotProps">
+                          <span class="text-xs">{{ slotProps.currency }}</span>
+                        </template>
+                        <template #integer="slotProps">
+                          <span class="text-xs">{{ slotProps.integer }}</span>
+                        </template>
+                        <template #group="slotProps">
+                          <span class="text-xs">{{ slotProps.group }}</span>
+                        </template>
+                        <template #fraction="slotProps">
+                          <span class="text-xs">{{ slotProps.fraction }}</span>
+                        </template>
+                      </i18n-n>
+                    </template>
+                    <template #to>
+                      <i18n-n
+                        v-if="Object.keys(inputParameters).includes('price_to')"
+                        class="inline-block" :value="Number(inputParameters.price_to)" :format="{ key: 'currency' }"
+                        :locale="getLocaleFromCurrencyCode($cmwStore.isUk ? 'GBP' : 'EUR')"
+                      >
+                        <template #currency="slotProps">
+                          <span class="text-xs">{{ slotProps.currency }}</span>
+                        </template>
+                        <template #integer="slotProps">
+                          <span class="text-xs">{{ slotProps.integer }}</span>
+                        </template>
+                        <template #group="slotProps">
+                          <span class="text-xs">{{ slotProps.group }}</span>
+                        </template>
+                        <template #fraction="slotProps">
+                          <span class="text-xs">{{ slotProps.fraction }}</span>
+                        </template>
+                      </i18n-n>
+                    </template>
+                  </i18n>
+                </small>
+                <small
+                  v-else-if="Object.keys(inputParameters).includes('price_from')"
+                  class="block text-primary text-left text-xs"
+                >
+                  <i18n
+                    path="search.priceFrom"
+                    tag="span"
+                  >
+                    <template #from>
+                      <i18n-n
+                        class="inline-block" :value="Number(inputParameters.price_from)"
+                        :format="{ key: 'currency' }"
+                        :locale="getLocaleFromCurrencyCode($cmwStore.isUk ? 'GBP' : 'EUR')"
+                      >
+                        <template #currency="slotProps">
+                          <span class="text-xs">{{ slotProps.currency }}</span>
+                        </template>
+                        <template #integer="slotProps">
+                          <span class="text-xs">{{ slotProps.integer }}</span>
+                        </template>
+                        <template #group="slotProps">
+                          <span class="text-xs">{{ slotProps.group }}</span>
+                        </template>
+                        <template #fraction="slotProps">
+                          <span class="text-xs">{{ slotProps.fraction }}</span>
+                        </template>
+                      </i18n-n>
+                    </template>
+                  </i18n>
+                </small>
+                <small
+                  v-else-if="Object.keys(inputParameters).includes('price_to')"
+                  class="block text-primary text-left text-xs"
+                >
+                  <i18n
+                    path="search.priceTo"
+                    tag="span"
+                  >
+                    <template #to>
+                      <i18n-n
+                        class="inline-block" :value="Number(inputParameters.price_to)"
+                        :format="{ key: 'currency' }"
+                        :locale="getLocaleFromCurrencyCode($cmwStore.isUk ? 'GBP' : 'EUR')"
+                      >
+                        <template #currency="slotProps">
+                          <span class="text-xs">{{ slotProps.currency }}</span>
+                        </template>
+                        <template #integer="slotProps">
+                          <span class="text-xs">{{ slotProps.integer }}</span>
+                        </template>
+                        <template #group="slotProps">
+                          <span class="text-xs">{{ slotProps.group }}</span>
+                        </template>
+                        <template #fraction="slotProps">
+                          <span class="text-xs">{{ slotProps.fraction }}</span>
+                        </template>
+                      </i18n-n>
+                    </template>
                   </i18n>
                 </small>
               </span>

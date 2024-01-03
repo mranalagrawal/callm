@@ -245,7 +245,9 @@ export default {
     agings: 'agings',
     philosophies: 'philosophies',
     price: 'price',
-    priceFromTo: 'Price from {0} to {1}',
+    priceFrom: 'Price from {from}',
+    priceTo: 'Price up to {to}',
+    priceFromTo: 'Price from {from} to {to}',
     results: 'results',
     noResultsAlert: 'There are no results for your search',
     noResultsMessage: `

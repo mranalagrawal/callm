@@ -245,6 +245,8 @@ export default {
     agings: 'Invecchiamento',
     philosophies: 'Filosofie',
     price: 'Prezzo',
+    priceFrom: 'Prezzo da {from}',
+    priceTo: 'Prezzo fino a {to}',
     priceFromTo: 'Prezzo da {from} a {to}',
     results: 'Risultati',
     noResultsAlert: 'Non ci sono risultati',

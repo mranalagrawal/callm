@@ -246,6 +246,8 @@ export default {
     agings: 'Alterungen',
     philosophies: 'Philosophien',
     price: 'Preis',
+    priceFrom: 'Preis ab {from}',
+    priceTo: 'Preis bis {to}',
     priceFromTo: 'Preis von {from} bis {to}',
     results: 'Ergebnisse',
     noResultsAlert: 'Es gibt keine Ergebnisse für Ihre Suche',

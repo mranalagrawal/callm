@@ -244,7 +244,9 @@ export default {
     agings: 'Vieillissements',
     philosophies: 'Philosophies',
     price: 'Prix',
-    priceFromTo: 'Tarif de {from} à {to}',
+    priceFrom: 'Prix à partir de {from}',
+    priceTo: 'Prix jusqu\'à {to}',
+    priceFromTo: 'Prix de {from} à {to}',
     results: 'Résultats',
     noResultsAlert: 'Il n\'y a aucun résultat pour votre recherche',
     noResultsMessage: `
