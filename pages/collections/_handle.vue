@@ -14,6 +14,7 @@ import {
 import chevronLeftIcon from 'assets/svg/chevron-left.svg'
 import chevronRightIcon from 'assets/svg/chevron-right.svg'
 import filterIcon from 'assets/svg/filter.svg'
+import type { TranslateResult } from 'vue-i18n'
 import type { RawLocation } from 'vue-router'
 import type { TStores } from '~/config/themeConfig'
 import themeConfig from '~/config/themeConfig'
@@ -32,7 +33,7 @@ interface IInputParameters {
 interface IView {
   [key: string]: {
     key: string
-    name: string
+    name: TranslateResult
     field: string
   } | null
 }
@@ -269,15 +270,14 @@ export default defineComponent({
           view.value.priceFrom = priceFrom
             ? {
                 key: 'priceFrom',
-                name: `From ${priceFrom}`,
+                name: $i18n.t('search.priceFrom', { from: priceFrom }),
                 field: 'price_from',
               }
             : null
-
           view.value.priceTo = priceTo
             ? {
                 key: 'priceTo',
-                name: `To ${priceTo}`,
+                name: $i18n.t('search.priceTo', { to: priceTo }),
                 field: 'price_to',
               }
             : null
