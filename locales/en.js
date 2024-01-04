@@ -312,7 +312,7 @@ export default {
     proprietaryGrapes: 'proprietary grapes',
     productionPhilosophies: 'Filosofia produttiva',
     tipology: 'Tipologia',
-    color: 'Color',
+    color: 'Colour',
     taste: 'Taste',
     aroma: 'Scent',
     collectionBottle: 'Collection bottle, no discounts',

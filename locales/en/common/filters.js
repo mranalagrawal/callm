@@ -15,7 +15,7 @@ export default {
       by: 'Sort By',
       nameAsc: 'Name a-z',
       nameDesc: 'Name z-a',
-      novelty: 'Novelty',
+      novelty: 'New Entries',
       popularity: { most: 'Popularity', least: 'Least Popular' },
       prefix: 'Sorted by: ',
       price: { highest: 'Highest Price', lowest: 'Lowest Price' },
