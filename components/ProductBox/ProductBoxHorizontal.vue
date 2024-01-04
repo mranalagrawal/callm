@@ -56,7 +56,7 @@ export default defineComponent({
       getCustomerType,
     } = storeToRefs(useCustomer())
 
-    const { filteredWishlistArr } = storeToRefs(useCustomerWishlist())
+    const { wishlistArr } = storeToRefs(useCustomerWishlist())
     const { checkout } = storeToRefs(useCheckout())
     const { checkoutCreate, checkoutLineItemsAdd, checkoutLineItemsUpdate } = useCheckout()
     const { handleWishlist } = useCustomerWishlist()
@@ -90,7 +90,7 @@ export default defineComponent({
 
     const notActive = computed(() => props.product.tags.includes('not_active'))
     const isRelatedVintageWithHandle = computed(() => !!props.relatedVintage?.handle)
-    const isOnFavourite = computed(() => filteredWishlistArr.value.includes(`'${props.product.source_id}'`))
+    const isOnFavourite = computed(() => wishlistArr.value.includes(`'${props.product.source_id}'`))
     const isOnSale = computed(() => {
       const currentProduct = mappedRelatedVintage.value || props.product
       return currentProduct.availableFeatures.includes('isInPromotion')

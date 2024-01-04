@@ -18,9 +18,12 @@ export default {
     const { getWishlistProducts } = customerWishlistStore
     const { customer, customerId } = storeToRefs(useCustomer())
     const { selectedLayout, availableLayouts } = storeToRefs(useFilters())
-    const { filteredWishlistArr, wishlistShopifyProducts, elements, filters, categoriesFilters, subcategoriesFilters, wineListsFilters } = storeToRefs(customerWishlistStore)
+    const {
+      wishlistArr, filteredWishlistArr,
+      wishlistShopifyProducts, elements,
+      filters, categoriesFilters, subcategoriesFilters, wineListsFilters,
+    } = storeToRefs(customerWishlistStore)
 
-    const isReady = ref(false)
     const selectedCategory = ref('')
     const selectedSubcategory = ref('')
     const selectedWineList = ref('')
@@ -29,12 +32,12 @@ export default {
       shopifyCustomerId: customerId.value,
       sortingDirection: 'ASC',
     })
-    // This must be a ref that it will be updated by anytime we need to update the query
+    // This must be a ref that it will be updated anytime we need to update the query
     const queryUrl = ref(`/wishlists/full?shopifyCustomerId=${customerId.value}&sortingDirection=ASC&sortingField=createdat`)
     const wishlistOtherProducts = ref<IProductMapped[]>([])
 
     const chunkSize = 12
-    const wishListChunks = ref(chunkArray(filteredWishlistArr.value, chunkSize))
+    const wishListChunks = computed(() => chunkArray(filteredWishlistArr.value, chunkSize))
     const nextChunkId = ref(1)
     const manualLazyLoading = ref(false)
 
@@ -80,11 +83,10 @@ export default {
 
     watch([
       () => queryUrl.value,
-      // () => filteredWishlistArr.value,
+      () => wishListChunks.value,
     ], () => {
       nextChunkId.value = 1
       wishlistOtherProducts.value = []
-      wishListChunks.value = chunkArray(filteredWishlistArr.value, chunkSize)
       fetch()
     })
 
@@ -160,7 +162,8 @@ export default {
       selectedCategory.value = '' // Reset the selected category
 
       queryParams.value = ({
-        ...queryParams.value,
+        shopifyCustomerId: customerId.value,
+        sortingDirection: 'ASC',
         ...JSON.parse(jsonString),
       })
 
@@ -186,7 +189,6 @@ export default {
       findRelatedVintage,
       handleUpdateQuery,
       handleUpdateTrigger,
-      isReady,
       lazyLoadChunkOfProducts,
       removeFilterFromQuery,
       resetFilter,
@@ -199,6 +201,7 @@ export default {
       trigger,
       wineListsFilters,
       wishListChunks,
+      wishlistArr,
       filteredWishlistArr,
       wishlistShopifyProducts,
       elements,
@@ -209,11 +212,7 @@ export default {
 
 <template>
   <div>
-    <!-- Todo: Remove this v-if="isReady" when we complete the implementation -->
-    <div
-      v-if="isReady"
-      class="grid grid-cols-[auto_200px] items-start border-y border-gray-light py-1 m-4 transition-all"
-    >
+    <div class="grid grid-cols-[auto_200px] items-start border-y border-gray-light py-1 m-4 transition-all">
       <div class="flex flex-wrap min-h-[42px]">
         <CmwDropdown
           v-if="!!categoriesFilters.length"

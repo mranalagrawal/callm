@@ -18,7 +18,7 @@ export default defineComponent({
   },
   setup(props) {
     const customerWishlist = useCustomerWishlist()
-    const { filteredWishlistArr } = storeToRefs(customerWishlist)
+    const { wishlistArr } = storeToRefs(customerWishlist)
     const { handleWishlist } = customerWishlist
 
     const isOnSale = computed(() => {
@@ -35,18 +35,18 @@ export default defineComponent({
         : 'probably-a-gift-card'
     })
 
-    const isOnFavourite = computed(() => filteredWishlistArr.value.includes(`'${backofficeId.value}'`))
+    const isOnFavourite = computed(() => wishlistArr.value.includes(`'${backofficeId.value}'`))
     const productDetails = computed(() => JSON.parse(props.orderLineItem.variant?.product?.details?.value || ''))
 
     return {
       backofficeId,
-      filteredWishlistArr,
       handleWishlist,
       heartFullIcon,
       heartIcon,
       isOnFavourite,
       isOnSale,
       productDetails,
+      wishlistArr,
     }
   },
   methods: {
