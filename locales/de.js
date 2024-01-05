@@ -250,7 +250,7 @@ export default {
     priceFrom: 'Preis ab {from}',
     priceTo: 'Preis bis {to}',
     priceFromTo: 'Preis von {from} bis {to}',
-    results: 'Ergebnisse',
+    results: 'Ergebnis | Ergebnisse',
     noResultsAlert: 'Es gibt keine Ergebnisse für Ihre Suche',
     noResultsMessage: `
       <p class="lead">Vorschläge für Ihre Suche:</p>

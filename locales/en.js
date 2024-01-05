@@ -249,7 +249,7 @@ export default {
     priceFrom: 'Price from {from}',
     priceTo: 'Price up to {to}',
     priceFromTo: 'Price from {from} to {to}',
-    results: 'results',
+    results: 'result | results',
     noResultsAlert: 'There are no results for your search',
     noResultsMessage: `
       <p class="lead">Suggestions for your search:</p>

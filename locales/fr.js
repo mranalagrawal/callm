@@ -248,7 +248,7 @@ export default {
     priceFrom: 'Prix à partir de {from}',
     priceTo: 'Prix jusqu\'à {to}',
     priceFromTo: 'Prix de {from} à {to}',
-    results: 'Résultats',
+    results: 'Résultat | Résultats',
     noResultsAlert: 'Il n\'y a aucun résultat pour votre recherche',
     noResultsMessage: `
         <p class="lead">Suggestions pour votre recherche:</p>
