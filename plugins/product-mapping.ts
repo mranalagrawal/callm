@@ -117,8 +117,7 @@ const productMapping: Plugin = ({ $config, $cmwStore, i18n }, inject) => {
 
         // shortDescription_t or shortDescription
         // sometimes for 'it' exists only shortDescription, backend need to fix it and republish all
-        // const plpDescriptionHtml = (p._source.shortDescription_t && p._source.shortDescription_t[lang]) ? p._source.shortDescription_t[lang] : (p._source.shortDescription ? p._source.shortDescription : '')
-        const plpDescriptionHtml = (p._source.shortDescription_t && p._source.shortDescription_t[lang]) ? p._source.shortDescription_t[lang] : ''
+        const plpDescriptionHtml = (p._source.shortDescription_t && p._source.shortDescription_t[lang]) ? p._source.shortDescription_t[lang] : ((lang === 'it' && p._source.shortDescription) ? p._source.shortDescription : '')
 
         return ({
           milliliters: p._source.milliliters || 0,
