@@ -4,9 +4,17 @@ import { storeToRefs } from 'pinia'
 import { useFilters } from '~/store/filters'
 import { useCustomer } from '~/store/customer'
 import { useCustomerWishlist } from '~/store/customerWishlist'
+import type { IOptions } from '~/types/types'
 import { chunkArray } from '~/utilities/arrays'
 import type { IProductMapped } from '~/types/product'
 import closeIcon from '~/assets/svg/close.svg'
+
+interface IQueryParams {
+  shopifyCustomerId: string
+  sortingDirection: string
+  sortingField?: string
+  categoryId?: string
+}
 
 export default {
   props: {
@@ -28,10 +36,26 @@ export default {
     const selectedSubcategory = ref('')
     const selectedWineList = ref('')
 
-    const queryParams = ref({
+    const queryParams = ref<IQueryParams>({
       shopifyCustomerId: customerId.value,
       sortingDirection: 'ASC',
     })
+
+    const mappedCategoriesFilters = computed<IOptions[]>(() => {
+      if (!categoriesFilters.value || !queryParams.value) {
+        return []
+      }
+
+      return categoriesFilters.value.map((category: IOptions) => {
+        const parsedCategory = JSON.parse(category.value)
+
+        return ({
+          ...category,
+          selected: parsedCategory?.categoryId === queryParams.value.categoryId,
+        })
+      })
+    })
+
     // This must be a ref that it will be updated anytime we need to update the query
     const queryUrl = ref(`/wishlists/full?shopifyCustomerId=${customerId.value}&sortingDirection=ASC&sortingField=createdat`)
     const wishlistOtherProducts = ref<IProductMapped[]>([])
@@ -184,12 +208,16 @@ export default {
       closeIcon,
       customer,
       customerProducts,
+      elements,
+      filteredWishlistArr,
       filters,
       finalProducts,
       findRelatedVintage,
       handleUpdateQuery,
       handleUpdateTrigger,
       lazyLoadChunkOfProducts,
+      mappedCategoriesFilters,
+      queryParams,
       removeFilterFromQuery,
       resetFilter,
       selectedCategory,
@@ -202,9 +230,7 @@ export default {
       wineListsFilters,
       wishListChunks,
       wishlistArr,
-      filteredWishlistArr,
       wishlistShopifyProducts,
-      elements,
     }
   },
 }
@@ -215,7 +241,7 @@ export default {
     <div class="grid grid-cols-[auto_200px] items-start border-y border-gray-light py-1 m-4 transition-all">
       <div class="flex flex-wrap min-h-[42px]">
         <CmwDropdown
-          v-if="!!categoriesFilters.length"
+          v-if="!!mappedCategoriesFilters.length"
           key="categories"
           size="sm"
           :active="selectedCategory === 'categories'"
@@ -225,7 +251,7 @@ export default {
             <span>{{ $t('common.filters.category') }}</span>
           </template>
           <template #children>
-            <CmwSelect :options="categoriesFilters" @update-value="handleUpdateQuery" />
+            <CmwSelect :options="mappedCategoriesFilters" @update-value="handleUpdateQuery" />
           </template>
         </CmwDropdown>
         <CmwDropdown
