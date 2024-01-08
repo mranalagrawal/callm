@@ -175,7 +175,7 @@ export default {
 
     const customerProducts = computed<IProductMapped[]>(() => {
       // Note: there's an annoying warning but the page renders perfectly, https://github.com/nuxt-community/composition-api/issues/19
-      if (!elements.value || !elements.value.length) { return [] }
+      if (!wishlistShopifyProducts.value || !wishlistShopifyProducts.value.length) { return [] }
 
       return $productMapping.fromShopify(wishlistShopifyProducts.value)
     })
@@ -186,10 +186,21 @@ export default {
       return element?.relatedVintage || null
     }
 
-    const finalProducts = computed<IProductMapped[]>(() => [
-      ...customerProducts.value,
-      ...wishlistOtherProducts.value,
-    ].slice(0, nextChunkId.value * chunkSize))
+    const finalProducts = computed<IProductMapped[]>(() => {
+      const mergedProducts = [...customerProducts.value, ...wishlistOtherProducts.value]
+
+      const productMap = new Map()
+      mergedProducts.forEach((product) => {
+        productMap.set(product.source_id.replace(/'/g, ''), product)
+      })
+
+      const orderedProducts = filteredWishlistArr.value?.map((id) => {
+        const productId = id.replace(/'/g, '')
+        return productMap.get(productId) || null
+      })
+
+      return orderedProducts.filter(product => product !== null).slice(0, nextChunkId.value * chunkSize)
+    })
 
     const trigger = ref(null) // used to get the ref of div that manage the intersection
 
@@ -243,6 +254,10 @@ export default {
     /* This function is used to update the queryUrl and trigger the fetch, only run on browser */
     const handleUpdateQuery = (jsonString: string) => {
       selectedCategory.value = '' // Reset the selected category
+      customerWishlistStore.$patch({
+        wishlistShopifyProducts: [],
+        filteredElements: [],
+      })
 
       queryParams.value = ({
         ...queryParams.value,
