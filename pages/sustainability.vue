@@ -42,7 +42,7 @@ export default defineComponent({
   <div v-if="pageData.title" class="prose max-w-screen-xl mx-auto p-4 mt-5">
     <h1 v-text="pageData.title" />
     <LoadingImage
-      v-if="pageData.image"
+      v-if="pageData.image?.url"
       img-classes="w-full"
       :thumbnail="{
         url: pageData.image.url ? `${pageData.image.url}?&width=20&height=12` : 'https://picsum.photos/id/75/20/12',

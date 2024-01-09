@@ -49,9 +49,10 @@ export type TPrismicComponents =
 type TPrismicUid =
   | 'corporate-gifts'
   | 'customer-service'
-  | 'guide-to-our-wines'
+  | 'faq'
   | 'footer-elements'
   | 'footer-test'
+  | 'guide-to-our-wines'
 
 export interface IPrismicPageParams {
   page: string

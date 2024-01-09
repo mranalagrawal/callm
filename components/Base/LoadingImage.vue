@@ -25,6 +25,7 @@ export default {
       if (image) {
         image.addEventListener('load', function handler() {
           imageIsLoaded.value = true
+          // eslint-disable-next-line @typescript-eslint/no-invalid-this
           this.removeEventListener('load', handler)
         })
 
@@ -40,6 +41,7 @@ export default {
       if (imgEl.value) {
         imgEl.value.addEventListener('load', function handler() {
           setTimeout(() => {
+            // eslint-disable-next-line @typescript-eslint/no-invalid-this
             this.removeEventListener('load', handler)
             loadBigImage(imgEl.value)
           }, 200)

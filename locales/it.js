@@ -94,6 +94,7 @@ export default {
     company: 'L\'Azienda',
     who: 'Chi Siamo',
     sustainability: 'Sostenibilità',
+    faq: 'FAQ',
     services: 'Servizi Offerti',
     restaurantsAndWineShops: 'Enoteche e Ristoranti',
     corporateGifts: 'Regali Aziendali',

@@ -96,6 +96,7 @@ export default {
     company: 'Die Firma',
     who: 'Über uns',
     sustainability: 'Nachhaltigkeit',
+    faq: 'FAQ',
     services: 'Unsere Dienstleistungen',
     restaurantsAndWineShops: 'Önothek und Restaurants',
     corporateGifts: 'Werbegeschenke',
