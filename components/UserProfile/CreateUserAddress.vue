@@ -4,6 +4,7 @@ import customerAddressCreate from '~/graphql/mutations/customerAddressCreate'
 import { SweetAlertToast } from '~/utilities/Swal'
 import { useSplash } from '~/store/splash'
 import { useCustomerAddresses } from '~/store/customerAddresses'
+
 // noinspection JSUnusedGlobalSymbols
 export default {
   name: 'CreateUserAddress',

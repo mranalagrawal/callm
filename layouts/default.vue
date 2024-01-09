@@ -12,6 +12,7 @@ import {
   watch, watchEffect,
 } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+
 // import LazyHydrate from 'vue-lazy-hydration'
 
 import useScreenSize from '~/components/composables/useScreenSize'

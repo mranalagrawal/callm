@@ -5,6 +5,7 @@ import { useSplash } from '~/store/splash'
 import { useCustomer } from '~/store/customer'
 import eyeShowIcon from '~/assets/svg/eye-show.svg'
 import eyeHideIcon from '~/assets/svg/eye-hide.svg'
+
 // noinspection JSUnusedGlobalSymbols
 export default {
   name: 'UpdateCustomerPassword',

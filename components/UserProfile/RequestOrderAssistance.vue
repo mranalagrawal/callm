@@ -5,6 +5,7 @@ import { useSplash } from '~/store/splash'
 import { useCustomer } from '@/store/customer'
 import { useCustomerOrders } from '~/store/customerOrders.ts'
 import { SweetAlertToast } from '~/utilities/Swal'
+
 // noinspection JSUnusedGlobalSymbols
 export default {
   name: 'RequestOrderAssistance',

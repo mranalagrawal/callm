@@ -8,6 +8,7 @@ import { SweetAlertConfirm, SweetAlertToast } from '@/utilities/Swal'
 import customerAddressDelete from '~/graphql/mutations/customerAddressDelete'
 import { useSplash } from '~/store/splash'
 import { useCustomerAddresses } from '~/store/customerAddresses'
+
 // noinspection JSUnusedGlobalSymbols
 export default {
   props: {

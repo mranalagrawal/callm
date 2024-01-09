@@ -5,6 +5,7 @@ import {
   defineComponent,
 } from '@nuxtjs/composition-api'
 import closeIcon from '~/assets/svg/close.svg'
+
 // import plusIcon from 'assets/svg/plus.svg'
 
 // interface Query {
