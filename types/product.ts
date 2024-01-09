@@ -121,7 +121,7 @@ export interface IProductMapped extends IBaseProductMapped {
   priceLists: Record<string, any>
   seo?: IProductSeo
   sku: string
-  source_id: string | number
+  source_id: string
   url: string
   characteristics?: any
   tbd?: any

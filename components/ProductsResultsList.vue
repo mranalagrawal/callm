@@ -95,7 +95,7 @@ export default defineComponent({
     <div v-if="mappedProducts?.length > 0" class="">
       <div class="flex gap-2 items-center justify-between mb-8">
         <div>
-          <strong>{{ total }}</strong> <span>{{ $t('search.results') }}</span>
+          <strong>{{ total }}</strong> <span>{{ $tc('search.results', Number(total)) }}</span>
         </div>
         <div class="hidden items-center mr-auto gap-2 lg:flex">
           <div

@@ -38,7 +38,7 @@ export const useCustomerWishlist = defineStore({
 
   getters: {
 
-    wishlistArr(state): string[] | number[] {
+    wishlistArr(state): string[] {
       const ids = state.elements.flatMap(({ productFeId, relatedVintage }) =>
         (relatedVintage ? [productFeId] : [productFeId]))
 
@@ -133,7 +133,7 @@ export const useCustomerWishlist = defineStore({
             // Find the object in data.elements with the same productFeId as args.id and remove it
             let elements = this.elements.filter(p => p.productFeId !== args.id)
             elements = [...elements, ...data.data.elements]
-            this.$patch({ elements, filteredElements: elements })
+            this.$patch({ elements })
 
             await this.$nuxt.$cmwGtmUtils.resetDatalayerFields()
 
@@ -174,7 +174,7 @@ export const useCustomerWishlist = defineStore({
 
           // Create a function to remove args.id from state.elements and state.filteredElements 🤦🏻‍️🙈🫣
           const filteredArr = this.elements.filter(p => `${p.productFeId}` !== `${args.id}`)
-          this.$patch({ elements: filteredArr, filteredElements: filteredArr })
+          this.$patch({ elements: filteredArr })
         }
       })
         .catch(() => {
