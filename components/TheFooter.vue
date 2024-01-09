@@ -89,6 +89,7 @@ export default defineComponent({
                 {{ $t('footer.sustainability') }}
               </NuxtLink>
               <NuxtLink
+                v-if="$i18n.locale === 'it'"
                 :to="localePath('/faq')"
                 class="block text-white"
               >
