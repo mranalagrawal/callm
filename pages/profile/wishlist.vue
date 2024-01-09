@@ -67,14 +67,27 @@ export default {
         return []
       }
 
-      return subcategoriesFilters.value.map((subCategory: IOptions) => {
-        const parsedSubCategory = JSON.parse(subCategory.value)
+      if (!queryParams.value?.categoryId) {
+        return subcategoriesFilters.value.map((subCategory: IOptions) => {
+          const parsedSubCategory = JSON.parse(subCategory.value)
 
-        return ({
-          ...subCategory,
-          selected: parsedSubCategory?.subcategoryId === queryParams.value.subcategoryId,
+          return ({
+            ...subCategory,
+            selected: parsedSubCategory?.subcategoryId === queryParams.value.subcategoryId,
+          })
         })
-      })
+      } else {
+        const allSubcategoriesFilters = subcategoriesFilters.value.map((subCategory: IOptions) => {
+          const parsedSubCategory = JSON.parse(subCategory.value)
+
+          return ({
+            ...subCategory,
+            selected: parsedSubCategory?.subcategoryId === queryParams.value.subcategoryId,
+          })
+        })
+
+        return allSubcategoriesFilters.filter(subCategory => JSON.parse(subCategory.value).categoryId === queryParams.value?.categoryId)
+      }
     })
 
     const mappedWineListsFilters = computed<IOptions[]>(() => {
@@ -357,6 +370,7 @@ export default {
 
 <template>
   <div>
+    <pre>{{ queryParams }}</pre>
     <div class="flex flex-wrap min-h-[42px] border-y border-gray-light py-1 m-4">
       <CmwDropdown
         v-if="!!mappedCategoriesFilters.length"
