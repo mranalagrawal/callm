@@ -214,11 +214,11 @@ export default defineConfig({
     'center-the-unknown': 'absolute transform top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
   },
   plugins: [
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
+
     require('windicss/plugin/typography'),
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
+
     require('windicss/plugin/line-clamp'),
-    // eslint-disable-next-line @typescript-eslint/no-var-requires,@typescript-eslint/no-require-imports
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     require('@windicss/plugin-animations')({
       settings: {
         animatedSpeed: 1000,
