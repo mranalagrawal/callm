@@ -49,6 +49,7 @@ export default defineComponent({
       })
     })
 
+    const ready = computed(() => false)
     onMounted(() => {
       process.browser && $cmwGtmUtils.pushPage('page')
     })
@@ -62,6 +63,7 @@ export default defineComponent({
       handleUpdateTrigger,
       navigation,
       pageData,
+      ready,
       sections,
       selectedQuestion,
     }
@@ -78,6 +80,7 @@ export default defineComponent({
       :class="(!$store.state.headers.fromApp) ? 'top-$cmw-header-height' : 'top-0'"
     >
       <nav
+        v-if="ready"
         class="
         c-navigationTab font-sans justify-between w-full flex no-wrap overflow-x-auto
         border-b border-b-gray-dark mb-3 md:(mt-9 max-w-10/12)
