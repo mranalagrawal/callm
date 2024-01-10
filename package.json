@@ -1,6 +1,6 @@
 {
   "name": "callmewine-frontend",
-  "version": "1.23.0",
+  "version": "1.23.1",
   "private": true,
   "engines": {
     "node": ">=16.0.0 <17.0.0"
@@ -45,6 +45,7 @@
     "@smartweb/vue-flash-message": "^0.6.10",
     "@types/lodash.debounce": "^4.0.7",
     "@types/lodash.kebabcase": "^4.1.7",
+    "@types/lodash.throttle": "^4.1.7",
     "@vercel/kv": "^0.2.3",
     "@yzfe/svgicon": "^1.1.0",
     "@yzfe/vue-svgicon": "^4.0.3",
@@ -74,6 +75,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.38.4",
+    "@babel/plugin-proposal-private-property-in-object": "^7.16.7",
     "@commitlint/config-conventional": "^17.6.7",
     "@nuxt/types": "2.15.8",
     "@nuxt/typescript-build": "^3.0.1",
@@ -90,5 +92,9 @@
     "typescript": "4",
     "vee-validate": "^3.4.15",
     "webpack": "^4.46.0"
-  }
+  },
+  "contributors": [
+    "Mattia Minini <mattia.minini@callmewine.com> (https://callmewine.it/)",
+    "Ryan Serrano <ryan.serrano@callmewine.com> (https://menosesmas.it/ryan)"
+  ]
 }

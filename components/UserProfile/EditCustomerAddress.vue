@@ -6,6 +6,7 @@ import customerAddressUpdate from '~/graphql/mutations/customerAddressUpdate'
 import { SweetAlertToast } from '~/utilities/Swal'
 import { useSplash } from '~/store/splash'
 import { useCustomerAddresses } from '~/store/customerAddresses'
+
 // noinspection JSUnusedGlobalSymbols
 export default {
   name: 'EditCustomerAddress',

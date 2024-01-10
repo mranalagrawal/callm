@@ -1,6 +1,6 @@
 <script>
 import { ref, useContext, watchEffect } from '@nuxtjs/composition-api'
-import throttle from 'lodash.debounce'
+import throttle from 'lodash.throttle'
 import { getCurrencySymbol } from '@/utilities/currency'
 
 export default {

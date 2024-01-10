@@ -115,13 +115,17 @@ const productMapping: Plugin = ({ $config, $cmwStore, i18n }, inject) => {
           quote: award[`quote_${lang}`],
         })) || []
 
+        // shortDescription_t or shortDescription
+        // sometimes for 'it' exists only shortDescription, backend need to fix it and republish all
+        const plpDescriptionHtml = (p._source.shortDescription_t && p._source.shortDescription_t[lang]) ? p._source.shortDescription_t[lang] : ((lang === 'it' && p._source.shortDescription) ? p._source.shortDescription : '')
+
         return ({
           milliliters: p._source.milliliters || 0,
           availableFeatures: $productMapping.availableFeatures(p._source),
           availableForSale: p._source.quantity[store] > 0,
           awards: getUniqueListBy(productAwards, 'id'),
           compareAtPrice,
-          descriptionHtml: p._source.shortDescription,
+          descriptionHtml: plpDescriptionHtml,
           priceLists,
           quantityAvailable: p._source.quantity[store],
           details: p._source,
@@ -171,7 +175,7 @@ const productMapping: Plugin = ({ $config, $cmwStore, i18n }, inject) => {
           sku: p._source.sku,
           tbd: {
             countryName: p._source.countries[`identifier_${lang}`] ? p._source.countries[`identifier_${lang}`].split('|')[1] : '',
-            description: p._source.shortDescription ?? '',
+            description: plpDescriptionHtml,
             grapes: p._source.grapes ?? '',
             regionName: p._source.regionname ?? '',
             size: p._source.sizes[`identifier_${lang}`] ? p._source.sizes[`identifier_${lang}`].split('|')[1] : '',

@@ -20,8 +20,9 @@ export interface TImage {
 }
 
 export interface IOptions {
-  label: TranslateResult
-  value: string
-  icon?: string
   disabled?: boolean
+  icon?: string
+  label: TranslateResult
+  selected?: boolean
+  value: string
 }

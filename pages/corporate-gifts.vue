@@ -51,7 +51,7 @@ export default defineComponent({
   <div v-if="pageData.title" class="prose max-w-screen-xl mx-auto mt-5 p-4">
     <PrismicRichText v-if="pageData.title" :field="pageData.title" />
     <LoadingImage
-      v-if="pageData.main_banner"
+      v-if="pageData.main_banner?.url"
       img-classes="w-full"
       :thumbnail="{
         url: pageData.main_banner.url ? `${pageData.main_banner.url}?&width=20&height=12` : 'https://picsum.photos/id/75/20/12',

@@ -33,6 +33,7 @@ export default {
   chooseGiftCard: 'Wählen Sie den Betrag des Geschenkgutscheins',
   searchResultLabel: 'Die Ergebnisse Ihrer Suche',
   loading: 'Daten werden abgerufen...',
+  calculating: 'Berechnung...',
   fetchError: 'Ein Fehler ist aufgetreten',
   save: 'Speichern',
   phone: 'Telefon',
@@ -96,6 +97,7 @@ export default {
     company: 'Die Firma',
     who: 'Über uns',
     sustainability: 'Nachhaltigkeit',
+    faq: 'FAQ',
     services: 'Unsere Dienstleistungen',
     restaurantsAndWineShops: 'Önothek und Restaurants',
     corporateGifts: 'Werbegeschenke',
@@ -246,8 +248,10 @@ export default {
     agings: 'Alterungen',
     philosophies: 'Philosophien',
     price: 'Preis',
+    priceFrom: 'Preis ab {from}',
+    priceTo: 'Preis bis {to}',
     priceFromTo: 'Preis von {from} bis {to}',
-    results: 'Ergebnisse',
+    results: 'Ergebnis | Ergebnisse',
     noResultsAlert: 'Es gibt keine Ergebnisse für Ihre Suche',
     noResultsMessage: `
       <p class="lead">Vorschläge für Ihre Suche:</p>

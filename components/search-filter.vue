@@ -311,14 +311,14 @@ export default defineComponent({
       view.value.priceFrom = priceFrom
         ? {
             key: 'priceFrom',
-            name: `From ${priceFrom}`,
+            name: i18n.t('search.priceFrom', { from: priceFrom }),
             field: 'price_from',
           }
         : null
       view.value.priceTo = priceTo
         ? {
             key: 'priceTo',
-            name: `To ${priceTo}`,
+            name: i18n.t('search.priceTo', { to: priceTo }),
             field: 'price_to',
           }
         : null

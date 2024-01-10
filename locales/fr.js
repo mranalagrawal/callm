@@ -33,6 +33,7 @@ export default {
   chooseGiftCard: 'Choisissez votre chèque cadeau',
   searchResultLabel: 'Les résultats de votre recherche',
   loading: 'Récupération des données...',
+  calculating: 'Calcul des frais de port...',
   fetchError: 'Une erreur s\'est produite',
   save: 'Sauvegarder',
   phone: 'Téléphone',
@@ -94,6 +95,7 @@ export default {
     company: 'Société',
     who: 'Qui Nous Sommes',
     sustainability: 'Durabilité',
+    faq: 'FAQ',
     services: 'Nos Services',
     restaurantsAndWineShops: 'Bar à vins & Restaurants',
     corporateGifts: 'Cadeaux d\'entreprise',
@@ -244,8 +246,10 @@ export default {
     agings: 'Vieillissements',
     philosophies: 'Philosophies',
     price: 'Prix',
-    priceFromTo: 'Tarif de {from} à {to}',
-    results: 'Résultats',
+    priceFrom: 'Prix à partir de {from}',
+    priceTo: 'Prix jusqu\'à {to}',
+    priceFromTo: 'Prix de {from} à {to}',
+    results: 'Résultat | Résultats',
     noResultsAlert: 'Il n\'y a aucun résultat pour votre recherche',
     noResultsMessage: `
         <p class="lead">Suggestions pour votre recherche:</p>

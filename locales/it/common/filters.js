@@ -22,7 +22,7 @@ export default {
       recent: { most: 'Più recente', least: 'Meno recente' },
     },
     category: 'Categorie',
-    subcategory: 'Sotto Categorie',
-    wineList: 'WineList',
+    subcategory: 'Tipologie',
+    wineList: 'Carta vini',
   },
 }

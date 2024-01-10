@@ -3,6 +3,7 @@ import { defineConfig } from 'windicss/helpers'
 
 import colors from 'windicss/colors'
 import plugin from 'windicss/plugin'
+
 // import { } from '@windicss/plugin-animations'
 import type { TStores } from './config/themeConfig'
 import themeConfig from './config/themeConfig'
@@ -213,7 +214,9 @@ export default defineConfig({
     'center-the-unknown': 'absolute transform top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
   },
   plugins: [
+
     require('windicss/plugin/typography'),
+
     require('windicss/plugin/line-clamp'),
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     require('@windicss/plugin-animations')({

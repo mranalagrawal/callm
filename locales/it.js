@@ -32,6 +32,7 @@ export default {
   chooseGiftCard: 'Scegli il buono regalo',
   searchResultLabel: 'I risultati della tua ricerca',
   loading: 'Recuperando i dati...',
+  calculating: 'Calcolando...',
   fetchError: 'Si è verificato un errore',
   save: 'Salva',
   phone: 'Telefono',
@@ -94,6 +95,7 @@ export default {
     company: 'L\'Azienda',
     who: 'Chi Siamo',
     sustainability: 'Sostenibilità',
+    faq: 'FAQ',
     services: 'Servizi Offerti',
     restaurantsAndWineShops: 'Enoteche e Ristoranti',
     corporateGifts: 'Regali Aziendali',
@@ -245,8 +247,10 @@ export default {
     agings: 'Invecchiamento',
     philosophies: 'Filosofie',
     price: 'Prezzo',
+    priceFrom: 'Prezzo da {from}',
+    priceTo: 'Prezzo fino a {to}',
     priceFromTo: 'Prezzo da {from} a {to}',
-    results: 'Risultati',
+    results: 'Risultato | Risultati',
     noResultsAlert: 'Non ci sono risultati',
     noResultsMessage: `
       <p class="lead">Suggerimenti per la ricerca:</p>

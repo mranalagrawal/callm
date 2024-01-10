@@ -33,6 +33,7 @@ export default {
   chooseGiftCard: 'Choose your gift card',
   searchResultLabel: 'The results of your search',
   loading: 'Fetching data...',
+  calculating: 'Calculating...',
   fetchError: 'An error occurred',
   save: 'Save',
   phone: 'Phone',
@@ -95,6 +96,7 @@ export default {
     company: 'The Company',
     who: 'About Us',
     sustainability: 'Sustainability',
+    faq: 'FAQ',
     services: 'Our Services',
     restaurantsAndWineShops: 'Wine Shops & Restaurants',
     corporateGifts: 'Corporate Gifts',
@@ -245,8 +247,10 @@ export default {
     agings: 'agings',
     philosophies: 'philosophies',
     price: 'price',
-    priceFromTo: 'Price from {0} to {1}',
-    results: 'results',
+    priceFrom: 'Price from {from}',
+    priceTo: 'Price up to {to}',
+    priceFromTo: 'Price from {from} to {to}',
+    results: 'result | results',
     noResultsAlert: 'There are no results for your search',
     noResultsMessage: `
       <p class="lead">Suggestions for your search:</p>

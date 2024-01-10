@@ -1,12 +1,25 @@
 <script lang="ts">
 import { computed, onMounted, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import { useFilters } from '~/store/filters'
+import closeIcon from '~/assets/svg/close.svg'
 import { useCustomer } from '~/store/customer'
 import { useCustomerWishlist } from '~/store/customerWishlist'
-import { chunkArray } from '~/utilities/arrays'
+import { useFilters } from '~/store/filters'
 import type { IProductMapped } from '~/types/product'
-import closeIcon from '~/assets/svg/close.svg'
+import type { IOptions } from '~/types/types'
+import { chunkArray } from '~/utilities/arrays'
+import { generateKey } from '~/utilities/strings'
+import gridIcon from '~/assets/svg/layout-grid.svg'
+import listIcon from '~/assets/svg/layout-list.svg'
+
+interface IQueryParams {
+  categoryId?: string
+  shopifyCustomerId: string
+  sortingDirection: string
+  sortingField?: string
+  subcategoryId?: string
+  wineListId?: string
+}
 
 export default {
   props: {
@@ -18,23 +31,86 @@ export default {
     const { getWishlistProducts } = customerWishlistStore
     const { customer, customerId } = storeToRefs(useCustomer())
     const { selectedLayout, availableLayouts } = storeToRefs(useFilters())
-    const { filteredWishlistArr, wishlistShopifyProducts, elements, filters, categoriesFilters, subcategoriesFilters, wineListsFilters } = storeToRefs(customerWishlistStore)
+    const {
+      wishlistArr, filteredWishlistArr,
+      wishlistShopifyProducts, elements,
+      filters, categoriesFilters, subcategoriesFilters, wineListsFilters,
+    } = storeToRefs(customerWishlistStore)
 
-    const isReady = ref(false)
     const selectedCategory = ref('')
     const selectedSubcategory = ref('')
     const selectedWineList = ref('')
 
-    const queryParams = ref({
+    const queryParams = ref<IQueryParams>({
       shopifyCustomerId: customerId.value,
       sortingDirection: 'ASC',
+      sortingField: 'createdat',
     })
-    // This must be a ref that it will be updated by anytime we need to update the query
+
+    const mappedCategoriesFilters = computed<IOptions[]>(() => {
+      if (!categoriesFilters.value || !queryParams.value) {
+        return []
+      }
+
+      return categoriesFilters.value.map((category: IOptions) => {
+        const parsedCategory = JSON.parse(category.value)
+
+        return ({
+          ...category,
+          selected: parsedCategory?.categoryId === queryParams.value.categoryId,
+        })
+      })
+    })
+
+    const mappedSubCategoriesFilters = computed<IOptions[]>(() => {
+      if (!subcategoriesFilters.value || !queryParams.value) {
+        return []
+      }
+
+      if (!queryParams.value?.categoryId) {
+        return subcategoriesFilters.value.map((subCategory: IOptions) => {
+          const parsedSubCategory = JSON.parse(subCategory.value)
+
+          return ({
+            ...subCategory,
+            selected: parsedSubCategory?.subcategoryId === queryParams.value.subcategoryId,
+          })
+        })
+      } else {
+        const allSubcategoriesFilters = subcategoriesFilters.value.map((subCategory: IOptions) => {
+          const parsedSubCategory = JSON.parse(subCategory.value)
+
+          return ({
+            ...subCategory,
+            selected: parsedSubCategory?.subcategoryId === queryParams.value.subcategoryId,
+          })
+        })
+
+        return allSubcategoriesFilters.filter(subCategory => JSON.parse(subCategory.value).categoryId === queryParams.value?.categoryId)
+      }
+    })
+
+    const mappedWineListsFilters = computed<IOptions[]>(() => {
+      if (!wineListsFilters.value || !queryParams.value) {
+        return []
+      }
+
+      return wineListsFilters.value.map((wineList: IOptions) => {
+        const parsedWineList = JSON.parse(wineList.value)
+
+        return ({
+          ...wineList,
+          selected: parsedWineList?.wineListId === queryParams.value.wineListId,
+        })
+      })
+    })
+
+    // This must be a ref that it will be updated anytime we need to update the query
     const queryUrl = ref(`/wishlists/full?shopifyCustomerId=${customerId.value}&sortingDirection=ASC&sortingField=createdat`)
     const wishlistOtherProducts = ref<IProductMapped[]>([])
 
     const chunkSize = 12
-    const wishListChunks = ref(chunkArray(filteredWishlistArr.value, chunkSize))
+    const wishListChunks = computed(() => chunkArray(filteredWishlistArr.value, chunkSize))
     const nextChunkId = ref(1)
     const manualLazyLoading = ref(false)
 
@@ -58,7 +134,11 @@ export default {
           })
       }
 
-      if (wishListChunks.value.length > 0) {
+      if (!wishListChunks.value.length) {
+        customerWishlistStore.$patch({
+          wishlistShopifyProducts: [],
+        })
+      } else {
         await getWishlistProducts({
           query: `${wishListChunks.value[0].join(' OR ')}`,
           first: wishListChunks.value[0].length,
@@ -67,30 +147,48 @@ export default {
     })
 
     const removeFilterFromQuery = (item: string) => {
-      // eslint-disable-next-line no-console
-      console.log('HEY', item)
+      // Construct updated query parameters string
+      const updatedSearchParams = new URLSearchParams()
+      Object.entries(queryParams.value).forEach(([key, value]) => {
+        if (key !== item) {
+          updatedSearchParams.set(key, value)
+        } else {
+          // Delete the specified item directly within the loop
+          delete (queryParams.value as { [key: string]: any })[item]
+        }
+      })
+
+      // Construct the updated query URL by combining base URL with updated query parameters
+      queryUrl.value = `/wishlists/full?${updatedSearchParams.toString()}`
     }
 
     const resetFilter = () => {
-      // eslint-disable-next-line no-console
-      console.log('HEY')
+      queryParams.value = {
+        shopifyCustomerId: customerId.value,
+        sortingDirection: 'ASC',
+        sortingField: 'createdat',
+      }
+
+      queryUrl.value = `/wishlists/full?shopifyCustomerId=${customerId.value}&sortingDirection=ASC&sortingField=createdat`
     }
 
-    const activeFilters = computed(() => [])
+    const getLayoutIcon = (layout: 'grid' | 'list') => ({
+      grid: gridIcon,
+      list: listIcon,
+    }[layout] || gridIcon)
 
     watch([
       () => queryUrl.value,
-      // () => filteredWishlistArr.value,
+      () => wishListChunks.value,
     ], () => {
       nextChunkId.value = 1
       wishlistOtherProducts.value = []
-      wishListChunks.value = chunkArray(filteredWishlistArr.value, chunkSize)
       fetch()
     })
 
     const customerProducts = computed<IProductMapped[]>(() => {
       // Note: there's an annoying warning but the page renders perfectly, https://github.com/nuxt-community/composition-api/issues/19
-      if (!elements.value || !elements.value.length) { return [] }
+      if (!wishlistShopifyProducts.value || !wishlistShopifyProducts.value.length) { return [] }
 
       return $productMapping.fromShopify(wishlistShopifyProducts.value)
     })
@@ -101,10 +199,21 @@ export default {
       return element?.relatedVintage || null
     }
 
-    const finalProducts = computed<IProductMapped[]>(() => [
-      ...customerProducts.value,
-      ...wishlistOtherProducts.value,
-    ].slice(0, nextChunkId.value * chunkSize))
+    const finalProducts = computed<IProductMapped[]>(() => {
+      const mergedProducts = [...customerProducts.value, ...wishlistOtherProducts.value]
+
+      const productMap = new Map()
+      mergedProducts.forEach((product) => {
+        productMap.set(product.source_id.replace(/'/g, ''), product)
+      })
+
+      const orderedProducts = filteredWishlistArr.value?.map((id) => {
+        const productId = id.replace(/'/g, '')
+        return productMap.get(productId) || null
+      })
+
+      return orderedProducts.filter(product => product !== null).slice(0, nextChunkId.value * chunkSize)
+    })
 
     const trigger = ref(null) // used to get the ref of div that manage the intersection
 
@@ -158,11 +267,26 @@ export default {
     /* This function is used to update the queryUrl and trigger the fetch, only run on browser */
     const handleUpdateQuery = (jsonString: string) => {
       selectedCategory.value = '' // Reset the selected category
-
-      queryParams.value = ({
-        ...queryParams.value,
-        ...JSON.parse(jsonString),
+      customerWishlistStore.$patch({
+        wishlistShopifyProducts: [],
+        filteredElements: [],
       })
+
+      const parsedJson = JSON.parse(jsonString)
+
+      if (parsedJson?.categoryId) {
+        queryParams.value = ({
+          shopifyCustomerId: customerId.value,
+          sortingDirection: 'ASC',
+          sortingField: 'createdat',
+          ...JSON.parse(jsonString),
+        })
+      } else {
+        queryParams.value = ({
+          ...queryParams.value,
+          ...JSON.parse(jsonString),
+        })
+      }
 
       // Construct updated query parameters string
       const updatedSearchParams = new URLSearchParams()
@@ -174,6 +298,44 @@ export default {
       queryUrl.value = `/wishlists/full?${updatedSearchParams.toString()}`
     }
 
+    const activeFilters = computed<IOptions[]>(() => {
+      const selectedCategoriesLabels = mappedCategoriesFilters.value
+        .filter(category => category.selected)
+        .map(category => ({ label: category.label, value: 'categoryId' }))
+
+      const selectedSubCategoriesLabels = mappedSubCategoriesFilters.value
+        .filter(subCategory => subCategory.selected)
+        .map(subCategory => ({ label: subCategory.label, value: 'subcategoryId' }))
+
+      const selectedWineListsLabels = mappedWineListsFilters.value
+        .filter(wineList => wineList.selected)
+        .map(wineList => ({ label: wineList.label, value: 'wineListId' }))
+
+      return [...selectedCategoriesLabels, ...selectedSubCategoriesLabels, ...selectedWineListsLabels]
+    })
+
+    const sorting = ref(false)
+    const handleUpdateSortValue = (val: string) => {
+      queryParams.value = ({
+        ...queryParams.value,
+        ...JSON.parse(val),
+      })
+      sorting.value = false
+
+      // Construct updated query parameters string
+      const updatedSearchParams = new URLSearchParams()
+      Object.entries(queryParams.value).forEach(([key, value]) => {
+        updatedSearchParams.set(key, value)
+      })
+
+      // Construct the updated query URL by combining base URL with updated query parameters
+      queryUrl.value = `/wishlists/full?${updatedSearchParams.toString()}`
+    }
+
+    const handleUpdateSortTrigger = () => {
+      sorting.value = !sorting.value
+    }
+
     return {
       activeFilters,
       availableLayouts,
@@ -181,13 +343,21 @@ export default {
       closeIcon,
       customer,
       customerProducts,
+      elements,
+      filteredWishlistArr,
       filters,
       finalProducts,
       findRelatedVintage,
+      getLayoutIcon,
       handleUpdateQuery,
+      handleUpdateSortTrigger,
+      handleUpdateSortValue,
       handleUpdateTrigger,
-      isReady,
       lazyLoadChunkOfProducts,
+      mappedCategoriesFilters,
+      mappedSubCategoriesFilters,
+      mappedWineListsFilters,
+      queryParams,
       removeFilterFromQuery,
       resetFilter,
       selectedCategory,
@@ -195,82 +365,74 @@ export default {
       selectedSubcategory,
       selectedWineList,
       showMore,
+      sorting,
       subcategoriesFilters,
       trigger,
       wineListsFilters,
       wishListChunks,
-      filteredWishlistArr,
+      wishlistArr,
+      wishlistOtherProducts,
       wishlistShopifyProducts,
-      elements,
     }
   },
+  methods: { generateKey },
 }
 </script>
 
 <template>
   <div>
-    <!-- Todo: Remove this v-if="isReady" when we complete the implementation -->
-    <div
-      v-if="isReady"
-      class="grid grid-cols-[auto_200px] items-start border-y border-gray-light py-1 m-4 transition-all"
-    >
-      <div class="flex flex-wrap min-h-[42px]">
-        <CmwDropdown
-          v-if="!!categoriesFilters.length"
-          key="categories"
-          size="sm"
-          :active="selectedCategory === 'categories'"
-          @update-trigger="handleUpdateTrigger"
-        >
-          <template #default>
-            <span>{{ $t('common.filters.category') }}</span>
-          </template>
-          <template #children>
-            <CmwSelect :options="categoriesFilters" @update-value="handleUpdateQuery" />
-          </template>
-        </CmwDropdown>
-        <CmwDropdown
-          v-if="!!subcategoriesFilters.length"
-          key="subcategories"
-          size="sm"
-          :active="selectedCategory === 'subcategories'"
-          @update-trigger="handleUpdateTrigger"
-        >
-          <template #default>
-            <span>{{ $t('common.filters.subcategory') }}</span>
-          </template>
-          <template #children>
-            <!-- Todo: Update query -->
-            <CmwSelect :options="subcategoriesFilters" @update-value="handleUpdateQuery" />
-          </template>
-        </CmwDropdown>
-        <CmwDropdown
-          v-if="!!wineListsFilters.length"
-          key="wineList"
-          size="sm"
-          :active="selectedCategory === 'wineList'"
-          @update-trigger="handleUpdateTrigger"
-        >
-          <template #default>
-            <span>{{ $t('common.filters.wineList') }}</span>
-          </template>
-          <template #children>
-            <!-- Todo: Update query -->
-            <CmwSelect :options="wineListsFilters" @update-value="handleUpdateQuery" />
-          </template>
-        </CmwDropdown>
-      </div>
+    <div class="flex flex-wrap min-h-[42px] border-y border-gray-light py-1 m-4">
+      <CmwDropdown
+        v-if="!!mappedCategoriesFilters.length"
+        key="categories"
+        size="sm"
+        :active="selectedCategory === 'categories'"
+        @update-trigger="handleUpdateTrigger"
+      >
+        <template #default>
+          <span>{{ $t('common.filters.category') }}</span>
+        </template>
+        <template #children>
+          <CmwSelect :options="mappedCategoriesFilters" @update-value="handleUpdateQuery" />
+        </template>
+      </CmwDropdown>
+      <CmwDropdown
+        v-if="!!mappedSubCategoriesFilters.length"
+        key="subcategories"
+        size="sm"
+        :active="selectedCategory === 'subcategories'"
+        @update-trigger="handleUpdateTrigger"
+      >
+        <template #default>
+          <span>{{ $t('common.filters.subcategory') }}</span>
+        </template>
+        <template #children>
+          <!-- Todo: Update query -->
+          <CmwSelect :options="mappedSubCategoriesFilters" @update-value="handleUpdateQuery" />
+        </template>
+      </CmwDropdown>
+      <CmwDropdown
+        v-if="!!mappedWineListsFilters.length"
+        key="wineList"
+        size="sm"
+        :active="selectedCategory === 'wineList'"
+        @update-trigger="handleUpdateTrigger"
+      >
+        <template #default>
+          <span>{{ $t('common.filters.wineList') }}</span>
+        </template>
+        <template #children>
+          <!-- Todo: Update query -->
+          <CmwSelect :options="mappedWineListsFilters" @update-value="handleUpdateQuery" />
+        </template>
+      </CmwDropdown>
     </div>
-    <div class="flex justify-between items-center">
-      <div>
-        <div
-          v-if="activeFilters.length" class="my-4 flex gap-2"
-        >
-          <CmwChip
-            v-for="item in activeFilters" :key="item" size="xs"
-            :label="$t(`common.features.${item}`)" :on-delete="() => removeFilterFromQuery(item)"
-          />
-        </div>
+    <div class="flex justify-between items-center mx-4">
+      <div v-if="activeFilters.length" class="flex gap-2">
+        <CmwChip
+          v-for="({ label, value }) in activeFilters" :key="generateKey(`${label}`)" size="xs"
+          :label="label" :on-delete="() => removeFilterFromQuery(value)"
+        />
       </div>
       <div v-if="activeFilters.length">
         <CmwButton
@@ -285,18 +447,15 @@ export default {
         </CmwButton>
       </div>
     </div>
-    <div class="c-filterBar flex items-center justify-between px-4">
-      <div>
-        <!-- Todo: Implement this later -->
-        <!--        <CmwSelect
-          v-model="selectedSort"
-          :options="filteredSort"
-          @update-value="handleUpdateValue"
-        >
-          <span>{{ selectedLabel }}</span>
-        </CmwSelect> -->
+    <div class="flex gap-2 items-center justify-between mb-8 mx-4">
+      <div v-if="$fetchState.pending">
+        {{ $t("calculating") }}
       </div>
-      <div class="hidden items-center gap-2 lg:flex">
+      <div v-else>
+        <strong>{{ filteredWishlistArr.length }}</strong>
+        <span>{{ $tc('search.results', filteredWishlistArr.length) }}</span>
+      </div>
+      <div class="hidden items-center mr-auto gap-2 lg:flex">
         <div
           v-for="layout in availableLayouts"
           :key="layout"
@@ -305,6 +464,7 @@ export default {
           <input
             :id="layout"
             v-model="selectedLayout"
+            :aria-label="`select ${layout}`"
             class="peer appearance-none absolute w-full h-full z-dante"
             type="radio"
             name="layout"
@@ -318,13 +478,54 @@ export default {
           >
             <VueSvgIcon
               class="m-auto"
-              :data="require(`@/assets/svg/layout-${layout}.svg`)"
+              :data="getLayoutIcon(layout)"
               width="20"
               height="20"
               color="#992545"
             />
           </label>
         </div>
+      </div>
+      <div>
+        <CmwDropdown
+          key="sort-by"
+          size="sm"
+          :active="sorting"
+          position="right"
+          @update-trigger="handleUpdateSortTrigger"
+        >
+          <template #default>
+            <span>{{ $t('common.filters.sort.by') }}</span>
+          </template>
+          <template #children>
+            <!-- Todo: Can we align the object keys? sometimes is field and others sortingField, ecc -->
+            <CmwSelect
+              position="right"
+              :options="[{
+                           label: $t('common.filters.sort.nameAsc'),
+                           value: JSON.stringify({ sortingField: 'name', sortingDirection: 'ASC' }),
+                         },
+                         {
+                           label: $t('common.filters.sort.nameDesc'),
+                           value: JSON.stringify({ sortingField: 'name', sortingDirection: 'DESC' }),
+                         },
+                         {
+                           label: $t('common.filters.sort.recent.most'),
+                           value: JSON.stringify({ sortingField: 'createdat', sortingDirection: 'ASC' }),
+                         },
+                         {
+                           label: $t('common.filters.sort.recent.least'),
+                           value: JSON.stringify({ sortingField: 'createdat', sortingDirection: 'DESC' }),
+                         },
+                         {
+                           label: $t('common.filters.sort.novelty'),
+                           value: JSON.stringify({ sortingField: 'new', sortingDirection: 'DESC' }),
+                         },
+              ]"
+              @update-value="handleUpdateSortValue"
+            />
+          </template>
+        </CmwDropdown>
       </div>
     </div>
     <p v-if="$fetchState.pending" class="px-4">

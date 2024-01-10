@@ -1,6 +1,7 @@
 <script lang="ts">
 import type { PropType } from '@nuxtjs/composition-api'
 import { computed, defineComponent, getCurrentInstance, ref, useRoute, watch } from '@nuxtjs/composition-api'
+import checkmarkIcon from 'assets/svg/checkmark.svg'
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
 import type { IOptions, TPosition, TSizes } from '~/types/types'
 
@@ -38,14 +39,23 @@ export default defineComponent({
     })[props.size]
 
     const useSearchField = computed(() => props.options.length > 10)
-    const filteredOptions = computed(() => useSearchField
+    const filteredOptions = computed<IOptions[]>(() => useSearchField
       ? props.options.filter(option => `${option.label}`.toLowerCase().includes(searchTerm.value.toLowerCase()))
       : props.options,
     )
 
     watch(() => route.value, () => searchTerm.value = '', { deep: true })
 
-    return { key, useSearchField, filteredOptions, searchTerm, chevronDownIcon, getFontSize, handleClick }
+    return {
+      checkmarkIcon,
+      chevronDownIcon,
+      filteredOptions,
+      getFontSize,
+      handleClick,
+      key,
+      searchTerm,
+      useSearchField,
+    }
   },
 })
 </script>
@@ -87,7 +97,7 @@ export default defineComponent({
           @click="handleClick(option.value)"
         >
           <VueSvgIcon
-            v-if="option.selected && !option.icon" :data="require(`@/assets/svg/checkmark.svg`)"
+            v-if="option.selected && !option.icon" :data="checkmarkIcon"
             color="#d94965" class="mr-2"
           />
           <VueSvgIcon

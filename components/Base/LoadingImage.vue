@@ -25,6 +25,7 @@ export default {
       if (image) {
         image.addEventListener('load', function handler() {
           imageIsLoaded.value = true
+
           this.removeEventListener('load', handler)
         })
 
