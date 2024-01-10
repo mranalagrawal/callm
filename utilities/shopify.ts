@@ -1,5 +1,6 @@
 import type { TStores } from '~/config/themeConfig'
 import type { ICmwStore } from '~/plugins/cmw-project-config'
+import { djb2Hash } from '~/utilities/strings'
 
 export function shopifyRichTextToHTML(content: string): string {
   if (!content) { return '' }
@@ -67,4 +68,15 @@ function getCheckoutHostname(cmwStore: ICmwStore): string {
   return hostMap[settings.store][env] || ''
 }
 
-export { getCheckoutHostname }
+function getCustomerId(str: string): string {
+  let nv = str.substring(str.lastIndexOf('/') + 1)
+  const hashedValue = djb2Hash(str)
+  hashedValue.toString().split('').reverse().join('')
+  const n = str.substring(`${str}`.lastIndexOf('/') + 1)
+  nv = djb2Hash(n.substring(0, n.indexOf('-'))).toString()
+  nv.split('').reverse().join('')
+
+  return n
+}
+
+export { getCheckoutHostname, getCustomerId }

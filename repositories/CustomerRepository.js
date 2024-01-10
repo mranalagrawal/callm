@@ -1,7 +1,7 @@
-import getCustomer from '@/graphql/queries/getCustomer'
+import customerUpdate from '~/graphql/mutations/customer/customerUpdate'
 import getCart from '@/graphql/queries/getCart'
-import customerUpdate from '@/graphql/mutations/customerUpdate'
 import getCheckoutById from '@/graphql/queries/getCheckoutById'
+import getCustomer from '@/graphql/queries/getCustomer'
 
 export default ctx => ({
   async getCustomer() {

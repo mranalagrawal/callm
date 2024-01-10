@@ -363,8 +363,7 @@ export default {
   eventNote: `Con il Calendario dell'Avvento di Callmewine ogni giorno è una sorpresa! Dietro ogni casella si
       nascondono bottiglie scontate, gadget, samples in omaggio e tanto altro: per un avvento fatto di
       grandi brindisi insieme a Callmewine!`,
-  eventGiftNote: 'Congratulazioni, hai diritto a quest\'omaggio del {0}!',
-  eventGiftNoteLinkLabel: 'calendario dell\'avvento',
+  eventGiftNote: 'Congratulazioni, hai diritto a quest\'omaggio!',
   eventGiftFree: 'Gratis',
   eventProductExpired: 'La promozione di questo giorno è terminata!',
 }

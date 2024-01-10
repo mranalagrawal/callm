@@ -25,9 +25,17 @@ const cleanUrl = (str = '') =>
     .replaceAll('callmewine.co.uk', '')
     .replaceAll('callmewine.com', ''))
 
-const sleep = (ms: number) => new Promise(
+const awaitPromise = (ms: number) => new Promise(
   resolve => setTimeout(resolve, ms))
 
 const escapeJsonSingleQuotes = (str: string) => str.replace(/'/g, '\\\'')
 
-export { djb2Hash, stripHtml, stripHtmlAnchors, generateKey, cleanUrl, sleep, escapeJsonSingleQuotes }
+export {
+  awaitPromise,
+  cleanUrl,
+  djb2Hash,
+  escapeJsonSingleQuotes,
+  generateKey,
+  stripHtml,
+  stripHtmlAnchors,
+}

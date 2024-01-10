@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { ValidationObserver, ValidationProvider, extend, setInteractionMode } from 'vee-validate'
+import { extend, setInteractionMode, ValidationObserver, ValidationProvider } from 'vee-validate'
 import { confirmed, email, is, is_not, max, min, oneOf, regex, required } from 'vee-validate/dist/rules'
 import { regexRules } from '~/utilities/validators'
 

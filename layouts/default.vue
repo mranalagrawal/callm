@@ -14,14 +14,14 @@ import {
 import { storeToRefs } from 'pinia'
 
 // import LazyHydrate from 'vue-lazy-hydration'
+import type { TISO639 } from '~/config/themeConfig'
 
-import useScreenSize from '~/components/composables/useScreenSize'
-import useNewsletterSplash from '~/components/composables/useNewsletterSplash'
 import Navbar from '~/components/Navbar.vue'
 import TopBar from '~/components/TopBar.vue'
-import type { TISO639 } from '~/config/themeConfig'
-import { useCheckout } from '~/store/checkout'
+import useNewsletterSplash from '~/components/composables/useNewsletterSplash'
+import useScreenSize from '~/components/composables/useScreenSize'
 
+import { useCart } from '~/store/cart'
 import { useCustomer } from '~/store/customer'
 import { useVercelKv } from '~/store/vercelKv'
 
@@ -38,9 +38,8 @@ export default defineComponent({
     const route = useRoute()
     const { loadMenu } = useVercelKv()
     const { getCustomer, customer } = useCustomer()
-    const { getCheckoutById, mergeCheckoutStoreWithCheckout } = useCheckout()
-    const { checkout } = storeToRefs(useCheckout())
-    const { handleTemporaryCartReplace } = useCheckout()
+    const { getCartById, handleTemporaryCheckoutReplace, mergeCartCookieWithCheckoutId } = useCart()
+    const { cart } = storeToRefs(useCart())
     const { handleNewsletterSplash } = useNewsletterSplash()
     const {
       isTablet,
@@ -66,23 +65,22 @@ export default defineComponent({
     const showAppHeader = computed(() => (isFromApp.value && isHomePage.value))
 
     onMounted(async () => {
-      const cartId = $cookies.get('cartId')
-      if (cartId) {
-        await handleTemporaryCartReplace(cartId)
+      const checkoutId = $cookies.get('checkoutId')
+      const cartIdCookie = $cookies.get('cartId')
+
+      if (checkoutId && !cartIdCookie) {
+        await handleTemporaryCheckoutReplace(checkoutId)
       }
 
       nextTick(async () => {
-        const checkoutId = $cookies.get('checkoutId')
-
-        if (!customer.id && checkoutId) {
-          await getCheckoutById(checkoutId)
-        }
-
-        if (customer.id && checkoutId) {
-          await getCheckoutById(checkoutId)
-
-          if (customer.lastIncompleteCheckout?.id && customer.lastIncompleteCheckout.id !== checkoutId) {
-            await mergeCheckoutStoreWithCheckout(customer.lastIncompleteCheckout.id)
+        // Note: We handle logged-in users on getCustomer() so we can skip the else section
+        // Handle non-logged-in users
+        if (!customer.id) {
+          if (cartIdCookie && checkoutId) {
+            await mergeCartCookieWithCheckoutId(checkoutId, cartIdCookie)
+            // $cookies.remove('checkoutId')
+          } else if (cartIdCookie) {
+            await getCartById(cartIdCookie)
           }
         }
       })
@@ -116,6 +114,7 @@ export default defineComponent({
       }
     })
     return {
+      cart,
       handleNewsletterSplash,
       hasBeenSet,
       isDesktop,
@@ -124,7 +123,6 @@ export default defineComponent({
       isTablet,
       showAppHeader,
       showTopBar,
-      checkout,
     }
   },
   head: {},

@@ -1,0 +1,24 @@
+fragment CUSTOMER_FRAGMENT on Customer {
+  id
+  firstName
+  lastName
+  acceptsMarketing
+  email
+  phone
+  tags
+  lastIncompleteCheckout {
+    id
+  }
+  newsletterFrequency: metafield(namespace: "custom", key: "newsletter_frequency") {
+    value
+  }
+  lastIncompleteCart: metafield(namespace: "custom", key: "last_incomplete_cart") {
+    value
+  }
+  isCheckoutMigrated: metafield(namespace: "custom", key: "is_checkout_migrated") {
+    value
+  }
+  approved: metafield(namespace: "custom", key: "b2b_approved") {
+    value
+  }
+}

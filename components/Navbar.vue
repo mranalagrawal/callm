@@ -1,22 +1,24 @@
 <script lang="ts">
 import { defineComponent, inject, ref, useRoute, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+
 import cartIcon from '~/assets/svg/cart.svg'
 import chevronLeftIcon from '~/assets/svg/chevron-left.svg'
 import closeIcon from '~/assets/svg/close.svg'
-import logoB2b from '~/assets/svg/logo-call-me-wine-b2b.svg'
 import logo from '~/assets/svg/logo-call-me-wine.svg'
+import logoB2b from '~/assets/svg/logo-call-me-wine-b2b.svg'
 import menuIcon from '~/assets/svg/menu.svg'
-import userIcon from '~/assets/svg/user.svg'
 import UserActions from '~/components/Header/UserActions.vue'
-import { useCheckout } from '~/store/checkout'
+import userIcon from '~/assets/svg/user.svg'
+
+import { useCart } from '~/store/cart'
 import { useCustomer } from '~/store/customer'
 
 export default defineComponent({
   components: { UserActions },
   setup() {
     const { customer } = storeToRefs(useCustomer())
-    const { checkoutTotalQuantity } = storeToRefs(useCheckout())
+    const { cartTotalQuantity } = storeToRefs(useCart())
     const route = useRoute()
     const isDesktop = inject('isDesktop')
     const navbar = ref(null)
@@ -49,7 +51,7 @@ export default defineComponent({
 
     return {
       cartIcon,
-      checkoutTotalQuantity,
+      cartTotalQuantity,
       chevronLeftIcon,
       closeIcon,
       customer,
@@ -131,7 +133,7 @@ export default defineComponent({
                   :width="28"
                   :height="28"
                 />
-                <span class="totalItems">{{ checkoutTotalQuantity }} </span>
+                <span class="totalItems">{{ cartTotalQuantity }} </span>
               </NuxtLink>
             </ClientOnly>
           </div>

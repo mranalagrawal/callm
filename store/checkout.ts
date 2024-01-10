@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import type { TSalesChannel } from '~/config/themeConfig'
 import getProductsById from '~/graphql/queries/getProductsById.graphql'
 import { useCustomer } from '~/store/customer'
 import type { CheckoutMapped, ICheckoutLineItemMapped, IShopifyCheckout } from '~/types/checkout'
@@ -34,44 +33,6 @@ export const useCheckout = defineStore({
     },
     suitableGift: undefined,
   }),
-
-  getters: {
-    checkoutTotalQuantity(state) {
-      return state.checkout.lineItems?.reduce((t, n) => t + n.quantity, 0) || 0
-    },
-
-    checkoutTotalPrice(state) {
-      return (salesChannel: TSalesChannel, customerType: string) => {
-        let checkoutLines = []
-
-        if (!state.checkout?.lineItems?.length) { return 0 }
-
-        checkoutLines = state.checkout.lineItems.map(n => ({
-          quantity: n.quantity,
-          price: !n.variant.product.isGiftCard
-            ? JSON.parse(n.variant.product.details.value)
-              .priceLists[salesChannel][customerType]
-            : n.variant.price.amount,
-        })) || []
-
-        const subtotal = checkoutLines.reduce((t, n) => t + n.quantity * n.price, 0)
-
-        let giftTotal = 0
-        // If the suitableGift is in the checkout lines, sum their price
-        // run a loop to subtract all the suitableGift lines
-        if (this.checkout.lineItems.length) {
-          for (const lineItem of this.checkout.lineItems) {
-            const customAttribute = lineItem.customAttributes.find(el => el.key === 'gift')
-            if (customAttribute) {
-              giftTotal += lineItem.priceLists[salesChannel][customerType] * lineItem.quantity
-            }
-          }
-        }
-
-        return subtotal - giftTotal
-      }
-    },
-  },
 
   actions: {
     setMappedCheckout(checkout: IShopifyCheckout, skipSetCookie?: boolean) {
@@ -437,17 +398,15 @@ export const useCheckout = defineStore({
         })
     },
 
-    async getCheckoutById(id: string) {
-      await this.$nuxt.$cmwRepo.customer.getCheckout(id)
+    async getCheckoutById(id: string): Promise<IShopifyCheckout | null> {
+      return await this.$nuxt.$cmwRepo.customer.getCheckout(id)
         .then(({ node }: any) => {
           if (!node || node.completedAt) {
-            this.$nuxt.$cookies.remove('checkoutId')
-            return
+            // Todo: this.$nuxt.$cookies.remove('checkoutId')
+            return null
           }
 
-          this.setMappedCheckout(node)
-          this.checkSuitableGift(node)
-          this.checkoutEmailUpdateV2(node.id, useCustomer().customer?.email || node.email)
+          return node
         })
     },
 

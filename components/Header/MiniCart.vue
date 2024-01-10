@@ -1,21 +1,24 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import { useCheckout } from '~/store/checkout'
-import { useCustomer } from '~/store/customer'
+
 import type { IPrismicPageData } from '~/types/prismic'
-import { initialPageData } from '~/config/prismicConfig'
+
 import { generateKey } from '~/utilities/strings'
-import deliveryIcon from '~/assets/svg/delivery.svg'
+import { initialPageData } from '~/config/prismicConfig'
+import { useCart } from '~/store/cart'
+import { useCustomer } from '~/store/customer'
+
 import checkCircularIcon from '~/assets/svg/check-circular.svg'
+import deliveryIcon from '~/assets/svg/delivery.svg'
 
 export default defineComponent({
   name: 'HeaderMiniCart',
   setup() {
     const { $cmwStore, $cookies } = useContext()
     const { getCustomerType } = storeToRefs(useCustomer())
-    const { goToCheckout, getCheckoutById } = useCheckout()
-    const { checkout, checkoutTotalPrice, checkoutTotalQuantity } = storeToRefs(useCheckout())
+    const { cart, cartTotalQuantity, cartTotalPrice } = storeToRefs(useCart())
+    const { getCartById, goToCheckout } = useCart()
 
     const shipping = ref<IPrismicPageData>(initialPageData)
 
@@ -23,21 +26,22 @@ export default defineComponent({
       shipping.value = await $cmwRepo.prismic.getSingle('shipping')
     })
 
-    const computedCheckoutTotalPrice = computed(() => checkoutTotalPrice.value($cmwStore.settings.salesChannel, getCustomerType.value))
+    const computedCartTotalPrice = computed(() => cartTotalPrice.value($cmwStore.settings.salesChannel, getCustomerType.value))
 
     onMounted(async () => {
-      const checkoutId = $cookies.get('checkoutId')
+      const cartIdCookie = $cookies.get('cartId')
 
-      if (checkoutId) {
-        await getCheckoutById(checkoutId)
+      if (cartIdCookie) {
+        await getCartById(cartIdCookie)
       }
     })
 
     return {
+      cart,
+      cartTotalPrice,
+      cartTotalQuantity,
       checkCircularIcon,
-      checkout,
-      checkoutTotalQuantity,
-      computedCheckoutTotalPrice,
+      computedCartTotalPrice,
       deliveryIcon,
       goToCheckout,
       shipping,
@@ -52,24 +56,24 @@ export default defineComponent({
     <div class="border-t-4 border-t-primary-900 pt-4">
       <div>
         <div v-if="shipping?.threshold">
-          <div v-if="checkoutTotalQuantity > 0" class="min-w-[640px]">
+          <div v-if="cartTotalQuantity > 0" class="min-w-[640px]">
             <div
               class="text-secondary-700 flex items-center justify-center gap-2 text-sm uppercase pb-4"
             >
               <VueSvgIcon
-                :data="computedCheckoutTotalPrice < shipping.threshold ? deliveryIcon : checkCircularIcon" width="24"
+                :data="computedCartTotalPrice < shipping.threshold ? deliveryIcon : checkCircularIcon" width="24"
                 height="24"
               />
               <span>{{
-                computedCheckoutTotalPrice < shipping.threshold ? shipping.threshold_not_reached : shipping.threshold_reached
+                computedCartTotalPrice < shipping.threshold ? shipping.threshold_not_reached : shipping.threshold_reached
               }}</span>
             </div>
             <div class="px-4">
               <hr class="border-gray-light">
             </div>
             <div class="max-h-[360px] overflow-y-auto overflow-x-hidden">
-              <div v-for="lineItem in checkout.lineItems" :key="generateKey(`mini-cart-${lineItem.id}`)">
-                <CheckoutLine :checkout-line-item="lineItem" />
+              <div v-for="line in cart.lines" :key="generateKey(`mini-cart-${line.id}`)">
+                <CartLine :cart-line-item="line" />
               </div>
             </div>
             <div class="grid grid-cols-2 gap-4 bg-gray-lightest p-4">

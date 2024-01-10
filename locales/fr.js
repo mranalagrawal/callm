@@ -361,8 +361,7 @@ export default {
   eventCancelButton: 'Back to calendar',
   eventNote: `With the Callmewine Advent Calendar every day is a surprise! Behind each box are discounted
       bottles, gadgets, free samples and much more: for an advent made of great toasts with Callmewine!`,
-  eventGiftNote: 'Félicitations, vous avez droit à ce cadeau du {0}',
-  eventGiftNoteLinkLabel: 'calendrier de l’avent',
+  eventGiftNote: 'Félicitations, vous avez droit à ce cadeau!',
   eventGiftFree: 'GRATUIT',
   eventProductExpired: 'La promotion de ce jour est terminée!',
 }

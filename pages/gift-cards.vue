@@ -1,26 +1,29 @@
-<script>
+<script lang="ts">
 import { computed, defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
-import addIcon from 'assets/svg/add.svg'
-import cartIcon from 'assets/svg/cart.svg'
-import emailIcon from 'assets/svg/email.svg'
-import heartFullIcon from 'assets/svg/heart-full.svg'
-import heartIcon from 'assets/svg/heart.svg'
-import subtractIcon from 'assets/svg/subtract.svg'
 import { storeToRefs } from 'pinia'
-import { getCountryFromStore, getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
-import { useCustomer } from '@/store/customer'
-import { useCheckout } from '~/store/checkout'
+
+import type { IGiftCardMapped } from '~/types/product'
+
+import { getCountryFromStore, getLocaleFromCurrencyCode, getPercent } from '~/utilities/currency'
+import addIcon from '~/assets/svg/add.svg'
+import cartIcon from '~/assets/svg/cart.svg'
+import emailIcon from '~/assets/svg/email.svg'
 import { generateKey } from '~/utilities/strings'
+import heartFullIcon from '~/assets/svg/heart-full.svg'
+import heartIcon from '~/assets/svg/heart.svg'
+import subtractIcon from '~/assets/svg/subtract.svg'
 import { SweetAlertToast } from '~/utilities/Swal'
+import { useCart } from '~/store/cart'
+import { useCustomer } from '~/store/customer'
 
 export default defineComponent({
   setup() {
-    const { $config, $cmwGtmUtils, req } = useContext()
+    const { $cmwStore, $cmwGtmUtils, req } = useContext()
     const { customer, customerId, getCustomerType } = storeToRefs(useCustomer())
-    const { checkout } = storeToRefs(useCheckout())
-    const { checkoutCreate, checkoutLineItemsAdd, checkoutLineItemsUpdate } = useCheckout()
+    const { cart } = storeToRefs(useCart())
+    const { cartCreate, cartLinesAdd, cartLinesUpdate } = useCart()
     const isOpen = ref(false)
-    const product = ref({})
+    const product = ref<IGiftCardMapped | null>(null)
     const productVariant = ref()
     const productDetails = ref({
       brandId: '',
@@ -32,13 +35,13 @@ export default defineComponent({
       priceLists: {},
       redirectSeoUrl: {},
     })
-    const giftCardVariantSelected = ref({ id: '' }) // set a default?
+    const giftCardVariantSelected = ref<Record<string, any>>({ id: '' })
     const canonicalUrl = ref('')
 
     const amountMax = ref(50)
 
     const isOnCart = computed(() =>
-      checkout.value.lineItems.find(el => el.variant.id === giftCardVariantSelected.value.id))
+      cart.value.lines.find(el => el.merchandise.id === giftCardVariantSelected.value.id))
 
     const cartQuantity = computed(() => isOnCart.value ? isOnCart.value.quantity : 0)
 
@@ -61,10 +64,10 @@ export default defineComponent({
       await $cmwRepo.products.getGiftCardByHandle({
         handle: 'gift-cards', // or by route $route.value.name,
       })
-        .then(({ product: shopifyProduct }) => {
+        .then(({ product: shopifyProduct }: any) => {
           product.value = shopifyProduct && $productMapping.giftCard(shopifyProduct) // set product.value here ?
         })
-        .catch(err => $handleApiErrors(`Something went wrong getting gift card from Shopify ${err}`))
+        .catch((err: Error) => $handleApiErrors(`Something went wrong getting gift card from Shopify ${err}`))
     })
 
     const strippedContent = computed(() => {
@@ -78,7 +81,7 @@ export default defineComponent({
     })
 
     const generateMetaLink = (arr = []) => {
-      const hrefLangArr = !!arr.length && arr.map(el => ({
+      const hrefLangArr = arr?.map(el => ({
         hid: `alternate-${el[0]}`,
         rel: 'alternate',
         href: el[1],
@@ -95,32 +98,32 @@ export default defineComponent({
       ]
     }
 
-    const removeProductFromCustomerCheckout = async () => {
+    const removeProductFromCustomerCart = async () => {
       if (cartQuantity.value < 1) {
         return
       }
 
-      const currentLineItem = checkout.value.lineItems.find(el => el.variant.id === giftCardVariantSelected.value.id)
+      const currentLineItem = cart.value.lines.find(el => el.merchandise.id === giftCardVariantSelected.value.id)
 
       if (!currentLineItem) {
         return
       }
 
-      const lineItems = [{
-        customAttributes: currentLineItem.customAttributes,
+      const lines = [{
+        attributes: currentLineItem.attributes,
         id: currentLineItem.id,
         quantity: +currentLineItem.quantity - 1,
-        variantId: currentLineItem.variant.id,
+        merchandiseId: currentLineItem.merchandise.id,
       }]
 
-      await checkoutLineItemsUpdate(checkout.value.id, lineItems)
+      await cartLinesUpdate(cart.value.id, lines)
     }
 
     onMounted(() => {
       process.browser && $cmwGtmUtils.pushPage('product', {
         event: 'giftCardDetailView',
         ecommerce: {
-          currencyCode: $config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
+          currencyCode: $cmwStore.isUk ? 'GBP' : 'EUR',
           detail: {
             products: [{ giftCard: 'undefined' }],
           },
@@ -128,29 +131,39 @@ export default defineComponent({
       })
     })
 
-    useMeta(() => ({
-      title: product?.value?.seo?.title || '',
-      meta: [
-        {
-          hid: 'description',
-          name: 'description',
-          content: product?.value?.seo?.description || '',
-        },
-      ],
-      link: {
-        rel: 'canonical',
-        href: canonicalUrl.value,
-      },
-    }))
+    useMeta(() => {
+      let link: any[] = []
+      const href = canonicalUrl.value ? canonicalUrl.value : ''
+
+      if (href) {
+        link = [{
+          rel: 'canonical',
+          href: canonicalUrl?.value,
+        }]
+      }
+
+      return {
+        title: product?.value?.seo?.title || '',
+        meta: [
+          {
+            hid: 'description',
+            name: 'description',
+            content: product?.value?.seo?.description || '',
+          },
+        ],
+        link,
+      }
+    })
+
     return {
       addIcon,
       amountMax,
       canAddMore,
+      cart,
+      cartCreate,
       cartIcon,
+      cartLinesAdd,
       cartQuantity,
-      checkout,
-      checkoutCreate,
-      checkoutLineItemsAdd,
       customer,
       customerId,
       emailIcon,
@@ -165,7 +178,7 @@ export default defineComponent({
       product,
       productDetails,
       productVariant,
-      removeProductFromCustomerCheckout,
+      removeProductFromCustomerCart,
       strippedContent,
       subtractIcon,
     }
@@ -175,7 +188,7 @@ export default defineComponent({
     generateKey,
     getPercent,
     getLocaleFromCurrencyCode,
-    async addProductToCustomerCheckout() {
+    async addProductToCustomerCart() {
       this.isOpen = true
 
       // check for availability
@@ -187,41 +200,42 @@ export default defineComponent({
         return
       }
 
-      const checkoutCreateInput = {
+      const cartInput = {
         buyerIdentity: {
           countryCode: getCountryFromStore(this.$cmwStore.settings.store),
+          ...(this.customer.email && { email: this.customer.email }),
         },
-        ...(this.customer.email && { email: this.customer.email }),
-        note: this.checkout.note,
-        lineItems: [{
-          customAttributes: [
+        note: this.cart.note,
+        lines: [{
+          attributes: [
             {
               key: 'gtmProductData',
               value: this.giftCardVariantSelected.gtmProductData ? JSON.stringify(this.giftCardVariantSelected.gtmProductData) : 'false',
             },
             {
               key: 'bundle',
-              value: (this.giftCardVariantSelected.tags) ? this.product.tags.includes('BUNDLE').toString() : 'false',
+              value: (this.giftCardVariantSelected.tags) ? this.product?.tags.includes('BUNDLE').toString() : 'false',
             },
           ],
-          quantity: this.product.quantity || 1,
-          variantId: this.giftCardVariantSelected.id,
+          quantity: 1,
+          merchandiseId: this.giftCardVariantSelected.id,
         }],
       }
 
-      if (!this.checkout.id) {
-        await this.checkoutCreate({
-          ...checkoutCreateInput,
+      if (!this.cart.id) {
+        await this.cartCreate({
+          ...cartInput,
           lineItems: [],
         })
       }
 
-      this.checkoutLineItemsAdd(this.checkout.id, checkoutCreateInput.lineItems)
+      this.cartLinesAdd(this.cart.id, cartInput.lines)
         .then(async () => {
+          /* @ts-expect-error flashMessage doesn't seem to handle typescript */
           this.flashMessage.show({
             status: '',
-            message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title} ${this.giftCardVariantSelected.title}` }),
-            icon: this.product.image.source.url,
+            message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product?.title} ${this.giftCardVariantSelected.title}` }),
+            icon: this.product?.image.source.url,
             iconClass: 'bg-transparent ',
             time: 8000,
             blockClass: 'add-product-notification',
@@ -255,22 +269,23 @@ export default defineComponent({
           <!-- Image Section -->
           <div class="relative">
             <LoadingImage
+              v-if="product?.image"
               class="h-full"
               img-classes="max-h-[350px] md:max-h-[550px] mx-auto object-contain"
-              :thumbnail="product.image.thumbnail"
-              :source="product.image.source"
+              :thumbnail="product.image?.thumbnail"
+              :source="product.image?.source"
             />
           </div>
           <!-- Content Section -->
           <div class="flex flex-col">
-            <h1 class="text-secondary <md:pt-8" v-text="product.title" />
+            <h1 class="text-secondary <md:pt-8" v-text="product?.title" />
 
             <div v-html="strippedContent" />
             <div>
               <div class="py-4 h4" v-text="$t('chooseGiftCard')" />
               <div class="items-center mr-auto gap-2 flex flex-wrap">
                 <div
-                  v-for="variant in product.variants"
+                  v-for="variant in product?.variants"
                   :key="variant.id"
                   class="relative"
                 >
@@ -340,12 +355,12 @@ export default defineComponent({
               </i18n-n>
               <div class="ml-auto mr-4">
                 <div class="">
-                  <div v-if="product.availableForSale" class="relative">
+                  <div v-if="product?.availableForSale" class="relative">
                     <CmwButton
                       class="gap-2 pl-2 pr-3 py-2"
                       :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
                       :disabled="!giftCardVariantSelected.id"
-                      @click.native="addProductToCustomerCheckout"
+                      @click.native="addProductToCustomerCart"
                     >
                       <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
                       <span class="text-sm" v-text="$t('common.cta.addToCart')" />
@@ -363,7 +378,7 @@ export default defineComponent({
                       <button
                         class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l hover:(bg-primary)"
                         :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
-                        @click="removeProductFromCustomerCheckout"
+                        @click="removeProductFromCustomerCart"
                       >
                         <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="white" />
                       </button>
@@ -375,7 +390,7 @@ export default defineComponent({
                         hover:(bg-primary)
                         disabled:(bg-primary-100 cursor-not-allowed)"
                         :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
-                        @click="addProductToCustomerCheckout"
+                        @click="addProductToCustomerCart"
                       >
                         <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
                       </button>
@@ -388,8 +403,8 @@ export default defineComponent({
         </div>
 
         <ClientOnly>
-          <RecommendedProducts v-if="product.shopify_product_id" :id="product.shopify_product_id" />
-          <RecentProducts :current-product="product.source_id" />
+          <RecommendedProducts v-if="product?.shopify_product_id" :id="product?.shopify_product_id" />
+          <RecentProducts :current-product="product?.id" />
         </ClientOnly>
       </div>
     </template>

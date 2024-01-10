@@ -1,0 +1,19 @@
+#import "~/graphql/fragments/customer.graphql"
+
+mutation customerUpdate(
+  $customer: CustomerUpdateInput!,
+  $customerAccessToken: String!
+  $lang: LanguageCode!) @inContext(language: $lang) {
+  customerUpdate(customer: $customer, customerAccessToken: $customerAccessToken) {
+    customer {
+      ...CUSTOMER_FRAGMENT
+    }
+    customerAccessToken {
+      accessToken
+    }
+    customerUserErrors {
+      field
+      message
+    }
+  }
+}
