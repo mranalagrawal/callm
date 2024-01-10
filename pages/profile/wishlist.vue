@@ -272,10 +272,21 @@ export default {
         filteredElements: [],
       })
 
-      queryParams.value = ({
-        ...queryParams.value,
-        ...JSON.parse(jsonString),
-      })
+      const parsedJson = JSON.parse(jsonString)
+
+      if (parsedJson?.categoryId) {
+        queryParams.value = ({
+          shopifyCustomerId: customerId.value,
+          sortingDirection: 'ASC',
+          sortingField: 'createdat',
+          ...JSON.parse(jsonString),
+        })
+      } else {
+        queryParams.value = ({
+          ...queryParams.value,
+          ...JSON.parse(jsonString),
+        })
+      }
 
       // Construct updated query parameters string
       const updatedSearchParams = new URLSearchParams()
