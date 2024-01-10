@@ -33,6 +33,7 @@ export default {
   chooseGiftCard: 'Wählen Sie den Betrag des Geschenkgutscheins',
   searchResultLabel: 'Die Ergebnisse Ihrer Suche',
   loading: 'Daten werden abgerufen...',
+  calculating: 'Berechnung...',
   fetchError: 'Ein Fehler ist aufgetreten',
   save: 'Speichern',
   phone: 'Telefon',

@@ -33,6 +33,7 @@ export default {
   chooseGiftCard: 'Choose your gift card',
   searchResultLabel: 'The results of your search',
   loading: 'Fetching data...',
+  calculating: 'Calculating...',
   fetchError: 'An error occurred',
   save: 'Save',
   phone: 'Phone',

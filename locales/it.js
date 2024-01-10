@@ -32,6 +32,7 @@ export default {
   chooseGiftCard: 'Scegli il buono regalo',
   searchResultLabel: 'I risultati della tua ricerca',
   loading: 'Recuperando i dati...',
+  calculating: 'Calcolando...',
   fetchError: 'Si è verificato un errore',
   save: 'Salva',
   phone: 'Telefono',

@@ -370,7 +370,6 @@ export default {
 
 <template>
   <div>
-    <pre>{{ queryParams }}</pre>
     <div class="flex flex-wrap min-h-[42px] border-y border-gray-light py-1 m-4">
       <CmwDropdown
         v-if="!!mappedCategoriesFilters.length"
@@ -438,7 +437,10 @@ export default {
       </div>
     </div>
     <div class="flex gap-2 items-center justify-between mb-8 mx-4">
-      <div>
+      <div v-if="$fetchState.pending">
+        {{ $t("calculating") }}
+      </div>
+      <div v-else>
         <strong>{{ filteredWishlistArr.length }}</strong>
         <span>{{ $tc('search.results', filteredWishlistArr.length) }}</span>
       </div>

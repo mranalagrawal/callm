@@ -33,6 +33,7 @@ export default {
   chooseGiftCard: 'Choisissez votre chèque cadeau',
   searchResultLabel: 'Les résultats de votre recherche',
   loading: 'Récupération des données...',
+  calculating: 'Calcul des frais de port...',
   fetchError: 'Une erreur s\'est produite',
   save: 'Sauvegarder',
   phone: 'Téléphone',
