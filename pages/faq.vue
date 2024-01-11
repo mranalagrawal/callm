@@ -26,27 +26,28 @@ export default defineComponent({
     }
 
     const pageData = ref<IPrismicPageData>(initialPageData)
-    const sections = computed(() => pageData.value.body)
     const selectedQuestion = ref('')
-
-    const navigation = computed<ISection[]>(() =>
-      sections.value?.map(s => ({
-        sectionTitlePrismic: s.primary?.section_title,
-        sectionTitle: s.primary?.section_title[0]?.text,
-        hash: generateKey(s.primary?.section_title[0]?.text),
-        id: s.id,
-        items: s.items,
-      })) || [])
+    const navigation = ref<ISection[]>([])
 
     const handleUpdateTrigger = (val: string) => {
       selectedQuestion.value = selectedQuestion.value === val ? '' : val
     }
 
     const { fetch } = useFetch(async ({ $cmwRepo }) => {
-      pageData.value = await $cmwRepo.prismic.getPageByUID({
+      const data = await $cmwRepo.prismic.getPageByUID({
         page: 'static-page',
         uid: 'faq',
       })
+
+      pageData.value = data?.body || initialPageData
+
+      navigation.value = data?.body.map((s: any) => ({
+        sectionTitlePrismic: s.primary?.section_title,
+        sectionTitle: s.primary?.section_title[0]?.text,
+        hash: generateKey(s.primary?.section_title[0]?.text),
+        id: s.id,
+        items: s.items,
+      })) || []
     })
 
     const ready = computed(() => false)
@@ -64,7 +65,6 @@ export default defineComponent({
       navigation,
       pageData,
       ready,
-      sections,
       selectedQuestion,
     }
   },
