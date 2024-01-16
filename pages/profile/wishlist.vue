@@ -1,22 +1,24 @@
 <script lang="ts">
 import { computed, onMounted, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import closeIcon from '~/assets/svg/close.svg'
-import { useCustomer } from '~/store/customer'
-import { useCustomerWishlist } from '~/store/customerWishlist'
-import { useFilters } from '~/store/filters'
-import type { IProductMapped } from '~/types/product'
+
 import type { IOptions } from '~/types/types'
+import type { IProductMapped } from '~/types/product'
+
 import { chunkArray } from '~/utilities/arrays'
+import closeIcon from '~/assets/svg/close.svg'
 import { generateKey } from '~/utilities/strings'
 import gridIcon from '~/assets/svg/layout-grid.svg'
 import listIcon from '~/assets/svg/layout-list.svg'
+import { useCustomer } from '~/store/customer'
+import { useCustomerWishlist } from '~/store/customerWishlist'
+import { useFilters } from '~/store/filters'
 
 interface IQueryParams {
   categoryId?: string
   shopifyCustomerId: string
-  sortingDirection: string
-  sortingField?: string
+  sortingDirection: 'ASC' | 'DESC'
+  sortingField?: 'createdat' | 'name' | 'new'
   subcategoryId?: string
   wineListId?: string
 }
@@ -43,7 +45,7 @@ export default {
 
     const queryParams = ref<IQueryParams>({
       shopifyCustomerId: customerId.value,
-      sortingDirection: 'ASC',
+      sortingDirection: 'DESC',
       sortingField: 'createdat',
     })
 
@@ -106,7 +108,7 @@ export default {
     })
 
     // This must be a ref that it will be updated anytime we need to update the query
-    const queryUrl = ref(`/wishlists/full?shopifyCustomerId=${customerId.value}&sortingDirection=ASC&sortingField=createdat`)
+    const queryUrl = ref(`/wishlists/full?shopifyCustomerId=${customerId.value}&sortingDirection=DESC&sortingField=createdat`)
     const wishlistOtherProducts = ref<IProductMapped[]>([])
 
     const chunkSize = 12
@@ -165,7 +167,7 @@ export default {
     const resetFilter = () => {
       queryParams.value = {
         shopifyCustomerId: customerId.value,
-        sortingDirection: 'ASC',
+        sortingDirection: 'DESC',
         sortingField: 'createdat',
       }
 
