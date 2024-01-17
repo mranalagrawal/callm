@@ -93,25 +93,26 @@ export interface IPrismicPageData {
     }
     url: string
   }
-  section: Record<string, any>
-  content: Record<string, any>
   body?: Record<string, any>[]
   box?: Record<string, any>[]
-  text?: any
-  text_sm?: any
-  description?: string
-  newsletter_cta?: string
-  first_check?: string
-  second_check?: string
-  info?: string
-  subtitle?: string
+  content: Record<string, any>
+  copyright?: any
   cta_button?: string
   cta_link?: string
-  shown?: string
-  hidden?: string
-  productor?: Record<string, any>[]
+  description?: string
   featured?: Record<string, any>[]
+  first_check?: string
+  hidden?: string
+  info?: string
   label?: string
+  newsletter_cta?: string
+  productor?: Record<string, any>[]
+  second_check?: string
+  section: Record<string, any>
+  shown?: string
+  subtitle?: string
+  text?: any
+  text_sm?: any
   threshold?: string
   threshold_not_reached?: string
   threshold_reached?: string
