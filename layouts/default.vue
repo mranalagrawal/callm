@@ -56,7 +56,6 @@ export default defineComponent({
 
     useFetch(async ({ $cmwStore, $cookieHelpers }) => {
       await loadMenu($cmwStore.prismicSettings.isoCode[i18n.locale as TISO639])
-      await store.dispatch('user/setUser', {})
       const accessToken = $cookieHelpers.getToken()
       accessToken && await getCustomer()
     })
@@ -67,7 +66,6 @@ export default defineComponent({
     const showAppHeader = computed(() => (isFromApp.value && isHomePage.value))
 
     onMounted(async () => {
-      await store.dispatch('user/setUser', {})
       const cartId = $cookies.get('cartId')
       if (cartId) {
         await handleTemporaryCartReplace(cartId)

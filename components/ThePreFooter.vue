@@ -1,33 +1,36 @@
 <script lang="ts">
 import {
-  computed,
   defineComponent,
   inject,
   onMounted,
-  ref,
-  useStore,
+  ref, useContext,
+  useFetch, watch,
 } from '@nuxtjs/composition-api'
+import { kv } from '@vercel/kv'
+import type { TISO639 } from '~/config/themeConfig'
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
 import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({
   setup() {
+    const { i18n } = useContext()
     const isDesktop = inject('isDesktop')
     const currentItem = ref('')
     const jsIsDisabled = ref(true)
-    const store: any = useStore()
-    const preFooterMenu = computed(() => store.state.preFooterData)
+    const filteredItems = ref<Record<string, any>[]>([])
 
     const handleTriggerClick = (id: string) => {
       currentItem.value = currentItem.value === id ? '' : id
     }
 
-    const filteredItems = computed(() => {
-      // Filter out items with undefined or null name or link values
-      return preFooterMenu.value.map((menuItem: { items: any[]; primary: any }) => {
-        const filteredItems = menuItem.items.filter(
-          (item: { name: null | undefined; link: null | undefined }) => item.name !== null && item.name !== undefined && item.link !== null && item.link !== undefined,
-        )
+    const { fetch } = useFetch(async ({ $i18n, $cmwStore }) => {
+      const locale = $i18n.locale as TISO639
+      const prismicLocale = $cmwStore.prismicSettings.isoCode[locale]
+      const data: any = await kv.get(`prismic/pre-footer/pre-footer-${prismicLocale}`)
+
+      filteredItems.value = data.map((menuItem: { items: any[]; primary: any }) => {
+        const filteredItems = menuItem.items
+          .filter(item => item.name !== null && item.name !== undefined && item.link !== null && item.link !== undefined)
         return {
           primary: menuItem.primary,
           items: filteredItems,
@@ -41,6 +44,8 @@ export default defineComponent({
       }
     })
 
+    watch(() => i18n.locale, () => fetch())
+
     return {
       chevronDownIcon,
       currentItem,
@@ -48,7 +53,6 @@ export default defineComponent({
       handleTriggerClick,
       isDesktop,
       jsIsDisabled,
-      preFooterMenu,
     }
   },
   methods: { generateKey },
@@ -68,11 +72,11 @@ export default defineComponent({
           :class="{ 'border-b-gray': !isDesktop }"
         >
           <component
-            :is="item?.primary?.link ? 'NuxtLink' : 'div'"
-            :to="item?.primary?.link ? localePath(item?.primary?.link) : null"
+            :is="item.primary?.link ? 'NuxtLink' : 'div'"
+            :to="item.primary?.link ? localePath(item.primary.link) : null"
             class="block overline-2 text-secondary-700 text-uppercase text-sm pl-2 py-2 select-none"
           >
-            {{ item?.primary?.title }}
+            {{ item.primary?.title }}
           </component>
           <button
             type="button"

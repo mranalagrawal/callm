@@ -1,16 +1,16 @@
 <script lang="ts">
-import { computed, defineComponent, useStore } from '@nuxtjs/composition-api'
+import { defineComponent } from '@nuxtjs/composition-api'
 
 export default defineComponent({
-  setup() {
-    const store: any = useStore()
-    const socialLinks = computed(() => store.state.footerData.socialLinks)
-    const mobileApps = computed(() => store.state.footerData.mobileApps)
-
-    return {
-      mobileApps,
-      socialLinks,
-    }
+  props: {
+    mobileApps: {
+      type: Array,
+      required: true,
+    },
+    socialLinks: {
+      type: Array,
+      required: true,
+    },
   },
 })
 </script>

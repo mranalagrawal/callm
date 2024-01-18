@@ -1,15 +1,16 @@
 <script lang="ts">
 import walletIcon from 'assets/svg/wallet.svg'
-import { computed, useStore } from '@nuxtjs/composition-api'
 import { generateKey } from '~/utilities/strings'
 
 export default {
+  props: {
+    paymentMethods: {
+      type: Array,
+      required: true,
+    },
+  },
   setup() {
-    const store: any = useStore()
-    const paymentMethods = computed(() => store.state.footerData.paymentMethods)
-
     return {
-      paymentMethods,
       walletIcon,
       generateKey,
     }
