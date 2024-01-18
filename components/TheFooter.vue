@@ -13,10 +13,12 @@ export default defineComponent({
     const store: any = useStore()
     const route = useRoute()
     const isDesktop = inject('isDesktop') as Ref<boolean>
+    const footerCopyright = computed(() => store.state.footerData.copyright)
     const isFromApp = computed(() => store.state.headers.fromApp)
     const isHomePage = computed(() => getRouteBaseName(route.value) === 'index')
 
     return {
+      footerCopyright,
       isDesktop,
       isFromApp,
       isHomePage,
@@ -170,7 +172,11 @@ export default defineComponent({
         <FooterPaymentMethods />
 
         <hr class="bg-secondary-800 my-4 border-0 h-px">
-        <FooterCopyright />
+        <PrismicRichText
+          v-if="footerCopyright"
+          class="sm:w-[min(100%,_80%)] m-inline-auto prose dark text-secondary-100 text-center text-xs"
+          :field="footerCopyright"
+        />
       </div>
     </div>
   </footer>
