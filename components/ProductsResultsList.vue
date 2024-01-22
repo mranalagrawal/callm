@@ -5,8 +5,6 @@ import { storeToRefs } from 'pinia'
 import type { ObjType } from '~/types/types'
 import { useFilters } from '~/store/filters'
 import type { IProductMapped } from '~/types/product'
-import gridIcon from '~/assets/svg/layout-grid.svg'
-import listIcon from '~/assets/svg/layout-list.svg'
 
 export default defineComponent({
   props: {
@@ -71,14 +69,8 @@ export default defineComponent({
       return mappedProducts
     })
 
-    const getLayoutIcon = (layout: 'grid' | 'list') => ({
-      grid: gridIcon,
-      list: listIcon,
-    }[layout] || gridIcon)
-
     return {
       availableLayouts,
-      getLayoutIcon,
       handleUpdateSortTrigger,
       handleUpdateSortValue,
       isDesktop,
@@ -97,30 +89,30 @@ export default defineComponent({
         <div>
           <strong>{{ total }}</strong> <span>{{ $tc('search.results', Number(total)) }}</span>
         </div>
-        <div class="hidden items-center mr-auto gap-2 lg:flex">
+        <div class="flex items-center mr-auto gap-2">
           <div
-            v-for="layout in availableLayouts"
-            :key="layout"
+            v-for="({ icon, key }) in availableLayouts"
+            :key="key"
             class="relative"
           >
             <input
-              :id="layout"
+              :id="key"
               v-model="selectedLayout"
-              :aria-label="`select ${layout}`"
+              :aria-label="`select ${key}`"
               class="peer appearance-none absolute w-full h-full z-dante"
               type="radio"
               name="layout"
-              :value="layout"
+              :value="key"
             >
             <label
-              :for="layout"
+              :for="key"
               class="
               flex rounded-sm shadow p-[0.40rem] mb-0 bg-white cursor-pointer
               peer-checked:(bg-gray-lightest shadow-none)"
             >
               <VueSvgIcon
                 class="m-auto"
-                :data="getLayoutIcon(layout)"
+                :data="icon"
                 width="20"
                 height="20"
                 color="#992545"
@@ -167,7 +159,7 @@ export default defineComponent({
           </template>
         </CmwDropdown>
       </div>
-      <div v-if="selectedLayout === 'list' && isDesktop">
+      <div v-if="selectedLayout === 'list'">
         <div
           v-for="(result, idx) in mappedProducts"
           :key="result.shopify_product_id"

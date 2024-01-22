@@ -769,7 +769,6 @@ export default defineComponent({
         />
 
         <ClientOnly>
-          {{ product.source_id }}
           <VendorProducts :vendor="brand.title" :tag="product.source_id" :vendor-fe-id="productDetails.brandId" />
           <RecommendedProducts :id="product.shopify_product_id" />
           <RecentProducts :current-product="product.source_id" />

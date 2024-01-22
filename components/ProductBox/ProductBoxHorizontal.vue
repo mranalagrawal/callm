@@ -318,8 +318,9 @@ export default defineComponent({
 <template>
   <div
     v-if="templateProduct.shopify_product_id"
-    class="relative transition transition-box-shadow bg-white rounded-sm border border-gray-light p-2 grid grid-cols-[220px_auto_320px]
-hover:shadow-elevation"
+    class="relative transition transition-box-shadow bg-white rounded-sm border border-gray-light p-2
+     grid grid-cols-[1fr_2fr] lg:grid-cols-[220px_auto_320px]
+     hover:shadow-elevation"
     :data-sku="templateProduct.sku"
   >
     <!-- Image Section -->
@@ -388,7 +389,7 @@ hover:shadow-elevation"
         </div>
       </div>
       <div
-        class="grid gap-x-8 gap-y-2 grid-cols-[auto_1fr] text-sm"
+        class="hidden md:grid gap-x-8 gap-y-2 grid-cols-[auto_1fr] text-sm"
         :class="{
           'opacity-50': !product.availableForSale,
           'my-8': templateProduct.tbd?.grapes || templateProduct.tbd?.regionName || templateProduct.tbd?.size?.id,
@@ -423,14 +424,14 @@ hover:shadow-elevation"
       <!-- <div>{{ product.description }}</div>
       <div>{{ product.descriptionHtml }}</div> -->
       <div
-        class="c-productBox__desc mb-4 line-clamp-6"
+        class="hidden lg:block c-productBox__desc mb-4 line-clamp-6"
         :class="{ 'opacity-50': !templateProduct.availableForSale }"
         v-html="stripHtml(templateProduct.tbd.description)"
       />
       <ProductUserRatingDescription v-if="customerId" :product-id="`${templateProduct.details.feId}`" @submit-comment="handleStarAndCustomerCommentClick" />
     </div>
     <!-- CTA Section -->
-    <div class="relative flex">
+    <div class="relative flex <lg:col-span-full">
       <div class="m-auto text-center w-full px-4">
         <p
           v-if="!!templateProduct.quantityAvailable && templateProduct.quantityAvailable < 6"
@@ -534,7 +535,7 @@ hover:shadow-elevation"
           <small v-if="$cmwStore.isDe" class="text-gray">Inkl. MwSt. Und St.</small>
         </div>
       </div>
-      <div class="absolute transform top-px left-1/2 -translate-x-1/2 -translate-y-1/2">
+      <div class="hidden lg:block absolute transform top-px left-1/2 -translate-x-1/2 -translate-y-1/2">
         <CardLapel v-if="isOnSale" />
       </div>
     </div>
