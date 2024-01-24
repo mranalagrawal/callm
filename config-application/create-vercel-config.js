@@ -34,6 +34,16 @@ const config = {
       destination: 'https://blog-stage.callmewine.com/',
     },
     {
+      source: '/blog/',
+      has: [
+        {
+          value: '.*stage.*',
+          type: 'host',
+        },
+      ],
+      destination: 'https://blog-stage.callmewine.com/',
+    },
+    {
       source: '/blog/:match*/',
       has: [
         {
@@ -55,6 +65,16 @@ const config = {
     },
     {
       source: '/blog',
+      missing: [
+        {
+          value: '.*stage.*',
+          type: 'host',
+        },
+      ],
+      destination: 'https://blog.callmewine.com/',
+    },
+    {
+      source: '/blog/',
       missing: [
         {
           value: '.*stage.*',
