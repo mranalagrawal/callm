@@ -1,0 +1,17 @@
+#import "~/graphql/fragments/cart.graphql"
+
+mutation cartCreate(
+  $input: CartInput!,
+  $lang: LanguageCode!
+) @inContext(language: $lang) {
+  cartCreate(input: $input) {
+    cart {
+      ...CART_FRAGMENT
+    }
+    userErrors {
+      code
+      field
+      message
+    }
+  }
+}

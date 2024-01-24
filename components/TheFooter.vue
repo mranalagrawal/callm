@@ -2,23 +2,47 @@
 import type { Ref } from '@nuxtjs/composition-api'
 import {
   computed,
-  defineComponent,
-  inject, useContext, useRoute, useStore,
+  defineComponent, inject,
+  ref,
+  useContext,
+  useFetch, useRoute, useStore, watch,
 } from '@nuxtjs/composition-api'
+import { kv } from '@vercel/kv'
 import logo from 'assets/svg/logo-call-me-wine.svg'
+import type { TISO639 } from '~/config/themeConfig'
 
 export default defineComponent({
   setup() {
-    const { getRouteBaseName } = useContext()
+    const { getRouteBaseName, i18n } = useContext()
     const store: any = useStore()
     const route = useRoute()
     const isDesktop = inject('isDesktop') as Ref<boolean>
-    const footerCopyright = computed(() => store.state.footerData.copyright)
+    const footerData = ref({
+      copyright: [],
+      mobileApps: [],
+      paymentMethods: [],
+      socialLinks: [],
+    })
     const isFromApp = computed(() => store.state.headers.fromApp)
     const isHomePage = computed(() => getRouteBaseName(route.value) === 'index')
 
+    const { fetch } = useFetch(async ({ $cmwStore }) => {
+      const locale = i18n.locale as TISO639
+      const prismicLocale = $cmwStore.prismicSettings.isoCode[locale]
+      const data: any = await kv.get(`prismic/footer/footer-${prismicLocale}`)
+
+      footerData.value = {
+        copyright: data.copyright,
+        mobileApps: (data['mobile-apps'] ? data['mobile-apps'][0]?.items : []) || [],
+        paymentMethods: (data['payment-methods'] ? data['payment-methods'][0]?.items : []) || [],
+        socialLinks: (data['social-links'] ? data['social-links'][0]?.items : []) || [],
+      }
+    })
+
+    watch(() => i18n.locale, () => fetch())
+
     return {
-      footerCopyright,
+      footerData,
       isDesktop,
       isFromApp,
       isHomePage,
@@ -165,17 +189,17 @@ export default defineComponent({
             </div>
           </div>
         </div>
-        <FooterSocials />
+        <FooterSocials :mobile-apps="footerData.mobileApps" :social-links="footerData.socialLinks" />
 
         <hr class="bg-secondary-800 my-4 border-0 h-px">
 
-        <FooterPaymentMethods />
+        <FooterPaymentMethods :payment-methods="footerData.paymentMethods" />
 
         <hr class="bg-secondary-800 my-4 border-0 h-px">
         <PrismicRichText
-          v-if="footerCopyright"
+          v-if="!!footerData.copyright.length"
           class="sm:w-[min(100%,_80%)] m-inline-auto prose dark text-secondary-100 text-center text-xs"
-          :field="footerCopyright"
+          :field="footerData.copyright"
         />
       </div>
     </div>

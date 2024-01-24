@@ -1,0 +1,34 @@
+#import "~/graphql/fragments/attributes.graphql"
+#import "~/graphql/fragments/image.graphql"
+
+fragment CART_FRAGMENT on Cart {
+  buyerIdentity { countryCode }
+  checkoutUrl
+  createdAt
+  id
+  note
+  lines(first: 50) {
+    nodes {
+      attributes { ...ATTRIBUTES_FRAGMENT }
+      id
+      quantity
+      merchandise {
+        ...on ProductVariant {
+          id
+          price { amount, currencyCode }
+          quantityAvailable
+          product {
+            id
+            details: metafield(namespace: "custom", key: "details") { value }
+            featuredImage {...IMAGE_FRAGMENT}
+            isGiftCard
+            title
+            totalInventory,
+          }
+          sku
+          title
+        }
+      }
+    }
+  }
+}

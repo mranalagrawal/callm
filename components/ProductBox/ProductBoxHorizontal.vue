@@ -1,30 +1,32 @@
 <script lang="ts">
 import {
-  type PropType,
   computed,
   defineComponent,
+  type PropType,
   ref,
   useContext,
   useFetch,
   useRoute,
   useRouter,
 } from '@nuxtjs/composition-api'
-import addIcon from 'assets/svg/add.svg'
-import cartIcon from 'assets/svg/cart.svg'
-import closeIcon from 'assets/svg/close.svg'
-import emailIcon from 'assets/svg/email.svg'
-import heartFullIcon from 'assets/svg/heart-full.svg'
-import heartIcon from 'assets/svg/heart.svg'
-import subtractIcon from 'assets/svg/subtract.svg'
 import { storeToRefs } from 'pinia'
-import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
-import { useCheckout } from '~/store/checkout'
+
+import type { IProductMapped } from '~/types/product'
+
+import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
+import addIcon from '~/assets/svg/add.svg'
+import cartIcon from '~/assets/svg/cart.svg'
+import closeIcon from '~/assets/svg/close.svg'
+import emailIcon from '~/assets/svg/email.svg'
+import heartFullIcon from '~/assets/svg/heart-full.svg'
+import heartIcon from '~/assets/svg/heart.svg'
+import { stripHtml } from '~/utilities/strings'
+import subtractIcon from '~/assets/svg/subtract.svg'
+import { SweetAlertToast } from '~/utilities/Swal'
+import { useCart } from '~/store/cart'
 import { useCustomer } from '~/store/customer'
 import { useCustomerWishlist } from '~/store/customerWishlist'
-import type { IProductMapped } from '~/types/product'
-import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
-import { stripHtml } from '~/utilities/strings'
-import { SweetAlertToast } from '~/utilities/Swal'
+import useShowRequestModal from '~/components/ProductBox/useShowRequestModal'
 
 export default defineComponent({
   name: 'ProductBoxHorizontal',
@@ -57,8 +59,8 @@ export default defineComponent({
     } = storeToRefs(useCustomer())
 
     const { wishlistArr } = storeToRefs(useCustomerWishlist())
-    const { checkout } = storeToRefs(useCheckout())
-    const { checkoutCreate, checkoutLineItemsAdd, checkoutLineItemsUpdate } = useCheckout()
+    const { cart } = storeToRefs(useCart())
+    const { cartCreate, cartLinesAdd, cartLinesUpdate } = useCart()
     const { handleWishlist } = useCustomerWishlist()
     const { handleShowRequestModal } = useShowRequestModal()
     const router = useRouter()
@@ -118,7 +120,7 @@ export default defineComponent({
 
     const isOnCart = computed(() => {
       const currentProduct = mappedRelatedVintage.value || props.product
-      return checkout.value.lineItems.find(el => el.variant.id === currentProduct.shopify_product_variant_id)
+      return cart.value.lines.find(el => el.merchandise.id === currentProduct.shopify_product_variant_id)
     })
 
     const cartQuantity = computed(() => isOnCart.value ? isOnCart.value.quantity : 0)
@@ -151,27 +153,27 @@ export default defineComponent({
       })
     }
 
-    const removeProductFromCustomerCheckout = async () => {
+    const removeProductFromCustomerCart = async () => {
       if (cartQuantity.value < 1) {
         return
       }
 
       const currentProduct = mappedRelatedVintage.value || props.product
 
-      const currentLineItem = checkout.value.lineItems.find(el => el.variant.id === currentProduct.shopify_product_variant_id)
+      const currentLineItem = cart.value.lines.find(el => el.merchandise.id === currentProduct.shopify_product_variant_id)
 
       if (!currentLineItem) {
         return
       }
 
       const lineItems = [{
-        customAttributes: currentLineItem.customAttributes,
+        attributes: currentLineItem.attributes,
         id: currentLineItem.id,
         quantity: +currentLineItem.quantity - 1,
-        variantId: currentLineItem.variant.id,
+        merchandiseId: currentLineItem.merchandise.id,
       }]
 
-      await checkoutLineItemsUpdate(checkout.value.id, lineItems, true)
+      await cartLinesUpdate(cart.value.id, lineItems, true)
     }
 
     const handleStarAndCustomerCommentClick = ({ score = null, description = '' }) => {
@@ -216,11 +218,12 @@ export default defineComponent({
       addIcon,
       amountMax,
       canAddMore,
+      cart,
+      cartCreate,
       cartIcon,
+      cartLinesAdd,
+      cartLinesUpdate,
       cartQuantity,
-      checkout,
-      checkoutCreate,
-      checkoutLineItemsAdd,
       closeIcon,
       customer,
       customerId,
@@ -242,7 +245,7 @@ export default defineComponent({
       mappedRelatedVintage,
       notActive,
       priceByLiter,
-      removeProductFromCustomerCheckout,
+      removeProductFromCustomerCart,
       subtractIcon,
       templateProduct,
     }
@@ -251,7 +254,7 @@ export default defineComponent({
     stripHtml,
     getLocaleFromCurrencyCode,
     getCountryFromStore,
-    async addProductToCustomerCheckout() {
+    async addProductToCustomerCart() {
       this.isOpen = true
 
       // check for availability
@@ -265,14 +268,14 @@ export default defineComponent({
 
       const currentProduct = this.mappedRelatedVintage || this.product
 
-      const checkoutCreateInput = {
+      const cartInput = {
         buyerIdentity: {
           countryCode: getCountryFromStore(this.$cmwStore.settings.store),
+          ...(this.customer.email && { email: this.customer.email }),
         },
-        ...(this.customer.email && { email: this.customer.email }),
-        note: this.checkout.note,
-        lineItems: [{
-          customAttributes: [
+        note: this.cart.note,
+        lines: [{
+          attributes: [
             {
               key: 'gtmProductData',
               value: currentProduct.gtmProductData ? JSON.stringify(currentProduct.gtmProductData) : 'false',
@@ -283,18 +286,18 @@ export default defineComponent({
             },
           ],
           quantity: 1,
-          variantId: currentProduct.shopify_product_variant_id,
+          merchandiseId: currentProduct.shopify_product_variant_id,
         }],
       }
 
-      if (!this.checkout.id) {
-        await this.checkoutCreate({
-          ...checkoutCreateInput,
-          lineItems: [],
+      if (!this.cart.id) {
+        await this.cartCreate({
+          ...cartInput,
+          lines: [],
         })
       }
 
-      this.checkoutLineItemsAdd(this.checkout.id, checkoutCreateInput.lineItems)
+      this.cartLinesAdd(this.cart.id, cartInput.lines)
         .then(async () => {
           // Fixme: make flashMessage work along with typescript or use a better plugin
           /* @ts-expect-error flashMessage doesn't seem to handle typescript */
@@ -302,7 +305,7 @@ export default defineComponent({
             status: '',
             message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${currentProduct.title}` }),
             icon: currentProduct.image.source.url,
-            iconClass: 'bg-transparent ',
+            iconClass: 'bg-transparent',
             time: 4000,
             blockClass: 'add-product-notification',
           })
@@ -467,7 +470,7 @@ hover:shadow-elevation"
             <CmwButton
               class="gap-2 pl-2 pr-3 py-2"
               :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
-              @click.native="addProductToCustomerCheckout"
+              @click.native="addProductToCustomerCart"
             >
               <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
               <span class="text-sm" v-text="$t('common.cta.addToCart')" />
@@ -485,7 +488,7 @@ hover:shadow-elevation"
               <button
                 class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l hover:(bg-primary)"
                 :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
-                @click="removeProductFromCustomerCheckout"
+                @click="removeProductFromCustomerCart"
               >
                 <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="white" />
               </button>
@@ -498,7 +501,7 @@ hover:shadow-elevation"
                   disabled:(bg-primary-100 cursor-not-allowed)"
                 :disabled="!canAddMore"
                 :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
-                @click="addProductToCustomerCheckout"
+                @click="addProductToCustomerCart"
               >
                 <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
               </button>

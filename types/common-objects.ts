@@ -10,3 +10,8 @@ export interface IMoneyV2 {
 export type ITranslations = {
   [key in TISO639]: string
 }
+
+export interface IAttribute {
+  key: string
+  value: string
+}

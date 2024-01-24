@@ -1,19 +1,21 @@
 <script lang="ts">
-import type { PropType } from '@nuxtjs/composition-api'
 import { computed, defineComponent, ref, useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import { useCheckout } from '~/store/checkout'
-import { useCustomer } from '~/store/customer'
+
+import type { PropType } from '@nuxtjs/composition-api'
 import type { ILineItem, IOrder } from '~/types/order'
+
+import chevronDownIcon from '~/assets/svg/chevron-down.svg'
+import OrderCardLineItem from '~/components/UserProfile/OrderCardLineItem.vue'
+import OrderCardSummary from '~/components/UserProfile/OrderCardSummary.vue'
 import OrderReceiptPrint from '~/components/UserProfile/OrderReceiptPrint.vue'
 
 import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
-import OrderCardSummary from '~/components/UserProfile/OrderCardSummary.vue'
-import OrderCardLineItem from '~/components/UserProfile/OrderCardLineItem.vue'
 import { generateKey } from '~/utilities/strings'
-import { useSplash } from '~/store/splash'
+import { useCart } from '~/store/cart'
+import { useCustomer } from '~/store/customer'
 import { useCustomerOrders } from '~/store/customerOrders'
-import chevronDownIcon from '~/assets/svg/chevron-down.svg'
+import { useSplash } from '~/store/splash'
 
 export default defineComponent({
   components: {
@@ -43,8 +45,8 @@ export default defineComponent({
     const splash = useSplash()
     const { customer } = storeToRefs(useCustomer())
     const customerOrders = useCustomerOrders()
-    const { checkout } = storeToRefs(useCheckout())
-    const { checkoutCreate, checkoutLineItemsAdd, checkoutLineItemsUpdate } = useCheckout()
+    const { cart } = storeToRefs(useCart())
+    const { cartCreate, cartLinesAdd, cartLinesUpdate } = useCart()
     const upperButton = ref<HTMLElement | null>(null)
     const { iso } = i18n.localeProperties
 
@@ -118,39 +120,39 @@ export default defineComponent({
 
     const handleReorderProducts = async () => {
       // If there's no cart create one
-      if (!checkout.value?.id) {
-        const checkoutCreateInput = {
+      if (!cart.value?.id) {
+        const cartInput = {
           buyerIdentity: {
             countryCode: getCountryFromStore($cmwStore.settings.store),
+            ...(customer.value.email && { email: customer.value.email }),
           },
-          ...(customer.value.email && { email: customer.value.email }),
         }
-        await checkoutCreate(checkoutCreateInput)
+        await cartCreate(cartInput)
       }
 
       // Check every Item in orderLineItems,
-      const checkoutLineItems = checkout.value.lineItems || []
+      const lines = cart.value.lines || []
 
       // Separate line items into alreadyInCheckoutItems and notInCheckoutItems
-      const { alreadyInCheckoutItems, notInCheckoutItems } = orderLineItems.value.reduce(
+      const { alreadyInCartItems, notInCheckoutItems } = orderLineItems.value.reduce(
         (result: any, orderLineItem: ILineItem) => {
-          const checkoutLineItem = checkoutLineItems.find(
-            checkoutItem => checkoutItem.variant.id === orderLineItem.variant.id,
+          const checkoutLineItem = lines.find(
+            checkoutItem => checkoutItem.merchandise.id === orderLineItem.variant.id,
           )
 
           if (checkoutLineItem) {
-            // If the line item is the same, add it to alreadyInCheckoutItems
-            result.alreadyInCheckoutItems.push({
-              customAttributes: checkoutLineItem.customAttributes,
+            // If the line item is the same, add it to alreadyInCartItems
+            result.alreadyInCartItems.push({
+              attributes: checkoutLineItem.attributes,
               id: checkoutLineItem.id,
               quantity: checkoutLineItem.quantity + orderLineItem.quantity,
-              variantId: checkoutLineItem.variant.id,
+              merchandiseId: checkoutLineItem.merchandise.id,
             })
           } else {
             // If the line item is not in the checkout, add it to notInCheckoutItems
             const gtmProductData = $productMapping.getGtmProductDataFromCartLine(orderLineItem.variant.product)
             result.notInCheckoutItems.push({
-              customAttributes: [
+              attributes: [
                 {
                   key: 'gtmProductData',
                   value: gtmProductData ? JSON.stringify(gtmProductData) : 'false',
@@ -161,29 +163,29 @@ export default defineComponent({
                 },
               ],
               quantity: orderLineItem.quantity,
-              variantId: orderLineItem.variant.id,
+              merchandiseId: orderLineItem.variant.id,
             })
           }
 
           return result
         },
-        { alreadyInCheckoutItems: [], notInCheckoutItems: [] },
+        { alreadyInCartItems: [], notInCheckoutItems: [] },
       )
 
       if (notInCheckoutItems.length) {
-        await checkoutLineItemsAdd(checkout.value.id, notInCheckoutItems)
+        await cartLinesAdd(cart.value.id, notInCheckoutItems)
       }
 
-      if (alreadyInCheckoutItems.length) {
-        await checkoutLineItemsUpdate(checkout.value.id, alreadyInCheckoutItems)
+      if (alreadyInCartItems.length) {
+        await cartLinesUpdate(cart.value.id, alreadyInCartItems)
       }
     }
 
     return {
       afterEnter,
       canBuyAgain,
-      checkoutLineItemsAdd,
-      checkoutLineItemsUpdate,
+      cartLinesAdd,
+      cartLinesUpdate,
       chevronDownIcon,
       customer,
       handleClick,

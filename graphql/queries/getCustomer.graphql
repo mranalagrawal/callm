@@ -1,28 +1,9 @@
+#import "~/graphql/fragments/customer.graphql"
+
 query getCustomer($customerAccessToken: String!, $lang: LanguageCode!)
 @inContext(language: $lang) {
   customer(customerAccessToken: $customerAccessToken) {
-    id
-    firstName
-    lastName
-    acceptsMarketing
-    email
-    phone
-    tags
-    lastIncompleteCheckout {
-      id
-    }
-    billing: metafield(namespace: "custom", key: "billing") {
-      value
-    }
-    wishlist: metafield(namespace: "custom", key: "wishlist") {
-      value
-    }
-    newsletterFrequency: metafield(namespace: "custom", key: "newsletter_frequency") {
-      value
-    }
-    approved: metafield(namespace: "custom", key: "b2b_approved") {
-      value
-    }
+    ...CUSTOMER_FRAGMENT
     addresses(first: 30) {
       edges {
         node {

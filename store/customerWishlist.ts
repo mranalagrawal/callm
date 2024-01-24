@@ -1,16 +1,19 @@
 import { defineStore } from 'pinia'
 import { useCustomer } from '~/store/customer'
-import type { IProductRating } from '~/types/product'
+
 import type { IOptions, ObjType } from '~/types/types'
-import { getIconAsImg } from '~/utilities/icons'
+import type { IProductRating } from '~/types/product'
+
 import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
+import { getCustomerId } from '~/utilities/shopify'
+import { getIconAsImg } from '~/utilities/icons'
 
 interface IState {
   customerWishlistProducts: IProductRating[]
   elements: any[]
   filteredElements: any[]
   filters: {
-    categoriesFilters: {
+    categoryFilters: {
       'id': number
       'name': string
       'subcategories': {
@@ -32,7 +35,7 @@ export const useCustomerWishlist = defineStore({
     customerWishlistProducts: [],
     elements: [],
     filteredElements: [],
-    filters: { categoriesFilters: [], wineListsFilters: [] },
+    filters: { categoryFilters: [], wineListsFilters: [] },
     wishlistShopifyProducts: [],
   }),
 
@@ -56,14 +59,14 @@ export const useCustomerWishlist = defineStore({
       return this.wishlistArr.length
     },
 
-    categoriesFilters: (state): IOptions[] =>
-      state.filters.categoriesFilters?.map(({ id: categoryId, name: label }) => ({
+    categoryFilters: (state): IOptions[] =>
+      state.filters.categoryFilters?.map(({ id: categoryId, name: label }) => ({
         value: JSON.stringify({ categoryId }),
         label,
       })) || [],
 
-    subcategoriesFilters: (state): IOptions[] =>
-      state.filters.categoriesFilters?.map(({ id: categoryId, subcategories }) =>
+    subcategoryFilters: (state): IOptions[] =>
+      state.filters.categoryFilters?.map(({ id: categoryId, subcategories }) =>
         subcategories?.map(({ id: subcategoryId, name: label }) => ({
           value: JSON.stringify({ categoryId, subcategoryId }),
           label,
@@ -80,7 +83,7 @@ export const useCustomerWishlist = defineStore({
   actions: {
     async getCustomerWishlist(id: string) {
       const { customer } = useCustomer()
-      const customerId = id || `${customer.id}`.substring(`${customer.id}`.lastIndexOf('/') + 1)
+      const customerId = id || getCustomerId(customer.id)
 
       await this.$nuxt.$cmw.$get(`/wishlists/full?shopifyCustomerId=${customerId}&sortingDirection=ASC&sortingField=createdat`)
         .then(({ data, responseCode }: any) => {

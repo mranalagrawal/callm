@@ -1,10 +1,5 @@
-import type { IMoneyV2 } from '~/types/common-objects'
+import type { IAttribute, IMoneyV2 } from '~/types/common-objects'
 import type { IShopifyProductVariant } from '~/types/product'
-
-interface IAttribute {
-  key: string
-  value: string
-}
 
 /* The input fields for the identity of the customer associated with the checkout. */
 interface CheckoutBuyerIdentityInput {

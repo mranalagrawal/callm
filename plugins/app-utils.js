@@ -1,11 +1,11 @@
 import { storeToRefs } from 'pinia'
-import { useCheckout } from '~/store/checkout'
+import { useCart } from '~/store/cart'
 
 export default (context) => {
-  const checkoutStore = useCheckout()
-  const { checkoutTotalQuantity: quantity } = storeToRefs(useCheckout())
+  const cartStore = useCart()
+  const { cartTotalQuantity: quantity } = storeToRefs(useCart())
 
-  checkoutStore.$subscribe(() => {
+  cartStore.$subscribe(() => {
     if (window.ReactNativeWebView) {
       window.ReactNativeWebView.postMessage(JSON.stringify({
         type: 'cartQuantityUpdate',

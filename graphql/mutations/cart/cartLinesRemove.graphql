@@ -1,0 +1,16 @@
+#import "~/graphql/fragments/cart.graphql"
+
+mutation cartLinesRemove(
+  $cartId: ID!
+  $lineIds: [ID!]!
+  $lang: LanguageCode!
+) @inContext(language: $lang) {
+  cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+    cart {
+      ...CART_FRAGMENT
+    }
+    userErrors {
+      message
+    }
+  }
+}

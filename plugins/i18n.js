@@ -22,7 +22,5 @@ export default function ({ app }) {
     localeChanged()
 
     await loadMenu(prismicLocale)
-    await app.store.dispatch('loadFooter')
-    await app.store.dispatch('loadPreFooter')
   }
 }

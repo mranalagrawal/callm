@@ -43,6 +43,13 @@ type CustomerUpdatePayload {
   customerUserErrors: DisplayableError
 }
 
+type CartCreatePayload {
+  # The new cart.
+  cart: Cart
+  # The list of errors that occurred from executing the mutation.
+  userErrors: [CartUserError!]!
+}
+
 type CartNoteUpdatePayload {
   # The updated cart.
   cart: Cart
@@ -75,7 +82,7 @@ type CheckoutCreatePayload {
   # The new checkout object.
   checkout: Checkout
   # The list of errors that occurred from executing the mutation.
-  checkoutUserErrors:  [CheckoutUserError!]!
+  checkoutUserErrors: [CheckoutUserError!]!
   # The checkout queue token. Available only to selected stores.
   queueToken:String
 }

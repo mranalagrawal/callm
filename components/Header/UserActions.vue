@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia'
 import heartIcon from '~/assets/svg/heart.svg'
 import userIcon from '~/assets/svg/user.svg'
 import cartIcon from '~/assets/svg/cart.svg'
-import { useCheckout } from '~/store/checkout'
+import { useCart } from '~/store/cart'
 import { useCustomer } from '~/store/customer'
 import { useCustomerWishlist } from '~/store/customerWishlist'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
@@ -19,7 +19,7 @@ export default {
     const customerStore = useCustomer()
     const { customer, getCustomerType } = storeToRefs(customerStore)
     const { favoritesCount } = storeToRefs(useCustomerWishlist())
-    const { checkoutTotalPrice, checkoutTotalQuantity } = storeToRefs(useCheckout())
+    const { cartTotalPrice, cartTotalQuantity } = storeToRefs(useCart())
 
     const currentComponent = ref<TComponents>('')
     const hoveringAction = ref(false)
@@ -60,7 +60,7 @@ export default {
       login: 'HeaderLogin',
     })[k]
 
-    const computedCheckoutTotalPrice = computed(() => checkoutTotalPrice.value($cmwStore.settings.salesChannel, getCustomerType.value))
+    const computedCartTotalPrice = computed(() => cartTotalPrice.value($cmwStore.settings.salesChannel, getCustomerType.value))
     const localeFromCurrency = getLocaleFromCurrencyCode($cmwStore.isUk ? 'GBP' : 'EUR')
 
     watch(() => route.value, () => {
@@ -69,8 +69,8 @@ export default {
 
     return {
       cartIcon,
-      checkoutTotalQuantity,
-      computedCheckoutTotalPrice,
+      cartTotalQuantity,
+      computedCartTotalPrice,
       currentComponent,
       customer,
       customerStore,
@@ -144,10 +144,10 @@ export default {
         @mouseleave="handleUserActionMouseLeave"
       >
         <span class="flex gap-1 items-center">
-          <span v-if="checkoutTotalQuantity">
+          <span v-if="cartTotalQuantity">
             <span class="block text-xxs text-left mb-1">{{ $t('cartTotal') }}</span>
             <i18n-n
-              class="flex items-end leading-none" :value="Number(computedCheckoutTotalPrice)"
+              class="flex items-end leading-none" :value="Number(computedCartTotalPrice)"
               :format="{ key: 'currency' }"
               :locale="localeFromCurrency"
             >
@@ -173,14 +173,14 @@ export default {
               height="32px"
             />
             <span
-              v-if="!checkoutTotalQuantity"
+              v-if="!cartTotalQuantity"
               class="block my-0 cmw-font-light text-sm"
             >
               {{ $t('cart') }}
             </span>
             <Badge
-              v-if="checkoutTotalQuantity"
-              :qty="checkoutTotalQuantity"
+              v-if="cartTotalQuantity"
+              :qty="cartTotalQuantity"
               :bg-color="currentComponent === 'cart' ? 'white' : 'primary-400'"
               class="transform absolute top-[-10px] right-[-10px]"
             />

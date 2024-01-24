@@ -15,6 +15,14 @@ module.exports = {
         ignoreTemplateLiterals: true,
       },
     ],
+    // TODO: Implement sorting rules
+    'sort-imports': ['warn', {
+      ignoreCase: true,
+      ignoreDeclarationSort: false,
+      ignoreMemberSort: false,
+      memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
+      allowSeparatedGroups: true,
+    }],
     'import/first': 'off',
     'camelcase': 0,
     'no-console': ['warn', { allow: ['warn', 'error'] }],

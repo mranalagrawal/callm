@@ -10,44 +10,46 @@ import {
   useRoute,
   watch,
 } from '@nuxtjs/composition-api'
-import addIcon from 'assets/svg/add.svg'
-import cartIcon from 'assets/svg/cart.svg'
-import emailIcon from 'assets/svg/email.svg'
-import heartFullIcon from 'assets/svg/heart-full.svg'
-import heartIcon from 'assets/svg/heart.svg'
-import subtractIcon from 'assets/svg/subtract.svg'
 import { storeToRefs } from 'pinia'
-import { SweetAlertToast } from '@/utilities/Swal'
-import { getCountryFromStore, getCurrencySymbol, getLocaleFromCurrencyCode, getPercent } from '@/utilities/currency'
-import { useRecentProductsStore } from '@/store/recent'
-import { useCustomer } from '@/store/customer'
-import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
-import favouriteIcon from '~/assets/svg/selections/favourite.svg'
-import getArticles from '~/graphql/queries/getArticles'
-import { useCheckout } from '~/store/checkout'
-import { useCustomerWishlist } from '~/store/customerWishlist'
+
 import { generateKey, stripHtmlAnchors } from '~/utilities/strings'
+import { getCountryFromStore, getCurrencySymbol, getLocaleFromCurrencyCode, getPercent } from '~/utilities/currency'
+import addIcon from '~/assets/svg/add.svg'
+import cartIcon from '~/assets/svg/cart.svg'
+import emailIcon from '~/assets/svg/email.svg'
+import favouriteIcon from '~/assets/svg/selections/favourite.svg'
+import heartFullIcon from '~/assets/svg/heart-full.svg'
+import heartIcon from '~/assets/svg/heart.svg'
+import subtractIcon from '~/assets/svg/subtract.svg'
+import { SweetAlertToast } from '~/utilities/Swal'
+
+import getArticles from '~/graphql/queries/getArticles'
+import { useCart } from '~/store/cart'
+import { useCustomer } from '~/store/customer'
+import { useCustomerWishlist } from '~/store/customerWishlist'
+import { useRecentProductsStore } from '~/store/recent'
+import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
 
 export default defineComponent({
   setup() {
     if (process.client) { window.scrollTo(0, 0) }
 
     const {
-      i18n,
+      $cmwGtmUtils,
+      $cmwRepo,
+      $cmwStore,
       $config,
       $graphql,
-      $cmwStore,
-      $cmwRepo,
-      error,
-      redirect,
-      localeLocation,
-      $cmwGtmUtils,
       $productMapping,
+      error,
+      i18n,
+      localeLocation,
+      redirect,
       req,
     } = useContext()
     const customerStore = useCustomer()
-    const { checkout } = storeToRefs(useCheckout())
-    const { checkoutCreate, checkoutLineItemsAdd, checkoutLineItemsUpdate } = useCheckout()
+    const { cart } = storeToRefs(useCart())
+    const { cartLinesAdd, cartLinesUpdate, cartCreate } = useCart()
     const isDesktop = inject('isDesktop')
     const recentProductsStore = useRecentProductsStore()
     const { recentProducts } = storeToRefs(recentProductsStore)
@@ -225,7 +227,7 @@ export default defineComponent({
     })
 
     const isOnCart = computed(() =>
-      checkout.value.lineItems.find(el => el.variant.id === product.value.shopify_product_variant_id))
+      cart.value.lines.find(el => el.merchandise.id === product.value.shopify_product_variant_id))
 
     const cartQuantity = computed(() => isOnCart.value ? isOnCart.value.quantity : 0)
 
@@ -250,25 +252,23 @@ export default defineComponent({
       price: finalPrice.value,
     }))
 
-    const removeProductFromCustomerCheckout = async () => {
+    const removeProductFromCustomerCart = async () => {
       if (cartQuantity.value < 1) {
         return
       }
 
-      const currentLineItem = checkout.value.lineItems.find(el => el.variant.id === product.value.shopify_product_variant_id)
+      const currentLineItem = cart.value.lines.find(el => el.merchandise.id === product.value.shopify_product_variant_id)
 
-      if (!currentLineItem) {
-        return
-      }
+      if (!currentLineItem) { return }
 
       const lineItems = [{
-        customAttributes: currentLineItem.customAttributes,
+        attributes: currentLineItem.attributes,
         id: currentLineItem.id,
         quantity: +currentLineItem.quantity - 1,
-        variantId: currentLineItem.variant.id,
+        merchandiseId: currentLineItem.merchandise.id,
       }]
 
-      await checkoutLineItemsUpdate(checkout.value.id, lineItems, true)
+      await cartLinesUpdate(cart.value.id, lineItems, true)
     }
 
     const generateMetaLink = (arr = []) => {
@@ -323,11 +323,11 @@ export default defineComponent({
       brand,
       brandMetaFields,
       canAddMore,
+      cart,
+      cartCreate,
       cartIcon,
+      cartLinesAdd,
       cartQuantity,
-      checkout,
-      checkoutCreate,
-      checkoutLineItemsAdd,
       customer,
       customerId,
       emailIcon,
@@ -352,7 +352,7 @@ export default defineComponent({
       productBreadcrumbs,
       productDetails,
       productVariant,
-      removeProductFromCustomerCheckout,
+      removeProductFromCustomerCart,
       showKlarna,
       showRequestModal,
       showScalaPay,
@@ -367,7 +367,7 @@ export default defineComponent({
     generateKey,
     getPercent,
     getLocaleFromCurrencyCode,
-    async addProductToCustomerCheckout() {
+    async addProductToCustomerCart() {
       this.isOpen = true
 
       // check for availability
@@ -379,14 +379,14 @@ export default defineComponent({
         return
       }
 
-      const checkoutCreateInput = {
+      const cartInput = {
         buyerIdentity: {
           countryCode: getCountryFromStore(this.$cmwStore.settings.store),
+          ...(this.customer.email && { email: this.customer.email }),
         },
-        ...(this.customer.email && { email: this.customer.email }),
-        note: this.checkout.note,
-        lineItems: [{
-          customAttributes: [
+        note: this.cart.note,
+        lines: [{
+          attributes: [
             {
               key: 'gtmProductData',
               value: this.product.gtmProductData ? JSON.stringify(this.product.gtmProductData) : 'false',
@@ -396,19 +396,19 @@ export default defineComponent({
               value: (this.product.tags) ? this.product.tags.includes('BUNDLE').toString() : 'false',
             },
           ],
-          quantity: this.product.quantity || 1,
-          variantId: this.product.shopify_product_variant_id,
+          quantity: 1,
+          merchandiseId: this.product.shopify_product_variant_id,
         }],
       }
 
-      if (!this.checkout.id) {
-        await this.checkoutCreate({
-          ...checkoutCreateInput,
-          lineItems: [],
+      if (!this.cart.id) {
+        await this.cartCreate({
+          ...cartInput,
+          lines: [],
         })
       }
 
-      this.checkoutLineItemsAdd(this.checkout.id, checkoutCreateInput.lineItems)
+      this.cartLinesAdd(this.cart.id, cartInput.lines)
         .then(async () => {
           this.flashMessage.show({
             status: '',
@@ -644,7 +644,7 @@ export default defineComponent({
                       <CmwButton
                         class="gap-2 pl-2 pr-3 py-2"
                         :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
-                        @click.native="addProductToCustomerCheckout"
+                        @click.native="addProductToCustomerCart"
                       >
                         <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
                         <span class="text-sm" v-text="isDesktop ? $t('common.cta.addToCart') : $t('common.cta.addToCartSm')" />
@@ -662,7 +662,7 @@ export default defineComponent({
                         <button
                           class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l hover:(bg-primary)"
                           :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
-                          @click="removeProductFromCustomerCheckout"
+                          @click="removeProductFromCustomerCart"
                         >
                           <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="white" />
                         </button>
@@ -675,7 +675,7 @@ export default defineComponent({
                           disabled:(bg-primary-100 cursor-not-allowed)"
                           :disabled="!canAddMore"
                           :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
-                          @click="addProductToCustomerCheckout"
+                          @click="addProductToCustomerCart"
                         >
                           <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
                         </button>
@@ -685,7 +685,7 @@ export default defineComponent({
                       <CmwButton
                         class="gap-2 pl-2 pr-3 py-2"
                         :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
-                        @click.native="addProductToCustomerCheckout"
+                        @click.native="addProductToCustomerCart"
                       >
                         <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
                         <span class="text-sm" v-text="isDesktop ? $t('common.cta.addToCart') : $t('common.cta.addToCartSm')" />
@@ -703,7 +703,7 @@ export default defineComponent({
                         <button
                           class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l hover:(bg-primary)"
                           :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
-                          @click="removeProductFromCustomerCheckout"
+                          @click="removeProductFromCustomerCart"
                         >
                           <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="white" />
                         </button>
@@ -716,7 +716,7 @@ export default defineComponent({
                               disabled:(bg-primary-100 cursor-not-allowed)"
                           :disabled="!canAddMore"
                           :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
-                          @click="addProductToCustomerCheckout"
+                          @click="addProductToCustomerCart"
                         >
                           <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
                         </button>
@@ -769,6 +769,7 @@ export default defineComponent({
         />
 
         <ClientOnly>
+          {{ product.source_id }}
           <VendorProducts :vendor="brand.title" :tag="product.source_id" :vendor-fe-id="productDetails.brandId" />
           <RecommendedProducts :id="product.shopify_product_id" />
           <RecentProducts :current-product="product.source_id" />

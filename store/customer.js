@@ -1,12 +1,16 @@
 import { defineStore } from 'pinia'
-import themeConfig from '~/config/themeConfig'
+import { getCustomerId } from '~/utilities/shopify'
+
+import { awaitPromise, djb2Hash } from '~/utilities/strings'
+import { SweetAlertToast } from '~/utilities/Swal'
+import { useCart } from '~/store/cart'
 import { useCheckout } from '~/store/checkout'
 import { useCustomerOrders } from '~/store/customerOrders.ts'
 import { useCustomerWishlist } from '~/store/customerWishlist'
-import { djb2Hash } from '~/utilities/strings'
-import { SweetAlertToast } from '~/utilities/Swal'
+
 import customerAccessTokenCreate from '~/graphql/mutations/authenticateUser'
 import customerAccessTokenCreateWithMultipass from '~/graphql/mutations/authenticateUserWithMultipass'
+import themeConfig from '~/config/themeConfig'
 
 // Note: Backend should use enums here 'GOLD' | 'B2B' | 'MAIN', this way we could simplify this to an array
 const availableUsers = {
@@ -25,13 +29,15 @@ export const useCustomer = defineStore({
       email: '',
       firstName: '',
       id: '',
+      isCheckoutMigrated: { value: false },
+      lastIncompleteCart: { value: { id: '' } },
       lastIncompleteCheckout: { id: '' },
       lastName: '',
       newsletterFrequency: { value: '' },
       orders_count: '',
       phone: '',
-      total_spent: '',
       tags: [],
+      total_spent: '',
     },
     // FixMe: on Nuxt 3 or using GraphQl local storage properly we shouldn't need this,
     //  we need to reduce the extra objects and relay on the state,
@@ -49,7 +55,9 @@ export const useCustomer = defineStore({
 
   getters: {
     customerId: (state) => {
-      return `${state.customer.id}`.substring(`${state.customer.id}`.lastIndexOf('/') + 1)
+      if (!state.customer.id) { return '' }
+
+      return getCustomerId(state.customer.id)
     },
     getCustomerType: (state) => {
       const userType = (state.customer.tags && state.customer.tags.find(k => Object.keys(availableUsers).includes(k))) || 'main'
@@ -125,13 +133,12 @@ export const useCustomer = defineStore({
     },
 
     async getCustomer(event = '') {
-      this.$nuxt.store.dispatch('user/setUser', {})
       await this.$nuxt.$cmwRepo.customer.getCustomer()
         .then(async ({ customer }) => {
-          if (customer) {
+          if (customer?.id) {
             // Todo: Implement shopify customerAccessTokenRenew
             const customerAccessToken = this.$nuxt.$cookieHelpers.getToken()
-            const customerId = `${customer.id}`.substring(`${customer.id}`.lastIndexOf('/') + 1)
+            const customerId = await awaitPromise(300).then(() => getCustomerId(customer.id))
             this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
 
             await this.$nuxt.$cmw.$get(`/customers/${customerId}/user-info`)
@@ -154,7 +161,7 @@ export const useCustomer = defineStore({
               approved,
             })
 
-            if (this.$nuxt.$config.STORE === 'B2B' && approved) {
+            if (this.$nuxt.$cmwStore.isB2b && approved) {
               const hashedValue = djb2Hash(this.$nuxt.$cookieHelpers.getToken())
               this.$nuxt.$cookies.set('b2b-approved', hashedValue, {
                 sameSite: 'none',
@@ -162,24 +169,32 @@ export const useCustomer = defineStore({
               })
             }
 
-            this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
             const customerWishlistStore = useCustomerWishlist()
+            const cartStore = useCart()
             await customerWishlistStore.getCustomerWishlist(customerId)
+            const cartIdCookie = this.$nuxt.$cookies.get('cartId')
+            const lastIncompleteCart = customer.lastIncompleteCart?.value && JSON.parse(customer.lastIncompleteCart?.value)
 
-            const checkoutId = this.$nuxt.$cookies.get('checkoutId')
-
-            if (checkoutId) {
-              const { getCheckoutById, mergeCheckoutStoreWithCheckout } = useCheckout()
-              await getCheckoutById(checkoutId)
-
-              if (customer.lastIncompleteCheckout?.id && customer.lastIncompleteCheckout.id !== checkoutId) {
-                await mergeCheckoutStoreWithCheckout(customer.lastIncompleteCheckout.id)
+            if (cartIdCookie) {
+              if (customer.lastIncompleteCheckout?.id && !customer.isCheckoutMigrated?.value) {
+                await cartStore.mergeCartCookieWithCheckoutId(customer.lastIncompleteCheckout?.id, cartIdCookie)
+                await this.$nuxt.$cmw.$post(`/customers/${customerId}/set-checkout-migrated`)
+              } else if (lastIncompleteCart?.id && lastIncompleteCart?.id !== cartIdCookie) {
+                await cartStore.mergeCartCookieWithLastIncompleteCart(lastIncompleteCart, cartIdCookie)
+              } else {
+                await cartStore.getCartById(cartIdCookie)
               }
-            }
+            } else {
+              if (customer.lastIncompleteCheckout?.id && !lastIncompleteCart?.id && !customer.isCheckoutMigrated?.value) {
+                const checkout = await useCheckout().getCheckoutById(customer.lastIncompleteCheckout?.id)
 
-            if (!checkoutId && customer.lastIncompleteCheckout?.id) {
-              const { getCheckoutById } = useCheckout()
-              await getCheckoutById(customer.lastIncompleteCheckout.id)
+                if (checkout) {
+                  await cartStore.mutateShopifyCheckoutIntoCart(checkout)
+                  await this.$nuxt.$cmw.$post(`/customers/${customerId}/set-checkout-migrated`)
+                }
+              } else if (lastIncompleteCart?.id) {
+                await cartStore.getCartById(lastIncompleteCart.id)
+              }
             }
 
             if (event) {
@@ -209,6 +224,8 @@ export const useCustomer = defineStore({
     async logout() {
       const customerOrders = useCustomerOrders()
       const checkoutStore = useCheckout()
+      const cartStore = useCart()
+
       this.$nuxt.$gtm.push({
         event: 'logout',
         userType: themeConfig[this.$nuxt.$config.STORE].customerType,
@@ -218,13 +235,15 @@ export const useCustomer = defineStore({
         userEmail: this.customer.email,
         userPhone: this.customer.phone,
       })
-      await this.$nuxt.store.dispatch('user/setUser', {})
       this.$nuxt.$cookieHelpers.onLogout()
       this.$reset()
       customerOrders.$reset()
       // TODO: Create a fresh checkout and add current items to it
       checkoutStore.$reset()
+      cartStore.$reset()
+
       this.$nuxt.$cookies.remove('checkoutId')
+      this.$nuxt.$cookies.remove('cartId')
       this.$nuxt.$cookies.remove('newsletter')
       this.$nuxt.$cookies.remove('b2b-approved')
       this.$nuxt.$graphql.default.setHeader('authorization', '')
