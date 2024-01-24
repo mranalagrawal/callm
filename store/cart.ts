@@ -201,6 +201,14 @@ export const useCart = defineStore({
             this.setMappedCart(cart)
             await this.saveCartOnCustomerMetafield(cart)
             // this.$nuxt.$cookies.remove('checkoutId')
+          } else {
+            const { field } = userErrors[0]
+
+            // Check if the property field array contains 'quantity'
+            if (field.includes('quantity') && cart?.id) {
+              // Retry cartCreate with the quantity of the lineItems reduced by limit
+              await this.getCartById(cart.id)
+            }
           }
         })
     },
