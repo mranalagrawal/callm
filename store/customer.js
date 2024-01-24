@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
-import { getCustomerId } from '~/utilities/shopify'
 
 import { awaitPromise, djb2Hash } from '~/utilities/strings'
+import { getCustomerId } from '~/utilities/shopify'
 import { SweetAlertToast } from '~/utilities/Swal'
 import { useCart } from '~/store/cart'
 import { useCheckout } from '~/store/checkout'
@@ -157,9 +157,7 @@ export const useCustomer = defineStore({
               })
             }
 
-            const customerWishlistStore = useCustomerWishlist()
             const cartStore = useCart()
-            await customerWishlistStore.getCustomerWishlist(customerId)
             const cartIdCookie = this.$nuxt.$cookies.get('cartId')
             const lastIncompleteCart = customer.lastIncompleteCart?.value && JSON.parse(customer.lastIncompleteCart?.value)
 
@@ -211,6 +209,7 @@ export const useCustomer = defineStore({
 
     async logout() {
       const customerOrders = useCustomerOrders()
+      const customerWishlist = useCustomerWishlist()
       const checkoutStore = useCheckout()
       const cartStore = useCart()
 
@@ -226,6 +225,7 @@ export const useCustomer = defineStore({
       this.$nuxt.$cookieHelpers.onLogout()
       this.$reset()
       customerOrders.$reset()
+      customerWishlist.$reset()
       // TODO: Create a fresh checkout and add current items to it
       checkoutStore.$reset()
       cartStore.$reset()

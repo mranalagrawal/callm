@@ -1,24 +1,25 @@
 <script lang="ts">
-import { computed, ref, useContext, useRoute, useRouter, watch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref, useContext, useRoute, useRouter, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import heartIcon from '~/assets/svg/heart.svg'
-import userIcon from '~/assets/svg/user.svg'
+
 import cartIcon from '~/assets/svg/cart.svg'
+import CustomerWishlist from '~/components/Header/CustomerWishlist.vue'
+import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { useCart } from '~/store/cart'
 import { useCustomer } from '~/store/customer'
-import { useCustomerWishlist } from '~/store/customerWishlist'
-import { getLocaleFromCurrencyCode } from '~/utilities/currency'
+import userIcon from '~/assets/svg/user.svg'
 
 type TComponents = 'login' | 'cart' | ''
-export default {
+
+export default defineComponent({
   name: 'UserActions',
+  components: { CustomerWishlist },
   setup() {
     const { $cmwStore, localePath } = useContext()
     const route = useRoute()
     const router = useRouter()
     const customerStore = useCustomer()
     const { customer, getCustomerType } = storeToRefs(customerStore)
-    const { favoritesCount } = storeToRefs(useCustomerWishlist())
     const { cartTotalPrice, cartTotalQuantity } = storeToRefs(useCart())
 
     const currentComponent = ref<TComponents>('')
@@ -74,49 +75,22 @@ export default {
       currentComponent,
       customer,
       customerStore,
-      favoritesCount,
       handleMouseAction,
       handleUserActionMouseEnter,
       handleUserActionMouseLeave,
       handleUserClick,
-      heartIcon,
       localeFromCurrency,
       lookUpComponent,
       userIcon,
     }
   },
-}
+})
 </script>
 
 <template>
   <div class="relative">
     <div class="relative flex">
-      <NuxtLink
-        v-if="customer.id"
-        :to="localePath('/profile/wishlist')"
-        class="peer transition-colors rounded py-3 px-6 bg-white text-center text-body hover:(bg-primary-900 text-white)"
-        @mouseenter.native="handleUserActionMouseEnter('')"
-        @mouseleave.native="handleUserActionMouseLeave"
-      >
-        <span class="relative">
-          <VueSvgIcon
-            class="block"
-            :data="heartIcon"
-            width="32px"
-            height="32px"
-          />
-          <span
-            class="block my-0 cmw-font-light text-sm"
-            v-text="$t('navbar.favorites')"
-          />
-          <Badge
-            v-if="favoritesCount"
-            :qty="favoritesCount"
-            bg-color="primary-400"
-            class="transform absolute top-[-6px] right-[-4px]"
-          />
-        </span>
-      </NuxtLink>
+      <CustomerWishlist v-if="customer.id" />
       <button
         class="transition-colors rounded-t py-3 px-6 bg-white hover:(bg-primary-900 text-white)"
         :class="{ 'bg-primary-900 text-white': currentComponent === 'login' }"
