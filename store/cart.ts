@@ -225,8 +225,8 @@ export const useCart = defineStore({
     },
 
     async mutateShopifyCheckoutIntoCart(checkout: IShopifyCheckout) {
-      const lines = checkout.lineItems.nodes?.map((line: any) => ({
-        attributes: line.attributes,
+      const lines = checkout.lineItems.nodes?.map(line => ({
+        attributes: line.customAttributes,
         quantity: line.quantity,
         merchandiseId: line.variant.id,
       }))
