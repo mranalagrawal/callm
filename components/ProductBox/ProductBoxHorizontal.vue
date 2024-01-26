@@ -389,7 +389,7 @@ export default defineComponent({
         </div>
       </div>
       <div
-        class="hidden md:grid gap-x-8 gap-y-2 grid-cols-[auto_1fr] text-sm"
+        class="grid md:(grid-cols-[auto_1fr] gap-x-8 gap-y-2) text-sm"
         :class="{
           'opacity-50': !product.availableForSale,
           'my-8': templateProduct.tbd?.grapes || templateProduct.tbd?.regionName || templateProduct.tbd?.size?.id,
@@ -405,7 +405,7 @@ export default defineComponent({
         </div>
         <div
           v-if="templateProduct.tbd?.regionName"
-          class="cmw-font-bold"
+          class="<md:mt-2 cmw-font-bold"
           v-text="$t('product.regionCountry')"
         />
         <div v-if="templateProduct.tbd?.regionName">
@@ -413,7 +413,7 @@ export default defineComponent({
         </div>
         <div
           v-if="templateProduct.tbd?.size"
-          class="cmw-font-bold"
+          class="<md:mt-2 cmw-font-bold"
           v-text="$t('product.size')"
         />
         <div v-if="templateProduct.tbd?.size">
@@ -424,7 +424,7 @@ export default defineComponent({
       <!-- <div>{{ product.description }}</div>
       <div>{{ product.descriptionHtml }}</div> -->
       <div
-        class="hidden lg:block c-productBox__desc mb-4 lg:line-clamp-6"
+        class="c-productBox__desc mb-4 line-clamp-6"
         :class="{ 'opacity-50': !templateProduct.availableForSale }"
         v-html="stripHtml(templateProduct.tbd.description)"
       />
