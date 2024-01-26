@@ -424,7 +424,7 @@ export default defineComponent({
       <!-- <div>{{ product.description }}</div>
       <div>{{ product.descriptionHtml }}</div> -->
       <div
-        class="hidden lg:block c-productBox__desc mb-4 line-clamp-6"
+        class="hidden lg:block c-productBox__desc mb-4 lg:line-clamp-6"
         :class="{ 'opacity-50': !templateProduct.availableForSale }"
         v-html="stripHtml(templateProduct.tbd.description)"
       />
