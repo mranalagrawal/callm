@@ -128,7 +128,7 @@ export default defineComponent({
     <div v-html="collectionRef.descriptionHtml" />
 
     <div v-if="!!sortedProducts?.length">
-      <div class="hidden items-center gap-2 lg:flex">
+      <div class="hidden items-center gap-2">
         <!-- Todo: Implement availableLayouts when we can use the newest product box -->
         <!--        <div
           v-for="layout in availableLayouts"

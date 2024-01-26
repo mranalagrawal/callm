@@ -35,7 +35,8 @@ export default defineComponent({
         label: i18n.t('common.filters.sort.price.highest'),
         value: 'highestPrice',
       },
-    ]) // processed_at:>2022-12-01
+    ])
+
     const selectedLabel = computed(() => {
       const selectedItem = sort.value.find(period => period.value === selectedSort.value)
       return selectedItem?.label
@@ -105,29 +106,29 @@ export default defineComponent({
           <span>{{ selectedLabel }}</span>
         </CmwSelect> -->
       </div>
-      <div class="hidden items-center gap-2 lg:flex">
+      <div class="flex items-center gap-2">
         <div
-          v-for="layout in availableLayouts"
-          :key="layout"
+          v-for="({ icon, key }) in availableLayouts"
+          :key="key"
           class="relative"
         >
           <input
-            :id="layout"
+            :id="key"
             v-model="selectedLayout"
             class="peer appearance-none absolute w-full h-full z-dante"
             type="radio"
             name="layout"
-            :value="layout"
+            :value="key"
           >
           <label
-            :for="layout"
+            :for="key"
             class="
               flex rounded-sm shadow p-[0.40rem] mb-0 bg-white cursor-pointer
               peer-checked:(bg-gray-lightest shadow-none)"
           >
             <VueSvgIcon
               class="m-auto"
-              :data="require(`@/assets/svg/layout-${layout}.svg`)"
+              :data="icon"
               width="20"
               height="20"
               color="#992545"
@@ -148,19 +149,17 @@ export default defineComponent({
         v-if="!!customerProducts.length"
         class="p-4"
       >
-        <template v-if="selectedLayout === 'list' && isDesktop">
+        <template v-if="selectedLayout === 'list'">
           <div
             v-for="product in customerProducts"
             :key="product.id"
             class="mb-4"
           >
-            <ProductBoxHorizontal :product="product" :is-desktop="isDesktop" />
+            <ProductBoxHorizontal :product="product" />
           </div>
         </template>
         <template v-else>
-          <div
-            class="products-grid"
-          >
+          <div class="products-grid">
             <ProductBoxVertical
               v-for="product in customerProducts"
               :key="product.id"

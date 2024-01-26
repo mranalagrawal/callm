@@ -28,7 +28,7 @@ export default defineComponent({
     const route = useRoute()
     const router = useRouter()
     const filtersStore = useFilters()
-    const { selectedLayout, availableLayouts } = storeToRefs(filtersStore)
+    const { selectedLayout } = storeToRefs(filtersStore)
     const isDesktop = inject('isDesktop')
     const showPageFullDescription = ref(false)
     const showMoreFilters = ref(false)
@@ -548,7 +548,6 @@ export default defineComponent({
       activeSelections,
       aggregations,
       allSelections,
-      availableLayouts,
       canonicalUrl,
       chevronDownIcon,
       closeIcon,

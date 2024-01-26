@@ -8,8 +8,8 @@ import { sortArrayByNumber } from '~/utilities/arrays'
 export default {
   props: ['vendor', 'tag', 'vendorFeId'],
   setup(props: any) {
-    const { selectedLayout, availableLayouts } = storeToRefs(useFilters())
-    const productsRef = ref<IProductMapped[]>([])
+    const { selectedLayout } = storeToRefs(useFilters())
+    const productRef = ref<IProductMapped[]>([])
     const isDesktop = inject('isDesktop')
     const { vendor: vendorRef, tag } = toRefs(props)
     const query = computed(() => {
@@ -27,8 +27,8 @@ export default {
       })
         .then(async ({ products = { nodes: [] } }) => {
           if (products.nodes.length) {
-            productsRef.value = $productMapping.fromShopify(products.nodes)
-            productsRef.value = sortArrayByNumber(productsRef.value, 'availableForSale', 'desc')
+            productRef.value = $productMapping.fromShopify(products.nodes)
+            productRef.value = sortArrayByNumber(productRef.value, 'availableForSale', 'desc')
           }
         })
         .catch((err: Error) => {
@@ -39,9 +39,8 @@ export default {
     watch(() => query.value, () => fetch())
 
     return {
-      availableLayouts,
       isDesktop,
-      productsRef,
+      productRef,
       selectedLayout,
       vendorRef,
     }
@@ -56,9 +55,9 @@ export default {
     </p>
     <div v-else class="max-w-screen-xl mx-auto py-4 px-4 mt-4">
       <div class="h2 text-center py-4" v-text="$t('sameProducer')" />
-      <div v-if="selectedLayout === 'list' && isDesktop">
+      <div v-if="selectedLayout === 'list'">
         <div
-          v-for="(result, idx) in productsRef"
+          v-for="(result, idx) in productRef"
           :key="result.shopify_product_id"
           class="mb-4"
         >
@@ -69,7 +68,7 @@ export default {
         v-else class="products-grid"
       >
         <div
-          v-for="(result, idx) in productsRef"
+          v-for="(result, idx) in productRef"
           :key="`desktop${result.shopify_product_id}`"
         >
           <ProductBoxVertical :product="result" :position="idx + 1" />
