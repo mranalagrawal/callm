@@ -77,14 +77,14 @@ const cmwGtm: Plugin = ({ $cmwStore, $config, $gtm, getRouteBaseName }, inject) 
     return {
       userLogStatus: customer.value.firstName ? 'logged' : 'not_logged',
       ...(customer.value.firstName && {
-        userType: themeConfig[store]?.customerType, // getCustomerType.value,
-        userId: customer.value.id,
-        userFirstName: customer.value.firstName,
-        userLastName: customer.value.lastName,
         userEmail: customer.value.email,
+        userFirstName: customer.value.firstName,
+        userId: customer.value.id,
+        userLastName: customer.value.lastName,
         userPhone: customer.value.phone,
-        userPurchasesCount: customer.value.orders_count, // Note: We don't have this info on Store because we only get it at my-orders
-        userPurchasesTot: customer.value.total_spent,
+        userPurchasesCount: customer.value.numberOfOrders,
+        userPurchasesTot: customer.value.amountSpend.value,
+        userType: themeConfig[store]?.customerType, // getCustomerType.value,
       }),
     }
   }
