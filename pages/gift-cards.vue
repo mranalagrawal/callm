@@ -205,7 +205,7 @@ export default defineComponent({
           countryCode: getCountryFromStore(this.$cmwStore.settings.store),
           ...(this.customer.email && { email: this.customer.email }),
         },
-        note: this.cart.note,
+        note: this.cart.note ?? '',
         lines: [{
           attributes: [
             {
@@ -225,7 +225,7 @@ export default defineComponent({
       if (!this.cart.id) {
         await this.cartCreate({
           ...cartInput,
-          lineItems: [],
+          lines: [],
         })
       }
 

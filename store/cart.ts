@@ -197,7 +197,7 @@ export const useCart = defineStore({
       window.location.href = redirectUrl.toString()
     },
 
-    async cartCreate(input: any) {
+    async cartCreate(input: IShopifyCartInput) {
       await this.$nuxt.$graphql.default
         .request(cartCreate, {
           lang: this.$nuxt.app.i18n.locale.toUpperCase(),
@@ -209,7 +209,6 @@ export const useCart = defineStore({
           if (!userErrors.length) {
             this.setMappedCart(cart)
             await this.saveCartOnCustomerMetafield(cart)
-            // this.$nuxt.$cookies.remove('checkoutId')
           } else {
             const { field } = userErrors[0]
 
@@ -241,7 +240,7 @@ export const useCart = defineStore({
       }))
       const { customer } = useCustomer()
 
-      const cartInput = {
+      const cartInput: IShopifyCartInput = {
         buyerIdentity: {
           countryCode: getCountryFromStore(this.$nuxt.$cmwStore.settings.store),
           ...(customer.email && { email: customer.email }),
@@ -369,10 +368,10 @@ export const useCart = defineStore({
         return acc
       }, [...CheckoutOnCookieCartInput.lines]) // Use the initial value as a copy of CheckoutOnCookieCartInput.lines
 
-      const mergedCartInput = {
+      const mergedCartInput: IShopifyCartInput = {
         buyerIdentity: lastIncompleteCart.buyerIdentity,
         lines: mergedCartLines,
-        note: lastIncompleteCart.note,
+        note: lastIncompleteCart.note ?? '',
       }
 
       // Create a new cart with the mergedCartInput
@@ -409,7 +408,7 @@ export const useCart = defineStore({
         })
     },
 
-    async cartLinesUpdate(cartId: string, lines: any[], isRemoving = false) {
+    async cartLinesUpdate(cartId: string, lines: IShopifyCartInput['lines'], isRemoving = false) {
       await this.$nuxt.$graphql.default
         .request(cartLinesUpdate, {
           lang: this.$nuxt.app.i18n.locale.toUpperCase(),
@@ -507,7 +506,7 @@ export const useCart = defineStore({
         })
     },
 
-    async saveCartOnCustomerMetafield(cart: any) {
+    async saveCartOnCustomerMetafield(cart: IShopifyCart) {
       const customerStore = useCustomer()
       const { customer } = customerStore
 
