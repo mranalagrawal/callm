@@ -82,11 +82,19 @@ export interface IShopifyCartLineInput {
   sellingPlanId?: string
 }
 
+export interface IShopifyCartLineUpdateInput {
+  attributes: IAttribute[]
+  id: string
+  merchandiseId: string
+  quantity: number
+  sellingPlanId?: string
+}
+
 // The input fields to create a cart.
 export interface IShopifyCartInput {
   attributes?: IAttribute[]
   buyerIdentity?: CartBuyerIdentity
-  discountCodes?: String[]
+  discountCodes?: string[]
   lines: IShopifyCartLineInput[] // [CartLineInput!]
   metafields?: string // [CartInputMetafieldInput!]
   note?: string

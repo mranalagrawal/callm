@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { useCustomer } from '~/store/customer'
 
-import type { ICartLinesMapped, ICartMapped, IShopifyCart, IShopifyCartInput, IShopifyCartLineInput } from '~/types/cart'
+import type { ICartLinesMapped, ICartMapped, IShopifyCart, IShopifyCartInput, IShopifyCartLineInput, IShopifyCartLineUpdateInput } from '~/types/cart'
 import type { IProductMapped } from '~/types/product'
 import type { IShopifyCheckout } from '~/types/checkout'
 import type { TSalesChannel } from '~/config/themeConfig'
@@ -13,7 +13,7 @@ import cartLinesUpdate from '~/graphql/mutations/cart/cartLinesUpdate.graphql'
 import cartNoteUpdate from '~/graphql/mutations/cartNoteUpdate.graphql'
 import getProductsById from '~/graphql/queries/getProductsById.graphql'
 
-import { getCheckoutHostname } from '~/utilities/shopify'
+import { getCheckoutHostname, getCustomerId } from '~/utilities/shopify'
 import { getCountryFromStore } from '~/utilities/currency'
 import { SweetAlertToast } from '~/utilities/Swal'
 
@@ -408,7 +408,7 @@ export const useCart = defineStore({
         })
     },
 
-    async cartLinesUpdate(cartId: string, lines: IShopifyCartInput['lines'], isRemoving = false) {
+    async cartLinesUpdate(cartId: string, lines: IShopifyCartLineUpdateInput[], isRemoving = false) {
       await this.$nuxt.$graphql.default
         .request(cartLinesUpdate, {
           lang: this.$nuxt.app.i18n.locale.toUpperCase(),
@@ -500,10 +500,34 @@ export const useCart = defineStore({
             return
           }
 
-          this.setMappedCart(cart)
-          this.checkSuitableGift(cart)
-          this.saveCartOnCustomerMetafield(cart)
+          const emptyAttribute = cart.lines.nodes.some((line: any) => !line.attributes.length)
+
+          if (emptyAttribute) {
+            this.fillCartLineAttributes(cart)
+          } else {
+            this.setMappedCart(cart)
+            this.checkSuitableGift(cart)
+            this.saveCartOnCustomerMetafield(cart)
+          }
         })
+    },
+
+    fillCartLineAttributes(cart: IShopifyCart) {
+      const updatedCartLinesInput: IShopifyCartLineUpdateInput[] = cart.lines.nodes.map(line => ({
+        attributes: !line.attributes.length
+          ? [
+              {
+                key: 'bundle',
+                value: (line.merchandise.product?.tags.includes('BUNDLE')).toString(),
+              },
+            ]
+          : line.attributes,
+        id: line.id,
+        quantity: line.quantity,
+        merchandiseId: line.merchandise.id,
+      }))
+
+      this.cartLinesUpdate(cart.id, updatedCartLinesInput)
     },
 
     async saveCartOnCustomerMetafield(cart: IShopifyCart) {
@@ -513,7 +537,7 @@ export const useCart = defineStore({
       if (!customer.id) { return }
 
       const customerAccessToken = this.$nuxt.$cookieHelpers.getToken()
-      const customerId = `${customer.id}`.substring(`${customer.id}`.lastIndexOf('/') + 1)
+      const customerId = getCustomerId(customer.id)
       this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
 
       await this.$nuxt.$cmw.$post(`/customers/${customerId}/last-incomplete-cart`, {
