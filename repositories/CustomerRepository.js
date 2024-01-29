@@ -2,6 +2,7 @@ import customerUpdate from '~/graphql/mutations/customer/customerUpdate'
 import getCart from '@/graphql/queries/getCart'
 import getCheckoutById from '@/graphql/queries/getCheckoutById'
 import getCustomer from '@/graphql/queries/getCustomer'
+import { SweetAlertToast } from '~/utilities/Swal'
 
 export default ctx => ({
   async getCustomer() {
@@ -13,8 +14,11 @@ export default ctx => ({
 
       return { customer }
     } catch (e) {
-      // TODO: maybe implement sentry in the future
-      throw new Error(ctx.$i18n.t('feedback.KO.unknown').toString())
+      SweetAlertToast.fire({
+        icon: 'error',
+        text: e.response?.errors[0]?.message || ctx.i18n.t('common.feedback.KO.unknown').toString(),
+      })
+      return { customer: null }
     }
   },
 
@@ -28,7 +32,11 @@ export default ctx => ({
 
       return { cart }
     } catch (e) {
-      throw new Error(ctx.$i18n.t('feedback.KO.unknown').toString())
+      SweetAlertToast.fire({
+        icon: 'error',
+        text: e.response?.errors[0]?.message || ctx.i18n.t('common.feedback.KO.unknown').toString(),
+      })
+      return { cart: null }
     }
   },
 
@@ -41,7 +49,11 @@ export default ctx => ({
 
       return { node }
     } catch (e) {
-      throw new Error(ctx.$i18n.t('feedback.KO.unknown').toString())
+      SweetAlertToast.fire({
+        icon: 'error',
+        text: e.response?.errors[0]?.message || ctx.i18n.t('common.feedback.KO.unknown').toString(),
+      })
+      return { node: null }
     }
   },
 

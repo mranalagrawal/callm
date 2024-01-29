@@ -214,7 +214,7 @@ export default defineComponent({
             },
             {
               key: 'bundle',
-              value: (this.giftCardVariantSelected.tags) ? this.product?.tags.includes('BUNDLE').toString() : 'false',
+              value: (this.giftCardVariantSelected.tags) ? (this.product?.tags.includes('BUNDLE') ?? false).toString() : 'false',
             },
           ],
           quantity: 1,

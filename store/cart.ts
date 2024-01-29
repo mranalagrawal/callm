@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { useCustomer } from '~/store/customer'
 
-import type { ICartLinesMapped, ICartMapped, IShopifyCart } from '~/types/cart'
+import type { ICartLinesMapped, ICartMapped, IShopifyCart, IShopifyCartInput, IShopifyCartLineInput } from '~/types/cart'
 import type { IProductMapped } from '~/types/product'
 import type { IShopifyCheckout } from '~/types/checkout'
 import type { TSalesChannel } from '~/config/themeConfig'
@@ -20,6 +20,16 @@ import { SweetAlertToast } from '~/utilities/Swal'
 interface IState {
   cart: ICartMapped
   suitableGift: IProductMapped | undefined
+}
+
+const parseGtmProductData = (item: IShopifyCartLineInput | ICartLinesMapped) => {
+  const gtmProductData = item.attributes.find(el => el.key === 'gtmProductData')
+
+  if (gtmProductData) {
+    return JSON.parse(gtmProductData.value)
+  } else {
+    return { id: 'missing gtmProductData' }
+  }
 }
 
 export const useCart = defineStore({
@@ -83,7 +93,6 @@ export const useCart = defineStore({
         buyerIdentity: cart.buyerIdentity,
         checkoutUrl: cart.checkoutUrl,
         createdAt: cart.createdAt,
-        // email: checkout.email,
         id: cart.id,
         lines: cart.lines.nodes.map(line => ({
           attributes: line.attributes,
@@ -370,7 +379,7 @@ export const useCart = defineStore({
       await this.cartCreate(mergedCartInput)
     },
 
-    async cartLinesAdd(cartId: string, lines: any[]) {
+    async cartLinesAdd(cartId: string, lines: IShopifyCartInput['lines']) {
       await this.$nuxt.$graphql.default
         .request(cartLinesAdd, {
           lang: this.$nuxt.app.i18n.locale.toUpperCase(),
@@ -390,16 +399,12 @@ export const useCart = defineStore({
               ecommerce: {
                 currencyCode: this.$nuxt.$cmwStore.isUk ? 'GBP' : 'EUR',
                 add: {
-                  products: lines.map((item: any) =>
-                    JSON.parse(item.attributes.find((el: any) => el.key === 'gtmProductData').value)),
+                  products: lines.map(item => parseGtmProductData(item)),
                 },
               },
             })
 
-            if (typeof window !== 'undefined' && window.google_tag_manager
-                && window.google_tag_manager[this.$nuxt.app.$config.gtm.id]) {
-              window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.set('ecommerce', undefined)
-            }
+            this.$nuxt.$cmwGtmUtils.resetDatalayerSpecificField('ecommerce')
           }
         })
     },
@@ -424,16 +429,12 @@ export const useCart = defineStore({
               ecommerce: {
                 currencyCode: this.$nuxt.$cmwStore.isUk ? 'GBP' : 'EUR',
                 add: {
-                  products: lines.map((item: any) =>
-                    JSON.parse(item.attributes.find((el: any) => el.key === 'gtmProductData').value)),
+                  products: lines.map(item => parseGtmProductData(item)),
                 },
               },
             })
 
-            if (typeof window !== 'undefined' && window.google_tag_manager
-                && window.google_tag_manager[this.$nuxt.app.$config.gtm.id]) {
-              window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.set('ecommerce', undefined)
-            }
+            this.$nuxt.$cmwGtmUtils.resetDatalayerSpecificField('ecommerce')
           }
         })
     },
@@ -460,8 +461,7 @@ export const useCart = defineStore({
               ecommerce: {
                 currencyCode: this.$nuxt.$cmwStore.isUk ? 'GBP' : 'EUR',
                 remove: {
-                  products: cartLines.map((item: any) =>
-                    JSON.parse(item.attributes.find((el: any) => el.key === 'gtmProductData').value)),
+                  products: cartLines.map(item => parseGtmProductData(item)),
                 },
               },
             })
@@ -493,11 +493,11 @@ export const useCart = defineStore({
         })
     },
 
-    async getCartById(id: string) {
+    async getCartById(id: IShopifyCart['id']) {
       await this.$nuxt.$cmwRepo.customer.getCart(id)
         .then(({ cart }: any) => {
           if (!cart?.id) {
-            this.$nuxt.$cookies.remove('cart')
+            this.$nuxt.$cookies.remove('cartId')
             return
           }
 

@@ -74,3 +74,20 @@ export interface ICartMapped {
   lines: ICartLinesMapped[]
   note: string | null
 }
+
+export interface IShopifyCartLineInput {
+  attributes: IAttribute[]
+  merchandiseId: string
+  quantity: number
+  sellingPlanId?: string
+}
+
+// The input fields to create a cart.
+export interface IShopifyCartInput {
+  attributes: IAttribute[]
+  buyerIdentity?: CartBuyerIdentity
+  discountCodes?: String[]
+  lines: IShopifyCartLineInput[] // [CartLineInput!]
+  metafields?: string // [CartInputMetafieldInput!]
+  note?: String
+}

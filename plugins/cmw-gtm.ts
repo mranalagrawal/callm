@@ -1,15 +1,19 @@
-import type { Plugin } from '@nuxt/types'
 import { storeToRefs } from 'pinia'
+
+import type { Plugin } from '@nuxt/types'
 import type { TStores } from '~/config/themeConfig'
+
 import themeConfig from '~/config/themeConfig'
 import { useCustomer } from '~/store/customer'
 
 interface ICmwGtmUtils {
   getActionField(route: any): string
+  resetDatalayerSpecificField(fieldName: string): void
   resetDatalayerFields(): void
   pushPage(pageType: string, data?: Record<string, any>): void
   getCustomerGtmData: Function
 }
+
 declare module 'vue/types/vue' {
   // this.$cmwGtmUtils inside Vue components
   interface Vue {
@@ -52,7 +56,15 @@ const cmwGtm: Plugin = ({ $cmwStore, $config, $gtm, getRouteBaseName }, inject) 
     },
     pushPage: () => {},
     getCustomerGtmData: () => {},
-    resetDatalayerFields: async () => {
+
+    resetDatalayerSpecificField: (fieldName = 'ecommerce') => {
+      if (typeof window !== 'undefined' && window.google_tag_manager
+        && window.google_tag_manager[$config.gtm.id]) {
+        window.google_tag_manager[$config.gtm.id].dataLayer.set(fieldName, undefined)
+      }
+    },
+
+    resetDatalayerFields: () => {
       const fields = ['ecommerce', 'actionField', 'impressions', 'pageType', 'wishlistAddedProduct', 'event']
 
       if (typeof window !== 'undefined' && window.google_tag_manager && window.google_tag_manager[$config.gtm.id]) {
