@@ -25,6 +25,7 @@ export const useCustomer = defineStore({
   state: () => ({
     customer: {
       acceptsMarketing: false,
+      amountSpend: { value: '' },
       billing: { value: '' },
       email: '',
       firstName: '',
@@ -34,10 +35,9 @@ export const useCustomer = defineStore({
       lastIncompleteCheckout: { id: '' },
       lastName: '',
       newsletterFrequency: { value: '' },
-      orders_count: '',
+      numberOfOrders: '',
       phone: '',
       tags: [],
-      total_spent: '',
     },
     // FixMe: on Nuxt 3 or using GraphQl local storage properly we shouldn't need this,
     //  we need to reduce the extra objects and relay on the state,
@@ -141,18 +141,6 @@ export const useCustomer = defineStore({
             const customerId = await awaitPromise(300).then(() => getCustomerId(customer.id))
             this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
 
-            await this.$nuxt.$cmw.$get(`/customers/${customerId}/user-info`)
-              .then(({ data = {}, errors = [] }) => {
-                if (errors.length) {
-                  this.$nuxt.$handleApiErrors('error getCustomer')
-                } else {
-                  customer = {
-                    ...customer,
-                    ...data,
-                  }
-                }
-              })
-
             const approved = (customer.approved && customer.approved.value) ? JSON.parse(customer.approved.value) : false
 
             this.$patch({
@@ -202,14 +190,14 @@ export const useCustomer = defineStore({
 
               this.$nuxt.$gtm.push({
                 event,
-                userType: themeConfig[this.$nuxt.$config.STORE].customerType,
-                userId: this.customerId,
-                userFirstName: this.customer.firstName,
-                userLastName: this.customer.lastName,
                 userEmail: this.customer.email,
+                userFirstName: this.customer.firstName,
+                userId: this.customerId,
+                userLastName: this.customer.lastName,
                 userPhone: this.customer.phone,
-                userPurchasesCount: this.customer.orders_count,
-                userPurchasesTot: this.customer.total_spent,
+                userPurchasesCount: this.customer.numberOfOrders,
+                userPurchasesTot: this.customer.amountSpend.value,
+                userType: themeConfig[this.$nuxt.$config.STORE].customerType,
               })
             }
           } else {

@@ -1,7 +1,8 @@
 <script>
 import { ref, useContext, watchEffect } from '@nuxtjs/composition-api'
 import throttle from 'lodash.throttle'
-import { getCurrencySymbol } from '@/utilities/currency'
+
+import { getCurrencySymbol } from '~/utilities/currency'
 
 export default {
   props: ['label', 'min', 'minValueTotal', 'max', 'maxValueTotal'],

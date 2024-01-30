@@ -12,7 +12,7 @@ export default ctx => ({
       return { defaultAddress, addresses: addresses.nodes }
     } catch (e) {
       // TODO: maybe implement sentry in the future
-      throw new Error(ctx.$i18n.t('feedback.KO.unknown').toString())
+      throw new Error(ctx.i18n.t('common.feedback.KO.unknown').toString())
     }
   },
   async setAddressAsDefault(addressId) {
@@ -25,7 +25,7 @@ export default ctx => ({
 
       return { customer, customerUserErrors }
     } catch (e) {
-      throw new Error(ctx.$i18n.t('feedback.KO.unknown').toString())
+      throw new Error(ctx.i18n.t('common.feedback.KO.unknown').toString())
     }
   },
 })

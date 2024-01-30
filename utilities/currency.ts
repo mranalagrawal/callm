@@ -18,6 +18,6 @@ const getCountryFromStore = (store = '') => ({
   CMW_UK: 'GB',
   CMW_FR: 'FR',
   CMW_DE: 'DE',
-})[store]
+})[store] || ''
 
 export { getCurrencySymbol, getLocaleFromCurrencyCode, getPercent, getCountryFromStore }

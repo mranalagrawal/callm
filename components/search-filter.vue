@@ -16,7 +16,7 @@ import Loader from '@/components/UI/Loader.vue'
 import closeIcon from '~/assets/svg/close.svg'
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
 import { useFilters } from '~/store/filters.ts'
-import { getLocaleFromCurrencyCode } from '@/utilities/currency'
+import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { pick } from '~/utilities/arrays.ts'
 
 export default defineComponent({
@@ -28,7 +28,7 @@ export default defineComponent({
     const route = useRoute()
     const router = useRouter()
     const filtersStore = useFilters()
-    const { selectedLayout, availableLayouts } = storeToRefs(filtersStore)
+    const { selectedLayout } = storeToRefs(filtersStore)
     const isDesktop = inject('isDesktop')
     const showPageFullDescription = ref(false)
     const showMoreFilters = ref(false)
@@ -548,7 +548,6 @@ export default defineComponent({
       activeSelections,
       aggregations,
       allSelections,
-      availableLayouts,
       canonicalUrl,
       chevronDownIcon,
       closeIcon,

@@ -205,7 +205,7 @@ export default defineComponent({
           countryCode: getCountryFromStore(this.$cmwStore.settings.store),
           ...(this.customer.email && { email: this.customer.email }),
         },
-        note: this.cart.note,
+        note: this.cart.note ?? '',
         lines: [{
           attributes: [
             {
@@ -214,7 +214,7 @@ export default defineComponent({
             },
             {
               key: 'bundle',
-              value: (this.giftCardVariantSelected.tags) ? this.product?.tags.includes('BUNDLE').toString() : 'false',
+              value: (this.giftCardVariantSelected.tags) ? (this.product?.tags.includes('BUNDLE') ?? false).toString() : 'false',
             },
           ],
           quantity: 1,
@@ -225,7 +225,7 @@ export default defineComponent({
       if (!this.cart.id) {
         await this.cartCreate({
           ...cartInput,
-          lineItems: [],
+          lines: [],
         })
       }
 

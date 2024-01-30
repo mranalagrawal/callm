@@ -69,7 +69,7 @@ export default defineComponent({
         note: cart.value.note,
         lines: [
           {
-            merchandiseId: suitableGift.value?.shopify_product_variant_id,
+            merchandiseId: suitableGift.value?.shopify_product_variant_id?.toString() || '',
             quantity: 1,
             attributes: [
               {

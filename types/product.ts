@@ -105,7 +105,7 @@ export interface IBaseProductMapped {
   merchandiseId: string
   quantityAvailable: number
   shopify_product_id: string | number
-  shopify_product_variant_id: string | number
+  shopify_product_variant_id: string
   tags: string[]
   title: string
 }

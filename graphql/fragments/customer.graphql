@@ -1,24 +1,16 @@
 fragment CUSTOMER_FRAGMENT on Customer {
-  id
-  firstName
-  lastName
   acceptsMarketing
+  amountSpend: metafield(namespace: "custom", key: "amount_spent") { value }
+  approved: metafield(namespace: "custom", key: "b2b_approved") { value }
   email
+  firstName
+  id
+  isCheckoutMigrated: metafield(namespace: "custom", key: "is_checkout_migrated") { value }
+  lastIncompleteCart: metafield(namespace: "custom", key: "last_incomplete_cart") { value }
+  lastIncompleteCheckout { id }
+  lastName
+  newsletterFrequency: metafield(namespace: "custom", key: "newsletter_frequency") { value }
+  numberOfOrders
   phone
   tags
-  lastIncompleteCheckout {
-    id
-  }
-  newsletterFrequency: metafield(namespace: "custom", key: "newsletter_frequency") {
-    value
-  }
-  lastIncompleteCart: metafield(namespace: "custom", key: "last_incomplete_cart") {
-    value
-  }
-  isCheckoutMigrated: metafield(namespace: "custom", key: "is_checkout_migrated") {
-    value
-  }
-  approved: metafield(namespace: "custom", key: "b2b_approved") {
-    value
-  }
 }

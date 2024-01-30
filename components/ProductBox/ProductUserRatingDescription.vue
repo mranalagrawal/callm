@@ -1,11 +1,13 @@
 <script lang="ts">
-import { computed, defineComponent, ref } from '@nuxtjs/composition-api'
+import { computed, defineComponent, inject, ref } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import ratingEmpty from 'assets/svg/rating-empty.svg'
-import ratingFilled from 'assets/svg/rating-filled.svg'
-import { useCustomerWishlist } from '~/store/customerWishlist'
+
 import type { IProductRating } from '~/types/product'
+
 import { generateKey } from '~/utilities/strings'
+import ratingEmpty from '~/assets/svg/rating-empty.svg'
+import ratingFilled from '~/assets/svg/rating-filled.svg'
+import { useCustomerWishlist } from '~/store/customerWishlist'
 
 export default defineComponent({
   props: {
@@ -18,6 +20,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const customerWishlist = useCustomerWishlist()
     const { elements } = storeToRefs(customerWishlist)
+    const isDesktop = inject('isDesktop')
     const currentHoveredStar = ref(0)
     const hasFocus = ref(false)
     const formEl = ref<HTMLFormElement | null>(null)
@@ -52,6 +55,7 @@ export default defineComponent({
       formEl,
       handleReset,
       hasFocus,
+      isDesktop,
       onSubmit,
       ratingEmpty,
       ratingFilled,
@@ -79,11 +83,14 @@ export default defineComponent({
             :id="generateKey(`${productId}-message`)"
             v-model="customerMessage"
             :placeholder="$t('profile.ratingMessage')"
-            :rows="hasFocus || customerMessage ? '3' : '1'"
+            :rows="hasFocus || customerMessage ? '3' : isDesktop ? '1' : '2'"
             class="
-              px-4 text-sm py-3 w-full bg-info/15 border border-info/15 placeholder-gray-dark
-              focus:(outline-none border-info)
-              autofill:(text-body border-info text-sm)
+              peer px-4 text-gray-dark py-3 w-full bg-transparent border border-gray-light
+              rounded transition-colors
+              hover:(border-gray)
+              focus:(outline-none border-gray-dark placeholder-gray-light)
+              autofill:(text-body border-info text-base)
+              disabled:(border-gray-light/70 cursor-not-allowed)
 "
             @focus="hasFocus = true"
           />

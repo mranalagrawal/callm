@@ -27,7 +27,7 @@ type Customer {
 # The customer’s last name.
   lastName: String
 # Returns a metafield found by namespace and key.
-  metafield: Metafield
+#  metafield: Metafield
 # Returns a metafield found by namespace and key.
   metafield(namespace:String!,key:String!): Metafield
 # The metafields associated with the resource matching the supplied list of namespaces and keys.

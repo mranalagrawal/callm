@@ -1,22 +1,24 @@
 import { defineStore } from 'pinia'
-import getProductsById from '~/graphql/queries/getProductsById.graphql'
 import { useCustomer } from '~/store/customer'
+
 import type { CheckoutMapped, ICheckoutLineItemMapped, IShopifyCheckout } from '~/types/checkout'
 import type { IProductMapped } from '~/types/product'
-import { getCountryFromStore } from '~/utilities/currency'
+
 import checkoutAttributesUpdateV2 from '~/graphql/mutations/checkout/checkoutAttributesUpdateV2.graphql'
 import checkoutCreate from '~/graphql/mutations/checkout/checkoutCreate.graphql'
 import checkoutEmailUpdateV2 from '~/graphql/mutations/checkout/checkoutEmailUpdateV2.graphql'
 import checkoutLineItemsAdd from '~/graphql/mutations/checkout/checkoutLineItemsAdd.graphql'
 import checkoutLineItemsRemove from '~/graphql/mutations/checkout/checkoutLineItemsRemove.graphql'
 import checkoutLineItemsUpdate from '~/graphql/mutations/checkout/checkoutLineItemsUpdate.graphql'
-import { getCheckoutHostname } from '~/utilities/shopify'
+import { getCountryFromStore } from '~/utilities/currency'
+import getProductsById from '~/graphql/queries/getProductsById.graphql'
 import { SweetAlertToast } from '~/utilities/Swal'
 
 interface IState {
   checkout: CheckoutMapped
   suitableGift: IProductMapped | undefined
 }
+
 export const useCheckout = defineStore({
   id: 'checkout',
   state: () => <IState>({
@@ -108,45 +110,6 @@ export const useCheckout = defineStore({
             }
           }
         })
-    },
-
-    async goToCheckout() {
-      const { customer } = useCustomer()
-
-      if (this.checkout.note) {
-        await this.checkoutAttributesUpdateV2({
-          note: this.checkout.note,
-        })
-      }
-
-      let redirectUrl = this.checkout?.webUrl
-
-      if (!redirectUrl) { return }
-
-      if (!customer.id && typeof window !== 'undefined' && redirectUrl) {
-        const url = new URL(redirectUrl.toString())
-        url.hostname = new URL(getCheckoutHostname(this.$nuxt.$cmwStore)).hostname
-
-        window.location.href = url.toString()
-        return
-      }
-
-      try {
-        const res: any = await this.$nuxt.$elastic.$post('/checkout', {
-          customerAccessToken: this.$nuxt.$cookieHelpers.getToken(),
-          store: this.$nuxt.$config.STORE,
-          checkoutUrl: redirectUrl,
-          email: customer.email,
-        })
-
-        redirectUrl = res.link
-      } catch (error) {
-        this.$nuxt.$handleApiErrors(`Catch on checkout: ${error}`)
-      }
-
-      if (!redirectUrl) { return }
-
-      window.location.href = redirectUrl.toString()
     },
 
     async checkoutCreate(input: any) {
@@ -325,10 +288,7 @@ export const useCheckout = defineStore({
               },
             })
 
-            if (typeof window !== 'undefined' && window.google_tag_manager
-                && window.google_tag_manager[this.$nuxt.app.$config.gtm.id]) {
-              window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.set('ecommerce', undefined)
-            }
+            this.$nuxt.$cmwGtmUtils.resetDatalayerSpecificField('ecommerce')
           }
         })
     },
@@ -359,10 +319,7 @@ export const useCheckout = defineStore({
               },
             })
 
-            if (typeof window !== 'undefined' && window.google_tag_manager
-                && window.google_tag_manager[this.$nuxt.app.$config.gtm.id]) {
-              window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.set('ecommerce', undefined)
-            }
+            this.$nuxt.$cmwGtmUtils.resetDatalayerSpecificField('ecommerce')
           }
         })
     },

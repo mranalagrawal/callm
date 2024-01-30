@@ -273,7 +273,7 @@ export default defineComponent({
           countryCode: getCountryFromStore(this.$cmwStore.settings.store),
           ...(this.customer.email && { email: this.customer.email }),
         },
-        note: this.cart.note,
+        note: this.cart.note ?? '',
         lines: [{
           attributes: [
             {
@@ -318,8 +318,9 @@ export default defineComponent({
 <template>
   <div
     v-if="templateProduct.shopify_product_id"
-    class="relative transition transition-box-shadow bg-white rounded-sm border border-gray-light p-2 grid grid-cols-[220px_auto_320px]
-hover:shadow-elevation"
+    class="relative transition transition-box-shadow bg-white rounded-sm border border-gray-light p-2
+     grid grid-cols-[1fr_2fr] lg:grid-cols-[220px_auto_320px]
+     hover:shadow-elevation"
     :data-sku="templateProduct.sku"
   >
     <!-- Image Section -->
@@ -388,7 +389,7 @@ hover:shadow-elevation"
         </div>
       </div>
       <div
-        class="grid gap-x-8 gap-y-2 grid-cols-[auto_1fr] text-sm"
+        class="grid md:(grid-cols-[auto_1fr] gap-x-8 gap-y-2) text-sm"
         :class="{
           'opacity-50': !product.availableForSale,
           'my-8': templateProduct.tbd?.grapes || templateProduct.tbd?.regionName || templateProduct.tbd?.size?.id,
@@ -404,7 +405,7 @@ hover:shadow-elevation"
         </div>
         <div
           v-if="templateProduct.tbd?.regionName"
-          class="cmw-font-bold"
+          class="<md:mt-2 cmw-font-bold"
           v-text="$t('product.regionCountry')"
         />
         <div v-if="templateProduct.tbd?.regionName">
@@ -412,7 +413,7 @@ hover:shadow-elevation"
         </div>
         <div
           v-if="templateProduct.tbd?.size"
-          class="cmw-font-bold"
+          class="<md:mt-2 cmw-font-bold"
           v-text="$t('product.size')"
         />
         <div v-if="templateProduct.tbd?.size">
@@ -430,7 +431,7 @@ hover:shadow-elevation"
       <ProductUserRatingDescription v-if="customerId" :product-id="`${templateProduct.details.feId}`" @submit-comment="handleStarAndCustomerCommentClick" />
     </div>
     <!-- CTA Section -->
-    <div class="relative flex">
+    <div class="relative flex <lg:col-span-full">
       <div class="m-auto text-center w-full px-4">
         <p
           v-if="!!templateProduct.quantityAvailable && templateProduct.quantityAvailable < 6"
@@ -534,7 +535,7 @@ hover:shadow-elevation"
           <small v-if="$cmwStore.isDe" class="text-gray">Inkl. MwSt. Und St.</small>
         </div>
       </div>
-      <div class="absolute transform top-px left-1/2 -translate-x-1/2 -translate-y-1/2">
+      <div class="hidden lg:block absolute transform top-px left-1/2 -translate-x-1/2 -translate-y-1/2">
         <CardLapel v-if="isOnSale" />
       </div>
     </div>

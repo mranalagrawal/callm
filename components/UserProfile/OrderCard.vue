@@ -126,6 +126,7 @@ export default defineComponent({
             countryCode: getCountryFromStore($cmwStore.settings.store),
             ...(customer.value.email && { email: customer.value.email }),
           },
+          lines: [],
         }
         await cartCreate(cartInput)
       }

@@ -8,8 +8,6 @@ import type { IProductMapped } from '~/types/product'
 import { chunkArray } from '~/utilities/arrays'
 import closeIcon from '~/assets/svg/close.svg'
 import { generateKey } from '~/utilities/strings'
-import gridIcon from '~/assets/svg/layout-grid.svg'
-import listIcon from '~/assets/svg/layout-list.svg'
 import { useCustomer } from '~/store/customer'
 import { useCustomerWishlist } from '~/store/customerWishlist'
 import { useFilters } from '~/store/filters'
@@ -173,11 +171,6 @@ export default {
 
       queryUrl.value = `/wishlists/full?shopifyCustomerId=${customerId.value}&sortingDirection=ASC&sortingField=createdat`
     }
-
-    const getLayoutIcon = (layout: 'grid' | 'list') => ({
-      grid: gridIcon,
-      list: listIcon,
-    }[layout] || gridIcon)
 
     watch([
       () => queryUrl.value,
@@ -350,7 +343,6 @@ export default {
       filters,
       finalProducts,
       findRelatedVintage,
-      getLayoutIcon,
       handleUpdateQuery,
       handleUpdateSortTrigger,
       handleUpdateSortValue,
@@ -457,30 +449,30 @@ export default {
         <strong>{{ filteredWishlistArr.length }}</strong>
         <span>{{ $tc('search.results', filteredWishlistArr.length) }}</span>
       </div>
-      <div class="hidden items-center mr-auto gap-2 lg:flex">
+      <div class="flex items-center mr-auto gap-2">
         <div
-          v-for="layout in availableLayouts"
-          :key="layout"
+          v-for="({ icon, key }) in availableLayouts"
+          :key="key"
           class="relative"
         >
           <input
-            :id="layout"
+            :id="key"
             v-model="selectedLayout"
-            :aria-label="`select ${layout}`"
+            :aria-label="`select ${key}`"
             class="peer appearance-none absolute w-full h-full z-dante"
             type="radio"
             name="layout"
-            :value="layout"
+            :value="key"
           >
           <label
-            :for="layout"
+            :for="key"
             class="
               flex rounded-sm shadow p-[0.40rem] mb-0 bg-white cursor-pointer
               peer-checked:(bg-gray-lightest shadow-none)"
           >
             <VueSvgIcon
               class="m-auto"
-              :data="getLayoutIcon(layout)"
+              :data="icon"
               width="20"
               height="20"
               color="#992545"
@@ -538,13 +530,13 @@ export default {
         v-if="!!customerProducts.length"
         class="p-4"
       >
-        <template v-if="selectedLayout === 'list' && isDesktop">
+        <template v-if="selectedLayout === 'list'">
           <div
             v-for="product in finalProducts"
             :key="product.id"
             class="mb-4"
           >
-            <ProductBoxHorizontal :product="product" :is-desktop="isDesktop" :related-vintage="findRelatedVintage(product.id.toString())" />
+            <ProductBoxHorizontal :product="product" :related-vintage="findRelatedVintage(product.id.toString())" />
           </div>
         </template>
         <template v-else>
