@@ -83,7 +83,7 @@ const cmwGtm: Plugin = ({ $cmwStore, $config, $gtm, getRouteBaseName }, inject) 
         userLastName: customer.value.lastName,
         userPhone: customer.value.phone,
         userPurchasesCount: customer.value.numberOfOrders,
-        userPurchasesTot: customer.value.amountSpend.value,
+        userPurchasesTot: customer.value.amountSpent?.value,
         userType: themeConfig[store]?.customerType, // getCustomerType.value,
       }),
     }
