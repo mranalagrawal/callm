@@ -14,7 +14,6 @@ export default defineComponent({
     const { favoritesCount } = storeToRefs(useCustomerWishlist())
 
     onMounted(async () => {
-      // Todo: this implementation has an issue, mobile apps will not be able to use this
       if (customerId.value) {
         await getCustomerWishlist(customerId.value)
       }

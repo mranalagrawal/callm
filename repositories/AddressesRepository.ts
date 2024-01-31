@@ -1,8 +1,11 @@
-import getCustomerAddresses from '@/graphql/queries/getCustomerAddresses'
-import customerDefaultAddressUpdate from '~/graphql/mutations/customerDefaultAddressUpdate'
+import type { Context } from '@nuxt/types'
+import type { IMailingAddress } from '~/types/mailingAddress'
 
-export default ctx => ({
-  async getCustomerAddresses() {
+import customerDefaultAddressUpdate from '~/graphql/mutations/customerDefaultAddressUpdate.graphql'
+import getCustomerAddresses from '~/graphql/queries/getCustomerAddresses.graphql'
+
+export default (ctx: Context) => ({
+  async getCustomerAddresses(): Promise<{ defaultAddress: IMailingAddress; addresses: IMailingAddress[] }> {
     try {
       const { customer: { defaultAddress, addresses } } = await ctx.$graphql.default.request(getCustomerAddresses, {
         lang: ctx.i18n.locale.toUpperCase(),
@@ -15,7 +18,7 @@ export default ctx => ({
       throw new Error(ctx.i18n.t('common.feedback.KO.unknown').toString())
     }
   },
-  async setAddressAsDefault(addressId) {
+  async setAddressAsDefault(addressId: IMailingAddress['id']) {
     try {
       const { customerDefaultAddressUpdate: { customer, customerUserErrors } } = await ctx.$graphql.default.request(customerDefaultAddressUpdate, {
         lang: ctx.i18n.locale.toUpperCase(),

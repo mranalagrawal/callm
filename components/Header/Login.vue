@@ -1,13 +1,14 @@
 <script lang="ts">
-import { defineComponent, ref, useContext, useRouter } from '@nuxtjs/composition-api'
+import { defineComponent, ref } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+
 import type { TranslateResult } from 'vue-i18n'
-import type { RawLocation } from 'vue-router'
+
+import eyeHideIcon from '~/assets/svg/eye-hide.svg'
+import eyeShowIcon from '~/assets/svg/eye-show.svg'
 import socialFacebook from '~/assets/svg/social-facebook.svg'
 import socialGoogle from '~/assets/svg/social-google.svg'
 import { useCustomer } from '~/store/customer'
-import eyeShowIcon from '~/assets/svg/eye-show.svg'
-import eyeHideIcon from '~/assets/svg/eye-hide.svg'
 
 export default defineComponent({
   name: 'HeaderLogin',
@@ -17,8 +18,6 @@ export default defineComponent({
     },
   },
   setup() {
-    const { i18n, localeLocation } = useContext()
-    const router = useRouter()
     const customerStore = useCustomer()
     const { customer } = storeToRefs(customerStore)
     const { logout } = customerStore
@@ -29,19 +28,6 @@ export default defineComponent({
       email: '',
       password: '',
     })
-    const onSubmit = async () => {
-      isSubmitting.value = true
-
-      const valid = await customerStore.login(form.value.email, form.value.password)
-
-      if (valid) {
-        await customerStore.getCustomer('login')
-          .then(() => router.push(localeLocation('/') as RawLocation))
-      } else {
-        message.value = i18n.t('common.feedback.KO.login')
-      }
-      isSubmitting.value = false
-    }
 
     return {
       customer,
@@ -52,7 +38,6 @@ export default defineComponent({
       isSubmitting,
       logout,
       message,
-      onSubmit,
       passwordIsVisible,
       socialFacebook,
       socialGoogle,
@@ -91,61 +76,20 @@ export default defineComponent({
   <div>
     <div class="border-t-4 border-t-primary-900 py-4 px-6">
       <template v-if="!customer.id">
-        <ValidationObserver v-slot="{ handleSubmit }" slim>
-          <form
-            autocomplete="off"
-            @submit.prevent="handleSubmit(onSubmit)"
-          >
-            <!--            <InputField
-              v-model="form.email"
-              name="user-email-navbar"
-              :label="$t('email')"
-              autocomplete="off"
-              :placeholder="$t('emailPlaceholder')"
-              rules="required|email"
-            />
+        <CmwButton variant="default" :to="localePath('/login')" class="mt-8">
+          {{ $t('common.cta.signIn') }}
+        </CmwButton>
 
-            <InputField
-              v-model="form.password"
-              :type="!passwordIsVisible ? 'password' : 'text'"
-              name="user-password-navbar"
-              :label="$t('password')"
-              autocomplete="off"
-              :placeholder="$t('passwordPlaceholder')"
-              rules="required|min:4"
-              :icon="passwordIsVisible ? eyeHideIcon : eyeShowIcon"
-              :click-icon="() => passwordIsVisible = !passwordIsVisible"
-            /> -->
-            <!--            <p
-              v-if="message"
-              class="text-sm text-error mt-3"
-            >
-              {{ message }}
-            </p> -->
-
-            <!--            <CmwButton
-              class="mt-8"
-              type="submit"
-              :disabled="isSubmitting"
-              :label="$t('common.cta.signIn')"
-            /> -->
-
-            <CmwButton variant="default" :to="localePath('/login')" class="mt-8">
-              {{ $t('common.cta.signIn') }}
-            </CmwButton>
-
-            <NuxtLink
-              to="/recover"
-              class="block w-max my-3 mx-auto text-primary-400"
-            >
-              {{ $t("navbar.user.forgotPassword") }}
-            </NuxtLink>
-            <div class="text-center">
-              <a v-if="$cmwStore.isIt" class="my-8 cmw-font-bold text-secondary-400" href="https://b2b.callmewine.com">PORTALE
-                OPERATORI HO.RE.CA.</a>
-            </div>
-          </form>
-        </ValidationObserver>
+        <NuxtLink
+          to="/recover"
+          class="block w-max my-3 mx-auto text-primary-400"
+        >
+          {{ $t("navbar.user.forgotPassword") }}
+        </NuxtLink>
+        <div class="text-center">
+          <a v-if="$cmwStore.isIt" class="my-8 cmw-font-bold text-secondary-400" href="https://b2b.callmewine.com">PORTALE
+            OPERATORI HO.RE.CA.</a>
+        </div>
         <template v-if="!$cmwStore.isB2b">
           <p class="text-center my-5">
             {{ $t('navbar.user.orLoginWith') }}

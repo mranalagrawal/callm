@@ -38,7 +38,7 @@ export default defineComponent({
     const route = useRoute()
     const { loadMenu } = useVercelKv()
     const { getCustomer, customer } = useCustomer()
-    const { getCartById, handleTemporaryCheckoutReplace, mergeCartCookieWithCheckoutId } = useCart()
+    const { getCartById, handleTemporaryCheckoutReplace, mergeCartCookieWithCheckoutId, getInitialCart } = useCart()
     const { cart } = storeToRefs(useCart())
     const { handleNewsletterSplash } = useNewsletterSplash()
     const {
@@ -80,10 +80,12 @@ export default defineComponent({
         if (!customer.id) {
           if (cartIdCookie && checkoutId) {
             await mergeCartCookieWithCheckoutId(checkoutId, cartIdCookie)
-            // $cookies.remove('checkoutId')
+            $cookies.remove('checkoutId')
           } else if (cartIdCookie) {
             await getCartById(cartIdCookie)
           }
+        } else {
+          await getInitialCart()
         }
       })
       handleNewsletterSplash()
@@ -117,6 +119,7 @@ export default defineComponent({
     })
     return {
       cart,
+      getInitialCart,
       handleNewsletterSplash,
       hasBeenSet,
       isDesktop,

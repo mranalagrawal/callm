@@ -1,12 +1,14 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+
+import type { IOptions } from '~/types/types'
+
 import countriesJson from '~/assets/countries.json'
 import radioCheckedIcon from '~/assets/svg/radio-checked.svg'
 import radioUncheckedIcon from '~/assets/svg/radio-unchecked.svg'
-import { useCustomer } from '~/store/customer'
-import type { IOptions } from '~/types/types'
 import { SweetAlertToast } from '~/utilities/Swal'
+import { useCustomer } from '~/store/customer'
 
 interface CustomResponse extends Response {
   data: {
@@ -31,8 +33,7 @@ export default defineComponent({
     const isSubmitting = ref(false)
     const countries = ref<IOptions[]>([])
     const provincesOptions = ref<IOptions[]>([])
-    const customerBilling = computed(() => customer.value.billing?.value ? JSON.parse(customer.value.billing.value) : {})
-    const selectedCountry = ref(customerBilling.value.country || '')
+    const selectedCountry = ref(customer.value?.billing?.country || '')
     const invoiceType = computed<IOptions[]>(() => {
       const baseOptions = [
         {
@@ -56,9 +57,8 @@ export default defineComponent({
         : baseOptions
     })
 
-    // const srcData = ref<Record<string, any>>([])
-    const selectedRequestInvoice = ref(customerBilling.value.invoice ? 'request' : 'refuse')
-    const selectedInvoiceType = ref(customerBilling.value.invoice_type || '')
+    const selectedRequestInvoice = ref(customer.value?.billing?.invoice ? 'request' : 'refuse')
+    const selectedInvoiceType = ref(customer.value?.billing?.invoice_type || '')
     const requestInvoice = [
       {
         uuid: 'request',
@@ -119,7 +119,7 @@ export default defineComponent({
         && (selectedInvoiceType.value === 'Associazione' && selectedCountry.value === 'IT'))
       || ((!!selectedCountry.value)
         && (selectedInvoiceType.value === 'Privato' || selectedInvoiceType.value === 'Azienda')),
-      inputValue: customerBilling.value?.first_name || '',
+      inputValue: customer.value?.billing?.first_name || '',
       rules: (() => ({ required: (selectedInvoiceType.value === 'Privato') }))(),
     }))
 
@@ -129,7 +129,7 @@ export default defineComponent({
           && (selectedInvoiceType.value === 'Associazione' && selectedCountry.value === 'IT'))
         || ((!!selectedCountry.value)
           && (selectedInvoiceType.value === 'Privato' || selectedInvoiceType.value === 'Azienda')),
-      inputValue: customerBilling.value?.last_name || '',
+      inputValue: customer.value?.billing?.last_name || '',
       rules: (() => ({ required: (selectedInvoiceType.value === 'Privato') }))(),
     }))
 
@@ -140,7 +140,7 @@ export default defineComponent({
       && (selectedInvoiceType.value === 'Azienda'))
       || ((!!selectedCountry.value && !!selectedCountry.value)
       && (selectedInvoiceType.value === 'Associazione' && selectedCountry.value === 'IT'))),
-      inputValue: customerBilling.value?.company_name || '',
+      inputValue: customer.value?.billing?.company_name || '',
       rules: { required: true },
     }))
 
@@ -148,7 +148,7 @@ export default defineComponent({
     const formDataCompanyName = computed(() => ({
       inputName: 'checkout_billing_address_company',
       show: selectedInvoiceType.value === 'Azienda',
-      inputValue: customerBilling.value?.company || '',
+      inputValue: customer.value?.billing?.company || '',
       rules: { required: false },
     }))
 
@@ -156,7 +156,7 @@ export default defineComponent({
     const formDataVat = computed(() => ({
       inputName: 'checkout_invoice_company_vat',
       show: ((!!selectedCountry.value && selectedInvoiceType.value === 'Azienda')),
-      inputValue: customerBilling.value?.vat || '',
+      inputValue: customer.value?.billing?.vat || '',
       rules: (() => {
         if (selectedCountry.value === 'DE') {
           return { required: true, regex: /^DE\d{9}$/ }
@@ -171,7 +171,7 @@ export default defineComponent({
       inputName: 'checkout_invoice_company_pec',
       show: ((selectedCountry.value === 'IT'
         && (selectedInvoiceType.value === 'Associazione' || selectedInvoiceType.value === 'Azienda'))),
-      inputValue: customerBilling.value?.pec_sdi || '',
+      inputValue: customer.value?.billing?.pec_sdi || '',
       rules: { required: true, regex: /^(?:[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}|[a-zA-Z0-9]{7})$/ },
     }))
 
@@ -179,7 +179,7 @@ export default defineComponent({
     const formDataTaxCode = computed(() => ({
       inputName: 'checkout_invoice_private_taxcode',
       show: ((selectedCountry.value === 'IT' && (selectedInvoiceType.value === 'Associazione' || selectedInvoiceType.value === 'Privato'))),
-      inputValue: customerBilling.value?.tax_code || '',
+      inputValue: customer.value?.billing?.tax_code || '',
       rules: (() => {
         if (selectedInvoiceType.value === 'Privato') { return { required: true, regex: /^[A-Z]{6}\d{2}[A-Z]\d{2}[A-Z]\d{3}[A-Z]$/i } } else { return { required: true, regex: /^\d{11}$/i } }
       })(),
@@ -192,7 +192,7 @@ export default defineComponent({
           && (selectedInvoiceType.value === 'Associazione' && selectedCountry.value === 'IT'))
         || ((!!selectedCountry.value)
           && (selectedInvoiceType.value === 'Privato' || selectedInvoiceType.value === 'Azienda')),
-      inputValue: customerBilling.value?.city || '',
+      inputValue: customer.value?.billing?.city || '',
       rules: { required: true },
     }))
 
@@ -200,7 +200,7 @@ export default defineComponent({
     const formDataProvince = computed(() => ({
       inputName: 'checkout_billing_address_province',
       show: (selectedCountry.value === 'IT' && !!selectedInvoiceType.value),
-      inputValue: customerBilling.value?.province || '',
+      inputValue: customer.value?.billing?.province || '',
       rules: { required: true },
     }))
 
@@ -211,7 +211,7 @@ export default defineComponent({
           && (selectedInvoiceType.value === 'Associazione' && selectedCountry.value === 'IT'))
         || ((!!selectedCountry.value)
           && (selectedInvoiceType.value === 'Privato' || selectedInvoiceType.value === 'Azienda')),
-      inputValue: customerBilling.value?.address1 || '',
+      inputValue: customer.value?.billing?.address1 || '',
       rules: { required: true },
     }))
 
@@ -222,7 +222,7 @@ export default defineComponent({
           && (selectedInvoiceType.value === 'Associazione' && selectedCountry.value === 'IT'))
         || ((!!selectedCountry.value)
           && (selectedInvoiceType.value === 'Privato' || selectedInvoiceType.value === 'Azienda')),
-      inputValue: customerBilling.value?.zip || '',
+      inputValue: customer.value?.billing?.zip || '',
       rules: { required: true },
     }))
 
@@ -233,7 +233,7 @@ export default defineComponent({
           && (selectedInvoiceType.value === 'Associazione' && selectedCountry.value === 'IT'))
         || ((!!selectedCountry.value)
           && (selectedInvoiceType.value === 'Privato' || selectedInvoiceType.value === 'Azienda')),
-      inputValue: customerBilling.value?.phone || '',
+      inputValue: customer.value?.billing?.phone || '',
       rules: { required: false },
     }))
 
@@ -315,7 +315,7 @@ export default defineComponent({
       process.browser && $cmwGtmUtils.pushPage('page')
       if (selectedCountry.value) {
         handleCountryChange(selectedCountry.value)
-        if (customerBilling.value?.province) { handleProvinceChange(customerBilling.value?.province) }
+        if (customer.value?.billing?.province) { handleProvinceChange(customer.value?.billing?.province) }
       }
     })
 
@@ -323,7 +323,6 @@ export default defineComponent({
       // srcData,
       countries,
       customer,
-      customerBilling,
       fetchingCountries,
       formDataAddress1,
       formDataCity,

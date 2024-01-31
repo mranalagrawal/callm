@@ -7,7 +7,9 @@ import {
   useRouter,
 } from '@nuxtjs/composition-api'
 import type { RawLocation } from 'vue-router'
+
 import Loader from '~/components/UI/Loader.vue'
+import { useCart } from '~/store/cart'
 import { useCustomer } from '~/store/customer'
 
 export default defineComponent({
@@ -18,16 +20,21 @@ export default defineComponent({
     if ($config.STORE === 'B2B' || !route.query?.cmw_api_token) { return redirect(localeLocation('/login') as unknown as string) }
   },
   setup() {
-    const { localeLocation, $handleApiErrors } = useContext()
+    const { localeLocation, $handleApiErrors, $cmwGtmUtils } = useContext()
     const customerStore = useCustomer()
+    const { getInitialCart } = useCart()
     const router = useRouter()
     const valid = ref(false)
 
     useFetch(async ({ $route }) => {
       valid.value = await customerStore.loginWithMultipass($route.query.cmw_api_token as string)
       if (valid.value) {
-        await customerStore.getCustomer('login')
-          .then(() => router.push(localeLocation('/') as RawLocation))
+        await customerStore.getCustomer()
+          .then(() => {
+            getInitialCart()
+            $cmwGtmUtils.pushCustomLoginEvent()
+            router.push(localeLocation('/') as RawLocation)
+          })
           .catch(e => $handleApiErrors(`Error while fetching customer data: ${e}`))
       }
     })

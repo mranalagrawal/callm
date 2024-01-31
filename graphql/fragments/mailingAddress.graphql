@@ -1,0 +1,12 @@
+fragment MAILING_ADDRESS on MailingAddress {
+  address1
+  address2
+  city
+  country
+  firstName
+  id
+  lastName
+  phone
+  province
+  zip
+}

@@ -46,6 +46,7 @@ export default {
       'newsletter-checkbox': 'newsletter',
       'newsletter-footer-checkbox': 'newsletter',
       'notify-me-user-email': 'Email',
+      'phone': 'telefono',
       'privacy': 'privacy',
       'register-business-name': 'Ragione Sociale',
       'register-business-type': 'Settore Attività',

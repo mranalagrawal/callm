@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia'
+import type { TranslateResult } from 'vue-i18n'
 
 interface IState {
   currentSplash: string
-  title: string
-  subtitle: string
+  title: TranslateResult
+  subtitle: TranslateResult
   size: string
   localData: string
   onBeforeCloseModal: any

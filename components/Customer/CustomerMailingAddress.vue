@@ -1,19 +1,20 @@
-<script>
-import bookmarkIcon from 'assets/svg/bookmark.svg'
-import editIcon from 'assets/svg/edit.svg'
-import deleteIcon from 'assets/svg/delete.svg'
-import moreVerticalIcon from 'assets/svg/more-vertical.svg'
-import { ref, useContext } from '@nuxtjs/composition-api'
-import { SweetAlertConfirm, SweetAlertToast } from '@/utilities/Swal'
-import customerAddressDelete from '~/graphql/mutations/customerAddressDelete'
-import { useSplash } from '~/store/splash'
-import { useCustomerAddresses } from '~/store/customerAddresses'
+<script lang="ts">
+import { defineComponent, type PropType, ref, useContext } from '@nuxtjs/composition-api'
+import type { IMailingAddress } from '~/types/mailingAddress'
 
-// noinspection JSUnusedGlobalSymbols
-export default {
+import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
+import bookmarkIcon from '~/assets/svg/bookmark.svg'
+import customerAddressDelete from '~/graphql/mutations/customerAddressDelete.graphql'
+import deleteIcon from '~/assets/svg/delete.svg'
+import editIcon from '~/assets/svg/edit.svg'
+import moreVerticalIcon from '~/assets/svg/more-vertical.svg'
+import { useCustomerAddresses } from '~/store/customerAddresses'
+import { useSplash } from '~/store/splash'
+
+export default defineComponent({
   props: {
-    /** @Type: {MailingAddressType.MailingAddress} */
     address: {
+      type: Object as PropType<IMailingAddress>,
       required: true,
     },
     isDefaultAddress: {
@@ -94,14 +95,18 @@ export default {
       setAddressAsDefault,
     }
   },
-}
+})
 </script>
 
 <template>
   <div class="c-address h-full relative font-sans p-3 rounded-sm border border-gray-light hover:shadow-elevation">
     <div class="flex items-baseline justify-between gap-4">
       <strong>{{ address.name }}</strong>
-      <CmwChip v-if="isDefaultAddress" :icon="bookmarkIcon" variant="overline-2" color="secondary-400" :label="$t('profile.defaultAddress').toUpperCase()" />
+      <CmwChip
+        v-if="isDefaultAddress" :icon="bookmarkIcon" variant="overline-2" color="secondary-400"
+        class="text-uppercase"
+        :label="$t('profile.defaultAddress')"
+      />
     </div>
     <div class="text-sm">
       <div>{{ address.address1 }}</div>

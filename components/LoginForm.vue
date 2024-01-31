@@ -1,16 +1,19 @@
 <script lang="ts">
 import { defineComponent, ref, useContext, useRouter } from '@nuxtjs/composition-api'
-import type { TranslateResult } from 'vue-i18n'
+
 import type { RawLocation } from 'vue-router'
-import loginGoogle from '~/assets/svg/login-google.svg'
-import loginFacebook from '~/assets/svg/login-facebook.svg'
-import loginApple from '~/assets/svg/login-apple.svg'
-import eyeShowIcon from '~/assets/svg/eye-show.svg'
+import type { TranslateResult } from 'vue-i18n'
+
+import Alert from '~/components/FeedBack/Alert.vue'
 import eyeHideIcon from '~/assets/svg/eye-hide.svg'
+import eyeShowIcon from '~/assets/svg/eye-show.svg'
+import loginApple from '~/assets/svg/login-apple.svg'
+import loginFacebook from '~/assets/svg/login-facebook.svg'
+import loginGoogle from '~/assets/svg/login-google.svg'
 import socialFacebook from '~/assets/svg/social-facebook.svg'
 import socialGoogle from '~/assets/svg/social-google.svg'
+import { useCart } from '~/store/cart'
 import { useCustomer } from '~/store/customer'
-import Alert from '~/components/FeedBack/Alert.vue'
 
 export default defineComponent({
   components: { Alert },
@@ -19,7 +22,8 @@ export default defineComponent({
   },
   emits: ['login-success'],
   setup(props, { emit }) {
-    const { i18n, localeLocation } = useContext()
+    const { i18n, localeLocation, $cmwGtmUtils } = useContext()
+    const { getInitialCart } = useCart()
     const router = useRouter()
     const customerStore = useCustomer()
     const isSubmitting = ref(false)
@@ -35,9 +39,11 @@ export default defineComponent({
       const valid = await customerStore.login(form.value.email, form.value.password)
 
       if (valid) {
-        await customerStore.getCustomer('login')
-          .then(async () => {
+        await customerStore.getCustomer()
+          .then(() => {
             emit('login-success', true)
+            getInitialCart()
+            $cmwGtmUtils.pushCustomLoginEvent()
             !props.skipRedirect && router.push(localeLocation('/') as RawLocation)
           })
       } else {
