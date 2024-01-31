@@ -25,7 +25,7 @@ export const useCustomer = defineStore({
   state: () => ({
     customer: {
       acceptsMarketing: false,
-      amountSpend: { value: '' },
+      amountSpent: { value: '' },
       billing: { value: '' },
       email: '',
       firstName: '',
@@ -196,7 +196,7 @@ export const useCustomer = defineStore({
                 userLastName: this.customer.lastName,
                 userPhone: this.customer.phone,
                 userPurchasesCount: this.customer.numberOfOrders,
-                userPurchasesTot: this.customer.amountSpend.value,
+                userPurchasesTot: this.customer.amountSpent?.value,
                 userType: themeConfig[this.$nuxt.$config.STORE].customerType,
               })
             }
