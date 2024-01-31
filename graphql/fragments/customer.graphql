@@ -2,6 +2,7 @@ fragment CUSTOMER_FRAGMENT on Customer {
   acceptsMarketing
   amountSpent: metafield(namespace: "custom", key: "amount_spent") { value }
   approved: metafield(namespace: "custom", key: "b2b_approved") { value }
+  billing: metafield(namespace: "custom", key: "billing") { value }
   email
   firstName
   id
