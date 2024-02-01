@@ -22,6 +22,7 @@ export default defineComponent({
     const { cartTotalQuantity } = storeToRefs(useCart())
     const route = useRoute()
     const isDesktop = inject('isDesktop')
+    const isMobile = inject('isMobile')
     const navbar = ref(null)
     const menuBarRef = ref<HTMLDivElement | null>(null)
     const showMobileButton = ref(true)
@@ -58,6 +59,7 @@ export default defineComponent({
       customer,
       handleShowMobileButton,
       isDesktop,
+      isMobile,
       isMobileMenuOpen,
       isSidebarOpen,
       logo,
@@ -117,7 +119,7 @@ export default defineComponent({
 
           <div class="flex items-center ml-auto lg:hidden">
             <ClientOnly>
-              <CustomerWishlist v-if="customer.id && !isDesktop" />
+              <CustomerWishlist v-if="isMobile && customer.id" />
               <NuxtLink :to="localePath(customer.id ? '/profile/my-orders' : '/login')">
                 <VueSvgIcon
                   :data="userIcon"
@@ -156,7 +158,7 @@ export default defineComponent({
       </div>
     </div>
 
-    <div v-if="!isDesktop" class="">
+    <div v-if="isMobile" class="">
       <transition name="menu-mobile">
         <div v-show="isSidebarOpen" class="absolute left-0 w-full z-base" :style="{ top: sideBarTop }">
           <MenuMobile />

@@ -2,6 +2,7 @@ import { nextTick, onMounted, onUnmounted, ref } from '@nuxtjs/composition-api'
 import debounce from 'lodash.debounce'
 
 export default function () {
+  const isMobile = ref(false)
   const isTablet = ref(false)
   const isDesktop = ref(false)
   const isDesktopWide = ref(false)
@@ -9,11 +10,13 @@ export default function () {
   const hasBeenSet = ref(false)
 
   const resizeListener = debounce(() => {
+    const windowInnerW = window.innerWidth
     hasBeenSet.value = true
-    isTablet.value = window.innerWidth >= 768
-    isDesktop.value = window.innerWidth >= 992
-    isDesktopWide.value = window.innerWidth >= 1280
-    isDesktopWider.value = window.innerWidth >= 1600
+    isMobile.value = windowInnerW < 768
+    isTablet.value = windowInnerW >= 768
+    isDesktop.value = windowInnerW >= 992
+    isDesktopWide.value = windowInnerW >= 1280
+    isDesktopWider.value = windowInnerW >= 1600
   }, 400)
 
   onMounted(() => {
@@ -26,5 +29,5 @@ export default function () {
     window.removeEventListener('resize', resizeListener)
   })
 
-  return { isTablet, isDesktop, isDesktopWide, isDesktopWider, hasBeenSet }
+  return { isMobile, isTablet, isDesktop, isDesktopWide, isDesktopWider, hasBeenSet }
 }

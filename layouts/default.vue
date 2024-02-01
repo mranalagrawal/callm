@@ -42,12 +42,14 @@ export default defineComponent({
     const { cart } = storeToRefs(useCart())
     const { handleNewsletterSplash } = useNewsletterSplash()
     const {
+      isMobile,
       isTablet,
       isDesktop,
       isDesktopWide,
       hasBeenSet,
     } = useScreenSize()
 
+    provide('isMobile', readonly(isMobile))
     provide('isTablet', readonly(isTablet))
     provide('isDesktop', readonly(isDesktop))
     provide('isDesktopWide', readonly(isDesktopWide))
@@ -120,6 +122,7 @@ export default defineComponent({
       isDesktop,
       isDesktopWide,
       isFromApp,
+      isMobile,
       isTablet,
       showAppHeader,
       showTopBar,
