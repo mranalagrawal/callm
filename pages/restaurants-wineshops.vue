@@ -5,6 +5,11 @@ import { initialPageData } from '~/config/prismicConfig'
 import type { IPrismicPageData } from '~/types/prismic'
 
 export default defineComponent({
+  middleware({ $cmwStore, localePath, redirect }) {
+    if ($cmwStore.isUk) {
+      return redirect(localePath('/'))
+    }
+  },
   setup() {
     const { $cmwGtmUtils } = useContext()
 

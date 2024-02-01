@@ -1,14 +1,20 @@
 <script lang="ts">
-import type { Ref } from '@nuxtjs/composition-api'
 import {
   computed,
-  defineComponent, inject,
+  defineComponent,
+  inject,
   ref,
   useContext,
-  useFetch, useRoute, useStore, watch,
+  useFetch,
+  useRoute,
+  useStore,
+  watch,
 } from '@nuxtjs/composition-api'
+import type { Ref } from '@nuxtjs/composition-api'
+
 import { kv } from '@vercel/kv'
-import logo from 'assets/svg/logo-call-me-wine.svg'
+
+import logo from '~/assets/svg/logo-call-me-wine.svg'
 import type { TISO639 } from '~/config/themeConfig'
 
 export default defineComponent({
@@ -125,6 +131,7 @@ export default defineComponent({
                 {{ $t('footer.services') }}
               </div>
               <NuxtLink
+                v-if="!$cmwStore.isUk"
                 :to="localePath('/restaurants-wineshops')"
                 class="block text-white"
               >
