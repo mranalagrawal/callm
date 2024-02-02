@@ -20,10 +20,14 @@ export default {
     const handleInput = throttle(({ target }) => {
       const { id, value } = target
 
-      if (id === 'input-field-max') { maxValue.value = value > props.maxValueTotal ? props.maxValueTotal : value } else { minValue.value = value < props.minValueTotal ? props.minValueTotal : value }
+      if (id === 'input-field-max') {
+        maxValue.value = value > props.maxValueTotal ? props.maxValueTotal : value
+      } else { minValue.value = value < props.minValueTotal ? props.minValueTotal : value }
 
       if ((maxValue.value - minValue.value) < rangeGap) {
-        if (id === 'input-field-max') { maxValue.value = value > props.maxValueTotal ? props.maxValueTotal : +minValue.value + rangeGap } else { minValue.value = +maxValue.value - rangeGap }
+        if (id === 'input-field-max') {
+          maxValue.value = value > props.maxValueTotal ? props.maxValueTotal : +minValue.value + rangeGap
+        } else { minValue.value = +maxValue.value - rangeGap }
       }
 
       emit('update-values', { minValue: minValue.value, maxValue: maxValue.value })
@@ -74,7 +78,7 @@ export default {
           id="input-field-min" v-model="minValue" type="text" name="min" placeholder="min value"
           class="px-4 text-gray-dark py-3 w-full bg-transparent border border-gray-light
               placeholder-transparent rounded"
-          @input="handleInput"
+          @blur="handleInput"
         >
         <span class="transform absolute top-1/2 right-4 -translate-y-1/2 text-primary" v-text="currencySymbol" />
       </div>
@@ -84,7 +88,7 @@ export default {
           id="input-field-max" v-model="maxValue" type="text" name="max" :max="maxValueTotal" placeholder="max value"
           class="px-4 text-gray-dark py-3 w-full bg-transparent border border-gray-light
               placeholder-transparent rounded"
-          @input="handleInput"
+          @blur="handleInput"
         >
         <span class="transform absolute top-1/2 right-4 -translate-y-1/2 text-primary" v-text="currencySymbol" />
       </div>
