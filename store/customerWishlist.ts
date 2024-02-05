@@ -13,7 +13,7 @@ interface IState {
   elements: any[]
   filteredElements: any[]
   filters: {
-    categoryFilters: {
+    categories: {
       'id': number
       'name': string
       'subcategories': {
@@ -21,7 +21,7 @@ interface IState {
         'name': string
       }[]
     }[]
-    wineListsFilters: {
+    wineLists: {
       'id': number
       'name': string
     }[]
@@ -35,7 +35,7 @@ export const useCustomerWishlist = defineStore({
     customerWishlistProducts: [],
     elements: [],
     filteredElements: [],
-    filters: { categoryFilters: [], wineListsFilters: [] },
+    filters: { categories: [], wineLists: [] },
     wishlistShopifyProducts: [],
   }),
 
@@ -59,21 +59,21 @@ export const useCustomerWishlist = defineStore({
       return this.wishlistArr.length
     },
 
-    categoryFilters: (state): IOptions[] =>
-      state.filters.categoryFilters?.map(({ id: categoryId, name: label }) => ({
+    filteredCategories: (state): IOptions[] =>
+      state.filters.categories?.map(({ id: categoryId, name: label }) => ({
         value: JSON.stringify({ categoryId }),
         label,
       })) || [],
 
-    subcategoryFilters: (state): IOptions[] =>
-      state.filters.categoryFilters?.map(({ id: categoryId, subcategories }) =>
+    filteredSubcategories: (state): IOptions[] =>
+      state.filters.categories?.map(({ id: categoryId, subcategories }) =>
         subcategories?.map(({ id: subcategoryId, name: label }) => ({
           value: JSON.stringify({ categoryId, subcategoryId }),
           label,
         }))).flat() || [],
 
-    wineListsFilters: (state): IOptions[] =>
-      state.filters.wineListsFilters?.map(({ id: wineListId, name: label }) => ({
+    filteredWineLists: (state): IOptions[] =>
+      state.filters.wineLists?.map(({ id: wineListId, name: label }) => ({
         value: JSON.stringify({ wineListId }),
         label,
       })) || [],

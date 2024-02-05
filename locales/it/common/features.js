@@ -1,7 +1,7 @@
 export default {
   features: {
     ARTISANAL: 'Vini Artigianali',
-    BEST_SELLER: 'massima vendita',
+    BEST_SELLER: 'Più venduto',
     EXCLUSIVE: 'Esclusivo',
     FAVOURITE: 'Preferiti di Callmewine',
     FOR_EVERYDAY: 'per tutti i giorni',

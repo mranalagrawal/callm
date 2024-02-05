@@ -34,7 +34,7 @@ export default {
     const {
       wishlistArr, filteredWishlistArr,
       wishlistShopifyProducts, elements,
-      filters, categoryFilters, subcategoryFilters, wineListsFilters,
+      filters, filteredCategories, filteredSubcategories, filteredWineLists,
     } = storeToRefs(customerWishlistStore)
 
     const selectedCategory = ref('')
@@ -47,12 +47,12 @@ export default {
       sortingField: 'createdat',
     })
 
-    const mappedCategoriesFilters = computed<IOptions[]>(() => {
-      if (!categoryFilters.value || !queryParams.value) {
+    const mappedFilteredCategories = computed<IOptions[]>(() => {
+      if (!filteredCategories.value || !queryParams.value) {
         return []
       }
 
-      return categoryFilters.value.map((category: IOptions) => {
+      return filteredCategories.value.map((category: IOptions) => {
         const parsedCategory = JSON.parse(category.value)
 
         return ({
@@ -62,13 +62,13 @@ export default {
       })
     })
 
-    const mappedSubcategoryFilters = computed<IOptions[]>(() => {
-      if (!subcategoryFilters.value || !queryParams.value) {
+    const mappedFilteredSubcategories = computed<IOptions[]>(() => {
+      if (!filteredSubcategories.value || !queryParams.value) {
         return []
       }
 
       if (!queryParams.value?.categoryId) {
-        return subcategoryFilters.value.map((subCategory: IOptions) => {
+        return filteredSubcategories.value.map((subCategory: IOptions) => {
           const parsedSubCategory = JSON.parse(subCategory.value)
 
           return ({
@@ -77,7 +77,7 @@ export default {
           })
         })
       } else {
-        const allSubcategoryFilters = subcategoryFilters.value.map((subCategory: IOptions) => {
+        const allSubcategoryFilters = filteredSubcategories.value.map((subCategory: IOptions) => {
           const parsedSubCategory = JSON.parse(subCategory.value)
 
           return ({
@@ -91,11 +91,11 @@ export default {
     })
 
     const mappedWineListsFilters = computed<IOptions[]>(() => {
-      if (!wineListsFilters.value || !queryParams.value) {
+      if (!filteredWineLists.value || !queryParams.value) {
         return []
       }
 
-      return wineListsFilters.value.map((wineList: IOptions) => {
+      return filteredWineLists.value.map((wineList: IOptions) => {
         const parsedWineList = JSON.parse(wineList.value)
 
         return ({
@@ -128,7 +128,12 @@ export default {
             if (responseCode === 0) {
               customerWishlistStore.$patch({
                 filteredElements: elements,
-                filters,
+                filters: {
+                  /* Can't do anything here, filters.categoriesFilters it is */
+                  categories: filters.categoriesFilters,
+                  /* Can't do anything here, filters.wineListsFilters it is */
+                  wineLists: filters.wineListsFilters,
+                },
               })
             }
           })
@@ -294,11 +299,11 @@ export default {
     }
 
     const activeFilters = computed<IOptions[]>(() => {
-      const selectedCategoriesLabels = mappedCategoriesFilters.value
+      const selectedCategoriesLabels = mappedFilteredCategories.value
         .filter(category => category.selected)
         .map(category => ({ label: category.label, value: 'categoryId' }))
 
-      const selectedSubCategoriesLabels = mappedSubcategoryFilters.value
+      const selectedSubCategoriesLabels = mappedFilteredSubcategories.value
         .filter(subCategory => subCategory.selected)
         .map(subCategory => ({ label: subCategory.label, value: 'subcategoryId' }))
 
@@ -334,11 +339,13 @@ export default {
     return {
       activeFilters,
       availableLayouts,
-      categoryFilters,
       closeIcon,
       customer,
       customerProducts,
       elements,
+      filteredCategories,
+      filteredSubcategories,
+      filteredWineLists,
       filteredWishlistArr,
       filters,
       finalProducts,
@@ -348,8 +355,8 @@ export default {
       handleUpdateSortValue,
       handleUpdateTrigger,
       lazyLoadChunkOfProducts,
-      mappedCategoriesFilters,
-      mappedSubcategoryFilters,
+      mappedFilteredCategories,
+      mappedFilteredSubcategories,
       mappedWineListsFilters,
       queryParams,
       removeFilterFromQuery,
@@ -360,9 +367,7 @@ export default {
       selectedWineList,
       showMore,
       sorting,
-      subcategoryFilters,
       trigger,
-      wineListsFilters,
       wishListChunks,
       wishlistArr,
       wishlistOtherProducts,
@@ -377,7 +382,7 @@ export default {
   <div>
     <div class="flex flex-wrap min-h-[42px] border-y border-gray-light py-1 m-4">
       <CmwDropdown
-        v-if="!!mappedCategoriesFilters.length"
+        v-if="!!mappedFilteredCategories.length"
         key="categories"
         size="sm"
         :active="selectedCategory === 'categories'"
@@ -387,11 +392,11 @@ export default {
           <span>{{ $t('common.filters.category') }}</span>
         </template>
         <template #children>
-          <CmwSelect :options="mappedCategoriesFilters" @update-value="handleUpdateQuery" />
+          <CmwSelect :options="mappedFilteredCategories" @update-value="handleUpdateQuery" />
         </template>
       </CmwDropdown>
       <CmwDropdown
-        v-if="!!mappedSubcategoryFilters.length"
+        v-if="!!mappedFilteredSubcategories.length"
         key="subcategories"
         size="sm"
         :active="selectedCategory === 'subcategories'"
@@ -402,7 +407,7 @@ export default {
         </template>
         <template #children>
           <!-- Todo: Update query -->
-          <CmwSelect :options="mappedSubcategoryFilters" @update-value="handleUpdateQuery" />
+          <CmwSelect :options="mappedFilteredSubcategories" @update-value="handleUpdateQuery" />
         </template>
       </CmwDropdown>
       <CmwDropdown
