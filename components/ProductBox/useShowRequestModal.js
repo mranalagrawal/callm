@@ -1,9 +1,10 @@
-import { useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import { useProductAvailability } from '~/store/product-availability'
-import { useCustomer } from '~/store/customer'
-import { useSplash } from '~/store/splash'
+import { useContext } from '@nuxtjs/composition-api'
+
 import { SweetAlertToast } from '~/utilities/Swal'
+import { useCustomer } from '~/store/customer'
+import { useProductAvailability } from '~/store/product-availability'
+import { useSplash } from '~/store/splash'
 
 export default function () {
   const { i18n, $cmw, $sentry } = useContext()
@@ -18,6 +19,7 @@ export default function () {
     if (customer.value.email) {
       await $cmw.$post('/products-availability-alerts', {
         email: customer.value.email,
+        productFeId: productId,
         productId,
       })
         .then(({ data }) => {
