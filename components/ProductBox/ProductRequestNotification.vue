@@ -1,9 +1,10 @@
 <script lang="ts">
 import { ref, useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+
+import { SweetAlertToast } from '~/utilities/Swal'
+import { useProductAvailability } from '~/store/product-availability'
 import { useSplash } from '~/store/splash'
-import { useProductAvailability } from '@/store/product-availability'
-import { SweetAlertToast } from '@/utilities/Swal'
 
 export default {
   name: 'ProductRequestNotification',
@@ -26,6 +27,7 @@ export default {
       await $cmw.$post('/products-availability-alerts', {
         email: form.value.email,
         productId: productId.value,
+        productFeId: productId.value,
       })
         .then(({ data }: any) => {
           if (data) {
