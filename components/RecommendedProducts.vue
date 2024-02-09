@@ -24,8 +24,10 @@ export default {
             productsRef.value = productsRef.value.filter(p => !!p.availableForSale)
           }
         })
-        .catch((err: Error) => {
-          $handleApiErrors(`Catch getProductRecommendations from shopify: ${err}`)
+        .catch((err: Error | string) => {
+          if (err !== 'TypeError: Network request failed') {
+            $handleApiErrors(`Catch getProductRecommendations from shopify: ${err}`)
+          }
         })
     })
 

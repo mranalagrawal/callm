@@ -26,8 +26,10 @@ export default {
             productsRef.value = productsRef.value.filter(p => !!p.availableForSale)
           }
         })
-        .catch((err: Error) => {
-          $handleApiErrors(`Catch getting products getAll from shopify: ${err}`)
+        .catch((err: Error | string) => {
+          if (err !== 'TypeError: Network request failed') {
+            $handleApiErrors(`Catch getting products getAll from shopify: ${err}`)
+          }
         })
     })
 
