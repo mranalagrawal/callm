@@ -66,6 +66,7 @@ export default defineComponent({
     const isOpen = ref(false)
     const showRequestModal = ref(false)
     const product = ref({
+      url: '',
       source_id: '',
       availableFeatures: [],
       bundle: [],
@@ -304,6 +305,53 @@ export default defineComponent({
 
     useMeta(() => ({
       title: product?.value?.seo?.title,
+      script: [{
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify({
+          type: 'application/ld+json',
+          textContent: {
+            '@context': 'https://schema.org',
+            '@type': 'Product',
+            'name': `${product.value.title}`,
+            'sku': `${product.value.sku}`,
+            'image': `${product.value.image?.hd.url}`,
+            'mpn': `CALLMEWINE${product.value.sku}`,
+            'brand': {
+              '@type': 'Brand',
+              'name': `${product.value.vendor}`,
+            },
+            'offers': {
+              '@type': 'Offer',
+              'url': `${product.value?.url}`,
+              'priceCurrency': `${productVariant.value?.price.currencyCode}`,
+              'price': `${finalPrice.value}`,
+              'availability': `${product.value.availableForSale ? 'InStock' : 'OutOfStock'}`,
+              'itemCondition ': 'newCondition',
+            },
+          },
+        }),
+      }, {
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify({
+          type: 'application/ld+json',
+          textContent: {
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            'itemListElement': productBreadcrumbs.value.map((el, i) => {
+              return {
+                '@type': 'ListItem',
+                'position': i + 1,
+                'item': {
+                  '@id': `${canonicalUrl.value}`,
+                  'name': el.label,
+                },
+
+              }
+            }),
+          },
+        }),
+      }],
+      __dangerouslyDisableSanitizers: ['script'],
       meta: [
         {
           hid: 'description',
@@ -426,7 +474,7 @@ export default defineComponent({
 
 <template>
   <div class="mt-4 max-w-screen-xl mx-auto px-4">
-    <div v-if="fetchState.pending" :class="fetchState?.pending" class="sr-only" />
+    <div v-if="fetchState?.pending" class="sr-only" />
     <div v-else-if="fetchState?.error" class="relative text-center mt-12">
       <div class="md:(grid grid-cols-2 items-center)">
         <img
