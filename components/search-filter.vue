@@ -361,11 +361,9 @@ export default defineComponent({
     })
 
     const seoTitleReplace = computed(() => {
-      let h1Words = view.value && Object.values(view.value)
+      const h1Words = view.value && Object.values(view.value)
         .filter(v => v !== null)
         .map(v => v.name || '')
-
-      if (h1MacroName.value) { h1Words = [h1MacroName.value, ...h1Words] }
 
       return h1Words.join(' - ')
     })
