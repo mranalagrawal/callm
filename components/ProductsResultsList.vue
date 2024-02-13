@@ -1,11 +1,13 @@
 <script lang="ts">
-import { computed, defineComponent, inject, ref, useContext, useRoute, watchEffect } from '@nuxtjs/composition-api'
-import type { PropType } from '@nuxtjs/composition-api'
+import { defineComponent, inject, ref, useContext, useMeta, useRoute, watch, watchEffect } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+
+import type { PropType } from '@nuxtjs/composition-api'
 
 import type { IProductMapped } from '~/types/product'
 import type { ObjType } from '~/types/types'
 
+import { stripHtml } from '~/utilities/strings'
 import { useFilters } from '~/store/filters'
 
 export default defineComponent({
@@ -25,10 +27,11 @@ export default defineComponent({
   },
   emits: ['update-sort-value'],
   setup(props, { emit }) {
-    const { $config, $productMapping, $cmwGtmUtils, i18n } = useContext()
+    const { $config, $productMapping, $cmwGtmUtils, i18n, localePath } = useContext()
     const route = useRoute()
     const { selectedLayout, availableLayouts } = storeToRefs(useFilters())
     const isDesktop = inject('isDesktop')
+    const mappedProductListRef = ref<IProductMapped[]>([])
 
     const sorting = ref(false)
     const selectedSort = ref(i18n.t('common.filters.sort.by'))
@@ -84,36 +87,67 @@ export default defineComponent({
       sorting.value = !sorting.value
     }
 
-    const mappedProducts = computed<IProductMapped[]>(() => {
-      let mappedProducts: IProductMapped[] = []
+    const pushProductListView = () => {
+      if (!mappedProductListRef.value?.length) { return }
 
-      if (props.results?.length) {
-        mappedProducts = $productMapping.fromElastic(props.results)
-        // mappedProducts.sort((a, b) => Number(b.availableForSale) - Number(a.availableForSale))
-      }
+      const impressions = mappedProductListRef.value.map((product, i) => {
+        // eslint-disable-next-line unused-imports/no-unused-vars
+        const { quantity, ...rest } = product.gtmProductData
+        return {
+          ...rest,
+          position: i + 1,
+        }
+      })
 
-      if (process.browser) {
-        const impressions = mappedProducts.map((product, i) => {
-          // eslint-disable-next-line unused-imports/no-unused-vars
-          const { quantity, ...rest } = product.gtmProductData
-          return {
-            ...rest,
-            position: i + 1,
-          }
-        })
+      $cmwGtmUtils.pushPage($cmwGtmUtils.getActionField(route.value), {
+        event: 'productListView',
+        ecommerce: {
+          currencyCode: $config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
+          actionField: { list: $cmwGtmUtils.getActionField(route.value) },
+          impressions,
+        },
+      })
+    }
 
-        $cmwGtmUtils.pushPage($cmwGtmUtils.getActionField(route.value), {
-          event: 'productListView',
-          ecommerce: {
-            currencyCode: $config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
-            actionField: { list: $cmwGtmUtils.getActionField(route.value) },
-            impressions,
+    const setItemListSchema = () => {
+      if (!mappedProductListRef.value?.length) { return [] }
+
+      return mappedProductListRef.value.map((product, i) => {
+        const { title } = product
+        return {
+          '@type': 'ListItem',
+          'position': i + 1,
+          'name': title,
+          'url': localePath(product.url),
+          'image': product.image.source.url,
+          'description': stripHtml(product.tbd.description),
+
+        }
+      })
+    }
+
+    useMeta(() => ({
+      script: [{
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify({
+          type: 'application/ld+json',
+          textContent: {
+            '@context': 'https://schema.org',
+            '@type': 'ItemList',
+            'itemListElement': setItemListSchema(),
           },
-        })
-      }
+        }),
+      }],
+      __dangerouslyDisableSanitizers: ['script'],
+    }))
 
-      return mappedProducts
-    })
+    watch(() => props.results, () => {
+      if (props.results?.length) {
+        mappedProductListRef.value = $productMapping.fromElastic(props.results)
+        process.browser && pushProductListView()
+      }
+    },
+    { immediate: true, deep: true })
 
     watchEffect(() => {
       const sortQuery = route.value.query?.sort
@@ -140,19 +174,20 @@ export default defineComponent({
       handleUpdateSortTrigger,
       handleUpdateSortValue,
       isDesktop,
-      mappedProducts,
+      mappedProductListRef,
       selectedLayout,
       selectedSort,
       sortOptions,
       sorting,
     }
   },
+  head: {},
 })
 </script>
 
 <template>
   <div class="mt-2">
-    <div v-if="mappedProducts?.length > 0" class="">
+    <div v-if="mappedProductListRef?.length > 0" class="">
       <div class="flex gap-2 items-center justify-between mb-8">
         <div>
           <strong>{{ total }}</strong> <span>{{ $tc('search.results', Number(total)) }}</span>
@@ -209,7 +244,7 @@ export default defineComponent({
       </div>
       <div v-if="selectedLayout === 'list'">
         <div
-          v-for="(result, idx) in mappedProducts"
+          v-for="(result, idx) in mappedProductListRef"
           :key="result.shopify_product_id"
           class="mb-4"
         >
@@ -220,7 +255,7 @@ export default defineComponent({
         v-else class="products-grid"
       >
         <div
-          v-for="(result, idx) in mappedProducts"
+          v-for="(result, idx) in mappedProductListRef"
           :key="`desktop${result.shopify_product_id}`"
         >
           <ProductBoxVertical :product="result" :position="idx + 1" />
