@@ -49,7 +49,11 @@ export default defineComponent({
         .then((data) => {
           results.value = data
         })
-        .catch((err: Error) => $handleApiErrors(`Catch getting autocomplete: ${err}`))
+        .catch((err: Error) => {
+          console.error({ err })
+          console.error(err.message, err.name, err.stack, err.cause)
+          $handleApiErrors(`Catch getting autocomplete: ${err}`)
+        })
     }, 300)
 
     const handleBlur = () => {

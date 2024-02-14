@@ -73,6 +73,7 @@ const cmwApi: Plugin = ({ $http, i18n, $config, $sentry }, inject) => {
   $cmw.setHeader('Accept', 'application/json')
   $cmw.setHeader('Content-Type', 'application/json')
   $cmw.onError((err) => {
+    console.log(err.message, err.response)
     $sentry.captureException(new Error(`$cmw catch ${err}`))
   })
 
@@ -83,6 +84,7 @@ const cmwApi: Plugin = ({ $http, i18n, $config, $sentry }, inject) => {
   $elastic.setHeader('Accept', 'application/json')
   $elastic.setHeader('Content-Type', 'application/json')
   $elastic.onError((err) => {
+    console.log(err.message, err.response)
     $sentry.captureException(new Error(`$elastic catch ${err}`))
   })
 
