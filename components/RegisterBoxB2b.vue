@@ -1,15 +1,18 @@
 <script lang="ts">
 import { defineComponent, ref, useContext, useRouter } from '@nuxtjs/composition-api'
 import type { RawLocation } from 'vue-router'
+
 import calendarIcon from '~/assets/svg/calendar.svg'
 import { SweetAlertToast } from '~/utilities/Swal'
+import { useCart } from '~/store/cart'
 import { useCustomer } from '~/store/customer'
 
 export default defineComponent({
   setup() {
-    const { localeRoute, $gtm, $cmw, $handleApiErrors } = useContext()
+    const { localeLocation, $gtm, $cmw, $handleApiErrors, $cmwGtmUtils } = useContext()
     const router = useRouter()
     const customerStore = useCustomer()
+    const { getInitialCart } = useCart()
     const isSubmitting = ref(false)
     const showPasswordToast = ref(false)
 
@@ -48,7 +51,11 @@ export default defineComponent({
 
           if (valid) {
             await customerStore.getCustomer()
-            router.push(localeRoute('/') as RawLocation)
+              .then(() => {
+                getInitialCart()
+                $cmwGtmUtils.pushCustomLoginEvent()
+                router.push(localeLocation('/') as RawLocation)
+              })
           }
         } else {
           throw new Error('`customer` not found in response.data')

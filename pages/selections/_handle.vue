@@ -2,7 +2,7 @@
 import { computed, defineComponent, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import chevronRightIcon from 'assets/svg/chevron-right.svg'
-import { useCustomer } from '@/store/customer'
+import { useCustomer } from '~/store/customer'
 import type { ICollection } from '~/types/collection'
 import { initialCollectionData } from '~/types/collection'
 import type { IProductMapped } from '~/types/product'

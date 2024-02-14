@@ -359,7 +359,7 @@ export const useCheckout = defineStore({
       return await this.$nuxt.$cmwRepo.customer.getCheckout(id)
         .then(({ node }: any) => {
           if (!node || node.completedAt) {
-            // Todo: this.$nuxt.$cookies.remove('checkoutId')
+            this.$nuxt.$cookies.remove('checkoutId')
             return null
           }
 

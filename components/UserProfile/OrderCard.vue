@@ -1,8 +1,8 @@
 <script lang="ts">
 import { computed, defineComponent, ref, useContext } from '@nuxtjs/composition-api'
+import type { PropType } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
-import type { PropType } from '@nuxtjs/composition-api'
 import type { ILineItem, IOrder } from '~/types/order'
 
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
@@ -58,7 +58,6 @@ export default defineComponent({
 
     const handleRequestAssistance = () => {
       splash.$patch({
-        // @ts-expect-error TODO: fix this types
         currentSplash: 'RequestOrderAssistance',
         title: i18n.t('profile.requestAssistanceTitle', { orderId: props.order.name || props.activeOrder }),
         subtitle: i18n.t('profile.requestAssistanceSubtitle'),

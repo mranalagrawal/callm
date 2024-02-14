@@ -1,19 +1,30 @@
 import { defineStore } from 'pinia'
-import { getCustomerId } from '~/utilities/shopify'
 
-import { awaitPromise, djb2Hash } from '~/utilities/strings'
+import type { IEditingCustomer, IMappedCustomer, IShopifyCustomer } from '~/types/customer'
+
+import { djb2Hash } from '~/utilities/strings'
+import { getCustomerId } from '~/utilities/shopify'
 import { SweetAlertToast } from '~/utilities/Swal'
 import { useCart } from '~/store/cart'
 import { useCheckout } from '~/store/checkout'
-import { useCustomerOrders } from '~/store/customerOrders.ts'
+import { useCustomerOrders } from '~/store/customerOrders'
 import { useCustomerWishlist } from '~/store/customerWishlist'
 
-import customerAccessTokenCreate from '~/graphql/mutations/authenticateUser'
-import customerAccessTokenCreateWithMultipass from '~/graphql/mutations/authenticateUserWithMultipass'
+import customerAccessTokenCreate from '~/graphql/mutations/authenticateUser.graphql'
+import customerAccessTokenCreateWithMultipass from '~/graphql/mutations/authenticateUserWithMultipass.graphql'
 import themeConfig from '~/config/themeConfig'
 
+interface IState {
+  customer: IMappedCustomer
+  approved: boolean
+  editingCustomer: IEditingCustomer
+}
+
 // Note: Backend should use enums here 'GOLD' | 'B2B' | 'MAIN', this way we could simplify this to an array
-const availableUsers = {
+type availableUsersKeys = 'LIST_GOLD' | 'list_gold' | 'list_b2b' | 'main'
+type availableUsersValues = 'gold' | 'b2b' | 'main'
+
+const availableUsers: { [key in availableUsersKeys]: availableUsersValues } = {
   LIST_GOLD: 'gold',
   list_gold: 'gold',
   list_b2b: 'b2b',
@@ -22,26 +33,27 @@ const availableUsers = {
 
 export const useCustomer = defineStore({
   id: 'customer',
-  state: () => ({
+  state: () => <IState>({
     customer: {
       acceptsMarketing: false,
-      amountSpent: { value: '' },
-      billing: { value: '' },
+      amountSpent: '',
+      approved: false,
+      billing: null,
+      createdAt: undefined,
+      defaultAddress: null,
+      displayName: '',
       email: '',
       firstName: '',
       id: '',
-      isCheckoutMigrated: { value: false },
-      lastIncompleteCart: { value: { id: '' } },
-      lastIncompleteCheckout: { id: '' },
+      isCheckoutMigrated: false,
+      lastIncompleteCart: null,
+      lastIncompleteCheckout: '',
       lastName: '',
-      newsletterFrequency: { value: '' },
+      newsletterFrequency: '',
       numberOfOrders: '',
       phone: '',
       tags: [],
     },
-    // FixMe: on Nuxt 3 or using GraphQl local storage properly we shouldn't need this,
-    //  we need to reduce the extra objects and relay on the state,
-    //  I believe there is an issue with deep watch, for some reason getters are not updating accordingly
     approved: false,
     editingCustomer: {
       acceptsMarketing: false,
@@ -59,13 +71,58 @@ export const useCustomer = defineStore({
 
       return getCustomerId(state.customer.id)
     },
-    getCustomerType: (state) => {
-      const userType = (state.customer.tags && state.customer.tags.find(k => Object.keys(availableUsers).includes(k))) || 'main'
+
+    getCustomerType: (state): string => {
+      const availableUsersKeys = Object.keys(availableUsers)
+      const userType: availableUsersKeys = state.customer.tags
+        .find(k => availableUsersKeys.includes(k)) as availableUsersKeys || 'main'
       return availableUsers[userType]
     },
   },
 
   actions: {
+    setMappedCustomer(customer: IShopifyCustomer) {
+      const {
+        acceptsMarketing,
+        amountSpent,
+        billing,
+        createdAt,
+        defaultAddress,
+        email,
+        firstName,
+        id,
+        isCheckoutMigrated,
+        lastIncompleteCart,
+        lastIncompleteCheckout,
+        lastName,
+        newsletterFrequency,
+        numberOfOrders,
+        phone,
+        tags,
+      } = customer
+
+      this.$patch({
+        customer: {
+          acceptsMarketing,
+          amountSpent: amountSpent?.value || '',
+          approved: customer.approved?.value === 'true',
+          billing: billing?.value ? JSON.parse(billing.value) : null,
+          createdAt,
+          defaultAddress,
+          email,
+          firstName,
+          id,
+          isCheckoutMigrated: isCheckoutMigrated?.value === 'true',
+          lastIncompleteCart: lastIncompleteCart?.value ? JSON.parse(lastIncompleteCart.value) : null,
+          lastIncompleteCheckout: lastIncompleteCheckout?.id || '',
+          lastName,
+          newsletterFrequency: newsletterFrequency?.value || '',
+          numberOfOrders,
+          phone,
+          tags,
+        },
+      })
+    },
 
     async loginWithMultipass(multipassToken = '') {
       let valid = false
@@ -92,7 +149,7 @@ export const useCustomer = defineStore({
       return valid
     },
 
-    async login(email, password) {
+    async login(email: string, password: string) {
       let valid = false
 
       // call cww api before make login
@@ -132,74 +189,40 @@ export const useCustomer = defineStore({
       return valid
     },
 
-    async getCustomer(event = '') {
+    removeCookies() {
+      this.$nuxt.$cookies.remove('b2b-approved')
+      this.$nuxt.$cookies.remove('cartId')
+      this.$nuxt.$cookies.remove('checkoutId')
+      this.$nuxt.$cookies.remove('newsletter')
+    },
+
+    setB2bLogin() {
+      const hashedValue = djb2Hash(this.$nuxt.$cookieHelpers.getToken())
+      this.$nuxt.$cookies.set('b2b-approved', hashedValue, {
+        sameSite: 'none',
+        secure: true,
+      })
+    },
+
+    async getCustomer() {
+      // Note: this is a temporary solution, in time, the cookies flow will work as expected
+      // this.removeCookies()
+      this.$nuxt.$cookies.remove('b2b-approved')
+      this.$nuxt.$cookies.remove('checkoutId')
+      this.$nuxt.$cookies.remove('newsletter')
+
       await this.$nuxt.$cmwRepo.customer.getCustomer()
-        .then(async ({ customer }) => {
+        .then(async ({ customer }: Record<string, any>) => {
           if (customer?.id) {
             // Todo: Implement shopify customerAccessTokenRenew
             const customerAccessToken = this.$nuxt.$cookieHelpers.getToken()
-            const customerId = await awaitPromise(300).then(() => getCustomerId(customer.id))
             this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
-
             const approved = (customer.approved && customer.approved.value) ? JSON.parse(customer.approved.value) : false
 
-            this.$patch({
-              customer,
-              billing: (customer.billing && customer.billing.value) ? JSON.parse(customer.billing.value) : [],
-              approved,
-            })
+            this.setMappedCustomer(customer);
 
-            if (this.$nuxt.$cmwStore.isB2b && approved) {
-              const hashedValue = djb2Hash(this.$nuxt.$cookieHelpers.getToken())
-              this.$nuxt.$cookies.set('b2b-approved', hashedValue, {
-                sameSite: 'none',
-                secure: true,
-              })
-            }
-
-            const customerWishlistStore = useCustomerWishlist()
-            const cartStore = useCart()
-            await customerWishlistStore.getCustomerWishlist(customerId)
-            const cartIdCookie = this.$nuxt.$cookies.get('cartId')
-            const lastIncompleteCart = customer.lastIncompleteCart?.value && JSON.parse(customer.lastIncompleteCart?.value)
-
-            if (cartIdCookie) {
-              if (customer.lastIncompleteCheckout?.id && !customer.isCheckoutMigrated?.value) {
-                await cartStore.mergeCartCookieWithCheckoutId(customer.lastIncompleteCheckout?.id, cartIdCookie)
-                await this.$nuxt.$cmw.$post(`/customers/${customerId}/set-checkout-migrated`)
-              } else if (lastIncompleteCart?.id && lastIncompleteCart?.id !== cartIdCookie) {
-                await cartStore.mergeCartCookieWithLastIncompleteCart(lastIncompleteCart, cartIdCookie)
-              } else {
-                await cartStore.getCartById(cartIdCookie)
-              }
-            } else {
-              if (customer.lastIncompleteCheckout?.id && !lastIncompleteCart?.id && !customer.isCheckoutMigrated?.value) {
-                const checkout = await useCheckout().getCheckoutById(customer.lastIncompleteCheckout?.id)
-
-                if (checkout) {
-                  await cartStore.mutateShopifyCheckoutIntoCart(checkout)
-                  await this.$nuxt.$cmw.$post(`/customers/${customerId}/set-checkout-migrated`)
-                }
-              } else if (lastIncompleteCart?.id) {
-                await cartStore.getCartById(lastIncompleteCart.id)
-              }
-            }
-
-            if (event) {
-              await this.$nuxt.$cmwGtmUtils.resetDatalayerFields()
-
-              this.$nuxt.$gtm.push({
-                event,
-                userEmail: this.customer.email,
-                userFirstName: this.customer.firstName,
-                userId: this.customerId,
-                userLastName: this.customer.lastName,
-                userPhone: this.customer.phone,
-                userPurchasesCount: this.customer.numberOfOrders,
-                userPurchasesTot: this.customer.amountSpent?.value,
-                userType: themeConfig[this.$nuxt.$config.STORE].customerType,
-              })
-            }
+            /* NOTE: since middleware runs before on appCreated, we still getting a redirect to /waiting-for-confirmation on first load */
+            (this.$nuxt.$cmwStore.isB2b && approved) ? this.setB2bLogin() : this.$nuxt.$cookies.remove('b2b-approved')
           } else {
             await SweetAlertToast.fire({ text: this.$nuxt.app.i18n.t('common.feedback.KO.login') })
           }
@@ -211,12 +234,13 @@ export const useCustomer = defineStore({
 
     async logout() {
       const customerOrders = useCustomerOrders()
+      const customerWishlist = useCustomerWishlist()
       const checkoutStore = useCheckout()
       const cartStore = useCart()
 
       this.$nuxt.$gtm.push({
         event: 'logout',
-        userType: themeConfig[this.$nuxt.$config.STORE].customerType,
+        userType: themeConfig[this.$nuxt.$cmwStore.settings.store]?.customerType,
         userId: this.customerId,
         userFirstName: this.customer.firstName,
         userLastName: this.customer.lastName,
@@ -226,29 +250,23 @@ export const useCustomer = defineStore({
       this.$nuxt.$cookieHelpers.onLogout()
       this.$reset()
       customerOrders.$reset()
+      customerWishlist.$reset()
       // TODO: Create a fresh checkout and add current items to it
       checkoutStore.$reset()
       cartStore.$reset()
 
-      this.$nuxt.$cookies.remove('checkoutId')
-      this.$nuxt.$cookies.remove('cartId')
-      this.$nuxt.$cookies.remove('newsletter')
-      this.$nuxt.$cookies.remove('b2b-approved')
+      this.removeCookies()
       this.$nuxt.$graphql.default.setHeader('authorization', '')
       this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', undefined)
       window.google_tag_manager && window.google_tag_manager[this.$nuxt.app.$config.gtm.id] && window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.reset()
-      await this.$nuxt.app.router.push(this.$nuxt.app.localePath('/'))
+      await this.$nuxt.app.router?.push(this.$nuxt.app.localePath('/'))
     },
 
     async customerUpdateData(customer = {}, feedbackOk = '', feedbackKo = '') {
       await this.$nuxt.$cmwRepo.customer.customerUpdate(customer)
-        .then(({ customerUpdate: { customer, customerAccessToken, customerUserErrors } }) => {
+        .then(({ customerUpdate: { customer, customerAccessToken, customerUserErrors } }: any) => {
           if (customer && customer.id) {
-            this.$patch({
-              customer: {
-                ...customer,
-              },
-            })
+            this.setMappedCustomer(customer)
 
             if (customerAccessToken && customerAccessToken.accessToken) {
               this.$nuxt.$cookieHelpers.setToken(customerAccessToken.accessToken)

@@ -218,7 +218,7 @@ export default {
     const trigger = ref(null) // used to get the ref of div that manage the intersection
 
     const lazyLoadChunkOfProducts = async () => {
-      if (nextChunkId.value < wishListChunks.value.length && nextChunkId.value in wishListChunks.value) {
+      if (nextChunkId.value <= wishListChunks.value.length && nextChunkId.value in wishListChunks.value) {
         // start fetching ${nextChunkId.value} chunk of product...
         const nextChunk = wishListChunks.value[nextChunkId.value]
         const nextProducts = await $cmwRepo.products.getAll({

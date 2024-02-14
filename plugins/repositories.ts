@@ -1,13 +1,20 @@
 import type { Plugin } from '@nuxt/types'
+
 import type { IPrismicPageData, IPrismicPageParams, TPrismicComponentsNames, TPrismicIsoCodes } from '~/types/prismic'
-import createRepository from '~/repositories'
+import type { IMailingAddress } from '~/types/mailingAddress'
+import type { ICustomerUserError, IShopifyCustomer } from '~/types/customer'
 import type { IShopifyPage } from '~/types/shopifyPage'
+
+import createRepository from '~/repositories'
 
 interface ICmwRepo {
   shopifyPages: {
     getPageByHandle(handle: string): Promise<IShopifyPage>
   }
-  addresses: any
+  addresses: {
+    getCustomerAddresses(): Promise<{ defaultAddress: IMailingAddress; addresses: IMailingAddress[] }>
+    setAddressAsDefault(addressId: IMailingAddress['id']): Promise<{ customer: IShopifyCustomer; customerUserErrors: ICustomerUserError[] }>
+  }
   countries: any
   customer: any
   orders: any

@@ -1,13 +1,13 @@
-<script>
-import { ref, useContext } from '@nuxtjs/composition-api'
+<script lang="ts">
+import { defineComponent, ref, useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import { useSplash } from '~/store/splash'
-import { useCustomer } from '@/store/customer'
-import { useCustomerOrders } from '~/store/customerOrders.ts'
 import { SweetAlertToast } from '~/utilities/Swal'
+import { useCustomer } from '~/store/customer'
+import { useCustomerOrders } from '~/store/customerOrders'
+import { useSplash } from '~/store/splash'
 
 // noinspection JSUnusedGlobalSymbols
-export default {
+export default defineComponent({
   name: 'RequestOrderAssistance',
   props: {},
   setup() {
@@ -21,7 +21,9 @@ export default {
     const customerMessage = ref('')
 
     const onSubmit = async () => {
-      const { isValid } = await formEl.value.validateWithInfo()
+      // TODO: type formEl with vue validate
+      /* @ts-expect-error need typing for formEl validateWithInfo */
+      const { isValid } = await formEl.value?.validateWithInfo()
 
       if (isValid) {
         const { status, message } = await $cmwRepo.orders.requestAssistance({
@@ -44,7 +46,7 @@ export default {
 
     return { customerMessage, formEl, onSubmit }
   },
-}
+})
 </script>
 
 <template>

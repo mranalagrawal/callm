@@ -1,14 +1,58 @@
 import { defineStore } from 'pinia'
 import { SweetAlertToast } from '@/utilities/Swal'
 
+import type { IMailingAddress } from '~/types/mailingAddress'
+
+interface IState {
+  defaultAddress: IMailingAddress
+  addresses: IMailingAddress[]
+  editingAddress: IMailingAddress
+}
+
 export const useCustomerAddresses = defineStore({
   id: 'customerAddresses',
-  state: () => ({
-    defaultAddress: { id: '' },
-    /** @Type: {MailingAddressType.MailingAddress[]} */
+  state: () => <IState>({
+    defaultAddress: {
+      address1: '',
+      address2: '',
+      city: '',
+      company: '',
+      country: '',
+      countryCodeV2: '',
+      firstName: '',
+      formatted: '',
+      formattedArea: '',
+      id: '',
+      lastName: '',
+      latitude: '',
+      longitude: '',
+      name: '',
+      phone: '',
+      province: '',
+      provinceCode: '',
+      zip: '',
+    },
     addresses: [],
-    /** @Type: {MailingAddressType.MailingAddress} */
-    editingAddress: {},
+    editingAddress: {
+      address1: '',
+      address2: '',
+      city: '',
+      company: '',
+      country: '',
+      countryCodeV2: '',
+      firstName: '',
+      formatted: '',
+      formattedArea: '',
+      id: '',
+      lastName: '',
+      latitude: '',
+      longitude: '',
+      name: '',
+      phone: '',
+      province: '',
+      provinceCode: '',
+      zip: '',
+    },
   }),
 
   actions: {
@@ -18,17 +62,19 @@ export const useCustomerAddresses = defineStore({
           this.$patch({ defaultAddress, addresses })
         })
     },
+
     async setAddressAsDefault(addressId = '', successCB = () => {}) {
       await this.$nuxt.$cmwRepo.addresses.setAddressAsDefault(addressId)
         .then(({ customer, customerUserErrors }) => {
           if (!customerUserErrors.length) {
-            const { protocol, pathname } = new URL(customer.defaultAddress?.id)
+            const defaultAddressId = customer.defaultAddress?.id || ''
+            const { protocol, pathname } = new URL(defaultAddressId)
 
             const newAddresses = this.addresses.map((address) => {
               if (address.id.includes(`${protocol}${pathname}`)) {
                 return {
                   ...address,
-                  id: customer.defaultAddress?.id,
+                  id: defaultAddressId,
                 }
               } else {
                 return address
@@ -36,7 +82,7 @@ export const useCustomerAddresses = defineStore({
             }) || []
 
             this.$patch({
-              defaultAddress: { id: customer.defaultAddress?.id },
+              defaultAddress: { id: defaultAddressId },
               addresses: newAddresses,
             })
 

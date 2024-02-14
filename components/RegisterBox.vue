@@ -1,18 +1,21 @@
 <script lang="ts">
 import { ref, useContext, useRouter } from '@nuxtjs/composition-api'
 import type { RawLocation } from 'vue-router'
+
+import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
 import calendarIcon from '~/assets/svg/calendar.svg'
 import GqlCustomerCreate from '~/graphql/mutations/customerCreate.graphql'
-import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
-import { useCustomer } from '~/store/customer'
 import socialFacebook from '~/assets/svg/social-facebook.svg'
 import socialGoogle from '~/assets/svg/social-google.svg'
+import { useCart } from '~/store/cart'
+import { useCustomer } from '~/store/customer'
 
 export default {
   setup() {
-    const { $graphql, i18n, localeLocation, $gtm, $handleApiErrors } = useContext()
+    const { $graphql, i18n, localeLocation, $gtm, $handleApiErrors, $cmwGtmUtils } = useContext()
     const router = useRouter()
     const customerStore = useCustomer()
+    const { getInitialCart } = useCart()
     const isSubmitting = ref(false)
     const showPasswordToast = ref(false)
 
@@ -55,7 +58,11 @@ export default {
 
           if (valid) {
             await customerStore.getCustomer()
-              .then(() => router.push(localeLocation('/') as RawLocation))
+              .then(() => {
+                getInitialCart()
+                $cmwGtmUtils.pushCustomLoginEvent()
+                router.push(localeLocation('/') as RawLocation)
+              })
           }
         } else {
           if (customerUserErrors[0].field) {

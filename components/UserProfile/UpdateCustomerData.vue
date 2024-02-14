@@ -1,10 +1,11 @@
 <script lang="ts">
 import { defineComponent, ref, toRefs, useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import { useSplash } from '~/store/splash'
-import { useCustomer } from '~/store/customer'
+
 import radioCheckedIcon from '~/assets/svg/radio-checked.svg'
 import radioUncheckedIcon from '~/assets/svg/radio-unchecked.svg'
+import { useCustomer } from '~/store/customer'
+import { useSplash } from '~/store/splash'
 
 export default defineComponent({
   name: 'UpdateCustomerData',
@@ -28,8 +29,8 @@ export default defineComponent({
       },
     ]
 
-    const selectedFrequency = ref(customer.value.newsletterFrequency?.value ?? '')
-    const acceptsNewsletter = ref(['DAILY', 'WEEKLY', 'B2B'].includes(customer.value.newsletterFrequency?.value || ''))
+    const selectedFrequency = ref(customer.value.newsletterFrequency ?? '')
+    const acceptsNewsletter = ref(['DAILY', 'WEEKLY', 'B2B'].includes(customer.value.newsletterFrequency || ''))
     const formEl = ref<HTMLFormElement | null>(null)
 
     const handleAcceptsMarketingChange = (checked: boolean) => {

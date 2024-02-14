@@ -3,7 +3,7 @@ import type { Plugin } from '@nuxt/types'
 interface ICookieHelpers {
   getToken(): string
   setToken(token: string, expires?: Date): void
-  onLogout(pageType: string, data?: Record<string, any>): void
+  onLogout(): void
 }
 declare module 'vue/types/vue' {
   interface Vue {

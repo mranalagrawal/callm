@@ -5,6 +5,7 @@ import { storeToRefs } from 'pinia'
 import cartIcon from '~/assets/svg/cart.svg'
 import chevronLeftIcon from '~/assets/svg/chevron-left.svg'
 import closeIcon from '~/assets/svg/close.svg'
+import CustomerWishlist from '~/components/Header/CustomerWishlist.vue'
 import logo from '~/assets/svg/logo-call-me-wine.svg'
 import logoB2b from '~/assets/svg/logo-call-me-wine-b2b.svg'
 import menuIcon from '~/assets/svg/menu.svg'
@@ -15,12 +16,13 @@ import { useCart } from '~/store/cart'
 import { useCustomer } from '~/store/customer'
 
 export default defineComponent({
-  components: { UserActions },
+  components: { CustomerWishlist, UserActions },
   setup() {
     const { customer } = storeToRefs(useCustomer())
     const { cartTotalQuantity } = storeToRefs(useCart())
     const route = useRoute()
     const isDesktop = inject('isDesktop')
+    const isMobile = inject('isMobile')
     const navbar = ref(null)
     const menuBarRef = ref<HTMLDivElement | null>(null)
     const showMobileButton = ref(true)
@@ -57,6 +59,7 @@ export default defineComponent({
       customer,
       handleShowMobileButton,
       isDesktop,
+      isMobile,
       isMobileMenuOpen,
       isSidebarOpen,
       logo,
@@ -116,6 +119,7 @@ export default defineComponent({
 
           <div class="flex items-center ml-auto lg:hidden">
             <ClientOnly>
+              <CustomerWishlist v-if="isMobile && customer.id" />
               <NuxtLink :to="localePath(customer.id ? '/profile/my-orders' : '/login')">
                 <VueSvgIcon
                   :data="userIcon"
@@ -154,7 +158,7 @@ export default defineComponent({
       </div>
     </div>
 
-    <div v-if="!isDesktop" class="">
+    <div v-if="isMobile" class="">
       <transition name="menu-mobile">
         <div v-show="isSidebarOpen" class="absolute left-0 w-full z-base" :style="{ top: sideBarTop }">
           <MenuMobile />

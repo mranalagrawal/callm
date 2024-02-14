@@ -46,6 +46,7 @@ export default {
       'newsletter-checkbox': 'newsletter',
       'newsletter-footer-checkbox': 'newsletter',
       'notify-me-user-email': 'Email',
+      'phone': 'Telephone',
       'privacy': 'privacy',
       'register-business-name': 'Company Name',
       'register-business-type': 'Business Type',

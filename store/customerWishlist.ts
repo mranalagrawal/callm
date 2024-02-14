@@ -84,6 +84,9 @@ export const useCustomerWishlist = defineStore({
     async getCustomerWishlist(id: string) {
       const { customer } = useCustomer()
       const customerId = id || getCustomerId(customer.id)
+      const customerAccessToken = this.$nuxt.$cookieHelpers.getToken()
+
+      this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
 
       await this.$nuxt.$cmw.$get(`/wishlists/full?shopifyCustomerId=${customerId}&sortingDirection=ASC&sortingField=createdat`)
         .then(({ data, responseCode }: any) => {

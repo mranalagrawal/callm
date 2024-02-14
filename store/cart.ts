@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { useCheckout } from '~/store/checkout'
 import { useCustomer } from '~/store/customer'
 
 import type { ICartLinesMapped, ICartMapped, IShopifyCart, IShopifyCartInput, IShopifyCartLineInput, IShopifyCartLineUpdateInput } from '~/types/cart'
@@ -15,6 +16,7 @@ import getProductsById from '~/graphql/queries/getProductsById.graphql'
 
 import { getCheckoutHostname, getCustomerId } from '~/utilities/shopify'
 import { getCountryFromStore } from '~/utilities/currency'
+import { awaitPromise } from '~/utilities/strings'
 import { SweetAlertToast } from '~/utilities/Swal'
 
 interface IState {
@@ -550,12 +552,42 @@ export const useCart = defineStore({
             customerStore.$patch({
               customer: {
                 ...customer,
-                lastIncompleteCart: { value: JSON.parse(data.metafield.value) },
+                lastIncompleteCart: JSON.parse(data.metafield.value),
               },
             })
           }
         }
       })
+    },
+
+    async getInitialCart() {
+      const customerStore = useCustomer()
+      const cartIdCookie = this.$nuxt.$cookies.get('cartId')
+      const customerId = await awaitPromise(10).then(() => getCustomerId(customerStore.customer.id))
+
+      if (cartIdCookie) {
+        if (customerStore.customer.lastIncompleteCheckout && !customerStore.customer.isCheckoutMigrated) {
+          await this.mergeCartCookieWithCheckoutId(customerStore.customer.lastIncompleteCheckout, cartIdCookie)
+          await this.$nuxt.$cmw.$post(`/customers/${customerId}/set-checkout-migrated`)
+        } else if (customerStore.customer.lastIncompleteCart?.id && customerStore.customer.lastIncompleteCart?.id !== cartIdCookie) {
+          await this.mergeCartCookieWithLastIncompleteCart(customerStore.customer.lastIncompleteCart, cartIdCookie)
+        } else {
+          await this.getCartById(cartIdCookie)
+        }
+      } else {
+        if (customerStore.customer.lastIncompleteCheckout
+          && !customerStore.customer.lastIncompleteCart?.id
+          && !customerStore.customer.isCheckoutMigrated) {
+          const checkout = await useCheckout().getCheckoutById(customerStore.customer.lastIncompleteCheckout)
+
+          if (checkout) {
+            await this.mutateShopifyCheckoutIntoCart(checkout)
+            await this.$nuxt.$cmw.$post(`/customers/${customerId}/set-checkout-migrated`)
+          }
+        } else if (customerStore.customer.lastIncompleteCart?.id) {
+          await this.getCartById(customerStore.customer.lastIncompleteCart.id)
+        }
+      }
     },
 
     setCartIdCookie(id: IShopifyCart['id'], createdAt: IShopifyCart['createdAt']) {

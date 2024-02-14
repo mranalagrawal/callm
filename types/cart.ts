@@ -65,8 +65,6 @@ export interface ICartLinesMapped {
 }
 
 export interface ICartMapped {
-  // completedAt: string | null
-  // email: string
   buyerIdentity: CartBuyerIdentity
   checkoutUrl: Location | undefined
   createdAt: string // DateTime!

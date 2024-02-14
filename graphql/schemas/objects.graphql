@@ -1,7 +1,7 @@
 type CustomerUserError {
   code: CustomerErrorCode
-  code: [String!]
-  code: String!
+  field: [String!]
+  message: String!
 }
 
 #  An amount discounting the line that has been allocated by a discount.

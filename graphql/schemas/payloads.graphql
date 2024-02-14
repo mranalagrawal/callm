@@ -5,7 +5,7 @@ type CustomerCreatePayload {
 
 type CustomerDefaultAddressUpdatePayload {
   customer: Customer
-  customerUserErrors: DisplayableError # [CustomerUserError!]!
+  customerUserErrors: [CustomerUserError!]! # DisplayableError # [CustomerUserError!]!
 }
 
 type CustomerAddressDeletePayload {

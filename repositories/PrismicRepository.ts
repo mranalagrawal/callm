@@ -1,7 +1,9 @@
 import type { Context } from '@nuxt/types'
-import { initialPageData } from '~/config/prismicConfig'
-import type { TISO639 } from '~/config/themeConfig'
+
 import type { IPrismicPageData, IPrismicPageParams, TPrismicIsoCodes } from '~/types/prismic'
+import type { TISO639 } from '~/config/themeConfig'
+
+import { initialPageData } from '~/config/prismicConfig'
 
 export default ({ $prismic, $cmwStore, i18n, $handleApiErrors }: Context) => ({
   async getSinglePage(page = ''): Promise<Record<string, any>> {
@@ -14,7 +16,9 @@ export default ({ $prismic, $cmwStore, i18n, $handleApiErrors }: Context) => ({
 
       return data
     } catch (err) {
-      $handleApiErrors(`Catch getting page (${page}) from Prismic: ${err}`)
+      if (err !== 'TypeError: Network request failed') {
+        $handleApiErrors(`Catch on getSinglePage (${page}) from Prismic: ${err}`)
+      }
       return {}
     }
   },
@@ -28,7 +32,9 @@ export default ({ $prismic, $cmwStore, i18n, $handleApiErrors }: Context) => ({
 
       return data
     } catch (err) {
-      $handleApiErrors(`Catch getting page (${page}) from Prismic: ${err}`)
+      if (err !== 'TypeError: Network request failed') {
+        $handleApiErrors(`Catch on getSingle (${page}) from Prismic: ${err}`)
+      }
       return initialPageData
     }
   },
@@ -42,7 +48,9 @@ export default ({ $prismic, $cmwStore, i18n, $handleApiErrors }: Context) => ({
 
       return data
     } catch (err) {
-      $handleApiErrors(`Catch getting page (${page}) with uid (${uid}) from Prismic: ${err}`)
+      if (err !== 'TypeError: Network request failed') {
+        $handleApiErrors(`Catch on getPageByUID (${page}) with uid (${uid}) from Prismic: ${err}`)
+      }
       return initialPageData
     }
   },

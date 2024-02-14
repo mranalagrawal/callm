@@ -673,6 +673,8 @@ export default {
       '/?search=*',
       '/catalog.htm',
       '/catalog.htm?*',
+      '/collections/*',
+      '/selections/*',
       '/*catalog.htm',
       '/*catalog.htm?*',
       '/*?pricerange=*',
