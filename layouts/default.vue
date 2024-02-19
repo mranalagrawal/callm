@@ -12,6 +12,7 @@ import {
   watch, watchEffect,
 } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+import CustomerWishlist from '~/components/Header/CustomerWishlist.vue'
 
 // import LazyHydrate from 'vue-lazy-hydration'
 import type { TISO639 } from '~/config/themeConfig'
@@ -27,6 +28,7 @@ import { useVercelKv } from '~/store/vercelKv'
 
 export default defineComponent({
   components: {
+    CustomerWishlist,
     // LazyHydrate,
     TheFooter: () => import('../components/TheFooter.vue'),
     TopBar,
@@ -140,6 +142,7 @@ export default defineComponent({
     <TopBar v-if="showTopBar" />
     <Navbar v-if="!isFromApp" class="cmw-navbar" />
     <AppHeader v-if="showAppHeader" />
+    <CustomerWishlist v-if="isFromApp" />
 
     <nuxt :class="isFromApp ? 'cmw-app-main' : 'cmw-main'" />
 
