@@ -121,7 +121,6 @@ export default defineComponent({
           'url': localePath(product.url),
           'image': product.image.source.url,
           'description': stripHtml(product.tbd.description),
-
         }
       })
     }
@@ -130,7 +129,6 @@ export default defineComponent({
       script: [{
         type: 'application/ld+json',
         innerHTML: JSON.stringify({
-          type: 'application/ld+json',
           textContent: {
             '@context': 'https://schema.org',
             '@type': 'ItemList',
