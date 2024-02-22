@@ -1,7 +1,18 @@
 import type { Middleware } from '@nuxt/types'
 import { djb2Hash } from '~/utilities/strings'
 
-const excludePages = ['login', 'register', 'recover', 'waiting-for-confirmation']
+const excludePages = [
+  'login',
+  'register',
+  'recover',
+  'waiting-for-confirmation',
+  'about-us',
+  'corporate-gifts',
+  'sustainability',
+  'restaurants-wineshops',
+  'gift-cards',
+  'guide-to-our-wines',
+]
 
 const b2bMiddleware: Middleware = ({ getRouteBaseName, $cookies, $cookieHelpers, $cmwStore, route, localeRoute, redirect }) => {
   if (!$cmwStore.isB2b) { return }
