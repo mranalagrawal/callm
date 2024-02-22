@@ -44,6 +44,7 @@ export default defineComponent({
       error,
       i18n,
       localeLocation,
+      localePath,
       redirect,
       req,
     } = useContext()
@@ -121,8 +122,13 @@ export default defineComponent({
     })
 
     const canonicalUrl = ref('')
+    const originUrl = ref('')
 
-    if (process.server && req?.headers && req?.url) { canonicalUrl.value = `https://${req.headers.host}${req.url}` }
+    if (process.server && req?.headers && req?.url) {
+      console.log(req.headers.host, req.url)
+      originUrl.value = `https://${req.headers.host}`
+      canonicalUrl.value = `https://${req.headers.host}${req.url}`
+    }
 
     if (process.client && typeof window !== 'undefined') {
       const {
@@ -132,6 +138,7 @@ export default defineComponent({
       } = window.location
       const encodedPath = pathname || ''
       const encodedSearch = search || ''
+      originUrl.value = `${origin}`
       canonicalUrl.value = `${origin}${encodedPath}${encodedSearch}`
     }
 
@@ -342,7 +349,7 @@ export default defineComponent({
                 '@type': 'ListItem',
                 'position': i + 1,
                 'item': {
-                  '@id': `${canonicalUrl.value}`,
+                  '@id': `${originUrl.value}${localePath(el.to)}`,
                   'name': el.label,
                 },
 
@@ -368,6 +375,7 @@ export default defineComponent({
     return {
       addIcon,
       amountMax,
+      baseUrl: originUrl,
       brand,
       brandMetaFields,
       canAddMore,
