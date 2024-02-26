@@ -49,12 +49,29 @@ export default defineComponent({
     const { cartCreate, cartLinesAdd, cartLinesUpdate } = useCart()
     const upperButton = ref<HTMLElement | null>(null)
     const { iso } = i18n.localeProperties
+    const isActive = computed(() => props.activeOrder === props.order.orderNumber)
 
     const orderLineItems = computed(() => {
       const lineItems = props.order?.lineItems && props.order.lineItems.nodes?.map(node => node)
       return lineItems.filter(lineItem => Number(lineItem.discountedTotalPrice.amount) > 0)
     })
-    const isActive = computed(() => props.activeOrder === props.order.orderNumber)
+
+    /* <pre class="text-xxs">{{ order.eventStatus }}</pre> */
+    const orderFulfillmentStatus = computed(() => {
+      const forbidden = [
+        'confirmed',
+        'delayed',
+        'failure',
+        'label_printed',
+        'label_purchased',
+        'ready_for_pickup',
+      ]
+
+      // If the order has an eventStatus and the key is different from a forbidden array, return the eventStatus
+      return (props.order?.eventStatus?.value && !forbidden.includes(props.order.eventStatus.value))
+        ? props.order.eventStatus.value
+        : props.order?.fulfillmentStatus
+    })
 
     const handleRequestAssistance = () => {
       splash.$patch({
@@ -194,6 +211,7 @@ export default defineComponent({
       handleRequestAssistance,
       isActive,
       iso,
+      orderFulfillmentStatus,
       orderLineItems,
       totalItems,
       upperButton,
@@ -255,7 +273,7 @@ export default defineComponent({
             />
             <span
               class="font-sans text-body tracking-normal"
-              v-text="$t(`enums.fulfillmentStatus.${order.fulfillmentStatus}`)"
+              v-text="$t(`enums.fulfillmentStatus.${orderFulfillmentStatus}`)"
             />
           </button>
           <button
@@ -351,7 +369,7 @@ export default defineComponent({
           >
             <span
               class="font-sans text-body tracking-normal"
-              v-text="$t(`enums.fulfillmentStatus.${order.fulfillmentStatus}`)"
+              v-text="$t(`enums.fulfillmentStatus.${orderFulfillmentStatus}`)"
             />
           </i18n>
         </button>
@@ -368,7 +386,7 @@ export default defineComponent({
         <div v-if="activeOrder === order.orderNumber">
           <div class="bg-gray-lightest md:(m-4 rounded) print:hidden">
             <OrderCardSummary
-              :fulfillment-status="order.fulfillmentStatus"
+              :fulfillment-status="orderFulfillmentStatus"
               :successful-fulfillments="order.successfulFulfillments[0] ? order.successfulFulfillments[0] : null"
               :shipping-address="order.shippingAddress"
               :source-tracking-number="order.sourceTrackingNumber?.value"

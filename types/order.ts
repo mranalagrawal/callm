@@ -1,5 +1,6 @@
 import type { IMailingAddress } from '~/types/mailingAddress'
 import type { IMoneyV2 } from '~/types/common-objects'
+import type { Metafield } from '~/types/metafield'
 
 export interface ICartLineItem {
   id: string
@@ -45,6 +46,7 @@ export interface IOrder {
   metafields: string // String # Todo: [Metafield]!
   name: string // String!
   orderNumber: number
+  eventStatus: Metafield
   originalTotalDuties: IMoneyV2
   originalTotalPrice: IMoneyV2
   phone: string // String
@@ -60,5 +62,5 @@ export interface IOrder {
   totalTaxV2: IMoneyV2
   lineItems: { nodes: ILineItem[] }
   discountApplications: any
-  sourceTrackingNumber: any
+  sourceTrackingNumber: Metafield
 }
