@@ -1,10 +1,12 @@
 <script lang="ts">
-import type { PropType } from '@nuxtjs/composition-api'
 import { computed, defineComponent, inject, ref, useContext, useRoute } from '@nuxtjs/composition-api'
+import type { PropType } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import type { ObjType } from '~/types/types'
-import { useFilters } from '~/store/filters'
+
 import type { IProductMapped } from '~/types/product'
+import type { ObjType } from '~/types/types'
+
+import { useFilters } from '~/store/filters'
 
 export default defineComponent({
   props: {
@@ -23,13 +25,16 @@ export default defineComponent({
   },
   emits: ['update-sort-value'],
   setup(props, { emit }) {
-    const { $config, $productMapping, $cmwGtmUtils } = useContext()
+    const { $config, $productMapping, $cmwGtmUtils, i18n } = useContext()
     const route = useRoute()
     const { selectedLayout, availableLayouts } = storeToRefs(useFilters())
     const isDesktop = inject('isDesktop')
 
     const sorting = ref(false)
+    const selectedSort = ref(i18n.t('common.filters.sort.by'))
     const handleUpdateSortValue = (val: string) => {
+      console.log('val', JSON.parse(val).label)
+      selectedSort.value = JSON.parse(val).label
       emit('update-sort-value', val)
       sorting.value = false
     }
@@ -76,6 +81,7 @@ export default defineComponent({
       isDesktop,
       mappedProducts,
       selectedLayout,
+      selectedSort,
       sorting,
     }
   },
@@ -128,30 +134,50 @@ export default defineComponent({
           @update-trigger="handleUpdateSortTrigger"
         >
           <template #default>
-            <span>{{ $t('common.filters.sort.by') }}</span>
+            <span>{{ selectedSort }}</span>
           </template>
           <template #children>
             <CmwSelect
               position="right"
               :options="[{
                            label: $t('common.filters.sort.popularity.most'),
-                           value: JSON.stringify({ field: 'popularity', direction: 'desc' }),
+                           value: JSON.stringify({
+                             field: 'popularity',
+                             direction: 'desc',
+                             label: $t('common.filters.sort.popularity.most'),
+                           }),
                          },
                          {
                            label: $t('common.filters.sort.price.highest'),
-                           value: JSON.stringify({ field: 'price', direction: 'desc' }),
+                           value: JSON.stringify({
+                             field: 'price',
+                             direction: 'desc',
+                             label: $t('common.filters.sort.price.highest'),
+                           }),
                          },
                          {
                            label: $t('common.filters.sort.price.lowest'),
-                           value: JSON.stringify({ field: 'price', direction: 'asc' }),
+                           value: JSON.stringify({
+                             field: 'price',
+                             direction: 'asc',
+                             label: $t('common.filters.sort.price.lowest'),
+                           }),
                          },
                          {
                            label: $t('common.filters.sort.awarded.most'),
-                           value: JSON.stringify({ field: 'awardcount', direction: 'desc' }),
+                           value: JSON.stringify({
+                             field: 'awardcount',
+                             direction: 'desc',
+                             label: $t('common.filters.sort.awarded.most'),
+                           }),
                          },
                          {
                            label: $t('common.filters.sort.novelty'),
-                           value: JSON.stringify({ field: 'isnew', direction: 'desc' }),
+                           value: JSON.stringify({
+                             field: 'isnew',
+                             direction: 'desc',
+                             label: $t('common.filters.sort.novelty'),
+                           }),
                          },
               ]"
               @update-value="handleUpdateSortValue"
