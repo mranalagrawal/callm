@@ -329,7 +329,7 @@ export default defineComponent({
             },
             'offers': {
               '@type': 'Offer',
-              'url': `${product.value?.url}`,
+              'url': `${originUrl.value}${localePath(product.value?.url)}`,
               'priceCurrency': `${productVariant.value?.price.currencyCode}`,
               'price': `${finalPrice.value}`,
               'availability': `${product.value.availableForSale ? 'InStock' : 'OutOfStock'}`,
