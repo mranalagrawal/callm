@@ -10,12 +10,13 @@ import {
   useMeta,
   useRoute,
 } from '@nuxtjs/composition-api'
-import chevronLeftIcon from 'assets/svg/chevron-left.svg'
-import chevronRightIcon from 'assets/svg/chevron-right.svg'
-import ribbon from '~/assets/svg/ribbon.svg'
+import chevronLeftIcon from '~/assets/svg/chevron-left.svg'
+import chevronRightIcon from '~/assets/svg/chevron-right.svg'
 import cmwFavouriteIcon from '~/assets/svg/feature-cmw-favourite.svg'
+import { generateHeadHreflang } from '~/utilities/arrays'
 import getArticles from '~/graphql/queries/getArticles.graphql'
 import { inRange } from '~/utilities/math'
+import ribbon from '~/assets/svg/ribbon.svg'
 import { stripHtmlAnchors } from '~/utilities/strings'
 
 // Todo: define right types
@@ -148,12 +149,12 @@ export default defineComponent({
           content: brand.value?.seo?.description || '',
         },
       ],
-      link: !canonicalUrl.value
-        ? []
-        : [{
-            rel: 'canonical',
-            href: canonicalUrl.value,
-          }],
+      link: [
+        ...generateHeadHreflang(metaFields.value.hrefLang),
+        {
+          rel: 'canonical',
+          href: canonicalUrl.value,
+        }],
     }))
 
     return {
