@@ -2,7 +2,7 @@
 
 // eslint-disable-next-line max-len
 // const OLD_LETTERS_REGEX = /^\/(.*?)(?<!%)((C(1|2|3|4|54|57|64|66|75|78|87|95|97|99|104|106|109))|(R(1|15|4|5|6|221|238|9|10|275|11|12|282|13|14|16|17|19|20|21|22|23|24|25|233|26|203|188|28|29|241|30|31|32|229|33|34|35|36|38|39|40|196|42|291|43|44|45|46|47|48|247|49|50|51|293|52|186|184|297)))([A-OQ-Z]\d+)?(.*?).htm/
-const MACRO_LETTERS = '(1|2|3|4|54|57|64|66|75|78|87|95|97|99|104|106|109)'
+const MACRO_LETTERS = '(1|2|3|4|54|57|64|66|75|78|87|95|97|99|104|106)'
 const COUNTRY_LETTERS = '(1|4|5|6|9|10|11|12|13|14|15|16|17|19|20|21|22|23|24|25|26|28|29|30|31|32|33|34|35|36|38|39|40|42|43|44|45|46|47|48|49|50|51|52|184|186|188|196|203|221|229|233|238|241|247|275|282|291|293|297)'
 
 const URL_WITH_CAPITALIZED_LETTERS = '^\/([^%]*[A-Z].*)-(.*?)\.htm$'
@@ -66,6 +66,8 @@ const REDIRECT_PUNTUALI = {
   '/vino-analcolico-V650.htm': '/vino-alcool-free-C113.htm',
   '/kombucha-a-base-di-te-C98.htm': '/kombucha-C98.htm',
   '/kombucha-M97.htm': '/kombucha-C98.htm',
+  '/soft-drink-M64.htm': '/no-low-alcol-M64.htm',
+  '/hard-seltzer-M109.htm': '/hard-seltzer-C109.htm',
 }
 
 const REDIRECT_SEO_REGEX = {
