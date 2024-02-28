@@ -13,10 +13,11 @@ const vercelMiddleware: Middleware = async ({ $cmwRepo }) => {
     const megaMenu = await $cmwRepo.prismic.getSingle('mega-menu-test', lang)
     return megaMenu?.body?.length
       ? megaMenu.body.map((firstLevel) => {
-        const secondLevels = firstLevel.items.map((el: { secondlevelname: any; second_level_position: any }) => {
+        const secondLevels = firstLevel.items.map((el: Record<string, any>) => {
           return {
             name: el.secondlevelname,
             position: el.second_level_position,
+            link: el.second_level_link,
           }
         })
 

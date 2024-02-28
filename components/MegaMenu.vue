@@ -95,7 +95,9 @@ export default defineComponent({
                 { 'bg-gray-lightest': (i === 0) },
               ]"
             >
-              <p class="overline-2 uppercase text-secondary-700 cmw-font-semibold pt-4" v-text="secondLevel.name" />
+              <component :is="secondLevel.link ? 'NuxtLink' : 'span'" :to="secondLevel.link ? localePath(`${secondLevel.link}`) : undefined">
+                <p class="overline-2 uppercase text-secondary-700 cmw-font-semibold pt-4" v-text="secondLevel.name" />
+              </component>
               <div class="flex flex-col h-full">
                 <ThirdLevel
                   v-for="(thirdLevel, idx) in secondLevel.items"
