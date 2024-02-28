@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, inject, ref, useContext, useRoute } from '@nuxtjs/composition-api'
+import { computed, defineComponent, inject, ref, useContext, useRoute, watchEffect } from '@nuxtjs/composition-api'
 import type { PropType } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
@@ -32,9 +32,50 @@ export default defineComponent({
 
     const sorting = ref(false)
     const selectedSort = ref(i18n.t('common.filters.sort.by'))
+
+    const sortOptions = [{
+      label: i18n.t('common.filters.sort.popularity.most'),
+      value: JSON.stringify({
+        field: 'popularity',
+        direction: 'desc',
+        label: i18n.t('common.filters.sort.popularity.most'),
+      }),
+    },
+    {
+      label: i18n.t('common.filters.sort.price.highest'),
+      value: JSON.stringify({
+        field: 'price',
+        direction: 'desc',
+        label: i18n.t('common.filters.sort.price.highest'),
+      }),
+    },
+    {
+      label: i18n.t('common.filters.sort.price.lowest'),
+      value: JSON.stringify({
+        field: 'price',
+        direction: 'asc',
+        label: i18n.t('common.filters.sort.price.lowest'),
+      }),
+    },
+    {
+      label: i18n.t('common.filters.sort.awarded.most'),
+      value: JSON.stringify({
+        field: 'awardcount',
+        direction: 'desc',
+        label: i18n.t('common.filters.sort.awarded.most'),
+      }),
+    },
+    {
+      label: i18n.t('common.filters.sort.novelty'),
+      value: JSON.stringify({
+        field: 'isnew',
+        direction: 'desc',
+        label: i18n.t('common.filters.sort.novelty'),
+      }),
+    },
+    ]
+
     const handleUpdateSortValue = (val: string) => {
-      console.log('val', JSON.parse(val).label)
-      selectedSort.value = JSON.parse(val).label
       emit('update-sort-value', val)
       sorting.value = false
     }
@@ -74,6 +115,26 @@ export default defineComponent({
       return mappedProducts
     })
 
+    watchEffect(() => {
+      const sortQuery = route.value.query?.sort
+      const directionQuery = route.value.query?.direction
+
+      const defaultSortLabel = i18n.t('common.filters.sort.by')
+
+      if (sortQuery && directionQuery) {
+        const matchingSort = sortOptions.find(option =>
+          option.value.includes(`"${sortQuery}"`) && option.value.includes(`"${directionQuery}"`),
+        )
+
+        if (matchingSort) {
+          selectedSort.value = matchingSort.label
+          return
+        }
+      }
+
+      selectedSort.value = defaultSortLabel
+    })
+
     return {
       availableLayouts,
       handleUpdateSortTrigger,
@@ -82,6 +143,7 @@ export default defineComponent({
       mappedProducts,
       selectedLayout,
       selectedSort,
+      sortOptions,
       sorting,
     }
   },
@@ -139,47 +201,7 @@ export default defineComponent({
           <template #children>
             <CmwSelect
               position="right"
-              :options="[{
-                           label: $t('common.filters.sort.popularity.most'),
-                           value: JSON.stringify({
-                             field: 'popularity',
-                             direction: 'desc',
-                             label: $t('common.filters.sort.popularity.most'),
-                           }),
-                         },
-                         {
-                           label: $t('common.filters.sort.price.highest'),
-                           value: JSON.stringify({
-                             field: 'price',
-                             direction: 'desc',
-                             label: $t('common.filters.sort.price.highest'),
-                           }),
-                         },
-                         {
-                           label: $t('common.filters.sort.price.lowest'),
-                           value: JSON.stringify({
-                             field: 'price',
-                             direction: 'asc',
-                             label: $t('common.filters.sort.price.lowest'),
-                           }),
-                         },
-                         {
-                           label: $t('common.filters.sort.awarded.most'),
-                           value: JSON.stringify({
-                             field: 'awardcount',
-                             direction: 'desc',
-                             label: $t('common.filters.sort.awarded.most'),
-                           }),
-                         },
-                         {
-                           label: $t('common.filters.sort.novelty'),
-                           value: JSON.stringify({
-                             field: 'isnew',
-                             direction: 'desc',
-                             label: $t('common.filters.sort.novelty'),
-                           }),
-                         },
-              ]"
+              :options="sortOptions"
               @update-value="handleUpdateSortValue"
             />
           </template>
