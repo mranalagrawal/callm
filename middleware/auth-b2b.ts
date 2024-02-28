@@ -1,17 +1,23 @@
 import type { Middleware } from '@nuxt/types'
+
 import { djb2Hash } from '~/utilities/strings'
 
-const excludePages = [
-  'login',
-  'register',
-  'recover',
-  'waiting-for-confirmation',
+const allowedPages = [
   'about-us',
+  'contact',
+  'cookie',
   'corporate-gifts',
-  'sustainability',
-  'restaurants-wineshops',
-  'gift-cards',
   'guide-to-our-wines',
+  'login',
+  'payments',
+  'privacy',
+  'recover',
+  'register',
+  'restaurants-wineshops',
+  'shipping',
+  'sustainability',
+  'terms-of-sales',
+  'waiting-for-confirmation',
 ]
 
 const b2bMiddleware: Middleware = ({ getRouteBaseName, $cookies, $cookieHelpers, $cmwStore, route, localeRoute, redirect }) => {
@@ -19,7 +25,7 @@ const b2bMiddleware: Middleware = ({ getRouteBaseName, $cookies, $cookieHelpers,
 
   const cleanedRouteName = getRouteBaseName(route) || ''
 
-  if (excludePages.includes(cleanedRouteName)) { return }
+  if (allowedPages.includes(cleanedRouteName)) { return }
 
   const sessionToken = $cookieHelpers.getToken()
   const b2bApprovedToken = $cookies.get('b2b-approved')
