@@ -31,7 +31,6 @@ export default defineComponent({
       script: [{
         type: 'application/ld+json',
         innerHTML: JSON.stringify({
-          type: 'application/ld+json',
           textContent: {
             '@context': 'https://schema.org',
             '@type': 'Organization',

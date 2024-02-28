@@ -27,13 +27,26 @@ export default defineComponent({
   },
   emits: ['update-sort-value'],
   setup(props, { emit }) {
-    const { $config, $productMapping, $cmwGtmUtils, i18n, localePath } = useContext()
+    const { $config, $productMapping, $cmwGtmUtils, i18n, localePath, req } = useContext()
     const route = useRoute()
     const { selectedLayout, availableLayouts } = storeToRefs(useFilters())
     const isDesktop = inject('isDesktop')
     const mappedProductListRef = ref<IProductMapped[]>([])
 
+    const originUrl = ref('')
     const sorting = ref(false)
+
+    if (process.server && req?.headers && req?.url) {
+      originUrl.value = `https://${req.headers.host}`
+    }
+
+    if (process.client && typeof window !== 'undefined') {
+      const {
+        origin,
+      } = window.location
+      originUrl.value = `${origin}`
+    }
+
     const selectedSort = ref(i18n.t('common.filters.sort.by'))
 
     const sortOptions = [{
@@ -114,11 +127,12 @@ export default defineComponent({
 
       return mappedProductListRef.value.map((product, i) => {
         const { title } = product
+
         return {
           '@type': 'ListItem',
           'position': i + 1,
           'name': title,
-          'url': localePath(product.url),
+          'url': `${originUrl.value}${localePath(product.url)}`,
           'image': product.image.source.url,
           'description': stripHtml(product.tbd.description),
         }
@@ -129,11 +143,9 @@ export default defineComponent({
       script: [{
         type: 'application/ld+json',
         innerHTML: JSON.stringify({
-          textContent: {
-            '@context': 'https://schema.org',
-            '@type': 'ItemList',
-            'itemListElement': setItemListSchema(),
-          },
+          '@context': 'https://schema.org',
+          '@type': 'ItemList',
+          'itemListElement': setItemListSchema(),
         }),
       }],
       __dangerouslyDisableSanitizers: ['script'],

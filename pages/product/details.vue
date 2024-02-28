@@ -125,7 +125,6 @@ export default defineComponent({
     const originUrl = ref('')
 
     if (process.server && req?.headers && req?.url) {
-      console.log(req.headers.host, req.url)
       originUrl.value = `https://${req.headers.host}`
       canonicalUrl.value = `https://${req.headers.host}${req.url}`
     }
@@ -315,7 +314,6 @@ export default defineComponent({
       script: [{
         type: 'application/ld+json',
         innerHTML: JSON.stringify({
-          type: 'application/ld+json',
           textContent: {
             '@context': 'https://schema.org',
             '@type': 'Product',
@@ -340,7 +338,6 @@ export default defineComponent({
       }, {
         type: 'application/ld+json',
         innerHTML: JSON.stringify({
-          type: 'application/ld+json',
           textContent: {
             '@context': 'https://schema.org',
             '@type': 'BreadcrumbList',
