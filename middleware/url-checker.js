@@ -63,6 +63,9 @@ const REDIRECT_PUNTUALI = {
   '/albana-passito-bottiglia-50-cl-emilia-romagna-V3F4R62.htm': '/vini-albana-passito-emilia-romagna-C1V3R62.htm',
   '/ice-wine-bottiglia-37-5-cl-israele-V396F3R29.htm': '/vini-ice-wine-israele-C1V396R29.htm',
   '/petit-verdot-bottiglia-75-cl-perù-V212F7R38.htm': '/vini-petit-verdot-per%C3%B9-C1V212R38.htm',
+  '/vino-analcolico-V650.htm': '/vino-alcool-free-C113.htm',
+  '/kombucha-a-base-di-te-C98.htm': '/kombucha-C98.htm',
+  '/kombucha-M97.htm': '/kombucha-C98.htm',
 }
 
 const REDIRECT_SEO_REGEX = {
