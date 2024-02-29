@@ -1,9 +1,10 @@
 export default function (to, from, savedPosition) {
-  if (to.hash) {
+  const { hash } = to
+  if (hash && hash !== '#brand-products') {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({
-          selector: to.hash,
+          selector: hash,
           offset: { x: 0, y: (window?.innerWidth > 992 ? 170 : 135) + 120 },
           behavior: 'smooth',
         })

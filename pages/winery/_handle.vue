@@ -2,7 +2,7 @@
 import {
   computed,
   defineComponent,
-  inject,
+  inject, nextTick,
   onMounted,
   ref,
   useContext,
@@ -88,6 +88,7 @@ export default defineComponent({
     })
 
     const canonicalUrl = ref('')
+    const brandProductsRef = ref<Maybe<HTMLElement>>(null)
     const query = computed(() => {
       const pathParts = route.value?.path.split('-')
       if (!pathParts) { return }
@@ -138,6 +139,20 @@ export default defineComponent({
 
     onMounted(() => {
       process.browser && $cmwGtmUtils.pushPage('page')
+      nextTick(() => {
+        if (route.value?.hash && typeof window !== 'undefined') {
+          const element = brandProductsRef.value
+          if (!element || !(element instanceof HTMLElement)) {
+            return
+          }
+
+          setTimeout(() => {
+            const menuHeight = window.innerWidth > 992 ? 170 : 135
+            const top = element.offsetTop - menuHeight
+            window.scrollTo({ top, behavior: 'smooth' })
+          }, 100)
+        }
+      })
     })
 
     useMeta(() => ({
@@ -158,10 +173,11 @@ export default defineComponent({
     }))
 
     return {
-      canonicalUrl,
       brand,
+      brandProductsRef,
       c1,
       c2,
+      canonicalUrl,
       chevronLeftIcon,
       chevronRightIcon,
       cmwFavouriteIcon,
@@ -393,7 +409,7 @@ export default defineComponent({
             <div v-if="!isDesktop" class="px-4 md:order-3" v-html="stripHtmlAnchors(brand.contentHtml)" />
           </div>
         </div>
-        <div v-if="brand && brand.title" id="brand-products">
+        <div v-if="brand && brand.title" id="brand-products" ref="brandProductsRef">
           <VendorProductsListing :vendor="brand.title" :vendor-fe-id="metaFields.feId" />
         </div>
       </div>
