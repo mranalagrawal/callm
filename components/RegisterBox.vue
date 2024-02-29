@@ -4,6 +4,7 @@ import type { RawLocation } from 'vue-router'
 
 import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
 import calendarIcon from '~/assets/svg/calendar.svg'
+import { getCustomerId } from '~/utilities/shopify'
 import GqlCustomerCreate from '~/graphql/mutations/customerCreate.graphql'
 import socialFacebook from '~/assets/svg/social-facebook.svg'
 import socialGoogle from '~/assets/svg/social-google.svg'
@@ -50,7 +51,7 @@ export default {
           // Todo: Call API to save customer birthday
           $gtm.push({
             event: 'siteSubscription',
-            userId: customer.id,
+            userId: getCustomerId(customer.id),
             userEmail: form.value.email,
           })
 

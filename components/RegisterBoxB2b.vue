@@ -3,6 +3,7 @@ import { defineComponent, ref, useContext, useRouter } from '@nuxtjs/composition
 import type { RawLocation } from 'vue-router'
 
 import calendarIcon from '~/assets/svg/calendar.svg'
+import { getCustomerId } from '~/utilities/shopify'
 import { SweetAlertToast } from '~/utilities/Swal'
 import { useCart } from '~/store/cart'
 import { useCustomer } from '~/store/customer'
@@ -43,7 +44,7 @@ export default defineComponent({
         if (data.customer) {
           $gtm.push({
             event: 'siteSubscription',
-            userId: data.customer.id,
+            userId: getCustomerId(data.customer.id),
             userEmail: form.value.email,
           })
 
