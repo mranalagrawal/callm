@@ -1,5 +1,10 @@
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from '@nuxtjs/composition-api'
+import type { PropType } from '@nuxtjs/composition-api'
+
+import deliveryFastIcon from '~/assets/svg/delivery-fast.svg'
+
+export default defineComponent({
   name: 'OrderCardSummary',
   props: {
     fulfillmentStatus: {
@@ -7,11 +12,10 @@ export default {
       required: true,
     },
     successfulFulfillments: {
-      type: [Object, null],
-      default: () => {},
+      type: [Object, null] as PropType<Record<string, any>>,
     },
     shippingAddress: {
-      type: Object,
+      type: Object as PropType<Record<string, any>>,
       required: true,
     },
     sourceTrackingNumber: {
@@ -19,7 +23,12 @@ export default {
       required: false,
     },
   },
-}
+  setup() {
+    return {
+      deliveryFastIcon,
+    }
+  },
+})
 </script>
 
 <template>
@@ -41,15 +50,19 @@ export default {
         <i18n
           path="profile.orders.card.shipment"
           tag="span"
-          class="text-secondary-400"
+          class="flex gap-2 items-center text-secondary-400"
         >
-          <span class="font-sans text-body tracking-normal">{{ successfulFulfillments.trackingCompany }}
+          <span class="font-sans text-body tracking-normal">
+            <span>{{ successfulFulfillments.trackingCompany }}</span>
             <a
               v-if="successfulFulfillments.trackingInfo[0]"
               class="text-gray-dark hover:text-primary"
               :href="`https://www.shippypro.com/tracking.html?tracking=${sourceTrackingNumber || successfulFulfillments.trackingInfo[0].number}`"
               target="_blank"
-            ><small> ({{ successfulFulfillments.trackingInfo[0].number }})</small></a>
+            >
+              <small>({{ successfulFulfillments.trackingInfo[0].number }})</small>
+              <VueSvgIcon :data="deliveryFastIcon" width="22" height="22" />
+            </a>
           </span>
         </i18n>
       </div>

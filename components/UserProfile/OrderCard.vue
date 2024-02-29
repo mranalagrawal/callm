@@ -59,18 +59,18 @@ export default defineComponent({
     /* <pre class="text-xxs">{{ order.eventStatus }}</pre> */
     const orderFulfillmentStatus = computed(() => {
       const forbidden = [
-        'confirmed',
-        'delayed',
-        'failure',
-        'label_printed',
-        'label_purchased',
-        'ready_for_pickup',
+        'CONFIRMED',
+        'DELAYED',
+        'FAILURE',
+        'LABEL_PRINTED',
+        'LABEL_PURCHASED',
+        'READY_FOR_PICKUP',
       ]
 
       // If the order has an eventStatus and the key is different from a forbidden array, return the eventStatus
       return (props.order?.eventStatus?.value && !forbidden.includes(props.order.eventStatus.value))
-        ? props.order.eventStatus.value
-        : props.order?.fulfillmentStatus
+        ? `eventStatus.${props.order.eventStatus.value}`
+        : `shopify.${props.order.fulfillmentStatus}`
     })
 
     const handleRequestAssistance = () => {
