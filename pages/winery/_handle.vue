@@ -393,7 +393,7 @@ export default defineComponent({
             <div v-if="!isDesktop" class="px-4 md:order-3" v-html="stripHtmlAnchors(brand.contentHtml)" />
           </div>
         </div>
-        <div v-if="brand && brand.title">
+        <div v-if="brand && brand.title" id="brand-products">
           <VendorProductsListing :vendor="brand.title" :vendor-fe-id="metaFields.feId" />
         </div>
       </div>
