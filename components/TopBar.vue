@@ -1,19 +1,21 @@
 <script lang="ts">
-import { defineComponent, ref, useFetch } from '@nuxtjs/composition-api'
+import { defineComponent, ref, useContext, useFetch } from '@nuxtjs/composition-api'
+import { kv } from '@vercel/kv'
+import type { TISO639 } from '~/config/themeConfig'
 
 export default defineComponent({
   setup() {
+    const { i18n } = useContext()
     const headline = ref('')
     const headlineSm = ref('')
 
-    useFetch(async ({ $cmwRepo }) => {
-      await $cmwRepo.prismic.getSingle('topbar')
-        .then((data) => {
-          if (!data.text?.length) { return }
+    useFetch(async ({ $cmwStore }) => {
+      const locale = i18n.locale as TISO639
+      const prismicLocale = $cmwStore.prismicSettings.isoCode[locale]
+      const data: any = await kv.get(`prismic/topbar/topbar-${prismicLocale}`)
 
-          headline.value = data.text ?? undefined
-          headlineSm.value = data.text_sm ?? undefined
-        })
+      headline.value = data?.text ?? undefined
+      headlineSm.value = data?.text_sm ?? undefined
     })
 
     return { headline, headlineSm }
