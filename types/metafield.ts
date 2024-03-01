@@ -1,4 +1,4 @@
-export interface Metafield {
+/* export interface Metafield {
   // createdAt:DateTime!
   // description:String
   // id:ID!
@@ -9,4 +9,6 @@ export interface Metafield {
   // type:String!
   // updatedAt:DateTime!
   value: string
-}
+} */
+
+export interface Metafield { value?: string }

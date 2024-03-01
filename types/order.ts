@@ -1,5 +1,6 @@
 import type { IMailingAddress } from '~/types/mailingAddress'
 import type { IMoneyV2 } from '~/types/common-objects'
+import type { Metafield } from '~/types/metafield'
 
 export interface ICartLineItem {
   id: string
@@ -25,6 +26,16 @@ export interface ILineItem {
   variant: Record<string, any> // Todo: get right type
 }
 
+export interface IFulfillmentTrackingInfo {
+  number: String
+  url: URL
+}
+
+export interface IFulfillment {
+  trackingCompany: string
+  trackingInfo: IFulfillmentTrackingInfo[]
+}
+
 export interface IOrder {
   billingAddress: IMailingAddress
   cancelReasonTodo: string // # Todo: OrderCancelReason
@@ -45,6 +56,7 @@ export interface IOrder {
   metafields: string // String # Todo: [Metafield]!
   name: string // String!
   orderNumber: number
+  eventStatus: Metafield
   originalTotalDuties: IMoneyV2
   originalTotalPrice: IMoneyV2
   phone: string // String
@@ -53,12 +65,12 @@ export interface IOrder {
   shippingDiscountAllocations: string // String # Todo: [DiscountAllocation!]!
   statusUrl: string // String # Todo: URL!
   subtotalPrice: IMoneyV2
-  successfulFulfillments: string // String #Todo: [Fulfillment!]
+  successfulFulfillments: IFulfillment[] // String #Todo: [Fulfillment!]
   totalPrice: IMoneyV2
   totalRefundedV2: IMoneyV2
   totalShippingPrice: IMoneyV2
   totalTaxV2: IMoneyV2
   lineItems: { nodes: ILineItem[] }
   discountApplications: any
-  sourceTrackingNumber: any
+  sourceTrackingNumber: Metafield
 }

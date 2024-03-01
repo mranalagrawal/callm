@@ -1,3 +1,5 @@
+#import "~/graphql/fragments/mailingAddress.graphql"
+
 query getCustomerOrders(
   $customerAccessToken: String!,
   $lang: LanguageCode!,
@@ -9,14 +11,7 @@ query getCustomerOrders(
     orders(first: 30, reverse: true, query: $query) {
       nodes {
         billingAddress {
-          city
-          country
-          address1
-          address2
-          zip
-          name
-          phone
-          formattedArea
+          ...MAILING_ADDRESS
         }
         cancelReason,
         canceledAt,
@@ -36,14 +31,7 @@ query getCustomerOrders(
         totalPrice { amount, currencyCode }
         totalShippingPrice { amount, currencyCode }
         shippingAddress {
-          city
-          country
-          address1
-          address2
-          zip
-          name
-          phone
-          formattedArea
+          ...MAILING_ADDRESS
         }
         successfulFulfillments(first: 1) {
           trackingCompany
@@ -52,9 +40,8 @@ query getCustomerOrders(
             url
           }
         }
-        sourceTrackingNumber: metafield(namespace: "logistic", key: "source_tracking_number") {
-          value
-        }
+        eventStatus: metafield(namespace: "fulfillment", key: "event_status") { value }
+        sourceTrackingNumber: metafield(namespace: "logistic", key: "source_tracking_number") { value }
         lineItems(first: 250) {
           nodes {
             quantity
