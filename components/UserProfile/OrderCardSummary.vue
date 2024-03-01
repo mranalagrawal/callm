@@ -2,7 +2,8 @@
 import { defineComponent } from '@nuxtjs/composition-api'
 import type { PropType } from '@nuxtjs/composition-api'
 
-import deliveryFastIcon from '~/assets/svg/delivery-fast.svg'
+import type { IFulfillment } from '~/types/order'
+import type { IMailingAddress } from '~/types/mailingAddress'
 
 export default defineComponent({
   name: 'OrderCardSummary',
@@ -11,22 +12,22 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    successfulFulfillments: {
-      type: [Object, null] as PropType<Record<string, any>>,
+    successfulFulfillment: {
+      type: Object as PropType<IFulfillment>,
     },
     shippingAddress: {
-      type: Object as PropType<Record<string, any>>,
+      type: Object as PropType<IMailingAddress>,
       required: true,
+    },
+    trackingUrl: {
+      type: String,
     },
     sourceTrackingNumber: {
       type: String,
-      required: false,
     },
   },
   setup() {
-    return {
-      deliveryFastIcon,
-    }
+    return {}
   },
 })
 </script>
@@ -46,22 +47,21 @@ export default defineComponent({
           v-text="$t(`enums.fulfillmentStatus.${fulfillmentStatus}`)"
         />
       </i18n>
-      <div v-if="successfulFulfillments">
+      <div v-if="successfulFulfillment">
         <i18n
           path="profile.orders.card.shipment"
           tag="span"
           class="flex gap-2 items-center text-secondary-400"
         >
           <span class="font-sans text-body tracking-normal">
-            <span>{{ successfulFulfillments.trackingCompany }}</span>
+            <span>{{ successfulFulfillment.trackingCompany }}</span>
             <a
-              v-if="successfulFulfillments.trackingInfo[0]"
+              v-if="trackingUrl"
               class="text-gray-dark hover:text-primary"
-              :href="`https://www.shippypro.com/tracking.html?tracking=${sourceTrackingNumber || successfulFulfillments.trackingInfo[0].number}`"
+              :href="trackingUrl"
               target="_blank"
             >
-              <small>({{ successfulFulfillments.trackingInfo[0].number }})</small>
-              <VueSvgIcon :data="deliveryFastIcon" width="22" height="22" />
+              <small class="underline">({{ sourceTrackingNumber }})</small>
             </a>
           </span>
         </i18n>

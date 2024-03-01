@@ -26,6 +26,16 @@ export interface ILineItem {
   variant: Record<string, any> // Todo: get right type
 }
 
+export interface IFulfillmentTrackingInfo {
+  number: String
+  url: URL
+}
+
+export interface IFulfillment {
+  trackingCompany: string
+  trackingInfo: IFulfillmentTrackingInfo[]
+}
+
 export interface IOrder {
   billingAddress: IMailingAddress
   cancelReasonTodo: string // # Todo: OrderCancelReason
@@ -55,7 +65,7 @@ export interface IOrder {
   shippingDiscountAllocations: string // String # Todo: [DiscountAllocation!]!
   statusUrl: string // String # Todo: URL!
   subtotalPrice: IMoneyV2
-  successfulFulfillments: string // String #Todo: [Fulfillment!]
+  successfulFulfillments: IFulfillment[] // String #Todo: [Fulfillment!]
   totalPrice: IMoneyV2
   totalRefundedV2: IMoneyV2
   totalShippingPrice: IMoneyV2
