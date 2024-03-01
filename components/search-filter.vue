@@ -15,11 +15,11 @@ import {
 } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
-import { generateHeadHreflang, pick } from '~/utilities/arrays.ts'
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
 import closeIcon from '~/assets/svg/close.svg'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 import Loader from '@/components/UI/Loader.vue'
+import { pick } from '~/utilities/arrays.ts'
 import { useFilters } from '~/store/filters.ts'
 
 export default defineComponent({
@@ -114,13 +114,13 @@ export default defineComponent({
       mainFilters: [],
     })
 
-    const hrefLang = {
+    /* const hrefLang = {
       'it': 'https://www.callmewine.com/catalog',
       'en': 'https://www.callmewine.com/en/catalog',
       'fr': 'https://callmewine.fr/catalog',
       'de': 'https://callmewine.de/catalog',
       'en-gb': 'https://callmewine.co.uk/catalog',
-    }
+    } */
 
     const searchedTerm = ref('')
 
@@ -353,7 +353,6 @@ export default defineComponent({
           const searchParams = new URLSearchParams(search)
           searchParams.delete('page')
 
-          console.log(searchParams.toString())
           const encodedPath = `${encodeURIComponent(view.value.brands.name.replace(' ', '-'))}-${brandId}.htm`
           const encodedSearch = searchParams.toString() ? `?${searchParams.toString()}` : ''
           canonicalUrl.value = `${origin}/${encodedPath}${encodedSearch}`
@@ -528,7 +527,6 @@ export default defineComponent({
     })
 
     useMeta(() => {
-      console.log(canonicalUrl.value)
       let link = []
       const href = canonicalUrl.value ? canonicalUrl.value : ''
 
@@ -539,7 +537,7 @@ export default defineComponent({
         }]
       }
 
-      const fullHrefLang = generateHeadHreflang(hrefLang)
+      const fullHrefLang = [] // generateHeadHreflang(hrefLang)
 
       // Note: I don't think this is necessary
       /* if (process.client && typeof window !== 'undefined') {
@@ -588,7 +586,7 @@ export default defineComponent({
       handleUpdateTrigger,
       handleUpdateValue,
       handleUpdateValueSelections,
-      hrefLang,
+      // hrefLang,
       isDesktop,
       loading,
       maxPrice,
