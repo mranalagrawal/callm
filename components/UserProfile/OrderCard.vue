@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, ref, toRefs, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref, toRef, useContext } from '@nuxtjs/composition-api'
 import type { PropType } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
@@ -57,8 +57,10 @@ export default defineComponent({
       return lineItems.filter(lineItem => Number(lineItem.discountedTotalPrice.amount) > 0)
     })
 
-    const { successfulFulfillments, sourceTrackingNumber } = toRefs(props.order)
-    const successfulFulfillment = computed<Maybe<IFulfillment>>(() => successfulFulfillments.value?.length ? successfulFulfillments.value[0] : null)
+    const successfulFulfillmentList = toRef(props.order, 'successfulFulfillments')
+    const sourceTrackingNumber = toRef(props.order, 'sourceTrackingNumber')
+    // const { successfulFulfillments, sourceTrackingNumber } = toRefs(props.order)
+    const successfulFulfillment = computed<Maybe<IFulfillment>>(() => successfulFulfillmentList.value?.length ? successfulFulfillmentList.value[0] : null)
     const trackingInfo = computed(() => successfulFulfillment.value ? successfulFulfillment?.value.trackingInfo[0] : null)
     const trackingUrl = computed(() => {
       if (!sourceTrackingNumber?.value && !trackingInfo.value?.number) { return undefined }
