@@ -76,7 +76,7 @@ export default defineComponent({
       <address>
         <span
           class="block"
-          v-text="shippingAddress.name"
+          v-text="shippingAddress?.name ? shippingAddress.name : '-'"
         />
         <span
           class="block"

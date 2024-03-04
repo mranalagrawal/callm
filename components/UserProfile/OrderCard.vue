@@ -357,7 +357,7 @@ export default defineComponent({
           >
             <span
               class="font-sans text-body tracking-normal"
-              v-text="order.shippingAddress.name"
+              v-text="order.shippingAddress?.name ? order.shippingAddress?.name : '-'"
             />
           </i18n>
 
