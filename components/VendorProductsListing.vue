@@ -1,15 +1,28 @@
 <script lang="ts">
-import { computed, inject, ref, toRefs, useFetch, watch } from '@nuxtjs/composition-api'
+import {
+  computed,
+  defineComponent,
+  inject, onMounted,
+  ref,
+  toRefs,
+  useContext,
+  useFetch, useRoute,
+  watch,
+} from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import { useFilters } from '~/store/filters'
-import type { IProductMapped } from '~/types/product'
-import { sortArrayByNumber } from '~/utilities/arrays'
 
-export default {
+import type { IProductMapped } from '~/types/product'
+
+import { sortArrayByNumber } from '~/utilities/arrays'
+import { useFilters } from '~/store/filters'
+
+export default defineComponent({
   props: ['vendor', 'tag', 'vendorFeId'],
   setup(props: any) {
+    const { $cmwStore, $cmwGtmUtils } = useContext()
+    const route = useRoute()
     const { selectedLayout } = storeToRefs(useFilters())
-    const productRef = ref<IProductMapped[]>([])
+    const productRef = ref<Maybe<IProductMapped[]>>([])
     const isDesktop = inject('isDesktop')
     const { vendor: vendorRef, tag } = toRefs(props)
     const query = computed(() => {
@@ -36,16 +49,53 @@ export default {
         })
     })
 
-    watch(() => query.value, () => fetch())
+    // TODO: Make this a helper utility and reuse on ProductResultsList
+    const pushProductListView = (product: Maybe<IProductMapped[]>) => {
+      if (!process.browser || !product?.length) { return }
+
+      const impressions = product.map((product, i) => {
+        // eslint-disable-next-line unused-imports/no-unused-vars
+        const { quantity, ...rest } = product.gtmProductData
+        return {
+          ...rest,
+          position: i + 1,
+        }
+      })
+
+      $cmwGtmUtils.pushPage($cmwGtmUtils.getActionField(route.value), {
+        event: 'productListView',
+        ecommerce: {
+          currencyCode: $cmwStore.isUk ? 'GBP' : 'EUR',
+          actionField: { list: $cmwGtmUtils.getActionField(route.value) },
+          impressions,
+        },
+      })
+    }
+
+    onMounted(() => {
+      pushProductListView(productRef.value)
+    })
+
+    watch(() => query.value, () => {
+      fetch()
+    })
+
+    watch(() => productRef.value, () => {
+      pushProductListView(productRef.value)
+    }, {
+      immediate: true,
+      deep: true,
+    })
 
     return {
       isDesktop,
       productRef,
+      pushProductListView,
       selectedLayout,
       vendorRef,
     }
   },
-}
+})
 </script>
 
 <template>
