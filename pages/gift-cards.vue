@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia'
 
 import type { IGiftCardMapped } from '~/types/product'
 
-import { getCountryFromStore, getLocaleFromCurrencyCode, getPercent } from '~/utilities/currency'
+import { getCountryFromStore, getCurrencySymbol, getLocaleFromCurrencyCode, getPercent } from '~/utilities/currency'
 import addIcon from '~/assets/svg/add.svg'
 import cartIcon from '~/assets/svg/cart.svg'
 import emailIcon from '~/assets/svg/email.svg'
@@ -185,6 +185,7 @@ export default defineComponent({
   },
   head: {},
   methods: {
+    getCurrencySymbol,
     generateKey,
     getPercent,
     getLocaleFromCurrencyCode,
@@ -267,7 +268,7 @@ export default defineComponent({
 
         <div class="md:(grid grid-cols-[40%_60%] max-h-[550px] my-4)">
           <!-- Image Section -->
-          <div class="relative">
+          <div class="relative md:mt-8">
             <LoadingImage
               v-if="product?.image"
               class="h-full"
@@ -283,7 +284,7 @@ export default defineComponent({
             <div v-html="strippedContent" />
             <div>
               <div class="py-4 h4" v-text="$t('chooseGiftCard')" />
-              <div class="items-center mr-auto gap-2 flex flex-wrap">
+              <div class="items-center mr-auto gap-2 grid w-[min(100%,_30rem)] grid-cols-[repeat(auto-fit,_minmax(16ch,_1fr))]">
                 <div
                   v-for="variant in product?.variants"
                   :key="variant.id"
@@ -300,29 +301,18 @@ export default defineComponent({
                   >
                   <label
                     :for="variant.id"
-                    class="btn-base btn-base-spacing text-sm cursor-pointer border-primary-400 text-primary-400 cmw-font-bold uppercase
-                     hover:(bg-primary-50)"
+                    class="btn-base btn-base-spacing gap-1 text-sm cursor-pointer border-primary-400 text-primary-400 cmw-font-bold uppercase
+                    hover:(bg-primary-50)"
                     :class="{ 'bg-primary-400': variant.id === giftCardVariantSelected.id }"
                   >
-                    <i18n-n
-                      class="flex items-end leading-none"
+                    <span
                       :class="{ 'text-white': variant.id === giftCardVariantSelected.id }"
-                      :value="Number(variant.price.amount)" :format="{ key: 'currency' }"
-                      :locale="getLocaleFromCurrencyCode(variant.price.currencyCode)"
-                    >
-                      <template #currency="slotProps">
-                        <span class="text-sm md:text-base">{{ slotProps.currency }}</span>
-                      </template>
-                      <template #integer="slotProps">
-                        <span class="text-2xl">{{ slotProps.integer }}</span>
-                      </template>
-                      <template #group="slotProps">
-                        <span>{{ slotProps.group }}</span>
-                      </template>
-                      <template #fraction="slotProps">
-                        <span>{{ slotProps.fraction }}</span>
-                      </template>
-                    </i18n-n>
+                      class="text-2xl"
+                    >{{ Number(variant.price.amount) }}</span>
+                    <span
+                      :class="{ 'text-white': variant.id === giftCardVariantSelected.id }"
+                      class="text-sm"
+                    >{{ getCurrencySymbol(variant.price.currencyCode) }}</span>
                   </label>
                 </div>
               </div>
@@ -331,7 +321,7 @@ export default defineComponent({
               class="
             <md:(fixed bottom-0 left-0 w-full bg-white z-content shadow-elevation px-3 py-4)
             mt-auto flex items-end
-            md:mb-8
+            md:my-8
 "
             >
               <i18n-n
