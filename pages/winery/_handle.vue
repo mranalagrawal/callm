@@ -150,7 +150,7 @@ export default defineComponent({
             const menuHeight = window.innerWidth > 992 ? 170 : 135
             const top = element.offsetTop - menuHeight
             window.scrollTo({ top, behavior: 'smooth' })
-          }, 100)
+          }, 1200)
         }
       })
     })
