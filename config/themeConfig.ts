@@ -23,17 +23,19 @@ export interface ICompanyAddress {
 }
 
 export interface IStoreConfig {
-  id: number
-  store: TStores
-  defaultLocale: TISO639
-  salesChannel: TSalesChannel
+  address: ICompanyAddress
+  colors: Record<string, any>
   customerType: TCustomerType
+  defaultLocale: TISO639
   fonts: {
     sans: string[]
     secondary: string[]
   }
-  colors: Record<string, any>
-  address: ICompanyAddress
+  id: number
+  salesChannel: TSalesChannel
+  store: TStores
+  telephone: string
+  website: string
 }
 
 type TThemeConfig = {
@@ -97,6 +99,8 @@ const themeConfig: TThemeConfig = {
     },
     colors: { ...defaultColors },
     address: defaultAddress,
+    telephone: '+39 02 81480430',
+    website: 'https://www.callmewine.com',
   },
   B2B: {
     id: 5,
@@ -110,6 +114,8 @@ const themeConfig: TThemeConfig = {
     },
     colors: { ...defaultColors },
     address: defaultAddress,
+    telephone: '+39 02 81480430',
+    website: 'https://b2b.callmewine.com/',
   },
   CMW_UK: {
     id: 2,
@@ -134,6 +140,8 @@ const themeConfig: TThemeConfig = {
       zip: 'W1W 5PF',
       footer: '© Callmewine 2022 - Callmewine UK Limited, registered in England & Wales under company number 14216917 and our registered office is at 167-169 Great Portland Street, 5th Floor, L',
     },
+    telephone: '+39 02 81480430',
+    website: 'https://www.callmewine.co.uk',
   },
   CMW_FR: {
     id: 3,
@@ -147,6 +155,8 @@ const themeConfig: TThemeConfig = {
     },
     colors: { ...defaultColors },
     address: defaultAddress,
+    telephone: '+39 02 81480430',
+    website: 'https://www.callmewine.fr',
   },
   CMW_DE: {
     id: 4,
@@ -160,6 +170,8 @@ const themeConfig: TThemeConfig = {
     },
     colors: { ...defaultColors },
     address: defaultAddress,
+    telephone: '+39 02 81480430',
+    website: 'https://www.callmewine.de',
   },
 }
 
