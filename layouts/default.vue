@@ -1,22 +1,25 @@
 <script lang="ts">
 import {
   computed,
-  defineComponent, nextTick,
+  defineComponent,
+  nextTick,
   onMounted,
   provide,
   readonly,
   useContext,
   useFetch,
   useMeta,
-  useRoute, useStore,
-  watch, watchEffect,
+  useRoute,
+  useStore,
+  watch,
+  watchEffect,
 } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import CustomerWishlist from '~/components/Header/CustomerWishlist.vue'
 
 // import LazyHydrate from 'vue-lazy-hydration'
 import type { TISO639 } from '~/config/themeConfig'
 
+import CustomerWishlist from '~/components/Header/CustomerWishlist.vue'
 import Navbar from '~/components/Navbar.vue'
 import TopBar from '~/components/TopBar.vue'
 import useNewsletterSplash from '~/components/composables/useNewsletterSplash'
@@ -39,7 +42,8 @@ export default defineComponent({
     const store: any = useStore()
     const route = useRoute()
     const { loadMenu } = useVercelKv()
-    const { getCustomer, customer } = useCustomer()
+    const { getCustomer } = useCustomer()
+    const { customer } = storeToRefs(useCustomer())
     const { getCartById, handleTemporaryCheckoutReplace, mergeCartCookieWithCheckoutId, getInitialCart } = useCart()
     const { cart } = storeToRefs(useCart())
     const { handleNewsletterSplash } = useNewsletterSplash()
@@ -66,7 +70,6 @@ export default defineComponent({
     const isFromApp = computed(() => store.state.headers.fromApp)
     const isHomePage = computed(() => getRouteBaseName(route.value) === 'index')
     const showTopBar = computed(() => (isFromApp.value && isHomePage.value) || !isFromApp.value)
-    const showAppHeader = computed(() => (isFromApp.value && isHomePage.value))
 
     onMounted(async () => {
       const checkoutId = $cookies.get('checkoutId')
@@ -79,7 +82,7 @@ export default defineComponent({
       nextTick(async () => {
         // Note: We handle logged-in users on getCustomer() so we can skip the else section
         // Handle non-logged-in users
-        if (!customer.id) {
+        if (!customer.value?.id) {
           if (cartIdCookie && checkoutId) {
             await mergeCartCookieWithCheckoutId(checkoutId, cartIdCookie)
             $cookies.remove('checkoutId')
@@ -121,6 +124,7 @@ export default defineComponent({
     })
     return {
       cart,
+      customer,
       getInitialCart,
       handleNewsletterSplash,
       hasBeenSet,
@@ -129,7 +133,6 @@ export default defineComponent({
       isFromApp,
       isMobile,
       isTablet,
-      showAppHeader,
       showTopBar,
     }
   },
@@ -141,8 +144,7 @@ export default defineComponent({
   <div>
     <TopBar v-if="showTopBar" />
     <Navbar v-if="!isFromApp" class="cmw-navbar" />
-    <AppHeader v-if="showAppHeader" />
-    <CustomerWishlist v-if="isFromApp" />
+    <CustomerWishlist v-if="isFromApp && customer.id" />
 
     <nuxt :class="isFromApp ? 'cmw-app-main' : 'cmw-main'" />
 
