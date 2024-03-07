@@ -259,7 +259,7 @@ export default defineComponent({
         class="print:hidden"
       >
         <!-- Desktop Top Card -->
-        <div class="<md:hidden grid grid-cols-[auto_120px_90px] h-90px text-sm">
+        <div class="<md:hidden grid grid-cols-[auto_160px_90px] h-90px text-sm">
           <button
             class="grid grid-cols-[repeat(6,_1fr)] items-center"
             @click="handleClick(order.orderNumber)"
@@ -291,7 +291,7 @@ export default defineComponent({
           </button>
           <a
             v-if="trackingUrl"
-            class="flex w-[120px] text-gray-dark hover:text-primary"
+            class="flex text-gray-dark hover:text-primary"
             :href="trackingUrl"
             target="_blank"
           >
@@ -300,7 +300,7 @@ export default defineComponent({
               <VueSvgIcon :data="deliveryFastIcon" width="28" height="28" />
             </span>
           </a>
-          <button v-else class="w-[120px]">
+          <button v-else>
             <span>
               <span class="font-sans text-body tracking-normal">{{ $t(`enums.fulfillmentStatus.${orderFulfillmentStatus}`) }}</span>
             </span>
