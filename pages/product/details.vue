@@ -314,45 +314,41 @@ export default defineComponent({
       script: [{
         type: 'application/ld+json',
         innerHTML: JSON.stringify({
-          textContent: {
-            '@context': 'https://schema.org',
-            '@type': 'Product',
-            'name': `${product.value.title}`,
-            'sku': `${product.value.sku}`,
-            'image': `${product.value.image?.hd.url}`,
-            'mpn': `CALLMEWINE${product.value.sku}`,
-            'brand': {
-              '@type': 'Brand',
-              'name': `${product.value.vendor}`,
-            },
-            'offers': {
-              '@type': 'Offer',
-              'url': `${originUrl.value}${localePath(product.value?.url)}`,
-              'priceCurrency': `${productVariant.value?.price.currencyCode}`,
-              'price': `${finalPrice.value}`,
-              'availability': `${product.value.availableForSale ? 'InStock' : 'OutOfStock'}`,
-              'itemCondition ': 'newCondition',
-            },
+          '@context': 'https://schema.org',
+          '@type': 'Product',
+          'name': `${product.value.title}`,
+          'sku': `${product.value.sku}`,
+          'image': `${product.value.image?.hd.url}`,
+          'mpn': `CALLMEWINE${product.value.sku}`,
+          'brand': {
+            '@type': 'Brand',
+            'name': `${product.value.vendor}`,
+          },
+          'offers': {
+            '@type': 'Offer',
+            'url': `${originUrl.value}${localePath(product.value?.url)}`,
+            'priceCurrency': `${productVariant.value?.price.currencyCode}`,
+            'price': `${finalPrice.value}`,
+            'availability': `${product.value.availableForSale ? 'InStock' : 'OutOfStock'}`,
+            'itemCondition ': 'newCondition',
           },
         }),
       }, {
         type: 'application/ld+json',
         innerHTML: JSON.stringify({
-          textContent: {
-            '@context': 'https://schema.org',
-            '@type': 'BreadcrumbList',
-            'itemListElement': productBreadcrumbs.value.map((el, i) => {
-              return {
-                '@type': 'ListItem',
-                'position': i + 1,
-                'item': {
-                  '@id': `${originUrl.value}${localePath(el.to)}`,
-                  'name': el.label,
-                },
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          'itemListElement': productBreadcrumbs.value.map((el, i) => {
+            return {
+              '@type': 'ListItem',
+              'position': i + 1,
+              'item': {
+                '@id': `${originUrl.value}${localePath(el.to)}`,
+                'name': el.label,
+              },
 
-              }
-            }),
-          },
+            }
+          }),
         }),
       }],
       __dangerouslyDisableSanitizers: ['script'],
