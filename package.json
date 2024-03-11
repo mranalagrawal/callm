@@ -1,6 +1,6 @@
 {
   "name": "callmewine-frontend",
-  "version": "1.24.4",
+  "version": "1.25.0",
   "private": true,
   "engines": {
     "node": ">=16.0.0 <17.0.0"
@@ -95,6 +95,6 @@
   },
   "contributors": [
     "Mattia Minini <mattia.minini@callmewine.com> (https://callmewine.it/)",
-    "Ryan Serrano <ryan.serrano@callmewine.com> (https://menosesmas.it/ryan)"
+    "Ryan Serrano <ryan.serrano@callmewine.com> (https://ryan.menosesmas.it)"
   ]
 }

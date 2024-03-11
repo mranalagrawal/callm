@@ -21,13 +21,14 @@ export const useCustomerOrders = defineStore({
     async getOrders(query = 'processed_at:>2020-01-01') {
       await this.$nuxt.$cmwRepo.orders.getAll(query)
         // @ts-expect-error we need to define customer type
-        .then(({ customer }) => {
+        .then((customer) => {
+          if (!customer) { return }
+
           this.$patch({
             id: customer.id,
             orders: customer.orders.nodes,
           })
         })
-        .catch((err: Error) => this.$nuxt.$handleApiErrors(`Catch on getOrders from Shopify: ${err}`))
     },
   },
 })

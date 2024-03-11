@@ -315,6 +315,7 @@ const productMapping: Plugin = ({ $config, $cmwStore, i18n }, inject) => {
       const details = JSON.parse(product.details.value)
       const breadcrumbs = JSON.parse(product.breadcrumbs.value)
 
+      // TODO: handle mobile and desktop images
       return {
         merchandiseId: product.id,
         isGiftCard: product.isGiftCard,

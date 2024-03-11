@@ -39,7 +39,7 @@ export default defineComponent({
     >
       <div
         class="c-tableHeaders print:hidden backdrop-filter backdrop-blur bg-gray-lightest rounded
-         <md:hidden grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_90px]
+         <md:hidden grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_160px_90px]
        items-center justify-items-center text-center mb-6 py-6 sticky"
         :class="{ '-fromApp': $store.state.headers.fromApp }"
       >

@@ -1,11 +1,12 @@
 <script lang="ts">
-import { computed, defineComponent, ref, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref, toRef, useContext } from '@nuxtjs/composition-api'
 import type { PropType } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
-import type { ILineItem, IOrder } from '~/types/order'
+import type { IFulfillment, ILineItem, IOrder } from '~/types/order'
 
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
+import deliveryFastIcon from '~/assets/svg/delivery-fast.svg'
 import OrderCardLineItem from '~/components/UserProfile/OrderCardLineItem.vue'
 import OrderCardSummary from '~/components/UserProfile/OrderCardSummary.vue'
 import OrderReceiptPrint from '~/components/UserProfile/OrderReceiptPrint.vue'
@@ -49,12 +50,41 @@ export default defineComponent({
     const { cartCreate, cartLinesAdd, cartLinesUpdate } = useCart()
     const upperButton = ref<HTMLElement | null>(null)
     const { iso } = i18n.localeProperties
+    const isActive = computed(() => props.activeOrder === props.order.orderNumber)
 
     const orderLineItems = computed(() => {
       const lineItems = props.order?.lineItems && props.order.lineItems.nodes?.map(node => node)
       return lineItems.filter(lineItem => Number(lineItem.discountedTotalPrice.amount) > 0)
     })
-    const isActive = computed(() => props.activeOrder === props.order.orderNumber)
+
+    const successfulFulfillmentList = toRef(props.order, 'successfulFulfillments')
+    const sourceTrackingNumber = toRef(props.order, 'sourceTrackingNumber')
+    // const { successfulFulfillments, sourceTrackingNumber } = toRefs(props.order)
+    const successfulFulfillment = computed<Maybe<IFulfillment>>(() => successfulFulfillmentList.value?.length ? successfulFulfillmentList.value[0] : null)
+    const trackingInfo = computed(() => successfulFulfillment.value ? successfulFulfillment?.value.trackingInfo[0] : null)
+    const trackingUrl = computed(() => {
+      if (!sourceTrackingNumber?.value && !trackingInfo.value?.number) { return undefined }
+
+      const trackingNumber = sourceTrackingNumber?.value?.value || trackingInfo.value?.number
+
+      return `https://www.shippypro.com/tracking.html?tracking=${trackingNumber}`
+    })
+
+    const orderFulfillmentStatus = computed(() => {
+      const forbidden = [
+        'CONFIRMED',
+        'DELAYED',
+        'FAILURE',
+        'LABEL_PRINTED',
+        'LABEL_PURCHASED',
+        'READY_FOR_PICKUP',
+      ]
+
+      // If the order has an eventStatus and the key is different from a forbidden array, return the eventStatus
+      return (props.order?.eventStatus?.value && !forbidden.includes(props.order.eventStatus.value))
+        ? `eventStatus.${props.order.eventStatus.value}`
+        : `shopify.${props.order.fulfillmentStatus}`
+    })
 
     const handleRequestAssistance = () => {
       splash.$patch({
@@ -188,14 +218,19 @@ export default defineComponent({
       cartLinesUpdate,
       chevronDownIcon,
       customer,
+      deliveryFastIcon,
       handleClick,
       handlePrint,
       handleReorderProducts,
       handleRequestAssistance,
       isActive,
       iso,
+      orderFulfillmentStatus,
       orderLineItems,
+      successfulFulfillment,
       totalItems,
+      trackingInfo,
+      trackingUrl,
       upperButton,
     }
   },
@@ -224,9 +259,9 @@ export default defineComponent({
         class="print:hidden"
       >
         <!-- Desktop Top Card -->
-        <div class="<md:hidden grid grid-cols-[auto_90px] h-90px text-sm">
+        <div class="<md:hidden grid grid-cols-[auto_160px_90px] h-90px text-sm">
           <button
-            class="grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr] items-center"
+            class="grid grid-cols-[repeat(6,_1fr)] items-center"
             @click="handleClick(order.orderNumber)"
           >
             <strong
@@ -253,10 +288,22 @@ export default defineComponent({
               class="font-sans text-body tracking-normal"
               v-text="$t(`enums.financialStatus.${order.financialStatus}`)"
             />
-            <span
-              class="font-sans text-body tracking-normal"
-              v-text="$t(`enums.fulfillmentStatus.${order.fulfillmentStatus}`)"
-            />
+          </button>
+          <a
+            v-if="trackingUrl"
+            class="flex text-gray-dark hover:text-primary"
+            :href="trackingUrl"
+            target="_blank"
+          >
+            <span class="m-auto">
+              <span class="font-sans text-body tracking-normal">{{ $t(`enums.fulfillmentStatus.${orderFulfillmentStatus}`) }}</span>
+              <VueSvgIcon :data="deliveryFastIcon" width="28" height="28" />
+            </span>
+          </a>
+          <button v-else>
+            <span>
+              <span class="font-sans text-body tracking-normal">{{ $t(`enums.fulfillmentStatus.${orderFulfillmentStatus}`) }}</span>
+            </span>
           </button>
           <button
             :class="isActive ? 'bg-gray-white' : 'bg-gray-lightest'"
@@ -310,7 +357,7 @@ export default defineComponent({
           >
             <span
               class="font-sans text-body tracking-normal"
-              v-text="order.shippingAddress.name"
+              v-text="order.shippingAddress?.name ? order.shippingAddress?.name : '-'"
             />
           </i18n>
 
@@ -351,8 +398,18 @@ export default defineComponent({
           >
             <span
               class="font-sans text-body tracking-normal"
-              v-text="$t(`enums.fulfillmentStatus.${order.fulfillmentStatus}`)"
-            />
+            >
+              <span>{{ $t(`enums.fulfillmentStatus.${orderFulfillmentStatus}`) }}</span>
+              <a
+                v-if="trackingUrl"
+                class="text-gray-dark hover:text-primary"
+                :href="trackingUrl"
+                target="_blank"
+                @click.stop
+              >
+                <VueSvgIcon :data="deliveryFastIcon" width="28" height="28" />
+              </a>
+            </span>
           </i18n>
         </button>
       </div>
@@ -368,12 +425,12 @@ export default defineComponent({
         <div v-if="activeOrder === order.orderNumber">
           <div class="bg-gray-lightest md:(m-4 rounded) print:hidden">
             <OrderCardSummary
-              :fulfillment-status="order.fulfillmentStatus"
-              :successful-fulfillments="order.successfulFulfillments[0] ? order.successfulFulfillments[0] : null"
+              :fulfillment-status="orderFulfillmentStatus"
+              :successful-fulfillment="successfulFulfillment ?? null"
               :shipping-address="order.shippingAddress"
-              :source-tracking-number="order.sourceTrackingNumber?.value"
+              :source-tracking-number="trackingInfo?.number"
+              :tracking-url="trackingUrl"
             />
-            <!-- Note: ?? doesn't work well on the current configuration :successful-fulfillments="order.successfulFulfillments[0] ?? null" -->
           </div>
           <!-- <div> TODO: Gift Notes Section </div> -->
           <div class="flex items-end justify-between px-4 md:items-center print:hidden">

@@ -1,25 +1,35 @@
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from '@nuxtjs/composition-api'
+import type { PropType } from '@nuxtjs/composition-api'
+
+import type { IFulfillment } from '~/types/order'
+import type { IMailingAddress } from '~/types/mailingAddress'
+
+export default defineComponent({
   name: 'OrderCardSummary',
   props: {
     fulfillmentStatus: {
       type: String,
       required: true,
     },
-    successfulFulfillments: {
-      type: [Object, null],
-      default: () => {},
+    successfulFulfillment: {
+      type: Object as PropType<IFulfillment>,
     },
     shippingAddress: {
-      type: Object,
+      type: Object as PropType<IMailingAddress>,
       required: true,
+    },
+    trackingUrl: {
+      type: String,
     },
     sourceTrackingNumber: {
       type: String,
-      required: false,
     },
   },
-}
+  setup() {
+    return {}
+  },
+})
 </script>
 
 <template>
@@ -37,19 +47,22 @@ export default {
           v-text="$t(`enums.fulfillmentStatus.${fulfillmentStatus}`)"
         />
       </i18n>
-      <div v-if="successfulFulfillments">
+      <div v-if="successfulFulfillment">
         <i18n
           path="profile.orders.card.shipment"
           tag="span"
-          class="text-secondary-400"
+          class="flex gap-2 items-center text-secondary-400"
         >
-          <span class="font-sans text-body tracking-normal">{{ successfulFulfillments.trackingCompany }}
+          <span class="font-sans text-body tracking-normal">
+            <span>{{ successfulFulfillment.trackingCompany }}</span>
             <a
-              v-if="successfulFulfillments.trackingInfo[0]"
+              v-if="trackingUrl"
               class="text-gray-dark hover:text-primary"
-              :href="`https://www.shippypro.com/tracking.html?tracking=${sourceTrackingNumber || successfulFulfillments.trackingInfo[0].number}`"
+              :href="trackingUrl"
               target="_blank"
-            ><small> ({{ successfulFulfillments.trackingInfo[0].number }})</small></a>
+            >
+              <small class="underline">({{ sourceTrackingNumber }})</small>
+            </a>
           </span>
         </i18n>
       </div>
@@ -63,7 +76,7 @@ export default {
       <address>
         <span
           class="block"
-          v-text="shippingAddress.name"
+          v-text="shippingAddress?.name ? shippingAddress.name : '-'"
         />
         <span
           class="block"

@@ -1,4 +1,6 @@
-const getCurrencySymbol = (k = '') => ({
+import type { CurrencyCode } from '~/types/common-objects'
+
+const getCurrencySymbol = (k: CurrencyCode) => ({
   GBP: '£',
   EUR: '€',
 })[k]

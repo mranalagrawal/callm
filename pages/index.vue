@@ -1,7 +1,9 @@
 <script lang="ts">
-import type { Ref } from '@nuxtjs/composition-api'
-import { defineComponent, inject } from '@nuxtjs/composition-api'
+import { defineComponent, inject, useContext, useMeta } from '@nuxtjs/composition-api'
 import LazyHydrate from 'vue-lazy-hydration'
+import type { Ref } from '@nuxtjs/composition-api'
+
+import { generateHeadHreflang } from '~/utilities/arrays'
 
 export default defineComponent({
   name: 'IndexPage',
@@ -15,35 +17,55 @@ export default defineComponent({
     HomeSlider: () => import('../components/Home/HomeSlider.vue'),
   },
   setup() {
+    const { $cmwStore } = useContext()
     const isTablet = inject('isTablet') as Ref<boolean>
+    const hrefLang = {
+      'en-gb': 'https://www.callmewine.co.uk',
+      'it': 'https://www.callmewine.com',
+      'en': 'https://www.callmewine.com/en',
+      'fr': 'https://www.callmewine.fr',
+      'de': 'https://www.callmewine.de',
+    }
+    useMeta(() => ({
+      link: generateHeadHreflang(hrefLang),
+      script: [{
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify({
+          textContent: {
+            '@context': 'https://schema.org',
+            '@type': 'Organization',
+            'url': $cmwStore.settings?.website || 'https://www.callmewine.com',
+            'logo': 'https://cdn.shopify.com/s/files/1/0650/4356/2708/files/logo-callmewine.png?v=1696941270',
+            'contactPoint': [{
+              '@type': 'ContactPoint',
+              'telephone': $cmwStore.settings?.telephone || '+39 02 81480430',
+              'contactType': 'customer service',
+            }],
+            'sameAs': [
+              'https://www.facebook.com/callmewine',
+            ],
+          },
+        }),
+      },
+      {
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify({
+          '@context': 'http://schema.org',
+          '@type': 'WebSite',
+          'url': $cmwStore.settings?.website || 'https://www.callmewine.com',
+          'potentialAction': {
+            '@type': 'SearchAction',
+            'target': $cmwStore.settings?.website ? `${$cmwStore.settings?.website}/catalog?search={query}` : 'https://www.callmewine.com/catalog?search={query}',
+            'query-input': 'required name=query',
+          },
+        }),
+      }],
+      __dangerouslyDisableSanitizers: ['script'],
+    }))
 
     return { isTablet }
   },
-  data() {
-    return {
-      // homeBanner: 'HomeBanner',
-      links: {
-        'en-gb': 'https://www.callmewine.co.uk',
-        'it': 'https://www.callmewine.com',
-        'en': 'https://www.callmewine.com/en',
-        'fr': 'https://www.callmewine.fr',
-        'de': 'https://www.callmewine.de',
-      },
-    }
-  },
-  head() {
-    return {
-      description: 'Online wine for sale on Callmewine, your online wine shop: the best way to buy wines and champagne on offer at exceptional prices!',
-      link: Object.entries(this.links).map((el) => {
-        return {
-          hid: `alternate-${el[0]}`,
-          rel: 'alternate',
-          href: el[1],
-          hreflang: el[0],
-        }
-      }),
-    }
-  },
+  head: {},
 })
 </script>
 

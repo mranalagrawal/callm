@@ -43,7 +43,7 @@ declare module 'vuex/types/index' {
 
 const cmwGtm: Plugin = ({ $cmwStore, $config, $gtm, getRouteBaseName }, inject) => {
   const customerStore = useCustomer()
-  const { customer } = storeToRefs(customerStore)
+  const { customer, customerId } = storeToRefs(customerStore)
 
   const store: TStores = $config.STORE || 'CMW_UK'
 
@@ -111,7 +111,7 @@ const cmwGtm: Plugin = ({ $cmwStore, $config, $gtm, getRouteBaseName }, inject) 
         ...(customer.value.firstName && {
           userEmail: customer.value.email,
           userFirstName: customer.value.firstName,
-          userId: customer.value.id,
+          userId: customerId.value,
           userLastName: customer.value.lastName,
           userPhone: customer.value.phone,
           userPurchasesCount: customer.value.numberOfOrders,

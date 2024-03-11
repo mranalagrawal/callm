@@ -6,18 +6,21 @@ import {
   provide,
   ref,
   useContext,
-  useFetch, useMeta,
-  useRoute, useRouter,
+  useFetch,
+  useMeta,
+  useRoute,
+  useRouter,
   watch,
   watchEffect,
 } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import Loader from '@/components/UI/Loader.vue'
-import closeIcon from '~/assets/svg/close.svg'
+
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
-import { useFilters } from '~/store/filters.ts'
+import closeIcon from '~/assets/svg/close.svg'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
+import Loader from '@/components/UI/Loader.vue'
 import { pick } from '~/utilities/arrays.ts'
+import { useFilters } from '~/store/filters.ts'
 
 export default defineComponent({
   components: { Loader },
@@ -110,6 +113,14 @@ export default defineComponent({
       pageFullDescription: '',
       mainFilters: [],
     })
+
+    /* const hrefLang = {
+      'it': 'https://www.callmewine.com/catalog',
+      'en': 'https://www.callmewine.com/en/catalog',
+      'fr': 'https://callmewine.fr/catalog',
+      'de': 'https://callmewine.de/catalog',
+      'en-gb': 'https://callmewine.co.uk/catalog',
+    } */
 
     const searchedTerm = ref('')
 
@@ -526,6 +537,22 @@ export default defineComponent({
         }]
       }
 
+      const fullHrefLang = [] // generateHeadHreflang(hrefLang)
+
+      // Note: I don't think this is necessary
+      /* if (process.client && typeof window !== 'undefined') {
+        const { search } = window.location
+        const searchParams = new URLSearchParams(search)
+        searchParams.delete('page')
+
+        fullHrefLang = fullHrefLang.map(el => ({
+          ...el,
+          href: `${el.href}?${searchParams.toString()}`,
+        }))
+      } */
+
+      link = [...link, ...fullHrefLang]
+
       return {
         title: seoData.value?.seoTitle || seoTitleReplace.value,
         meta: [
@@ -559,6 +586,7 @@ export default defineComponent({
       handleUpdateTrigger,
       handleUpdateValue,
       handleUpdateValueSelections,
+      // hrefLang,
       isDesktop,
       loading,
       maxPrice,

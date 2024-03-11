@@ -71,7 +71,7 @@ export default defineComponent({
       </address>
       <address v-if="order.shippingAddress">
         <strong>{{ $t('profile.orders.card.shipmentAddress') }}</strong>
-        <span class="block" v-text="order.shippingAddress.name" />
+        <span class="block" v-text="order.shippingAddress?.name ? order.shippingAddress.name : '-' " />
         <span class="block" v-text="order.shippingAddress.address1" />
         <span class="block" v-text="order.shippingAddress.phone" />
         <span class="block" v-text="order.shippingAddress.city" />

@@ -9,7 +9,7 @@ export default (context) => {
     if (window.ReactNativeWebView) {
       window.ReactNativeWebView.postMessage(JSON.stringify({
         type: 'cartQuantityUpdate',
-        quantity,
+        quantity: quantity.value,
       }))
     }
   }, { detached: true })
