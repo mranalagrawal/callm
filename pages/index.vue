@@ -31,20 +31,18 @@ export default defineComponent({
       script: [{
         type: 'application/ld+json',
         innerHTML: JSON.stringify({
-          textContent: {
-            '@context': 'https://schema.org',
-            '@type': 'Organization',
-            'url': $cmwStore.settings?.website || 'https://www.callmewine.com',
-            'logo': 'https://cdn.shopify.com/s/files/1/0650/4356/2708/files/logo-callmewine.png?v=1696941270',
-            'contactPoint': [{
-              '@type': 'ContactPoint',
-              'telephone': $cmwStore.settings?.telephone || '+39 02 81480430',
-              'contactType': 'customer service',
-            }],
-            'sameAs': [
-              'https://www.facebook.com/callmewine',
-            ],
-          },
+          '@context': 'https://schema.org',
+          '@type': 'Organization',
+          'url': $cmwStore.settings?.website || 'https://www.callmewine.com',
+          'logo': 'https://cdn.shopify.com/s/files/1/0650/4356/2708/files/logo-callmewine.png?v=1696941270',
+          'contactPoint': [{
+            '@type': 'ContactPoint',
+            'telephone': $cmwStore.settings?.telephone || '+39 02 81480430',
+            'contactType': 'customer service',
+          }],
+          'sameAs': [
+            'https://www.facebook.com/callmewine',
+          ],
         }),
       },
       {
