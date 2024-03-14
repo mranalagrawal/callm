@@ -112,7 +112,7 @@ export default defineComponent({
       root.style.setProperty('--cmw-top-banner-height', showTopBar.value ? '26px' : '0px')
 
       if (isFromApp.value) {
-        root.style.setProperty('--cmw-header-height', showTopBar.value ? '72px' : '0px')
+        root.style.setProperty('--cmw-header-height', showTopBar.value ? '26px' : '0px')
       }
     })
 
