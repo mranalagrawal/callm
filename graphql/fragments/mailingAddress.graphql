@@ -5,6 +5,7 @@ fragment MAILING_ADDRESS on MailingAddress {
   country
   firstName
   id
+  name
   lastName
   phone
   province
