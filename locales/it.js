@@ -1,11 +1,15 @@
-import * as enums from '@/locales/it/enums'
 import * as common from '@/locales/it/common'
+import * as enums from '@/locales/it/enums'
 import * as pages from '@/locales/it/pages'
 
 export default {
   ...common.validations,
   head: {
     description: 'Vendita vino online su Callmewine, la tua enoteca online: il modo migliore per comprare vini, champagne e distillati in offerta a prezzi eccezionali!',
+    winery: {
+      title: 'Produttori di Vino e Champagne: tutte le Cantine di Callmewine',
+      description: 'Scopri le cantine e i produttori di vino selezionati da Callmewine: proponiamo i vini delle migliori aziende vinicole italiane e non solo. Acquista online!',
+    },
   },
   enums: {
     ...enums.Accessibility,
