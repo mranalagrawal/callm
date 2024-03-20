@@ -6,11 +6,13 @@ import {
   onMounted,
   ref,
   useContext,
+  useMeta,
   useRoute,
   useRouter,
   watch,
 } from '@nuxtjs/composition-api'
 import Loader from '~/components/UI/Loader.vue'
+
 import type { IOptions } from '~/types/types'
 
 interface ILinksRef {
@@ -30,7 +32,7 @@ interface IAllFilters {
 export default defineComponent({
   components: { Loader },
   setup() {
-    const { $cmwGtmUtils, localePath, $elastic } = useContext()
+    const { $cmwGtmUtils, localePath, $elastic, i18n } = useContext()
     const route = useRoute()
     const router = useRouter()
 
@@ -185,6 +187,17 @@ export default defineComponent({
 
     watch(() => route.value.query, () => fetchDataWithFetchState())
 
+    useMeta(() => ({
+      title: i18n.t('head.winery.title') as string,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: i18n.t('head.winery.description') as string,
+        },
+      ],
+    }))
+
     return {
       activeSelections,
       allFilters,
@@ -201,6 +214,7 @@ export default defineComponent({
       trigger,
     }
   },
+  head: {},
 })
 </script>
 

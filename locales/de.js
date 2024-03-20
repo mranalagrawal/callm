@@ -1,11 +1,15 @@
-import * as enums from '@/locales/de/enums'
 import * as common from '@/locales/de/common'
+import * as enums from '@/locales/de/enums'
 import * as pages from '@/locales/de/pages'
 
 export default {
   ...common.validations,
   head: {
     description: 'Online -Wein zum Verkauf auf Callmewine, Ihr Online -Weinwerk: Der beste Weg, um Weine zu kaufen, Champagner und destilliert zu außergewöhnlichen Preisen zu destilliert!',
+    winery: {
+      title: 'Wein- und Champagnerproduzenten: alle Weingüter von Callmewine',
+      description: 'Entdecken Sie die von Callmewine ausgewählten Weinkeller und Winzer: Wir bieten Weine der besten italienischen Weingüter und mehr. Kaufen Sie online ein!',
+    },
   },
   enums: {
     ...enums.Accessibility,
