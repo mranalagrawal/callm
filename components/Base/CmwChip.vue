@@ -1,11 +1,11 @@
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
 import type { PropType } from '@nuxtjs/composition-api'
-
-// import promoTagIcon from 'assets/svg/promo-tag.svg'
-import closeIcon from 'assets/svg/close.svg'
 import type { TranslateResult } from 'vue-i18n'
+
 import type { TColors, TShapes } from '~/types/types'
+
+import closeIcon from '~/assets/svg/close.svg'
 
 export default defineComponent({
   name: 'CmwChip',
@@ -69,7 +69,7 @@ export default defineComponent({
 <template>
   <div
     class="transition-colors w-max flex items-center justify-center gap-1"
-    :class="[getColor(), getShape(), getSize()]"
+    :class="[getColor(), getShape(), getSize(), { 'js-remove-single-filter': !!onDelete }]"
   >
     <VueSvgIcon
       v-if="icon"

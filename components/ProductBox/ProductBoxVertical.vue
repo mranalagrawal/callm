@@ -376,6 +376,7 @@ export default defineComponent({
           <ButtonIcon
             :icon="isOnFavourite ? heartFullIcon : heartIcon"
             class="z-baseLow" :variant="isOnFavourite ? 'icon-primary' : 'icon'"
+            :class="isOnFavourite ? 'js-remove-from-wishlist' : 'js-add-to-wishlist'"
             :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
             @click.native="handleWishlistClick"
           />
@@ -412,6 +413,7 @@ export default defineComponent({
       <div v-if="!notActive || isRelatedVintageWithHandle" class="c-productBox__cart justify-self-baseline place-self-end">
         <div v-if="product.availableForSale || (isRelatedVintageWithHandle && mappedRelatedVintage?.availableForSale)" class="mr-3 relative">
           <ButtonIcon
+            class="js-add-to-cart"
             variant="ghost"
             :icon="cartIcon"
             :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
@@ -428,9 +430,11 @@ export default defineComponent({
             @mouseleave="isOpen = false"
           >
             <button
-              class="flex transition-colors w-[44px] h-[44px] bg-primary-400 rounded-t-sm
-                 hover:(bg-primary)
-                 disabled:(bg-primary-100 cursor-not-allowed)"
+              class="
+              flex transition-colors w-[44px] h-[44px] bg-primary-400 rounded-t-sm
+              js-add-to-cart
+              hover:(bg-primary)
+              disabled:(bg-primary-100 cursor-not-allowed)"
               :disabled="!canAddMore"
               :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
               @click="addProductToCustomerCart"
@@ -441,7 +445,10 @@ export default defineComponent({
               <span class="m-auto text-sm">{{ cartQuantity }}</span>
             </div>
             <button
-              class="flex transition-colors w-[44px] h-[44px] bg-primary-400 rounded-b-sm hover:(bg-primary)"
+              class="
+              flex transition-colors w-[44px] h-[44px] bg-primary-400 rounded-b-sm
+              js-remove-from-cart
+              hover:(bg-primary)"
               :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
               @click="removeProductFromCustomerCart"
             >

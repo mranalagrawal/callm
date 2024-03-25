@@ -346,7 +346,7 @@ export default defineComponent({
                 <div class="">
                   <div v-if="product?.availableForSale" class="relative">
                     <CmwButton
-                      class="gap-2 pl-2 pr-3 py-2"
+                      class="gap-2 pl-2 pr-3 py-2 js-add-to-cart"
                       :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
                       :disabled="!giftCardVariantSelected.id"
                       @click.native="addProductToCustomerCart"
@@ -365,7 +365,10 @@ export default defineComponent({
                       @mouseleave="isOpen = false"
                     >
                       <button
-                        class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l hover:(bg-primary)"
+                        class="
+                        flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l
+                        js-remove-from-cart
+                        hover:(bg-primary)"
                         :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
                         @click="removeProductFromCustomerCart"
                       >
@@ -375,7 +378,9 @@ export default defineComponent({
                         <span class="m-auto text-sm">{{ cartQuantity }}</span>
                       </div>
                       <button
-                        class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-r
+                        class="
+                        flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-r
+                        js-add-to-cart
                         hover:(bg-primary)
                         disabled:(bg-primary-100 cursor-not-allowed)"
                         :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"

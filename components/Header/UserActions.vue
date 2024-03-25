@@ -111,7 +111,7 @@ export default defineComponent({
         </span>
       </button>
       <button
-        class="transition-colors rounded-t py-4 px-8 bg-white hover:(bg-primary-900 text-white)"
+        class="js-go-to-cart transition-colors rounded-t py-4 px-8 bg-white hover:(bg-primary-900 text-white)"
         :class="currentComponent === 'cart' ? 'bg-primary-900 text-white' : ''"
         @click="$router.push(localePath('/cart'))"
         @mouseenter="handleUserActionMouseEnter('cart')"

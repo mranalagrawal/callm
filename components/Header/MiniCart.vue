@@ -77,7 +77,7 @@ export default defineComponent({
               </div>
             </div>
             <div class="grid grid-cols-2 gap-4 bg-gray-lightest p-4">
-              <CmwButton variant="ghost" :to="localePath('/cart')" :label="$t('navbar.cart.detail')" />
+              <CmwButton class="js-go-to-cart" variant="ghost" :to="localePath('/cart')" :label="$t('navbar.cart.detail')" />
               <CmwButton :label="$t('navbar.cart.checkout')" @click.native="goToCheckout" />
             </div>
           </div>

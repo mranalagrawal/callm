@@ -1,35 +1,17 @@
 <script lang="ts">
-import type { PropType } from '@nuxtjs/composition-api'
 import {
   computed,
   defineComponent,
 } from '@nuxtjs/composition-api'
+import type { PropType } from '@nuxtjs/composition-api'
+
 import closeIcon from '~/assets/svg/close.svg'
-
-// import plusIcon from 'assets/svg/plus.svg'
-
-// interface Query {
-//   [key: string]: string | undefined
-// }
 
 interface IViews {
   key: string
   name: string
   field: string
 }
-
-/* interface IFilters {
-  winelists: []
-  pairings: []
-  dosagecontents: []
-  bodystyles: []
-  boxes: []
-  areas: []
-  provenience: []
-  awards: []
-  agings: []
-  philosophies: []
-} */
 
 export default defineComponent({
   props: {
@@ -117,11 +99,11 @@ export default defineComponent({
         </div>
       </div>
     </div>
-    <div v-if="!!activeSelections?.length || Object.values(view).some(v => v !== null)">
+    <div v-if="!!activeSelections?.length || Object.values(mappedViews).some(v => v !== null)">
       <CmwButton
         variant="text"
         size="sm"
-        class=""
+        class="js-remove-all-filter"
         @click.native="resetFilter"
       >
         <span class="text-body flex items-center gap-1">

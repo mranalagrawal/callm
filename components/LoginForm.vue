@@ -104,7 +104,7 @@ export default defineComponent({
           </Alert>
 
           <CmwButton
-            class="mt-8"
+            class="js-login-cta mt-8"
             type="submit"
             :disabled="isSubmitting"
             :label="$t('common.cta.signIn')"

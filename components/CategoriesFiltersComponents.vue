@@ -1,5 +1,4 @@
 <script lang="ts">
-import type { PropType, Ref } from '@nuxtjs/composition-api'
 import {
   computed,
   defineComponent,
@@ -7,10 +6,12 @@ import {
   ref,
   useContext,
   useRoute,
-  // useRouter,
 } from '@nuxtjs/composition-api'
-import plusIcon from 'assets/svg/plus.svg'
+
+import type { PropType, Ref } from '@nuxtjs/composition-api'
+
 import { orderByArray } from '~/utilities/arrays'
+import plusIcon from '~/assets/svg/plus.svg'
 
 interface IFilters {
   winelists: []
@@ -233,7 +234,7 @@ export default defineComponent({
 
 <template>
   <div
-    class="grid grid-cols-[auto_200px] items-start border-y border-gray-light py-1 transition-all"
+    class="grid grid-cols-[auto_200px] items-start border-y border-gray-light py-1 transition-all js-select-filter-list"
   >
     <div class="flex flex-wrap min-h-[42px]">
       <CmwDropdown

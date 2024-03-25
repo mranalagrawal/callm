@@ -1,10 +1,12 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import ratingEmpty from 'assets/svg/rating-empty.svg'
-import ratingFilled from 'assets/svg/rating-filled.svg'
-import { useCustomerWishlist } from '~/store/customerWishlist'
+
 import type { IProductRating } from '~/types/product'
+
+import ratingEmpty from '~/assets/svg/rating-empty.svg'
+import ratingFilled from '~/assets/svg/rating-filled.svg'
+import { useCustomerWishlist } from '~/store/customerWishlist'
 
 export default defineComponent({
   name: 'ProductUserRating',
@@ -48,7 +50,10 @@ export default defineComponent({
 <template>
   <div class="flex">
     <button
-      v-for="n in 5" :key="n" class="text-primary-400" @click="() => handleStarClick(n)" @mouseenter="currentHoveredStar = n"
+      v-for="n in 5" :key="n"
+      class="text-primary-400 js-add-to-wishlist"
+      @click="() => handleStarClick(n)"
+      @mouseenter="currentHoveredStar = n"
       @mouseleave="currentHoveredStar = 0"
     >
       <VueSvgIcon

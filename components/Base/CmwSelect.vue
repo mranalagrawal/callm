@@ -1,9 +1,11 @@
 <script lang="ts">
-import type { PropType } from '@nuxtjs/composition-api'
 import { computed, defineComponent, getCurrentInstance, ref, useRoute, watch } from '@nuxtjs/composition-api'
-import checkmarkIcon from 'assets/svg/checkmark.svg'
-import chevronDownIcon from '~/assets/svg/chevron-down.svg'
+import type { PropType } from '@nuxtjs/composition-api'
+
 import type { IOptions, TPosition, TSizes } from '~/types/types'
+
+import checkmarkIcon from '~/assets/svg/checkmark.svg'
+import chevronDownIcon from '~/assets/svg/chevron-down.svg'
 
 export default defineComponent({
   name: 'CmwSelect',
@@ -87,7 +89,7 @@ export default defineComponent({
         </div>
       </div>
       <!-- List Items -->
-      <div class="pt-1 max-h-[300px] overflow-auto">
+      <div class="pt-1 max-h-[300px] overflow-auto js-select-filter-single-panel">
         <button
           v-for="(option) in filteredOptions"
           :key="option.value"

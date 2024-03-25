@@ -174,7 +174,7 @@ export default defineComponent({
                 <small><strong v-text="cartTotalQuantity" />
                   <span>{{ $tc('profile.orders.card.goods', computedCartTotalPrice) }}</span>
                 </small>
-                <CmwButton class="w-max ml-auto" variant="text" :label="$t('common.cta.emptyCart')" @click.native="emptyCart" />
+                <CmwButton class="js-empty-cart w-max ml-auto" variant="text" :label="$t('common.cta.emptyCart')" @click.native="emptyCart" />
               </div>
               <div v-if="suitableGift?.id && !suitableGiftIsOnCart">
                 <div class="bg-secondary-50 rounded my-2 mx-3 grid grid-cols-[70px_1fr_40px] gap-4 items-center justify-start md:(grid-cols-[70px_1fr_auto])">
@@ -265,6 +265,7 @@ export default defineComponent({
                   <p class="text-sm text-gray-darkest" v-html="$t('shippingCost')" />
                   <CmwButton
                     type="button" variant="default"
+                    class="js-go-to-checkout"
                     @click.native="goToCheckout"
                   >
                     {{ $t('common.cta.goToCheckout') }}

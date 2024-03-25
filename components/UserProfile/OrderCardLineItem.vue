@@ -90,6 +90,7 @@ export default defineComponent({
         <button
           v-if="backofficeId !== 'probably-a-gift-card'"
           type="button"
+          :class="isOnFavourite ? 'js-remove-from-wishlist' : 'js-add-to-wishlist'"
           :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
           @click="handleWishlist({ id: orderLineItem.variant.product.tags.find(tag => new RegExp(regexRules('isProduct')).test(tag)).replace('P', ''), isOnFavourite })"
         >
