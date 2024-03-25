@@ -40,8 +40,8 @@ export default defineComponent({
         text: i18n.t('common.confirm.deleteCart'),
         cancelButtonText: i18n.t('common.cta.cancel'),
         confirmButtonText: i18n.t('common.cta.confirm'),
-        preConfirm: () => {
-          cartLinesRemove(cart.value.id, cart.value.lines)
+        preConfirm: async () => {
+          await cartLinesRemove(cart.value.id, cart.value.lines)
           $cookies.remove('cartId')
           cartStore.$reset()
         },
