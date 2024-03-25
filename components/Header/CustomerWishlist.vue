@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, onMounted } from '@nuxtjs/composition-api'
+import { computed, defineComponent, onMounted, useStore } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
 import heartIcon from '~/assets/svg/heart.svg'
@@ -12,6 +12,8 @@ export default defineComponent({
     const { getCustomerWishlist } = useCustomerWishlist()
     const { customerId } = storeToRefs(useCustomer())
     const { favoritesCount } = storeToRefs(useCustomerWishlist())
+    const store: any = useStore()
+    const isFromApp = computed(() => store.state.headers.fromApp)
 
     onMounted(async () => {
       if (customerId.value) {
@@ -19,13 +21,18 @@ export default defineComponent({
       }
     })
 
-    return { customerId, favoritesCount, heartIcon }
+    return {
+      customerId,
+      favoritesCount,
+      heartIcon,
+      isFromApp,
+    }
   },
 })
 </script>
 
 <template>
-  <div class="relative hidden md:block">
+  <div v-if="!isFromApp" class="relative hidden md:block">
     <div class="relative flex">
       <NuxtLink
         :to="localePath('/profile/wishlist')"
