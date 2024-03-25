@@ -7,7 +7,8 @@ fragment CART_FRAGMENT on Cart {
   createdAt
   id
   note
-  lines(first: 50) {
+  # Todo: Handle this limit in a better way to avoid performance issues
+  lines(first: 250) {
     nodes {
       attributes { ...ATTRIBUTES_FRAGMENT }
       id
