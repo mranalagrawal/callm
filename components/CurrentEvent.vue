@@ -1,22 +1,24 @@
 <script lang="ts">
-import type { PropType } from '@nuxtjs/composition-api'
 import { computed, defineComponent, inject, ref, useContext } from '@nuxtjs/composition-api'
-import addIcon from 'assets/svg/add.svg'
-import cartIcon from 'assets/svg/cart.svg'
-import closeIcon from 'assets/svg/close.svg'
-import emailIcon from 'assets/svg/email.svg'
-import subtractIcon from 'assets/svg/subtract.svg'
+import type { PropType } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import Alert from '~/components/FeedBack/Alert.vue'
-import useShowRequestModal from '~/components/ProductBox/useShowRequestModal'
+
+import type { IGiftCardMapped, IProductMapped } from '~/types/product'
 import type { IEventDay } from '~/pages/calendario-avvento-2023.vue'
+import type { TImage } from '~/types/types'
+
+import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
+import addIcon from '~/assets/svg/add.svg'
+import Alert from '~/components/FeedBack/Alert.vue'
+import cartIcon from '~/assets/svg/cart.svg'
+import closeIcon from '~/assets/svg/close.svg'
+import emailIcon from '~/assets/svg/email.svg'
+import { shopifyRichTextToHTML } from '~/utilities/shopify'
+import subtractIcon from '~/assets/svg/subtract.svg'
+import { SweetAlertToast } from '~/utilities/Swal'
 import { useCheckout } from '~/store/checkout'
 import { useCustomer } from '~/store/customer'
-import type { IGiftCardMapped, IProductMapped } from '~/types/product'
-import type { TImage } from '~/types/types'
-import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
-import { shopifyRichTextToHTML } from '~/utilities/shopify'
-import { SweetAlertToast } from '~/utilities/Swal'
+import useShowRequestModal from '~/components/ProductBox/useShowRequestModal'
 
 export default defineComponent({
 
@@ -66,9 +68,9 @@ export default defineComponent({
     const giftDescription = computed(() => props.currentEvent.description?.value && shopifyRichTextToHTML(props.currentEvent.description.value))
     const isToday = computed(() => props.currentDay === $dayjs(props.currentEvent.date.value).get('D'))
     const isGift = computed(() => props.currentEvent.type.value === 'Gift')
-    const productImage = computed<TImage>(() => props.currentEvent.image
+    const productImage = computed<Maybe<TImage>>(() => props.currentEvent.image
       ? props.currentEvent.image.reference.image
-      : (product.value.image.source || undefined),
+      : (product.value?.image?.source || undefined),
     )
     const amountMax = computed(() => {
       if (product.value.isGiftCard) { return 50 }
@@ -225,7 +227,7 @@ export default defineComponent({
           this.flashMessage.show({
             status: '',
             message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title}` }),
-            icon: this.product.image.source.url,
+            icon: this.product.image?.source.url,
             iconClass: 'bg-transparent ',
             time: 8000,
             blockClass: 'add-product-notification',

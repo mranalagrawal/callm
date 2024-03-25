@@ -206,7 +206,7 @@ export default defineConfig({
     'btn-base-spacing': 'px-4 py-3 md:(px-8 py-[0.8rem])',
     'btn-default': 'font-secondary border-transparent bg-primary-400 text-white cmw-font-bold uppercase',
     'btn-text': 'border-transparent text-primary-400',
-    'products-grid': 'grid grid-cols-2 gap-2 phone:(grid-cols-2 gap-2) sm:(grid-cols-2 gap-3) lg:(grid-cols-3 gap-4) desktop-wide:grid-cols-4',
+    'products-grid': 'grid grid-cols-2 gap-2 phone-md:(grid-cols-2 gap-2) sm:(grid-cols-2 gap-3) lg:(grid-cols-3 gap-4) desktop-wide:grid-cols-4',
   },
   alias: {
     // Note: This compiles single utilities, we need to use it with a '*' es. class="*big-titles"

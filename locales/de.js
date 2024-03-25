@@ -270,6 +270,11 @@ export default {
     removeFilters: 'Filter entfernen',
   },
   product: {
+    lowestPrice: 'Niedrigster Preis: {price}',
+    lowestPriceSplashTitle: 'Informationen zum niedrigsten Preis',
+    lowestPriceSplashText: 'Dieser Wert entspricht dem niedrigsten Preis, der in den letzten 30 Tagen vor der Anwendung des Rabatts auf unserer Plattform verzeichnet wurde, und berücksichtigt auch frühere Werbeaktionen.',
+    lowestPriceSplashExtraText: 'Auf Callmewine werden die Preise in Übereinstimmung mit den europäischen Gesetzen und der so genannten Omnibus-Richtlinie mit absoluter Transparenz festgelegt; weitere {tosUrl} finden Sie auf unserer Seite mit den Verkaufsbedingungen.',
+    tosUrl: 'Einzelheiten',
     otherVintagesSale: 'Jahrgang zum Verkauf {vintage}',
     otherVintages: 'Andere Jahrgänge: ',
     tooltip: {

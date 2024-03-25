@@ -7,9 +7,10 @@ import {
   useContext,
   useFetch,
   useRoute,
-  useRouter,
+  useRouter, watch,
 } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+import type { IMoneyV2 } from '~/types/common-objects'
 
 import type { IProductMapped } from '~/types/product'
 
@@ -66,6 +67,9 @@ export default defineComponent({
     const router = useRouter()
     const route = useRoute()
 
+    const finalPrice = ref<Partial<IMoneyV2>>({})
+    const lowestPrice = ref<Partial<IMoneyV2>>({})
+    const compareAtPrice = ref<Partial<IMoneyV2>>({})
     const isOpen = ref(false)
     const mappedRelatedVintage = ref<IProductMapped | null>(null)
 
@@ -96,15 +100,6 @@ export default defineComponent({
     const isOnSale = computed(() => {
       const currentProduct = mappedRelatedVintage.value || props.product
       return currentProduct.availableFeatures.includes('isInPromotion')
-    })
-
-    const finalPrice = computed(() => {
-      const currentProduct = mappedRelatedVintage.value || props.product
-
-      if (!currentProduct.priceLists || !currentProduct.priceLists[$config.SALECHANNEL]) {
-        return 0
-      }
-      return currentProduct.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0
     })
 
     const amountMax = computed(() => {
@@ -141,7 +136,7 @@ export default defineComponent({
       if (!$cmwStore.isDe) {
         return 0
       } else {
-        return ((finalPrice.value / currentProduct.milliliters) * 1000)
+        return ((+(finalPrice.value?.amount || 0) / currentProduct.milliliters) * 1000)
       }
     })
 
@@ -214,6 +209,19 @@ export default defineComponent({
       router.push(localePath(url))
     }
 
+    watch([
+      () => getCustomerType.value,
+      () => templateProduct.value?.source_id,
+    ], () => {
+      if (!templateProduct.value?.source_id) { return false }
+
+      const priceLists = templateProduct.value?.priceLists ? templateProduct.value?.priceLists[getCustomerType.value] : null
+
+      finalPrice.value = (priceLists?.price?.amount && priceLists?.price?.currencyCode) ? priceLists.price : {}
+      lowestPrice.value = (isOnSale.value && priceLists?.lowestPrice?.amount && priceLists?.lowestPrice?.currencyCode) ? priceLists.lowestPrice : {}
+      compareAtPrice.value = (priceLists?.compareAtPrice?.amount && priceLists?.compareAtPrice?.currencyCode) ? priceLists.compareAtPrice : {}
+    }, { immediate: true })
+
     return {
       addIcon,
       amountMax,
@@ -225,6 +233,7 @@ export default defineComponent({
       cartLinesUpdate,
       cartQuantity,
       closeIcon,
+      compareAtPrice,
       customer,
       customerId,
       emailIcon,
@@ -242,6 +251,7 @@ export default defineComponent({
       isOnSale,
       isOpen,
       isRelatedVintageWithHandle,
+      lowestPrice,
       mappedRelatedVintage,
       notActive,
       priceByLiter,
@@ -267,6 +277,10 @@ export default defineComponent({
       }
 
       const currentProduct = this.mappedRelatedVintage || this.product
+
+      if (!currentProduct.shopify_product_variant_id) {
+        return
+      }
 
       const cartInput = {
         buyerIdentity: {
@@ -304,7 +318,7 @@ export default defineComponent({
           this.flashMessage.show({
             status: '',
             message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${currentProduct.title}` }),
-            icon: currentProduct.image.source.url,
+            icon: currentProduct.image?.source.url,
             iconClass: 'bg-transparent',
             time: 4000,
             blockClass: 'add-product-notification',
@@ -340,8 +354,8 @@ export default defineComponent({
               { 'opacity-50': !templateProduct.availableForSale },
               { 'hover:contrast-150': !templateProduct.image?.thumbnail.url?.includes('no-product-image') },
             ]"
-            :thumbnail="templateProduct.image.thumbnail"
-            :source="templateProduct.image.source"
+            :thumbnail="templateProduct.image?.thumbnail"
+            :source="templateProduct.image?.source"
             wrapper="span"
           />
         </NuxtLink>
@@ -438,31 +452,13 @@ export default defineComponent({
           class="overline-2 text-success font-medium text-center uppercase"
           v-text="$t('product.available', { quantity: templateProduct.quantityAvailable })"
         />
-
-        <span
-          v-if="isOnSale"
-          class="line-through text-gray text-sm mr-3"
-        >
-          {{ $n(Number(product.compareAtPrice.amount), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode)) }}
-        </span>
-        <i18n-n
-          v-if="finalPrice"
-          class="inline-block mb-3" :value="finalPrice" :format="{ key: 'currency' }"
-          :locale="getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode)"
-        >
-          <template #currency="slotProps">
-            <span class="text-sm md:text-base">{{ slotProps.currency }}</span>
-          </template>
-          <template #integer="slotProps">
-            <span class="h1 cmw-font-bold">{{ slotProps.integer }}</span>
-          </template>
-          <template #group="slotProps">
-            <span class="h1 cmw-font-bold">{{ slotProps.group }}</span>
-          </template>
-          <template #fraction="slotProps">
-            <span class="text-sm md:text-base">{{ slotProps.fraction }}</span>
-          </template>
-        </i18n-n>
+        <ProductPriceListsCompareAtPrice v-if="isOnSale && Object.keys(compareAtPrice).length" :compare-at-price="compareAtPrice" />
+        <ProductPriceListsFinalPrice v-if="Object.keys(finalPrice).length" :final-price="finalPrice" class="mb-3" />
+        <ProductPriceListsLowestPrice
+          v-if="Object.keys(lowestPrice).length && !$cmwStore.isProd"
+          class="flex justify-center mb-2"
+          :lowest-price="lowestPrice"
+        />
         <div v-if="$cmwStore.isB2b" class="text-sm text-gray-dark  mb-3">
           iva esclusa
         </div>

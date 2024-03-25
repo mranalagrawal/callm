@@ -108,7 +108,8 @@ type ProductVariant {
   quantityAvailable: Int
   requiresShipping: Boolean!
   selectedOptions: String # Todo: [selectedOptions!]!
-  sku: String # Todo: [selectedOptions!]!
+  # The SKU (stock keeping unit) associated with the variant.
+  sku: String
   title: String! # Todo: [selectedOptions!]!
   unitPrice: MoneyV2
   unitPriceMeasurement: String # Todo: UnitPriceMeasurement

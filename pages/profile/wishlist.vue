@@ -3,7 +3,7 @@ import { computed, onMounted, ref, useContext, useFetch, watch } from '@nuxtjs/c
 import { storeToRefs } from 'pinia'
 
 import type { IOptions } from '~/types/types'
-import type { IProductMapped } from '~/types/product'
+import type { IProductMapped, IShopifyProduct } from '~/types/product'
 
 import { chunkArray } from '~/utilities/arrays'
 import closeIcon from '~/assets/svg/close.svg'
@@ -188,9 +188,9 @@ export default {
 
     const customerProducts = computed<IProductMapped[]>(() => {
       // Note: there's an annoying warning but the page renders perfectly, https://github.com/nuxt-community/composition-api/issues/19
-      if (!wishlistShopifyProducts.value || !wishlistShopifyProducts.value.length) { return [] }
+      if (!wishlistShopifyProducts.value.length) { return [] }
 
-      return $productMapping.fromShopify(wishlistShopifyProducts.value)
+      return $productMapping.fromShopify(wishlistShopifyProducts.value.filter(Boolean) as IShopifyProduct[])
     })
 
     const findRelatedVintage = (productId: string) => {

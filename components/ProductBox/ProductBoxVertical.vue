@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useFetch, useRoute, useRouter } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref, useContext, useFetch, useRoute, useRouter, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
 import addIcon from 'assets/svg/add.svg'
@@ -11,6 +11,8 @@ import heartIcon from 'assets/svg/heart.svg'
 import subtractIcon from 'assets/svg/subtract.svg'
 
 import type { PropType } from '@nuxtjs/composition-api'
+
+import type { IMoneyV2 } from '~/types/common-objects'
 import type { IProductMapped } from '~/types/product'
 
 import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
@@ -62,7 +64,10 @@ export default defineComponent({
     const isOpen = ref(false)
     const showRequestModal = ref(false)
     const isHovering = ref(false)
-    const mappedRelatedVintage = ref<IProductMapped | null>(null)
+    const mappedRelatedVintage = ref<Maybe<IProductMapped>>(null)
+    const finalPrice = ref<Partial<IMoneyV2>>({})
+    const lowestPrice = ref<Partial<IMoneyV2>>({})
+    const compareAtPrice = ref<Partial<IMoneyV2>>({})
 
     // get a mapped product from shopify if relatedVintage is passed
     useFetch(({ $cmwRepo, $productMapping }) => {
@@ -83,7 +88,7 @@ export default defineComponent({
       }
     })
 
-    const templateProduct = computed(() => mappedRelatedVintage.value || props.product)
+    const templateProduct = computed<IProductMapped>(() => mappedRelatedVintage.value || props.product)
 
     const notActive = computed(() => props.product.tags.includes('not_active'))
     const isRelatedVintageWithHandle = computed(() => !!props.relatedVintage?.handle)
@@ -91,15 +96,6 @@ export default defineComponent({
     const isOnSale = computed(() => {
       const currentProduct = mappedRelatedVintage.value || props.product
       return currentProduct.availableFeatures.includes('isInPromotion')
-    })
-
-    const finalPrice = computed(() => {
-      const currentProduct = mappedRelatedVintage.value || props.product
-
-      if (!currentProduct.priceLists || !currentProduct.priceLists[$config.SALECHANNEL]) {
-        return 0
-      }
-      return currentProduct.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0
     })
 
     const amountMax = computed(() => {
@@ -137,7 +133,7 @@ export default defineComponent({
       if (!$cmwStore.isDe) {
         return 0
       } else {
-        return ((finalPrice.value / currentProduct.milliliters) * 1000)
+        return ((+(finalPrice.value?.amount || 0) / currentProduct.milliliters) * 1000)
       }
     })
 
@@ -205,6 +201,19 @@ export default defineComponent({
         : props.relatedVintage.feId)
     }
 
+    watch([
+      () => getCustomerType.value,
+      () => templateProduct.value?.source_id,
+    ], () => {
+      if (!templateProduct.value?.source_id) { return false }
+
+      const priceLists = templateProduct.value?.priceLists ? templateProduct.value?.priceLists[getCustomerType.value] : null
+
+      finalPrice.value = (priceLists?.price?.amount && priceLists?.price?.currencyCode) ? priceLists.price : {}
+      lowestPrice.value = (isOnSale.value && priceLists?.lowestPrice?.amount && priceLists?.lowestPrice?.currencyCode) ? priceLists.lowestPrice : {}
+      compareAtPrice.value = (priceLists?.compareAtPrice?.amount && priceLists?.compareAtPrice?.currencyCode) ? priceLists.compareAtPrice : {}
+    }, { immediate: true })
+
     return {
       addIcon,
       amountMax,
@@ -216,6 +225,7 @@ export default defineComponent({
       cartLinesUpdate,
       cartQuantity,
       closeIcon,
+      compareAtPrice,
       customer,
       customerId,
       emailIcon,
@@ -235,6 +245,7 @@ export default defineComponent({
       isOnSale,
       isOpen,
       isRelatedVintageWithHandle,
+      lowestPrice,
       mappedRelatedVintage,
       notActive,
       priceByLiter,
@@ -281,7 +292,7 @@ export default defineComponent({
             },
           ],
           quantity: 1,
-          merchandiseId: currentProduct.shopify_product_variant_id,
+          merchandiseId: currentProduct.shopify_product_variant_id || '',
         }],
       }
 
@@ -299,7 +310,7 @@ export default defineComponent({
           this.flashMessage.show({
             status: '',
             message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${currentProduct.title}` }),
-            icon: currentProduct.image.source.url,
+            icon: currentProduct.image?.source.url,
             iconClass: 'bg-transparent ',
             time: 4000,
             blockClass: 'add-product-notification',
@@ -337,8 +348,8 @@ export default defineComponent({
                 { 'opacity-50': !templateProduct.availableForSale },
                 { 'hover:contrast-150': !templateProduct.image?.thumbnail.url?.includes('no-product-image') },
               ]"
-              :thumbnail="templateProduct.image.thumbnail"
-              :source="templateProduct.image.source"
+              :thumbnail="templateProduct.image?.thumbnail"
+              :source="templateProduct.image?.source"
               wrapper="span"
             />
           </NuxtLink>
@@ -389,33 +400,9 @@ export default defineComponent({
       <div class="c-productBox__price justify-self-baseline self-end">
         <div class="flex flex-col ml-3">
           <span class="flex gap-2">
-            <span
-              v-if="isOnSale"
-              class="line-through text-gray text-sm"
-            >
-              {{
-                $n(Number(product.compareAtPrice.amount), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode))
-              }}
-            </span>
+            <ProductPriceListsCompareAtPrice v-if="isOnSale && Object.keys(compareAtPrice).length" :compare-at-price="compareAtPrice" />
           </span>
-          <i18n-n
-            v-if="finalPrice"
-            class="inline-block" :value="finalPrice" :format="{ key: 'currency' }"
-            :locale="getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode)"
-          >
-            <template #currency="slotProps">
-              <span class="text-sm md:text-base">{{ slotProps.currency }}</span>
-            </template>
-            <template #integer="slotProps">
-              <span class="h1 cmw-font-bold !leading-none">{{ slotProps.integer }}</span>
-            </template>
-            <template #group="slotProps">
-              <span class="h1 cmw-font-bold !leading-none">{{ slotProps.group }}</span>
-            </template>
-            <template #fraction="slotProps">
-              <span class="text-sm md:text-base">{{ slotProps.fraction }}</span>
-            </template>
-          </i18n-n>
+          <ProductPriceListsFinalPrice v-if="Object.keys(finalPrice).length" :final-price="finalPrice" />
         </div>
       </div>
       <div v-if="!notActive || isRelatedVintageWithHandle" class="c-productBox__cart justify-self-baseline place-self-end">
@@ -468,13 +455,17 @@ export default defineComponent({
           />
         </div>
       </div>
-      <div v-if="$cmwStore.isDe" class="c-productBox__note mx-2">
-        <span v-if="priceByLiter" class="text-gray">
-          {{ $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(templateProduct.compareAtPrice.currencyCode)) }}/liter</span>
+      <div class="c-productBox__note mx-2">
+        <ProductPriceListsLowestPrice
+          v-if="Object.keys(lowestPrice).length && !$cmwStore.isProd"
+          :lowest-price="lowestPrice"
+        />
+        <span v-if="$cmwStore.isDe && priceByLiter && finalPrice?.currencyCode" class="text-gray">
+          {{ $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(finalPrice.currencyCode)) }}/liter</span>
         <span v-if="$cmwStore.isDe" class="text-gray">Inkl. MwSt. Und St.</span>
-      </div>
-      <div v-if="$cmwStore.isB2b" class="text-sm text-gray-dark ml-2">
-        iva esclusa
+        <div v-if="$cmwStore.isB2b" class="text-sm text-gray-dark ml-2">
+          iva esclusa
+        </div>
       </div>
     </div>
     <div v-if="isOnSale" class="c-productBox__lapel absolute top-$lapel-top right-8">
@@ -498,7 +489,7 @@ export default defineComponent({
 
 .c-productBox__grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: auto 60px 54px 12px;
+  grid-template-rows: auto 3lh 60px 1.4lh;
   grid-template-areas:
   "image image"
   "title title"
@@ -554,12 +545,12 @@ export default defineComponent({
 
 /* DE Modifiers */
 .c-productBox.-cmw-de .c-productBox__grid, .c-productBox.-b-2-b .c-productBox__grid {
-  grid-template-rows: auto 60px 54px 40px;
+  grid-template-rows: auto 3lh 70px 2lh;
 }
 /* We are handling this piece skipping mobile-first to reduce the amount of CSS  */
 @container product-box (max-width: 250px) {
   .c-productBox.-cmw-de .c-productBox__grid, .c-productBox.-b-2-b .c-productBox__grid {
-    grid-template-rows: auto auto 54px 26px;
+    grid-template-rows: auto 2.8lh 50px 1.8lh;
   }
 
   .c-productBox__image {

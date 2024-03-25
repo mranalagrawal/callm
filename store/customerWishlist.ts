@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
 import { useCustomer } from '~/store/customer'
 
-import type { IOptions, ObjType } from '~/types/types'
-import type { IProductRating } from '~/types/product'
+import type { IProductRating, IShopifyProduct } from '~/types/product'
+import type { IOptions } from '~/types/types'
 
 import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
 import { getCustomerId } from '~/utilities/shopify'
@@ -26,7 +26,7 @@ interface IState {
       'name': string
     }[]
   }
-  wishlistShopifyProducts: ObjType<any>[]
+  wishlistShopifyProducts: IShopifyProduct[]
 }
 
 export const useCustomerWishlist = defineStore({
@@ -103,13 +103,13 @@ export const useCustomerWishlist = defineStore({
     },
 
     async getWishlistProducts({ query = '', first = 30 }) {
-      await this.$nuxt.$cmwRepo.products.getAll({
+      await this.$nuxt.$cmwRepo.products.getAllV2({
         first: Number(first),
         query,
       })
-        .then(({ products }: any) => {
+        .then((products) => {
           this.$patch({
-            wishlistShopifyProducts: products.nodes,
+            wishlistShopifyProducts: products,
           })
         })
     },

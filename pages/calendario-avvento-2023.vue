@@ -7,11 +7,14 @@ import {
   useContext,
   useFetch,
 } from '@nuxtjs/composition-api'
-import metaobject from '~/graphql/queries/metaobject.graphql'
+
 import type { ICollection } from '~/types/collection'
-import { initialCollectionData } from '~/types/collection'
-import type { ObjType, TImage } from '~/types/types'
+import type { IShopifyProduct } from '~/types/product'
+import type { TImage } from '~/types/types'
+
 import { getRandNumber } from '~/utilities/math'
+import { initialCollectionData } from '~/types/collection'
+import metaobject from '~/graphql/queries/metaobject.graphql'
 import { SweetAlertConfirm } from '~/utilities/Swal'
 
 export interface IEventDay {
@@ -22,7 +25,7 @@ export interface IEventDay {
     discount: { value: string }
     image: { reference: { image: TImage } }
     price: { value: string }
-    product: { reference: ObjType<KeyType> } // IProductMapped
+    product: { reference: IShopifyProduct } // IProductMapped
     productVariant: { reference: any } // IProductMapped
     title: { value: string }
     type: { value: string }
@@ -184,7 +187,7 @@ export default defineComponent({
                 :to="(product?.url) ? localeLocation(product.url) : '/'"
               >
                 <img
-                  :src="product.image.source.url" :alt="product.image.thumbnail.altText"
+                  :src="product.image?.source?.url" :alt="product.image?.thumbnail?.altText"
                   class="w-full h-auto object-contain"
                 >
               </NuxtLink>
