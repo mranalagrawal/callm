@@ -647,8 +647,8 @@ export default defineComponent({
             <!-- MOBILE ADD_TO_CART BUTTON -->
             <div
               class="
-            <md:(fixed bottom-0 left-0 w-full bg-white z-content shadow-elevation px-3 py-4)
-            mt-auto flex items-end
+            <md:(fixed bottom-0 left-0 w-full bg-white z-content shadow-elevation pl-3 pr-3 pt-2 pb-2)
+            mt-auto grid grid-cols-[3fr_9fr] items-center
             md:my-8
 "
             >
@@ -665,12 +665,8 @@ export default defineComponent({
                     :label="`-${getPercent(+finalPrice.amount, +compareAtPrice?.amount)}%`"
                   />
                 </div>
-                <ProductPriceListsFinalPrice v-if="Object.keys(finalPrice).length" :final-price="finalPrice" class="mb-3" />
-                <ProductPriceListsLowestPrice
-                  v-if="Object.keys(lowestPrice).length && !$cmwStore.isProd"
-                  :lowest-price="lowestPrice"
-                />
-                <div v-if="$cmwStore.isB2b" class="text-gray-dark">
+                <ProductPriceListsFinalPrice v-if="Object.keys(finalPrice).length" :final-price="finalPrice" />
+                <div v-if="$cmwStore.isB2b" class="text-gray-dark text-sm">
                   iva esclusa
                 </div>
                 <div v-if="$cmwStore.isDe">
@@ -741,7 +737,7 @@ export default defineComponent({
                         :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
                         @click.native="addProductToCustomerCart"
                       >
-                        <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
+                        <!--                        <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" /> -->
                         <span class="text-sm" v-text="isDesktop ? $t('common.cta.addToCart') : $t('common.cta.addToCartSm')" />
                       </CmwButton>
                       <Badge
@@ -791,6 +787,11 @@ export default defineComponent({
                   </div>
                 </div>
               </div>
+              <ProductPriceListsLowestPrice
+                v-if="Object.keys(lowestPrice).length && !$cmwStore.isProd"
+                class="col-span-full"
+                :lowest-price="lowestPrice"
+              />
             </div>
             <template v-if="showScalaPay">
               <script type="module" src="https://cdn.scalapay.com/widget/v3/js/scalapay-widget.esm.js" />
