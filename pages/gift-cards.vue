@@ -23,7 +23,7 @@ export default defineComponent({
     const { cart } = storeToRefs(useCart())
     const { cartCreate, cartLinesAdd, cartLinesUpdate } = useCart()
     const isOpen = ref(false)
-    const product = ref<IGiftCardMapped | null>(null)
+    const product = ref<Maybe<IGiftCardMapped>>(null)
     const productVariant = ref()
     const productDetails = ref({
       brandId: '',
@@ -60,14 +60,13 @@ export default defineComponent({
       canonicalUrl.value = `${origin}${encodedPath}${encodedSearch}`
     }
 
-    const { fetchState } = useFetch(async ({ $cmwRepo, $productMapping, $handleApiErrors }) => {
+    const { fetchState } = useFetch(async ({ $cmwRepo, $productMapping }) => {
       await $cmwRepo.products.getGiftCardByHandle({
         handle: 'gift-cards', // or by route $route.value.name,
       })
-        .then(({ product: shopifyProduct }: any) => {
+        .then((shopifyProduct) => {
           product.value = shopifyProduct && $productMapping.giftCard(shopifyProduct) // set product.value here ?
         })
-        .catch((err: Error) => $handleApiErrors(`Something went wrong getting gift card from Shopify ${err}`))
     })
 
     const strippedContent = computed(() => {
@@ -236,7 +235,7 @@ export default defineComponent({
           this.flashMessage.show({
             status: '',
             message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product?.title} ${this.giftCardVariantSelected.title}` }),
-            icon: this.product?.image.source.url,
+            icon: this.product?.image?.source.url,
             iconClass: 'bg-transparent ',
             time: 8000,
             blockClass: 'add-product-notification',

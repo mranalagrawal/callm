@@ -133,7 +133,7 @@ export default defineComponent({
           'position': i + 1,
           'name': title,
           'url': `${originUrl.value}${localePath(product.url)}`,
-          'image': product.image.source.url,
+          'image': product.image?.source.url,
           'description': stripHtml(product.tbd.description),
         }
       })

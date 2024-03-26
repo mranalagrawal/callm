@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 import {
   computed,
   defineComponent,
@@ -12,6 +12,11 @@ import {
 } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
+import type { IProductBreadcrumbs, IProductMapped, IShopifyProductVariant } from '~/types/product'
+import type { IMoneyV2 } from '~/types/common-objects'
+import type { IShopifyCartInput } from '~/types/cart'
+import type { TISO639 } from '~/config/themeConfig'
+
 import { generateKey, stripHtmlAnchors } from '~/utilities/strings'
 import { getCountryFromStore, getCurrencySymbol, getLocaleFromCurrencyCode, getPercent } from '~/utilities/currency'
 import addIcon from '~/assets/svg/add.svg'
@@ -23,12 +28,27 @@ import heartIcon from '~/assets/svg/heart.svg'
 import subtractIcon from '~/assets/svg/subtract.svg'
 import { SweetAlertToast } from '~/utilities/Swal'
 
-import getArticles from '~/graphql/queries/getArticles'
+import getArticles from '~/graphql/queries/getArticles.graphql'
 import { useCart } from '~/store/cart'
 import { useCustomer } from '~/store/customer'
 import { useCustomerWishlist } from '~/store/customerWishlist'
 import { useRecentProductsStore } from '~/store/recent'
-import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
+import useShowRequestModal from '~/components/ProductBox/useShowRequestModal'
+
+interface IProductDetails {
+  brandId: string
+  canonical: string
+  compareAtPrice: IMoneyV2
+  feId: string
+  foodPairings: string[]
+  hrefLang: Record<string, string> | null
+  key: string
+  milliliters: number
+  priceLists: Record<string, any>
+  redirectSeoUrl: Record<string, string>
+  shortDescription: Record<string, string>
+  subCategoryName: string
+}
 
 export default defineComponent({
   setup() {
@@ -43,7 +63,6 @@ export default defineComponent({
       $productMapping,
       error,
       i18n,
-      localeLocation,
       localePath,
       redirect,
       req,
@@ -66,41 +85,10 @@ export default defineComponent({
     const route = useRoute()
     const isOpen = ref(false)
     const showRequestModal = ref(false)
-    const product = ref({
-      url: '',
-      source_id: '',
-      availableFeatures: [],
-      bundle: [],
-      details: {},
-      featuredImage: {
-        altText: '',
-        height: 0,
-        url: '',
-        width: 0,
-      },
-      handle: '',
-      id: '',
-      variants: { nodes: [] },
-      title: '',
-      tags: [],
-      seo: {
-        description: '',
-        title: '',
-      },
-      gtmProductData: { id: '' },
-    })
-    const productVariant = ref()
-    const productDetails = ref({
-      brandId: '',
-      canonical: '',
-      feId: '',
-      hrefLang: {},
-      shortDescription: '',
-      priceLists: {},
-      redirectSeoUrl: {},
-      foodPairings: [],
-    })
-    const productBreadcrumbs = ref([])
+    const product = ref<Maybe<IProductMapped>>(null)
+    const productVariant = ref<Maybe<IShopifyProductVariant>>(null)
+    const productDetails = ref<Maybe<IProductDetails>>(null)
+    const productBreadcrumbs = ref<IProductBreadcrumbs[]>([])
     const brandMetaFields = ref({
       key: '',
       subtitle: '',
@@ -108,8 +96,12 @@ export default defineComponent({
       hrefLang: {},
       isPartner: false,
     })
+    const finalPrice = ref<Partial<IMoneyV2>>({})
+    const lowestPrice = ref<Partial<IMoneyV2>>({})
+    const compareAtPrice = ref<Partial<IMoneyV2>>({})
 
     const brand = ref({
+      handle: '',
       title: '',
       contentHtml: '',
       seo: {
@@ -144,58 +136,71 @@ export default defineComponent({
     const { handleShowRequestModal } = useShowRequestModal()
 
     const { fetchState } = useFetch(async ({ $sentry }) => {
-      await $cmwRepo.products.getAll({
+      await $cmwRepo.products.getAllV2({
         first: 1,
         query: `tag:P${route.value.params.id}`,
       })
-        .then(async ({ products = { nodes: [] } }) => {
-          if (!!products.nodes.length && products.nodes[0].handle) {
-            product.value = await $productMapping.fromShopify([products.nodes[0]])[0]
-
-            productVariant.value = products.nodes[0].variants.nodes[0]
-            productDetails.value = JSON.parse(products.nodes[0].details.value)
-            productBreadcrumbs.value = JSON.parse(products.nodes[0].breadcrumbs.value)
-            productBreadcrumbs.value = !Object.keys(productBreadcrumbs.value).length
-              ? []
-              : $productMapping.breadcrumbs(productBreadcrumbs.value[i18n.locale])
-
-            if (route.value.params.pathMatch !== product.value.handle.toLowerCase()) { return redirect(301, localeLocation(`/${product.value.handle.toLowerCase()}-${productDetails.value.key}.htm`), route.value.query) }
-
-            if (product.value.tags.includes('not_active')) {
-              if (productDetails.value.redirectSeoUrl && productDetails.value.redirectSeoUrl[i18n.locale]) { return redirect(301, localeLocation(`/${productDetails.value.redirectSeoUrl[i18n.locale]}`), route.value.query) }
-              return redirect(301, '/') // redirect to home if redirectSeoUrl is missing
-            }
-
-            // if (!productDetails.value.enabled)
-            //   return redirect(301, productDetails.value.canonicalProductId ||
-            //   `/winery/${product.value.vendor.replace(' ', '-').toLowerCase()}-B-${productDetails.value.brandId}.htm`)
-
-            recentProductsStore.$patch({
-              recentProducts: recentProducts.value?.length > 11
-                ? [...new Set([...recentProducts.value, productDetails.value.key])].slice(-12)
-                : [...new Set([...recentProducts.value, productDetails.value.key])],
-            })
-
-            const { articles } = await $graphql.default.request(getArticles, {
-              lang: i18n.locale.toUpperCase(),
-              first: 1,
-              query: `tag:B${productDetails.value.brandId}`, // route.value.params.handle,
-            })
-
-            if (articles.nodes[0]) {
-              brand.value = articles.nodes[0]
-              brandMetaFields.value = articles.nodes[0].details && JSON.parse(articles.nodes[0].details.value)
-            }
-          } else {
+        .then(async (products) => {
+          if (!products?.length || !products[0]) {
             return error({
               statusCode: 404,
               message: 'No results',
             })
           }
-        }).catch((err) => {
-          $sentry.captureException(new Error(`Something went wrong ${err}`))
+
+          const locale: TISO639 = i18n.locale as TISO639
+          product.value = $productMapping.fromShopify([products[0]])[0]
+
+          productVariant.value = products[0].variants.nodes[0]
+          productDetails.value = JSON.parse(products[0].details.value)
+          const productBreadcrumbsValue = products[0].breadcrumbs?.value ? JSON.parse(products[0].breadcrumbs?.value) : {}
+
+          if (Object.keys(productBreadcrumbsValue).length && Object.keys(productBreadcrumbsValue).includes(locale)) {
+            productBreadcrumbs.value = $productMapping.breadcrumbs(productBreadcrumbsValue[locale])
+          }
+
+          if (!productDetails.value) { return }
+
+          if (route.value.params.pathMatch !== product.value.handle.toLowerCase()) {
+            return redirect(
+              301,
+              localePath(`/${product.value.handle.toLowerCase()}-${productDetails.value.key}.htm`),
+              route.value.query)
+          }
+
+          if (product.value.tags.includes('not_active')) {
+            if (productDetails.value.redirectSeoUrl && productDetails.value.redirectSeoUrl[locale]) {
+              return redirect(
+                301,
+                localePath(`/${productDetails.value.redirectSeoUrl[locale]}`) as unknown as string,
+                route.value.query)
+            }
+            return redirect(301, localePath({ name: 'index' }))
+          }
+
+          recentProductsStore.$patch({
+            recentProducts: recentProducts.value?.length > 11
+              ? [...new Set([...recentProducts.value, productDetails.value.key])].slice(-12)
+              : [...new Set([...recentProducts.value, productDetails.value.key])],
+          })
+
+          const { articles } = await $graphql.default.request(getArticles, {
+            lang: locale.toUpperCase(),
+            first: 1,
+            query: `tag:B${productDetails.value.brandId}`, // route.value.params.handle,
+          })
+
+          if (articles.nodes[0]) {
+            brand.value = articles.nodes[0]
+            brandMetaFields.value = articles.nodes[0].details && JSON.parse(articles.nodes[0].details.value)
+          }
+        })
+        .catch((err) => {
+          $sentry.captureException(new Error(`Something went wrong processing the product in PDP ${err}`))
         })
     })
+
+    const localeProperties = computed(() => i18n.localeProperties)
 
     const showScalaPay = computed(() => $cmwStore.isIt || $cmwStore.isB2b)
 
@@ -204,28 +209,24 @@ export default defineComponent({
     const isOnSale = computed(() => {
       if (!productVariant.value) { return false }
 
-      return product.value.availableFeatures.includes('isInPromotion')
+      return product.value?.availableFeatures.includes('isInPromotion')
     })
 
     const strippedContent = computed(() => {
-      if (productDetails.value.shortDescription[i18n.locale]) {
+      const locale: TISO639 = i18n.locale as TISO639
+      if (productDetails.value?.shortDescription[locale]) {
         if ($config.SALECHANNEL === 'cmw_uk_b2c') {
-          return stripHtmlAnchors(productDetails.value.shortDescription[i18n.locale])
+          return stripHtmlAnchors(productDetails.value.shortDescription[locale])
         } else {
-          return productDetails.value.shortDescription[i18n.locale]
+          return productDetails.value.shortDescription[locale]
         }
-        /*
-        return productDetails.value.shortDescription[i18n.locale]
-          .replace('href', '')
-          .replace('style', '')
-        */
       }
 
-      return ''// empty like old.com
+      return ''
     })
 
     const amountMax = computed(() => {
-      if (!product.value.details.amountMax) { return 0 }
+      if (!product.value?.details.amountMax) { return 0 }
 
       return (product.value.details.amountMax[$config.SALECHANNEL]
               && product.value.details.amountMax[$config.SALECHANNEL] <= product.value.quantityAvailable)
@@ -234,28 +235,26 @@ export default defineComponent({
     })
 
     const isOnCart = computed(() =>
-      cart.value.lines.find(el => el.merchandise.id === product.value.shopify_product_variant_id))
+      cart.value.lines.find(el => el.merchandise.id === product.value?.shopify_product_variant_id))
 
     const cartQuantity = computed(() => isOnCart.value ? isOnCart.value.quantity : 0)
 
     const canAddMore = computed(() => (amountMax.value - cartQuantity.value) > 0)
 
-    const isBundle = computed(() => !!product.value.bundle.length)
+    const isBundle = computed(() => !!product.value?.bundle?.length)
 
-    const finalPrice = computed(() => {
-      if (!productDetails.value.feId) { return false }
-
-      return productDetails.value.priceLists[$config.SALECHANNEL][getCustomerType.value] || 0
-    })
-
-    const isOnFavourite = computed(() => wishlistArr.value.includes(`'${product.value.source_id}'`))
+    const isOnFavourite = computed(() => wishlistArr.value.includes(`'${product.value?.source_id}'`))
 
     const priceByLiter = computed(() => {
-      if ($config.STORE !== 'CMW_DE') { return 0 } else { return ((finalPrice.value / productDetails.value.milliliters) * 1000) }
+      if ($config.STORE !== 'CMW_DE') {
+        return 0
+      } else {
+        return ((+(finalPrice?.value?.amount || 0) / +(productDetails.value?.milliliters || 0)) * 1000)
+      }
     })
 
     const gtmProductData = computed(() => ({
-      ...product.value.gtmProductData,
+      ...product.value?.gtmProductData,
       price: finalPrice.value,
     }))
 
@@ -264,7 +263,7 @@ export default defineComponent({
         return
       }
 
-      const currentLineItem = cart.value.lines.find(el => el.merchandise.id === product.value.shopify_product_variant_id)
+      const currentLineItem = cart.value.lines.find(el => el.merchandise.id === product.value?.shopify_product_variant_id)
 
       if (!currentLineItem) { return }
 
@@ -278,13 +277,15 @@ export default defineComponent({
       await cartLinesUpdate(cart.value.id, lineItems, true)
     }
 
-    const generateMetaLink = (arr = []) => {
-      const hrefLangArr = !!arr.length && arr.map(el => ({
-        hid: `alternate-${el[0]}`,
-        rel: 'alternate',
-        href: el[1],
-        hreflang: el[0],
-      }))
+    const generateMetaLink = (arr: any[]) => {
+      const hrefLangArr = arr.length
+        ? arr.map(el => ({
+          hid: `alternate-${el[0]}`,
+          rel: 'alternate',
+          href: el[1],
+          hreflang: el[0],
+        }))
+        : []
 
       return [
         ...hrefLangArr,
@@ -297,73 +298,92 @@ export default defineComponent({
       ]
     }
 
+    watch([
+      () => getCustomerType.value,
+      () => productDetails.value?.feId,
+    ], () => {
+      if (!productDetails.value?.feId) { return false }
+
+      const priceLists = product.value?.priceLists ? product.value?.priceLists[getCustomerType.value] : null
+
+      finalPrice.value = (priceLists?.price?.amount && priceLists?.price?.currencyCode) ? priceLists.price : {}
+      lowestPrice.value = (priceLists?.lowestPrice?.amount && priceLists?.lowestPrice?.currencyCode) ? priceLists.lowestPrice : {}
+      compareAtPrice.value = (priceLists?.compareAtPrice?.amount && priceLists?.compareAtPrice?.currencyCode) ? priceLists.compareAtPrice : {}
+    }, { immediate: true })
+
     watch(() => gtmProductData.value.id, () => {
       process.browser && $cmwGtmUtils.pushPage('product', {
         event: 'productDetailView',
         ecommerce: {
           currencyCode: $config.STORE === 'CMW_UK' ? 'GBP' : 'EUR',
           detail: {
-            products: [{ ...product.value.gtmProductData }],
+            products: [{ ...product.value?.gtmProductData }],
           },
         },
       })
     })
 
-    useMeta(() => ({
-      title: product?.value?.seo?.title,
-      script: [{
-        type: 'application/ld+json',
-        innerHTML: JSON.stringify({
-          '@context': 'https://schema.org',
-          '@type': 'Product',
-          'name': `${product.value.title}`,
-          'sku': `${product.value.sku}`,
-          'image': `${product.value.image?.hd.url}`,
-          'mpn': `CALLMEWINE${product.value.sku}`,
-          'brand': {
-            '@type': 'Brand',
-            'name': `${product.value.vendor}`,
-          },
-          'offers': {
-            '@type': 'Offer',
-            'url': `${originUrl.value}${localePath(product.value?.url)}`,
-            'priceCurrency': `${productVariant.value?.price.currencyCode}`,
-            'price': `${finalPrice.value}`,
-            'availability': `${product.value.availableForSale ? 'InStock' : 'OutOfStock'}`,
-            'itemCondition ': 'newCondition',
-          },
-        }),
-      }, {
-        type: 'application/ld+json',
-        innerHTML: JSON.stringify({
-          '@context': 'https://schema.org',
-          '@type': 'BreadcrumbList',
-          'itemListElement': productBreadcrumbs.value.map((el, i) => {
-            return {
-              '@type': 'ListItem',
-              'position': i + 1,
-              'item': {
-                '@id': `${originUrl.value}${localePath(el.to)}`,
-                'name': el.label,
-              },
+    useMeta(() => {
+      let productDetailsHrefLang: any = productDetails.value?.hrefLang
+        ? Object.entries(productDetails.value.hrefLang)
+        : undefined
+      productDetailsHrefLang = productDetailsHrefLang && generateMetaLink(productDetailsHrefLang)
 
-            }
+      return {
+        title: product?.value?.seo?.title || '',
+        script: [{
+          type: 'application/ld+json',
+          innerHTML: JSON.stringify({
+
+            '@context': 'https://schema.org',
+            '@type': 'Product',
+            'name': `${product.value?.title}`,
+            'sku': `${product.value?.sku}`,
+            'image': `${product.value?.image?.hd?.url}`,
+            'mpn': `CALLMEWINE${product.value?.sku}`,
+            'brand': {
+              '@type': 'Brand',
+              'name': `${product.value?.vendor}`,
+            },
+            'offers': {
+              '@type': 'Offer',
+              'url': `${originUrl.value}${localePath(product.value?.url || '')}`,
+              'priceCurrency': `${productVariant.value?.price.currencyCode}`,
+              'price': `${finalPrice.value}`,
+              'availability': `${product.value?.availableForSale ? 'InStock' : 'OutOfStock'}`,
+              'itemCondition ': 'newCondition',
+            },
           }),
-        }),
-      }],
-      __dangerouslyDisableSanitizers: ['script'],
-      meta: [
-        {
-          hid: 'description',
-          name: 'description',
-          content: product?.value?.seo?.description,
-        },
-      ],
-      link: productDetails.value
-        && productDetails.value.hrefLang
-        && Object.keys(productDetails.value?.hrefLang).length
-        && generateMetaLink(Object.entries(productDetails.value?.hrefLang)),
-    }))
+        }, {
+          type: 'application/ld+json',
+          innerHTML: JSON.stringify({
+
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            'itemListElement': productBreadcrumbs.value.map((el, i) => {
+              return {
+                '@type': 'ListItem',
+                'position': i + 1,
+                'item': {
+                  '@id': `${originUrl.value}${localePath(el.to)}`,
+                  'name': el.label,
+                },
+
+              }
+            }),
+          }),
+        }],
+        __dangerouslyDisableSanitizers: ['script'],
+        meta: [
+          {
+            hid: 'description',
+            name: 'description',
+            content: product.value?.seo?.description || '',
+          },
+        ],
+        ...(productDetailsHrefLang && { link: productDetailsHrefLang }),
+      }
+    })
 
     return {
       addIcon,
@@ -377,6 +397,7 @@ export default defineComponent({
       cartIcon,
       cartLinesAdd,
       cartQuantity,
+      compareAtPrice,
       customer,
       customerId,
       emailIcon,
@@ -396,6 +417,8 @@ export default defineComponent({
       isOnFavourite,
       isOnSale,
       isOpen,
+      localeProperties,
+      lowestPrice,
       priceByLiter,
       product,
       productBreadcrumbs,
@@ -428,25 +451,25 @@ export default defineComponent({
         return
       }
 
-      const cartInput = {
+      const cartInput: IShopifyCartInput = {
         buyerIdentity: {
           countryCode: getCountryFromStore(this.$cmwStore.settings.store),
           ...(this.customer.email && { email: this.customer.email }),
         },
-        note: this.cart.note,
+        note: this.cart.note || '',
         lines: [{
           attributes: [
             {
               key: 'gtmProductData',
-              value: this.product.gtmProductData ? JSON.stringify(this.product.gtmProductData) : 'false',
+              value: this.product?.gtmProductData ? JSON.stringify(this.product.gtmProductData) : 'false',
             },
             {
               key: 'bundle',
-              value: (this.product.tags) ? this.product.tags.includes('BUNDLE').toString() : 'false',
+              value: (this.product?.tags) ? this.product.tags.includes('BUNDLE').toString() : 'false',
             },
           ],
           quantity: 1,
-          merchandiseId: this.product.shopify_product_variant_id,
+          merchandiseId: this.product?.shopify_product_variant_id || '',
         }],
       }
 
@@ -459,10 +482,11 @@ export default defineComponent({
 
       this.cartLinesAdd(this.cart.id, cartInput.lines)
         .then(async () => {
+          /* @ts-expect-error flashMessage doesn't seem to handle typescript */
           this.flashMessage.show({
             status: '',
-            message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product.title}` }),
-            icon: this.product.image.source.url,
+            message: this.$i18n.t('common.feedback.OK.cartAdded', { product: `${this.product?.title}` }),
+            icon: this.product?.image?.source.url,
             iconClass: 'bg-transparent ',
             time: 8000,
             blockClass: 'add-product-notification',
@@ -497,12 +521,12 @@ export default defineComponent({
             <LoadingImage
               class="min-h-[350px] md:min-h-[550px] h-full"
               img-classes="min-h-[350px] max-h-[350px] md:max-h-[550px] mx-auto object-contain"
-              :thumbnail="product.image.thumbnail"
-              :source="product.image.hd"
+              :thumbnail="product?.image?.thumbnail"
+              :source="product?.image?.hd"
             />
             <div v-if="$cmwStore.isDe" class="md:hidden transform absolute w-full bottom-0 flex items-center justify-center left-1/2 -translate-x-1/2 translate-y-8">
               <i18n-n
-                v-if="finalPrice && !isOnSale"
+                v-if="finalPrice && !isOnSale && productVariant?.price.currencyCode"
                 class="md:hidden inline-block text-gray" :value="Number(finalPrice)"
                 :format="{ key: 'currency' }"
                 :locale="getLocaleFromCurrencyCode(productVariant.price.currencyCode)"
@@ -522,21 +546,21 @@ export default defineComponent({
               </i18n-n>
               <span v-if="$cmwStore.isDe && priceByLiter" class="text-sm text-gray">
                 {{
-                  $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode))
+                  $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(compareAtPrice?.currencyCode))
                 }}/liter</span>
               <div v-if="$cmwStore.isDe" class="md:hidden text-sm text-gray ml-1">
                 Inkl. MwSt. Und St.
               </div>
             </div>
-            <div v-if="product.availableFeatures" class="absolute top-4 left-2">
+            <div v-if="product?.availableFeatures" class="absolute top-4 left-2">
               <ProductBoxFeature
-                v-for="feature in product.availableFeatures"
+                v-for="feature in product?.availableFeatures"
                 :key="generateKey(`details-feature-${feature}`)" :feature="feature"
               />
             </div>
             <div class="absolute bottom-0 left-2">
               <div
-                v-for="(award, i) in product.awards.slice(0, 4)"
+                v-for="(award, i) in product?.awards.slice(0, 4)"
                 :key="`${award.id}-${i}`"
                 class="flex gap-1 items-center pr-1.5"
               >
@@ -550,7 +574,7 @@ export default defineComponent({
               <button
                 type="button"
                 :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
-                @click="handleWishlist({ id: product.id, isOnFavourite, gtmProductData: product.gtmProductData })"
+                @click="handleWishlist({ id: product?.id, isOnFavourite, gtmProductData: product?.gtmProductData })"
               >
                 <VueSvgIcon
                   color="#d94965"
@@ -563,25 +587,25 @@ export default defineComponent({
           </div>
           <!-- Content Section -->
           <div class="flex flex-col">
-            <h1 class="h2 text-secondary <md:pt-8" v-text="product.title" />
+            <h1 class="h2 text-secondary <md:pt-8" v-text="product?.title" />
             <NuxtLink
-              v-if="!isBundle && product.vendor.toUpperCase() !== 'CALLMEWINE'"
+              v-if="!isBundle && product?.vendor.toUpperCase() !== 'CALLMEWINE'"
               class="h3 w-max hover:text-primary-400"
               :to="localePath({ name: 'winery-handle', params: { handle: `${brand.handle}-${brandMetaFields.key}.htm` } })"
               prefetch
             >
-              {{ product.vendor }}
+              {{ product?.vendor }}
             </NuxtLink>
             <CmwTextAccordion line-clamp="3">
               <div class="prose text-sm leading-snug md:(text-base leading-normal)" v-html="strippedContent" />
             </CmwTextAccordion>
-            <p v-if="!product.availableForSale" class="text-primary-400">
+            <p v-if="!product?.availableForSale" class="text-primary-400">
               {{ $t('product.notAvailable') }}
             </p>
-            <div v-if="isBundle && productDetails.subCategoryName !== 'Mystery Box'" class="mb-4">
+            <div v-if="isBundle && productDetails?.subCategoryName !== 'Mystery Box'" class="mb-4">
               <div class="h4 my-4" v-text="$t('bundle.whatIsInTheBox')" />
               <ul class="mb-4 text-sm text-body">
-                <li v-for="({ product_name, quantity }) in product.bundle" :key="generateKey(product_name)">
+                <li v-for="({ product_name, quantity }) in product?.bundle" :key="generateKey(product_name)">
                   {{ quantity }} {{ product_name }}
                 </li>
               </ul>
@@ -610,21 +634,21 @@ export default defineComponent({
               />
 
               <ClientOnly>
-                <div v-if="finalPrice" class="my-4">
+                <div v-if="finalPrice?.amount" class="my-4">
                   <klarna-placement
                     data-key="credit-promotion-badge"
-                    :data-locale="$i18n.localeProperties.iso"
-                    :data-purchase-amount="finalPrice.toFixed(2).replace(/[^0-9]/g, '')"
+                    :data-locale="localeProperties?.iso"
+                    :data-purchase-amount="Number(finalPrice.amount).toFixed(2).replace(/[^0-9]/g, '')"
                   />
                 </div>
               </ClientOnly>
             </template>
-            <ProductDetailsVintages :sku="product.sku" />
+            <ProductDetailsVintages :sku="product?.sku" />
             <!-- MOBILE ADD_TO_CART BUTTON -->
             <div
               class="
-            <md:(fixed bottom-0 left-0 w-full bg-white z-content shadow-elevation px-3 py-4)
-            mt-auto flex items-end
+            <md:(fixed bottom-0 left-0 w-full bg-white z-content shadow-elevation pl-3 pr-3 pt-2 pb-2)
+            mt-auto grid grid-cols-[3fr_9fr] items-center
             md:my-8
 "
             >
@@ -633,45 +657,22 @@ export default defineComponent({
                   v-if="isOnSale"
                   class="flex items-center gap-2"
                 >
-                  <span class="line-through text-gray text-sm">
-                    {{
-                      $n(Number(productVariant.compareAtPrice.amount),
-                         'currency',
-                         getLocaleFromCurrencyCode(productVariant.compareAtPrice.currencyCode))
-                    }}
-                  </span>
+                  <ProductPriceListsCompareAtPrice v-if="isOnSale && Object.keys(compareAtPrice).length" :compare-at-price="compareAtPrice" />
                   <CmwChip
+                    v-if="finalPrice?.amount"
                     color="secondary"
                     shape="rounded"
-                    :label="`-${getPercent(finalPrice, productVariant.compareAtPrice.amount)}%`"
+                    :label="`-${getPercent(+finalPrice.amount, +compareAtPrice?.amount)}%`"
                   />
                 </div>
-                <i18n-n
-                  v-if="finalPrice"
-                  class="inline-block" :value="Number(finalPrice)"
-                  :format="{ key: 'currency' }"
-                  :locale="getLocaleFromCurrencyCode(productVariant.price.currencyCode)"
-                >
-                  <template #currency="slotProps">
-                    <span class="text-sm md:text-base">{{ slotProps.currency }}</span>
-                  </template>
-                  <template #integer="slotProps">
-                    <span class="h1 cmw-font-bold !leading-none">{{ slotProps.integer }}</span>
-                  </template>
-                  <template #group="slotProps">
-                    <span class="h1 cmw-font-bold !leading-none">{{ slotProps.group }}</span>
-                  </template>
-                  <template #fraction="slotProps">
-                    <span class="text-sm md:text-base">{{ slotProps.fraction }}</span>
-                  </template>
-                </i18n-n>
-                <div v-if="$cmwStore.isB2b" class="text-gray-dark">
+                <ProductPriceListsFinalPrice v-if="Object.keys(finalPrice).length" :final-price="finalPrice" />
+                <div v-if="$cmwStore.isB2b" class="text-gray-dark text-sm">
                   iva esclusa
                 </div>
                 <div v-if="$cmwStore.isDe">
                   <span v-if="$cmwStore.isDe && priceByLiter" class="text-sm <md:hidden">
                     {{
-                      $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(product.compareAtPrice.currencyCode))
+                      $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(compareAtPrice?.currencyCode))
                     }}/liter</span>
                   <div v-if="$cmwStore.isDe" class="<md:hidden text-sm text-gray-dark">
                     Inkl. MwSt. Und St.
@@ -682,13 +683,13 @@ export default defineComponent({
                 <div class="">
                   <div v-if="!amountMax">
                     <p
-                      v-if="product.quantityAvailable > 0" class="text-success text-center"
-                      :class="{ hidden: product.quantityAvailable > 6 }"
+                      v-if="product?.quantityAvailable > 0" class="text-success text-center"
+                      :class="{ hidden: product?.quantityAvailable > 6 }"
                     >
-                      {{ $t('product.available', { quantity: product.quantityAvailable }) }}
+                      {{ $t('product.available', { quantity: product?.quantityAvailable }) }}
                     </p>
                   </div>
-                  <div v-if="product.availableForSale" class="relative">
+                  <div v-if="product?.availableForSale" class="relative">
                     <div v-if="!amountMax">
                       <CmwButton
                         class="gap-2 pl-2 pr-3 py-2"
@@ -736,7 +737,7 @@ export default defineComponent({
                         :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
                         @click.native="addProductToCustomerCart"
                       >
-                        <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" />
+                        <!--                        <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" /> -->
                         <span class="text-sm" v-text="isDesktop ? $t('common.cta.addToCart') : $t('common.cta.addToCartSm')" />
                       </CmwButton>
                       <Badge
@@ -778,7 +779,7 @@ export default defineComponent({
                       variant="ghost"
                       class="gap-2 pl-2 pr-3 py-2 <md:(w-[min(100%,_14rem)] ml-auto)"
                       :aria-label="$t('enums.accessibility.role.MODAL_OPEN')"
-                      @click.native="() => handleShowRequestModal(productDetails.feId)"
+                      @click.native="() => handleShowRequestModal(productDetails?.feId)"
                     >
                       <VueSvgIcon :data="emailIcon" width="30" height="auto" />
                       <span class="text-sm leading-4" v-text="isDesktop ? $t('common.cta.notifyMe') : $t('common.cta.notifyMeSm')" />
@@ -786,6 +787,11 @@ export default defineComponent({
                   </div>
                 </div>
               </div>
+              <ProductPriceListsLowestPrice
+                v-if="Object.keys(lowestPrice).length && !$cmwStore.isProd"
+                class="col-span-full"
+                :lowest-price="lowestPrice"
+              />
             </div>
             <template v-if="showScalaPay">
               <script type="module" src="https://cdn.scalapay.com/widget/v3/js/scalapay-widget.esm.js" />
@@ -818,9 +824,9 @@ export default defineComponent({
         />
 
         <ClientOnly>
-          <VendorProducts :vendor="brand.title" :tag="product.source_id" :vendor-fe-id="productDetails.brandId" />
-          <RecommendedProducts :id="product.shopify_product_id" />
-          <RecentProducts :current-product="product.source_id" />
+          <VendorProducts :vendor="brand.title" :tag="product?.source_id" :vendor-fe-id="productDetails?.brandId" />
+          <RecommendedProducts :id="product?.shopify_product_id" />
+          <RecentProducts :current-product="product?.source_id" />
         </ClientOnly>
       </div>
     </div>

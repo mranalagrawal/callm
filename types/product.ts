@@ -1,9 +1,63 @@
 import type { TranslateResult } from 'vue-i18n'
+import type { availableUsersValues } from '~/store/customer'
+
 import type { IMoneyV2 } from '~/types/common-objects'
 import type { TImage } from '~/types/types'
 
 type TChoice = 'yes' | 'no'
 type TStock = 'in_stock' | 'out_of_stock'
+
+interface SEO {
+  description: string
+  title: string
+}
+
+interface ProductPriceRange {
+  maxVariantPrice: IMoneyV2
+  minVariantPrice: IMoneyV2
+}
+
+interface IProductPriceList {
+  compareAtPrice: IMoneyV2
+  lowestPrice: IMoneyV2
+  price: IMoneyV2
+}
+
+type ProductPriceByCustomer = Record<availableUsersValues, IProductPriceList>
+
+export interface IShopifyProduct {
+  availableForSale: boolean
+  compareAtPriceRange: ProductPriceRange
+  createdAt: string // DateTime!
+  description: string
+  descriptionHtml: string // HTML!
+  featuredImage: TImage
+  handle: string
+  id: string // ID!
+  isGiftCard: boolean
+  // onlineStoreUrl: URL
+  // options: [ProductOption!]!
+  // priceRange: ProductPriceRange!
+  productType: string
+  publishedAt: string // DateTime!
+  requiresSellingPlan: boolean
+  seo: SEO
+  tags: string[]
+  title: string
+  totalInventory: number // Int!
+  updatedAt: string // DateTime!
+  // variantBySelectedOptions: ProductVariant
+  vendor: string
+  // MetaFields
+  breadcrumbs: { value: string }
+  bundle: { value: string }
+  details: { value: string }
+  priceLists: { value: string }
+  // Connections
+  variants: {
+    nodes: IShopifyProductVariant[]
+  }
+}
 
 export interface IShopifyProductVariant {
   availableForSale: boolean
@@ -20,7 +74,7 @@ export interface IShopifyProductVariant {
   quantityAvailable?: number
   requiresShipping?: boolean
   selectedOptions?: string // Todo: [selectedOptions!]!
-  sku?: string // Todo: [selectedOptions!]!
+  sku: string
   title: string // Todo: [selectedOptions!]!
   unitPrice?: IMoneyV2
   unitPriceMeasurement?: string // Todo: UnitPriceMeasurement
@@ -100,31 +154,34 @@ export interface IProductBreadcrumbs {
 export interface IBaseProductMapped {
   availableForSale: boolean
   id: string | number
-  image: IProductImage
+  image: IProductImage | null
   isGiftCard: boolean
   merchandiseId: string
   quantityAvailable: number
-  shopify_product_id: string | number
-  shopify_product_variant_id: string
+  shopify_product_id: string | number | undefined
+  shopify_product_variant_id: string | undefined
   tags: string[]
   title: string
 }
 
 export interface IProductMapped extends IBaseProductMapped {
-  milliliters: any
   availableFeatures: TProductFeatures[]
   awards: IProductAward[]
+  bundle?: string
+  characteristics?: any
   compareAtPrice: IMoneyV2
   descriptionHtml: HTMLElement | string
   details: Record<string, any> // Todo: type this
   gtmProductData: any
-  priceLists: Record<string, any>
+  handle: string
+  milliliters: any
+  priceLists: Partial<ProductPriceByCustomer>
   seo?: IProductSeo
   sku: string
   source_id: string
-  url: string
-  characteristics?: any
   tbd?: any
+  url: string
+  vendor: string
 }
 
 export interface IGiftCardVariantMapped extends IBaseProductMapped {

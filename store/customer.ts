@@ -22,7 +22,7 @@ interface IState {
 
 // Note: Backend should use enums here 'GOLD' | 'B2B' | 'MAIN', this way we could simplify this to an array
 type availableUsersKeys = 'LIST_GOLD' | 'list_gold' | 'list_b2b' | 'main'
-type availableUsersValues = 'gold' | 'b2b' | 'main'
+export type availableUsersValues = 'gold' | 'b2b' | 'main'
 
 const availableUsers: { [key in availableUsersKeys]: availableUsersValues } = {
   LIST_GOLD: 'gold',
@@ -72,7 +72,7 @@ export const useCustomer = defineStore({
       return getCustomerId(state.customer.id)
     },
 
-    getCustomerType: (state): string => {
+    getCustomerType: (state) => {
       const availableUsersKeys = Object.keys(availableUsers)
       const userType: availableUsersKeys = state.customer.tags
         .find(k => availableUsersKeys.includes(k)) as availableUsersKeys || 'main'

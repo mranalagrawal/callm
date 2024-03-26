@@ -48,18 +48,18 @@ export default defineComponent({
 
     const selectedLabel = computed(() => sortOptions.value.find(sortOption => sortOption.value === selectedFilter.value)?.label)
 
-    const { fetch } = useFetch(async ({ $cmwStore, $cmwRepo }) => {
+    const { fetch } = useFetch(async ({ $cmwRepo }) => {
       await $cmwRepo.products.getCollectionsByHandle({
         handle: params.value.handle,
         sortKey: selectedSortKey.value,
       })
-        .then((collection: ICollection) => {
+        .then((collection) => {
           collectionRef.value = collection
 
           sortedProducts.value = collection.products
           sortedProducts.value = sortedProducts.value?.map(p => ({
             ...p,
-            sortPrice: Number(p.priceLists[$cmwStore.settings.salesChannel][getCustomerType.value]),
+            sortPrice: Number(p.priceLists?.[getCustomerType.value]),
           }))
         })
     })

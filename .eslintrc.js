@@ -55,6 +55,7 @@ module.exports = {
         'categories',
         'contact',
         'default',
+        'details',
         'empty',
         'error',
         'faq',

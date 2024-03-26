@@ -269,6 +269,11 @@ export default {
     removeFilters: 'Remove filters',
   },
   product: {
+    lowestPrice: 'Lowest Price: {price}',
+    lowestPriceSplashTitle: 'Lowest Price Information',
+    lowestPriceSplashText: 'This value corresponds to the lowest price recorded on our platform in the 30 days prior to the application of the discount and also takes into account previous promotions.',
+    lowestPriceSplashExtraText: 'On Callmewine, prices are defined with absolute transparency, in accordance with European laws and the so-called Omnibus Directive; visit our {tosUrl} page for further details.',
+    tosUrl: 'Terms of Sales',
     otherVintagesSale: 'Vintage on sale {vintage}',
     otherVintages: 'Other vintages: ',
     tooltip: {

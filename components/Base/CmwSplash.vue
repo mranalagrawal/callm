@@ -1,7 +1,8 @@
 <script lang="ts">
-import { storeToRefs } from 'pinia'
-import closeIcon from 'assets/svg/close.svg'
 import { defineComponent, ref } from '@nuxtjs/composition-api'
+import { storeToRefs } from 'pinia'
+
+import closeIcon from '~/assets/svg/close.svg'
 import { useSplash } from '~/store/splash'
 
 export default defineComponent({
@@ -34,6 +35,7 @@ export default defineComponent({
       ProductRequestNotification: () => import('~/components/ProductBox/ProductRequestNotification.vue'),
       TheCustomerLoginSplash: () => import('~/components/TheCustomerLoginSplash.vue'),
       TheNewsletterSplash: () => import('~/components/TheNewsletterSplash.vue'),
+      ProductLowestPriceTooltip: () => import('~/components/ProductBox/ProductLowestPriceTooltip.vue'),
     }
 
     /* watchEffect(() => {

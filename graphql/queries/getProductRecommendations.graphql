@@ -13,12 +13,10 @@ query getProductRecommendations(
     title
     vendor
     totalInventory
-    details: metafield(namespace: "custom", key: "details") {
-      value
-    }
-    breadcrumbs: metafield(namespace: "custom", key: "breadcrumbs") {
-      value
-    }
+    # MetaFields
+    breadcrumbs: metafield(namespace: "custom", key: "breadcrumbs") { value }
+    details: metafield(namespace: "custom", key: "details") { value }
+    priceLists: metafield(namespace: "prices", key: "price_lists") { value }
     variants(first: 1) {
       nodes {
         id
