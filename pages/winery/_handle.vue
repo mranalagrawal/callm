@@ -302,7 +302,7 @@ export default defineComponent({
                 :region="metaFields.region"
               />
             </div>
-            <div class="px-4 md:order-3" v-html="stripHtmlAnchors(brand.contentHtml)" />
+            <div class="prose px-4 md:order-3" v-html="$cmwStore.isUk ? stripHtmlAnchors(brand.contentHtml) : brand.contentHtml" />
           </div>
         </div>
         <div v-else class="max-w-screen-xl mx-auto py-4">
@@ -390,7 +390,7 @@ export default defineComponent({
                   </VueSlickCarousel>
                 </div>
               </ClientOnly>
-              <div v-if="isDesktop" class="md:order-3" v-html="stripHtmlAnchors(brand.contentHtml)" />
+              <div v-if="isDesktop" class="prose md:order-3" v-html="$cmwStore.isUk ? stripHtmlAnchors(brand.contentHtml) : brand.contentHtml" />
             </div>
             <div class="px-4">
               <BrandInfo v-if="metaFields" :meta-fields="metaFields" />
@@ -406,7 +406,7 @@ export default defineComponent({
                 :region="metaFields.region"
               />
             </div>
-            <div v-if="!isDesktop" class="px-4 md:order-3" v-html="stripHtmlAnchors(brand.contentHtml)" />
+            <div v-if="!isDesktop" class="px-4 md:order-3" v-html="$cmwStore.isUk ? stripHtmlAnchors(brand.contentHtml) : brand.contentHtml" />
           </div>
         </div>
         <div v-if="brand && brand.title" id="brand-products" ref="brandProductsRef">
