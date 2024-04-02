@@ -39,7 +39,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <span v-if="!$cmwStore.isProd && lowestPrice.amount && lowestPrice.currencyCode" class="font-sans text-gray relative">
+  <span v-if="lowestPrice.amount && lowestPrice.currencyCode" class="font-sans text-gray relative">
     <button class="flex items-center gap-1" @click="handleClick">
       <span class="text-xxs sm:text-xs text-left text-gray-dark">
         {{ $t('product.lowestPrice', { price: $n(Number(lowestPrice.amount), 'currency', getLocaleFromCurrencyCode(lowestPrice.currencyCode)) }) }}
