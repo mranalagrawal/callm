@@ -71,6 +71,7 @@ export default defineComponent({
     const lowestPrice = ref<Partial<IMoneyV2>>({})
     const compareAtPrice = ref<Partial<IMoneyV2>>({})
     const isOpen = ref(false)
+    const isBundle = ref(false)
     const mappedRelatedVintage = ref<IProductMapped | null>(null)
 
     // get a mapped product from shopify if relatedVintage is passed
@@ -220,6 +221,8 @@ export default defineComponent({
       finalPrice.value = (priceLists?.price?.amount && priceLists?.price?.currencyCode) ? priceLists.price : {}
       lowestPrice.value = (isOnSale.value && priceLists?.lowestPrice?.amount && priceLists?.lowestPrice?.currencyCode) ? priceLists.lowestPrice : {}
       compareAtPrice.value = (priceLists?.compareAtPrice?.amount && priceLists?.compareAtPrice?.currencyCode) ? priceLists.compareAtPrice : {}
+
+      isBundle.value = templateProduct.value?.tags.includes('BUNDLE')
     }, { immediate: true })
 
     return {
@@ -247,6 +250,7 @@ export default defineComponent({
       handleWishlistClick,
       heartFullIcon,
       heartIcon,
+      isBundle,
       isOnFavourite,
       isOnSale,
       isOpen,
@@ -455,7 +459,7 @@ export default defineComponent({
         <ProductPriceListsCompareAtPrice v-if="isOnSale && Object.keys(compareAtPrice).length" :compare-at-price="compareAtPrice" />
         <ProductPriceListsFinalPrice v-if="Object.keys(finalPrice).length" :final-price="finalPrice" class="mb-3" />
         <ProductPriceListsLowestPrice
-          v-if="Object.keys(lowestPrice).length && !$cmwStore.isProd"
+          v-if="Object.keys(lowestPrice).length && !isBundle"
           class="flex justify-center mb-2"
           :lowest-price="lowestPrice"
         />

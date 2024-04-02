@@ -788,7 +788,7 @@ export default defineComponent({
                 </div>
               </div>
               <ProductPriceListsLowestPrice
-                v-if="Object.keys(lowestPrice).length && !$cmwStore.isProd"
+                v-if="Object.keys(lowestPrice).length && !isBundle"
                 class="col-span-full"
                 :lowest-price="lowestPrice"
               />

@@ -62,6 +62,7 @@ export default defineComponent({
     const route = useRoute()
 
     const isOpen = ref(false)
+    const isBundle = ref(false)
     const showRequestModal = ref(false)
     const isHovering = ref(false)
     const mappedRelatedVintage = ref<Maybe<IProductMapped>>(null)
@@ -212,6 +213,8 @@ export default defineComponent({
       finalPrice.value = (priceLists?.price?.amount && priceLists?.price?.currencyCode) ? priceLists.price : {}
       lowestPrice.value = (isOnSale.value && priceLists?.lowestPrice?.amount && priceLists?.lowestPrice?.currencyCode) ? priceLists.lowestPrice : {}
       compareAtPrice.value = (priceLists?.compareAtPrice?.amount && priceLists?.compareAtPrice?.currencyCode) ? priceLists.compareAtPrice : {}
+
+      isBundle.value = templateProduct.value?.tags.includes('BUNDLE')
     }, { immediate: true })
 
     return {
@@ -239,6 +242,7 @@ export default defineComponent({
       handleWishlistClick,
       heartFullIcon,
       heartIcon,
+      isBundle,
       isHovering,
       isOnCart,
       isOnFavourite,
@@ -457,7 +461,7 @@ export default defineComponent({
       </div>
       <div class="c-productBox__note mx-2">
         <ProductPriceListsLowestPrice
-          v-if="Object.keys(lowestPrice).length && !$cmwStore.isProd"
+          v-if="Object.keys(lowestPrice).length && !isBundle"
           :lowest-price="lowestPrice"
         />
         <span v-if="$cmwStore.isDe && priceByLiter && finalPrice?.currencyCode" class="text-gray">
