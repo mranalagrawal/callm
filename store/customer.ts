@@ -199,6 +199,7 @@ export const useCustomer = defineStore({
     setB2bLogin() {
       const hashedValue = djb2Hash(this.$nuxt.$cookieHelpers.getToken())
       this.$nuxt.$cookies.set('b2b-approved', hashedValue, {
+        path: '/',
         sameSite: 'none',
         secure: true,
       })
