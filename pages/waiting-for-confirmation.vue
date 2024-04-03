@@ -1,6 +1,7 @@
 <script lang="ts">
 import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+
 import Alert from '~/components/FeedBack/Alert.vue'
 import { useCustomer } from '~/store/customer'
 
@@ -11,10 +12,10 @@ export default defineComponent({
   },
   setup() {
     const { i18n } = useContext()
-    const { approved } = storeToRefs(useCustomer())
-    const msg = computed(() => approved.value ? i18n.t('waitingForConfirmation.alreadyApproved') : i18n.t('waitingForConfirmation.msg'))
+    const { customer } = storeToRefs(useCustomer())
+    const msg = computed(() => customer.value.approved ? i18n.t('waitingForConfirmation.alreadyApproved') : i18n.t('waitingForConfirmation.msg'))
 
-    return { approved, msg }
+    return { customer, msg }
   },
 })
 </script>
