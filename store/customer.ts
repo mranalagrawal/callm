@@ -16,7 +16,6 @@ import themeConfig from '~/config/themeConfig'
 
 interface IState {
   customer: IMappedCustomer
-  approved: boolean
   editingCustomer: IEditingCustomer
 }
 
@@ -54,7 +53,6 @@ export const useCustomer = defineStore({
       phone: '',
       tags: [],
     },
-    approved: false,
     editingCustomer: {
       acceptsMarketing: false,
       email: '',
@@ -198,7 +196,16 @@ export const useCustomer = defineStore({
 
     setB2bLogin() {
       const hashedValue = djb2Hash(this.$nuxt.$cookieHelpers.getToken())
+      // We cannot read the expiration date from the session cookie and set it to the b2b-approved cookie,
+      // so instead we will set the expiration date as 1 month from now
+      const expires = new Date()
+      expires.setMonth(expires.getMonth() + 1)
+      const currentDate = new Date()
+      const maxAge = Math.floor((+expires - +currentDate) / 1000)
+
       this.$nuxt.$cookies.set('b2b-approved', hashedValue, {
+        expires,
+        maxAge,
         path: '/',
         sameSite: 'none',
         secure: true,
@@ -222,13 +229,14 @@ export const useCustomer = defineStore({
 
             this.setMappedCustomer(customer);
 
-            /* NOTE: since middleware runs before on appCreated, we still getting a redirect to /waiting-for-confirmation on first load */
             (this.$nuxt.$cmwStore.isB2b && approved) ? this.setB2bLogin() : this.$nuxt.$cookies.remove('b2b-approved')
           } else {
+            this.$nuxt.$cookieHelpers.onLogout()
             await SweetAlertToast.fire({ text: this.$nuxt.app.i18n.t('common.feedback.KO.login') })
           }
         })
         .catch(() => {
+          this.$nuxt.$cookieHelpers.onLogout()
           SweetAlertToast.fire({ text: this.$nuxt.app.i18n.t('common.feedback.KO.login') })
         })
     },
