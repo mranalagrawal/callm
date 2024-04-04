@@ -75,7 +75,7 @@ export default defineComponent({
             </div>
             <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               <div v-for="(thirdLevel, j) in secondLevel.items" :key="j">
-                <ThirdLevel :third-level="thirdLevel" @close-banner="onTab('')" />
+                <ThirdLevel :third-level="thirdLevel" :show-bg="selectedItem === items.name" @close-banner="onTab('')" />
               </div>
             </div>
           </div>
@@ -102,6 +102,7 @@ export default defineComponent({
                 <ThirdLevel
                   v-for="(thirdLevel, idx) in secondLevel.items"
                   :key="generateKey(`${thirdLevel.third_level_name}-${idx}`)" :third-level="thirdLevel"
+                  :show-bg="selectedItem === items.name"
                   @close-banner="onTab('')"
                 />
               </div>

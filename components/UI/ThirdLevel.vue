@@ -1,12 +1,16 @@
 <script lang="ts">
-import type { PropType } from '@nuxtjs/composition-api'
 import { defineComponent } from '@nuxtjs/composition-api'
+import type { PropType } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   props: {
     thirdLevel: {
       type: Object as PropType<Record<string, any>>,
       required: true,
+    },
+    showBg: {
+      type: Boolean,
+      default: false,
     },
   },
   emits: ['close-banner'],
@@ -35,7 +39,7 @@ export default defineComponent({
     <NuxtLink v-else :to="localePath(thirdLevel.third_level_link)">
       <Card
         :bg-url="thirdLevel.marketing_image.url" :title="thirdLevel.third_level_name" :subtitle="thirdLevel.marketing_cta"
-        :icon="thirdLevel.icon"
+        :icon="thirdLevel.icon" :show-bg="showBg"
       />
     </NuxtLink>
   </div>

@@ -1,8 +1,10 @@
 <script lang="ts">
 import { computed, defineComponent } from '@nuxtjs/composition-api'
 import type { PropType } from '@nuxtjs/composition-api'
-import type { DEPRECATED_FEATURES, FEATURES } from '@/utilities/icons'
-import { getIconByFeature } from '@/utilities/icons'
+
+import type { DEPRECATED_FEATURES, FEATURES } from '~/utilities/icons'
+
+import { getIconByFeature } from '~/utilities/icons'
 
 export default defineComponent({
   // eslint-disable-next-line vue/multi-word-component-names
@@ -24,6 +26,10 @@ export default defineComponent({
     bgColor: {
       type: String as PropType<'gray' | 'white'>,
       default: 'white',
+    },
+    showBg: {
+      type: Boolean,
+      default: false,
     },
   },
   setup(props) {
@@ -51,6 +57,7 @@ export default defineComponent({
     :class="[getBgColor()]"
   >
     <span
+      v-if="$props.showBg"
       class="h-full bg-cover bg-center rounded-tl rounded-bl overflow-hidden"
       :style="`backgroundImage: url('${bgUrl}&w=${200}')`"
     />

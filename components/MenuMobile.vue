@@ -162,7 +162,10 @@ export default defineComponent({
                   class="relative"
                 >
                   <NuxtLink :to="localePath(third_level_link)">
-                    <Card :bg-url="marketing_image.url" :title="third_level_name" :subtitle="marketing_cta" :icon="icon" />
+                    <Card
+                      :bg-url="marketing_image.url" :title="third_level_name" :subtitle="marketing_cta" :icon="icon"
+                      show-bg
+                    />
                   </NuxtLink>
                 </div>
               </template>
