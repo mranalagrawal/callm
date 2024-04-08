@@ -8,6 +8,7 @@ import {
 } from '@nuxtjs/composition-api'
 import { kv } from '@vercel/kv'
 import type { TISO639 } from '~/config/themeConfig'
+
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
 import { generateKey } from '~/utilities/strings'
 
@@ -28,12 +29,13 @@ export default defineComponent({
       const prismicLocale = $cmwStore.prismicSettings.isoCode[locale]
       const data: any = await kv.get(`prismic/pre-footer/pre-footer-${prismicLocale}`)
 
-      filteredItems.value = data.map((menuItem: { items: any[]; primary: any }) => {
+      filteredItems.value = data.map((menuItem: { id: string; items: any[]; primary: any }) => {
         const filteredItems = menuItem.items
           .filter(item => item.name !== null && item.name !== undefined && item.link !== null && item.link !== undefined)
         return {
-          primary: menuItem.primary,
+          id: menuItem.id,
           items: filteredItems,
+          primary: menuItem.primary,
         }
       })
     })
