@@ -2,6 +2,8 @@
 import { defineComponent } from '@nuxtjs/composition-api'
 
 export default defineComponent({
+  // eslint-disable-next-line vue/multi-word-component-names
+  name: 'Iubenda',
   setup() {
     return {}
   },

@@ -1,3 +1,15 @@
+<script lang="ts">
+import { defineComponent } from '@nuxtjs/composition-api'
+
+export default defineComponent({
+  // eslint-disable-next-line vue/multi-word-component-names
+  name: 'Loader',
+  setup() {
+    return { }
+  },
+})
+</script>
+
 <template>
   <div class="loader">
     <div class="wrapper shadow">
