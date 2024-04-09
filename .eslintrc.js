@@ -16,6 +16,14 @@ module.exports = {
       },
     ],
     'sort-imports': 'off',
+    // TODO: Check this together with the import/order rule, I lost the sort-imports rule
+    /* 'sort-imports': ['warn', {
+      ignoreCase: true,
+      ignoreDeclarationSort: false,
+      ignoreMemberSort: false,
+      memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
+      allowSeparatedGroups: true,
+    }], */
     'import/first': 'off',
     'camelcase': 0,
     'no-console': ['warn', { allow: ['warn', 'error'] }],
