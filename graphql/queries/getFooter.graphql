@@ -1,0 +1,44 @@
+#import "~/graphql/fragments/frontendImage.graphql"
+
+query getTopBar(
+  $lang: LanguageCode!
+  $handle: MetaobjectHandleInput
+) @inContext(language: $lang) {
+  metaobject(handle: $handle) {
+    apps: field(key: "apps") {
+      references(first: 10) {
+        nodes {
+          ...FRONTEND_IMAGE_FRAGMENT
+        }
+      }
+    }
+    copyright: field(key: "copyright") { value }
+    paymentMethods: field(key: "payment_methods") {
+      references(first: 10) {
+        nodes {
+          ... on Metaobject {
+            image: field(key: "image") {
+              reference {
+                ...on MediaImage {
+                  image {
+                    altText
+                    id
+                    url
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    socialLinks: field(key: "social_links") {
+      references(first: 10) {
+        nodes {
+          ...FRONTEND_IMAGE_FRAGMENT
+        }
+      }
+    }
+    updatedAt
+  }
+}

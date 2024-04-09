@@ -1,0 +1,10 @@
+query getTopBar(
+  $lang: LanguageCode!
+  $handle: MetaobjectHandleInput
+) @inContext(language: $lang) {
+  metaobject(handle: $handle) {
+    desktopText: field(key: "desktop") { value }
+    mobileText: field(key: "mobile") { value }
+    updatedAt
+  }
+}

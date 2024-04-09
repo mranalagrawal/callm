@@ -1,18 +1,21 @@
 <script lang="ts">
-import walletIcon from 'assets/svg/wallet.svg'
+import { toRefs } from '@nuxtjs/composition-api'
+import { storeToRefs } from 'pinia'
+
+import walletIcon from '~/assets/svg/wallet.svg'
+import { useLayout } from '~/store/layout'
 import { generateKey } from '~/utilities/strings'
 
 export default {
-  props: {
-    paymentMethods: {
-      type: Array,
-      required: true,
-    },
-  },
+  name: 'FooterPaymentMethods',
   setup() {
+    const { footer } = storeToRefs(useLayout())
+    const { paymentMethods } = toRefs(footer.value)
+
     return {
-      walletIcon,
       generateKey,
+      paymentMethods,
+      walletIcon,
     }
   },
 }
@@ -25,14 +28,14 @@ export default {
       <span>{{ $t('footer.paymentMethods') }}</span>
     </div>
     <div
-      class="grid grid-cols-3 md:grid-cols-8 justify-items-center items-center content-center px-8 py-4"
+      class="
+      grid justify-items-center items-center justify-center px-8 py-4 gap-2
+      grid-cols-[repeat(3,minmax(0,_48px))]
+      sm:grid-cols-[repeat(4,minmax(0,_48px))]
+      md:grid-cols-[repeat(8,minmax(0,_48px))]
+"
     >
-      <PrismicImage
-        v-for="payment in paymentMethods"
-        :key="generateKey(payment.image?.url)"
-        :field="payment.image"
-        class="max-w-12"
-      />
+      <img v-for="({ url, id, altText }) in paymentMethods" :key="generateKey(id)" :src="url" :alt="altText">
     </div>
   </div>
 </template>
