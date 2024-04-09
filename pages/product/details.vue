@@ -12,28 +12,26 @@ import {
 } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
-import type { IProductBreadcrumbs, IProductMapped, IShopifyProductVariant } from '~/types/product'
-import type { IMoneyV2 } from '~/types/common-objects'
-import type { IShopifyCartInput } from '~/types/cart'
-import type { TISO639 } from '~/config/themeConfig'
-
-import { generateKey, stripHtmlAnchors } from '~/utilities/strings'
-import { getCountryFromStore, getCurrencySymbol, getLocaleFromCurrencyCode, getPercent } from '~/utilities/currency'
 import addIcon from '~/assets/svg/add.svg'
 import cartIcon from '~/assets/svg/cart.svg'
 import emailIcon from '~/assets/svg/email.svg'
-import favouriteIcon from '~/assets/svg/selections/favourite.svg'
 import heartFullIcon from '~/assets/svg/heart-full.svg'
 import heartIcon from '~/assets/svg/heart.svg'
+import favouriteIcon from '~/assets/svg/selections/favourite.svg'
 import subtractIcon from '~/assets/svg/subtract.svg'
-import { SweetAlertToast } from '~/utilities/Swal'
-
+import useShowRequestModal from '~/components/ProductBox/useShowRequestModal'
+import type { TISO639 } from '~/config/themeConfig'
 import getArticles from '~/graphql/queries/getArticles.graphql'
 import { useCart } from '~/store/cart'
 import { useCustomer } from '~/store/customer'
 import { useCustomerWishlist } from '~/store/customerWishlist'
 import { useRecentProductsStore } from '~/store/recent'
-import useShowRequestModal from '~/components/ProductBox/useShowRequestModal'
+import type { IShopifyCartInput } from '~/types/cart'
+import type { IMoneyV2 } from '~/types/common-objects'
+import type { IProductBreadcrumbs, IProductMapped, IShopifyProductVariant } from '~/types/product'
+import { getCountryFromStore, getCurrencySymbol, getLocaleFromCurrencyCode, getPercent } from '~/utilities/currency'
+import { generateKey, stripHtmlAnchors } from '~/utilities/strings'
+import { SweetAlertToast } from '~/utilities/Swal'
 
 interface IProductDetails {
   brandId: string
@@ -301,10 +299,13 @@ export default defineComponent({
     watch([
       () => getCustomerType.value,
       () => productDetails.value?.feId,
-    ], () => {
-      if (!productDetails.value?.feId) { return false }
+    ], ([
+      customerType,
+      feId,
+    ]) => {
+      if (!feId) { return false }
 
-      const priceLists = product.value?.priceLists ? product.value?.priceLists[getCustomerType.value] : null
+      const priceLists = product.value?.priceLists ? product.value?.priceLists[customerType] : null
 
       finalPrice.value = (priceLists?.price?.amount && priceLists?.price?.currencyCode) ? priceLists.price : {}
       lowestPrice.value = (priceLists?.lowestPrice?.amount && priceLists?.lowestPrice?.currencyCode) ? priceLists.lowestPrice : {}
@@ -546,7 +547,7 @@ export default defineComponent({
               </i18n-n>
               <span v-if="$cmwStore.isDe && priceByLiter" class="text-sm text-gray">
                 {{
-                  $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(compareAtPrice?.currencyCode))
+                  $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(compareAtPrice.currencyCode || 'EUR'))
                 }}/liter</span>
               <div v-if="$cmwStore.isDe" class="md:hidden text-sm text-gray ml-1">
                 Inkl. MwSt. Und St.
@@ -574,7 +575,8 @@ export default defineComponent({
               <button
                 type="button"
                 :class="isOnFavourite ? 'js-remove-from-wishlist' : 'js-add-to-wishlist'"
-                :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
+                :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST').toString()
+                  : $t('enums.accessibility.role.ADD_TO_WISHLIST').toString()"
                 @click="handleWishlist({ id: product?.id, isOnFavourite, gtmProductData: product?.gtmProductData })"
               >
                 <VueSvgIcon
@@ -615,6 +617,7 @@ export default defineComponent({
             <template v-if="showKlarna">
               <script
                 v-if="$cmwStore.isUk"
+                type="application/javascript"
                 data-environment="production" src="https://osm.klarnaservices.com/lib.js"
                 data-client-id="c72bae1f-0d1c-5ed1-a3bb-b0fa3d12e442"
                 async
@@ -622,6 +625,7 @@ export default defineComponent({
 
               <script
                 v-else-if="$cmwStore.isDe"
+                type="application/javascript"
                 async
                 data-environment="production" src="https://js.klarna.com/web-sdk/v1/klarna.js"
                 data-client-id="11e7a9bf-129c-580b-9095-0d578515d571"
@@ -629,6 +633,7 @@ export default defineComponent({
 
               <script
                 v-else-if="$cmwStore.isFr"
+                type="application/javascript"
                 async
                 data-environment="production" src="https://js.klarna.com/web-sdk/v1/klarna.js"
                 data-client-id="1e41d5a7-a0aa-55e1-86f2-00a1e155ac60"
@@ -663,7 +668,7 @@ export default defineComponent({
                     v-if="finalPrice?.amount"
                     color="secondary"
                     shape="rounded"
-                    :label="`-${getPercent(+finalPrice.amount, +compareAtPrice?.amount)}%`"
+                    :label="`-${getPercent(+finalPrice.amount, +(compareAtPrice?.amount || 0))}%`"
                   />
                 </div>
                 <ProductPriceListsFinalPrice v-if="Object.keys(finalPrice).length" :final-price="finalPrice" />
@@ -673,7 +678,7 @@ export default defineComponent({
                 <div v-if="$cmwStore.isDe">
                   <span v-if="$cmwStore.isDe && priceByLiter" class="text-sm <md:hidden">
                     {{
-                      $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(compareAtPrice?.currencyCode))
+                      $n(Number(priceByLiter), 'currency', getLocaleFromCurrencyCode(compareAtPrice?.currencyCode || 'EUR'))
                     }}/liter</span>
                   <div v-if="$cmwStore.isDe" class="<md:hidden text-sm text-gray-dark">
                     Inkl. MwSt. Und St.
@@ -715,7 +720,7 @@ export default defineComponent({
                           flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l
                           js-remove-from-cart
                           hover:(bg-primary)"
-                          :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
+                          :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART').toString()"
                           @click="removeProductFromCustomerCart"
                         >
                           <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="white" />
@@ -730,7 +735,7 @@ export default defineComponent({
                           hover:(bg-primary)
                           disabled:(bg-primary-100 cursor-not-allowed)"
                           :disabled="!canAddMore"
-                          :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
+                          :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART').toString()"
                           @click="addProductToCustomerCart"
                         >
                           <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
@@ -761,7 +766,7 @@ export default defineComponent({
                           flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l
                           js-remove-from-cart
                           hover:(bg-primary)"
-                          :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
+                          :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART').toString()"
                           @click="removeProductFromCustomerCart"
                         >
                           <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="white" />
@@ -776,7 +781,7 @@ export default defineComponent({
                           hover:(bg-primary)
                           disabled:(bg-primary-100 cursor-not-allowed)"
                           :disabled="!canAddMore"
-                          :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
+                          :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART').toString()"
                           @click="addProductToCustomerCart"
                         >
                           <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="white" />
@@ -806,7 +811,7 @@ export default defineComponent({
             </div>
             <template v-if="showScalaPay">
               <script type="module" src="https://cdn.scalapay.com/widget/v3/js/scalapay-widget.esm.js" />
-              <script nomodule src="https://cdn.scalapay.com/widget/v3/js/scalapay-widget.js" />
+              <script type="application/javascript" nomodule src="https://cdn.scalapay.com/widget/v3/js/scalapay-widget.js" />
               <ClientOnly>
                 <div class="my-4">
                   <scalapay-widget

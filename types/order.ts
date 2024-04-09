@@ -27,7 +27,7 @@ export interface ILineItem {
 }
 
 export interface IFulfillmentTrackingInfo {
-  number: String
+  number: string
   url: URL
 }
 

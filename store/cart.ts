@@ -1,21 +1,20 @@
 import { defineStore } from 'pinia'
-import { useCheckout } from '~/store/checkout'
-import { useCustomer } from '~/store/customer'
 
-import type { ICartLinesMapped, ICartMapped, IShopifyCart, IShopifyCartInput, IShopifyCartLineInput, IShopifyCartLineUpdateInput } from '~/types/cart'
-import type { IProductMapped } from '~/types/product'
-import type { IShopifyCheckout } from '~/types/checkout'
 import type { TSalesChannel } from '~/config/themeConfig'
-
 import cartCreate from '~/graphql/mutations/cart/cartCreate.graphql'
 import cartLinesAdd from '~/graphql/mutations/cart/cartLinesAdd.graphql'
 import cartLinesRemove from '~/graphql/mutations/cart/cartLinesRemove.graphql'
 import cartLinesUpdate from '~/graphql/mutations/cart/cartLinesUpdate.graphql'
 import cartNoteUpdate from '~/graphql/mutations/cartNoteUpdate.graphql'
 import getProductsById from '~/graphql/queries/getProductsById.graphql'
-
-import { getCheckoutHostname, getCustomerId } from '~/utilities/shopify'
+import { useCheckout } from '~/store/checkout'
+import type { availableUsersValues } from '~/store/customer'
+import { useCustomer } from '~/store/customer'
+import type { ICartLinesMapped, ICartMapped, IShopifyCart, IShopifyCartInput, IShopifyCartLineInput, IShopifyCartLineUpdateInput } from '~/types/cart'
+import type { IShopifyCheckout } from '~/types/checkout'
+import type { IProductMapped } from '~/types/product'
 import { getCountryFromStore } from '~/utilities/currency'
+import { getCheckoutHostname, getCustomerId } from '~/utilities/shopify'
 import { awaitPromise } from '~/utilities/strings'
 import { SweetAlertToast } from '~/utilities/Swal'
 
@@ -57,7 +56,7 @@ export const useCart = defineStore({
     },
 
     cartTotalPrice(state) {
-      return (salesChannel: TSalesChannel, customerType: string) => {
+      return (salesChannel: TSalesChannel, customerType: availableUsersValues) => {
         let cartLines = []
 
         if (!state.cart?.lines?.length) { return 0 }
@@ -79,7 +78,7 @@ export const useCart = defineStore({
           for (const line of this.cart.lines) {
             const customAttribute = line.attributes.find(el => el.key === 'gift')
             if (customAttribute) {
-              giftTotal += line.priceLists[salesChannel][customerType] * line.quantity
+              giftTotal += Number(line.priceLists[customerType]?.price?.amount) * line.quantity
             }
           }
         }
@@ -102,7 +101,7 @@ export const useCart = defineStore({
           quantity: line.quantity,
           title: line.merchandise.title,
           merchandise: line.merchandise,
-          priceLists: JSON.parse(line.merchandise.product.details.value).priceLists,
+          priceLists: JSON.parse(line.merchandise.product.priceLists?.value || '{}'),
         })),
         note: cart.note,
       }

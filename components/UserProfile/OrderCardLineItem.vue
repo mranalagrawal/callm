@@ -1,15 +1,17 @@
 <script lang="ts">
-import type { PropType } from '@nuxtjs/composition-api'
 import { computed, defineComponent } from '@nuxtjs/composition-api'
+import type { PropType } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import heartIcon from '~/assets/svg/heart.svg'
+
 import heartFullIcon from '~/assets/svg/heart-full.svg'
+import heartIcon from '~/assets/svg/heart.svg'
 import { useCustomerWishlist } from '~/store/customerWishlist'
 import type { ILineItem } from '~/types/order'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { regexRules } from '~/utilities/validators'
 
 export default defineComponent({
+  name: 'OrderCardLineItem',
   props: {
     orderLineItem: {
       type: Object as PropType<ILineItem>,
@@ -80,7 +82,8 @@ export default defineComponent({
           v-if="isOnSale"
           class="line-through text-gray text-sm"
         >
-          {{ $n(Number(orderLineItem.originalTotalPrice.amount), 'currency', getLocaleFromCurrencyCode(orderLineItem.originalTotalPrice.currencyCode)) }}
+          {{ $n(Number(orderLineItem.originalTotalPrice.amount),
+                'currency', getLocaleFromCurrencyCode(orderLineItem.originalTotalPrice.currencyCode)) }}
         </div>
         <div class="cmw-font-bold">
           {{ $n(Number(orderLineItem.discountedTotalPrice.amount), 'currency', getLocaleFromCurrencyCode(orderLineItem.discountedTotalPrice.currencyCode)) }}
@@ -91,7 +94,8 @@ export default defineComponent({
           v-if="backofficeId !== 'probably-a-gift-card'"
           type="button"
           :class="isOnFavourite ? 'js-remove-from-wishlist' : 'js-add-to-wishlist'"
-          :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
+          :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST').toString()
+            : $t('enums.accessibility.role.ADD_TO_WISHLIST').toString()"
           @click="handleWishlist({ id: orderLineItem.variant.product.tags.find(tag => new RegExp(regexRules('isProduct')).test(tag)).replace('P', ''), isOnFavourite })"
         >
           <VueSvgIcon

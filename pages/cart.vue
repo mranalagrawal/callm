@@ -2,17 +2,15 @@
 import { computed, defineComponent, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
-import type { IProductBreadcrumbs } from '~/types/product'
-
 import addIcon from '~/assets/svg/add.svg'
 import cartEmptyIcon from '~/assets/svg/cart-empty.svg'
 import toGiftIcon from '~/assets/svg/feature-to-gift.svg'
-
+import { useCart } from '~/store/cart'
+import { useCustomer } from '~/store/customer'
+import type { IProductBreadcrumbs } from '~/types/product'
 import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { generateKey } from '~/utilities/strings'
 import { SweetAlertConfirm } from '~/utilities/Swal'
-import { useCart } from '~/store/cart'
-import { useCustomer } from '~/store/customer'
 
 export default defineComponent({
   setup() {
@@ -24,7 +22,7 @@ export default defineComponent({
     const { cart, suitableGift, cartTotalPrice, cartTotalQuantity } = storeToRefs(cartStore)
     const { getCartById, cartLinesRemove, cartLinesAdd, goToCheckout } = cartStore
     const { customer, customerId } = storeToRefs(customerStore)
-    const orderNote = ref(cart.value?.note)
+    const orderNote = ref(cart.value?.note || '')
     const breadcrumb: IProductBreadcrumbs[] = [
       { handle: '/', label: i18n.t('home'), to: '/' },
       { handle: '/cart', label: i18n.t('cart'), to: '/cart' },
@@ -99,7 +97,7 @@ export default defineComponent({
 
       if (cartIdCookie) {
         await getCartById(cartIdCookie)
-        orderNote.value = cart.value?.note
+        orderNote.value = cart.value?.note || ''
       }
 
       const products = cart.value?.lines?.map((node) => {
@@ -181,8 +179,8 @@ export default defineComponent({
                   <div class="w-70px p-2">
                     <img
                       v-show="suitableGift.image?.source?.url"
-                      :src="suitableGift.image.source.url"
-                      :alt="suitableGift.image.source.altText" class="max-h-90px mix-blend-darken"
+                      :src="suitableGift.image?.source?.url"
+                      :alt="suitableGift.image?.source?.altText" class="max-h-90px mix-blend-darken"
                     >
                   </div>
                   <div class="py-2">
@@ -209,7 +207,7 @@ export default defineComponent({
                   <textarea
                     id="order-note"
                     v-model="orderNote"
-                    :placeholder="$t('common.forms.cart.cart_order_note_placeholder')"
+                    :placeholder="$t('common.forms.cart.cart_order_note_placeholder').toString()"
                     rows="4"
                     maxlength="50"
                     class="

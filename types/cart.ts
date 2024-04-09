@@ -1,7 +1,7 @@
-/* Represents information about the buyer that is interacting with the cart. */
+import type { IShopifyProductVariant, ProductPriceByCustomer } from '~/types/product'
 import type { IAttribute } from '~/types/common-objects'
-import type { IShopifyProductVariant } from '~/types/product'
 
+/* Represents information about the buyer that is interacting with the cart. */
 interface CartBuyerIdentity {
   /* The country where the buyer is located. */
   countryCode: string // TODO: CountryCode
@@ -61,7 +61,7 @@ export interface ICartLinesMapped {
   // title: string
   // unitPrice?: IMoneyV2
   merchandise: Record<string, any> // Todo: get right type
-  priceLists: Record<string, any> // Todo: get right type
+  priceLists: Partial<ProductPriceByCustomer>
 }
 
 export interface ICartMapped {
@@ -70,7 +70,7 @@ export interface ICartMapped {
   createdAt: string // DateTime!
   id: string
   lines: ICartLinesMapped[]
-  note: string | null
+  note: Maybe<string>
 }
 
 export interface IShopifyCartLineInput {
