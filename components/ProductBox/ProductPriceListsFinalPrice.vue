@@ -27,20 +27,38 @@ export default defineComponent({
 <template>
   <i18n-n
     v-if="finalPrice?.amount && finalPrice?.currencyCode"
-    class="inline-block" :value="finalPrice.amount" :format="{ key: 'currency' }"
+    class="c-finalPrice inline-block" :value="finalPrice.amount" :format="{ key: 'currency' }"
     :locale="getLocaleFromCurrencyCode(finalPrice.currencyCode)"
   >
     <template #currency="slotProps">
       <span class="text-sm md:text-base">{{ slotProps.currency }}</span>
     </template>
     <template #integer="slotProps">
-      <span class="inline-block text-3xl leading-none cmw-font-bold m-0 md:text-5xl">{{ slotProps.integer }}</span>
+      <span class="c-finalPrice__integer inline-block leading-none cmw-font-bold m-0">{{ slotProps.integer }}</span>
     </template>
     <template #group="slotProps">
-      <span class="h1 cmw-font-bold">{{ slotProps.group }}</span>
+      <span class="c-finalPrice__group cmw-font-bold">{{ slotProps.group }}</span>
     </template>
     <template #fraction="slotProps">
       <span class="text-sm md:text-base">{{ slotProps.fraction }}</span>
     </template>
   </i18n-n>
 </template>
+
+<style scoped>
+.c-finalPrice__integer, .c-finalPrice__group {
+  @apply text-xl;
+}
+
+@container product-box (min-width: 180px) {
+  .c-finalPrice__integer, .c-finalPrice__group {
+    @apply text-2xl;
+  }
+}
+
+@container product-box (min-width: 250px) {
+  .c-finalPrice__integer, .c-finalPrice__group {
+    @apply text-5xl;
+  }
+}
+</style>
