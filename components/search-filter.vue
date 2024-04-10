@@ -20,16 +20,16 @@ import { useFilters } from '~/store/filters.ts'
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
 import closeIcon from '~/assets/svg/close.svg'
 
-import Loader from '@/components/UI/Loader.vue'
+import Loader from '~/components/UI/Loader.vue'
 import { pick } from '~/utilities/arrays.ts'
-import { getLocaleFromCurrencyCode } from '~/utilities/currency'
+import { getCurrencySymbol, getLocaleFromCurrencyCode } from '~/utilities/currency'
 
 export default defineComponent({
   components: { Loader },
   scrollToTop: true,
   props: ['inputParameters'],
   setup(props) {
-    const { redirect, i18n, localePath } = useContext()
+    const { redirect, i18n, localePath, $cmwStore } = useContext()
     const route = useRoute()
     const router = useRouter()
     const filtersStore = useFilters()
@@ -126,7 +126,7 @@ export default defineComponent({
 
     const searchedTerm = ref('')
 
-    const { fetch } = useFetch(async ({ $elastic, $cmwStore }) => {
+    const { fetch } = useFetch(async ({ $elastic }) => {
       if (process.client) { window.scrollTo(0, 0) }
 
       loading.value = true
@@ -321,20 +321,33 @@ export default defineComponent({
         allSelections.includes(el),
       )
 
-      view.value.priceFrom = priceFrom
-        ? {
-            key: 'priceFrom',
-            name: i18n.t('search.priceFrom', { from: priceFrom }),
-            field: 'price_from',
-          }
-        : null
-      view.value.priceTo = priceTo
-        ? {
-            key: 'priceTo',
-            name: i18n.t('search.priceTo', { to: priceTo }),
-            field: 'price_to',
-          }
-        : null
+      if (priceFrom) {
+        const priceFromLabel = $cmwStore.isUk
+          ? `${getCurrencySymbol('GBP')} ${i18n.n(Number(priceFrom), { style: 'decimal' })}`
+          : `${i18n.n(Number(priceFrom), { style: 'decimal' })} ${getCurrencySymbol('EUR')}`
+
+        view.value.priceFrom = {
+          key: 'priceFrom',
+          name: i18n.t('search.priceFrom', { from: priceFromLabel }),
+          field: 'price_from',
+        }
+      } else {
+        view.value.priceFrom = null
+      }
+
+      if (priceTo) {
+        const priceToLabel = $cmwStore.isUk
+          ? `${getCurrencySymbol('GBP')} ${i18n.n(Number(priceTo), { style: 'decimal' })}`
+          : `${i18n.n(Number(priceTo), { style: 'decimal' })} ${getCurrencySymbol('EUR')}`
+
+        view.value.priceTo = {
+          key: 'priceTo',
+          name: i18n.t('search.priceTo', { to: priceToLabel }),
+          field: 'price_to',
+        }
+      } else {
+        view.value.priceTo = null
+      }
 
       maxPriceTotal.value = Math.round(+search.value.aggregations.max_price['agg-max-price'].value)
       maxPrice.value
@@ -361,22 +374,37 @@ export default defineComponent({
         }
       }
 
-      /* let h1Words = view.value && Object.values(view.value)
-        .filter(v => v !== null)
-        .map(v => v.name || '')
-
-      if (h1MacroName.value)
-        h1Words = [h1MacroName.value, ...h1Words]
-
-      seoTitleReplace.value = h1Words.join(' - ') */
-
       loading.value = false
     })
 
     const seoTitleReplace = computed(() => {
-      const h1Words = view.value && Object.values(view.value)
-        .filter(v => v !== null)
-        .map(v => v.name || '')
+      let h1Words = []
+
+      const priceFrom = view.value.priceFrom ? view.value.priceFrom.name : ''
+      const priceTo = view.value.priceTo ? view.value.priceTo.name : ''
+
+      if (priceFrom && priceTo) {
+        h1Words = Object.values(view.value)
+          .filter(v => v !== null && v.field !== 'price_from' && v.field !== 'price_to')
+          .map(v => v.name || '')
+
+        const fromParam = Number(props.inputParameters.price_from || 0)
+        const toParam = Number(props.inputParameters.price_to || 0)
+
+        const from = $cmwStore.isUk
+          ? `${getCurrencySymbol('GBP')} ${i18n.n(Number(fromParam), { style: 'decimal' })}`
+          : `${i18n.n(Number(fromParam), { style: 'decimal' })} ${getCurrencySymbol('EUR')}`
+
+        const to = $cmwStore.isUk
+          ? `${getCurrencySymbol('GBP')} ${i18n.n(Number(toParam), { style: 'decimal' })}`
+          : `${i18n.n(Number(toParam), { style: 'decimal' })} ${getCurrencySymbol('EUR')}`
+
+        h1Words.push(i18n.t('search.priceFromTo', { from, to }))
+      } else {
+        h1Words = Object.values(view.value)
+          .filter(v => v !== null)
+          .map(v => v.name || '')
+      }
 
       return h1Words.join(' - ')
     })
