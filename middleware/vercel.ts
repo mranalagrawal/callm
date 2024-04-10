@@ -1,5 +1,6 @@
-import { kv } from '@vercel/kv'
 import type { Middleware } from '@nuxt/types'
+import { kv } from '@vercel/kv'
+
 import type { TPrismicIsoCodes } from '~/types/prismic'
 
 const vercelMiddleware: Middleware = async ({ $cmwRepo }) => {

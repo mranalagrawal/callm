@@ -1,5 +1,6 @@
 import { useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+
 import { useCustomer } from '~/store/customer'
 import { useSplash } from '~/store/splash'
 

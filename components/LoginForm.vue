@@ -3,6 +3,9 @@ import { defineComponent, ref, useContext, useRouter } from '@nuxtjs/composition
 import type { TranslateResult } from 'vue-i18n'
 import type { RawLocation } from 'vue-router'
 
+import { useCart } from '~/store/cart'
+import { useCustomer } from '~/store/customer'
+
 import eyeHideIcon from '~/assets/svg/eye-hide.svg'
 import eyeShowIcon from '~/assets/svg/eye-show.svg'
 import loginApple from '~/assets/svg/login-apple.svg'
@@ -10,9 +13,8 @@ import loginFacebook from '~/assets/svg/login-facebook.svg'
 import loginGoogle from '~/assets/svg/login-google.svg'
 import socialFacebook from '~/assets/svg/social/social-facebook.svg'
 import socialGoogle from '~/assets/svg/social/social-google.svg'
+
 import Alert from '~/components/FeedBack/Alert.vue'
-import { useCart } from '~/store/cart'
-import { useCustomer } from '~/store/customer'
 
 export default defineComponent({
   components: { Alert },

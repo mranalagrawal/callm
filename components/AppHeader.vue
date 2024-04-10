@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
+
 import logo from '~/assets/svg/logo-call-me-wine.svg'
 
 export default defineComponent({

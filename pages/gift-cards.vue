@@ -2,19 +2,20 @@
 import { computed, defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
-import type { IGiftCardMapped } from '~/types/product'
+import { useCart } from '~/store/cart'
+import { useCustomer } from '~/store/customer'
 
-import { getCountryFromStore, getCurrencySymbol, getLocaleFromCurrencyCode, getPercent } from '~/utilities/currency'
 import addIcon from '~/assets/svg/add.svg'
 import cartIcon from '~/assets/svg/cart.svg'
 import emailIcon from '~/assets/svg/email.svg'
-import { generateKey } from '~/utilities/strings'
 import heartFullIcon from '~/assets/svg/heart-full.svg'
 import heartIcon from '~/assets/svg/heart.svg'
 import subtractIcon from '~/assets/svg/subtract.svg'
+
+import type { IGiftCardMapped } from '~/types/product'
+import { getCountryFromStore, getCurrencySymbol, getLocaleFromCurrencyCode, getPercent } from '~/utilities/currency'
+import { generateKey } from '~/utilities/strings'
 import { SweetAlertToast } from '~/utilities/Swal'
-import { useCart } from '~/store/cart'
-import { useCustomer } from '~/store/customer'
 
 export default defineComponent({
   setup() {

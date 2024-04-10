@@ -11,8 +11,9 @@ import {
 import type { Ref } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
-import logo from '~/assets/svg/logo-call-me-wine.svg'
 import { useLayout } from '~/store/layout'
+
+import logo from '~/assets/svg/logo-call-me-wine.svg'
 
 export default defineComponent({
   setup() {

@@ -1,4 +1,5 @@
 import Swal from 'sweetalert2/dist/sweetalert2.min'
+
 import { getIconAsImg } from '~/utilities/icons'
 
 export const SweetAlertConfirm = Swal.mixin({

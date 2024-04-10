@@ -2,15 +2,15 @@
 import { computed, defineComponent, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
-import type { IPrismicPageData } from '~/types/prismic'
-
-import { generateKey } from '~/utilities/strings'
-import { initialPageData } from '~/config/prismicConfig'
 import { useCart } from '~/store/cart'
 import { useCustomer } from '~/store/customer'
 
 import checkCircularIcon from '~/assets/svg/check-circular.svg'
 import deliveryIcon from '~/assets/svg/delivery.svg'
+
+import { initialPageData } from '~/config/prismicConfig'
+import type { IPrismicPageData } from '~/types/prismic'
+import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({
   name: 'HeaderMiniCart',

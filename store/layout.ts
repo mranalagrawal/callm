@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
-import type { TImage } from '~/types/types'
 
 import getFooter from '~/graphql/queries/getFooter.graphql'
 import getTopBar from '~/graphql/queries/getTopBar.graphql'
+import type { TImage } from '~/types/types'
 
 type IFrontendImage = Pick<TImage, 'altText' | 'url' | 'id'> & { link: string }
 

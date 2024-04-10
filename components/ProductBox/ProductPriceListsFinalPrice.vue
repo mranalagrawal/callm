@@ -1,10 +1,10 @@
 <script lang="ts">
 import {
-  defineComponent,
   type PropType,
+  defineComponent,
 } from '@nuxtjs/composition-api'
-import type { IMoneyV2 } from '~/types/common-objects'
 
+import type { IMoneyV2 } from '~/types/common-objects'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 
 export default defineComponent({

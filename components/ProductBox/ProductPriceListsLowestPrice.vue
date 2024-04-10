@@ -1,13 +1,13 @@
 <script lang="ts">
 import { defineComponent, useContext } from '@nuxtjs/composition-api'
-
 import type { PropType } from '@nuxtjs/composition-api'
 
-import type { IMoneyV2 } from '~/types/common-objects'
-
-import { getLocaleFromCurrencyCode } from '~/utilities/currency'
-import infoIcon from '~/assets/svg/info.svg'
 import { useSplash } from '~/store/splash'
+
+import infoIcon from '~/assets/svg/info.svg'
+
+import type { IMoneyV2 } from '~/types/common-objects'
+import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 
 export default defineComponent({
   name: 'ProductPriceListsLowestPrice',

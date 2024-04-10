@@ -1,15 +1,17 @@
 <script lang="ts">
-import { defineComponent, type PropType, ref, useContext } from '@nuxtjs/composition-api'
-import type { IMailingAddress } from '~/types/mailingAddress'
+import { type PropType, defineComponent, ref, useContext } from '@nuxtjs/composition-api'
 
-import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
+import { useCustomerAddresses } from '~/store/customerAddresses'
+import { useSplash } from '~/store/splash'
+
 import bookmarkIcon from '~/assets/svg/bookmark.svg'
-import customerAddressDelete from '~/graphql/mutations/customerAddressDelete.graphql'
 import deleteIcon from '~/assets/svg/delete.svg'
 import editIcon from '~/assets/svg/edit.svg'
 import moreVerticalIcon from '~/assets/svg/more-vertical.svg'
-import { useCustomerAddresses } from '~/store/customerAddresses'
-import { useSplash } from '~/store/splash'
+
+import customerAddressDelete from '~/graphql/mutations/customerAddressDelete.graphql'
+import type { IMailingAddress } from '~/types/mailingAddress'
+import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
 
 export default defineComponent({
   props: {

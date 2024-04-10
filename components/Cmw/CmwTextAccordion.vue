@@ -1,7 +1,8 @@
 <script lang="ts">
 import type { PropType } from '@nuxtjs/composition-api'
 import { computed, defineComponent, inject, ref } from '@nuxtjs/composition-api'
-import chevronDownIcon from 'assets/svg/chevron-down.svg'
+
+import chevronDownIcon from '~/assets/svg/chevron-down.svg'
 
 export default defineComponent({
   name: 'CmwTextButton',

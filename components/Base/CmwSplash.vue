@@ -2,8 +2,9 @@
 import { defineComponent, ref } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
-import closeIcon from '~/assets/svg/close.svg'
 import { useSplash } from '~/store/splash'
+
+import closeIcon from '~/assets/svg/close.svg'
 
 export default defineComponent({
   name: 'CmwSplash',

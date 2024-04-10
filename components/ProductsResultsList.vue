@@ -1,14 +1,13 @@
 <script lang="ts">
 import { defineComponent, inject, ref, useContext, useMeta, useRoute, watch, watchEffect } from '@nuxtjs/composition-api'
+import type { PropType } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
-import type { PropType } from '@nuxtjs/composition-api'
+import { useFilters } from '~/store/filters'
 
 import type { IProductMapped } from '~/types/product'
 import type { ObjType } from '~/types/types'
-
 import { stripHtml } from '~/utilities/strings'
-import { useFilters } from '~/store/filters'
 
 export default defineComponent({
   props: {

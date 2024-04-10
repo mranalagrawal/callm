@@ -2,12 +2,14 @@
 import { computed, defineComponent, ref, useContext, useRoute, useRouter, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
-import cartIcon from '~/assets/svg/cart.svg'
-import CustomerWishlist from '~/components/Header/CustomerWishlist.vue'
-import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { useCart } from '~/store/cart'
 import { useCustomer } from '~/store/customer'
+
+import cartIcon from '~/assets/svg/cart.svg'
 import userIcon from '~/assets/svg/user.svg'
+
+import CustomerWishlist from '~/components/Header/CustomerWishlist.vue'
+import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 
 type TComponents = 'login' | 'cart' | ''
 

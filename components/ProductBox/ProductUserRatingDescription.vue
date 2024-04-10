@@ -2,12 +2,13 @@
 import { computed, defineComponent, inject, ref } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
-import type { IProductRating } from '~/types/product'
+import { useCustomerWishlist } from '~/store/customerWishlist'
 
-import { generateKey } from '~/utilities/strings'
 import ratingEmpty from '~/assets/svg/rating-empty.svg'
 import ratingFilled from '~/assets/svg/rating-filled.svg'
-import { useCustomerWishlist } from '~/store/customerWishlist'
+
+import type { IProductRating } from '~/types/product'
+import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({
   props: {

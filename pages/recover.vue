@@ -1,7 +1,9 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, useContext } from '@nuxtjs/composition-api'
-import GqlCustomerRecover from '~/graphql/mutations/customerRecover.graphql'
+
 import { useSplash } from '~/store/splash'
+
+import GqlCustomerRecover from '~/graphql/mutations/customerRecover.graphql'
 import { SweetAlertToast } from '~/utilities/Swal'
 
 export default defineComponent({

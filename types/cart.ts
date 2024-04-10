@@ -1,5 +1,5 @@
-import type { IShopifyProductVariant, ProductPriceByCustomer } from '~/types/product'
 import type { IAttribute } from '~/types/common-objects'
+import type { IShopifyProductVariant, ProductPriceByCustomer } from '~/types/product'
 
 /* Represents information about the buyer that is interacting with the cart. */
 interface CartBuyerIdentity {

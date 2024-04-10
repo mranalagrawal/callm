@@ -2,8 +2,8 @@ import type { NuxtHTTPInstance } from '@nuxt/http'
 import type { Plugin } from '@nuxt/types'
 
 import type { TSalesChannel, TStores } from '~/config/themeConfig'
-import { SweetAlertToast } from '~/utilities/Swal'
 import themeConfig from '~/config/themeConfig'
+import { SweetAlertToast } from '~/utilities/Swal'
 
 interface ICallLogParams {
   msg: any

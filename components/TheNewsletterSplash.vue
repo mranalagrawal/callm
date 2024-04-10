@@ -1,10 +1,13 @@
 <script lang="ts">
 import { defineComponent, ref, useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import logo from '~/assets/svg/logo-call-me-wine.svg'
-import bannerSplashNewsletter from '~/assets/images/banner-splash-newsletter.jpg'
+
 import { useCustomer } from '~/store/customer'
 import { useSplash } from '~/store/splash'
+
+import bannerSplashNewsletter from '~/assets/images/banner-splash-newsletter.jpg'
+import logo from '~/assets/svg/logo-call-me-wine.svg'
+
 import { SweetAlertToast } from '~/utilities/Swal'
 
 export default defineComponent({

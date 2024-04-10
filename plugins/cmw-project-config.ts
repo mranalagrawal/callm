@@ -1,7 +1,7 @@
 import type { Plugin } from '@nuxt/types'
+
 import { prismicConfig } from '~/config/prismicConfig'
 import ThemeConfig from '~/config/themeConfig'
-
 import type { IStoreConfig, TStores } from '~/config/themeConfig'
 import type { IPrismicConfig } from '~/types/prismic'
 

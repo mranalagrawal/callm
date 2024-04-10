@@ -1,10 +1,12 @@
 <script lang="ts">
-import { storeToRefs } from 'pinia'
 import type { Ref } from '@nuxtjs/composition-api'
 import { computed, defineComponent, inject, useContext } from '@nuxtjs/composition-api'
-import chevronRightIcon from 'assets/svg/chevron-right.svg'
-import arrowRightIcon from 'assets/svg/arrow-right.svg'
+import { storeToRefs } from 'pinia'
+
 import { useCustomer } from '~/store/customer'
+
+import arrowRightIcon from '~/assets/svg/arrow-right.svg'
+import chevronRightIcon from '~/assets/svg/chevron-right.svg'
 
 export default defineComponent({
   middleware: ['auth', 'splash'],

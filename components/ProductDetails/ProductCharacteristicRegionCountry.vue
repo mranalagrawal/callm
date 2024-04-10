@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent, inject } from '@nuxtjs/composition-api'
+
 import i18n from '~/plugins/i18n'
 
 export default defineComponent({

@@ -1,6 +1,6 @@
 <script>
-import checkboxIcon from '~/assets/svg/checkbox.svg'
 import checkboxBlankIcon from '~/assets/svg/checkbox-blank.svg'
+import checkboxIcon from '~/assets/svg/checkbox.svg'
 
 export default {
   name: 'CmwCheckbox',

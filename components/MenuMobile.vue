@@ -1,11 +1,14 @@
 <script lang="ts">
-import closeIcon from 'assets/svg/close.svg'
-import promoTagIcon from 'assets/svg/promo-tag.svg'
-import chevronRightIcon from 'assets/svg/chevron-right.svg'
-import chevronLeftIcon from 'assets/svg/chevron-left.svg'
 import { computed, defineComponent, ref, useRoute, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+
 import { useVercelKv } from '~/store/vercelKv'
+
+import chevronLeftIcon from '~/assets/svg/chevron-left.svg'
+import chevronRightIcon from '~/assets/svg/chevron-right.svg'
+import closeIcon from '~/assets/svg/close.svg'
+import promoTagIcon from '~/assets/svg/promo-tag.svg'
+
 import { getIconByFeature } from '~/utilities/icons'
 import { generateKey } from '~/utilities/strings'
 

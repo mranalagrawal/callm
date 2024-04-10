@@ -1,5 +1,6 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from '@nuxtjs/composition-api'
+
 import OrderCard from '~/components/UserProfile/OrderCard.vue'
 
 export default defineComponent({

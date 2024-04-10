@@ -7,11 +7,11 @@ import {
   useContext,
   useRoute,
 } from '@nuxtjs/composition-api'
-
 import type { PropType, Ref } from '@nuxtjs/composition-api'
 
-import { orderByArray } from '~/utilities/arrays'
 import plusIcon from '~/assets/svg/plus.svg'
+
+import { orderByArray } from '~/utilities/arrays'
 
 interface IFilters {
   winelists: []

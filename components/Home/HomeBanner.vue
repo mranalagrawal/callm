@@ -11,12 +11,14 @@ import {
   useRouter,
 } from '@nuxtjs/composition-api'
 import type { RawLocation } from 'vue-router'
-import chevronLeftIcon from 'assets/svg/chevron-left.svg'
-import chevronRightIcon from 'assets/svg/chevron-right.svg'
-import carouselCurveDesktop from 'assets/svg/carousel-curve-desktop.svg'
-import carouselCurveMobile from 'assets/svg/carousel-curve-mobile.svg'
+
 import heroBannerCurveLg from '~/assets/images/hero-banner-curve-lg.png'
 import heroBannerCurveSm from '~/assets/images/hero-banner-curve-sm.png'
+import carouselCurveDesktop from '~/assets/svg/carousel-curve-desktop.svg'
+import carouselCurveMobile from '~/assets/svg/carousel-curve-mobile.svg'
+import chevronLeftIcon from '~/assets/svg/chevron-left.svg'
+import chevronRightIcon from '~/assets/svg/chevron-right.svg'
+
 import { getMobileOperatingSystem } from '@/utilities/getOS'
 import { generateKey } from '@/utilities/strings'
 

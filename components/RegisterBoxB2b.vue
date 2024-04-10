@@ -2,11 +2,13 @@
 import { defineComponent, ref, useContext, useRouter } from '@nuxtjs/composition-api'
 import type { RawLocation } from 'vue-router'
 
-import calendarIcon from '~/assets/svg/calendar.svg'
-import { getCustomerId } from '~/utilities/shopify'
-import { SweetAlertToast } from '~/utilities/Swal'
 import { useCart } from '~/store/cart'
 import { useCustomer } from '~/store/customer'
+
+import calendarIcon from '~/assets/svg/calendar.svg'
+
+import { getCustomerId } from '~/utilities/shopify'
+import { SweetAlertToast } from '~/utilities/Swal'
 
 export default defineComponent({
   setup() {

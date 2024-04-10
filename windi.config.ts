@@ -1,11 +1,9 @@
 import * as process from 'node:process'
-import { defineConfig } from 'windicss/helpers'
-
 import colors from 'windicss/colors'
+import { defineConfig } from 'windicss/helpers'
 import plugin from 'windicss/plugin'
 
 import type { TStores } from './config/themeConfig'
-
 import themeConfig from './config/themeConfig'
 
 const store: TStores = process.env.STORE as TStores

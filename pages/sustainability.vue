@@ -1,8 +1,9 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
-import { generateHeadHreflang } from '~/utilities/arrays'
+
 import { initialPageData } from '~/config/prismicConfig'
 import type { IPrismicPageData } from '~/types/prismic'
+import { generateHeadHreflang } from '~/utilities/arrays'
 import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({

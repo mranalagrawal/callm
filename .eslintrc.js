@@ -15,35 +15,42 @@ module.exports = {
         ignoreTemplateLiterals: true,
       },
     ],
-    'sort-imports': 'off',
-    // TODO: Check this together with the import/order rule, I lost the sort-imports rule
-    /* 'sort-imports': ['warn', {
-      ignoreCase: true,
-      ignoreDeclarationSort: false,
-      ignoreMemberSort: false,
-      memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
-      allowSeparatedGroups: true,
-    }], */
-    'import/first': 'off',
     'camelcase': 0,
     'no-console': ['warn', { allow: ['warn', 'error'] }],
-    // turn on errors for missing imports
-    'import/no-unresolved': 'warn', // TODO: make it error
-    // 'import/no-named-as-default-member': 'off',
+    'import/no-unresolved': 'error', // TODO: make it error
     'import/order': [
-      'warn', // TODO: make it error
+      'warn',
       {
         'groups': [
-          ['builtin', 'external'], // Node.js builtins and external modules
-          'internal', // Internal imports
-          ['sibling', 'parent'], // Sibling and parent imports
-          'index', // <- index imports
+          ['builtin', 'external'],
+          'internal',
+          ['sibling', 'parent'],
+          'index',
         ],
-        'newlines-between': 'always', // Enforce new lines between groups
+        'newlines-between': 'always',
+        'distinctGroup': true,
         'alphabetize': {
-          order: 'asc', // Sort in ascending order
-          caseInsensitive: true, // Ignore case
+          order: 'asc',
+          caseInsensitive: true,
         },
+        'pathGroups': [
+          {
+            pattern: 'vue',
+            group: 'builtin',
+            position: 'before',
+          },
+          {
+            pattern: '~/store/**',
+            group: 'internal',
+            position: 'before',
+          },
+          {
+            pattern: '~/assets/**',
+            group: 'internal',
+            position: 'before',
+          },
+        ],
+        'pathGroupsExcludedImportTypes': ['vue'],
       },
     ],
     /* VUE RULES */
@@ -90,4 +97,6 @@ module.exports = {
       },
     },
   },
+  // Ignore the following files (.svg, .graphql) from being linted
+  ignorePatterns: ['**/*.svg', '**/*.graphql'],
 }

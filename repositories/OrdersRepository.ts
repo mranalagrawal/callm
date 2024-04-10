@@ -1,4 +1,5 @@
 import type { Context } from '@nuxt/types'
+
 import getCustomerOrders from '@/graphql/queries/getCustomerOrders.graphql'
 import type { IShopifyCustomer } from '~/types/customer'
 

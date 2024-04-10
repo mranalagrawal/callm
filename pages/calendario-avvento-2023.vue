@@ -8,13 +8,12 @@ import {
   useFetch,
 } from '@nuxtjs/composition-api'
 
+import metaobject from '~/graphql/queries/metaobject.graphql'
 import type { ICollection } from '~/types/collection'
+import { initialCollectionData } from '~/types/collection'
 import type { IShopifyProduct } from '~/types/product'
 import type { TImage } from '~/types/types'
-
 import { getRandNumber } from '~/utilities/math'
-import { initialCollectionData } from '~/types/collection'
-import metaobject from '~/graphql/queries/metaobject.graphql'
 import { SweetAlertConfirm } from '~/utilities/Swal'
 
 export interface IEventDay {

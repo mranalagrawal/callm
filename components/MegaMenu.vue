@@ -1,9 +1,12 @@
 <script lang="ts">
 import { defineComponent, ref, useRoute, watch } from '@nuxtjs/composition-api'
-import promoTagIcon from 'assets/svg/promo-tag.svg'
 import { storeToRefs } from 'pinia'
-import ThirdLevel from '~/components/UI/ThirdLevel.vue'
+
 import { useVercelKv } from '~/store/vercelKv'
+
+import promoTagIcon from '~/assets/svg/promo-tag.svg'
+
+import ThirdLevel from '~/components/UI/ThirdLevel.vue'
 import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({

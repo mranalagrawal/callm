@@ -3,6 +3,7 @@ import type { PropType } from '@nuxtjs/composition-api'
 import { defineComponent } from '@nuxtjs/composition-api'
 import type { TranslateResult } from 'vue-i18n'
 import type { RawLocation, Route } from 'vue-router'
+
 import type { TButtonVariant, TSizes } from '~/types/types'
 
 export default defineComponent({

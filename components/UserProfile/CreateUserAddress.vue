@@ -1,9 +1,11 @@
 <script lang="ts">
 import { defineComponent, ref, useContext, useFetch } from '@nuxtjs/composition-api'
-import customerAddressCreate from '~/graphql/mutations/customerAddressCreate.graphql'
-import { SweetAlertToast } from '~/utilities/Swal'
+
 import { useCustomerAddresses } from '~/store/customerAddresses'
 import { useSplash } from '~/store/splash'
+
+import customerAddressCreate from '~/graphql/mutations/customerAddressCreate.graphql'
+import { SweetAlertToast } from '~/utilities/Swal'
 
 // noinspection JSUnusedGlobalSymbols
 export default defineComponent({

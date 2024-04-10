@@ -1,8 +1,9 @@
 <script lang="ts">
 import type { PropType } from '@nuxtjs/composition-api'
 import { defineComponent } from '@nuxtjs/composition-api'
-import chevronDownIcon from 'assets/svg/chevron-down.svg'
 import type { TranslateResult } from 'vue-i18n'
+
+import chevronDownIcon from '~/assets/svg/chevron-down.svg'
 
 export default defineComponent({
 

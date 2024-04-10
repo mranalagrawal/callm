@@ -1,4 +1,5 @@
 import type { TranslateResult } from 'vue-i18n'
+
 import type { availableUsersValues } from '~/store/customer'
 
 import type { IMoneyV2 } from '~/types/common-objects'

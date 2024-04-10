@@ -15,12 +15,14 @@ import {
 } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
+import { useFilters } from '~/store/filters.ts'
+
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
 import closeIcon from '~/assets/svg/close.svg'
-import { getLocaleFromCurrencyCode } from '~/utilities/currency'
+
 import Loader from '@/components/UI/Loader.vue'
 import { pick } from '~/utilities/arrays.ts'
-import { useFilters } from '~/store/filters.ts'
+import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 
 export default defineComponent({
   components: { Loader },

@@ -11,10 +11,10 @@ import {
 } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
-import type { IProductMapped } from '~/types/product'
-
-import { sortArrayByNumber } from '~/utilities/arrays'
 import { useFilters } from '~/store/filters'
+
+import type { IProductMapped } from '~/types/product'
+import { sortArrayByNumber } from '~/utilities/arrays'
 
 export default defineComponent({
   props: ['vendor', 'tag', 'vendorFeId'],

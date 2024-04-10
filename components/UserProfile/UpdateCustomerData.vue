@@ -2,10 +2,11 @@
 import { defineComponent, ref, toRefs, useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
-import radioCheckedIcon from '~/assets/svg/radio-checked.svg'
-import radioUncheckedIcon from '~/assets/svg/radio-unchecked.svg'
 import { useCustomer } from '~/store/customer'
 import { useSplash } from '~/store/splash'
+
+import radioCheckedIcon from '~/assets/svg/radio-checked.svg'
+import radioUncheckedIcon from '~/assets/svg/radio-unchecked.svg'
 
 export default defineComponent({
   name: 'UpdateCustomerData',

@@ -1,7 +1,9 @@
 <script lang="ts">
 import { defineComponent, ref, useContext } from '@nuxtjs/composition-api'
-import emailIcon from 'assets/svg/email.svg'
-import paperPlaneIcon from 'assets/svg/paper-plane.svg'
+
+import emailIcon from '~/assets/svg/email.svg'
+import paperPlaneIcon from '~/assets/svg/paper-plane.svg'
+
 import { SweetAlertToast } from '~/utilities/Swal'
 
 export default defineComponent({

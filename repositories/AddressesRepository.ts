@@ -1,8 +1,8 @@
 import type { Context } from '@nuxt/types'
-import type { IMailingAddress } from '~/types/mailingAddress'
 
 import customerDefaultAddressUpdate from '~/graphql/mutations/customerDefaultAddressUpdate.graphql'
 import getCustomerAddresses from '~/graphql/queries/getCustomerAddresses.graphql'
+import type { IMailingAddress } from '~/types/mailingAddress'
 
 export default (ctx: Context) => ({
   async getCustomerAddresses(): Promise<{ defaultAddress: IMailingAddress; addresses: IMailingAddress[] }> {

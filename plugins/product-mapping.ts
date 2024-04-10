@@ -1,12 +1,12 @@
 import type { Plugin } from '@nuxt/types'
 import { storeToRefs } from 'pinia'
-import type { TISO639, TSalesChannel, TStores } from '~/config/themeConfig'
-import { useCustomer } from '~/store/customer'
-import type { IMoneyV2 } from '~/types/common-objects'
 
+import { useCustomer } from '~/store/customer'
+
+import type { TISO639, TSalesChannel, TStores } from '~/config/themeConfig'
+import type { IMoneyV2 } from '~/types/common-objects'
 import type { IGiftCardMapped, IGiftCardVariantMapped, IGtmProductData, IProductBreadcrumbs, IProductMapped, IShopifyProduct, TProductFeatures } from '~/types/product'
 import type { ObjType } from '~/types/types'
-
 import { getUniqueListBy, pick } from '~/utilities/arrays'
 import { getCountryFromStore } from '~/utilities/currency'
 import { cleanUrl } from '~/utilities/strings'

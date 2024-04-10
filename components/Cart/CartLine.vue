@@ -3,12 +3,14 @@ import { computed, defineComponent, toRefs, useContext } from '@nuxtjs/compositi
 import type { PropType } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
+import { useCart } from '~/store/cart'
+import { useCustomer } from '~/store/customer'
+
 import addIcon from '~/assets/svg/add.svg'
 import deleteIcon from '~/assets/svg/delete.svg'
 import toGiftIcon from '~/assets/svg/feature-to-gift.svg'
 import subtractIcon from '~/assets/svg/subtract.svg'
-import { useCart } from '~/store/cart'
-import { useCustomer } from '~/store/customer'
+
 import type { ICartLinesMapped } from '~/types/cart'
 import type { IMoneyV2 } from '~/types/common-objects'
 import type { IProductPriceList } from '~/types/product'

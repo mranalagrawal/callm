@@ -2,15 +2,16 @@
 import { computed, onMounted, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
-import type { IOptions } from '~/types/types'
-import type { IProductMapped, IShopifyProduct } from '~/types/product'
-
-import { chunkArray } from '~/utilities/arrays'
-import closeIcon from '~/assets/svg/close.svg'
-import { generateKey } from '~/utilities/strings'
 import { useCustomer } from '~/store/customer'
 import { useCustomerWishlist } from '~/store/customerWishlist'
 import { useFilters } from '~/store/filters'
+
+import closeIcon from '~/assets/svg/close.svg'
+
+import type { IProductMapped, IShopifyProduct } from '~/types/product'
+import type { IOptions } from '~/types/types'
+import { chunkArray } from '~/utilities/arrays'
+import { generateKey } from '~/utilities/strings'
 
 interface IQueryParams {
   categoryId?: string

@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
+
 import { useCart } from '~/store/cart'
 import { useCustomerOrders } from '~/store/customerOrders'
 import { useSplash } from '~/store/splash'

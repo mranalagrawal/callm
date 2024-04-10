@@ -1,8 +1,8 @@
 <script lang="ts">
 import {
+  type PropType,
   computed,
   defineComponent,
-  type PropType,
   ref,
   useContext,
   useFetch,
@@ -10,24 +10,25 @@ import {
   useRouter, watch,
 } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import type { IMoneyV2 } from '~/types/common-objects'
 
-import type { IProductMapped } from '~/types/product'
+import { useCart } from '~/store/cart'
+import { useCustomer } from '~/store/customer'
+import { useCustomerWishlist } from '~/store/customerWishlist'
 
-import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
 import addIcon from '~/assets/svg/add.svg'
 import cartIcon from '~/assets/svg/cart.svg'
 import closeIcon from '~/assets/svg/close.svg'
 import emailIcon from '~/assets/svg/email.svg'
 import heartFullIcon from '~/assets/svg/heart-full.svg'
 import heartIcon from '~/assets/svg/heart.svg'
-import { stripHtml } from '~/utilities/strings'
 import subtractIcon from '~/assets/svg/subtract.svg'
-import { SweetAlertToast } from '~/utilities/Swal'
-import { useCart } from '~/store/cart'
-import { useCustomer } from '~/store/customer'
-import { useCustomerWishlist } from '~/store/customerWishlist'
+
 import useShowRequestModal from '~/components/ProductBox/useShowRequestModal'
+import type { IMoneyV2 } from '~/types/common-objects'
+import type { IProductMapped } from '~/types/product'
+import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
+import { stripHtml } from '~/utilities/strings'
+import { SweetAlertToast } from '~/utilities/Swal'
 
 export default defineComponent({
   name: 'ProductBoxHorizontal',

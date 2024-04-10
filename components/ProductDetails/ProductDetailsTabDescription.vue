@@ -1,6 +1,7 @@
 <script lang="ts">
 import type { PropType } from '@nuxtjs/composition-api'
 import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
+
 import type { IProductMapped } from '~/types/product'
 import { pick } from '~/utilities/arrays'
 import { generateKey } from '~/utilities/strings'

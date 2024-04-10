@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { SweetAlertToast } from '@/utilities/Swal'
 
+import { SweetAlertToast } from '@/utilities/Swal'
 import type { IMailingAddress } from '~/types/mailingAddress'
 
 interface IState {

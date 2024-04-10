@@ -1,4 +1,5 @@
 import colors from 'windicss/colors'
+
 import type { IMoneyV2 } from '~/types/common-objects'
 
 export type TCustomerType = 'B2C' | 'B2B'

@@ -1,9 +1,8 @@
 import type { Context } from '@nuxt/types'
 
-import type { IPrismicPageData, IPrismicPageParams, TPrismicIsoCodes } from '~/types/prismic'
-import type { TISO639 } from '~/config/themeConfig'
-
 import { initialPageData } from '~/config/prismicConfig'
+import type { TISO639 } from '~/config/themeConfig'
+import type { IPrismicPageData, IPrismicPageParams, TPrismicIsoCodes } from '~/types/prismic'
 
 export default ({ $prismic, $cmwStore, i18n, $handleApiErrors }: Context) => ({
   async getSinglePage(page = ''): Promise<Record<string, any>> {

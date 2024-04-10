@@ -9,8 +9,9 @@ import {
   useRoute,
 } from '@nuxtjs/composition-api'
 
-import plusIcon from 'assets/svg/plus.svg'
 import closeIcon from '~/assets/svg/close.svg'
+import plusIcon from '~/assets/svg/plus.svg'
+
 import { orderByArray } from '~/utilities/arrays'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 

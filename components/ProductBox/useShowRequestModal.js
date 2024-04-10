@@ -1,10 +1,11 @@
-import { storeToRefs } from 'pinia'
 import { useContext } from '@nuxtjs/composition-api'
+import { storeToRefs } from 'pinia'
 
-import { SweetAlertToast } from '~/utilities/Swal'
 import { useCustomer } from '~/store/customer'
 import { useProductAvailability } from '~/store/product-availability'
 import { useSplash } from '~/store/splash'
+
+import { SweetAlertToast } from '~/utilities/Swal'
 
 export default function () {
   const { i18n, $cmw, $sentry } = useContext()

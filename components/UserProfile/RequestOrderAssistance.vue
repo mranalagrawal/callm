@@ -1,10 +1,12 @@
 <script lang="ts">
 import { defineComponent, ref, useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import { SweetAlertToast } from '~/utilities/Swal'
+
 import { useCustomer } from '~/store/customer'
 import { useCustomerOrders } from '~/store/customerOrders'
 import { useSplash } from '~/store/splash'
+
+import { SweetAlertToast } from '~/utilities/Swal'
 
 // noinspection JSUnusedGlobalSymbols
 export default defineComponent({

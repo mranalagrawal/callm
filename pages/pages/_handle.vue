@@ -6,9 +6,11 @@ import {
   useRoute,
   useRouter, watch,
 } from '@nuxtjs/composition-api'
-import chevronLeftIcon from 'assets/svg/chevron-left.svg'
-import chevronRightIcon from 'assets/svg/chevron-right.svg'
-import filterIcon from 'assets/svg/filter.svg'
+
+import chevronLeftIcon from '~/assets/svg/chevron-left.svg'
+import chevronRightIcon from '~/assets/svg/chevron-right.svg'
+import filterIcon from '~/assets/svg/filter.svg'
+
 import Loader from '~/components/UI/Loader.vue'
 import type { IShopifyPage } from '~/types/shopifyPage'
 import { shopifyRichTextToHTML } from '~/utilities/shopify'

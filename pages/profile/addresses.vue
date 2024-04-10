@@ -1,8 +1,9 @@
 <script>
 import { onMounted, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import { useSplash } from '~/store/splash'
+
 import { useCustomerAddresses } from '~/store/customerAddresses'
+import { useSplash } from '~/store/splash'
 
 export default {
   props: {

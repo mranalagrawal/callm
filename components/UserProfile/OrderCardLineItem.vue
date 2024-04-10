@@ -3,9 +3,11 @@ import { computed, defineComponent } from '@nuxtjs/composition-api'
 import type { PropType } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
+import { useCustomerWishlist } from '~/store/customerWishlist'
+
 import heartFullIcon from '~/assets/svg/heart-full.svg'
 import heartIcon from '~/assets/svg/heart.svg'
-import { useCustomerWishlist } from '~/store/customerWishlist'
+
 import type { ILineItem } from '~/types/order'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { regexRules } from '~/utilities/validators'

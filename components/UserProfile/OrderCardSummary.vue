@@ -2,8 +2,8 @@
 import { defineComponent } from '@nuxtjs/composition-api'
 import type { PropType } from '@nuxtjs/composition-api'
 
-import type { IFulfillment } from '~/types/order'
 import type { IMailingAddress } from '~/types/mailingAddress'
+import type { IFulfillment } from '~/types/order'
 
 export default defineComponent({
   name: 'OrderCardSummary',

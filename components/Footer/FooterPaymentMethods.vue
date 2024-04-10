@@ -2,8 +2,10 @@
 import { toRefs } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
-import walletIcon from '~/assets/svg/wallet.svg'
 import { useLayout } from '~/store/layout'
+
+import walletIcon from '~/assets/svg/wallet.svg'
+
 import { generateKey } from '~/utilities/strings'
 
 export default {

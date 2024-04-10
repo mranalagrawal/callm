@@ -1,7 +1,9 @@
 <script>
 import { ref, watch } from '@nuxtjs/composition-api'
-import eyeShowIcon from '~/assets/svg/eye-show.svg'
+
 import eyeHideIcon from '~/assets/svg/eye-hide.svg'
+import eyeShowIcon from '~/assets/svg/eye-show.svg'
+
 import { regexRules } from '~/utilities/validators'
 
 // noinspection JSUnusedGlobalSymbols

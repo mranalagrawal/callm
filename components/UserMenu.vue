@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
+
 import { useCustomer } from '~/store/customer'
 
 export default defineComponent({

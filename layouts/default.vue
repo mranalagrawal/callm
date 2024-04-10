@@ -17,18 +17,18 @@ import {
 import { storeToRefs } from 'pinia'
 
 // import LazyHydrate from 'vue-lazy-hydration'
-import type { TISO639 } from '~/config/themeConfig'
-
-import CustomerWishlist from '~/components/Header/CustomerWishlist.vue'
-import Navbar from '~/components/Navbar.vue'
-import TopBar from '~/components/TopBar.vue'
-import useNewsletterSplash from '~/components/composables/useNewsletterSplash'
-import useScreenSize from '~/components/composables/useScreenSize'
 
 import { useCart } from '~/store/cart'
 import { useCustomer } from '~/store/customer'
 import { useLayout } from '~/store/layout'
 import { useVercelKv } from '~/store/vercelKv'
+
+import useNewsletterSplash from '~/components/composables/useNewsletterSplash'
+import useScreenSize from '~/components/composables/useScreenSize'
+import CustomerWishlist from '~/components/Header/CustomerWishlist.vue'
+import Navbar from '~/components/Navbar.vue'
+import TopBar from '~/components/TopBar.vue'
+import type { TISO639 } from '~/config/themeConfig'
 
 export default defineComponent({
   components: {

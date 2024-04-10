@@ -7,9 +7,10 @@ import {
   useRoute, useRouter,
   watchEffect,
 } from '@nuxtjs/composition-api'
-import chevronLeftIcon from 'assets/svg/chevron-left.svg'
-import chevronRightIcon from 'assets/svg/chevron-right.svg'
 import type { RawLocation } from 'vue-router'
+
+import chevronLeftIcon from '~/assets/svg/chevron-left.svg'
+import chevronRightIcon from '~/assets/svg/chevron-right.svg'
 
 interface IQuery {
   [key: string]: string | undefined

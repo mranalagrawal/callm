@@ -1,10 +1,12 @@
 <script lang="ts">
 import type { PropType } from '@nuxtjs/composition-api'
 import { defineComponent, inject, onMounted, useContext, useRoute } from '@nuxtjs/composition-api'
-import chevronLeftIcon from 'assets/svg/chevron-left.svg'
-import chevronRightIcon from 'assets/svg/chevron-right.svg'
-import { inRange } from '~/utilities/math'
+
+import chevronLeftIcon from '~/assets/svg/chevron-left.svg'
+import chevronRightIcon from '~/assets/svg/chevron-right.svg'
+
 import type { IProductMapped } from '~/types/product'
+import { inRange } from '~/utilities/math'
 import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({

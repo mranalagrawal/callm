@@ -2,8 +2,9 @@
 import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
-import Alert from '~/components/FeedBack/Alert.vue'
 import { useCustomer } from '~/store/customer'
+
+import Alert from '~/components/FeedBack/Alert.vue'
 
 export default defineComponent({
   components: { Alert },

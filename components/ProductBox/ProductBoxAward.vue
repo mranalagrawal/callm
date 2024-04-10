@@ -1,7 +1,9 @@
 <script lang="ts">
 import type { PropType } from '@nuxtjs/composition-api'
 import { defineComponent, ref } from '@nuxtjs/composition-api'
+
 import closeIcon from '~/assets/svg/close.svg'
+
 import type { IProductAward } from '~/types/product'
 import { getAwardIconById } from '~/utilities/icons'
 

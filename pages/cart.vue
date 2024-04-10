@@ -2,11 +2,13 @@
 import { computed, defineComponent, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
+import { useCart } from '~/store/cart'
+import { useCustomer } from '~/store/customer'
+
 import addIcon from '~/assets/svg/add.svg'
 import cartEmptyIcon from '~/assets/svg/cart-empty.svg'
 import toGiftIcon from '~/assets/svg/feature-to-gift.svg'
-import { useCart } from '~/store/cart'
-import { useCustomer } from '~/store/customer'
+
 import type { IProductBreadcrumbs } from '~/types/product'
 import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { generateKey } from '~/utilities/strings'

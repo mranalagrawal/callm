@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, inject, useContext, useMeta } from '@nuxtjs/composition-api'
-import LazyHydrate from 'vue-lazy-hydration'
 import type { Ref } from '@nuxtjs/composition-api'
+import LazyHydrate from 'vue-lazy-hydration'
 
 import { generateHeadHreflang } from '~/utilities/arrays'
 

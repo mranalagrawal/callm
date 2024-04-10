@@ -1,5 +1,6 @@
 <script>
 import { ref, useContext } from '@nuxtjs/composition-api'
+
 import closeIcon from '~/assets/svg/close.svg'
 
 // noinspection JSUnusedGlobalSymbols

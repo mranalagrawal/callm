@@ -1,6 +1,5 @@
 <script lang="ts">
 import { computed, defineComponent } from '@nuxtjs/composition-api'
-
 import type { PropType } from '@nuxtjs/composition-api'
 
 export default defineComponent({

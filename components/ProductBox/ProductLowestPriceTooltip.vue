@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent, useRoute, watch } from '@nuxtjs/composition-api'
+
 import { useSplash } from '~/store/splash'
 
 export default defineComponent({

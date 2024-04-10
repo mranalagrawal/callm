@@ -1,6 +1,7 @@
 <script>
 import { computed, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+
 import { useCustomerOrders } from '~/store/customerOrders.ts'
 
 export default {

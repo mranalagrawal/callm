@@ -2,10 +2,10 @@
 import { computed, defineComponent, getCurrentInstance, ref, useRoute, watch } from '@nuxtjs/composition-api'
 import type { PropType } from '@nuxtjs/composition-api'
 
-import type { IOptions, TPosition, TSizes } from '~/types/types'
-
 import checkmarkIcon from '~/assets/svg/checkmark.svg'
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
+
+import type { IOptions, TPosition, TSizes } from '~/types/types'
 
 export default defineComponent({
   name: 'CmwSelect',

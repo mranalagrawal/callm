@@ -3,15 +3,17 @@ import { computed, defineComponent, ref, toRef, useContext } from '@nuxtjs/compo
 import type { PropType } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
-import chevronDownIcon from '~/assets/svg/chevron-down.svg'
-import deliveryFastIcon from '~/assets/svg/delivery-fast.svg'
-import OrderCardLineItem from '~/components/UserProfile/OrderCardLineItem.vue'
-import OrderCardSummary from '~/components/UserProfile/OrderCardSummary.vue'
-import OrderReceiptPrint from '~/components/UserProfile/OrderReceiptPrint.vue'
 import { useCart } from '~/store/cart'
 import { useCustomer } from '~/store/customer'
 import { useCustomerOrders } from '~/store/customerOrders'
 import { useSplash } from '~/store/splash'
+
+import chevronDownIcon from '~/assets/svg/chevron-down.svg'
+import deliveryFastIcon from '~/assets/svg/delivery-fast.svg'
+
+import OrderCardLineItem from '~/components/UserProfile/OrderCardLineItem.vue'
+import OrderCardSummary from '~/components/UserProfile/OrderCardSummary.vue'
+import OrderReceiptPrint from '~/components/UserProfile/OrderReceiptPrint.vue'
 import type { IFulfillment, ILineItem, IOrder } from '~/types/order'
 import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { generateKey } from '~/utilities/strings'

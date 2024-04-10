@@ -1,6 +1,6 @@
-import { defineStore } from 'pinia'
-import { kv } from '@vercel/kv'
 import { useContext } from '@nuxtjs/composition-api'
+import { kv } from '@vercel/kv'
+import { defineStore } from 'pinia'
 
 import type { TISO639 } from '~/config/themeConfig'
 import type { TPrismicIsoCodes } from '~/types/prismic'

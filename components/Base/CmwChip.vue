@@ -3,9 +3,9 @@ import { defineComponent } from '@nuxtjs/composition-api'
 import type { PropType } from '@nuxtjs/composition-api'
 import type { TranslateResult } from 'vue-i18n'
 
-import type { TColors, TShapes } from '~/types/types'
-
 import closeIcon from '~/assets/svg/close.svg'
+
+import type { TColors, TShapes } from '~/types/types'
 
 export default defineComponent({
   name: 'CmwChip',

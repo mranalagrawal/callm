@@ -3,8 +3,9 @@ import type { Ref } from '@nuxtjs/composition-api'
 import { computed, defineComponent, inject, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 import type { TranslateResult } from 'vue-i18n'
-import { useFilters } from '~/store/filters'
+
 import { useCustomerOrders } from '~/store/customerOrders'
+import { useFilters } from '~/store/filters'
 
 export default defineComponent({
   setup() {

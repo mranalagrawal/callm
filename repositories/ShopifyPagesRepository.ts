@@ -1,4 +1,5 @@
 import type { Context } from '@nuxt/types'
+
 import getPage from '@/graphql/queries/getPage.graphql'
 import { initialShopifyPageData } from '~/config/shopifyConfig'
 import type { IShopifyPage } from '~/types/shopifyPage'
