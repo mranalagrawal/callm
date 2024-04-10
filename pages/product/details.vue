@@ -648,7 +648,7 @@ export default defineComponent({
             <div
               class="
             <md:(fixed bottom-0 left-0 w-full bg-white z-content shadow-elevation pl-3 pr-3 pt-2 pb-2)
-            mt-auto grid grid-cols-[3fr_9fr] items-center
+            mt-auto grid grid-cols-[3fr_9fr] items-center pt42 pb-4
             md:my-8
 "
             >
@@ -737,7 +737,7 @@ export default defineComponent({
                         :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
                         @click.native="addProductToCustomerCart"
                       >
-                        <!--                        <VueSvgIcon :data="cartIcon" color="white" width="30" height="auto" /> -->
+                        <VueSvgIcon v-if="isDesktop" :data="cartIcon" color="white" width="30" height="auto" />
                         <span class="text-sm" v-text="isDesktop ? $t('common.cta.addToCart') : $t('common.cta.addToCartSm')" />
                       </CmwButton>
                       <Badge

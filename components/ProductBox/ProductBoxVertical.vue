@@ -492,7 +492,7 @@ export default defineComponent({
 }
 
 .c-productBox__grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: auto 62px;
   grid-template-rows: auto 3lh 60px 1.4lh;
   grid-template-areas:
   "image image"
@@ -551,6 +551,7 @@ export default defineComponent({
 .c-productBox.-cmw-de .c-productBox__grid, .c-productBox.-b-2-b .c-productBox__grid {
   grid-template-rows: auto 3lh 70px 2lh;
 }
+
 /* We are handling this piece skipping mobile-first to reduce the amount of CSS  */
 @container product-box (max-width: 250px) {
   .c-productBox.-cmw-de .c-productBox__grid, .c-productBox.-b-2-b .c-productBox__grid {
