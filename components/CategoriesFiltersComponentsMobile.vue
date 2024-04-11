@@ -350,7 +350,7 @@ export default defineComponent({
           <CmwAccordion
             key="mobile-prize"
             size="sm"
-            :has-item="priceFromLabel || priceToLabel"
+            :has-item="!!priceFromLabel || !!priceToLabel"
             :footer-label="$t('common.cta.apply')"
             :on-footer-click="handleOnFooterClick"
             :active="cmwActiveSelect === 'mobile-prize'"
