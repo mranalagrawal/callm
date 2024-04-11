@@ -1,13 +1,12 @@
 import type { Plugin } from '@nuxt/types'
 
-import type { ICustomerUserError, IShopifyCustomer } from '~/types/customer'
-import type { IGiftCardMapped, IShopifyProduct } from '~/types/product'
-import type { IPrismicPageData, IPrismicPageParams, TPrismicComponentsNames, TPrismicIsoCodes } from '~/types/prismic'
-import type { ICollection } from '~/types/collection'
-import type { IMailingAddress } from '~/types/mailingAddress'
-import type { IShopifyPage } from '~/types/shopifyPage'
-
 import createRepository from '~/repositories'
+import type { ICollection } from '~/types/collection'
+import type { ICustomerUserError, IShopifyCustomer } from '~/types/customer'
+import type { IMailingAddress } from '~/types/mailingAddress'
+import type { IPrismicPageData, IPrismicPageParams, TPrismicComponentsNames, TPrismicIsoCodes } from '~/types/prismic'
+import type { IGiftCardMapped, IShopifyProduct } from '~/types/product'
+import type { IShopifyPage } from '~/types/shopifyPage'
 
 export interface GetGiftCardByHandleParams { handle: string }
 export interface GetAllV2Params {

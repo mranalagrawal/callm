@@ -7,9 +7,10 @@ import {
   useFetch, watch,
 } from '@nuxtjs/composition-api'
 import { kv } from '@vercel/kv'
-import type { TISO639 } from '~/config/themeConfig'
 
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
+
+import type { TISO639 } from '~/config/themeConfig'
 import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({

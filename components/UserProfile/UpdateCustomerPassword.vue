@@ -1,10 +1,12 @@
 <script>
 import { ref, toRefs, useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import { useSplash } from '~/store/splash'
+
 import { useCustomer } from '~/store/customer'
-import eyeShowIcon from '~/assets/svg/eye-show.svg'
+import { useSplash } from '~/store/splash'
+
 import eyeHideIcon from '~/assets/svg/eye-hide.svg'
+import eyeShowIcon from '~/assets/svg/eye-show.svg'
 
 // noinspection JSUnusedGlobalSymbols
 export default {

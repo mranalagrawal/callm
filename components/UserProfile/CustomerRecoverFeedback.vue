@@ -1,7 +1,9 @@
 <script lang="ts">
 import { defineComponent, ref } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+
 import { useSplash } from '~/store/splash'
+
 import emailSentIcon from '~/assets/svg/email-sent.svg'
 
 export default defineComponent({

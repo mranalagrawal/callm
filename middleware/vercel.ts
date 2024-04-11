@@ -1,15 +1,12 @@
-import { kv } from '@vercel/kv'
 import type { Middleware } from '@nuxt/types'
+import { kv } from '@vercel/kv'
+
 import type { TPrismicIsoCodes } from '~/types/prismic'
 
 const vercelMiddleware: Middleware = async ({ $cmwRepo }) => {
   const languages: TPrismicIsoCodes[] = ['it-it', 'it-bn', 'en-eu', 'en-gb', 'fr-fr', 'de-de']
 
-  const fetchTopBar = async (lang: TPrismicIsoCodes) => await $cmwRepo.prismic.getSingle('topbar', lang)
-
   const fetchPreFooter = async (lang: TPrismicIsoCodes) => await $cmwRepo.prismic.getSingle('footer', lang)
-
-  const fetchFooter = async (lang: TPrismicIsoCodes) => await $cmwRepo.prismic.getSingle('footer-test', lang)
 
   const fetchMenu = async (lang: TPrismicIsoCodes) => {
     const megaMenu = await $cmwRepo.prismic.getSingle('mega-menu-test', lang)
@@ -55,17 +52,11 @@ const vercelMiddleware: Middleware = async ({ $cmwRepo }) => {
 
   try {
     for (const lang of languages) {
-      const footerData = await fetchFooter(lang)
-      await kv.set(`prismic/footer/footer-${lang}`, JSON.stringify(footerData), {})
-
       const preFooterData = await fetchPreFooter(lang)
       await kv.set(`prismic/pre-footer/pre-footer-${lang}`, JSON.stringify(preFooterData?.body || []), {})
 
       const megaMenuData = await fetchMenu(lang)
       await kv.set(`prismic/menu/menu-${lang}`, JSON.stringify(megaMenuData), {})
-
-      const topbarData = await fetchTopBar(lang)
-      await kv.set(`prismic/topbar/topbar-${lang}`, JSON.stringify(topbarData), {})
     }
   } catch (error) {
     // Handle errors

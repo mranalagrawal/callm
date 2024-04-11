@@ -9,22 +9,23 @@ import {
   useRoute,
 } from '@nuxtjs/composition-api'
 
-import plusIcon from 'assets/svg/plus.svg'
 import closeIcon from '~/assets/svg/close.svg'
+import plusIcon from '~/assets/svg/plus.svg'
+
 import { orderByArray } from '~/utilities/arrays'
-import { getLocaleFromCurrencyCode } from '~/utilities/currency'
+import { getCurrencySymbol, getLocaleFromCurrencyCode } from '~/utilities/currency'
 
 interface IFilters {
-  winelists: []
-  pairings: []
-  dosagecontents: []
+  agings: []
+  areas: []
+  awards: []
   bodystyles: []
   boxes: []
-  areas: []
-  provenience: []
-  awards: []
-  agings: []
+  dosagecontents: []
+  pairings: []
   philosophies: []
+  provenience: []
+  winelists: []
 }
 
 export default defineComponent({
@@ -40,7 +41,7 @@ export default defineComponent({
   },
   emits: ['update-value-selections', 'update-value', 'handle-on-footer-click', 'reset-filter'],
   setup(props, { emit }) {
-    const { i18n } = useContext()
+    const { i18n, $cmwStore } = useContext()
     const route = useRoute()
     const isDesktop = inject('isDesktop') as Ref<boolean>
     const showMobileFilters = inject('showMobileFilters') as Ref<boolean>
@@ -89,6 +90,8 @@ export default defineComponent({
     const maxPrice = ref(0)
     const minPriceTotal = ref(0)
     const maxPriceTotal = ref(0)
+    const priceFromLabel = ref('')
+    const priceToLabel = ref('')
 
     const handleUpdateTrigger = (key: string) => {
       cmwActiveSelect.value = cmwActiveSelect.value === key ? '' : key
@@ -221,6 +224,22 @@ export default defineComponent({
       const priceFrom = props.inputParameters.price_from
       const priceTo = props.inputParameters.price_to
 
+      if (priceFrom) {
+        priceFromLabel.value = $cmwStore.isUk
+          ? `${getCurrencySymbol('GBP')}${i18n.n(Number(priceFrom), { style: 'decimal' })}`
+          : `${i18n.n(Number(priceFrom), { style: 'decimal' })}${getCurrencySymbol('EUR')}`
+      } else {
+        priceFromLabel.value = ''
+      }
+
+      if (priceTo) {
+        priceToLabel.value = $cmwStore.isUk
+          ? `${getCurrencySymbol('GBP')}${i18n.n(Number(priceTo), { style: 'decimal' })}`
+          : `${i18n.n(Number(priceTo), { style: 'decimal' })}${getCurrencySymbol('EUR')}`
+      } else {
+        priceToLabel.value = ''
+      }
+
       maxPriceTotal.value = Math.round(+props.aggregations.max_price['agg-max-price'].value)
       maxPrice.value = priceTo || Math.round(+props.aggregations.max_price['agg-max-price'].value)
 
@@ -258,6 +277,8 @@ export default defineComponent({
       minPrice,
       minPriceTotal,
       plusIcon,
+      priceFromLabel,
+      priceToLabel,
       resetFilter,
       selections,
       showMobileFilters,
@@ -329,7 +350,7 @@ export default defineComponent({
           <CmwAccordion
             key="mobile-prize"
             size="sm"
-            :has-item="Object.keys(inputParameters).includes('price_from')"
+            :has-item="!!priceFromLabel || !!priceToLabel"
             :footer-label="$t('common.cta.apply')"
             :on-footer-click="handleOnFooterClick"
             :active="cmwActiveSelect === 'mobile-prize'"
@@ -339,118 +360,25 @@ export default defineComponent({
               <span class="block">
                 <span
                   class="block text-left"
-                  :class="{ 'cmw-font-bold': Object.keys(inputParameters).includes('price_from') || Object.keys(inputParameters).includes('price_to') }"
+                  :class="{ 'cmw-font-bold': priceFromLabel || priceToLabel }"
                 >{{ $t('search.price') }}</span>
                 <small
-                  v-if="Object.keys(inputParameters).includes('price_from') && Object.keys(inputParameters).includes('price_to')"
+                  v-if="priceFromLabel && priceToLabel"
                   class="block text-primary text-left text-xs"
                 >
-                  <i18n
-                    path="search.priceFromTo"
-                    tag="span"
-                  >
-                    <template #from>
-                      <i18n-n
-                        v-if="Object.keys(inputParameters).includes('price_from')"
-                        class="inline-block" :value="Number(inputParameters.price_from)"
-                        :format="{ key: 'currency' }"
-                        :locale="getLocaleFromCurrencyCode($cmwStore.isUk ? 'GBP' : 'EUR')"
-                      >
-                        <template #currency="slotProps">
-                          <span class="text-xs">{{ slotProps.currency }}</span>
-                        </template>
-                        <template #integer="slotProps">
-                          <span class="text-xs">{{ slotProps.integer }}</span>
-                        </template>
-                        <template #group="slotProps">
-                          <span class="text-xs">{{ slotProps.group }}</span>
-                        </template>
-                        <template #fraction="slotProps">
-                          <span class="text-xs">{{ slotProps.fraction }}</span>
-                        </template>
-                      </i18n-n>
-                    </template>
-                    <template #to>
-                      <i18n-n
-                        v-if="Object.keys(inputParameters).includes('price_to')"
-                        class="inline-block" :value="Number(inputParameters.price_to)" :format="{ key: 'currency' }"
-                        :locale="getLocaleFromCurrencyCode($cmwStore.isUk ? 'GBP' : 'EUR')"
-                      >
-                        <template #currency="slotProps">
-                          <span class="text-xs">{{ slotProps.currency }}</span>
-                        </template>
-                        <template #integer="slotProps">
-                          <span class="text-xs">{{ slotProps.integer }}</span>
-                        </template>
-                        <template #group="slotProps">
-                          <span class="text-xs">{{ slotProps.group }}</span>
-                        </template>
-                        <template #fraction="slotProps">
-                          <span class="text-xs">{{ slotProps.fraction }}</span>
-                        </template>
-                      </i18n-n>
-                    </template>
-                  </i18n>
+                  {{ $t('search.priceFromTo', { from: priceFromLabel, to: priceToLabel }) }}
                 </small>
                 <small
-                  v-else-if="Object.keys(inputParameters).includes('price_from')"
+                  v-else-if="priceFromLabel"
                   class="block text-primary text-left text-xs"
                 >
-                  <i18n
-                    path="search.priceFrom"
-                    tag="span"
-                  >
-                    <template #from>
-                      <i18n-n
-                        class="inline-block" :value="Number(inputParameters.price_from)"
-                        :format="{ key: 'currency' }"
-                        :locale="getLocaleFromCurrencyCode($cmwStore.isUk ? 'GBP' : 'EUR')"
-                      >
-                        <template #currency="slotProps">
-                          <span class="text-xs">{{ slotProps.currency }}</span>
-                        </template>
-                        <template #integer="slotProps">
-                          <span class="text-xs">{{ slotProps.integer }}</span>
-                        </template>
-                        <template #group="slotProps">
-                          <span class="text-xs">{{ slotProps.group }}</span>
-                        </template>
-                        <template #fraction="slotProps">
-                          <span class="text-xs">{{ slotProps.fraction }}</span>
-                        </template>
-                      </i18n-n>
-                    </template>
-                  </i18n>
+                  {{ $t('search.priceFrom', { from: priceFromLabel }) }}
                 </small>
                 <small
-                  v-else-if="Object.keys(inputParameters).includes('price_to')"
+                  v-else-if="priceToLabel"
                   class="block text-primary text-left text-xs"
                 >
-                  <i18n
-                    path="search.priceTo"
-                    tag="span"
-                  >
-                    <template #to>
-                      <i18n-n
-                        class="inline-block" :value="Number(inputParameters.price_to)"
-                        :format="{ key: 'currency' }"
-                        :locale="getLocaleFromCurrencyCode($cmwStore.isUk ? 'GBP' : 'EUR')"
-                      >
-                        <template #currency="slotProps">
-                          <span class="text-xs">{{ slotProps.currency }}</span>
-                        </template>
-                        <template #integer="slotProps">
-                          <span class="text-xs">{{ slotProps.integer }}</span>
-                        </template>
-                        <template #group="slotProps">
-                          <span class="text-xs">{{ slotProps.group }}</span>
-                        </template>
-                        <template #fraction="slotProps">
-                          <span class="text-xs">{{ slotProps.fraction }}</span>
-                        </template>
-                      </i18n-n>
-                    </template>
-                  </i18n>
+                  {{ $t('search.priceTo', { to: priceToLabel }) }}
                 </small>
               </span>
             </template>
@@ -467,7 +395,7 @@ export default defineComponent({
             v-for="(value, key) in filteredCategories"
             :key="`mobile-${key}`"
             size="sm"
-            :has-item="Object.keys(inputParameters).includes(key)"
+            :has-item="Object.keys(inputParameters).includes(`${key}`)"
             :active="cmwActiveSelect === `mobile-${key}`"
             @update-trigger="handleUpdateTrigger"
           >
@@ -475,10 +403,10 @@ export default defineComponent({
               <span class="block">
                 <span
                   class="block text-left"
-                  :class="{ 'cmw-font-bold': Object.keys(inputParameters).includes(key) }"
+                  :class="{ 'cmw-font-bold': Object.keys(inputParameters).includes(`${key}`) }"
                 >{{ $t(`search.${key}`) }}</span>
                 <small
-                  v-if="Object.keys(inputParameters).includes(key)"
+                  v-if="Object.keys(inputParameters).includes(`${key}`)"
                   class="block text-primary text-left text-xs"
                 >
                   {{ value.find(v => v.selected) && value.find(v => v.selected).simpleLabel }}

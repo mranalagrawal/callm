@@ -1,6 +1,7 @@
 <script lang="ts">
 import type { PropType } from '@nuxtjs/composition-api'
 import { defineComponent, onMounted, ref, useContext } from '@nuxtjs/composition-api'
+
 import type { IProductMapped } from '~/types/product'
 
 export default defineComponent({

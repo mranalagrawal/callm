@@ -2,18 +2,19 @@
 import { defineComponent, inject, ref, useRoute, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
+import { useCart } from '~/store/cart'
+import { useCustomer } from '~/store/customer'
+
 import cartIcon from '~/assets/svg/cart.svg'
 import chevronLeftIcon from '~/assets/svg/chevron-left.svg'
 import closeIcon from '~/assets/svg/close.svg'
-import CustomerWishlist from '~/components/Header/CustomerWishlist.vue'
-import logo from '~/assets/svg/logo-call-me-wine.svg'
 import logoB2b from '~/assets/svg/logo-call-me-wine-b2b.svg'
+import logo from '~/assets/svg/logo-call-me-wine.svg'
 import menuIcon from '~/assets/svg/menu.svg'
-import UserActions from '~/components/Header/UserActions.vue'
 import userIcon from '~/assets/svg/user.svg'
 
-import { useCart } from '~/store/cart'
-import { useCustomer } from '~/store/customer'
+import CustomerWishlist from '~/components/Header/CustomerWishlist.vue'
+import UserActions from '~/components/Header/UserActions.vue'
 
 export default defineComponent({
   components: { CustomerWishlist, UserActions },

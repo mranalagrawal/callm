@@ -1,5 +1,6 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, useContext } from '@nuxtjs/composition-api'
+
 import type { TStores } from '~/config/themeConfig'
 import themeConfig from '~/config/themeConfig'
 import { generateKey } from '~/utilities/strings'

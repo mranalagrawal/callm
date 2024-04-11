@@ -1,5 +1,4 @@
 import { configure, localeChanged, localize } from 'vee-validate'
-import { useVercelKv } from '~/store/vercelKv'
 
 export default function ({ app }) {
   configure({
@@ -15,12 +14,9 @@ export default function ({ app }) {
   })
 
   app.i18n.onLanguageSwitched = async (_, newLocale) => {
-    const { loadMenu } = useVercelKv()
-    const prismicLocale = app.$cmwStore.prismicSettings.isoCode[newLocale]
-
     localize(newLocale)
     localeChanged()
 
-    await loadMenu(prismicLocale)
+    app.$callLog({ msg: `i18n.onLanguageSwitched ${newLocale}`, context: 'info' })
   }
 }

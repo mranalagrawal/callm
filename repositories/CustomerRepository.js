@@ -1,7 +1,7 @@
-import customerUpdate from '~/graphql/mutations/customer/customerUpdate'
 import getCart from '@/graphql/queries/getCart'
 import getCheckoutById from '@/graphql/queries/getCheckoutById'
 import getCustomer from '@/graphql/queries/getCustomer'
+import customerUpdate from '~/graphql/mutations/customer/customerUpdate'
 import { SweetAlertToast } from '~/utilities/Swal'
 
 export default ctx => ({

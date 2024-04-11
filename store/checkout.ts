@@ -1,8 +1,6 @@
 import { defineStore } from 'pinia'
-import { useCustomer } from '~/store/customer'
 
-import type { CheckoutMapped, ICheckoutLineItemMapped, IShopifyCheckout } from '~/types/checkout'
-import type { IProductMapped } from '~/types/product'
+import { useCustomer } from '~/store/customer'
 
 import checkoutAttributesUpdateV2 from '~/graphql/mutations/checkout/checkoutAttributesUpdateV2.graphql'
 import checkoutCreate from '~/graphql/mutations/checkout/checkoutCreate.graphql'
@@ -10,8 +8,10 @@ import checkoutEmailUpdateV2 from '~/graphql/mutations/checkout/checkoutEmailUpd
 import checkoutLineItemsAdd from '~/graphql/mutations/checkout/checkoutLineItemsAdd.graphql'
 import checkoutLineItemsRemove from '~/graphql/mutations/checkout/checkoutLineItemsRemove.graphql'
 import checkoutLineItemsUpdate from '~/graphql/mutations/checkout/checkoutLineItemsUpdate.graphql'
-import { getCountryFromStore } from '~/utilities/currency'
 import getProductsById from '~/graphql/queries/getProductsById.graphql'
+import type { CheckoutMapped, ICheckoutLineItemMapped, IShopifyCheckout } from '~/types/checkout'
+import type { IProductMapped } from '~/types/product'
+import { getCountryFromStore } from '~/utilities/currency'
 import { SweetAlertToast } from '~/utilities/Swal'
 
 interface IState {

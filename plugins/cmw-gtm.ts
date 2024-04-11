@@ -1,10 +1,10 @@
+import type { Plugin } from '@nuxt/types'
 import { storeToRefs } from 'pinia'
 
-import type { Plugin } from '@nuxt/types'
-import type { TStores } from '~/config/themeConfig'
-
-import themeConfig from '~/config/themeConfig'
 import { useCustomer } from '~/store/customer'
+
+import type { TStores } from '~/config/themeConfig'
+import themeConfig from '~/config/themeConfig'
 
 interface ICmwGtmUtils {
   getActionField(route: any): string

@@ -17,36 +17,40 @@ import {
 import { storeToRefs } from 'pinia'
 
 // import LazyHydrate from 'vue-lazy-hydration'
-import type { TISO639 } from '~/config/themeConfig'
-
-import CustomerWishlist from '~/components/Header/CustomerWishlist.vue'
-import Navbar from '~/components/Navbar.vue'
-import TopBar from '~/components/TopBar.vue'
-import useNewsletterSplash from '~/components/composables/useNewsletterSplash'
-import useScreenSize from '~/components/composables/useScreenSize'
 
 import { useCart } from '~/store/cart'
 import { useCustomer } from '~/store/customer'
+import { useLayout } from '~/store/layout'
 import { useVercelKv } from '~/store/vercelKv'
+
+import useNewsletterSplash from '~/components/composables/useNewsletterSplash'
+import useScreenSize from '~/components/composables/useScreenSize'
+import CustomerWishlist from '~/components/Header/CustomerWishlist.vue'
+import Navbar from '~/components/Navbar.vue'
+import TopBar from '~/components/TopBar.vue'
+import type { TISO639 } from '~/config/themeConfig'
 
 export default defineComponent({
   components: {
-    CustomerWishlist,
     // LazyHydrate,
+    CmwSplash: () => import('../components/Base/CmwSplash.vue'),
+    CustomerWishlist,
+    Navbar,
     TheFooter: () => import('../components/TheFooter.vue'),
     TopBar,
-    Navbar,
   },
   setup() {
     const { i18n, $cookies, getRouteBaseName } = useContext()
     const store: any = useStore()
     const route = useRoute()
     const { loadMenu } = useVercelKv()
+    const { loadTopbar, loadFooter } = useLayout()
     const { getCustomer } = useCustomer()
     const { customer } = storeToRefs(useCustomer())
     const { getCartById, handleTemporaryCheckoutReplace, mergeCartCookieWithCheckoutId, getInitialCart } = useCart()
     const { cart } = storeToRefs(useCart())
     const { handleNewsletterSplash } = useNewsletterSplash()
+
     const {
       isMobile,
       isTablet,
@@ -61,10 +65,19 @@ export default defineComponent({
     provide('isDesktopWide', readonly(isDesktopWide))
     provide('hasBeenSet', readonly(hasBeenSet))
 
-    useFetch(async ({ $cmwStore, $cookieHelpers }) => {
-      await loadMenu($cmwStore.prismicSettings.isoCode[i18n.locale as TISO639])
+    const { fetch } = useFetch(async ({ $callLog, $cmwStore, $cookieHelpers }) => {
+      $callLog({ msg: 'fetching layout data on DEFAULT LAYOUT' })
+
       const accessToken = $cookieHelpers.getToken()
-      accessToken && await getCustomer()
+
+      const promises = [
+        loadMenu($cmwStore.prismicSettings.isoCode[i18n.locale as TISO639]),
+        accessToken ? getCustomer() : Promise.resolve(),
+        loadTopbar(),
+        loadFooter(),
+      ]
+
+      await Promise.all(promises)
     })
 
     const isFromApp = computed(() => store.state.headers.fromApp)
@@ -122,6 +135,9 @@ export default defineComponent({
         setTimeout(() => window.scrollTo({ left: 0, top: 0, behavior: 'smooth' }), 300)
       }
     })
+
+    watch(() => i18n.locale, () => fetch())
+
     return {
       cart,
       customer,

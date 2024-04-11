@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent, inject, useContext } from '@nuxtjs/composition-api'
+
 import type { TISO639 } from '~/config/themeConfig'
 import type { ITranslations } from '~/types/common-objects'
 import { getUniqueListBy } from '~/utilities/arrays'

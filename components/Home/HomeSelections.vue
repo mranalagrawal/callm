@@ -1,9 +1,11 @@
 <script lang="ts">
 import { computed, defineComponent, ref, useFetch } from '@nuxtjs/composition-api'
-import bgCarousel from 'assets/images/bg-carousel.png'
+
+import bgCarousel from '~/assets/images/bg-carousel.png'
+
 import { getIconByFeature } from '~/utilities/icons'
-import { generateKey } from '~/utilities/strings'
 import { inRange } from '~/utilities/math'
+import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({
   setup() {

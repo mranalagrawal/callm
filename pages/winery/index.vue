@@ -11,8 +11,8 @@ import {
   useRouter,
   watch,
 } from '@nuxtjs/composition-api'
-import Loader from '~/components/UI/Loader.vue'
 
+import Loader from '~/components/UI/Loader.vue'
 import type { IOptions } from '~/types/types'
 
 interface ILinksRef {

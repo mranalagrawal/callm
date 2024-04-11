@@ -1,5 +1,5 @@
-import type { IMailingAddress } from '~/types/mailingAddress'
 import type { IMoneyV2 } from '~/types/common-objects'
+import type { IMailingAddress } from '~/types/mailingAddress'
 import type { Metafield } from '~/types/metafield'
 
 export interface ICartLineItem {
@@ -27,7 +27,7 @@ export interface ILineItem {
 }
 
 export interface IFulfillmentTrackingInfo {
-  number: String
+  number: string
   url: URL
 }
 

@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia'
+
 import { useCustomer } from '~/store/customer'
 
 import type { IProductRating, IShopifyProduct } from '~/types/product'
 import type { IOptions } from '~/types/types'
-
-import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
-import { getCustomerId } from '~/utilities/shopify'
 import { getIconAsImg } from '~/utilities/icons'
+import { getCustomerId } from '~/utilities/shopify'
+import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
 
 interface IState {
   customerWishlistProducts: IProductRating[]

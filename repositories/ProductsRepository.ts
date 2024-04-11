@@ -1,11 +1,10 @@
 import type { Context } from '@nuxt/types'
 
-import type { GetAllV2Params, GetCollectionByHandleParams, GetGiftCardByHandleParams, ICmwRepoProducts } from '~/plugins/repositories'
-import type { ICollection } from '~/types/collection'
-
 import getCollection from '@/graphql/queries/getCollection.graphql'
 import getGiftCardQuery from '@/graphql/queries/getGiftCard.graphql'
 import getProducts from '@/graphql/queries/getProducts.graphql'
+import type { GetAllV2Params, GetCollectionByHandleParams, GetGiftCardByHandleParams, ICmwRepoProducts } from '~/plugins/repositories'
+import type { ICollection } from '~/types/collection'
 
 export default (ctx: Context) => ({
   async getAllV2({

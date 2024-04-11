@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+
 import type { IOrder } from '~/types/order'
 
 interface IState {

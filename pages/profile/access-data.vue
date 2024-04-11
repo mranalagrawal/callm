@@ -1,9 +1,11 @@
 <script>
-import editIcon from 'assets/svg/edit.svg'
 import { onMounted, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+
 import { useCustomer } from '~/store/customer'
 import { useSplash } from '~/store/splash'
+
+import editIcon from '~/assets/svg/edit.svg'
 
 export default {
   setup() {

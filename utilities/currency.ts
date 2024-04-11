@@ -5,7 +5,7 @@ const getCurrencySymbol = (k: CurrencyCode) => ({
   EUR: '€',
 })[k]
 
-const getLocaleFromCurrencyCode = (code: CurrencyCode): Maybe<string> => ({
+const getLocaleFromCurrencyCode = (code: CurrencyCode): string => ({
   GBP: 'en-GB',
   EUR: 'it-IT',
 })[code]

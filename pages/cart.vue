@@ -2,17 +2,17 @@
 import { computed, defineComponent, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
-import type { IProductBreadcrumbs } from '~/types/product'
+import { useCart } from '~/store/cart'
+import { useCustomer } from '~/store/customer'
 
 import addIcon from '~/assets/svg/add.svg'
 import cartEmptyIcon from '~/assets/svg/cart-empty.svg'
 import toGiftIcon from '~/assets/svg/feature-to-gift.svg'
 
+import type { IProductBreadcrumbs } from '~/types/product'
 import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { generateKey } from '~/utilities/strings'
 import { SweetAlertConfirm } from '~/utilities/Swal'
-import { useCart } from '~/store/cart'
-import { useCustomer } from '~/store/customer'
 
 export default defineComponent({
   setup() {
@@ -24,7 +24,7 @@ export default defineComponent({
     const { cart, suitableGift, cartTotalPrice, cartTotalQuantity } = storeToRefs(cartStore)
     const { getCartById, cartLinesRemove, cartLinesAdd, goToCheckout } = cartStore
     const { customer, customerId } = storeToRefs(customerStore)
-    const orderNote = ref(cart.value?.note)
+    const orderNote = ref(cart.value?.note || '')
     const breadcrumb: IProductBreadcrumbs[] = [
       { handle: '/', label: i18n.t('home'), to: '/' },
       { handle: '/cart', label: i18n.t('cart'), to: '/cart' },
@@ -99,7 +99,7 @@ export default defineComponent({
 
       if (cartIdCookie) {
         await getCartById(cartIdCookie)
-        orderNote.value = cart.value?.note
+        orderNote.value = cart.value?.note || ''
       }
 
       const products = cart.value?.lines?.map((node) => {
@@ -174,15 +174,15 @@ export default defineComponent({
                 <small><strong v-text="cartTotalQuantity" />
                   <span>{{ $tc('profile.orders.card.goods', computedCartTotalPrice) }}</span>
                 </small>
-                <CmwButton class="w-max ml-auto" variant="text" :label="$t('common.cta.emptyCart')" @click.native="emptyCart" />
+                <CmwButton class="js-empty-cart w-max ml-auto" variant="text" :label="$t('common.cta.emptyCart')" @click.native="emptyCart" />
               </div>
               <div v-if="suitableGift?.id && !suitableGiftIsOnCart">
                 <div class="bg-secondary-50 rounded my-2 mx-3 grid grid-cols-[70px_1fr_40px] gap-4 items-center justify-start md:(grid-cols-[70px_1fr_auto])">
                   <div class="w-70px p-2">
                     <img
                       v-show="suitableGift.image?.source?.url"
-                      :src="suitableGift.image.source.url"
-                      :alt="suitableGift.image.source.altText" class="max-h-90px mix-blend-darken"
+                      :src="suitableGift.image?.source?.url"
+                      :alt="suitableGift.image?.source?.altText" class="max-h-90px mix-blend-darken"
                     >
                   </div>
                   <div class="py-2">
@@ -209,7 +209,7 @@ export default defineComponent({
                   <textarea
                     id="order-note"
                     v-model="orderNote"
-                    :placeholder="$t('common.forms.cart.cart_order_note_placeholder')"
+                    :placeholder="$t('common.forms.cart.cart_order_note_placeholder').toString()"
                     rows="4"
                     maxlength="50"
                     class="
@@ -265,6 +265,7 @@ export default defineComponent({
                   <p class="text-sm text-gray-darkest" v-html="$t('shippingCost')" />
                   <CmwButton
                     type="button" variant="default"
+                    class="js-go-to-checkout"
                     @click.native="goToCheckout"
                   >
                     {{ $t('common.cta.goToCheckout') }}

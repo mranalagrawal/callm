@@ -2,13 +2,14 @@
 import { computed, defineComponent, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
-import type { IOptions } from '~/types/types'
+import { useCustomer } from '~/store/customer'
 
 import countriesJson from '~/assets/countries.json'
 import radioCheckedIcon from '~/assets/svg/radio-checked.svg'
 import radioUncheckedIcon from '~/assets/svg/radio-unchecked.svg'
+
+import type { IOptions } from '~/types/types'
 import { SweetAlertToast } from '~/utilities/Swal'
-import { useCustomer } from '~/store/customer'
 
 interface CustomResponse extends Response {
   data: {

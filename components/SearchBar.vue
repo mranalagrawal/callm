@@ -1,6 +1,8 @@
 <script lang="ts">
 import { defineComponent, ref, useContext, useRoute, useRouter, watch } from '@nuxtjs/composition-api'
+
 import searchIcon from '~/assets/svg/search.svg'
+
 import type { TStores } from '~/config/themeConfig'
 import themeConfig from '~/config/themeConfig'
 

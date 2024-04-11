@@ -2,19 +2,20 @@
 import { computed, defineComponent, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
-import type { IGiftCardMapped } from '~/types/product'
+import { useCart } from '~/store/cart'
+import { useCustomer } from '~/store/customer'
 
-import { getCountryFromStore, getCurrencySymbol, getLocaleFromCurrencyCode, getPercent } from '~/utilities/currency'
 import addIcon from '~/assets/svg/add.svg'
 import cartIcon from '~/assets/svg/cart.svg'
 import emailIcon from '~/assets/svg/email.svg'
-import { generateKey } from '~/utilities/strings'
 import heartFullIcon from '~/assets/svg/heart-full.svg'
 import heartIcon from '~/assets/svg/heart.svg'
 import subtractIcon from '~/assets/svg/subtract.svg'
+
+import type { IGiftCardMapped } from '~/types/product'
+import { getCountryFromStore, getCurrencySymbol, getLocaleFromCurrencyCode, getPercent } from '~/utilities/currency'
+import { generateKey } from '~/utilities/strings'
 import { SweetAlertToast } from '~/utilities/Swal'
-import { useCart } from '~/store/cart'
-import { useCustomer } from '~/store/customer'
 
 export default defineComponent({
   setup() {
@@ -346,7 +347,7 @@ export default defineComponent({
                 <div class="">
                   <div v-if="product?.availableForSale" class="relative">
                     <CmwButton
-                      class="gap-2 pl-2 pr-3 py-2"
+                      class="gap-2 pl-2 pr-3 py-2 js-add-to-cart"
                       :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
                       :disabled="!giftCardVariantSelected.id"
                       @click.native="addProductToCustomerCart"
@@ -365,7 +366,10 @@ export default defineComponent({
                       @mouseleave="isOpen = false"
                     >
                       <button
-                        class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l hover:(bg-primary)"
+                        class="
+                        flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l
+                        js-remove-from-cart
+                        hover:(bg-primary)"
                         :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
                         @click="removeProductFromCustomerCart"
                       >
@@ -375,7 +379,9 @@ export default defineComponent({
                         <span class="m-auto text-sm">{{ cartQuantity }}</span>
                       </div>
                       <button
-                        class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-r
+                        class="
+                        flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-r
+                        js-add-to-cart
                         hover:(bg-primary)
                         disabled:(bg-primary-100 cursor-not-allowed)"
                         :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"

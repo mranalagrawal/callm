@@ -2,9 +2,10 @@
 import { ref, useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
-import { SweetAlertToast } from '~/utilities/Swal'
 import { useProductAvailability } from '~/store/product-availability'
 import { useSplash } from '~/store/splash'
+
+import { SweetAlertToast } from '~/utilities/Swal'
 
 export default {
   name: 'ProductRequestNotification',

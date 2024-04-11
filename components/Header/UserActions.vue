@@ -2,12 +2,14 @@
 import { computed, defineComponent, ref, useContext, useRoute, useRouter, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
-import cartIcon from '~/assets/svg/cart.svg'
-import CustomerWishlist from '~/components/Header/CustomerWishlist.vue'
-import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { useCart } from '~/store/cart'
 import { useCustomer } from '~/store/customer'
+
+import cartIcon from '~/assets/svg/cart.svg'
 import userIcon from '~/assets/svg/user.svg'
+
+import CustomerWishlist from '~/components/Header/CustomerWishlist.vue'
+import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 
 type TComponents = 'login' | 'cart' | ''
 
@@ -111,7 +113,7 @@ export default defineComponent({
         </span>
       </button>
       <button
-        class="transition-colors rounded-t py-4 px-8 bg-white hover:(bg-primary-900 text-white)"
+        class="js-go-to-cart transition-colors rounded-t py-4 px-8 bg-white hover:(bg-primary-900 text-white)"
         :class="currentComponent === 'cart' ? 'bg-primary-900 text-white' : ''"
         @click="$router.push(localePath('/cart'))"
         @mouseenter="handleUserActionMouseEnter('cart')"

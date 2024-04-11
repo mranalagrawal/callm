@@ -1,5 +1,6 @@
 <script lang="ts">
 import { computed, defineComponent } from '@nuxtjs/composition-api'
+
 import { getUniqueListBy } from '~/utilities/arrays'
 import { generateKey } from '~/utilities/strings'
 

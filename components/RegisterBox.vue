@@ -2,14 +2,16 @@
 import { ref, useContext, useRouter } from '@nuxtjs/composition-api'
 import type { RawLocation } from 'vue-router'
 
-import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
-import calendarIcon from '~/assets/svg/calendar.svg'
-import { getCustomerId } from '~/utilities/shopify'
-import GqlCustomerCreate from '~/graphql/mutations/customerCreate.graphql'
-import socialFacebook from '~/assets/svg/social-facebook.svg'
-import socialGoogle from '~/assets/svg/social-google.svg'
 import { useCart } from '~/store/cart'
 import { useCustomer } from '~/store/customer'
+
+import calendarIcon from '~/assets/svg/calendar.svg'
+import socialFacebook from '~/assets/svg/social/social-facebook.svg'
+import socialGoogle from '~/assets/svg/social/social-google.svg'
+
+import GqlCustomerCreate from '~/graphql/mutations/customerCreate.graphql'
+import { getCustomerId } from '~/utilities/shopify'
+import { SweetAlertConfirm, SweetAlertToast } from '~/utilities/Swal'
 
 export default {
   setup() {

@@ -1,6 +1,8 @@
 <script lang="ts">
 import { defineComponent, inject, useContext } from '@nuxtjs/composition-api'
+
 import bioOrBiodinamico from '~/assets/images/bio-or-biodinamico.webp'
+
 import { getUniqueListBy } from '~/utilities/arrays'
 
 export default defineComponent({

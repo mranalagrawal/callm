@@ -1,9 +1,12 @@
 <script lang="ts">
 import type { PropType } from '@nuxtjs/composition-api'
 import { defineComponent } from '@nuxtjs/composition-api'
+
 import type { TContextual } from '~/types/types'
 
 export default defineComponent({
+  // eslint-disable-next-line vue/multi-word-component-names
+  name: 'Alert',
   props: {
     severity: {
       type: String as PropType<TContextual>,

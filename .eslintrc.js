@@ -15,18 +15,45 @@ module.exports = {
         ignoreTemplateLiterals: true,
       },
     ],
-    // TODO: Implement sorting rules
-    'sort-imports': ['warn', {
-      ignoreCase: true,
-      ignoreDeclarationSort: false,
-      ignoreMemberSort: false,
-      memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
-      allowSeparatedGroups: true,
-    }],
-    'import/first': 'off',
     'camelcase': 0,
-    'no-console': ['warn', { allow: ['warn', 'error'] }],
-    /* VUE ESLINT RULES */
+    'no-console': ['error', { allow: ['warn', 'error'] }],
+    'import/no-unresolved': 'error',
+    'import/order': [
+      'error',
+      {
+        'groups': [
+          ['builtin', 'external'],
+          'internal',
+          ['sibling', 'parent'],
+          'index',
+        ],
+        'newlines-between': 'always',
+        'distinctGroup': true,
+        'alphabetize': {
+          order: 'asc',
+          caseInsensitive: true,
+        },
+        'pathGroups': [
+          {
+            pattern: 'vue',
+            group: 'builtin',
+            position: 'before',
+          },
+          {
+            pattern: '~/store/**',
+            group: 'internal',
+            position: 'before',
+          },
+          {
+            pattern: '~/assets/**',
+            group: 'internal',
+            position: 'before',
+          },
+        ],
+        'pathGroupsExcludedImportTypes': ['vue'],
+      },
+    ],
+    /* VUE RULES */
     'vue/no-v-for-template-key': 'error',
     'vue/no-v-for-template-key-on-child': 'off',
     'vue/no-v-text-v-html-on-component': 'warn',
@@ -35,52 +62,50 @@ module.exports = {
     'vue/script-setup-uses-vars': 'error',
     'vue/valid-template-root': 0,
     'vue/no-multiple-template-root': 0,
-    'vue/component-tags-order': [
-      'error',
-      {
-        order: ['script', 'template', 'style'],
-      },
-    ],
-    'vue/multi-word-component-names': ['warn', {
+    'vue/component-tags-order': ['error', { order: ['script', 'template', 'style'] }],
+    'vue/multi-word-component-names': ['error', {
       ignores: [
         'Error404',
         'Error410',
         'Navbar',
-        '_handle',
-        'addresses',
-        'billing',
-        'callback',
-        'cart',
-        'catalog',
-        'categories',
-        'contact',
-        'default',
-        'details',
-        'empty',
-        'error',
-        'faq',
-        'index',
-        'login',
-        'preview',
-        'profile',
-        'recover',
-        'register',
-        'search',
-        'shipping',
-        'sustainability',
-        'waiting-for-confirmation',
-        'wishlist',
       ],
     }],
     // Note: We can change this to "camelCase" when upgrading to Vue3 https://eslint.vuejs.org/rules/custom-event-name-casing.html
     'vue/custom-event-name-casing': ['error', 'kebab-case'],
-    /* ANTFU ESLINT RULES */
+    /* ANTFU OVERIDE RULES */
     'antfu/top-level-function': 'off',
     'curly': ['error', 'multi-line', 'consistent'],
     'max-statements-per-line': ['error', { max: 3 }],
     'max-depth': ['error', 5],
-    /* TYPESCRIPT ESLINT RULES */
+    /* TYPESCRIPT RULES */
     '@typescript-eslint/brace-style': ['error', '1tbs', { allowSingleLine: true }],
     '@typescript-eslint/no-unused-vars': ['error', { ignoreRestSiblings: true }],
+    // TODO: Make it error
+    '@typescript-eslint/member-ordering': [
+      'warn',
+      {
+        interfaces: {
+          order: 'alphabetically-case-insensitive',
+        },
+      },
+    ],
   },
+  overrides: [
+    {
+      files: ['pages/**/*.vue', 'layouts/**/*.vue'],
+      rules: {
+        // Disable the rule for components inside the pages and layouts directories
+        'vue/multi-word-component-names': 'off',
+      },
+    },
+  ],
+  settings: {
+    'import/resolver': {
+      nuxt: {
+        extensions: ['.js', '.vue', '.ts', '.d.ts', '.graphql', '.svg'],
+      },
+    },
+  },
+  // Ignore the following files (.svg, .graphql) from being linted
+  ignorePatterns: ['**/*.svg', '**/*.graphql'],
 }

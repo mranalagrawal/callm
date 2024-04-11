@@ -1,11 +1,14 @@
 <script>
 import { computed, onMounted, ref, unref, useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import bookmarkIcon from 'assets/svg/bookmark.svg'
+
+import { useCustomerAddresses } from '~/store/customerAddresses'
+import { useSplash } from '~/store/splash'
+
+import bookmarkIcon from '~/assets/svg/bookmark.svg'
+
 import customerAddressUpdate from '~/graphql/mutations/customerAddressUpdate'
 import { SweetAlertToast } from '~/utilities/Swal'
-import { useSplash } from '~/store/splash'
-import { useCustomerAddresses } from '~/store/customerAddresses'
 
 // noinspection JSUnusedGlobalSymbols
 export default {

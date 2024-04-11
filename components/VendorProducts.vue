@@ -1,5 +1,6 @@
 <script lang="ts">
 import { computed, ref, toRefs, useFetch, watch } from '@nuxtjs/composition-api'
+
 import type { IProductMapped } from '~/types/product'
 
 export default {

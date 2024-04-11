@@ -1,8 +1,8 @@
 <script lang="ts">
 import {
+  type PropType,
   computed,
   defineComponent,
-  type PropType,
   ref,
   useContext,
   useFetch,
@@ -10,24 +10,25 @@ import {
   useRouter, watch,
 } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-import type { IMoneyV2 } from '~/types/common-objects'
 
-import type { IProductMapped } from '~/types/product'
+import { useCart } from '~/store/cart'
+import { useCustomer } from '~/store/customer'
+import { useCustomerWishlist } from '~/store/customerWishlist'
 
-import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
 import addIcon from '~/assets/svg/add.svg'
 import cartIcon from '~/assets/svg/cart.svg'
 import closeIcon from '~/assets/svg/close.svg'
 import emailIcon from '~/assets/svg/email.svg'
 import heartFullIcon from '~/assets/svg/heart-full.svg'
 import heartIcon from '~/assets/svg/heart.svg'
-import { stripHtml } from '~/utilities/strings'
 import subtractIcon from '~/assets/svg/subtract.svg'
-import { SweetAlertToast } from '~/utilities/Swal'
-import { useCart } from '~/store/cart'
-import { useCustomer } from '~/store/customer'
-import { useCustomerWishlist } from '~/store/customerWishlist'
+
 import useShowRequestModal from '~/components/ProductBox/useShowRequestModal'
+import type { IMoneyV2 } from '~/types/common-objects'
+import type { IProductMapped } from '~/types/product'
+import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
+import { stripHtml } from '~/utilities/strings'
+import { SweetAlertToast } from '~/utilities/Swal'
 
 export default defineComponent({
   name: 'ProductBoxHorizontal',
@@ -371,6 +372,7 @@ export default defineComponent({
       <ButtonIcon
         :icon="isOnFavourite ? heartFullIcon : heartIcon"
         class="absolute top-4 right-2" :variant="isOnFavourite ? 'icon-primary' : 'icon'"
+        :class="isOnFavourite ? 'js-remove-from-wishlist' : 'js-add-to-wishlist'"
         :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
         @click.native="handleWishlistClick"
       />
@@ -469,7 +471,7 @@ export default defineComponent({
         <div v-if="!notActive || isRelatedVintageWithHandle">
           <div v-if="product.availableForSale || (isRelatedVintageWithHandle && mappedRelatedVintage?.availableForSale)" class="relative">
             <CmwButton
-              class="gap-2 pl-2 pr-3 py-2"
+              class="gap-2 pl-2 pr-3 py-2 js-add-to-cart"
               :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
               @click.native="addProductToCustomerCart"
             >
@@ -487,7 +489,10 @@ export default defineComponent({
               @mouseleave="isOpen = false"
             >
               <button
-                class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l hover:(bg-primary)"
+                class="
+                flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-l
+                js-remove-from-cart
+                hover:(bg-primary)"
                 :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
                 @click="removeProductFromCustomerCart"
               >
@@ -497,9 +502,11 @@ export default defineComponent({
                 <span class="m-auto text-sm">{{ cartQuantity }}</span>
               </div>
               <button
-                class="flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-r
-                  hover:(bg-primary)
-                  disabled:(bg-primary-100 cursor-not-allowed)"
+                class="
+                flex transition-colors w-[50px] h-[50px] bg-primary-400 rounded-r
+                js-add-to-cart
+                hover:(bg-primary)
+                disabled:(bg-primary-100 cursor-not-allowed)"
                 :disabled="!canAddMore"
                 :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
                 @click="addProductToCustomerCart"

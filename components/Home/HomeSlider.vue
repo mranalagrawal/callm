@@ -1,6 +1,7 @@
 <script lang="ts">
-import debounce from 'lodash.debounce'
 import { onMounted, onUnmounted, ref, useFetch } from '@nuxtjs/composition-api'
+import debounce from 'lodash.debounce'
+
 import { generateKey } from '~/utilities/strings'
 
 interface ISlide {

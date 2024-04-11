@@ -1,7 +1,9 @@
 <script lang="ts">
 import type { PropType } from '@nuxtjs/composition-api'
 import { defineComponent, shallowRef } from '@nuxtjs/composition-api'
-import chevronRightIcon from 'assets/svg/chevron-right.svg'
+
+import chevronRightIcon from '~/assets/svg/chevron-right.svg'
+
 import type { IProductBreadcrumbs } from '~/types/product'
 
 export default defineComponent({

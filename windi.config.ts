@@ -1,10 +1,8 @@
 import * as process from 'node:process'
-import { defineConfig } from 'windicss/helpers'
-
 import colors from 'windicss/colors'
+import { defineConfig } from 'windicss/helpers'
 import plugin from 'windicss/plugin'
 
-// import { } from '@windicss/plugin-animations'
 import type { TStores } from './config/themeConfig'
 import themeConfig from './config/themeConfig'
 
@@ -152,6 +150,7 @@ export default defineConfig({
       typography: {
         DEFAULT: {
           css: {
+            'lineHeight': 'inherit',
             'maxWidth': 'unset',
             'a': {
               'color': themeConfig[store]?.colors.primary[400],

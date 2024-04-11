@@ -1,4 +1,5 @@
 import type { TranslateResult } from 'vue-i18n'
+
 import type { availableUsersValues } from '~/store/customer'
 
 import type { IMoneyV2 } from '~/types/common-objects'
@@ -17,13 +18,13 @@ interface ProductPriceRange {
   minVariantPrice: IMoneyV2
 }
 
-interface IProductPriceList {
+export interface IProductPriceList {
   compareAtPrice: IMoneyV2
   lowestPrice: IMoneyV2
   price: IMoneyV2
 }
 
-type ProductPriceByCustomer = Record<availableUsersValues, IProductPriceList>
+export type ProductPriceByCustomer = Record<availableUsersValues, IProductPriceList>
 
 export interface IShopifyProduct {
   availableForSale: boolean
@@ -167,7 +168,10 @@ export interface IBaseProductMapped {
 export interface IProductMapped extends IBaseProductMapped {
   availableFeatures: TProductFeatures[]
   awards: IProductAward[]
-  bundle?: string
+  bundle?: {
+    product_name: string
+    quantity: string
+  }[]
   characteristics?: any
   compareAtPrice: IMoneyV2
   descriptionHtml: HTMLElement | string

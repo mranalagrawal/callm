@@ -1,11 +1,13 @@
 <script lang="ts">
 import type { PropType } from '@nuxtjs/composition-api'
 import { computed, defineComponent, useContext } from '@nuxtjs/composition-api'
+
+import logo from '~/assets/svg/logo-call-me-wine.svg'
+
 import type { ICompanyAddress, TStores } from '~/config/themeConfig'
 import themeConfig from '~/config/themeConfig'
-import { getLocaleFromCurrencyCode } from '~/utilities/currency'
-import logo from '~/assets/svg/logo-call-me-wine.svg'
 import type { IOrder } from '~/types/order'
+import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({

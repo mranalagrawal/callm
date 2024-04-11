@@ -11,11 +11,13 @@ import {
   useRouter,
   watch,
 } from '@nuxtjs/composition-api'
-import chevronLeftIcon from 'assets/svg/chevron-left.svg'
-import chevronRightIcon from 'assets/svg/chevron-right.svg'
-import filterIcon from 'assets/svg/filter.svg'
 import type { TranslateResult } from 'vue-i18n'
 import type { RawLocation } from 'vue-router'
+
+import chevronLeftIcon from '~/assets/svg/chevron-left.svg'
+import chevronRightIcon from '~/assets/svg/chevron-right.svg'
+import filterIcon from '~/assets/svg/filter.svg'
+
 import type { TStores } from '~/config/themeConfig'
 import themeConfig from '~/config/themeConfig'
 import type { ICollection } from '~/types/collection'

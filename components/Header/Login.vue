@@ -1,14 +1,14 @@
 <script lang="ts">
 import { defineComponent, ref } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
-
 import type { TranslateResult } from 'vue-i18n'
+
+import { useCustomer } from '~/store/customer'
 
 import eyeHideIcon from '~/assets/svg/eye-hide.svg'
 import eyeShowIcon from '~/assets/svg/eye-show.svg'
-import socialFacebook from '~/assets/svg/social-facebook.svg'
-import socialGoogle from '~/assets/svg/social-google.svg'
-import { useCustomer } from '~/store/customer'
+import socialFacebook from '~/assets/svg/social/social-facebook.svg'
+import socialGoogle from '~/assets/svg/social/social-google.svg'
 
 export default defineComponent({
   name: 'HeaderLogin',

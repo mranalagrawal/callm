@@ -3,52 +3,32 @@ import {
   computed,
   defineComponent,
   inject,
-  ref,
+  toRefs,
   useContext,
-  useFetch,
   useRoute,
   useStore,
-  watch,
 } from '@nuxtjs/composition-api'
 import type { Ref } from '@nuxtjs/composition-api'
+import { storeToRefs } from 'pinia'
 
-import { kv } from '@vercel/kv'
+import { useLayout } from '~/store/layout'
 
 import logo from '~/assets/svg/logo-call-me-wine.svg'
-import type { TISO639 } from '~/config/themeConfig'
 
 export default defineComponent({
   setup() {
-    const { getRouteBaseName, i18n } = useContext()
+    const { getRouteBaseName } = useContext()
+    const { footer } = storeToRefs(useLayout())
+    const { copyright } = toRefs(footer.value)
     const store: any = useStore()
     const route = useRoute()
     const isDesktop = inject('isDesktop') as Ref<boolean>
-    const footerData = ref({
-      copyright: [],
-      mobileApps: [],
-      paymentMethods: [],
-      socialLinks: [],
-    })
+
     const isFromApp = computed(() => store.state.headers.fromApp)
     const isHomePage = computed(() => getRouteBaseName(route.value) === 'index')
 
-    const { fetch } = useFetch(async ({ $cmwStore }) => {
-      const locale = i18n.locale as TISO639
-      const prismicLocale = $cmwStore.prismicSettings.isoCode[locale]
-      const data: any = await kv.get(`prismic/footer/footer-${prismicLocale}`)
-
-      footerData.value = {
-        copyright: data.copyright,
-        mobileApps: (data['mobile-apps'] ? data['mobile-apps'][0]?.items : []) || [],
-        paymentMethods: (data['payment-methods'] ? data['payment-methods'][0]?.items : []) || [],
-        socialLinks: (data['social-links'] ? data['social-links'][0]?.items : []) || [],
-      }
-    })
-
-    watch(() => i18n.locale, () => fetch())
-
     return {
-      footerData,
+      copyright,
       isDesktop,
       isFromApp,
       isHomePage,
@@ -59,11 +39,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <footer v-if="!isFromApp || isFromApp && isHomePage" class="bg-gray-lightest print:hidden">
+  <footer v-if="!isFromApp || (isFromApp && isHomePage)" class="bg-gray-lightest print:hidden">
     <ThePreFooter v-if="!$cmwStore.isUk && !isFromApp" />
-    <div
-      class="bg-secondary text-secondary-100 p-4 mt-4"
-    >
+    <div class="bg-secondary text-secondary-100 p-4 mt-4">
       <div class="max-w-screen-xl mx-auto py-4 px-4 mt-4">
         <div v-if="$cmwStore.isIt" class="flex justify-end">
           <NuxtLink
@@ -196,17 +174,17 @@ export default defineComponent({
             </div>
           </div>
         </div>
-        <FooterSocials :mobile-apps="footerData.mobileApps" :social-links="footerData.socialLinks" />
+        <FooterSocialsAndMobileApps />
 
         <hr class="bg-secondary-800 my-4 border-0 h-px">
 
-        <FooterPaymentMethods :payment-methods="footerData.paymentMethods" />
+        <FooterPaymentMethods />
 
         <hr class="bg-secondary-800 my-4 border-0 h-px">
-        <PrismicRichText
-          v-if="!!footerData.copyright.length"
+        <div
+          v-if="copyright"
           class="sm:w-[min(100%,_80%)] m-inline-auto prose dark text-secondary-100 text-center text-xs"
-          :field="footerData.copyright"
+          v-text="copyright"
         />
       </div>
     </div>

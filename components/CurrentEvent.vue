@@ -3,22 +3,23 @@ import { computed, defineComponent, inject, ref, useContext } from '@nuxtjs/comp
 import type { PropType } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
-import type { IGiftCardMapped, IProductMapped } from '~/types/product'
-import type { IEventDay } from '~/pages/calendario-avvento-2023.vue'
-import type { TImage } from '~/types/types'
+import { useCheckout } from '~/store/checkout'
+import { useCustomer } from '~/store/customer'
 
-import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
 import addIcon from '~/assets/svg/add.svg'
-import Alert from '~/components/FeedBack/Alert.vue'
 import cartIcon from '~/assets/svg/cart.svg'
 import closeIcon from '~/assets/svg/close.svg'
 import emailIcon from '~/assets/svg/email.svg'
-import { shopifyRichTextToHTML } from '~/utilities/shopify'
 import subtractIcon from '~/assets/svg/subtract.svg'
-import { SweetAlertToast } from '~/utilities/Swal'
-import { useCheckout } from '~/store/checkout'
-import { useCustomer } from '~/store/customer'
+
+import Alert from '~/components/FeedBack/Alert.vue'
 import useShowRequestModal from '~/components/ProductBox/useShowRequestModal'
+import type { IEventDay } from '~/pages/calendario-avvento-2023.vue'
+import type { IGiftCardMapped, IProductMapped } from '~/types/product'
+import type { TImage } from '~/types/types'
+import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
+import { shopifyRichTextToHTML } from '~/utilities/shopify'
+import { SweetAlertToast } from '~/utilities/Swal'
 
 export default defineComponent({
 

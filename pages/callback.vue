@@ -8,9 +8,10 @@ import {
 } from '@nuxtjs/composition-api'
 import type { RawLocation } from 'vue-router'
 
-import Loader from '~/components/UI/Loader.vue'
 import { useCart } from '~/store/cart'
 import { useCustomer } from '~/store/customer'
+
+import Loader from '~/components/UI/Loader.vue'
 
 export default defineComponent({
   components: { Loader },

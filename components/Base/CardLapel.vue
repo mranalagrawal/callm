@@ -1,6 +1,6 @@
 <script>
-import promoTagIcon from 'assets/svg/promo-tag.svg'
-import lapelIcon from 'assets/svg/lapel.svg'
+import lapelIcon from '~/assets/svg/lapel.svg'
+import promoTagIcon from '~/assets/svg/promo-tag.svg'
 
 // noinspection JSUnusedGlobalSymbols
 export default {

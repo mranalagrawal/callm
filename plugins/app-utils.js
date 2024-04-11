@@ -1,4 +1,5 @@
 import { storeToRefs } from 'pinia'
+
 import { useCart } from '~/store/cart'
 
 export default (context) => {

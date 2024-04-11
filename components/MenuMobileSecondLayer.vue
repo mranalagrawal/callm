@@ -1,9 +1,11 @@
 <script>
 import { computed } from '@nuxtjs/composition-api'
-import closeIcon from 'assets/svg/close.svg'
-import chevronLeftIcon from 'assets/svg/chevron-left.svg'
-import { generateKey } from '~/utilities/strings'
+
+import chevronLeftIcon from '~/assets/svg/chevron-left.svg'
+import closeIcon from '~/assets/svg/close.svg'
+
 import { getIconByFeature } from '~/utilities/icons'
+import { generateKey } from '~/utilities/strings'
 
 export default {
   components: { },

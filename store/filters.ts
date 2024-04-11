@@ -1,5 +1,6 @@
-import { defineStore } from 'pinia'
 import { markRaw } from '@nuxtjs/composition-api'
+import { defineStore } from 'pinia'
+
 import gridIcon from '~/assets/svg/layout-grid.svg'
 import listIcon from '~/assets/svg/layout-list.svg'
 

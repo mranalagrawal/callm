@@ -1,5 +1,6 @@
 <script lang="ts">
 import { ref, useFetch } from '@nuxtjs/composition-api'
+
 import type { ICollection } from '~/types/collection'
 import { initialCollectionData } from '~/types/collection'
 

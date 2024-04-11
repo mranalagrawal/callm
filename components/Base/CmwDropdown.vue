@@ -1,8 +1,10 @@
 <script lang="ts">
+import { defineComponent, getCurrentInstance, ref, toRef, watch } from '@nuxtjs/composition-api'
 import type { PropType } from '@nuxtjs/composition-api'
-import { defineComponent, getCurrentInstance, ref, toRef } from '@nuxtjs/composition-api'
 import type { TranslateResult } from 'vue-i18n'
+
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
+
 import type { TPosition, TSizes } from '~/types/types'
 
 export default defineComponent({
@@ -32,6 +34,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const key = getCurrentInstance()?.proxy.$vnode.key
     const isActive = toRef(props, 'active')
+    const containerRef = ref<Maybe<HTMLElement>>(null)
     const searchTerm = ref('')
 
     const handleTriggerClick = () => emit('update-trigger', key)
@@ -43,13 +46,40 @@ export default defineComponent({
       lg: 'text-sm',
     })[props.size]
 
-    return { isActive, searchTerm, chevronDownIcon, handleTriggerClick, getFontSize }
+    const clickOutsideEvent = (event: Event) => {
+      const { target } = event
+      if (!target) { return }
+
+      // Close the dropdown if the click is outside the dropdown container
+      if (!containerRef.value?.contains(target as HTMLElement)) {
+        handleTriggerClick()
+      }
+    }
+
+    watch(
+      () => isActive.value,
+      (newValue) => {
+        const action = newValue ? 'addEventListener' : 'removeEventListener'
+        // Add or remove the event listener based on the dropdown state
+        document[action]('click', clickOutsideEvent)
+      },
+    )
+
+    return {
+      chevronDownIcon,
+      containerRef,
+      getFontSize,
+      handleTriggerClick,
+      isActive,
+      key,
+      searchTerm,
+    }
   },
 })
 </script>
 
 <template>
-  <div class="relative" :class="isActive ? 'z-baseHigh' : 'z-base' ">
+  <div ref="containerRef" class="relative" :class="isActive ? 'z-baseHigh' : 'z-base' ">
     <button
       type="button"
       class="inherit flex items-center gap-2 z-baseHigh p-3 rounded-t-sm uppercase cmw-font-light

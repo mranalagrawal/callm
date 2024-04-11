@@ -1,4 +1,5 @@
 import Swal from 'sweetalert2/dist/sweetalert2.min'
+
 import { getIconAsImg } from '~/utilities/icons'
 
 export const SweetAlertConfirm = Swal.mixin({
@@ -32,7 +33,7 @@ export const SweetAlertConfirm = Swal.mixin({
     title: 'h3',
     htmlContainer: 'text-body mt-4',
     actions: 'w-3/4',
-    confirmButton: 'btn-base btn-default',
+    confirmButton: 'btn-base btn-default js-confirm-modal-action',
     denyButton: 'btn-base btn-text',
     cancelButton: 'btn-base btn-text',
     loader: 'cmw w-full',

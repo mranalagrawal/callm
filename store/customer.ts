@@ -1,18 +1,17 @@
 import { defineStore } from 'pinia'
 
-import type { IEditingCustomer, IMappedCustomer, IShopifyCustomer } from '~/types/customer'
-
-import { djb2Hash } from '~/utilities/strings'
-import { getCustomerId } from '~/utilities/shopify'
-import { SweetAlertToast } from '~/utilities/Swal'
 import { useCart } from '~/store/cart'
 import { useCheckout } from '~/store/checkout'
 import { useCustomerOrders } from '~/store/customerOrders'
 import { useCustomerWishlist } from '~/store/customerWishlist'
 
+import themeConfig from '~/config/themeConfig'
 import customerAccessTokenCreate from '~/graphql/mutations/authenticateUser.graphql'
 import customerAccessTokenCreateWithMultipass from '~/graphql/mutations/authenticateUserWithMultipass.graphql'
-import themeConfig from '~/config/themeConfig'
+import type { IEditingCustomer, IMappedCustomer, IShopifyCustomer } from '~/types/customer'
+import { getCustomerId } from '~/utilities/shopify'
+import { djb2Hash } from '~/utilities/strings'
+import { SweetAlertToast } from '~/utilities/Swal'
 
 interface IState {
   customer: IMappedCustomer

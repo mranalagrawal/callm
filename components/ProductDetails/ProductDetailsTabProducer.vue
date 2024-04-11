@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
+
 import favouriteIcon from '~/assets/svg/selections/favourite.svg'
 
 export default defineComponent({

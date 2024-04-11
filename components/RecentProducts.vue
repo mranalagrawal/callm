@@ -1,7 +1,9 @@
 <script lang="ts">
 import { computed, defineComponent, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+
 import { useRecentProductsStore } from '~/store/recent'
+
 import type { IProductMapped } from '~/types/product'
 
 export default defineComponent({

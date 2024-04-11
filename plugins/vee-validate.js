@@ -1,6 +1,8 @@
 import Vue from 'vue'
-import { extend, setInteractionMode, ValidationObserver, ValidationProvider } from 'vee-validate'
+
+import { ValidationObserver, ValidationProvider, extend, setInteractionMode } from 'vee-validate'
 import { confirmed, email, is, is_not, max, min, oneOf, regex, required } from 'vee-validate/dist/rules'
+
 import { regexRules } from '~/utilities/validators'
 
 /* We are using V3 for now, later we can move to V4 when nuxt 3 is ready

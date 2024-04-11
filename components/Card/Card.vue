@@ -3,7 +3,6 @@ import { computed, defineComponent } from '@nuxtjs/composition-api'
 import type { PropType } from '@nuxtjs/composition-api'
 
 import type { DEPRECATED_FEATURES, FEATURES } from '~/utilities/icons'
-
 import { getIconByFeature } from '~/utilities/icons'
 
 export default defineComponent({

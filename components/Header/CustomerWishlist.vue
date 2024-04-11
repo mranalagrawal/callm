@@ -2,9 +2,10 @@
 import { computed, defineComponent, onMounted, useStore } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
-import heartIcon from '~/assets/svg/heart.svg'
 import { useCustomer } from '~/store/customer'
 import { useCustomerWishlist } from '~/store/customerWishlist'
+
+import heartIcon from '~/assets/svg/heart.svg'
 
 export default defineComponent({
   name: 'CustomerWishlist',

@@ -1,0 +1,14 @@
+fragment FRONTEND_IMAGE_FRAGMENT on Metaobject {
+  link: field(key: "link") { value }
+  image: field(key: "image") {
+    reference {
+      ...on MediaImage {
+        image {
+          altText
+          id
+          url
+        }
+      }
+    }
+  }
+}

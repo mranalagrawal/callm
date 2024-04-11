@@ -1,7 +1,8 @@
 <script lang="ts">
 import { ref, toRefs, useContext, useFetch, watch } from '@nuxtjs/composition-api'
-import type { IProductMapped } from '~/types/product'
+
 import getProductRecommendations from '@/graphql/queries/getProductRecommendations.graphql'
+import type { IProductMapped } from '~/types/product'
 
 export default {
   props: ['id'],

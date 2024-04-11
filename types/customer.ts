@@ -1,5 +1,5 @@
-import type { IBillingAddress, IMailingAddress } from '~/types/mailingAddress'
 import type { IShopifyCart } from '~/types/cart'
+import type { IBillingAddress, IMailingAddress } from '~/types/mailingAddress'
 
 enum CustomerErrorCode {
   ALREADY_ENABLED,

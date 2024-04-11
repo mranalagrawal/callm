@@ -1,6 +1,8 @@
 <script lang="ts">
 import { defineComponent, ref, useFetch } from '@nuxtjs/composition-api'
-import readMoreBg from 'assets/images/enoteca.jpeg'
+
+import readMoreBg from '~/assets/images/enoteca.jpeg'
+
 import { initialPageData } from '~/config/prismicConfig'
 import type { IPrismicPageData } from '~/types/prismic'
 

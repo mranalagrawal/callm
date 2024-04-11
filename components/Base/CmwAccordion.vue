@@ -2,7 +2,9 @@
 import type { PropType } from '@nuxtjs/composition-api'
 import { defineComponent, getCurrentInstance, ref, toRef } from '@nuxtjs/composition-api'
 import type { TranslateResult } from 'vue-i18n'
+
 import chevronDownIcon from '~/assets/svg/chevron-down.svg'
+
 import type { TSizes } from '~/types/types'
 
 export default defineComponent({

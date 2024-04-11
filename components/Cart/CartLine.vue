@@ -1,17 +1,23 @@
 <script lang="ts">
-import type { PropType } from '@nuxtjs/composition-api'
 import { computed, defineComponent, toRefs, useContext } from '@nuxtjs/composition-api'
-import addIcon from 'assets/svg/add.svg'
-import deleteIcon from 'assets/svg/delete.svg'
-import subtractIcon from 'assets/svg/subtract.svg'
-import toGiftIcon from 'assets/svg/feature-to-gift.svg'
+import type { PropType } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
+
 import { useCart } from '~/store/cart'
 import { useCustomer } from '~/store/customer'
+
+import addIcon from '~/assets/svg/add.svg'
+import deleteIcon from '~/assets/svg/delete.svg'
+import toGiftIcon from '~/assets/svg/feature-to-gift.svg'
+import subtractIcon from '~/assets/svg/subtract.svg'
+
 import type { ICartLinesMapped } from '~/types/cart'
+import type { IMoneyV2 } from '~/types/common-objects'
+import type { IProductPriceList } from '~/types/product'
 import { getLocaleFromCurrencyCode } from '~/utilities/currency'
 
 export default defineComponent({
+  name: 'CartLine',
   props: {
     cartLineItem: {
       type: Object as PropType<ICartLinesMapped>,
@@ -20,16 +26,18 @@ export default defineComponent({
     isLast: Boolean,
   },
   setup(props) {
-    const { i18n, $cmwStore } = useContext()
+    const { i18n, $productMapping, $cmwStore: { settings: { salesChannel } } } = useContext()
     const { customerId, getCustomerType } = storeToRefs(useCustomer())
     const { cart } = storeToRefs(useCart())
     const { cartLinesRemove, cartLinesUpdate } = useCart()
-    const { $cmwStore: { settings: { salesChannel } } } = useContext()
 
     const { product, quantityAvailable } = toRefs(props.cartLineItem.merchandise)
     const productDetails = computed(() => product.value?.details?.value ? JSON.parse(product.value.details.value) : undefined)
     const cartQuantity = computed(() => props.cartLineItem.quantity)
     const canRemoveOne = computed(() => props.cartLineItem.quantity > 0)
+
+    const priceLists: Maybe<Partial<IProductPriceList>> = props.cartLineItem.priceLists ? props.cartLineItem.priceLists[getCustomerType.value] : null
+    const availableFeatures = Object.keys(productDetails.value).length ? $productMapping.availableFeatures(productDetails.value) : []
 
     const amountMax = computed(() => {
       if (!productDetails.value) { return 0 }
@@ -43,13 +51,17 @@ export default defineComponent({
     const canAddMore = computed(() => product.value.isGiftCard
         || (amountMax.value - cartQuantity.value) > 0)
 
-    const finalPrice = computed(() => !product.value.isGiftCard
-      ? JSON.parse(product.value.details.value).priceLists[$cmwStore.settings.salesChannel][getCustomerType.value]
-      : props.cartLineItem.merchandise.price.amount)
+    const finalPrice = computed<IMoneyV2>(() => !product.value.isGiftCard
+      ? priceLists?.price
+      : props.cartLineItem.merchandise.price)
+
+    const compareAtPrice = computed<IMoneyV2>(() => !product.value.isGiftCard
+      ? priceLists?.compareAtPrice
+      : props.cartLineItem.merchandise.compareAtPrice)
 
     const isSuitableGift = computed(() => props.cartLineItem.attributes.some(attr => attr.key === 'gift'))
 
-    const isOnSale = computed(() => finalPrice.value < +props.cartLineItem.merchandise.price.amount)
+    const isOnSale = computed(() => availableFeatures?.includes('isInPromotion'))
 
     const productUrl = computed(() =>
       !product.value.isGiftCard
@@ -92,6 +104,7 @@ export default defineComponent({
       amountMax,
       canAddMore,
       cartLinesUpdate,
+      compareAtPrice,
       customerId,
       deleteIcon,
       finalPrice,
@@ -141,7 +154,7 @@ export default defineComponent({
             <button
               class="flex transition-colors w-full h-full bg-white rounded-sm border-2 border-primary
             disabled:(border-gray-light opacity-50 cursor-not-allowed)"
-              :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
+              :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART').toString()"
               @click="subtractQuantity"
             >
               <VueSvgIcon class="m-auto" :data="subtractIcon" width="14" height="14" color="#992545" />
@@ -151,7 +164,7 @@ export default defineComponent({
               class="flex transition-colors w-full h-full bg-white rounded-sm border-2 border-primary
                disabled:(border-gray-light opacity-50 cursor-not-allowed)"
               :disabled="!canAddMore"
-              :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
+              :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART').toString()"
               @click="addQuantity"
             >
               <VueSvgIcon class="m-auto" :data="addIcon" width="14" height="14" color="#992545" />
@@ -164,15 +177,15 @@ export default defineComponent({
             class="block line-through text-gray text-sm text-right"
           >
             {{
-              $n(Number(cartLineItem.quantity * +cartLineItem.merchandise.price.amount),
+              $n(Number(cartLineItem.quantity * +compareAtPrice.amount),
                  'currency',
-                 getLocaleFromCurrencyCode(cartLineItem.merchandise.price.currencyCode))
+                 getLocaleFromCurrencyCode(compareAtPrice.currencyCode))
             }}
           </span>
           <i18n-n
             v-if="finalPrice"
-            class="block text-right" :value="cartLineItem.quantity * finalPrice" :format="{ key: 'currency' }"
-            :locale="getLocaleFromCurrencyCode(cartLineItem.merchandise.price.currencyCode)"
+            class="block text-right" :value="cartLineItem.quantity * Number(finalPrice.amount)" :format="{ key: 'currency' }"
+            :locale="getLocaleFromCurrencyCode(finalPrice.currencyCode)"
           >
             <template #currency="slotProps">
               <span class="text-lg cmw-font-bold !leading-none">{{ slotProps.currency }}</span>

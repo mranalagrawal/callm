@@ -1,27 +1,26 @@
 <script lang="ts">
 import { computed, defineComponent, ref, useContext, useFetch, useRoute, useRouter, watch } from '@nuxtjs/composition-api'
+import type { PropType } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
-import addIcon from 'assets/svg/add.svg'
-import cartIcon from 'assets/svg/cart.svg'
-import closeIcon from 'assets/svg/close.svg'
-import emailIcon from 'assets/svg/email.svg'
-import heartFullIcon from 'assets/svg/heart-full.svg'
-import heartIcon from 'assets/svg/heart.svg'
-import subtractIcon from 'assets/svg/subtract.svg'
-
-import type { PropType } from '@nuxtjs/composition-api'
-
-import type { IMoneyV2 } from '~/types/common-objects'
-import type { IProductMapped } from '~/types/product'
-
-import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
-import { generateKey } from '~/utilities/strings'
-import { SweetAlertToast } from '~/utilities/Swal'
 import { useCart } from '~/store/cart'
 import { useCustomer } from '~/store/customer'
 import { useCustomerWishlist } from '~/store/customerWishlist'
+
+import addIcon from '~/assets/svg/add.svg'
+import cartIcon from '~/assets/svg/cart.svg'
+import closeIcon from '~/assets/svg/close.svg'
+import emailIcon from '~/assets/svg/email.svg'
+import heartFullIcon from '~/assets/svg/heart-full.svg'
+import heartIcon from '~/assets/svg/heart.svg'
+import subtractIcon from '~/assets/svg/subtract.svg'
+
 import useShowRequestModal from '@/components/ProductBox/useShowRequestModal'
+import type { IMoneyV2 } from '~/types/common-objects'
+import type { IProductMapped } from '~/types/product'
+import { getCountryFromStore, getLocaleFromCurrencyCode } from '~/utilities/currency'
+import { generateKey } from '~/utilities/strings'
+import { SweetAlertToast } from '~/utilities/Swal'
 
 export default defineComponent({
   name: 'ProductBoxVertical',
@@ -376,6 +375,7 @@ export default defineComponent({
           <ButtonIcon
             :icon="isOnFavourite ? heartFullIcon : heartIcon"
             class="z-baseLow" :variant="isOnFavourite ? 'icon-primary' : 'icon'"
+            :class="isOnFavourite ? 'js-remove-from-wishlist' : 'js-add-to-wishlist'"
             :aria-label="isOnFavourite ? $t('enums.accessibility.role.REMOVE_FROM_WISHLIST') : $t('enums.accessibility.role.ADD_TO_WISHLIST')"
             @click.native="handleWishlistClick"
           />
@@ -412,6 +412,7 @@ export default defineComponent({
       <div v-if="!notActive || isRelatedVintageWithHandle" class="c-productBox__cart justify-self-baseline place-self-end">
         <div v-if="product.availableForSale || (isRelatedVintageWithHandle && mappedRelatedVintage?.availableForSale)" class="mr-3 relative">
           <ButtonIcon
+            class="js-add-to-cart"
             variant="ghost"
             :icon="cartIcon"
             :aria-label="$t('enums.accessibility.role.ADD_TO_CART')"
@@ -428,9 +429,11 @@ export default defineComponent({
             @mouseleave="isOpen = false"
           >
             <button
-              class="flex transition-colors w-[44px] h-[44px] bg-primary-400 rounded-t-sm
-                 hover:(bg-primary)
-                 disabled:(bg-primary-100 cursor-not-allowed)"
+              class="
+              flex transition-colors w-[44px] h-[44px] bg-primary-400 rounded-t-sm
+              js-add-to-cart
+              hover:(bg-primary)
+              disabled:(bg-primary-100 cursor-not-allowed)"
               :disabled="!canAddMore"
               :aria-label="!canAddMore ? '' : $t('enums.accessibility.role.ADD_TO_CART')"
               @click="addProductToCustomerCart"
@@ -441,7 +444,10 @@ export default defineComponent({
               <span class="m-auto text-sm">{{ cartQuantity }}</span>
             </div>
             <button
-              class="flex transition-colors w-[44px] h-[44px] bg-primary-400 rounded-b-sm hover:(bg-primary)"
+              class="
+              flex transition-colors w-[44px] h-[44px] bg-primary-400 rounded-b-sm
+              js-remove-from-cart
+              hover:(bg-primary)"
               :aria-label="$t('enums.accessibility.role.REMOVE_FROM_CART')"
               @click="removeProductFromCustomerCart"
             >

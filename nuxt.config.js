@@ -1,6 +1,6 @@
 /* import { apiEndpoint } from "./sm.json"; */
-import { join } from 'node:path'
 import fetch from 'node-fetch'
+import { join } from 'node:path'
 
 // Todo: Move these function to external files
 // import getSitemapProducts from './utilities/getSitemapProducts'
