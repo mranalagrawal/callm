@@ -16,10 +16,10 @@ module.exports = {
       },
     ],
     'camelcase': 0,
-    'no-console': ['warn', { allow: ['warn', 'error'] }],
-    'import/no-unresolved': 'error', // TODO: make it error
+    'no-console': ['error', { allow: ['warn', 'error'] }],
+    'import/no-unresolved': 'error',
     'import/order': [
-      'warn',
+      'error',
       {
         'groups': [
           ['builtin', 'external'],
@@ -80,6 +80,15 @@ module.exports = {
     /* TYPESCRIPT RULES */
     '@typescript-eslint/brace-style': ['error', '1tbs', { allowSingleLine: true }],
     '@typescript-eslint/no-unused-vars': ['error', { ignoreRestSiblings: true }],
+    // TODO: Make it error
+    '@typescript-eslint/member-ordering': [
+      'warn',
+      {
+        interfaces: {
+          order: 'alphabetically-case-insensitive',
+        },
+      },
+    ],
   },
   overrides: [
     {
