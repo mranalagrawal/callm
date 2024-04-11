@@ -1,7 +1,6 @@
 <script lang="ts">
 import {
-  type PropType,
-  defineComponent,
+  type PropType, computed, defineComponent,
 } from '@nuxtjs/composition-api'
 
 import type { IMoneyV2 } from '~/types/common-objects'
@@ -15,8 +14,18 @@ export default defineComponent({
       required: true,
     },
   },
-  setup() {
-    return { }
+  setup(props) {
+    const priceLength = computed(() => Number(props.finalPrice.amount).toFixed(2).length)
+
+    const priceFontSize = ({
+      '-short': priceLength.value < 7,
+      '-long': priceLength.value >= 7,
+    })
+
+    return {
+      priceFontSize,
+      priceLength,
+    }
   },
   methods: {
     getLocaleFromCurrencyCode,
@@ -31,34 +40,79 @@ export default defineComponent({
     :locale="getLocaleFromCurrencyCode(finalPrice.currencyCode)"
   >
     <template #currency="slotProps">
-      <span class="text-sm md:text-base">{{ slotProps.currency }}</span>
+      <span class="text-long md:text-base">{{ slotProps.currency }}</span>
     </template>
     <template #integer="slotProps">
-      <span class="c-finalPrice__integer inline-block leading-none cmw-font-bold m-0">{{ slotProps.integer }}</span>
+      <span
+        class="c-finalPrice__integer inline-block leading-none cmw-font-bold m-0"
+        :class="[priceFontSize]"
+      >{{ slotProps.integer }}</span>
     </template>
     <template #group="slotProps">
-      <span class="c-finalPrice__group cmw-font-bold">{{ slotProps.group }}</span>
+      <span
+        class="c-finalPrice__group cmw-font-bold"
+        :class="[priceFontSize]"
+      >{{ slotProps.group }}</span>
     </template>
     <template #fraction="slotProps">
-      <span class="text-sm md:text-base">{{ slotProps.fraction }}</span>
+      <span
+        class="c-finalPrice__fraction"
+        :class="[priceFontSize]"
+      >{{ slotProps.fraction }}</span>
     </template>
   </i18n-n>
 </template>
 
 <style scoped>
-.c-finalPrice__integer, .c-finalPrice__group {
+.c-finalPrice__integer.-short, .c-finalPrice__group.-short {
+  @apply text-3xl;
+}
+
+.c-finalPrice__integer.-long, .c-finalPrice__group.-long {
   @apply text-xl;
 }
 
+.c-finalPrice__fraction.-short {
+  @apply text-xs;
+}
+
+.c-finalPrice__fraction.-long {
+  @apply text-xs;
+}
+
 @container product-box (min-width: 180px) {
-  .c-finalPrice__integer, .c-finalPrice__group {
+  .c-finalPrice__integer.-short, .c-finalPrice__group.-short {
     @apply text-2xl;
+  }
+
+  .c-finalPrice__integer.-long, .c-finalPrice__group.-long {
+    @apply text-2xl;
+  }
+
+  .c-finalPrice__fraction.-short {
+    @apply text-base;
+  }
+
+  .c-finalPrice__fraction.-long {
+    @apply text-base;
   }
 }
 
 @container product-box (min-width: 250px) {
-  .c-finalPrice__integer, .c-finalPrice__group {
+  .c-finalPrice__integer.-short, .c-finalPrice__group.-short {
     @apply text-5xl;
+  }
+
+  .c-finalPrice__integer.-long, .c-finalPrice__group.-long {
+    @apply text-5xl;
+  }
+
+  .c-finalPrice__fraction.-short {
+    @apply text-lg;
+  }
+
+  .c-finalPrice__fraction.-long {
+    @apply text-lg;
   }
 }
 </style>
