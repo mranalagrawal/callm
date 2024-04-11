@@ -1,7 +1,6 @@
 const fs = require('node:fs')
 
-// eslint-disable-next-line no-console
-console.log('Creating vercel.json file...')
+console.warn('Creating vercel.json file...')
 
 /* const blogBaseUrl = process.env.DEPLOY_ENV === 'prod'
   ? 'https://blog.callmewine.com/'

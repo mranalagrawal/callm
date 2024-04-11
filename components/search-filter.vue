@@ -91,7 +91,6 @@ export default defineComponent({
       philosophies: [],
     })
     const maindata = ref({})
-    // const seoTitleReplace = ref('')
 
     const allSelections = [
       'artisanal',
@@ -115,14 +114,6 @@ export default defineComponent({
       pageFullDescription: '',
       mainFilters: [],
     })
-
-    /* const hrefLang = {
-      'it': 'https://www.callmewine.com/catalog',
-      'en': 'https://www.callmewine.com/en/catalog',
-      'fr': 'https://callmewine.fr/catalog',
-      'de': 'https://callmewine.de/catalog',
-      'en-gb': 'https://callmewine.co.uk/catalog',
-    } */
 
     const searchedTerm = ref('')
 
@@ -323,8 +314,8 @@ export default defineComponent({
 
       if (priceFrom) {
         const priceFromLabel = $cmwStore.isUk
-          ? `${getCurrencySymbol('GBP')} ${i18n.n(Number(priceFrom), { style: 'decimal' })}`
-          : `${i18n.n(Number(priceFrom), { style: 'decimal' })} ${getCurrencySymbol('EUR')}`
+          ? `${getCurrencySymbol('GBP')}${i18n.n(Number(priceFrom), { style: 'decimal' })}`
+          : `${i18n.n(Number(priceFrom), { style: 'decimal' })}${getCurrencySymbol('EUR')}`
 
         view.value.priceFrom = {
           key: 'priceFrom',
@@ -337,8 +328,8 @@ export default defineComponent({
 
       if (priceTo) {
         const priceToLabel = $cmwStore.isUk
-          ? `${getCurrencySymbol('GBP')} ${i18n.n(Number(priceTo), { style: 'decimal' })}`
-          : `${i18n.n(Number(priceTo), { style: 'decimal' })} ${getCurrencySymbol('EUR')}`
+          ? `${getCurrencySymbol('GBP')}${i18n.n(Number(priceTo), { style: 'decimal' })}`
+          : `${i18n.n(Number(priceTo), { style: 'decimal' })}${getCurrencySymbol('EUR')}`
 
         view.value.priceTo = {
           key: 'priceTo',
@@ -392,12 +383,12 @@ export default defineComponent({
         const toParam = Number(props.inputParameters.price_to || 0)
 
         const from = $cmwStore.isUk
-          ? `${getCurrencySymbol('GBP')} ${i18n.n(Number(fromParam), { style: 'decimal' })}`
-          : `${i18n.n(Number(fromParam), { style: 'decimal' })} ${getCurrencySymbol('EUR')}`
+          ? `${getCurrencySymbol('GBP')}${i18n.n(Number(fromParam), { style: 'decimal' })}`
+          : `${i18n.n(Number(fromParam), { style: 'decimal' })}${getCurrencySymbol('EUR')}`
 
         const to = $cmwStore.isUk
-          ? `${getCurrencySymbol('GBP')} ${i18n.n(Number(toParam), { style: 'decimal' })}`
-          : `${i18n.n(Number(toParam), { style: 'decimal' })} ${getCurrencySymbol('EUR')}`
+          ? `${getCurrencySymbol('GBP')}${i18n.n(Number(toParam), { style: 'decimal' })}`
+          : `${i18n.n(Number(toParam), { style: 'decimal' })}${getCurrencySymbol('EUR')}`
 
         h1Words.push(i18n.t('search.priceFromTo', { from, to }))
       } else {
@@ -662,7 +653,7 @@ export default defineComponent({
       <template v-else>
         {{ seoTitleReplace }}
         <span v-for="selection in activeSelections" :key="selection">
-          {{ $t(`common.features.${selection}`) }}
+          <span v-if="seoTitleReplace"> - </span>{{ $t(`common.features.${selection}`) }}
         </span>
       </template>
     </h1>

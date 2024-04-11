@@ -408,7 +408,7 @@ export default defineComponent({
                 :region="metaFields.region"
               />
             </div>
-            <div v-if="!isDesktop" class="px-4 md:order-3" v-html="$cmwStore.isUk ? stripHtmlAnchors(brand.contentHtml) : brand.contentHtml" />
+            <div v-if="!isDesktop" class="prose px-4 md:order-3" v-html="$cmwStore.isUk ? stripHtmlAnchors(brand.contentHtml) : brand.contentHtml" />
           </div>
         </div>
         <div v-if="brand && brand.title" id="brand-products" ref="brandProductsRef">

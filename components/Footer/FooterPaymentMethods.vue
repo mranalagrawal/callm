@@ -37,7 +37,7 @@ export default {
       md:grid-cols-[repeat(8,minmax(0,_48px))]
 "
     >
-      <img v-for="({ url, id, altText }) in paymentMethods" :key="generateKey(id)" :src="url" :alt="altText">
+      <img v-for="({ url, id, altText }) in paymentMethods" :key="generateKey(id)" class="rounded-sm" :src="url" :alt="altText">
     </div>
   </div>
 </template>
