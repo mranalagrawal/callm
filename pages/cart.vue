@@ -77,7 +77,7 @@ export default defineComponent({
                 value: 'true',
               },
               {
-                key: 'gtmProductData',
+                key: '_gtmProductData',
                 value: suitableGift.value?.gtmProductData ? JSON.stringify(suitableGift.value.gtmProductData) : 'false',
               },
               {
@@ -103,7 +103,8 @@ export default defineComponent({
       }
 
       const products = cart.value?.lines?.map((node) => {
-        const gtmProductData = node.attributes.find(v => v.key === 'gtmProductData')
+        const gtmProductData = node.attributes
+          .find(el => el.key === 'gtmProductData' || el.key === '_gtmProductData')
         const productDataJson = gtmProductData?.value ?? null
         return productDataJson
           ? {

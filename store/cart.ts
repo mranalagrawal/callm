@@ -25,7 +25,8 @@ interface IState {
 }
 
 const parseGtmProductData = (item: IShopifyCartLineInput | ICartLinesMapped) => {
-  const gtmProductData = item.attributes.find(el => el.key === 'gtmProductData')
+  const gtmProductData = item.attributes
+    .find(el => el.key === 'gtmProductData' || el.key === '_gtmProductData')
 
   if (gtmProductData) {
     return JSON.parse(gtmProductData.value)

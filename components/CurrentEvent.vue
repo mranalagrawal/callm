@@ -184,12 +184,12 @@ export default defineComponent({
       const getGtmProductData = () => {
         if (this.product.isGiftCard && this.productVariant) {
           return {
-            key: 'gtmProductData',
+            key: '_gtmProductData',
             value: this.product.gtmProductData ? JSON.stringify(this.product.gtmProductData) : 'false',
           }
         } else {
           return {
-            key: 'gtmProductData',
+            key: '_gtmProductData',
             value: this.giftCardProduct?.variants[0]?.gtmProductData ? JSON.stringify(this.giftCardProduct.variants[0].gtmProductData) : 'false',
           }
         }
