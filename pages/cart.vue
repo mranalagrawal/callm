@@ -254,18 +254,8 @@ export default defineComponent({
                   >{{ $t('common.forms.cart.cart_order_note') }}</label>
                 </div>
               </div>
-              <div class="my-4">
-                <p class="text-sm mt-2">
-                  {{ $t('continueShopping') }}
-                  <NuxtLink
-                    class="cmw-font-bold text-primary-400"
-                    :to="localePath('/')"
-                  >
-                    {{ $t('common.cta.continueShopping') }}
-                  </NuxtLink>
-                </p>
-              </div>
             </div>
+            <!-- CART SUMMARY -->
             <div>
               <div class="text-center my-2 overline-2 uppercase text-secondary-700">
                 {{
@@ -297,15 +287,14 @@ export default defineComponent({
               </div>
             </div>
           </div>
+          <RecommendedCartProducts :id="cart.lines[0].merchandise.product.id" />
         </div>
         <div v-else>
           <h1 class="h2 my-4" v-text="$t('navbar.cart.empty')" />
           <div class="text-center my-12">
             <VueSvgIcon :data="cartEmptyIcon" width="200" height="200" original />
           </div>
-          <div class="mt-8">
-            <CmwButton :to="localePath('/')" class="w-max mx-auto" :label="$t('common.cta.continueShopping')" />
-          </div>
+          <RecommendedEmptyCartProducts />
         </div>
       </ClientOnly>
     </div>

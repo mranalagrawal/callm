@@ -8,7 +8,6 @@ export default {
     cancel: 'Cancel',
     cannot_order: 'Available only for registered users',
     confirm: 'Confirm',
-    continueShopping: 'Continue shopping',
     emptyCart: 'Empty Cart',
     exit: 'Exit',
     goToCheckout: 'Go to the checkout',

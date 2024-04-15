@@ -8,7 +8,6 @@ export default {
     cancel: 'Annuler',
     cannot_order: '',
     confirm: 'Confirm',
-    continueShopping: 'Continuer vos achats',
     emptyCart: 'Panier Vide',
     exit: 'Sortie',
     goToCheckout: 'Aller à la caisse',

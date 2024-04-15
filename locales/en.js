@@ -25,7 +25,10 @@ export default {
     ...common.forms,
     ...common.info,
     carousel: {
+      emptyCart: 'Recommended for you',
       recommendedProducts: 'Often bought together',
+      thresholdNotReached: 'Add one of these products for free shipping',
+      thresholdReached: 'Complete your purchase by adding one of these products',
     },
   },
   pages: {
@@ -51,7 +54,6 @@ export default {
   viewMore: 'View more',
   cart: 'Cart',
   cartDetails: 'Shopping cart detail',
-  continueShopping: 'Do you want to add other products to your shopping?',
   shipping: {
     discountCode: 'If you have a <strong>discount code</strong> you can enter it later, before paying',
     cost: 'The <strong>shipping costs</strong> will be added to the checkout, after choosing the method.',

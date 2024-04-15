@@ -62,6 +62,7 @@ export default (ctx: Context) => ({
     handle = '',
     filters = { available: true },
     sortKey = 'COLLECTION_DEFAULT',
+    first = 250,
   }: GetCollectionByHandleParams,
   ): Promise<ICollection> {
     return ctx.$graphql.default.request(getCollection, {
@@ -69,12 +70,13 @@ export default (ctx: Context) => ({
       handle,
       filters,
       sortKey,
+      first,
     })
       .then(({ collection }) => {
         if (collection) {
           return {
             ...collection,
-            products: collection?.products?.nodes?.length && ctx.$productMapping.fromShopify(collection.products.nodes),
+            products: collection?.products?.nodes?.length ? ctx.$productMapping.fromShopify(collection.products.nodes) : [],
           }
         } else {
           return {}

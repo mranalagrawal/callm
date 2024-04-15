@@ -8,7 +8,6 @@ export default {
     cancel: 'Stornieren',
     cannot_order: '',
     confirm: 'Bestätigung',
-    continueShopping: 'Mit dem Einkaufen fortfahren',
     emptyCart: 'Leerer Warenkorb',
     exit: 'Ausfahrt',
     goToCheckout: 'Gehen Sie zur Kasse',

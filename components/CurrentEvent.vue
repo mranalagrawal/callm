@@ -386,9 +386,6 @@ export default defineComponent({
           </div>
         </div>
       </div>
-      <CmwButton :to="localePath('/')" variant="text" class="w-max m-inline-auto">
-        <span>{{ $t('common.cta.continueShopping') }}</span>
-      </CmwButton>
     </div>
   </div>
 </template>

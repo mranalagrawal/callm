@@ -25,7 +25,10 @@ export default {
     ...common.forms,
     ...common.info,
     carousel: {
+      emptyCart: 'Consigliati per te',
       recommendedProducts: 'Comprati spesso insieme',
+      thresholdNotReached: 'Aggiungi uno di questi prodotti per la spedizione gratuita',
+      thresholdReached: 'Completa l\'acquisto aggiungendo uno di questi prodotti',
     },
   },
   pages: {
@@ -51,7 +54,6 @@ export default {
   home: 'Home',
   cart: 'Carrello',
   cartDetails: 'Dettaglio carrello',
-  continueShopping: 'Vuoi aggiungere altri prodotti alla tua spesa?',
   shipping: {
     discountCode: 'Se hai un <strong>codice sconto</strong> potrai inserirlo in seguito, prima del pagamento.',
     cost: 'Le <strong>spese di spedizione</strong> verranno aggiunte alla cassa, dopo aver scelto la modalità.',
