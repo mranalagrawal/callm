@@ -459,7 +459,7 @@ export default defineComponent({
           v-text="$t('product.available', { quantity: templateProduct.quantityAvailable })"
         />
         <ProductPriceListsCompareAtPrice v-if="isOnSale && Object.keys(compareAtPrice).length" :compare-at-price="compareAtPrice" />
-        <ProductPriceListsFinalPrice v-if="Object.keys(finalPrice).length" :final-price="finalPrice" class="mb-3" />
+        <ProductPriceListsFinalPrice v-if="Object.keys(finalPrice).length" :final-price="finalPrice" class="mb-3" is-product-box-horizontal />
         <ProductPriceListsLowestPrice
           v-if="Object.keys(lowestPrice).length && !isBundle"
           class="flex justify-center mb-2"
