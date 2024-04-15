@@ -351,8 +351,8 @@ export default defineComponent({
             'offers': {
               '@type': 'Offer',
               'url': `${originUrl.value}${localePath(product.value?.url || '')}`,
-              'priceCurrency': `${productVariant.value?.price.currencyCode}`,
-              'price': `${finalPrice.value}`,
+              'priceCurrency': `${finalPrice.value?.currencyCode}`,
+              'price': `${finalPrice.value?.amount}`,
               'availability': `${product.value?.availableForSale ? 'InStock' : 'OutOfStock'}`,
               'itemCondition ': 'newCondition',
             },
