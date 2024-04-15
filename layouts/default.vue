@@ -82,7 +82,10 @@ export default defineComponent({
 
     const isFromApp = computed(() => store.state.headers.fromApp)
     const isHomePage = computed(() => getRouteBaseName(route.value) === 'index')
+    const isProductDetailsPage = computed(() => getRouteBaseName(route.value) === 'product')
     const showTopBar = computed(() => (isFromApp.value && isHomePage.value) || !isFromApp.value)
+
+    provide('isProductDetailsPage', readonly(isProductDetailsPage))
 
     onMounted(async () => {
       const checkoutId = $cookies.get('checkoutId')

@@ -1,6 +1,6 @@
 <script lang="ts">
 import {
-  type PropType, computed, defineComponent,
+  type PropType, type Ref, computed, defineComponent, inject,
 } from '@nuxtjs/composition-api'
 
 import type { IMoneyV2 } from '~/types/common-objects'
@@ -13,13 +13,18 @@ export default defineComponent({
       type: Object as PropType<IMoneyV2>,
       required: true,
     },
+    isProductBoxHorizontal: {
+      type: Boolean,
+    },
   },
   setup(props) {
+    const isProductDetailsPage = inject('isProductDetailsPage') as Ref<boolean>
     const priceLength = computed(() => Number(props.finalPrice.amount).toFixed(2).length)
 
     const priceFontSize = ({
-      '-short': priceLength.value < 7,
-      '-long': priceLength.value >= 7,
+      '-short': (priceLength.value < 7 && !isProductDetailsPage),
+      '-long': (priceLength.value >= 7 && !isProductDetailsPage),
+      '-regular': isProductDetailsPage.value || props.isProductBoxHorizontal,
     })
 
     return {
@@ -40,7 +45,7 @@ export default defineComponent({
     :locale="getLocaleFromCurrencyCode(finalPrice.currencyCode)"
   >
     <template #currency="slotProps">
-      <span class="text-long md:text-base">{{ slotProps.currency }}</span>
+      <span class="text-sm md:text-base">{{ slotProps.currency }}</span>
     </template>
     <template #integer="slotProps">
       <span
@@ -72,12 +77,20 @@ export default defineComponent({
   @apply text-xl;
 }
 
+.c-finalPrice__integer.-regular, .c-finalPrice__group.-regular {
+  @apply text-5xl;
+}
+
 .c-finalPrice__fraction.-short {
   @apply text-xs;
 }
 
 .c-finalPrice__fraction.-long {
   @apply text-xs;
+}
+
+.c-finalPrice__fraction.-regular, .c-finalPrice__fraction.-regular {
+  @apply text-sm md:text-base;
 }
 
 @container product-box (min-width: 180px) {
