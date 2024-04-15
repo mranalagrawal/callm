@@ -22,8 +22,8 @@ export default defineComponent({
     const priceLength = computed(() => Number(props.finalPrice.amount).toFixed(2).length)
 
     const priceFontSize = ({
-      '-short': (priceLength.value < 7 && !isProductDetailsPage),
-      '-long': (priceLength.value >= 7 && !isProductDetailsPage),
+      '-short': (priceLength.value < 7 && !isProductDetailsPage.value),
+      '-long': (priceLength.value >= 7 && !isProductDetailsPage.value),
       '-regular': isProductDetailsPage.value || props.isProductBoxHorizontal,
     })
 
