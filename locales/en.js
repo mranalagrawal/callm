@@ -52,8 +52,16 @@ export default {
   cart: 'Cart',
   cartDetails: 'Shopping cart detail',
   continueShopping: 'Do you want to add other products to your shopping?',
-  discountCode: 'If you have a <strong>discount code</strong> you can enter it later, before paying',
-  shippingCost: 'The <strong>shipping costs</strong> will be added to the checkout, after choosing the method.',
+  shipping: {
+    discountCode: 'If you have a <strong>discount code</strong> you can enter it later, before paying',
+    cost: 'The <strong>shipping costs</strong> will be added to the checkout, after choosing the method.',
+    threshold: {
+      info: 'Free shipping above {amount}',
+      reached: 'You are entitled to free shipping!',
+      remaining: 'You are {amount} away from free shipping',
+      progressBarReached: 'You get free shipping',
+    },
+  },
   home: 'Home',
   cartTotal: 'Cart Total',
   createYourAccount: 'Create your account',

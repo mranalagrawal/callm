@@ -1,12 +1,6 @@
-import * as process from 'node:process'
 import colors from 'windicss/colors'
 import { defineConfig } from 'windicss/helpers'
 import plugin from 'windicss/plugin'
-
-import type { TStores } from './config/themeConfig'
-import themeConfig from './config/themeConfig'
-
-const store: TStores = process.env.STORE as TStores
 
 function range(size: number, startAt = 1) {
   return Array.from(Array(size).keys()).map(i => i + startAt)
@@ -45,7 +39,26 @@ export default defineConfig({
       inherit: colors.inherit,
       current: colors.current,
       transparent: colors.transparent,
-      ...(themeConfig[store]?.colors ?? {}),
+      primary: {
+        DEFAULT: '#992545',
+        50: '#fae4e8',
+        100: '#F3BAC6',
+        400: '#d94965',
+        900: '#751f3e',
+      },
+      secondary: {
+        DEFAULT: '#10312b',
+        800: '#134c45',
+        700: '#155B53',
+        400: '#2C8982',
+        100: '#ADD3D1',
+        50: '#deeded',
+      },
+      body: colors.zinc[700],
+      success: '#299100',
+      error: '#E6362E',
+      warning: '#FFB800',
+      info: '#69baf1',
       white: colors.white,
       black: colors.black,
       gray: {
@@ -86,7 +99,8 @@ export default defineConfig({
     extend: {
       // https://windicss.org/utilities/general/typography.html#font-family
       fontFamily: {
-        ...(themeConfig[store]?.fonts ?? {}),
+        sans: ['"Open Sans"', 'Helvetica', 'Arial', 'sans-serif'],
+        secondary: ['"Open Sans"', 'Helvetica', 'Arial', 'sans-serif'],
         inherit: 'inherit',
         icon: ['"Material Symbols Outlined"', 'san-serif'],
       },
@@ -153,7 +167,7 @@ export default defineConfig({
             'lineHeight': 'inherit',
             'maxWidth': 'unset',
             'a': {
-              'color': themeConfig[store]?.colors.primary[400],
+              'color': '#d94965',
               'textDecoration': 'none',
               '&:link': {
                 textDecoration: 'none',

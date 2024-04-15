@@ -1,8 +1,6 @@
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, onMounted, ref } from '@nuxtjs/composition-api'
 
-import type { TStores } from '~/config/themeConfig'
-import themeConfig from '~/config/themeConfig'
 import { generateKey } from '~/utilities/strings'
 
 export default defineComponent({
@@ -20,7 +18,6 @@ export default defineComponent({
   },
   setup(props) {
     const mapRef = ref<HTMLDivElement | null>(null)
-    const { $config } = useContext()
     const getMap = (country: string) => ({
       belgio: 'belgium.svg',
       be: 'belgium.svg',
@@ -40,8 +37,7 @@ export default defineComponent({
       const region = mapRef.value.querySelector(`[aria-valuetext='${generateKey(props.region)}']`)
 
       if (region instanceof Element) {
-        const store: TStores = $config.STORE || 'CMW_UK'
-        region.setAttribute('fill', themeConfig[store]?.colors.primary.DEFAULT)
+        region.setAttribute('fill', '#992545')
       }
     }
 

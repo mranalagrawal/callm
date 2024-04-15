@@ -52,8 +52,16 @@ export default {
   cart: 'Wagen',
   cartDetails: 'Wagendetail',
   continueShopping: 'Möchten Sie Ihrem Einkauf weitere Produkte hinzufügen?',
-  discountCode: 'Wenn Sie einen <strong>Rabattcode</strong> haben, können Sie ihn später eingeben, bevor Sie bezahlen.',
-  shippingCost: 'Die <strong>Versandkosten</strong> werden an der Kasse hinzugefügt, nachdem Sie die Methode ausgewählt haben.',
+  shipping: {
+    discountCode: 'Wenn Sie einen <strong>Rabattcode</strong> haben, können Sie ihn später eingeben, bevor Sie bezahlen.',
+    cost: 'Die <strong>Versandkosten</strong> werden an der Kasse hinzugefügt, nachdem Sie die Methode ausgewählt haben.',
+    threshold: {
+      info: 'Gratisversand nach Deutschland ab {amount}',
+      reached: 'Herzlichen Glückwunsch, Sie haben kostenlosen Versand erhalten',
+      remaining: ' Dir fehlen {amount} für kostenlosen Versand',
+      progressBarReached: 'Sie erhalten kostenlosen Versand',
+    },
+  },
   home: 'Heim',
   cartTotal: 'Winkelwagen totaal\n',
   createYourAccount: 'Erstelle deinen Account',

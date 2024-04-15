@@ -153,7 +153,7 @@ function storeLocales(store) {
       { 'code': 'it', 'iso': 'it-IT', 'file': 'it.js', 'dir': 'ltr', 'iso-3166-1-alpha-3': 'ita' },
     ],
     B2B: [
-      { 'code': 'it', 'iso': 'it-IT', 'file': 'it.js', 'dir': 'ltr', 'iso-3166-1-alpha-3': 'ita' },
+      { 'code': 'it', 'iso': 'it-IT', 'file': 'it-b2b.js', 'dir': 'ltr', 'iso-3166-1-alpha-3': 'ita' },
     ],
     CMW_UK: [
       { 'code': 'en', 'iso': 'en-GB', 'file': 'en.js', 'dir': 'ltr', 'iso-3166-1-alpha-3': 'gbr' },

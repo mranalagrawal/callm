@@ -1,0 +1,30 @@
+export default {
+  feedback: {
+    OK: {
+      cartAdded: '{product} è stato aggiunto al carrello!',
+      customerAddressCreate: 'L\'indirizzo è stato creato correttamente!',
+      customerAddressUpdate: 'L\'indirizzo è stato modificato con successo!',
+      customerDefaultAddressUpdate: 'L\'indirizzo è stato impostato come predefinito!',
+      customerUpdateData: 'I tuoi dati personali sono stati aggiornati con successo!',
+      customerUpdateEmail: 'L\'indirizzo email è stato aggiornato con successo!',
+      customerUpdatePassword: 'La tua password è stata aggiornato con successo!',
+      deleteCustomerAddress: 'L\'indirizzo è stato rimosso correttamente!',
+      newsletterSubscribed: 'Iscrizione avvenuta con successo!',
+      requestAssistance: 'Messaggio inviato!',
+      wishlistAdded: 'Prodotto Aggiunto ai preferiti!',
+      wishlistRemoved: 'Prodotto Rimosso dei preferiti!',
+      wishlistUpdated: 'Preferito aggiornato',
+    },
+    KO: {
+      login: 'Login fallito, verificare i dati immessi',
+      unknown: 'Opps, qualcosa è andata storta.',
+      customerUpdateEmail: 'Non è stato possibile aggiornare la tua email, riprova piu tardi',
+      customerUpdatePassword: 'Non è stato possibile aggiornare la tua password, riprova piu tardi',
+      customerUpdateData: 'Non è stato possibile aggiornare i tuoi dati personali, riprova piu tardi',
+      addToCartReachLimit: 'Non ci sono più prodotti disponibili',
+      addToCartNotAvailable: 'Questo prodotto non è acquistabile',
+      newsletterSubscribed: 'Sei già registrato alla nostra newsletter!',
+      maxQuantityReached: 'Hai già acquistato la quantità massima per questo prodotto!',
+    },
+  },
+}
