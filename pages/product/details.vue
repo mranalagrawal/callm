@@ -179,6 +179,12 @@ export default defineComponent({
             return redirect(301, localePath({ name: 'index' }))
           }
 
+          const priceLists = product.value?.priceLists ? product.value?.priceLists[getCustomerType.value] : null
+
+          finalPrice.value = (priceLists?.price?.amount && priceLists?.price?.currencyCode) ? priceLists.price : {}
+          lowestPrice.value = (priceLists?.lowestPrice?.amount && priceLists?.lowestPrice?.currencyCode) ? priceLists.lowestPrice : {}
+          compareAtPrice.value = (priceLists?.compareAtPrice?.amount && priceLists?.compareAtPrice?.currencyCode) ? priceLists.compareAtPrice : {}
+
           recentProductsStore.$patch({
             recentProducts: recentProducts.value?.length > 11
               ? [...new Set([...recentProducts.value, productDetails.value.key])].slice(-12)
