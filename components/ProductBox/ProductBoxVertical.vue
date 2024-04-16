@@ -406,7 +406,7 @@ export default defineComponent({
           <span class="flex gap-2">
             <ProductPriceListsCompareAtPrice v-if="isOnSale && Object.keys(compareAtPrice).length" :compare-at-price="compareAtPrice" />
           </span>
-          <ProductPriceListsFinalPrice v-if="Object.keys(finalPrice).length" :final-price="finalPrice" />
+          <ProductPriceListsFinalPrice v-if="Object.keys(finalPrice).length" :final-price="finalPrice" use-font-size-reducer />
         </div>
       </div>
       <div v-if="!notActive || isRelatedVintageWithHandle" class="c-productBox__cart justify-self-baseline place-self-end">

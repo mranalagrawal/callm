@@ -73,6 +73,7 @@ export default defineComponent({
     const isDesktop = inject('isDesktop')
     const recentProductsStore = useRecentProductsStore()
     const { recentProducts } = storeToRefs(recentProductsStore)
+    const isMobile = inject('isMobile')
 
     const {
       customer,
@@ -416,6 +417,7 @@ export default defineComponent({
       heartIcon,
       isBundle,
       isDesktop,
+      isMobile,
       isOnCart,
       isOnFavourite,
       isOnSale,
@@ -656,7 +658,7 @@ export default defineComponent({
             <div
               class="
             <md:(fixed bottom-0 left-0 w-full bg-white z-content shadow-elevation pl-3 pr-3 pt-2 pb-2)
-            mt-auto grid grid-cols-[3fr_9fr] items-center pt42 pb-4
+            mt-auto grid grid-cols-[4fr_8fr] items-center pt42 pb-4
             md:my-8
 "
             >
@@ -673,7 +675,10 @@ export default defineComponent({
                     :label="`-${getPercent(+finalPrice.amount, +(compareAtPrice?.amount || 0))}%`"
                   />
                 </div>
-                <ProductPriceListsFinalPrice v-if="Object.keys(finalPrice).length" :final-price="finalPrice" />
+                <ProductPriceListsFinalPrice
+                  v-if="Object.keys(finalPrice).length" :final-price="finalPrice"
+                  :use-font-size-reducer="isMobile"
+                />
                 <div v-if="$cmwStore.isB2b" class="text-gray-dark text-sm">
                   iva esclusa
                 </div>

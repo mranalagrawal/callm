@@ -1,6 +1,6 @@
 <script lang="ts">
 import {
-  type PropType, type Ref, computed, defineComponent, inject,
+  type PropType, computed, defineComponent,
 } from '@nuxtjs/composition-api'
 
 import type { IMoneyV2 } from '~/types/common-objects'
@@ -13,19 +13,18 @@ export default defineComponent({
       type: Object as PropType<IMoneyV2>,
       required: true,
     },
-    isProductBoxHorizontal: {
+    useFontSizeReducer: {
       type: Boolean,
     },
   },
   setup(props) {
-    const isProductDetailsPage = inject('isProductDetailsPage') as Ref<boolean>
     const priceLength = computed(() => Number(props.finalPrice.amount).toFixed(2).length)
 
-    const priceFontSize = ({
-      '-short': (priceLength.value < 7 && !isProductDetailsPage.value),
-      '-long': (priceLength.value >= 7 && !isProductDetailsPage.value),
-      '-regular': isProductDetailsPage.value || props.isProductBoxHorizontal,
-    })
+    const priceFontSize = computed(() => ({
+      '-short': (priceLength.value < 7 && props.useFontSizeReducer),
+      '-long': (priceLength.value >= 7 && props.useFontSizeReducer),
+      '-regular': !props.useFontSizeReducer,
+    }))
 
     return {
       priceFontSize,
