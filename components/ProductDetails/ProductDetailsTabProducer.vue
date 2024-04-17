@@ -23,7 +23,7 @@ export default defineComponent({
 <template>
   <div class="mt-6">
     <div v-if="brand">
-      <div v-if="brandMetaFields.isPartner" class="ribbon flex items-center">
+      <div v-if="brandMetaFields?.isPartner" class="ribbon flex items-center">
         <!-- TODO: This will use the new lapel component -->
         <VueSvgIcon
           :data="favouriteIcon"
@@ -40,29 +40,29 @@ export default defineComponent({
       <div class="grid gap-4 md:grid-cols-[8fr_4fr]">
         <table class="w-full">
           <tbody>
-            <tr v-if="brandMetaFields.year">
+            <tr v-if="brandMetaFields?.year">
               <th scope="row" v-text="$t('product.foundation')" />
-              <td v-text="brandMetaFields.year" />
+              <td v-text="brandMetaFields?.year" />
             </tr>
-            <tr v-if="brandMetaFields.hectares">
+            <tr v-if="brandMetaFields?.hectares">
               <th scope="row" v-text="$t('product.vineyardHectares')" />
-              <td v-text="brandMetaFields.hectares" />
+              <td v-text="brandMetaFields?.hectares" />
             </tr>
-            <tr v-if="brandMetaFields.ownedGrapes">
+            <tr v-if="brandMetaFields?.ownedGrapes">
               <th scope="row" v-text="$t('product.ownGrapes')" />
-              <td v-text="brandMetaFields.ownedGrapes" />
+              <td v-text="brandMetaFields?.ownedGrapes" />
             </tr>
-            <tr v-if="brandMetaFields.annualProduction">
+            <tr v-if="brandMetaFields?.annualProduction">
               <th scope="row" v-text="$t('product.annualProduction')" />
-              <td v-text="brandMetaFields.annualProduction" />
+              <td v-text="brandMetaFields?.annualProduction" />
             </tr>
-            <tr v-if="brandMetaFields.oenologist">
+            <tr v-if="brandMetaFields?.oenologist">
               <th scope="row" v-text="$t('product.winemaker')" />
-              <td v-text="brandMetaFields.oenologist" />
+              <td v-text="brandMetaFields?.oenologist" />
             </tr>
-            <tr v-if="brandMetaFields.address">
+            <tr v-if="brandMetaFields?.address">
               <th scope="row" v-text="$t('product.address')" />
-              <td>{{ brandMetaFields.address }}</td>
+              <td>{{ brandMetaFields?.address }}</td>
             </tr>
           </tbody>
         </table>
@@ -100,7 +100,6 @@ table {
   border-collapse: collapse;
   border: 2px solid transparent;
   letter-spacing: 1px;
-  font-family: sans-serif;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
 }
 </style>
