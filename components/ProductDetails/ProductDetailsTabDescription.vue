@@ -31,7 +31,7 @@ export default defineComponent({
       return result
     })
 
-    const visible = computed(() => props.product?.descriptionHtml || characteristicsInDescription)
+    const visible = computed(() => props.product?.descriptionHtml || !!characteristicsInDescription?.value?.length)
 
     return {
       characteristicsInDescription,
