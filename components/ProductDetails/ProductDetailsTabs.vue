@@ -33,7 +33,10 @@ export default defineComponent({
         key: 'description',
         label: i18n.t('product.description'),
         component: 'ProductDetailsTabDescription',
-        available: !!props.product.descriptionHtml?.toString()?.length,
+        available: !!props.product.descriptionHtml?.toString()?.length
+        || props.productDetails.color[i18n.locale]
+        || props.productDetails.taste[i18n.locale]
+        || props.productDetails.aroma[i18n.locale],
       },
       {
         key: 'toEnjoyBetter',
