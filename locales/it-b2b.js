@@ -343,6 +343,10 @@ export default {
     bioOperator: 'Codice Operatore nr.',
     subCategory: 'Tipologia',
   },
+  winery: {
+    oenologist: 'Enologo',
+    masterDistiller: 'Mastro Distillatore',
+  },
   recoverPwd: {
     title: 'Reimposta password',
     paragraph: 'Inserisci l\'email con la quale ti sei registrato. Riceverai nella tua casella di posta un messaggio con le istruzioni per modificare la password.',

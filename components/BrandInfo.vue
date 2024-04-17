@@ -1,25 +1,46 @@
-<script>
-import { toRefs } from '@nuxtjs/composition-api'
+<script lang="ts">
+import type { PropType } from '@nuxtjs/composition-api'
+import { defineComponent, toRefs } from '@nuxtjs/composition-api'
 
-export default {
+import type { IWineryMapped } from '~/types/winery/winery-front-end'
+
+export default defineComponent({
   props: {
-    metaFields: {
-      type: Object,
+    winery: {
+      type: Object as PropType<IWineryMapped>,
+      required: true,
     },
   },
   setup(props) {
-    const { address, country, region, year, hectares, ownedGrapes, annualProduction } = toRefs(props.metaFields)
-    return { address, country, region, year, hectares, ownedGrapes, annualProduction }
+    const {
+      address,
+      year,
+      hectares,
+      ownedGrapes,
+      annualProduction,
+      oenologist,
+      masterDistiller,
+    } = toRefs(props.winery)
+
+    return {
+      address,
+      year,
+      hectares,
+      ownedGrapes,
+      annualProduction,
+      oenologist,
+      masterDistiller,
+    }
   },
-}
+})
 </script>
 
 <template>
   <table class="w-full">
     <tbody>
-      <tr v-if="region && country">
+      <tr v-if="address.region && address.country">
         <th scope="row" v-text="$t('product.regionCountry')" />
-        <td>{{ `${region} (${country})` }}</td>
+        <td>{{ `${address.region} (${address.country})` }}</td>
       </tr>
       <tr v-if="year">
         <th scope="row" v-text="$t('product.foundation')" />
@@ -33,9 +54,17 @@ export default {
         <th scope="row" v-text="$t('product.annualProduction')" />
         <td v-text="annualProduction" />
       </tr>
-      <tr v-if="address">
+      <tr v-if="address.formattedAddress">
         <th scope="row" v-text="$t('product.address')" />
-        <td v-text="address" />
+        <td v-text="address.formattedAddress" />
+      </tr>
+      <tr v-if="oenologist">
+        <th scope="row" v-text="$t('winery.oenologist')" />
+        <td v-text="oenologist" />
+      </tr>
+      <tr v-if="masterDistiller">
+        <th scope="row" v-text="$t('winery.masterDistiller')" />
+        <td v-text="masterDistiller" />
       </tr>
     </tbody>
   </table>

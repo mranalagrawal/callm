@@ -17,9 +17,11 @@ import cmwFavouriteIcon from '~/assets/svg/feature-cmw-favourite.svg'
 import ribbon from '~/assets/svg/ribbon.svg'
 
 import getArticles from '~/graphql/queries/getArticles.graphql'
+import type { IGraphQLArticlesResponse, IWineryShopify } from '~/types/winery/winery-backe-end-shopify'
+import type { IWineryMapped } from '~/types/winery/winery-front-end'
 import { generateHeadHreflang } from '~/utilities/arrays'
 import { inRange } from '~/utilities/math'
-import { stripHtmlAnchors } from '~/utilities/strings'
+import { generateKey, stripHtmlAnchors } from '~/utilities/strings'
 
 // Todo: define right types
 interface ILocales {
@@ -29,17 +31,17 @@ interface ILocales {
   it: string
 }
 interface IMetaFields {
+  country: string
+  feId: string
   hrefLang: {}
   images: never[]
   isPartner: boolean
   key: string
-  feId: string
-  subtitle: ILocales
-  country: string
   region: string
+  subtitle: ILocales
 }
 
-interface IBrand {
+/* interface IBrand {
   handle: string
   title: string
   contentHtml: string
@@ -50,7 +52,7 @@ interface IBrand {
   image: {
     url: string
   }
-}
+} */
 
 export default defineComponent({
   setup() {
@@ -61,18 +63,7 @@ export default defineComponent({
     const partnerC2 = ref(null)
     const c1 = ref<any>(null)
     const c2 = ref<any>(null)
-    const brand = ref<IBrand>({
-      handle: '/',
-      title: '',
-      contentHtml: '',
-      seo: {
-        description: '',
-        title: '',
-      },
-      image: {
-        url: '',
-      },
-    })
+    const winery = ref<Maybe<IWineryMapped>>(null)
     const metaFields = ref<IMetaFields>({
       hrefLang: {},
       images: [],
@@ -122,18 +113,57 @@ export default defineComponent({
       canonicalUrl.value = `${origin}${encodedPath}`
     }
 
+    const getWineryMapped = (iWineryShopify: IWineryShopify): IWineryMapped => {
+      const details = iWineryShopify.details?.value ? JSON.parse(iWineryShopify.details.value) : {}
+
+      return {
+        masterDistiller: details.masterDistiller,
+        annualProduction: details.annualProduction,
+        hectares: details.hectares,
+        oenologist: details.oenologist,
+        ownedGrapes: details.ownedGrapes,
+        year: details.year,
+        address: {
+          country: details.country,
+          formattedAddress: details.address,
+          region: details.region,
+          zone: details.listingText,
+        },
+        description: '',
+        descriptionHtml: iWineryShopify.contentHtml,
+        handle: iWineryShopify.handle,
+        id: iWineryShopify.id,
+        featureImage: {
+          url: iWineryShopify.image.url,
+          altText: iWineryShopify.image.altText,
+        },
+        images: details.images.map((image: string[]) => ({
+          url: image,
+          altText: iWineryShopify.title,
+        })),
+        isPartner: details.isPartner,
+        logo: { ...iWineryShopify.image },
+        name: '',
+        seo: {
+          description: iWineryShopify.seo.description,
+          title: iWineryShopify.seo.title,
+        },
+        subtitle: details.subtitle[i18n.locale],
+        title: iWineryShopify.title,
+      }
+    }
     const { fetch } = useFetch(async ({ $graphql }) => {
-      const { articles } = await $graphql.default.request(getArticles, {
+      const { articles }: IGraphQLArticlesResponse = await $graphql.default.request(getArticles, {
         lang: i18n.locale.toUpperCase(),
         first: 1,
         query: query.value,
       })
 
-      if (articles.nodes[0]) {
-        brand.value = articles.nodes[0]
+      if (articles.nodes.length) {
+        winery.value = getWineryMapped(articles.nodes[0])
         metaFields.value = articles.nodes[0].details && JSON.parse(articles.nodes[0].details.value) as IMetaFields
 
-        if (route.value.params.handle !== `${brand!.value.handle}-${metaFields.value.key}.htm`) { return redirect(301, localePath({ name: 'winery-handle', params: { handle: `${brand.value?.handle.trim()}-${metaFields.value?.key}.htm` } })) }
+        if (route.value.params.handle !== `${winery.value?.handle}-${metaFields.value.key}.htm`) { return redirect(301, localePath({ name: 'winery-handle', params: { handle: `${winery.value?.handle.trim()}-${metaFields.value?.key}.htm` } })) }
       }
     })
 
@@ -158,12 +188,12 @@ export default defineComponent({
     })
 
     useMeta(() => ({
-      title: brand.value?.seo?.title || '',
+      title: winery.value?.seo?.title || '',
       meta: [
         {
           hid: 'description',
           name: 'description',
-          content: brand.value?.seo?.description || '',
+          content: winery.value?.seo?.description || '',
         },
       ],
       link: [
@@ -175,7 +205,6 @@ export default defineComponent({
     }))
 
     return {
-      brand,
       brandProductsRef,
       c1,
       c2,
@@ -191,10 +220,11 @@ export default defineComponent({
       partnerC2,
       ribbon,
       stripHtmlAnchors,
+      winery,
     }
   },
   head: {},
-  methods: { inRange },
+  methods: { generateKey, inRange },
 })
 </script>
 
@@ -204,8 +234,8 @@ export default defineComponent({
       {{ $t("loading") }}
     </p>
     <template v-else>
-      <div v-if="metaFields && brand.title">
-        <div v-if="metaFields.isPartner" class="relative">
+      <div v-if="winery?.title">
+        <div v-if="winery.isPartner" class="relative">
           <img
             class="absolute top-0 left-0 w-full h-500px"
             src="@/assets/images/bg-wave.png" alt="image"
@@ -222,10 +252,10 @@ export default defineComponent({
                 </span>
                 <VueSvgIcon class="c-ribbon__right" :data="ribbon" width="9" height="24" />
               </div>
-              <h1 v-if="brand" class="text-white" v-text="brand.title" />
-              <div class="h4 my-4 !text-white" v-text="metaFields.subtitle && metaFields.subtitle[$i18n.locale]" />
+              <h1 v-if="winery" class="text-white" v-text="winery.title" />
+              <div class="h4 my-4 !text-white" v-text="winery.subtitle" />
             </div>
-            <ClientOnly v-if="!!metaFields.images.length">
+            <ClientOnly v-if="!!winery.images.length">
               <VueSlickCarousel
                 ref="partnerC1"
                 class="lg:pr-3"
@@ -235,23 +265,23 @@ export default defineComponent({
                 dots-class="c-carouselDots"
               >
                 <div
-                  v-for="(image, idx) in metaFields.images" :key="image"
+                  v-for="(image, idx) in winery.images" :key="generateKey(`mobile-${image.url}-${idx}`)"
                   class="lg:pl-3 w-full flex h-[410px]"
                 >
                   <LoadingImage
                     class="select-none pointer-events-none flex md:rounded-sm w-full h-full overflow-hidden"
                     img-classes="w-full object-cover object-center"
                     :thumbnail="{
-                      url: `${image}&width=40&height=20`,
+                      url: `${image.url}&width=40&height=20`,
                       width: 40,
                       height: 20,
-                      altText: `${brand.title} - ${idx}`,
+                      altText: `${winery.title} - ${idx}`,
                     }"
                     :source="{
-                      url: `${image}&width=800&height=409`,
+                      url: `${image.url}&width=800&height=409`,
                       width: 800,
                       height: 409,
-                      altText: `${brand.title} - ${idx}`,
+                      altText: `${winery.title} - ${idx}`,
                     }"
                   />
                 </div>
@@ -268,7 +298,7 @@ export default defineComponent({
                   <span />
                 </template>
               </VueSlickCarousel>
-              <div v-if="metaFields.images.length > 1 && isDesktop" class="my-4">
+              <div v-if="winery.images.length > 1 && isDesktop" class="my-4">
                 <VueSlickCarousel
                   ref="partnerC2"
                   class="lg:pr-3"
@@ -278,12 +308,12 @@ export default defineComponent({
                   :focus-on-select="true"
                 >
                   <div
-                    v-for="(image, idx) in metaFields.images" :key="`thumb-${image}`"
+                    v-for="(image, idx) in winery.images" :key="`thumb-${image}`"
                     class="px-3 h-full flex"
                   >
                     <img
                       class="select-none pointer-events-none flex rounded-sm h-full overflow-hidden"
-                      :src="image" :alt="`${brand.title} - ${idx}`"
+                      :src="image.url" :alt="`${winery.title} - ${idx}`"
                     >
                   </div>
                   <template #prevArrow>
@@ -298,21 +328,21 @@ export default defineComponent({
               </div>
             </ClientOnly>
             <div class="px-4 md:(grid gap-4 grid-cols-[minmax(auto,_60%)_minmax(auto,_40%)])">
-              <BrandInfo v-if="metaFields" :meta-fields="metaFields" />
+              <BrandInfo :winery="winery" />
               <CountryMap
-                v-if="metaFields && isDesktop" :logo="brand.image && brand.image.url || ''" :country="metaFields.country"
+                v-if="metaFields && isDesktop" :logo="winery.logo && winery.featureImage.url || ''" :country="metaFields.country"
                 :region="metaFields.region"
               />
             </div>
-            <div class="prose px-4 md:order-3" v-html="$cmwStore.isUk ? stripHtmlAnchors(brand.contentHtml) : brand.contentHtml" />
+            <div class="prose px-4 md:order-3" v-html="$cmwStore.isUk ? stripHtmlAnchors(`${winery.descriptionHtml}`) : winery.descriptionHtml" />
           </div>
         </div>
         <div v-else class="max-w-screen-xl mx-auto py-4">
-          <h1 v-if="brand" class="px-4 text-secondary" v-text="brand.title" />
-          <div class="px-4 h4 my-4 text-secondary" v-text="metaFields.subtitle && metaFields.subtitle[$i18n.locale]" />
+          <h1 v-if="winery" class="px-4 text-secondary" v-text="winery.title" />
+          <div class="px-4 h4 my-4 text-secondary" v-text="winery.subtitle" />
           <div class="md:(grid gap-4 grid-cols-[minmax(auto,_60%)_minmax(auto,_40%)])">
             <div>
-              <ClientOnly v-if="!!metaFields.images.length">
+              <ClientOnly v-if="!!winery.images.length">
                 <VueSlickCarousel
                   ref="c1"
                   :as-nav-for="c2"
@@ -321,22 +351,22 @@ export default defineComponent({
                   dots-class="c-carouselDots"
                 >
                   <div
-                    v-for="(image, idx) in metaFields.images" :key="image"
-                    class="lg:pl-3 h-full flex" :class="image"
+                    v-for="(image) in winery.images" :key="generateKey(`carousel-dots-${image.url}`)"
+                    class="lg:pl-3 h-full flex"
                   >
                     <LoadingImage
                       class="select-none pointer-events-none flex md:rounded-sm h-full overflow-hidden"
                       :thumbnail="{
-                        url: `${image}&width=40&height=20`,
+                        url: `${image.url}&width=40&height=20`,
                         width: 40,
                         height: 20,
-                        altText: `${brand.title} - ${idx}`,
+                        altText: image.altText || winery.title,
                       }"
                       :source="{
-                        url: `${image}&width=800&height=409`,
+                        url: `${image.url}&width=800&height=409`,
                         width: 800,
                         height: 409,
-                        altText: `${brand.title} - ${idx}`,
+                        altText: image.altText || winery.title,
                       }"
                     />
                   </div>
@@ -353,7 +383,7 @@ export default defineComponent({
                     <span />
                   </template>
                 </VueSlickCarousel>
-                <div v-if="metaFields.images.length > 1 && isDesktop" class="my-4">
+                <div v-if="winery.images.length > 1 && isDesktop" class="my-4">
                   <VueSlickCarousel
                     ref="c2"
                     :as-nav-for="c1"
@@ -362,22 +392,22 @@ export default defineComponent({
                     :focus-on-select="true"
                   >
                     <div
-                      v-for="(image, idx) in metaFields.images" :key="`thumb-${image}`"
+                      v-for="(image) in winery.images" :key="generateKey(`thumb-${image}`)"
                       class="px-3 h-full flex"
                     >
                       <LoadingImage
                         class="select-none pointer-events-none flex rounded-sm h-full overflow-hidden"
                         :thumbnail="{
-                          url: `${image}&width=40&height=20`,
+                          url: `${image.url}&width=40&height=20`,
                           width: 40,
                           height: 20,
-                          altText: `${brand.title} - ${idx}`,
+                          altText: image.altText || winery.title,
                         }"
                         :source="{
-                          url: `${image}&width=800&height=409`,
+                          url: `${image.url}&width=800&height=409`,
                           width: 800,
                           height: 409,
-                          altText: `${brand.title} - ${idx}`,
+                          altText: image.altText || winery.title,
                         }"
                       />
                     </div>
@@ -392,27 +422,27 @@ export default defineComponent({
                   </VueSlickCarousel>
                 </div>
               </ClientOnly>
-              <div v-if="isDesktop" class="prose md:order-3" v-html="$cmwStore.isUk ? stripHtmlAnchors(brand.contentHtml) : brand.contentHtml" />
+              <div v-if="isDesktop" class="prose md:order-3" v-html="$cmwStore.isUk ? stripHtmlAnchors(`${winery.descriptionHtml}`) : winery.descriptionHtml" />
             </div>
             <div class="px-4">
-              <BrandInfo v-if="metaFields" :meta-fields="metaFields" />
+              <BrandInfo :winery="winery" />
               <CountryMap
-                v-if="metaFields && isDesktop" :logo="brand.image && brand.image.url || ''" :country="metaFields.country"
+                v-if="metaFields && isDesktop" :logo="winery.logo && winery.featureImage.url || ''" :country="metaFields.country"
                 :region="metaFields.region"
               />
             </div>
-            <div v-if="brand && brand.image && brand.image.url" class="md:order-4">
+            <div v-if="winery && winery.featureImage && winery.featureImage.url" class="md:order-4">
               <!-- Note: on Nuxt 3 we could use Teleport o this component instead of having duplicates -->
               <CountryMap
-                v-if="metaFields && !isDesktop" :logo="brand.image && brand.image.url || ''" :country="metaFields.country"
+                v-if="metaFields && !isDesktop" :logo="winery.featureImage && winery.featureImage.url || ''" :country="metaFields.country"
                 :region="metaFields.region"
               />
             </div>
-            <div v-if="!isDesktop" class="prose px-4 md:order-3" v-html="$cmwStore.isUk ? stripHtmlAnchors(brand.contentHtml) : brand.contentHtml" />
+            <div v-if="!isDesktop" class="prose px-4 md:order-3" v-html="$cmwStore.isUk ? stripHtmlAnchors(`${winery.descriptionHtml}`) : winery.descriptionHtml" />
           </div>
         </div>
-        <div v-if="brand && brand.title" id="brand-products" ref="brandProductsRef">
-          <VendorProductsListing :vendor="brand.title" :vendor-fe-id="metaFields.feId" />
+        <div v-if="winery && winery.title" id="brand-products" ref="brandProductsRef">
+          <VendorProductsListing :vendor="winery.title" :vendor-fe-id="metaFields.feId" />
         </div>
       </div>
       <div v-else class="max-w-screen-xl mx-auto p-4 text-center">

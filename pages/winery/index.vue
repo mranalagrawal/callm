@@ -14,7 +14,8 @@ import {
 
 import Loader from '~/components/UI/Loader.vue'
 import type { IOptions } from '~/types/types'
-import type { IWinery, IWineryBackEnd } from '~/types/winery'
+import type { ICmwWinery } from '~/types/winery/winery-back-end-cmw'
+import type { IWineryShort } from '~/types/winery/winery-front-end'
 
 interface ILinksRef {
   first: string
@@ -38,7 +39,7 @@ export default defineComponent({
     const router = useRouter()
 
     const cmwActiveSelect = ref('')
-    const wineryList = ref<IWinery[]>([])
+    const wineryList = ref<IWineryShort[]>([])
     const linksRef = ref<ILinksRef | null>({ first: '', last: '', next: '', prev: '' })
     const allFiltersRaw = ref({})
     const limit = ref(5)
@@ -65,7 +66,7 @@ export default defineComponent({
         const searchParams = route.value.query as { [key: string]: string | number | boolean }
 
         const response = await $elastic.$get('/brands', { searchParams })
-        const { brands, links } = response as { brands: { data: IWineryBackEnd[] }; links: ILinksRef }
+        const { brands, links } = response as { brands: { data: ICmwWinery[] }; links: ILinksRef }
         fetchState.pending = false
 
         return {
@@ -89,11 +90,15 @@ export default defineComponent({
       linksRef.value = links
 
       wineryList.value = data.map(winery => ({
-        country: winery.country,
-        description: winery.subtitle,
+        address: {
+          country: winery.country,
+          region: winery.region,
+          zone: winery.listingText,
+          formattedAddress: winery.address,
+        },
         handle: `${winery.handle}-B${winery.brandId}.htm`,
         id: `${winery.brandId}`,
-        image: {
+        featureImage: {
           altText: winery.name,
           url: winery.image ?? '',
         },
@@ -104,7 +109,7 @@ export default defineComponent({
         },
         name: winery.name,
         region: winery.region,
-        zone: '', // empty string for now, we can add this later winery.listingText
+        zone: winery.listingText,
       }))
     }
 
@@ -140,7 +145,7 @@ export default defineComponent({
 
       return newFilters
     })
-    const slicedData = computed<IWinery[]>(() => wineryList.value.slice(0, limit.value))
+    const slicedData = computed<IWineryShort[]>(() => wineryList.value.slice(0, limit.value))
     const activeSelections = computed<Record<string, string>[]>(() => {
       return Object.values(allFilters.value)
         .flatMap(v => v.filter((item: { selected: boolean }) => item.selected)) || []

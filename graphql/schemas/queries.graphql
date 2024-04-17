@@ -2,6 +2,7 @@
 type Query {
   # how can we achieve this? https://shopify.dev/api/storefront/2022-07/queries/products#returns possibleReturns
   cart(id: ID): Cart
+  articles(first: Int, query: String): ArticleConnection
   collection(handle: String, id: ID): Collection
   collections(first: Int): CollectionConnection
   customer(customerAccessToken: String): Customer
