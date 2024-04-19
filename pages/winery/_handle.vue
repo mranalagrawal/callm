@@ -41,19 +41,6 @@ interface IMetaFields {
   subtitle: ILocales
 }
 
-/* interface IBrand {
-  handle: string
-  title: string
-  contentHtml: string
-  seo: {
-    description: string
-    title: string
-  }
-  image: {
-    url: string
-  }
-} */
-
 export default defineComponent({
   setup() {
     const { i18n, redirect, $cmwGtmUtils, localePath, req } = useContext()
@@ -169,6 +156,10 @@ export default defineComponent({
 
     const currentC1Slide = computed(() => c1.value && c1.value.$refs.innerSlider.currentSlide)
 
+    // Create a computed that checks if the current route has a query params marketing and its value equals 1
+    const isMarketing = computed(() => route.value.query.marketing === '1')
+    console.warn(isMarketing.value)
+
     onMounted(() => {
       process.browser && $cmwGtmUtils.pushPage('page')
       nextTick(() => {
@@ -215,6 +206,7 @@ export default defineComponent({
       currentC1Slide,
       fetch,
       isDesktop,
+      isMarketing,
       metaFields,
       partnerC1,
       partnerC2,
@@ -235,7 +227,7 @@ export default defineComponent({
     </p>
     <template v-else>
       <div v-if="winery?.title">
-        <div v-if="winery.isPartner" class="relative">
+        <div v-if="winery.isPartner && !isMarketing" class="relative">
           <img
             class="absolute top-0 left-0 w-full h-500px"
             src="@/assets/images/bg-wave.png" alt="image"
@@ -336,12 +328,23 @@ export default defineComponent({
                 :region="metaFields.region"
               />
             </div>
-            <div class="prose px-4 md:order-3" v-html="$cmwStore.isUk ? stripHtmlAnchors(`${winery.descriptionHtml}`) : winery.descriptionHtml" />
+            <CmwTextAccordion line-clamp="3" :force-show="!isMarketing">
+              <div class="prose px-4 md:order-3" v-html="$cmwStore.isUk ? stripHtmlAnchors(`${winery.descriptionHtml}`) : winery.descriptionHtml" />
+            </CmwTextAccordion>
           </div>
         </div>
         <div v-else class="max-w-screen-xl mx-auto py-4">
           <h1 v-if="winery" class="px-4 text-secondary" v-text="winery.title" />
           <div class="px-4 h4 my-4 text-secondary" v-text="winery.subtitle" />
+          <CmwTextAccordion v-if="isMarketing" line-clamp="3" :force-show="!isMarketing">
+            <div
+              class="prose px-4 md:order-3" v-html="$cmwStore.isUk ? stripHtmlAnchors(`${winery.descriptionHtml}`) : winery.descriptionHtml"
+            />
+          </CmwTextAccordion>
+
+          <div v-if="winery && winery.title && isMarketing" id="brand-products" ref="brandProductsRef">
+            <VendorProductsListing :vendor="winery.title" :vendor-fe-id="metaFields.feId" />
+          </div>
           <div class="md:(grid gap-4 grid-cols-[minmax(auto,_60%)_minmax(auto,_40%)])">
             <div>
               <ClientOnly v-if="!!winery.images.length">
@@ -427,7 +430,11 @@ export default defineComponent({
                   </VueSlickCarousel>
                 </div>
               </ClientOnly>
-              <div v-if="isDesktop" class="prose md:order-3" v-html="$cmwStore.isUk ? stripHtmlAnchors(`${winery.descriptionHtml}`) : winery.descriptionHtml" />
+              <CmwTextAccordion v-if="isDesktop && !isMarketing" line-clamp="3" :force-show="!isMarketing">
+                <div
+                  class="prose md:order-3" v-html="$cmwStore.isUk ? stripHtmlAnchors(`${winery.descriptionHtml}`) : winery.descriptionHtml"
+                />
+              </CmwTextAccordion>
             </div>
             <div class="px-4">
               <BrandInfo :winery="winery" />
@@ -443,10 +450,12 @@ export default defineComponent({
                 :region="metaFields.region"
               />
             </div>
-            <div v-if="!isDesktop" class="prose px-4 md:order-3" v-html="$cmwStore.isUk ? stripHtmlAnchors(`${winery.descriptionHtml}`) : winery.descriptionHtml" />
+            <CmwTextAccordion v-if="!isDesktop && !isMarketing" line-clamp="3">
+              <div class="prose px-4 md:order-3" v-html="$cmwStore.isUk ? stripHtmlAnchors(`${winery.descriptionHtml}`) : winery.descriptionHtml" />
+            </CmwTextAccordion>
           </div>
         </div>
-        <div v-if="winery && winery.title" id="brand-products" ref="brandProductsRef">
+        <div v-if="winery && winery.title && !isMarketing" id="brand-products" ref="brandProductsRef">
           <VendorProductsListing :vendor="winery.title" :vendor-fe-id="metaFields.feId" />
         </div>
       </div>
