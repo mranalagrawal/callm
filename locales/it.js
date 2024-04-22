@@ -316,7 +316,7 @@ export default {
     quote: 'Citazione',
     recommendedByCallmewine: 'Consigliato da Callmewine',
     mainWines: 'Vini principali',
-    foundation: 'Anno Fondazione',
+    foundation: 'Anno fondazione',
     vineyardHectares: 'Ettari vitati',
     ownGrapes: 'Proprietà',
     annualProduction: 'Produzione annuale',
