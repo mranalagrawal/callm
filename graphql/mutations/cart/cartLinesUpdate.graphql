@@ -1,6 +1,6 @@
 #import "~/graphql/fragments/cart.graphql"
 
-mutation cartLinesAdd(
+mutation cartLinesUpdate(
   $cartId: ID!
   $lines: [CartLineUpdateInput!]!
   $lang: LanguageCode!
