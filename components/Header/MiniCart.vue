@@ -124,13 +124,7 @@ export default defineComponent({
           <div v-else class="min-w-[425px] text-center px-6 pb-4">
             <div class="text-secondary-700 flex items-center justify-center gap-2 text-sm uppercase pb-4">
               <VueSvgIcon :data="deliveryIcon" width="24" height="24" />
-              <i18n
-                path="shipping.threshold.remaining"
-              >
-                <template #amount>
-                  <strong>{{ shippingThresholdNotReachedLabel }}</strong>
-                </template>
-              </i18n>
+              <span>{{ $t('shipping.threshold.info', { amount: shippingThresholdLabel }) }}</span>
             </div>
             <hr>
             <strong class="block" v-text="$t('navbar.cart.empty')" />

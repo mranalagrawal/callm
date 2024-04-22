@@ -41,7 +41,7 @@ export default defineComponent({
 
 <template>
   <div>
-    <div v-if="shippingThresholdHasBeenReached(getCustomerType)" class="text-sm text-success">
+    <div v-if="shippingThresholdHasBeenReached(getCustomerType)" class="text-sm text-secondary-400">
       {{ $t('shipping.threshold.progressBarReached') }}
     </div>
     <div v-else class="text-sm text-gray-darkest">
