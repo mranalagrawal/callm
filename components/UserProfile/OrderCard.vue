@@ -184,7 +184,7 @@ export default defineComponent({
             result.notInCheckoutItems.push({
               attributes: [
                 {
-                  key: 'gtmProductData',
+                  key: '_gtmProductData',
                   value: gtmProductData ? JSON.stringify(gtmProductData) : 'false',
                 },
                 {

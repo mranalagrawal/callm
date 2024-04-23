@@ -1,16 +1,41 @@
-<script>
-export default {
+<script lang="ts">
+import type { PropType } from '@nuxtjs/composition-api'
+import { defineComponent, toRefs } from '@nuxtjs/composition-api'
+
+import type { IWinery } from '~/types/winery'
+
+export default defineComponent({
   name: 'CardBrandPartner',
   props: {
-    brand: {
-      type: Object,
+    winery: {
+      type: Object as PropType<IWinery>,
+      required: true,
     },
   },
-}
+
+  setup(props) {
+    const {
+      country,
+      handle,
+      name,
+      region,
+      zone,
+    } = toRefs(props.winery)
+
+    return {
+      country,
+      handle,
+      name,
+      region,
+      zone,
+    }
+  },
+
+})
 </script>
 
 <template>
-  <NuxtLink :to="localePath({ name: 'winery-handle', params: { handle: `${brand.handle}-B${brand.brandId}.htm` } })">
+  <NuxtLink :to="localePath({ name: 'winery-handle', params: { handle } })">
     <div
       class="c-brand font-sans border-2 border-primary-400 rounded-sm border-gray-light overflow-hidden h-full
     hover:shadow-elevation"
@@ -18,23 +43,23 @@ export default {
       <div class="c-brand__grid grid items-center text-body">
         <div class="c-brand__imgBox relative">
           <NuxtLink
-            :to="localePath({ name: 'winery-handle', params: { handle: `${brand.handle}-B${brand.brandId}.htm` } })"
+            :to="localePath({ name: 'winery-handle', params: { handle } })"
             class="cnw-flex w-full h-full"
           >
             <LoadingImage
               class="w-full h-full overflow-hidden"
               img-classes="w-full h-full object-cover"
               :thumbnail="{
-                url: brand.image ? `${brand.image}?&width=20&height=10` : 'https://source.unsplash.com/Ls5oWV9e764',
+                url: winery.image?.url ? `${winery.image.url}?&width=20&height=10` : 'https://source.unsplash.com/Ls5oWV9e764',
                 width: 20,
                 height: 10,
-                altText: brand.name,
+                altText: winery.image.altText,
               }"
               :source="{
-                url: brand.image ? `${brand.image}?&width=337&height=330&crop=center` : 'https://source.unsplash.com/Ls5oWV9e764',
+                url: winery.image.url ? `${winery.image.url}?&width=337&height=330&crop=center` : 'https://source.unsplash.com/Ls5oWV9e764',
                 width: 300,
                 height: 540,
-                altText: brand.name,
+                altText: winery.image.altText,
               }"
             />
           </NuxtLink>
@@ -47,22 +72,25 @@ export default {
             <LoadingImage
               img-classes="m-auto max-w-[80%]"
               :thumbnail="{
-                url: brand.url ? `${brand.url}?&width=20&height=12` : 'https://picsum.photos/id/75/20/12',
+                url: winery.logo.url ? `${winery.logo.url}?&width=20&height=12` : 'https://picsum.photos/id/75/20/12',
                 width: 20,
                 height: 12,
-                altText: brand.name,
+                altText: winery.logo.altText,
               }"
               :source="{
-                url: brand.url ? `${brand.url}?&width=265&height=164` : 'https://picsum.photos/id/75/265/164',
+                url: winery.logo.url ? `${winery.logo.url}?&width=265&height=164` : 'https://picsum.photos/id/75/265/164',
                 width: 265,
                 height: 164,
-                altText: brand.name,
+                altText: winery.logo.altText,
               }"
             />
             <div>
-              <div class="cmw-font-bold text-xl mt-4" v-text="brand.name" />
-              <div v-text="brand.subtitle" />
-              <div class="text-secondary-700" v-text="brand.region" />
+              <div class="cmw-font-bold text-xl mt-2" v-text="name" />
+              <div class="flex gap-4 justify-center justify-items-center">
+                <div class="text-secondary-700" v-text="region" />
+                <span v-if="zone"> - {{ zone }}</span>
+              </div>
+              <span class="text-secondary-700" v-text="country" />
             </div>
           </div>
         </div>

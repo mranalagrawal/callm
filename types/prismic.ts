@@ -113,7 +113,4 @@ export interface IPrismicPageData {
   subtitle?: string
   text?: any
   text_sm?: any
-  threshold?: string
-  threshold_not_reached?: string
-  threshold_reached?: string
 }

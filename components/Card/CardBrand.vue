@@ -1,16 +1,41 @@
-<script>
-export default {
+<script lang="ts">
+import type { PropType } from '@nuxtjs/composition-api'
+import { defineComponent, toRefs } from '@nuxtjs/composition-api'
+
+import type { IWinery } from '~/types/winery'
+
+export default defineComponent({
   name: 'CardBrand',
   props: {
-    brand: {
-      type: [Object],
+    winery: {
+      type: Object as PropType<IWinery>,
+      required: true,
     },
   },
-}
+
+  setup(props) {
+    const {
+      country,
+      handle,
+      name,
+      region,
+      zone,
+    } = toRefs(props.winery)
+
+    return {
+      country,
+      handle,
+      name,
+      region,
+      zone,
+    }
+  },
+
+})
 </script>
 
 <template>
-  <NuxtLink :to="localePath({ name: 'winery-handle', params: { handle: `${brand.handle}-B${brand.brandId}.htm` } })">
+  <NuxtLink :to="localePath({ name: 'winery-handle', params: { handle } })">
     <div
       class="font-sans border border-gray-light rounded-sm border-gray-light overflow-hidden h-full
     hover:shadow-elevation"
@@ -20,22 +45,25 @@ export default {
           <LoadingImage
             img-classes="c-brand__contentImg mx-auto"
             :thumbnail="{
-              url: brand.url ? `${brand.url}?&width=20&height=12` : 'https://picsum.photos/id/75/20/12',
+              url: winery.logo.url ? `${winery.logo.url}?&width=20&height=12` : 'https://picsum.photos/id/75/20/12',
               width: 20,
               height: 12,
-              altText: brand.name,
+              altText: winery.logo.altText,
             }"
             :source="{
-              url: brand.url ? `${brand.url}?&width=265&height=164` : 'https://picsum.photos/id/75/265/164',
+              url: winery.logo.url ? `${winery.logo.url}?&width=265&height=164` : 'https://picsum.photos/id/75/265/164',
               width: 265,
               height: 164,
-              altText: brand.name,
+              altText: winery.logo.altText,
             }"
           />
           <div>
-            <div class="cmw-font-bold text-xl mt-4" v-text="brand.name" />
-            <div v-text="brand.subtitle" />
-            <div class="text-secondary-700" v-text="brand.region" />
+            <div class="cmw-font-bold text-xl mt-2" v-text="name" />
+            <div class="flex gap-4 justify-center justify-items-center">
+              <div class="text-secondary-700" v-text="region" />
+              <span v-if="zone"> - {{ zone }}</span>
+            </div>
+            <span class="text-secondary-700" v-text="country" />
           </div>
         </div>
       </div>
@@ -43,7 +71,7 @@ export default {
   </NuxtLink>
 </template>
 
-<style scoped>
+<style>
 .c-brand__contentContainer {
   container: brand-card-content / inline-size;
 }
@@ -58,7 +86,7 @@ export default {
 }
 
 .c-brand__contentImg {
-  max-width: 150px;
+  max-width: 200px;
 }
 
 @container brand-card-content (min-width: 500px) {

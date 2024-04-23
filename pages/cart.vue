@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, useContext, useFetch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, onMounted, ref, useContext } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
 import { useCart } from '~/store/cart'
@@ -18,10 +18,16 @@ export default defineComponent({
   setup() {
     const { $cookies, $cmwStore, $cmwGtmUtils, i18n } = useContext()
     const customerStore = useCustomer()
-    const shipping = ref<any>({})
     const { getCustomerType } = storeToRefs(useCustomer())
     const cartStore = useCart()
-    const { cart, suitableGift, cartTotalPrice, cartTotalQuantity } = storeToRefs(cartStore)
+    const {
+      cart,
+      cartTotalPrice,
+      cartTotalQuantity,
+      shippingThresholdHasBeenReached,
+      shippingThresholdRemaining,
+      suitableGift,
+    } = storeToRefs(cartStore)
     const { getCartById, cartLinesRemove, cartLinesAdd, goToCheckout } = cartStore
     const { customer, customerId } = storeToRefs(customerStore)
     const orderNote = ref(cart.value?.note || '')
@@ -29,10 +35,6 @@ export default defineComponent({
       { handle: '/', label: i18n.t('home'), to: '/' },
       { handle: '/cart', label: i18n.t('cart'), to: '/cart' },
     ]
-
-    const { fetch } = useFetch(async ({ $cmwRepo }) => {
-      shipping.value = await $cmwRepo.prismic.getSingle('shipping')
-    })
 
     const emptyCart = () => {
       SweetAlertConfirm.fire({
@@ -77,7 +79,7 @@ export default defineComponent({
                 value: 'true',
               },
               {
-                key: 'gtmProductData',
+                key: '_gtmProductData',
                 value: suitableGift.value?.gtmProductData ? JSON.stringify(suitableGift.value.gtmProductData) : 'false',
               },
               {
@@ -92,7 +94,20 @@ export default defineComponent({
       await cartLinesAdd(cart.value.id, cartInput.lines)
     }
 
-    const computedCartTotalPrice = computed(() => cartTotalPrice.value($cmwStore.settings.salesChannel, getCustomerType.value))
+    const computedCartTotalPrice = computed(() => cartTotalPrice.value(getCustomerType.value))
+
+    const shippingThresholdNotReachedLabel
+        = computed(() => i18n.n(
+          shippingThresholdRemaining.value(getCustomerType.value),
+          'currency',
+          getLocaleFromCurrencyCode($cmwStore.isUk ? 'GBP' : 'EUR'),
+        ).replace(/\u00A0/g, ''))
+
+    const shippingThresholdLabel
+        = computed(() => i18n.n($cmwStore.settings.shippingThreshold,
+          'currency',
+          getLocaleFromCurrencyCode($cmwStore.isUk ? 'GBP' : 'EUR'),
+        ).replace(/\u00A0/g, ''))
 
     onMounted(async () => {
       const cartIdCookie = $cookies.get('cartId')
@@ -103,7 +118,8 @@ export default defineComponent({
       }
 
       const products = cart.value?.lines?.map((node) => {
-        const gtmProductData = node.attributes.find(v => v.key === 'gtmProductData')
+        const gtmProductData = node.attributes
+          .find(el => el.key === 'gtmProductData' || el.key === '_gtmProductData')
         const productDataJson = gtmProductData?.value ?? null
         return productDataJson
           ? {
@@ -140,11 +156,15 @@ export default defineComponent({
       customerId,
       emptyCart,
       fetch,
+      getCustomerType,
       goToCheckout,
       handleAddGift,
       handleKeyUp,
       orderNote,
-      shipping,
+      shippingThresholdHasBeenReached,
+      shippingThresholdLabel,
+      shippingThresholdNotReachedLabel,
+      shippingThresholdRemaining,
       suitableGift,
       suitableGiftIsOnCart,
       toGiftIcon,
@@ -234,22 +254,14 @@ export default defineComponent({
                   >{{ $t('common.forms.cart.cart_order_note') }}</label>
                 </div>
               </div>
-              <div class="my-4">
-                <p class="text-sm mt-2">
-                  {{ $t('continueShopping') }}
-                  <NuxtLink
-                    class="cmw-font-bold text-primary-400"
-                    :to="localePath('/')"
-                  >
-                    {{ $t('common.cta.continueShopping') }}
-                  </NuxtLink>
-                </p>
-              </div>
             </div>
+            <!-- CART SUMMARY -->
             <div>
               <div class="text-center my-2 overline-2 uppercase text-secondary-700">
                 {{
-                  computedCartTotalPrice < shipping.threshold ? shipping?.threshold_not_reached : shipping?.threshold_reached
+                  shippingThresholdHasBeenReached(getCustomerType)
+                    ? $t('shipping.threshold.reached')
+                    : $t('shipping.threshold.info', { amount: shippingThresholdLabel })
                 }}
               </div>
               <div class="shadow mx-auto border border-gray-light rounded overflow-hidden">
@@ -257,12 +269,13 @@ export default defineComponent({
                   <div class="h5">
                     {{ $t('cartTotal') }}
                     <span class="float-right">{{
-                      $n(Number(computedCartTotalPrice), 'currency', getLocaleFromCurrencyCode($cmwStore.isUk ? "GBP" : "EUR"))
+                      $n(computedCartTotalPrice, 'currency', getLocaleFromCurrencyCode($cmwStore.isUk ? "GBP" : "EUR"))
                     }}</span>
                   </div>
                   <hr>
-                  <p class="text-sm text-gray-darkest" v-html="$t('discountCode')" />
-                  <p class="text-sm text-gray-darkest" v-html="$t('shippingCost')" />
+                  <p class="text-sm text-gray-darkest" v-html="$t('shipping.discountCode')" />
+                  <p class="text-sm text-gray-darkest" v-html="$t('shipping.cost')" />
+                  <ThresholdProgressBar />
                   <CmwButton
                     type="button" variant="default"
                     class="js-go-to-checkout"
@@ -274,15 +287,14 @@ export default defineComponent({
               </div>
             </div>
           </div>
+          <RecommendedCartProducts :id="cart.lines[0].merchandise.product.id" />
         </div>
         <div v-else>
           <h1 class="h2 my-4" v-text="$t('navbar.cart.empty')" />
           <div class="text-center my-12">
             <VueSvgIcon :data="cartEmptyIcon" width="200" height="200" original />
           </div>
-          <div class="mt-8">
-            <CmwButton :to="localePath('/')" class="w-max mx-auto" :label="$t('common.cta.continueShopping')" />
-          </div>
+          <RecommendedEmptyCartProducts />
         </div>
       </ClientOnly>
     </div>

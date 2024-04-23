@@ -17,6 +17,7 @@ export interface GetAllV2Params {
 
 export interface GetCollectionByHandleParams {
   filters?: { available?: boolean }
+  first?: number
   handle: string
   sortKey?: string
 }
@@ -33,9 +34,6 @@ export interface ICmwRepoProducts {
 }
 
 interface ICmwRepo {
-  shopifyPages: {
-    getPageByHandle(handle: string): Promise<IShopifyPage>
-  }
   addresses: {
     getCustomerAddresses(): Promise<{ defaultAddress: IMailingAddress; addresses: IMailingAddress[] }>
     setAddressAsDefault(addressId: IMailingAddress['id']): Promise<{ customer: IShopifyCustomer; customerUserErrors: ICustomerUserError[] }>
@@ -49,6 +47,9 @@ interface ICmwRepo {
     getSingle(page: TPrismicComponentsNames, lang?: TPrismicIsoCodes): Promise<IPrismicPageData>
   }
   products: ICmwRepoProducts
+  shopifyPages: {
+    getPageByHandle(handle: string): Promise<IShopifyPage>
+  }
 }
 
 declare module 'vue/types/vue' {

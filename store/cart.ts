@@ -4,7 +4,6 @@ import { useCheckout } from '~/store/checkout'
 import type { availableUsersValues } from '~/store/customer'
 import { useCustomer } from '~/store/customer'
 
-import type { TSalesChannel } from '~/config/themeConfig'
 import cartCreate from '~/graphql/mutations/cart/cartCreate.graphql'
 import cartLinesAdd from '~/graphql/mutations/cart/cartLinesAdd.graphql'
 import cartLinesRemove from '~/graphql/mutations/cart/cartLinesRemove.graphql'
@@ -25,7 +24,8 @@ interface IState {
 }
 
 const parseGtmProductData = (item: IShopifyCartLineInput | ICartLinesMapped) => {
-  const gtmProductData = item.attributes.find(el => el.key === 'gtmProductData')
+  const gtmProductData = item.attributes
+    .find(el => el.key === 'gtmProductData' || el.key === '_gtmProductData')
 
   if (gtmProductData) {
     return JSON.parse(gtmProductData.value)
@@ -57,7 +57,8 @@ export const useCart = defineStore({
     },
 
     cartTotalPrice(state) {
-      return (salesChannel: TSalesChannel, customerType: availableUsersValues) => {
+      return (customerType: availableUsersValues) => {
+        const { salesChannel } = this.$nuxt.$cmwStore.settings
         let cartLines = []
 
         if (!state.cart?.lines?.length) { return 0 }
@@ -85,6 +86,33 @@ export const useCart = defineStore({
         }
 
         return subtotal - giftTotal
+      }
+    },
+
+    shippingThresholdHasBeenReached() {
+      return (customerType: availableUsersValues) => {
+        const cartTotalPrice = this.cartTotalPrice(customerType)
+        const { shippingThreshold } = this.$nuxt.$cmwStore.settings
+
+        return cartTotalPrice >= shippingThreshold
+      }
+    },
+
+    shippingThresholdRemaining() {
+      return (customerType: availableUsersValues) => {
+        const cartTotalPrice = this.cartTotalPrice(customerType)
+        const { shippingThreshold } = this.$nuxt.$cmwStore.settings
+
+        return shippingThreshold - cartTotalPrice
+      }
+    },
+
+    barProgressWidth() {
+      return (customerType: availableUsersValues) => {
+        const cartTotalPrice = this.cartTotalPrice(customerType)
+        const { shippingThreshold } = this.$nuxt.$cmwStore.settings
+        const barWidth = (cartTotalPrice / shippingThreshold) * 100
+        return Math.round(barWidth > 100 ? 100 : barWidth)
       }
     },
   },

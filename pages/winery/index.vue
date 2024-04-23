@@ -14,6 +14,7 @@ import {
 
 import Loader from '~/components/UI/Loader.vue'
 import type { IOptions } from '~/types/types'
+import type { IWinery, IWineryBackEnd } from '~/types/winery'
 
 interface ILinksRef {
   first: string
@@ -37,7 +38,7 @@ export default defineComponent({
     const router = useRouter()
 
     const cmwActiveSelect = ref('')
-    const pageData = ref([])
+    const wineryList = ref<IWinery[]>([])
     const linksRef = ref<ILinksRef | null>({ first: '', last: '', next: '', prev: '' })
     const allFiltersRaw = ref({})
     const limit = ref(5)
@@ -64,10 +65,14 @@ export default defineComponent({
         const searchParams = route.value.query as { [key: string]: string | number | boolean }
 
         const response = await $elastic.$get('/brands', { searchParams })
-        const { brands, links } = response as { brands: Record<string, any>; links: ILinksRef }
+        const { brands, links } = response as { brands: { data: IWineryBackEnd[] }; links: ILinksRef }
         fetchState.pending = false
 
-        return { data: brands.data.sort((a: { isPartner: number }, b: { isPartner: number }) => b.isPartner - a.isPartner), links, fetchState }
+        return {
+          data: brands.data.sort((a: { isPartner: number }, b: { isPartner: number }) => b.isPartner - a.isPartner),
+          links,
+          fetchState,
+        }
       } catch (error: any) {
         fetchState.pending = false
         fetchState.error = error
@@ -81,8 +86,26 @@ export default defineComponent({
     async function fetchDataWithFetchState() {
       const { data, links, fetchState: updatedFetchState } = await fetchData()
       fetchState.value = updatedFetchState
-      pageData.value = data
       linksRef.value = links
+
+      wineryList.value = data.map(winery => ({
+        country: winery.country,
+        description: winery.subtitle,
+        handle: `${winery.handle}-B${winery.brandId}.htm`,
+        id: `${winery.brandId}`,
+        image: {
+          altText: winery.name,
+          url: winery.image ?? '',
+        },
+        isPartner: !!winery.isPartner,
+        logo: {
+          altText: winery.name,
+          url: winery.url,
+        },
+        name: winery.name,
+        region: winery.region,
+        zone: '', // empty string for now, we can add this later winery.listingText
+      }))
     }
 
     onBeforeMount(fetchDataWithFetchState)
@@ -117,7 +140,7 @@ export default defineComponent({
 
       return newFilters
     })
-    const slicedData = computed(() => pageData.value && pageData.value.slice(0, limit.value))
+    const slicedData = computed<IWinery[]>(() => wineryList.value.slice(0, limit.value))
     const activeSelections = computed<Record<string, string>[]>(() => {
       return Object.values(allFilters.value)
         .flatMap(v => v.filter((item: { selected: boolean }) => item.selected)) || []
@@ -209,7 +232,7 @@ export default defineComponent({
       handleUpdateTrigger,
       limit,
       linksRef,
-      pageData,
+      wineryList,
       slicedData,
       trigger,
     }
@@ -307,12 +330,12 @@ export default defineComponent({
     </div>
     <div class="l-brands grid grid-cols-2 gap-4 mt-8 desktop:(grid-cols-4)">
       <div
-        v-for="brand in slicedData"
-        :key="brand.brandId"
-        :class="brand.isPartner ? 'col-span-2' : 'col-span-2 sm:col-span-1'"
+        v-for="winery in slicedData"
+        :key="winery.id"
+        :class="winery.isPartner ? 'col-span-2' : 'col-span-2 sm:col-span-1'"
       >
         <ClientOnly>
-          <component :is="brand.isPartner ? 'CardBrandPartner' : 'CardBrand'" :brand="brand" />
+          <component :is="winery.isPartner ? 'CardBrandPartner' : 'CardBrand'" :winery="winery" />
         </ClientOnly>
       </div>
     </div>
@@ -321,7 +344,7 @@ export default defineComponent({
       <!-- Note: lazy load trigger, can't hide this because it loses the observer, v-if="limit < data.length" -->
       lazy-loading-trigger
     </div>
-    <div v-if="!!pageData.length" class="flex justify-between">
+    <div v-if="!!wineryList.length" class="flex justify-between">
       <CmwButton
         v-if="linksRef?.prev"
         class="w-max"

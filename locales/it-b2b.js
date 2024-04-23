@@ -1,6 +1,6 @@
-import * as common from '@/locales/it/common'
-import * as enums from '@/locales/it/enums'
-import * as pages from '@/locales/it/pages'
+import * as common from '@/locales/it-b2b/common'
+import * as enums from '@/locales/it-b2b/enums'
+import * as pages from '@/locales/it-b2b/pages'
 
 export default {
   ...common.validations,
@@ -58,7 +58,7 @@ export default {
     discountCode: 'Se hai un <strong>codice sconto</strong> potrai inserirlo in seguito, prima del pagamento.',
     cost: 'Le <strong>spese di spedizione</strong> verranno aggiunte alla cassa, dopo aver scelto la modalità.',
     threshold: {
-      info: 'Spedizione gratuita oltre i {amount}',
+      info: 'Spedizione gratuita in ITALIA {amount} +IVA',
       reached: 'Hai diritto alla spedizione gratuita',
       remaining: 'Ti manca {amount} per avere la spedizione gratuita',
       progressBarReached: 'Hai ottenuto la spedizione gratuita',
@@ -244,7 +244,7 @@ export default {
     productionTypes: 'Tipi di produzione',
     regions: 'Regioni',
     country: 'Nazione',
-    categories: 'Stile del Produttore',
+    categories: 'Categorie',
     winelists: 'Carta vini',
     pairings: 'Abbinamenti',
     dosagecontents: 'Dosaggio',

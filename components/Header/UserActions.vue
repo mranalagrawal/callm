@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useRoute, useRouter, watch } from '@nuxtjs/composition-api'
+import { defineComponent, ref, useContext, useRoute, useRouter, watch } from '@nuxtjs/composition-api'
 import { storeToRefs } from 'pinia'
 
 import { useCart } from '~/store/cart'
@@ -63,7 +63,6 @@ export default defineComponent({
       login: 'HeaderLogin',
     })[k]
 
-    const computedCartTotalPrice = computed(() => cartTotalPrice.value($cmwStore.settings.salesChannel, getCustomerType.value))
     const localeFromCurrency = getLocaleFromCurrencyCode($cmwStore.isUk ? 'GBP' : 'EUR')
 
     watch(() => route.value, () => {
@@ -73,10 +72,11 @@ export default defineComponent({
     return {
       cartIcon,
       cartTotalQuantity,
-      computedCartTotalPrice,
+      cartTotalPrice,
       currentComponent,
       customer,
       customerStore,
+      getCustomerType,
       handleMouseAction,
       handleUserActionMouseEnter,
       handleUserActionMouseLeave,
@@ -123,7 +123,7 @@ export default defineComponent({
           <span v-if="cartTotalQuantity">
             <span class="block text-xxs text-left mb-1">{{ $t('cartTotal') }}</span>
             <i18n-n
-              class="flex items-end leading-none" :value="Number(computedCartTotalPrice)"
+              class="flex items-end leading-none" :value="cartTotalPrice(getCustomerType)"
               :format="{ key: 'currency' }"
               :locale="localeFromCurrency"
             >

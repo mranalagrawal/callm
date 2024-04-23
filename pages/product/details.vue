@@ -471,7 +471,7 @@ export default defineComponent({
         lines: [{
           attributes: [
             {
-              key: 'gtmProductData',
+              key: '_gtmProductData',
               value: this.product?.gtmProductData ? JSON.stringify(this.product.gtmProductData) : 'false',
             },
             {

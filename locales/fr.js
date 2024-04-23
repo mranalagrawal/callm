@@ -25,7 +25,10 @@ export default {
     ...common.forms,
     ...common.info,
     carousel: {
+      emptyCart: 'Recommandé pour vous',
       recommendedProducts: 'Souvent achetés ensemble',
+      thresholdNotReached: 'Ajoutez un de ces produits pour la livraison gratuite',
+      thresholdReached: 'Complétez votre achat en ajoutant un de ces produits',
     },
   },
   pages: {
@@ -51,9 +54,17 @@ export default {
   viewMore: 'En voir plus',
   cart: 'Panier',
   cartDetails: 'Détail du panier',
-  continueShopping: 'Vous souhaitez ajouter d\'autres produits à votre shopping ?',
-  discountCode: 'Si vous avez un <strong>code de réduction</strong>, vous pouvez le saisir plus tard, avant de payer.',
-  shippingCost: 'Les <strong>frais d\'expédition</strong> seront ajoutés à la caisse, après avoir choisi la méthode.',
+  shippingThresholdNotReached: 'Il vous manque {amount} pour obtenir la livraison gratuite',
+  shipping: {
+    discountCode: 'Si vous avez un <strong>code de réduction</strong>, vous pouvez le saisir plus tard, avant de payer.',
+    cost: 'Les <strong>frais d\'expédition</strong> seront ajoutés à la caisse, après avoir choisi la méthode.',
+    threshold: {
+      info: 'Livraison gratuite à partir de {amount}',
+      reached: 'Vous bénéficiez d\'une livraison gratuite',
+      remaining: 'Il vous manque {amount} pour obtenir la livraison gratuite',
+      progressBarReached: 'Vous bénéficiez d\'une livraison gratuite',
+    },
+  },
   home: 'Maison',
   cartTotal: 'Total du panier\n',
   createYourAccount: 'Créez votre compte',

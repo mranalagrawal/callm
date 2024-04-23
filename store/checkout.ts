@@ -283,7 +283,7 @@ export const useCheckout = defineStore({
                 currencyCode: this.$nuxt.$cmwStore.isUk ? 'GBP' : 'EUR',
                 add: {
                   products: lineItems.map((item: any) =>
-                    JSON.parse(item.customAttributes.find((el: any) => el.key === 'gtmProductData').value)),
+                    JSON.parse(item.customAttributes.find((el: any) => el.key === 'gtmProductData' || el.key === '_gtmProductData').value)),
                 },
               },
             })
@@ -314,7 +314,7 @@ export const useCheckout = defineStore({
                 currencyCode: this.$nuxt.$cmwStore.isUk ? 'GBP' : 'EUR',
                 add: {
                   products: lineItems.map((item: any) =>
-                    JSON.parse(item.customAttributes.find((el: any) => el.key === 'gtmProductData').value)),
+                    JSON.parse(item.customAttributes.find((el: any) => el.key === 'gtmProductData' || el.key === '_gtmProductData').value)),
                 },
               },
             })
@@ -347,7 +347,7 @@ export const useCheckout = defineStore({
                 currencyCode: this.$nuxt.$cmwStore.isUk ? 'GBP' : 'EUR',
                 remove: {
                   products: lineItems.map((item: any) =>
-                    JSON.parse(item.customAttributes.find((el: any) => el.key === 'gtmProductData').value)),
+                    JSON.parse(item.customAttributes.find((el: any) => el.key === 'gtmProductData' || el.key === '_gtmProductData').value)),
                 },
               },
             })

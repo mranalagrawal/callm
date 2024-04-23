@@ -6,6 +6,7 @@ query getCollection(
   $handle: String, $id: ID,
   $filters: [ProductFilter!]
   $sortKey: ProductCollectionSortKeys = COLLECTION_DEFAULT
+  $first: Int = 250
 )
 @inContext(language: $lang) {
   collection(handle: $handle, id: $id) {
@@ -19,7 +20,7 @@ query getCollection(
     link: metafield(namespace: "custom", key: "link_home") {
       value
     }
-    products(first: 250, filters: $filters, sortKey: $sortKey) {
+    products(first: $first, filters: $filters, sortKey: $sortKey) {
       # How can we reuse the objects on graphql?
       nodes {
         availableForSale

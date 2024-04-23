@@ -210,7 +210,7 @@ export default defineComponent({
         lines: [{
           attributes: [
             {
-              key: 'gtmProductData',
+              key: '_gtmProductData',
               value: this.giftCardVariantSelected.gtmProductData ? JSON.stringify(this.giftCardVariantSelected.gtmProductData) : 'false',
             },
             {
