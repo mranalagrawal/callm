@@ -317,7 +317,9 @@ export default defineComponent({
                     >
                   </div>
                   <template #prevArrow>
-                    <span />
+                    <div class="custom-arrow absolute transform -translate-y-1/2 top-1/2 !left-8">
+                      <VueSvgIcon :data="chevronLeftIcon" width="20" height="20" />
+                    </div>
                   </template>
                   <template #nextArrow>
                     <div class="custom-arrow absolute transform -translate-y-1/2 top-1/2 !right-8">
@@ -411,8 +413,11 @@ export default defineComponent({
                         }"
                       />
                     </div>
-                    <template #prevArrow>
-                      <span />
+                    <template #prevArrow="arrowOption">
+                      <div v-if="arrowOption.currentSlide > 0" class="custom-arrow absolute transform -translate-y-1/2 top-1/2 !left-8">
+                        <VueSvgIcon :data="chevronLeftIcon" width="20" height="20" />
+                      </div>
+                      <span v-else />
                     </template>
                     <template #nextArrow>
                       <div class="custom-arrow absolute transform -translate-y-1/2 top-1/2 !right-8">
