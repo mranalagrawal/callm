@@ -39,7 +39,7 @@ export default defineComponent({
         :to="localePath('/profile/wishlist')"
         class="peer transition-colors rounded py-3 px-6 bg-white text-center text-body hover:(bg-primary-900 text-white)"
       >
-        <span class="relative">
+        <span class="block relative">
           <VueSvgIcon
             class="block"
             :data="heartIcon"
