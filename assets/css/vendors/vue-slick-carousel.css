@@ -1,5 +1,5 @@
 .custom-arrow {
-  @apply shadow-md bg-white rounded-sm text-primary-400 flex;
+  @apply shadow-md bg-white rounded-sm text-primary-400 flex cursor-pointer;
 }
 
 .custom-arrow.slick-prev:before, .custom-arrow.slick-next:before {

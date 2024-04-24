@@ -154,7 +154,6 @@ export default defineComponent({
 
     // Create a computed that checks if the current route has a query params marketing and its value equals 1
     const isMarketing = computed(() => route.value.query.marketing === '1')
-    console.warn(isMarketing.value)
 
     onMounted(() => {
       process.browser && $cmwGtmUtils.pushPage('page')
@@ -229,7 +228,7 @@ export default defineComponent({
             src="@/assets/images/bg-wave.png" alt="image"
           >
           <div class="relative max-w-screen-xl mx-auto py-4 md:px-4">
-            <div class="px-4 lg:px-3 ">
+            <div class="px-4 lg:px-3">
               <div class="c-ribbon flex items-center text-secondary mt-4">
                 <VueSvgIcon class="c-ribbon__left" :data="ribbon" width="9" height="24" />
                 <span
@@ -243,67 +242,42 @@ export default defineComponent({
               <h1 v-if="winery" class="text-white" v-text="winery.title" />
               <div class="h4 my-4 !text-white" v-text="winery.subtitle" />
             </div>
-            <ClientOnly v-if="!!winery.images.length">
-              <VueSlickCarousel
-                ref="partnerC1"
-                class="lg:pr-3"
-                :as-nav-for="partnerC2"
-                :focus-on-select="true"
-                :dots="!isDesktop"
-                dots-class="c-carouselDots"
-              >
-                <div
-                  v-for="(image, idx) in winery.images" :key="generateKey(`mobile-${image.url}-${idx}`)"
-                  class="lg:pl-3 w-full flex h-[410px]"
-                >
-                  <LoadingImage
-                    class="select-none pointer-events-none flex md:rounded-sm w-full h-full overflow-hidden"
-                    img-classes="w-full object-cover object-center"
-                    :thumbnail="{
-                      url: `${image.url}&width=40&height=20`,
-                      width: 40,
-                      height: 20,
-                      altText: `${winery.title} - ${idx}`,
-                    }"
-                    :source="{
-                      url: `${image.url}&width=800&height=409`,
-                      width: 800,
-                      height: 409,
-                      altText: `${winery.title} - ${idx}`,
-                    }"
-                  />
-                </div>
-                <template #customPaging="page">
-                  <button
-                    class="c-carouselDots__dot"
-                    :class="{ '-sm': !inRange((page - currentC1Slide), -2, 2) }"
-                  />
-                </template>
-                <template #prevArrow>
-                  <span />
-                </template>
-                <template #nextArrow>
-                  <span />
-                </template>
-              </VueSlickCarousel>
-              <div v-if="winery.images.length > 1 && isDesktop" class="my-4">
+            <div class="w-[min(100%,_58rem)] m-inline-auto">
+              <ClientOnly v-if="!!winery.images.length">
                 <VueSlickCarousel
-                  ref="partnerC2"
+                  ref="partnerC1"
                   class="lg:pr-3"
-                  :as-nav-for="partnerC1"
-                  :slides-to-show="5.5"
-                  :infinite="false"
                   :focus-on-select="true"
+                  :dots="!isDesktop"
+                  dots-class="c-carouselDots"
                 >
                   <div
-                    v-for="(image, idx) in winery.images" :key="`thumb-${image}`"
-                    class="px-3 h-full flex"
+                    v-for="(image, idx) in winery.images" :key="generateKey(`mobile-${image.url}-${idx}`)"
+                    class="lg:pl-3 w-full flex h-[410px]"
                   >
-                    <img
-                      class="select-none pointer-events-none flex rounded-sm h-full overflow-hidden"
-                      :src="image.url" :alt="`${winery.title} - ${idx}`"
-                    >
+                    <LoadingImage
+                      class="select-none pointer-events-none flex md:rounded-sm w-full h-full overflow-hidden"
+                      img-classes="w-full object-cover object-center"
+                      :thumbnail="{
+                        url: `${image.url}&width=40&height=20`,
+                        width: 40,
+                        height: 20,
+                        altText: `${winery.title} - ${idx}`,
+                      }"
+                      :source="{
+                        url: `${image.url}&width=800&height=409`,
+                        width: 800,
+                        height: 409,
+                        altText: `${winery.title} - ${idx}`,
+                      }"
+                    />
                   </div>
+                  <template #customPaging="page">
+                    <button
+                      class="c-carouselDots__dot"
+                      :class="{ '-sm': !inRange((page - currentC1Slide), -2, 2) }"
+                    />
+                  </template>
                   <template #prevArrow>
                     <div class="custom-arrow absolute transform -translate-y-1/2 top-1/2 !left-8">
                       <VueSvgIcon :data="chevronLeftIcon" width="20" height="20" />
@@ -315,9 +289,9 @@ export default defineComponent({
                     </div>
                   </template>
                 </VueSlickCarousel>
-              </div>
-            </ClientOnly>
-            <div class="px-4 md:(grid gap-4 grid-cols-[minmax(auto,_60%)_minmax(auto,_40%)])">
+              </ClientOnly>
+            </div>
+            <div class="px-4 my-4 md:(grid gap-4 grid-cols-[minmax(auto,_60%)_minmax(auto,_40%)])">
               <BrandInfo :winery="winery" />
               <CountryMap
                 v-if="metaFields && isDesktop" :logo="winery.logo && winery.featureImage.url || ''" :country="metaFields.country"
