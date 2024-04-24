@@ -1,3 +1,5 @@
+import type { ILocales } from '~/types/baseItem'
+
 export interface ICmwWinery {
   address: string
   annualProduction: string
@@ -9,10 +11,10 @@ export interface ICmwWinery {
   hectares: Maybe<number>
   image: Maybe<string>
   isPartner: number
-  listingText: string
+  listingText: ILocales
   name: string
   oenologist: Maybe<string>
-  ownedGrapes: Maybe<string>
+  ownedGrapes: Maybe<number>
   productionTypes: string[]
   quote: Maybe<string>
   region: string

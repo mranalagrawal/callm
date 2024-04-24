@@ -36,3 +36,11 @@ export interface IBaseItem {
    */
   title: string
 }
+
+export interface ILocales {
+  de: string
+  en: string
+  fr: string
+  it: string
+  [key: string]: string
+}

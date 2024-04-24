@@ -60,13 +60,16 @@ export default defineComponent({
       const fetchState = { pending: true, error: null }
 
       try {
-        const filters = await $elastic.$get('/brands') as Record<string, any>
-        allFiltersRaw.value = filters.brands.filters
-
         const searchParams = route.value.query as { [key: string]: string | number | boolean }
 
-        const response = await $elastic.$get('/brands', { searchParams })
-        const { brands, links } = response as { brands: { data: ICmwWinery[] }; links: ILinksRef }
+        const [filtersResponse, brandsResponse] = await Promise.all([
+          $elastic.$get('/brands'),
+          $elastic.$get('/brands', { searchParams }),
+        ])
+
+        allFiltersRaw.value = (filtersResponse as Record<string, any>).brands.filters
+
+        const { brands, links } = brandsResponse as { brands: { data: ICmwWinery[] }; links: ILinksRef }
         fetchState.pending = false
 
         return {
@@ -93,7 +96,7 @@ export default defineComponent({
         address: {
           country: winery.country,
           region: winery.region,
-          zone: winery.listingText,
+          zone: winery.listingText?.[i18n.locale] || '',
           formattedAddress: winery.address,
         },
         handle: `${winery.handle}-B${winery.brandId}.htm`,
@@ -108,8 +111,6 @@ export default defineComponent({
           url: winery.url,
         },
         name: winery.name,
-        region: winery.region,
-        zone: winery.listingText,
       }))
     }
 

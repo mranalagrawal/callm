@@ -2,7 +2,8 @@
 import {
   computed,
   defineComponent,
-  inject, nextTick,
+  inject,
+  nextTick,
   onMounted,
   ref,
   useContext,
@@ -17,19 +18,13 @@ import cmwFavouriteIcon from '~/assets/svg/feature-cmw-favourite.svg'
 import ribbon from '~/assets/svg/ribbon.svg'
 
 import getArticles from '~/graphql/queries/getArticles.graphql'
+import type { ILocales } from '~/types/baseItem'
 import type { IGraphQLArticlesResponse, IWineryShopify } from '~/types/winery/winery-backe-end-shopify'
 import type { IWineryMapped } from '~/types/winery/winery-front-end'
 import { generateHeadHreflang } from '~/utilities/arrays'
 import { inRange } from '~/utilities/math'
 import { generateKey, stripHtmlAnchors } from '~/utilities/strings'
 
-// Todo: define right types
-interface ILocales {
-  de: string
-  en: string
-  fr: string
-  it: string
-}
 interface IMetaFields {
   country: string
   feId: string
@@ -114,7 +109,7 @@ export default defineComponent({
           country: details.country,
           formattedAddress: details.address,
           region: details.region,
-          zone: details.listingText,
+          zone: details.listingText?.[i18n.locale] || '',
         },
         description: '',
         descriptionHtml: iWineryShopify.contentHtml,
@@ -131,6 +126,7 @@ export default defineComponent({
         isPartner: details.isPartner,
         logo: { ...iWineryShopify.image },
         name: '',
+        quote: details.quote || '',
         seo: {
           description: iWineryShopify.seo.description,
           title: iWineryShopify.seo.title,
@@ -331,6 +327,7 @@ export default defineComponent({
             <CmwTextAccordion line-clamp="3" :force-show="!isMarketing">
               <div class="prose px-4 md:order-3" v-html="$cmwStore.isUk ? stripHtmlAnchors(`${winery.descriptionHtml}`) : winery.descriptionHtml" />
             </CmwTextAccordion>
+            <CmwQuote :quote="winery.quote" />
           </div>
         </div>
         <div v-else class="max-w-screen-xl mx-auto py-4">
@@ -442,6 +439,7 @@ export default defineComponent({
                 v-if="metaFields && isDesktop" :logo="winery.logo && winery.featureImage.url || ''" :country="metaFields.country"
                 :region="metaFields.region"
               />
+              <CmwQuote v-if="isDesktop" :quote="winery.quote" />
             </div>
             <div v-if="winery && winery.featureImage && winery.featureImage.url" class="md:order-4">
               <!-- Note: on Nuxt 3 we could use Teleport o this component instead of having duplicates -->
@@ -453,6 +451,7 @@ export default defineComponent({
             <CmwTextAccordion v-if="!isDesktop && !isMarketing" line-clamp="3">
               <div class="prose px-4 md:order-3" v-html="$cmwStore.isUk ? stripHtmlAnchors(`${winery.descriptionHtml}`) : winery.descriptionHtml" />
             </CmwTextAccordion>
+            <CmwQuote v-if="!isDesktop" :quote="winery.quote" />
           </div>
         </div>
         <div v-if="winery && winery.title && !isMarketing" id="brand-products" ref="brandProductsRef">
