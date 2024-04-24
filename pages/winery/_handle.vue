@@ -133,6 +133,7 @@ export default defineComponent({
         },
         subtitle: details.subtitle[i18n.locale],
         title: iWineryShopify.title,
+        productListingText: details.productListingText?.[i18n.locale] || '',
       }
     }
     const { fetch } = useFetch(async ({ $graphql }) => {
@@ -429,7 +430,11 @@ export default defineComponent({
           </div>
         </div>
         <div v-if="winery && winery.title && !isMarketing" id="brand-products" ref="brandProductsRef">
-          <VendorProductsListing :vendor="winery.title" :vendor-fe-id="metaFields.feId" />
+          <VendorProductsListing
+            :vendor="winery.title"
+            :vendor-fe-id="metaFields.feId"
+            :title="winery.productListingText || $t('sameProducer', { name: winery.title })"
+          />
         </div>
       </div>
       <div v-else class="max-w-screen-xl mx-auto p-4 text-center">

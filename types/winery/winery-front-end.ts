@@ -96,6 +96,11 @@ export interface IWineryMapped extends Pick<IBaseItem,
   ownedGrapes: string
 
   /**
+   * The product Listing Text of the winery.
+   */
+  productListingText: string
+
+  /**
    * The quote of the winery.
    */
   quote: string

@@ -49,7 +49,7 @@ export default {
   noteDesktop: '(Presso, Interno, Citofono solo se diverso, Portineria)',
   country: 'Scegli paese',
   recentlySeen: 'Visti di recente',
-  sameProducer: 'Dallo stesso produttore',
+  sameProducer: 'Le bottiglie di {name}',
   viewMore: 'Vedi di più',
   home: 'Home',
   cart: 'Carrello',

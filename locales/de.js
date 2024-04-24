@@ -50,7 +50,7 @@ export default {
   noteDesktop: '(At, Intern, Gegensprechanlage nur falls abweichend, Concierge)',
   country: 'Land auswählen',
   recentlySeen: 'Kürzlich gesehen',
-  sameProducer: 'Vom selben Hersteller',
+  sameProducer: 'Die Flaschen von {name}',
   viewMore: 'Mehr sehen',
   cart: 'Wagen',
   cartDetails: 'Wagendetail',

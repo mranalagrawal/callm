@@ -50,7 +50,7 @@ export default {
   noteDesktop: '(At, Interne, Interphone uniquement si différent, Conciergerie)',
   country: 'Choisissez le pays',
   recentlySeen: 'Vu récemment ',
-  sameProducer: 'Du même producteur',
+  sameProducer: 'Les bouteilles de {name}',
   viewMore: 'En voir plus',
   cart: 'Panier',
   cartDetails: 'Détail du panier',
