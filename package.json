@@ -3,7 +3,7 @@
   "version": "1.27.0",
   "private": true,
   "engines": {
-    "node": ">=16.0.0 <17.0.0"
+    "node": ">=18.0.0"
   },
   "scripts": {
     "dev": "nuxt",
@@ -77,13 +77,16 @@
     "@antfu/eslint-config": "^0.38.4",
     "@babel/plugin-proposal-private-property-in-object": "^7.16.7",
     "@commitlint/config-conventional": "^17.6.7",
+    "@eslint/js": "^9.2.0",
     "@nuxt/types": "2.15.8",
     "@nuxt/typescript-build": "^3.0.1",
     "@nuxtjs/google-fonts": "^2.0.0",
     "@windicss/plugin-animations": "^1.0.9",
     "@yzfe/svgicon-loader": "^1.2.0",
-    "eslint": "^8.38.0",
+    "eslint": "^8.57.0",
     "eslint-import-resolver-nuxt": "^1.0.1",
+    "eslint-plugin-vue": "^9.26.0",
+    "globals": "^15.2.0",
     "graphql": "^15.8.0",
     "husky": "^8.0.0",
     "nuxt": "2.15.8",
@@ -91,6 +94,7 @@
     "nuxt-windicss": "^2.6.1",
     "slice-machine-ui": "^0.4.0",
     "typescript": "4",
+    "typescript-eslint": "^7.9.0",
     "vee-validate": "^3.4.15",
     "webpack": "^4.46.0"
   },

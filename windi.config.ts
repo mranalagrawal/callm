@@ -1,6 +1,9 @@
 import colors from 'windicss/colors'
 import { defineConfig } from 'windicss/helpers'
 import plugin from 'windicss/plugin'
+import 'windicss/plugin/typography'
+import 'windicss/plugin/line-clamp'
+import '@windicss/plugin-animations'
 
 function range(size: number, startAt = 1) {
   return Array.from(Array(size).keys()).map(i => i + startAt)
@@ -228,20 +231,20 @@ export default defineConfig({
   },
   plugins: [
 
-    require('windicss/plugin/typography'),
+    // require('windicss/plugin/typography'),
 
-    require('windicss/plugin/line-clamp'),
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    require('@windicss/plugin-animations')({
-      settings: {
-        animatedSpeed: 1000,
-        heartBeatSpeed: 1000,
-        hingeSpeed: 2000,
-        bounceInSpeed: 750,
-        bounceOutSpeed: 750,
-        animationDelaySpeed: 1000,
-      },
-    }),
+    // require('windicss/plugin/line-clamp'),
+    // // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // require('@windicss/plugin-animations')({
+    //   settings: {
+    //     animatedSpeed: 1000,
+    //     heartBeatSpeed: 1000,
+    //     hingeSpeed: 2000,
+    //     bounceInSpeed: 750,
+    //     bounceOutSpeed: 750,
+    //     animationDelaySpeed: 1000,
+    //   },
+    // }),
     plugin(({ addComponents }) => {
       const margins = {
         '.m-inline-auto': {

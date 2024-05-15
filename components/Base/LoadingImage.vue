@@ -21,12 +21,12 @@ export default {
       threshold: 0,
     }
 
-    const loadBigImage = (image) => {
+    function loadBigImage(image) {
       if (image) {
         image.addEventListener('load', function handler() {
           imageIsLoaded.value = true
 
-          this.removeEventListener('load', handler)
+          image.removeEventListener('load', handler)
         })
 
         image.addEventListener('error', () => {
@@ -37,11 +37,11 @@ export default {
       }
     }
 
-    const loadSmallImage = () => {
+    function loadSmallImage() {
       if (imgEl.value) {
         imgEl.value.addEventListener('load', function handler() {
           setTimeout(() => {
-            this.removeEventListener('load', handler)
+            imgEl.value.removeEventListener('load', handler)
             loadBigImage(imgEl.value)
           }, 200)
         })
