@@ -1,9 +1,9 @@
+import pluginAnimations from '@windicss/plugin-animations'
 import colors from 'windicss/colors'
 import { defineConfig } from 'windicss/helpers'
 import plugin from 'windicss/plugin'
 import 'windicss/plugin/typography'
 import 'windicss/plugin/line-clamp'
-import '@windicss/plugin-animations'
 
 function range(size: number, startAt = 1) {
   return Array.from(Array(size).keys()).map(i => i + startAt)
@@ -11,8 +11,15 @@ function range(size: number, startAt = 1) {
 // ...Array.from({ length: 4 }, (_, i) => `p-${i + 1}`),
 export default defineConfig({
   attributify: true,
-  safelist: ['nuxt-link-exact-active', 'peer-focus:bg-white', 'peer-focus:bg-black', 'peer-focus:bg-gray-lightest',
-    'btn-base', 'btn-base-spacing', 'btn-default', 'btn-text',
+  safelist: [
+    'nuxt-link-exact-active',
+    'peer-focus:bg-white',
+    'peer-focus:bg-black',
+    'peer-focus:bg-gray-lightest',
+    'btn-base',
+    'btn-base-spacing',
+    'btn-default',
+    'btn-text',
     range(10).map(i => `line-clamp-${i}`),
   ],
   preflight: {
@@ -123,7 +130,8 @@ export default defineConfig({
       },
       boxShadow: {
         'filter': '0px 4px white, 0 -1px 6px 0 rgb(51 51 51 / 20%)',
-        'popover': '0 1px 8px 0 rgb(51 51 51 / 20%), 0 3px 3px -2px rgb(51 51 51 / 12%), 0 3px 4px 0 rgb(51 51 51 / 14%)',
+        'popover':
+          '0 1px 8px 0 rgb(51 51 51 / 20%), 0 3px 3px -2px rgb(51 51 51 / 12%), 0 3px 4px 0 rgb(51 51 51 / 14%)',
         'input': '0 0 0 30px #ffe300 inset',
         'input-focus': '0 0 0 2px #fff, 0 0 0 4px rgb(50 100 150 / 40%)',
         'btn': '2px 2px 10px rgba(0, 0, 0, 0.3)',
@@ -214,20 +222,25 @@ export default defineConfig({
       },
     },
     'nuxt-link-exact-active': 'no-underline',
-    'center-the-unknown': 'absolute transform top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
+    'center-the-unknown':
+      'absolute transform top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
     'body-1': 'font-normal text-sm text-black hover:text-black',
     'overline-1': 'cmw-font-light tracking-wider text-xxs',
     'overline-2': 'cmw-font-light tracking-widest text-xs',
-    'btn-base': 'font-secondary flex items-center justify-center w-full transition-colors rounded border-2',
+    'btn-base':
+      'font-secondary flex items-center justify-center w-full transition-colors rounded border-2',
     'btn-base-spacing': 'px-4 py-3 md:(px-8 py-[0.8rem])',
-    'btn-default': 'font-secondary border-transparent bg-primary-400 text-white cmw-font-bold uppercase',
+    'btn-default':
+      'font-secondary border-transparent bg-primary-400 text-white cmw-font-bold uppercase',
     'btn-text': 'border-transparent text-primary-400',
-    'products-grid': 'grid gap-2 phone-md:grid-cols-2 sm:gap-3 lg:(grid-cols-3 gap-4) desktop-wide:grid-cols-4',
+    'products-grid':
+      'grid gap-2 phone-md:grid-cols-2 sm:gap-3 lg:(grid-cols-3 gap-4) desktop-wide:grid-cols-4',
   },
   alias: {
     // Note: This compiles single utilities, we need to use it with a '*' es. class="*big-titles"
     'nuxt-link-exact-active': 'no-underline',
-    'center-the-unknown': 'absolute transform top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
+    'center-the-unknown':
+      'absolute transform top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
   },
   plugins: [
 
@@ -245,6 +258,16 @@ export default defineConfig({
     //     animationDelaySpeed: 1000,
     //   },
     // }),
+    pluginAnimations({
+      
+            animatedSpeed: 1000,
+            heartBeatSpeed: 1000,
+            hingeSpeed: 2000,
+            bounceInSpeed: 750,
+            bounceOutSpeed: 750,
+            animationDelaySpeed: 1000,
+          
+    }),
     plugin(({ addComponents }) => {
       const margins = {
         '.m-inline-auto': {
