@@ -1,4 +1,6 @@
 <script>
+import { getHomeProduct } from '~/nuxt.config'
+
 // noinspection JSUnusedGlobalSymbols
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -28,6 +30,7 @@ export default {
     },
   },
 }
+getHomeProduct()
 </script>
 
 <template>

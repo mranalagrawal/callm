@@ -10,7 +10,6 @@ export default defineComponent({
   setup() {
     const componentData = ref<IPrismicPageData>(initialPageData)
     const showMoreText = ref(false)
-
     useFetch(async ({ $cmwRepo }) => {
       componentData.value = await $cmwRepo.prismic.getSingle('call-to-action')
     })

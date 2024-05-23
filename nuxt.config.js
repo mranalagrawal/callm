@@ -2,6 +2,8 @@
 import fetch from 'node-fetch'
 import { join } from 'node:path'
 
+import { useHeroStore } from './store/heroStore'
+
 // Todo: Move these function to external files
 // import getSitemapProducts from './utilities/getSitemapProducts'
 // import getSitemapBrands from './utilities/getSitemapBrands'
@@ -43,19 +45,206 @@ async function getPageProducts(lang, cursor = null) {
     }),
   })
     .then(async r => await r.json())
-    .then(data => response = data || {})
+    .then(data => (response = data || {}))
     .catch(() => {
       response = {}
     })
   return response
 }
+export async function getHomeProduct(
 
+  handle = 'home',
+  type = 'home',
+) {
+
+  try {
+    const res = await fetch(
+      // process.env.DOMAIN,
+      'https://callmewine-stage.myshopify.com/api/2023-04/graphql.json',
+
+      {
+        method: 'POST',
+        headers: {
+          'X-Shopify-Storefront-Access-Token':
+            // process.env.STOREFRONT_ACCESS_TOKEN,
+            '115ead58c046b5e0ef5f4aea42a3f8c5',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: `query getHomeMetaObject($handle: MetaobjectHandleInput!) { 
+                  metaobject(handle: $handle) { 
+                    handle 
+                    fields { 
+                      key 
+                      value 
+                    } 
+                  } 
+                }`,
+          variables: {
+            handle: {
+              type,
+              handle,
+            },
+          },
+        }),
+      },
+    )
+
+    if (!res.ok) {
+      console.error('Network response was not ok:', res.statusText)
+      throw new Error('Network response was not ok')
+    }
+
+    const data = await res.json()
+
+    const fields = data.data?.metaobject?.fields || []
+
+    // Extract IDs from the response
+
+    const idField = fields.find(field => field.key === 'main_banner')
+    const ids = idField ? JSON.parse(idField.value) : []
+    // return ids;
+    await getCurrentHero(ids)
+  } catch (error) {
+    console.error('Error fetching data:', error)
+    return []
+  }
+}
+
+async function getCurrentHero(ids) {
+  try {
+    let currentHero = null
+    let mostRecentActiveDate = null
+    for (const id of ids) {
+      const res = await fetch(
+        // process.env.DOMAIN   ,
+        'https://callmewine-stage.myshopify.com/api/2023-04/graphql.json',
+        {
+          method: 'POST',
+          headers: {
+            'X-Shopify-Storefront-Access-Token':
+            // process.env.STOREFRONT_ACCESS_TOKEN,
+            '115ead58c046b5e0ef5f4aea42a3f8c5',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: `query GetMetaObjectById($id: ID!) { 
+                    metaobject(id: $id) { 
+                      handle 
+                      fields { 
+                        key 
+                        value 
+                      } 
+                    } 
+                  }`,
+            variables: {
+              id,
+            },
+          }),
+        },
+      )
+      if (!res.ok) {
+        console.error('Network response was not ok:', res.statusText)
+        throw new Error('Network response was not ok')
+      }
+
+      const data = await res.json()
+      const metaObject = data?.data?.metaobject
+      if (metaObject) {
+        const startDate = new Date(metaObject.fields.find(field => field.key === 'start_date').value)
+        if (!mostRecentActiveDate || startDate > mostRecentActiveDate) {
+          mostRecentActiveDate = startDate
+          currentHero = metaObject
+        }
+      }
+    }
+    if (currentHero) {
+      const name
+        = currentHero.fields.find(field => field.key === 'name')?.value
+        || 'Unnamed Hero'
+      const bannerCarousels = JSON.parse(
+        currentHero.fields.find(field => field.key === 'banner_carousel')
+          ?.value || '[]',
+      )
+      const startDate
+        = currentHero.fields.find(field => field.key === 'start_date')?.value
+        || 'No start date'
+      HomBannerCarousel(bannerCarousels)
+      return { bannerCarousels, name, startDate }
+    }
+    return null
+  } catch (error) {
+    console.error('Error fetching data:', error)
+    return null
+  }
+}
+
+async function HomBannerCarousel(ids) {
+  const heroStore = useHeroStore() // Pinia store ka instance
+  try {
+    const heroData = []
+    for (const id of ids) {
+      const res = await fetch(
+        'https://callmewine-stage.myshopify.com/api/2023-04/graphql.json',
+        {
+          method: 'POST',
+          headers: {
+            'X-Shopify-Storefront-Access-Token': '115ead58c046b5e0ef5f4aea42a3f8c5',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: `query GetMetaObjectById($id: ID!) { 
+              metaobject(id: $id) { 
+                handle 
+                fields { 
+                  key 
+                  value 
+                } 
+              } 
+            }`,
+            variables: {
+              id,
+            },
+          }),
+        },
+      )
+      if (!res.ok) {
+        console.error('Network response was not ok:', res.statusText)
+        throw new Error('Network response was not ok')
+      }
+
+      const data = await res.json()
+      const metaobject = data?.data?.metaobject
+      if (metaobject && metaobject.fields) {
+        const banner = {
+          id,
+          backgroundColor: metaobject.fields.find(field => field.key === 'background_color')?.value || '',
+          image: metaobject.fields.find(field => field.key === 'image')?.value || '',
+          link: metaobject.fields.find(field => field.key === 'link')?.value || '',
+          text: metaobject.fields.find(field => field.key === 'text')?.value || '',
+          title: metaobject.fields.find(field => field.key === 'title')?.value || '',
+        }
+        heroData.push(banner)
+      }
+    }
+    heroStore.setBanners(heroData) // Store mein data set karo
+    return heroData
+  } catch (error) {
+    console.error('Error fetching data:', error)
+    return null
+  }
+}
 async function getMoreProducts(lang, arr, endCursor) {
   const { data } = await getPageProducts(lang, endCursor)
-  if (!data?.products.nodes) { return arr }
-  arr = [...arr,
+  if (!data?.products.nodes) {
+    return arr
+  }
+  arr = [
+    ...arr,
     ...data.products?.nodes.map(product => ({
-      url: `/${product.handle}-${product.details?.value ? JSON.parse(product.details.value).key : 'OHBOY'}.htm`,
+      url: `/${product.handle}-${
+        product.details?.value ? JSON.parse(product.details.value).key : 'OHBOY'
+      }.htm`,
       lastmod: product.updatedAt,
       img: [
         {
@@ -63,20 +252,29 @@ async function getMoreProducts(lang, arr, endCursor) {
           title: product.title,
         },
       ],
-    }))]
+    })),
+  ]
 
-  if (data.products.pageInfo && data.products.pageInfo.hasNextPage) { return await getMoreProducts(lang, arr, data.products.pageInfo.endCursor) } else { return arr }
+  if (data.products.pageInfo && data.products.pageInfo.hasNextPage) {
+    return await getMoreProducts(lang, arr, data.products.pageInfo.endCursor)
+  } else {
+    return arr
+  }
 }
 
 async function getSitemapProducts(lang) {
   let arr = []
   const { data } = await getPageProducts(lang)
 
-  if (!data?.products?.nodes) { return }
+  if (!data?.products?.nodes) {
+    return
+  }
 
   if (data.products.nodes) {
     arr = data.products?.nodes.map(product => ({
-      url: `/${product.handle}-${product.details?.value ? JSON.parse(product.details.value).key : 'OHBOY'}.htm`,
+      url: `/${product.handle}-${
+        product.details?.value ? JSON.parse(product.details.value).key : 'OHBOY'
+      }.htm`,
       lastmod: product.updatedAt,
       img: [
         {
@@ -93,43 +291,57 @@ async function getSitemapProducts(lang) {
 
 async function getBrands(query) {
   let response = {}
-  await fetch(`${process.env.ELASTIC_URL}/brands/sitemap?${query}`, { method: 'GET' })
+  await fetch(`${process.env.ELASTIC_URL}/brands/sitemap?${query}`, {
+    method: 'GET',
+  })
     .then(async res => await res.json())
-    .then(data => response = data || {})
-    .catch(() => { response = {} })
+    .then(data => (response = data || {}))
+    .catch(() => {
+      response = {}
+    })
 
   return response
 }
 
 async function getMoreBrands(arr, query) {
   const { data, meta } = await getBrands(query)
-  if (!data) { return arr }
-  arr = [...arr,
+  if (!data) {
+    return arr
+  }
+  arr = [
+    ...arr,
     ...data.map((brand) => {
       const url = new URL(brand.url)
 
-      return ({
+      return {
         url: url.pathname,
         lastmod: brand.updatedAt,
-      })
-    })]
+      }
+    }),
+  ]
 
-  if (meta.next_cursor) { return await getMoreBrands(arr, `paginate=300&cursor=${meta.next_cursor}`) } else { return arr }
+  if (meta.next_cursor) {
+    return await getMoreBrands(arr, `paginate=300&cursor=${meta.next_cursor}`)
+  } else {
+    return arr
+  }
 }
 
 async function getSitemapBrands() {
   let arr = []
   const { data, meta } = await getBrands('paginate=300')
 
-  if (!data) { return }
+  if (!data) {
+    return
+  }
 
   arr = data.map((brand) => {
     const url = new URL(brand.url)
 
-    return ({
+    return {
       url: url.pathname,
       lastmod: brand.updatedAt,
-    })
+    }
   })
 
   arr = await getMoreBrands(arr, `paginate=300&cursor=${meta.next_cursor}`)
@@ -148,21 +360,57 @@ function requestMiddleware(request: RequestInit) {
 function storeLocales(store) {
   const obj = {
     CMW: [
-      { 'code': 'en', 'iso': 'en-GB', 'file': 'en.js', 'dir': 'ltr', 'iso-3166-1-alpha-3': 'gbr' },
-      { 'code': 'it', 'iso': 'it-IT', 'file': 'it.js', 'dir': 'ltr', 'iso-3166-1-alpha-3': 'ita' },
+      {
+        'code': 'en',
+        'iso': 'en-GB',
+        'file': 'en.js',
+        'dir': 'ltr',
+        'iso-3166-1-alpha-3': 'gbr',
+      },
+      {
+        'code': 'it',
+        'iso': 'it-IT',
+        'file': 'it.js',
+        'dir': 'ltr',
+        'iso-3166-1-alpha-3': 'ita',
+      },
     ],
     B2B: [
-      { 'code': 'it', 'iso': 'it-IT', 'file': 'it-b2b.js', 'dir': 'ltr', 'iso-3166-1-alpha-3': 'ita' },
+      {
+        'code': 'it',
+        'iso': 'it-IT',
+        'file': 'it-b2b.js',
+        'dir': 'ltr',
+        'iso-3166-1-alpha-3': 'ita',
+      },
     ],
     CMW_UK: [
-      { 'code': 'en', 'iso': 'en-GB', 'file': 'en.js', 'dir': 'ltr', 'iso-3166-1-alpha-3': 'gbr' },
+      {
+        'code': 'en',
+        'iso': 'en-GB',
+        'file': 'en.js',
+        'dir': 'ltr',
+        'iso-3166-1-alpha-3': 'gbr',
+      },
       // { code: 'it', iso: 'it-IT', file: 'it.js', dir: 'ltr' }, // Todo: Remove this line
     ],
     CMW_FR: [
-      { 'code': 'fr', 'iso': 'fr-FR', 'file': 'fr.js', 'dir': 'ltr', 'iso-3166-1-alpha-3': 'fra' },
+      {
+        'code': 'fr',
+        'iso': 'fr-FR',
+        'file': 'fr.js',
+        'dir': 'ltr',
+        'iso-3166-1-alpha-3': 'fra',
+      },
     ],
     CMW_DE: [
-      { 'code': 'de', 'iso': 'de-DE', 'file': 'de.js', 'dir': 'ltr', 'iso-3166-1-alpha-3': 'deu' },
+      {
+        'code': 'de',
+        'iso': 'de-DE',
+        'file': 'de.js',
+        'dir': 'ltr',
+        'iso-3166-1-alpha-3': 'deu',
+      },
     ],
   }
 
@@ -173,7 +421,8 @@ const SITEMAP = {
   CMW: [
     {
       path: '/sitemap_it.xml',
-    }, {
+    },
+    {
       path: '/sitemap_en.xml',
       routes: ['bar/1', 'bar/2'],
       exclude: ['/**'],
@@ -192,7 +441,23 @@ const SITEMAP = {
     },
     {
       path: '/sitemap_en_editorial_other_pages.xml',
-      exclude: ['/product/**', '/search/**', '/profile', '/profile/**', '/catalog', '/privacy', '/terms-of-sales', '/cookie', '/cart', '/gift-cards', '/login', '/preview', '/recover', '/thank-you', '/winery'],
+      exclude: [
+        '/product/**',
+        '/search/**',
+        '/profile',
+        '/profile/**',
+        '/catalog',
+        '/privacy',
+        '/terms-of-sales',
+        '/cookie',
+        '/cart',
+        '/gift-cards',
+        '/login',
+        '/preview',
+        '/recover',
+        '/thank-you',
+        '/winery',
+      ],
     },
   ],
   CMW_DE: [
@@ -208,7 +473,23 @@ const SITEMAP = {
     },
     {
       path: '/sitemap_en_editorial_other_pages.xml',
-      exclude: ['/product/**', '/search/**', '/profile', '/profile/**', '/catalog', '/privacy', '/terms-of-sales', '/cookie', '/cart', '/gift-cards', '/login', '/preview', '/recover', '/thank-you', '/winery'],
+      exclude: [
+        '/product/**',
+        '/search/**',
+        '/profile',
+        '/profile/**',
+        '/catalog',
+        '/privacy',
+        '/terms-of-sales',
+        '/cookie',
+        '/cart',
+        '/gift-cards',
+        '/login',
+        '/preview',
+        '/recover',
+        '/thank-you',
+        '/winery',
+      ],
     },
   ],
   CMW_FR: [
@@ -224,7 +505,23 @@ const SITEMAP = {
     },
     {
       path: '/sitemap_en_editorial_other_pages.xml',
-      exclude: ['/product/**', '/search/**', '/profile', '/profile/**', '/catalog', '/privacy', '/terms-of-sales', '/cookie', '/cart', '/gift-cards', '/login', '/preview', '/recover', '/thank-you', '/winery'],
+      exclude: [
+        '/product/**',
+        '/search/**',
+        '/profile',
+        '/profile/**',
+        '/catalog',
+        '/privacy',
+        '/terms-of-sales',
+        '/cookie',
+        '/cart',
+        '/gift-cards',
+        '/login',
+        '/preview',
+        '/recover',
+        '/thank-you',
+        '/winery',
+      ],
     },
   ],
 }
@@ -365,7 +662,8 @@ export default {
          */
         options: {
           headers: {
-            'X-Shopify-Storefront-Access-Token': process.env.STOREFRONT_ACCESS_TOKEN,
+            'X-Shopify-Storefront-Access-Token':
+              process.env.STOREFRONT_ACCESS_TOKEN,
             'Content-Type': 'application/json, application/graphql',
           },
         },
@@ -546,7 +844,8 @@ export default {
       '@prismicio/vue',
       '@vercel/kv',
       '/@upstash/redis',
-      'swiper', 'vue-svg-icon',
+      'swiper',
+      'vue-svg-icon',
       'vee-validate/dist/rules',
       'vee-validate/dist/locale/de.json',
       'vee-validate/dist/locale/en.json',
@@ -555,7 +854,9 @@ export default {
     ],
     extend(config) {
       const svgFilePath = join(__dirname, 'assets')
-      const imageLoaderRule = config.module.rules.find(rule => rule.test && rule.test.test('.svg'))
+      const imageLoaderRule = config.module.rules.find(
+        rule => rule.test && rule.test.test('.svg'),
+      )
       imageLoaderRule.test = /\.(png|jpe?g|gif|webp)$/
 
       config.module.rules.push({
@@ -597,7 +898,8 @@ export default {
     preconnect: false,
     stylePath: 'css/fonts.css',
     fontsDir: process.env.NODE_ENV === 'production' ? 'fonts' : undefined,
-    fontsPath: process.env.NODE_ENV === 'production' ? '~assets/fonts' : undefined,
+    fontsPath:
+      process.env.NODE_ENV === 'production' ? '~assets/fonts' : undefined,
     families: {
       'Open Sans': {
         wght: [300, 400, 600, 700],
@@ -619,10 +921,12 @@ export default {
 
   gtm: {
     id: process.env.GOOGLE_TAG_MANAGER_ID,
-    enabled: process.env.DEPLOY_ENV === 'prod' || process.env.DEPLOY_ENV === 'staging',
+    enabled:
+      process.env.DEPLOY_ENV === 'prod' || process.env.DEPLOY_ENV === 'staging',
     pageTracking: false,
     pageViewEventName: 'nuxtRoute',
-    autoInit: process.env.DEPLOY_ENV === 'prod' || process.env.DEPLOY_ENV === 'staging',
+    autoInit:
+      process.env.DEPLOY_ENV === 'prod' || process.env.DEPLOY_ENV === 'staging',
     debug: !process.env.DEPLOY_ENV || process.env.DEPLOY_ENV === 'dev',
   },
 
@@ -703,19 +1007,14 @@ export default {
     return [
       {
         UserAgent: '*',
-        Disallow: [
-          '/*?*',
-          '/*?*=true',
-        ],
-        Allow: [
-          '*page',
-          '*/wp-content/',
-          '*/wp-includes/',
-        ],
+        Disallow: ['/*?*', '/*?*=true'],
+        Allow: ['*page', '*/wp-content/', '*/wp-includes/'],
       },
       {
         Disallow: disallowPaths,
-        ...(isProd && { Sitemap: req => `https://${req.headers.host}/sitemap.xml` }),
+        ...(isProd && {
+          Sitemap: req => `https://${req.headers.host}/sitemap.xml`,
+        }),
       },
       {
         UserAgent: 'dotbot',
@@ -739,5 +1038,4 @@ export default {
       },
     ]
   },
-
 }

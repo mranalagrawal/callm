@@ -1,0 +1,10 @@
+
+
+query GetCurrentHero($lang: LanguageCode!) {
+  getCurrentHero(lang: $lang) {
+    id
+    bannerCarousels {
+      ...HomeBannerCarousel
+    }
+  }
+}

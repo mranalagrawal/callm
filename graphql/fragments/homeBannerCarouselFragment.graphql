@@ -1,0 +1,11 @@
+fragment HomeBannerCarousel on HomeBannerCarousel {
+  backgroundColor
+  image
+  title
+  text
+  link
+  buttonText
+}
+
+
+

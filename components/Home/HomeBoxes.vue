@@ -28,7 +28,6 @@ export default defineComponent({
       const data = await $cmwRepo.prismic.getSingle('home-boxes')
       boxes.value = data.box as Record<string, any>[]
     })
-
     return { carousel, responsive, fetch, boxes }
   },
 
