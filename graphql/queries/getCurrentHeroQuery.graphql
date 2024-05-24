@@ -1,10 +1,9 @@
-
-
-query GetCurrentHero($lang: LanguageCode!) {
-  getCurrentHero(lang: $lang) {
-    id
-    bannerCarousels {
-      ...HomeBannerCarousel
-    }
+query GetMetaObjectById($id: ID!) {
+    metaobject(id: $id) { 
+      handle 
+      fields { 
+        key 
+        value 
+      } 
+    } 
   }
-}

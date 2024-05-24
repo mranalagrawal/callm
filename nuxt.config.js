@@ -2,6 +2,7 @@
 import fetch from 'node-fetch'
 import { join } from 'node:path'
 
+import { GETHOMEPRODUCTBYQUERY, GET_META_OBJECT_BY_ID } from './graphql/queries/newHeroQuery'
 import { useHeroStore } from './store/heroStore'
 
 // Todo: Move these function to external files
@@ -51,189 +52,7 @@ async function getPageProducts(lang, cursor = null) {
     })
   return response
 }
-export async function getHomeProduct(
 
-  handle = 'home',
-  type = 'home',
-) {
-
-  try {
-    const res = await fetch(
-      // process.env.DOMAIN,
-      'https://callmewine-stage.myshopify.com/api/2023-04/graphql.json',
-
-      {
-        method: 'POST',
-        headers: {
-          'X-Shopify-Storefront-Access-Token':
-            // process.env.STOREFRONT_ACCESS_TOKEN,
-            '115ead58c046b5e0ef5f4aea42a3f8c5',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query: `query getHomeMetaObject($handle: MetaobjectHandleInput!) { 
-                  metaobject(handle: $handle) { 
-                    handle 
-                    fields { 
-                      key 
-                      value 
-                    } 
-                  } 
-                }`,
-          variables: {
-            handle: {
-              type,
-              handle,
-            },
-          },
-        }),
-      },
-    )
-
-    if (!res.ok) {
-      console.error('Network response was not ok:', res.statusText)
-      throw new Error('Network response was not ok')
-    }
-
-    const data = await res.json()
-
-    const fields = data.data?.metaobject?.fields || []
-
-    // Extract IDs from the response
-
-    const idField = fields.find(field => field.key === 'main_banner')
-    const ids = idField ? JSON.parse(idField.value) : []
-    // return ids;
-    await getCurrentHero(ids)
-  } catch (error) {
-    console.error('Error fetching data:', error)
-    return []
-  }
-}
-
-async function getCurrentHero(ids) {
-  try {
-    let currentHero = null
-    let mostRecentActiveDate = null
-    for (const id of ids) {
-      const res = await fetch(
-        // process.env.DOMAIN   ,
-        'https://callmewine-stage.myshopify.com/api/2023-04/graphql.json',
-        {
-          method: 'POST',
-          headers: {
-            'X-Shopify-Storefront-Access-Token':
-            // process.env.STOREFRONT_ACCESS_TOKEN,
-            '115ead58c046b5e0ef5f4aea42a3f8c5',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            query: `query GetMetaObjectById($id: ID!) { 
-                    metaobject(id: $id) { 
-                      handle 
-                      fields { 
-                        key 
-                        value 
-                      } 
-                    } 
-                  }`,
-            variables: {
-              id,
-            },
-          }),
-        },
-      )
-      if (!res.ok) {
-        console.error('Network response was not ok:', res.statusText)
-        throw new Error('Network response was not ok')
-      }
-
-      const data = await res.json()
-      const metaObject = data?.data?.metaobject
-      if (metaObject) {
-        const startDate = new Date(metaObject.fields.find(field => field.key === 'start_date').value)
-        if (!mostRecentActiveDate || startDate > mostRecentActiveDate) {
-          mostRecentActiveDate = startDate
-          currentHero = metaObject
-        }
-      }
-    }
-    if (currentHero) {
-      const name
-        = currentHero.fields.find(field => field.key === 'name')?.value
-        || 'Unnamed Hero'
-      const bannerCarousels = JSON.parse(
-        currentHero.fields.find(field => field.key === 'banner_carousel')
-          ?.value || '[]',
-      )
-      const startDate
-        = currentHero.fields.find(field => field.key === 'start_date')?.value
-        || 'No start date'
-      HomBannerCarousel(bannerCarousels)
-      return { bannerCarousels, name, startDate }
-    }
-    return null
-  } catch (error) {
-    console.error('Error fetching data:', error)
-    return null
-  }
-}
-
-async function HomBannerCarousel(ids) {
-  const heroStore = useHeroStore() // Pinia store ka instance
-  try {
-    const heroData = []
-    for (const id of ids) {
-      const res = await fetch(
-        'https://callmewine-stage.myshopify.com/api/2023-04/graphql.json',
-        {
-          method: 'POST',
-          headers: {
-            'X-Shopify-Storefront-Access-Token': '115ead58c046b5e0ef5f4aea42a3f8c5',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            query: `query GetMetaObjectById($id: ID!) { 
-              metaobject(id: $id) { 
-                handle 
-                fields { 
-                  key 
-                  value 
-                } 
-              } 
-            }`,
-            variables: {
-              id,
-            },
-          }),
-        },
-      )
-      if (!res.ok) {
-        console.error('Network response was not ok:', res.statusText)
-        throw new Error('Network response was not ok')
-      }
-
-      const data = await res.json()
-      const metaobject = data?.data?.metaobject
-      if (metaobject && metaobject.fields) {
-        const banner = {
-          id,
-          backgroundColor: metaobject.fields.find(field => field.key === 'background_color')?.value || '',
-          image: metaobject.fields.find(field => field.key === 'image')?.value || '',
-          link: metaobject.fields.find(field => field.key === 'link')?.value || '',
-          text: metaobject.fields.find(field => field.key === 'text')?.value || '',
-          title: metaobject.fields.find(field => field.key === 'title')?.value || '',
-        }
-        heroData.push(banner)
-      }
-    }
-    heroStore.setBanners(heroData) // Store mein data set karo
-    return heroData
-  } catch (error) {
-    console.error('Error fetching data:', error)
-    return null
-  }
-}
 async function getMoreProducts(lang, arr, endCursor) {
   const { data } = await getPageProducts(lang, endCursor)
   if (!data?.products.nodes) {
@@ -534,6 +353,165 @@ const TITLE = {
   CMW_DE: 'Online Önothek, Verkauf italienischer Weine – Callmewine',
 }
 
+export async function getHomeProduct(
+
+  handle = 'home',
+  type = 'home',
+) {
+  try {
+    const res = await fetch(
+      // process.env.DOMAIN,
+      'https://callmewine-stage.myshopify.com/api/2023-04/graphql.json',
+
+      {
+        method: 'POST',
+        headers: {
+          'X-Shopify-Storefront-Access-Token':
+            // process.env.STOREFRONT_ACCESS_TOKEN,
+            '115ead58c046b5e0ef5f4aea42a3f8c5',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: GETHOMEPRODUCTBYQUERY,
+          variables: {
+            handle: {
+              type,
+              handle,
+            },
+          },
+        }),
+      },
+    )
+
+    if (!res.ok) {
+      console.error('Network response was not ok:', res.statusText)
+      throw new Error('Network response was not ok')
+    }
+
+    const data = await res.json()
+
+    const fields = data.data?.metaobject?.fields || []
+
+    // Extract IDs from the response
+
+    const idField = fields.find(field => field.key === 'main_banner')
+    const ids = idField ? JSON.parse(idField.value) : []
+    // return ids;
+
+    await getCurrentHero(ids)
+  } catch (error) {
+    console.error('Error fetching data:', error)
+    return []
+  }
+}
+
+async function getCurrentHero(ids) {
+  try {
+    let currentHero = null
+    let mostRecentActiveDate = null
+    for (const id of ids) {
+      const res = await fetch(
+        // process.env.DOMAIN   ,
+        'https://callmewine-stage.myshopify.com/api/2023-04/graphql.json',
+        {
+          method: 'POST',
+          headers: {
+            'X-Shopify-Storefront-Access-Token':
+            // process.env.STOREFRONT_ACCESS_TOKEN,
+            '115ead58c046b5e0ef5f4aea42a3f8c5',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: GET_META_OBJECT_BY_ID,
+            variables: {
+              id,
+            },
+          }),
+        },
+      )
+      if (!res.ok) {
+        console.error('Network response was not ok:', res.statusText)
+        throw new Error('Network response was not ok')
+      }
+
+      const data = await res.json()
+      const metaObject = data?.data?.metaobject
+      if (metaObject) {
+        const startDate = new Date(metaObject.fields.find(field => field.key === 'start_date').value)
+        if (!mostRecentActiveDate || startDate > mostRecentActiveDate) {
+          mostRecentActiveDate = startDate
+          currentHero = metaObject
+        }
+      }
+    }
+    if (currentHero) {
+      const name
+        = currentHero.fields.find(field => field.key === 'name')?.value
+        || 'Unnamed Hero'
+      const bannerCarousels = JSON.parse(
+        currentHero.fields.find(field => field.key === 'banner_carousel')
+          ?.value || '[]',
+      )
+      const startDate
+        = currentHero.fields.find(field => field.key === 'start_date')?.value
+        || 'No start date'
+      HomBannerCarousel(bannerCarousels)
+      return { bannerCarousels, name, startDate }
+    }
+    return null
+  } catch (error) {
+    console.error('Error fetching data:', error)
+    return null
+  }
+}
+
+async function HomBannerCarousel(ids) {
+  const heroStore = useHeroStore() // Pinia store ka instance
+  try {
+    const heroData = []
+    for (const id of ids) {
+      const res = await fetch(
+        'https://callmewine-stage.myshopify.com/api/2023-04/graphql.json',
+        {
+          method: 'POST',
+          headers: {
+            'X-Shopify-Storefront-Access-Token': '115ead58c046b5e0ef5f4aea42a3f8c5',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: GET_META_OBJECT_BY_ID,
+            variables: {
+              id,
+            },
+          }),
+        },
+      )
+      if (!res.ok) {
+        console.error('Network response was not ok:', res.statusText)
+        throw new Error('Network response was not ok')
+      }
+
+      const data = await res.json()
+      const metaobject = data?.data?.metaobject
+      if (metaobject && metaobject.fields) {
+        const banner = {
+          id,
+          backgroundColor: metaobject.fields.find(field => field.key === 'background_color')?.value || '',
+          image: metaobject.fields.find(field => field.key === 'image')?.value || '',
+          link: metaobject.fields.find(field => field.key === 'link')?.value || '',
+          text: metaobject.fields.find(field => field.key === 'text')?.value || '',
+          title: metaobject.fields.find(field => field.key === 'title')?.value || '',
+        }
+        heroData.push(banner)
+      }
+    }
+    heroStore.setBanners(heroData) // Store mein data set karo
+    return heroData
+  } catch (error) {
+    console.error('Error fetching data:', error)
+    return null
+  }
+}
 export default {
   loading: '~/components/LoadingBar.vue',
   loadingIndicator: {

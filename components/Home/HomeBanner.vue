@@ -5,7 +5,6 @@ import {
   defineComponent,
   inject,
   onBeforeUnmount,
-  onMounted,
   ref,
   useContext,
   useFetch,
@@ -34,7 +33,7 @@ export default defineComponent({
     } = useContext()
     const router = useRouter()
     const heroStore = useHeroStore()
-    const newbanners = ref([])
+
     // Fixme: carousel is loading all images (mobile and desktop) when loading a desktop website
     const carousel = ref(null)
     const slides = ref([])
@@ -43,20 +42,20 @@ export default defineComponent({
     const isTablet = inject('isTablet') as Ref<boolean>
     const isDesktopWide = inject('isDesktopWide') as Ref<boolean>
     const hasBeenSet = inject('hasBeenSet') as Ref<boolean>
+    let mtdata = ref([])
+    // const { fetch } = useFetch(async ({ $cmwRepo }) => {
+    //   const data = await $cmwRepo.prismic.getSingle('home-carousel')
+    //   if (!process.browser) {
+    //     OS.value = getMobileOperatingSystem(req.headers['user-agent'])
+    //     $cookies.set('iOS', getMobileOperatingSystem(req.headers['user-agent']), {
+    //       sameSite: 'none',
+    //       secure: true,
+    //     })
+    //   }
 
-    const { fetch } = useFetch(async ({ $cmwRepo }) => {
-      const data = await $cmwRepo.prismic.getSingle('home-carousel')
-      if (!process.browser) {
-        OS.value = getMobileOperatingSystem(req.headers['user-agent'])
-        $cookies.set('iOS', getMobileOperatingSystem(req.headers['user-agent']), {
-          sameSite: 'none',
-          secure: true,
-        })
-      }
-
-      isBrowser.value = process?.browser
-      slides.value = data.body && data.body[0].items
-    })
+    //   isBrowser.value = process?.browser
+    //   slides.value = data.body && data.body[0].items
+    // })
 
     const handleMobileClick = (link: RawLocation) => {
       if (isTablet.value) {
@@ -75,17 +74,25 @@ export default defineComponent({
     })
     onBeforeUnmount(() => slides.value = [])
     const banners = ref([])
-    onMounted(async () => {
-      // Function to update newbanners when heroStore data changes
-      const updateBanners = () => {
-        newbanners.value = heroStore.banners
+    const updateBanners = () => {
+      mtdata = heroStore.banners
+    }
+
+    updateBanners()
+
+    heroStore.$subscribe(updateBanners)
+    const { fetch } = useFetch(async ({ $cmwRepo }) => {
+      const data = await $cmwRepo.prismic.getSingle('home-carousel')
+      if (!process.browser) {
+        OS.value = getMobileOperatingSystem(req.headers['user-agent'])
+        $cookies.set('iOS', getMobileOperatingSystem(req.headers['user-agent']), {
+          sameSite: 'none',
+          secure: true,
+        })
       }
 
-      // Initially update newbanners
-      updateBanners()
-
-      // Subscribe to heroStore and update newbanners when the store data changes
-      heroStore.$subscribe(updateBanners)
+      isBrowser.value = process?.browser
+      mtdata.value = data.body && data.body[0].items
     })
 
     return {
@@ -107,7 +114,7 @@ export default defineComponent({
       showDesktopImage,
       slides,
       banners,
-      newbanners,
+      mtdata,
 
     }
   },
@@ -168,30 +175,38 @@ export default defineComponent({
     </div>
   </div> -->
 
-  <div class="relative h-[505px] bg-primary-50">
-    <div v-if="newbanners.value && newbanners.value.length">
-      <SsrCarousel ref="carousel" :key="newbanners.value.length" loop :show-arrows="isDesktopWide" show-dots class="relative h-[505px]">
-        <div v-for="banner in newbanners.value" :key="banner.id" class="slide relative w-full h-[505px] overflow-hidden" @click="handleMobileClick(banner.link)">
+  <div class="relative h-[505px]">
+    <!-- <div v-if="heroStore.banners && heroStore.banners.length "> -->
+    <div v-if="mtdata && mtdata.length">
+      <SsrCarousel ref="carousel" :key="mtdata.length" loop :show-arrows="isDesktopWide" show-dots class="relative h-[505px]">
+        <!-- Carousel content -->
+        <div v-for="banner in mtdata" :key="banner.id" class="slide relative w-full h-[505px] overflow-hidden" :style="{ backgroundColor: banner.backgroundColor }" @click="handleMobileClick(banner.link)">
+          <!-- Background image -->
           <div class="absolute top-0 left-0 w-full h-full bg-cover bg-center" />
-          <img :src="banner.image" class="absolute top-0 left-0 w-full h-full object-cover" :alt="banner.title" />
-          <div class="absolute top-0 left-0 w-full h-full">
-            <picture>
-              <source :srcset="heroBannerCurveLg" media="(min-width: 768px)" width="1200" height="500">
-              <source :srcset="heroBannerCurveSm" width="800" height="400">
-              <img :src="heroBannerCurveSm" class="c-bannerCurve w-full object-contain object-[0_-50px] md:(object-cover w-4/6 h-full)" alt="A geometric shape" width="400" height="400" loading="lazy" decoding="async">
-            </picture>
-          </div>
+          <!-- Main image -->
+          <PrismicImage
+            class="absolute top-0 left-0 w-full h-full object-cover"
+            :field="showDesktopImage ? banner.image : banner.image.mobile" :imgix-params="{ sat: -100, dpr: 2 }"
+          />
+          <!-- <img :src="banner.image" class="absolute top-0 left-0 w-full h-full object-cover" :alt="banner.title"> -->
+          <!-- Carousel content -->
           <div class="c-carouselWrapper relative z-base grid justify-stretch h-full md:justify-center">
             <div />
             <div class="grid grid-rows-auto md:(w-[min(100%,_30vw)]) xl:(w-[min(100%,_20vw)] justify-center)">
               <NuxtLink class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end" :to="localeRoute(banner.link)">
+                {{ banner.title }}
+              </NuxtLink>
+              <!-- Banner text -->
+              <NuxtLink class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end" :to="localeRoute(banner.link)">
                 {{ banner.text }}
               </NuxtLink>
-              <CmwButton class="hidden w-max self-end mt-8 text-shadow-none md:(block self-start)" variant="default-inverse" :to="localeRoute(banner.link)" :label="banner.cta" />
+              <!-- Banner CTA button -->
+              <CmwButton class="hidden w-max self-end mt-8 text-shadow-none md:(block self-start)" variant="default-inverse" :to="localeRoute(banner.link)" :label="banner.title" />
             </div>
             <div />
           </div>
         </div>
+        <!-- Carousel navigation arrows -->
         <template #back-arrow>
           <span class="w-12 h-12 bg-white rounded-sm flex">
             <VueSvgIcon :data="chevronLeftIcon" color="#992545" width="20" height="20" class="m-auto" />
@@ -203,9 +218,16 @@ export default defineComponent({
           </span>
         </template>
       </SsrCarousel>
+      <!-- Curve icon -->
       <div class="absolute left-0 bottom-[-2px] w-full h-auto">
         <VueSvgIcon class="m-auto" :data="showDesktopImage ? carouselCurveDesktop : carouselCurveMobile" width="100%" height="auto" original />
       </div>
+    </div>
+
+    <!-- Curve icon -->
+    <div class="absolute left-0 bottom-[-2px] w-full h-auto">
+      <VueSvgIcon class="m-auto" :data="showDesktopImage ? carouselCurveDesktop : carouselCurveMobile" width="100%" height="auto" original />
+    <!-- </div> -->
     </div>
   </div>
 </template>
@@ -306,5 +328,3 @@ export default defineComponent({
   }
 }
 </style>
-
-
