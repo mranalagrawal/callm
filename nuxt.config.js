@@ -648,8 +648,7 @@ export default {
          */
         options: {
           headers: {
-            'X-Shopify-Storefront-Access-Token':
-              process.env.STOREFRONT_ACCESS_TOKEN,
+            'X-Shopify-Storefront-Access-Token': process.env.STOREFRONT_ACCESS_TOKEN,
             'Content-Type': 'application/json, application/graphql',
           },
         },
@@ -830,8 +829,7 @@ export default {
       '@prismicio/vue',
       '@vercel/kv',
       '/@upstash/redis',
-      'swiper',
-      'vue-svg-icon',
+      'swiper', 'vue-svg-icon',
       'vee-validate/dist/rules',
       'vee-validate/dist/locale/de.json',
       'vee-validate/dist/locale/en.json',
@@ -840,9 +838,7 @@ export default {
     ],
     extend(config) {
       const svgFilePath = join(__dirname, 'assets')
-      const imageLoaderRule = config.module.rules.find(
-        rule => rule.test && rule.test.test('.svg'),
-      )
+      const imageLoaderRule = config.module.rules.find(rule => rule.test && rule.test.test('.svg'))
       imageLoaderRule.test = /\.(png|jpe?g|gif|webp)$/
 
       config.module.rules.push({
@@ -884,8 +880,7 @@ export default {
     preconnect: false,
     stylePath: 'css/fonts.css',
     fontsDir: process.env.NODE_ENV === 'production' ? 'fonts' : undefined,
-    fontsPath:
-      process.env.NODE_ENV === 'production' ? '~assets/fonts' : undefined,
+    fontsPath: process.env.NODE_ENV === 'production' ? '~assets/fonts' : undefined,
     families: {
       'Open Sans': {
         wght: [300, 400, 600, 700],
@@ -907,12 +902,10 @@ export default {
 
   gtm: {
     id: process.env.GOOGLE_TAG_MANAGER_ID,
-    enabled:
-      process.env.DEPLOY_ENV === 'prod' || process.env.DEPLOY_ENV === 'staging',
+    enabled: process.env.DEPLOY_ENV === 'prod' || process.env.DEPLOY_ENV === 'staging',
     pageTracking: false,
     pageViewEventName: 'nuxtRoute',
-    autoInit:
-      process.env.DEPLOY_ENV === 'prod' || process.env.DEPLOY_ENV === 'staging',
+    autoInit: process.env.DEPLOY_ENV === 'prod' || process.env.DEPLOY_ENV === 'staging',
     debug: !process.env.DEPLOY_ENV || process.env.DEPLOY_ENV === 'dev',
   },
 
@@ -993,14 +986,19 @@ export default {
     return [
       {
         UserAgent: '*',
-        Disallow: ['/*?*', '/*?*=true'],
-        Allow: ['*page', '*/wp-content/', '*/wp-includes/'],
+        Disallow: [
+          '/*?*',
+          '/*?*=true',
+        ],
+        Allow: [
+          '*page',
+          '*/wp-content/',
+          '*/wp-includes/',
+        ],
       },
       {
         Disallow: disallowPaths,
-        ...(isProd && {
-          Sitemap: req => `https://${req.headers.host}/sitemap.xml`,
-        }),
+        ...(isProd && { Sitemap: req => `https://${req.headers.host}/sitemap.xml` }),
       },
       {
         UserAgent: 'dotbot',
@@ -1024,4 +1022,5 @@ export default {
       },
     ]
   },
+
 }
