@@ -360,15 +360,15 @@ export async function getHomeProduct(
 ) {
   try {
     const res = await fetch(
-      // process.env.DOMAIN,
-      'https://callmewine-stage.myshopify.com/api/2023-04/graphql.json',
+      process.env.DOMAIN,
+      // 'https://callmewine-stage.myshopify.com/api/2023-04/graphql.json',
 
       {
         method: 'POST',
         headers: {
           'X-Shopify-Storefront-Access-Token':
-            // process.env.STOREFRONT_ACCESS_TOKEN,
-            '115ead58c046b5e0ef5f4aea42a3f8c5',
+            process.env.STOREFRONT_ACCESS_TOKEN,
+            // '115ead58c046b5e0ef5f4aea42a3f8c5',
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -411,14 +411,14 @@ async function getCurrentHero(ids) {
     let mostRecentActiveDate = null
     for (const id of ids) {
       const res = await fetch(
-        // process.env.DOMAIN   ,
-        'https://callmewine-stage.myshopify.com/api/2023-04/graphql.json',
+        process.env.DOMAIN   ,
+        // 'https://callmewine-stage.myshopify.com/api/2023-04/graphql.json',
         {
           method: 'POST',
           headers: {
             'X-Shopify-Storefront-Access-Token':
-            // process.env.STOREFRONT_ACCESS_TOKEN,
-            '115ead58c046b5e0ef5f4aea42a3f8c5',
+            process.env.STOREFRONT_ACCESS_TOKEN,
+            // '115ead58c046b5e0ef5f4aea42a3f8c5',
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
@@ -471,11 +471,13 @@ async function HomBannerCarousel(ids, lang) {
     const heroData = []
     for (const id of ids) {
       const res = await fetch(
-        'https://callmewine-stage.myshopify.com/api/2023-04/graphql.json',
+        process.env.DOMAIN   ,
+        // 'https://callmewine-stage.myshopify.com/api/2023-04/graphql.json',
         {
           method: 'POST',
           headers: {
-            'X-Shopify-Storefront-Access-Token': '115ead58c046b5e0ef5f4aea42a3f8c5',
+            'X-Shopify-Storefront-Access-Token':  process.env.STOREFRONT_ACCESS_TOKEN,
+            // '115ead58c046b5e0ef5f4aea42a3f8c5',
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
@@ -591,7 +593,7 @@ export default {
     '@nuxtjs/google-fonts',
     '@nuxtjs/prismic',
     'nuxt-windicss',
-    'nuxt-graphql-request',
+    'nuxt-graphql-request'
   ],
   prismic: {
     endpoint: process.env.PRISMIC,
@@ -610,7 +612,7 @@ export default {
     'cookie-universal-nuxt',
     '@nuxtjs/sentry',
     '@nuxtjs/gtm',
-    '@nuxtjs/sitemap',
+    '@nuxtjs/sitemap'
   ],
 
   recaptcha: {
