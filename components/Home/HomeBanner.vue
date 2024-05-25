@@ -127,49 +127,30 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="relative h-[505px] bg-primary-50">
-    <div v-if="slides.length">
-      <SsrCarousel
-        ref="carousel" :key="slides.length" loop :show-arrows="isDesktopWide" show-dots
-        class="relative h-[505px]"
-      >
-        <div
-          v-for="({ text, cta, image, link }) in slides" :key="generateKey(text)"
-          class="slide relative w-full h-[505px] overflow-hidden" @click="handleMobileClick(link)"
-        >
-          <div class="absolute top-0 left-0 w-full h-full bg-cover bg-center" />
-          <PrismicImage
-            class="absolute top-0 left-0 w-full h-full object-cover"
-            :field="showDesktopImage ? image : image.mobile" :imgix-params="{ sat: -100, dpr: 2 }"
-          />
-          <div class="absolute top-0 left-0 w-full h-full">
-            <picture>
-              <source :srcset="heroBannerCurveLg" media="(min-width: 768px)" width="1200" height="500">
-              <source :srcset="heroBannerCurveSm" width="800" height="400">
-              <img
-                :src="heroBannerCurveSm"
-                class="c-bannerCurve w-full object-contain object-[0_-50px] md:(object-cover w-4/6 h-full)"
-                alt="A geometric shape" width="400" height="400" loading="lazy" decoding="async"
-              >
-            </picture>
-          </div>
-          <div class="c-carouselWrapper relative z-base grid justify-stretch h-full md:justify-center">
-            <div />
-            <div class="grid grid-rows-auto md:(w-[min(100%,_30vw)]) xl:(w-[min(100%,_20vw)] justify-center)">
-              <NuxtLink
-                class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end"
-                :to="localeRoute(link)"
-              >
-                {{ text }}
-              </NuxtLink>
-              <CmwButton
-                class="hidden w-max self-end mt-8 text-shadow-none md:(block self-start)"
-                variant="default-inverse" :to="localeRoute(link)" :label="cta"
-              />
+  <div class="relative h-[505px]">
+    <div v-if="mtdata && mtdata.length">
+      <SsrCarousel ref="carousel" :key="mtdata.length" loop :show-arrows="isDesktopWide" show-dots class="relative h-[505px]">
+        <!-- Carousel content -->
+        <div v-for="banner in mtdata" :key="banner.id" class="slide relative w-full h-[505px] overflow-hidden" :style="{ backgroundColor: banner.backgroundColor }" @click="handleMobileClick(banner.link)">
+          <div class="banner-container">
+            <!-- Image container -->
+            <div class="image-container">
+              <img :src="banner.image" class="banner-image" :alt="banner.title">
             </div>
-            <div />
+            <!-- Content container -->
+            <div class="content-container">
+              <NuxtLink class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end" :to="localeRoute(banner.link)">
+                {{ banner.title }}
+              </NuxtLink>
+              <NuxtLink class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end" :to="localeRoute(banner.link)">
+                {{ banner.text }}
+              </NuxtLink>
+              <CmwButton class="hidden w-max self-end mt-8 text-shadow-none md:(block self-start)" variant="default-inverse" :to="localeRoute(banner.link)" :label="banner.text" />
+            </div>
           </div>
+          <!-- Carousel content -->
         </div>
+        <!-- Carousel navigation arrows -->
         <template #back-arrow>
           <span class="w-12 h-12 bg-white rounded-sm flex">
             <VueSvgIcon :data="chevronLeftIcon" color="#992545" width="20" height="20" class="m-auto" />
@@ -181,18 +162,12 @@ export default defineComponent({
           </span>
         </template>
       </SsrCarousel>
-      <div class="absolute left-0 bottom-[-2px] w-full h-auto">
-        <VueSvgIcon
-          class="m-auto" :data="showDesktopImage
-            ? carouselCurveDesktop : carouselCurveMobile" width="100%" height="auto" original
-        />
-      </div>
     </div>
   </div>
 
 </template>
 
-<style scoped>
+<!-- <style scoped>
 .c-bannerCurve {
   object-position: 0 0;
 }
@@ -287,8 +262,8 @@ export default defineComponent({
     right: 8%;
   }
 }
-</style>
-<!-- <style scoped>
+</style> -->
+<style scoped>
     .banner-container {
       display: flex;
       flex-direction: row;
@@ -348,4 +323,4 @@ export default defineComponent({
         display: none;
       }
     }
-    </style> -->
+    </style>

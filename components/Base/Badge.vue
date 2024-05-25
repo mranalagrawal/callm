@@ -1,5 +1,5 @@
 <script>
-// import { getHomeProduct } from '~/nuxt.config'
+import { getHomeProduct } from '~/nuxt.config'
 
 // noinspection JSUnusedGlobalSymbols
 export default {
@@ -30,7 +30,7 @@ export default {
     },
   },
 }
-// getHomeProduct()
+getHomeProduct()
 </script>
 
 <template>
