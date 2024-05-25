@@ -1,6 +1,6 @@
 /* import { apiEndpoint } from "./sm.json"; */
 import fetch from 'node-fetch'
-import { join } from 'node:path'
+import { join } from 'path'
 
 import { GETHOMEPRODUCTBYQUERY, GET_META_OBJECT_BY_ID } from './graphql/queries/newHeroQuery'
 import { useHeroStore } from './store/heroStore'
