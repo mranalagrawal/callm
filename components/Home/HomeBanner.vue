@@ -331,12 +331,12 @@ export default defineComponent({
       justify-content: space-evenly;
       align-items: center;
     }
-    
+
     .content-container {
       order: 2;
       margin-top: 2vmax;
     }
-    
+
     .image-container {
       order: 1;
      margin-top: 3.2vmax;
@@ -344,32 +344,32 @@ export default defineComponent({
       height: 32vmax;
       overflow: hidden;
     }
-    
+
     .banner-image {
       width: 100%;
       height: 100%;
       object-fit: contain;
     }
-    
+
     .title {
       font-size: 1.5rem;
       font-weight: bold;
       margin-bottom: 1rem;
     }
-    
+
     .cta-button {
       margin-top: 1rem;
     }
-    
+
     @media (max-width: 768px) {
       .banner-container {
         flex-direction: column;
       }
-    
+
       .content-container {
         order: 1;
       }
-    
+
       .image-container {
         order: 2;
         width: 100%;

@@ -1,6 +1,6 @@
 /* import { apiEndpoint } from "./sm.json"; */
 import fetch from 'node-fetch'
-import { join } from 'path'
+import { join } from 'node:path'
 
 import { GETHOMEPRODUCTBYQUERY, GET_META_OBJECT_BY_ID, getNewHero } from './graphql/queries/newHeroQuery'
 import { useHeroStore } from './store/heroStore'
@@ -368,7 +368,7 @@ export async function getHomeProduct(
         headers: {
           'X-Shopify-Storefront-Access-Token':
             process.env.STOREFRONT_ACCESS_TOKEN,
-            // '115ead58c046b5e0ef5f4aea42a3f8c5',
+          // '115ead58c046b5e0ef5f4aea42a3f8c5',
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -411,7 +411,7 @@ async function getCurrentHero(ids) {
     let mostRecentActiveDate = null
     for (const id of ids) {
       const res = await fetch(
-        process.env.DOMAIN   ,
+        process.env.DOMAIN,
         // 'https://callmewine-stage.myshopify.com/api/2023-04/graphql.json',
         {
           method: 'POST',
@@ -471,12 +471,12 @@ async function HomBannerCarousel(ids, lang) {
     const heroData = []
     for (const id of ids) {
       const res = await fetch(
-        process.env.DOMAIN   ,
+        process.env.DOMAIN,
         // 'https://callmewine-stage.myshopify.com/api/2023-04/graphql.json',
         {
           method: 'POST',
           headers: {
-            'X-Shopify-Storefront-Access-Token':  process.env.STOREFRONT_ACCESS_TOKEN,
+            'X-Shopify-Storefront-Access-Token': process.env.STOREFRONT_ACCESS_TOKEN,
             // '115ead58c046b5e0ef5f4aea42a3f8c5',
             'Content-Type': 'application/json',
           },
@@ -529,6 +529,8 @@ export default {
     color: '#3B8070',
     background: 'white',
   },
+  target: 'static',
+  ssr: false,
   head: {
     title: TITLE[process.env.STORE],
     htmlAttrs: {
@@ -593,7 +595,7 @@ export default {
     '@nuxtjs/google-fonts',
     '@nuxtjs/prismic',
     'nuxt-windicss',
-    'nuxt-graphql-request'
+    'nuxt-graphql-request',
   ],
   prismic: {
     endpoint: process.env.PRISMIC,
@@ -612,7 +614,7 @@ export default {
     'cookie-universal-nuxt',
     '@nuxtjs/sentry',
     '@nuxtjs/gtm',
-    '@nuxtjs/sitemap'
+    '@nuxtjs/sitemap',
   ],
 
   recaptcha: {
