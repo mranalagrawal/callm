@@ -25,7 +25,7 @@
       '/en/notificadisponibilita*',
       '/it/',
     ] */
-import type { IncomingMessage } from 'node:http'
+import type { IncomingMessage } from 'http'
 
 export default [
   { UserAgent: '*oh' },
