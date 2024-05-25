@@ -82,7 +82,7 @@ export default defineComponent({
     // updateBanners()
 
     // heroStore.$subscribe(updateBanners)
-    
+
     const { fetch } = useFetch(async ({ $cmwRepo }) => {
       const data = await $cmwRepo.prismic.getSingle('home-carousel')
       if (!process.browser) {
