@@ -1,5 +1,5 @@
 <script>
-import { getHomeProduct } from '~/nuxt.config'
+import { getHomeProduct } from '~/store/api.js'
 
 // noinspection JSUnusedGlobalSymbols
 export default {
