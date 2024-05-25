@@ -4,6 +4,7 @@ import {
   getNewHero,
 } from "../graphql/queries/newHeroQuery";
 import { useHeroStore } from "./heroStore";
+
 import fetch from "node-fetch";
 
 // NEW HERO START
@@ -11,14 +12,13 @@ import fetch from "node-fetch";
 export async function getHomeProduct(handle = "home", type = "home") {
   try {
     const res = await fetch(
-      // process.env.DOMAIN,
-      `https://callmewine-stage.myshopify.com/api/2023-04/graphql.json`,
+      process.env.DOMAIN,
+
       {
         method: "POST",
         headers: {
           "X-Shopify-Storefront-Access-Token":
-            //   process.env.STOREFRONT_ACCESS_TOKEN,
-            `115ead58c046b5e0ef5f4aea42a3f8c5`,
+            process.env.STOREFRONT_ACCESS_TOKEN,
 
           "Content-Type": "application/json",
         },
@@ -62,15 +62,13 @@ async function getCurrentHero(ids) {
     let mostRecentActiveDate = null;
     for (const id of ids) {
       const res = await fetch(
-        //   process.env.DOMAIN,
-        `https://callmewine-stage.myshopify.com/api/2023-04/graphql.json`,
+        process.env.DOMAIN,
 
         {
           method: "POST",
           headers: {
             "X-Shopify-Storefront-Access-Token":
-              // process.env.STOREFRONT_ACCESS_TOKEN,
-              `115ead58c046b5e0ef5f4aea42a3f8c5`,
+              process.env.STOREFRONT_ACCESS_TOKEN,
 
             "Content-Type": "application/json",
           },
@@ -126,15 +124,14 @@ async function HomBannerCarousel(ids, lang) {
     const heroData = [];
     for (const id of ids) {
       const res = await fetch(
-        //   process.env.DOMAIN,
-        `https://callmewine-stage.myshopify.com/api/2023-04/graphql.json`,
+        process.env.DOMAIN,
 
         {
           method: "POST",
           headers: {
             "X-Shopify-Storefront-Access-Token":
-              // process.env.STOREFRONT_ACCESS_TOKEN,
-              `115ead58c046b5e0ef5f4aea42a3f8c5`,
+              process.env.STOREFRONT_ACCESS_TOKEN,
+
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
