@@ -1,8 +1,8 @@
 /* import { apiEndpoint } from "./sm.json"; */
 import fetch from 'node-fetch'
-import { join } from 'path'
+import { join } from 'node:path'
 
-import { GETHOMEPRODUCTBYQUERY, GET_META_OBJECT_BY_ID } from './graphql/queries/newHeroQuery'
+import { GETHOMEPRODUCTBYQUERY, GET_META_OBJECT_BY_ID, getNewHero } from './graphql/queries/newHeroQuery'
 import { useHeroStore } from './store/heroStore'
 
 // Todo: Move these function to external files
@@ -20,7 +20,7 @@ async function getPageProducts(lang, cursor = null) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      query: `query getAllProducts($lang: LanguageCode!, $first: Int = 200, $cursor: String) @inContext(language: $lang) {
+      query: `query getAllProducts($lang: LanguageCode!, $first: Int = 200, $cursor: String) @inContext(language: ) {
                   products(first: $first, after: $cursor, query: "tag:active") {
                     pageInfo {
                       endCursor
@@ -465,8 +465,8 @@ async function getCurrentHero(ids) {
   }
 }
 
-async function HomBannerCarousel(ids) {
-  const heroStore = useHeroStore() // Pinia store ka instance
+async function HomBannerCarousel(ids, lang) {
+  const heroStore = useHeroStore()
   try {
     const heroData = []
     for (const id of ids) {
@@ -479,7 +479,7 @@ async function HomBannerCarousel(ids) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            query: GET_META_OBJECT_BY_ID,
+            query: getNewHero(lang),
             variables: {
               id,
             },
@@ -494,17 +494,25 @@ async function HomBannerCarousel(ids) {
       const data = await res.json()
       const metaobject = data?.data?.metaobject
       if (metaobject && metaobject.fields) {
+        const backgroundColor = metaobject.fields.find(field => field.key === 'background_color')?.value || ''
+
+        const imageUrl = metaobject.image?.reference?.image?.url || '' // Adjust this URL to match your CDN structure
+        const link = metaobject.fields.find(field => field.key === 'link')?.value || ''
+        const text = metaobject.fields.find(field => field.key === 'button_text')?.value || ''
+        const title = metaobject.fields.find(field => field.key === 'title')?.value || ''
+
         const banner = {
           id,
-          backgroundColor: metaobject.fields.find(field => field.key === 'background_color')?.value || '',
-          image: metaobject.fields.find(field => field.key === 'image')?.value || '',
-          link: metaobject.fields.find(field => field.key === 'link')?.value || '',
-          text: metaobject.fields.find(field => field.key === 'text')?.value || '',
-          title: metaobject.fields.find(field => field.key === 'title')?.value || '',
+          backgroundColor,
+          image: imageUrl,
+          link,
+          text,
+          title,
         }
         heroData.push(banner)
       }
     }
+
     heroStore.setBanners(heroData) // Store mein data set karo
     return heroData
   } catch (error) {
