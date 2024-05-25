@@ -42,7 +42,7 @@ export default defineComponent({
     const isTablet = inject('isTablet') as Ref<boolean>
     const isDesktopWide = inject('isDesktopWide') as Ref<boolean>
     const hasBeenSet = inject('hasBeenSet') as Ref<boolean>
-    let mtdata = ref(heroStore.banners)
+    const mtdata = ref(heroStore.banners)
     const { fetch } = useFetch(async ({ $cmwRepo }) => {
       const data = await $cmwRepo.prismic.getSingle('home-carousel')
       if (!process.browser) {
@@ -127,34 +127,45 @@ export default defineComponent({
 </script>
 
 <template>
-  
- <div class="relative h-[505px] bg-primary-50">
+  <!-- <div class="relative h-[505px] bg-primary-50">
     <div v-if="slides.length">
-      <SsrCarousel ref="carousel" :key="slides.length" loop :show-arrows="isDesktopWide" show-dots
-        class="relative h-[505px]">
-        <div v-for="({ text, cta, image, link }) in slides" :key="generateKey(text)"
-          class="slide relative w-full h-[505px] overflow-hidden" @click="handleMobileClick(link)">
+      <SsrCarousel
+        ref="carousel" :key="slides.length" loop :show-arrows="isDesktopWide" show-dots
+        class="relative h-[505px]"
+      >
+        <div
+          v-for="({ text, cta, image, link }) in slides" :key="generateKey(text)"
+          class="slide relative w-full h-[505px] overflow-hidden" @click="handleMobileClick(link)"
+        >
           <div class="absolute top-0 left-0 w-full h-full bg-cover bg-center" />
-          <PrismicImage class="absolute top-0 left-0 w-full h-full object-cover"
-            :field="showDesktopImage ? image : image.mobile" :imgix-params="{ sat: -100, dpr: 2 }" />
+          <PrismicImage
+            class="absolute top-0 left-0 w-full h-full object-cover"
+            :field="showDesktopImage ? image : image.mobile" :imgix-params="{ sat: -100, dpr: 2 }"
+          />
           <div class="absolute top-0 left-0 w-full h-full">
             <picture>
               <source :srcset="heroBannerCurveLg" media="(min-width: 768px)" width="1200" height="500">
               <source :srcset="heroBannerCurveSm" width="800" height="400">
-              <img :src="heroBannerCurveSm"
+              <img
+                :src="heroBannerCurveSm"
                 class="c-bannerCurve w-full object-contain object-[0_-50px] md:(object-cover w-4/6 h-full)"
-                alt="A geometric shape" width="400" height="400" loading="lazy" decoding="async">
+                alt="A geometric shape" width="400" height="400" loading="lazy" decoding="async"
+              >
             </picture>
           </div>
           <div class="c-carouselWrapper relative z-base grid justify-stretch h-full md:justify-center">
             <div />
             <div class="grid grid-rows-auto md:(w-[min(100%,_30vw)]) xl:(w-[min(100%,_20vw)] justify-center)">
-              <NuxtLink class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end"
-                :to="localeRoute(link)">
+              <NuxtLink
+                class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end"
+                :to="localeRoute(link)"
+              >
                 {{ text }}
               </NuxtLink>
-              <CmwButton class="hidden w-max self-end mt-8 text-shadow-none md:(block self-start)"
-                variant="default-inverse" :to="localeRoute(link)" :label="cta" />
+              <CmwButton
+                class="hidden w-max self-end mt-8 text-shadow-none md:(block self-start)"
+                variant="default-inverse" :to="localeRoute(link)" :label="cta"
+              />
             </div>
             <div />
           </div>
@@ -171,13 +182,53 @@ export default defineComponent({
         </template>
       </SsrCarousel>
       <div class="absolute left-0 bottom-[-2px] w-full h-auto">
-        <VueSvgIcon class="m-auto" :data="showDesktopImage
-          ? carouselCurveDesktop : carouselCurveMobile" width="100%" height="auto" original />
+        <VueSvgIcon
+          class="m-auto" :data="showDesktopImage
+            ? carouselCurveDesktop : carouselCurveMobile" width="100%" height="auto" original
+        />
       </div>
     </div>
-  </div> 
-  </template>
-<style scoped>
+  </div> -->
+  <div class="relative h-[505px]">
+    <div v-if="mtdata && mtdata.length">
+      <SsrCarousel ref="carousel" :key="mtdata.length" loop :show-arrows="isDesktopWide" show-dots class="relative h-[505px]">
+        <!-- Carousel content -->
+        <div v-for="banner in mtdata" :key="banner.id" class="slide relative w-full h-[505px] overflow-hidden" :style="{ backgroundColor: banner.backgroundColor }" @click="handleMobileClick(banner.link)">
+          <div class="banner-container">
+            <!-- Image container -->
+            <div class="image-container">
+              <img :src="banner.image" class="banner-image" :alt="banner.title">
+            </div>
+            <!-- Content container -->
+            <div class="content-container">
+              <NuxtLink class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end" :to="localeRoute(banner.link)">
+                {{ banner.title }}
+              </NuxtLink>
+              <NuxtLink class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end" :to="localeRoute(banner.link)">
+                {{ banner.text }}
+              </NuxtLink>
+              <CmwButton class="hidden w-max self-end mt-8 text-shadow-none md:(block self-start)" variant="default-inverse" :to="localeRoute(banner.link)" :label="banner.text" />
+            </div>
+          </div>
+          <!-- Carousel content -->
+        </div>
+        <!-- Carousel navigation arrows -->
+        <template #back-arrow>
+          <span class="w-12 h-12 bg-white rounded-sm flex">
+            <VueSvgIcon :data="chevronLeftIcon" color="#992545" width="20" height="20" class="m-auto" />
+          </span>
+        </template>
+        <template #next-arrow>
+          <span class="w-12 h-12 bg-white rounded-sm flex">
+            <VueSvgIcon :data="chevronRightIcon" color="#992545" width="20" height="20" class="m-auto" />
+          </span>
+        </template>
+      </SsrCarousel>
+    </div>
+  </div>
+</template>
+
+<!-- <style scoped>
 .c-bannerCurve {
   object-position: 0 0;
 }
@@ -272,5 +323,65 @@ export default defineComponent({
     right: 8%;
   }
 }
-</style>
-
+</style> -->
+<style scoped>
+    .banner-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-evenly;
+      align-items: center;
+    }
+    
+    .content-container {
+      order: 2;
+      margin-top: 2vmax;
+    }
+    
+    .image-container {
+      order: 1;
+     margin-top: 3.2vmax;
+      width:50%;
+      height: 32vmax;
+      overflow: hidden;
+    }
+    
+    .banner-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    
+    .title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+    
+    .cta-button {
+      margin-top: 1rem;
+    }
+    
+    @media (max-width: 768px) {
+      .banner-container {
+        flex-direction: column;
+      }
+    
+      .content-container {
+        order: 1;
+      }
+    
+      .image-container {
+        order: 2;
+        width: 100%;
+      height: 100%;
+      }
+      .banner-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+      .cta-button {
+        display: none;
+      }
+    }
+    </style>
