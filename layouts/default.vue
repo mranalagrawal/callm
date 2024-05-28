@@ -44,7 +44,7 @@ export default defineComponent({
     const store: any = useStore()
     const route = useRoute()
     const { loadMenu } = useVercelKv()
-    const { loadTopbar, loadFooter } = useLayout()
+    const { loadTopbar, loadFooter, getHomeProduct } = useLayout()
     const { getCustomer } = useCustomer()
     const { customer } = storeToRefs(useCustomer())
     const { getCartById, handleTemporaryCheckoutReplace, mergeCartCookieWithCheckoutId, getInitialCart } = useCart()
@@ -75,6 +75,7 @@ export default defineComponent({
         accessToken ? getCustomer() : Promise.resolve(),
         loadTopbar(),
         loadFooter(),
+        getHomeProduct(),
       ]
 
       await Promise.all(promises)

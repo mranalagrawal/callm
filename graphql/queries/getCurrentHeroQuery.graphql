@@ -1,9 +1,0 @@
-query GetMetaObjectById($id: ID!) {
-    metaobject(id: $id) { 
-      handle 
-      fields { 
-        key 
-        value 
-      } 
-    } 
-  }

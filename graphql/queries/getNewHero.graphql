@@ -1,0 +1,12 @@
+query getHomeMetaObject($handle: MetaobjectHandleInput!) { 
+    metaobject(handle: $handle) { 
+      handle 
+      fields { 
+        key 
+        value 
+      } 
+    } 
+  }
+
+
+  

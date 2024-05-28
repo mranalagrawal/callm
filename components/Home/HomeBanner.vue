@@ -166,6 +166,7 @@ export default defineComponent({
 </div>
 </div>
 </div> -->
+
   <div class="relative h-[505px]">
     <div v-if="mtdata && mtdata.length">
       <SsrCarousel ref="carousel" :key="mtdata.length" loop :show-arrows="isDesktopWide" show-dots
@@ -188,8 +189,8 @@ export default defineComponent({
                 :to="localeRoute(banner.link)">
                 {{ banner.text }}
               </NuxtLink>
-              <CmwButton class="hidden w-max self-end mt-8 text-shadow-none md:(block self-start)"
-                variant="default-inverse" :to="localeRoute(banner.link)" :label="banner.text" />
+              <CmwButton v-if="banner.text" class="hidden w-max self-end mt-8 text-shadow-none md:(block self-start)"
+    variant="default-inverse" :to="localeRoute(banner.link)" :label="banner.text" />
             </div>
           </div>
           <!-- Carousel content -->

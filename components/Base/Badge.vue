@@ -1,6 +1,4 @@
 <script>
-import { getHomeProduct } from '~/store/api.js'
-
 // noinspection JSUnusedGlobalSymbols
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -30,7 +28,7 @@ export default {
     },
   },
 }
-getHomeProduct()
+
 </script>
 
 <template>
