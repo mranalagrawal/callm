@@ -431,23 +431,25 @@ export default defineComponent({
   width: 50%;
   height: 32vmax;
   overflow: hidden;
+  position: relative;
 }
-
 .banner-image {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .title {
   /* font-size: 1.5rem; */
   font-weight: bold;
-  margin-bottom: 2rem !important;
+  margin-bottom: 3.1rem !important;
 }
 
 .cta-button {
-  margin-top: 1rem;
-  margin-bottom: 2.5rem !important;
+  margin-bottom: 3rem !important;
 }
 
 @media (max-width: 768px) {
