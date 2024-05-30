@@ -30,7 +30,7 @@ export default defineComponent({
       'fr': 'https://www.callmewine.fr',
       'de': 'https://www.callmewine.de',
     }
- useFetch(async () => {
+    useFetch(async () => {
       const promises = [
         getCurrentHome(),
       ]

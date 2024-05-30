@@ -1,14 +1,12 @@
 import { defineStore } from 'pinia'
 
-
 import getFooter from '~/graphql/queries/getFooter.graphql'
 import getHome from '~/graphql/queries/getHome.graphql'
 import getTopBar from '~/graphql/queries/getTopBar.graphql'
 import type { TImage } from '~/types/types'
 
-import { useHeroStore } from './heroStore'
+import { useHomeStore } from './homeStore'
 
-import{useHomeStore} from './homeStore'
 type IFrontendImage = Pick<TImage, 'altText' | 'url' | 'id'> & { link: string }
 
 interface ITopBarMetaObject {
@@ -209,10 +207,10 @@ export const useLayout = defineStore({
           )
           const ids = idField ? JSON.parse(idField.value) : []
           const homeStore = useHomeStore()
-          homeStore.setIds(ids) 
+          homeStore.setIds(ids)
         })
         .then(() => {
-         
+
         })
         .catch((err) => {
           this.$nuxt.$handleApiErrors(`Catch on getHome from GraphQl: ${err}`)
