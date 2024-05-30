@@ -1,4 +1,4 @@
-query GetMetaObjectById($id: ID!) {
+query getCurrentHero($id: ID!) {
   metaobject(id: $id) {
     id
     handle

@@ -1,4 +1,4 @@
-query getHomeMetaObject($handle: MetaobjectHandleInput!) { 
+query getHome($handle: MetaobjectHandleInput!) { 
     metaobject(handle: $handle) { 
       handle 
       fields { 

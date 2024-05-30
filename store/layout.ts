@@ -1,13 +1,14 @@
 import { defineStore } from 'pinia'
 
-import GetMetaObjectById from '~/graphql/queries/getCurrentHero.graphql'
+
 import getFooter from '~/graphql/queries/getFooter.graphql'
-import getHomeMetaObject from '~/graphql/queries/getNewHero.graphql'
+import getHome from '~/graphql/queries/getHome.graphql'
 import getTopBar from '~/graphql/queries/getTopBar.graphql'
 import type { TImage } from '~/types/types'
 
 import { useHeroStore } from './heroStore'
 
+import{useHomeStore} from './homeStore'
 type IFrontendImage = Pick<TImage, 'altText' | 'url' | 'id'> & { link: string }
 
 interface ITopBarMetaObject {
@@ -191,111 +192,9 @@ export const useLayout = defineStore({
         )
     },
 
-    async HomBannerCarousel(ids: any) {
-      const heroStore = useHeroStore()
-      try {
-        const heroData = []
-        for (const id of ids) {
-          const { metaobject } = await this.$nuxt.$graphql.default.request(
-            GetMetaObjectById,
-            {
-              lang: this.$nuxt.app.i18n.locale.toUpperCase(),
-              id,
-            },
-          )
-
-          if (metaobject && metaobject.fields) {
-            const backgroundColor
-              = metaobject.fields.find(
-                (field: any) => field.key === 'background_color',
-              )?.value || ''
-
-            const imageUrl = metaobject.image?.reference?.image?.url || '' // Adjust this URL to match your CDN structure
-            const link
-              = metaobject.fields.find((field: any) => field.key === 'link')
-                ?.value || ''
-            const text
-              = metaobject.fields.find(
-                (field: any) => field.key === 'button_text',
-              )?.value || ''
-            const title
-              = metaobject.fields.find((field: any) => field.key === 'title')
-                ?.value || ''
-
-            const banner = {
-              id,
-              backgroundColor,
-              image: imageUrl,
-              link,
-              text,
-              title,
-            }
-            heroData.push(banner)
-          }
-        }
-        heroStore.setBanners(heroData) // Store mein data set karo
-        return heroData
-      } catch (error) {
-        console.error('Error HomeBannerCarousel fetching data:', error)
-        return null
-      }
-    },
-    async getCurrentHero(ids: any[]) {
-      let currentHero: any = null
-      let mostRecentActiveDate: Date | null = null
-
-      for (const id of ids) {
-        try {
-          const { metaobject } = await this.$nuxt.$graphql.default.request(
-            GetMetaObjectById,
-            {
-              lang: this.$nuxt.app.i18n.locale.toUpperCase(),
-              id,
-            },
-          )
-
-          if (metaobject) {
-            const startDate = new Date(
-              metaobject.fields.find(
-                (field: any) => field.key === 'start_date',
-              )?.value,
-            )
-            if (!mostRecentActiveDate || startDate > mostRecentActiveDate) {
-              mostRecentActiveDate = startDate
-              currentHero = metaobject
-            }
-          }
-        } catch (err) {
-          this.$nuxt.$handleApiErrors(
-            `Catch on getCurrentHero from GraphQL: ${err}`,
-          )
-        }
-      }
-
-      if (currentHero) {
-        const name
-          = currentHero.fields.find((field: any) => field.key === 'name')
-            ?.value || 'Unnamed Hero'
-        const bannerCarousels = JSON.parse(
-          currentHero.fields.find(
-            (field: any) => field.key === 'banner_carousel',
-          )?.value || '[]',
-        )
-        const startDate
-          = currentHero.fields.find((field: any) => field.key === 'start_date')
-            ?.value || 'No start date'
-
-        await this.HomBannerCarousel(bannerCarousels)
-
-        return { bannerCarousels, name, startDate }
-      }
-
-      return null
-    },
-
-    async getHomeProduct() {
+    async getCurrentHome() {
       await this.$nuxt.$graphql.default
-        .request(getHomeMetaObject, {
+        .request(getHome, {
           lang: this.$nuxt.app.i18n.locale.toUpperCase(),
           handle: {
             handle: 'home',
@@ -309,10 +208,11 @@ export const useLayout = defineStore({
             (field: any) => field.key === 'main_banner',
           )
           const ids = idField ? JSON.parse(idField.value) : []
-          return this.getCurrentHero(ids) // Returning the promise to chain the next .then
+          const homeStore = useHomeStore()
+          homeStore.setIds(ids) 
         })
         .then(() => {
-          // Handle any logic after getCurrentHero completes, if needed
+         
         })
         .catch((err) => {
           this.$nuxt.$handleApiErrors(`Catch on getHome from GraphQl: ${err}`)

@@ -9,10 +9,11 @@ import {
   useContext,
   useFetch,
   useRouter,
+
 } from '@nuxtjs/composition-api'
 import type { RawLocation } from 'vue-router'
 
-import { useHeroStore } from '~/store/heroStore'
+import { useHomeStore } from '~/store/homeStore'
 
 import heroBannerCurveLg from '~/assets/images/hero-banner-curve-lg.png'
 import heroBannerCurveSm from '~/assets/images/hero-banner-curve-sm.png'
@@ -23,6 +24,7 @@ import chevronRightIcon from '~/assets/svg/chevron-right.svg'
 
 import { getMobileOperatingSystem } from '@/utilities/getOS'
 import { generateKey } from '@/utilities/strings'
+import getCurrentHero from '~/graphql/queries/getCurrentHero.graphql'
 
 export default defineComponent({
   setup() {
@@ -30,9 +32,13 @@ export default defineComponent({
       req,
       localeRoute,
       $cookies,
+      $handleApiErrors,
+      $graphql,
+      i18n,
+
     } = useContext()
     const router = useRouter()
-    const heroStore = useHeroStore()
+    const homeStore = useHomeStore()
 
     // Fixme: carousel is loading all images (mobile and desktop) when loading a desktop website
     const carousel = ref(null)
@@ -42,9 +48,8 @@ export default defineComponent({
     const isTablet = inject('isTablet') as Ref<boolean>
     const isDesktopWide = inject('isDesktopWide') as Ref<boolean>
     const hasBeenSet = inject('hasBeenSet') as Ref<boolean>
-    const mtdata = ref(heroStore.banners)
-    const { fetch } = useFetch(async ({ $cmwRepo }) => {
-      const data = await $cmwRepo.prismic.getSingle('home-carousel')
+    const currentHeroIds = ref(homeStore.ids)
+    const { fetch } = useFetch(async () => {
       if (!process.browser) {
         OS.value = getMobileOperatingSystem(req.headers['user-agent'])
         $cookies.set('iOS', getMobileOperatingSystem(req.headers['user-agent']), {
@@ -54,8 +59,90 @@ export default defineComponent({
       }
 
       isBrowser.value = process?.browser
-      slides.value = data.body && data.body[0].items
+      // slides.value = data.body && data.body[0].items
     })
+    interface BannerData {
+      id: any
+      backgroundColor: string
+      image: string
+      link: string
+      text: string
+      title: string
+    }
+    const homeBannerData = ref<BannerData[]>([])
+    const isDataLoaded = ref(false)
+    const HomeBannerCarousel = async (ids: any) => {
+      try {
+        const banners: BannerData[] = []
+        for (const id of ids) {
+          const { metaobject } = await $graphql.default.request(
+            getCurrentHero,
+            {
+              lang: i18n.locale.toUpperCase(),
+              id,
+            },
+          )
+          if (metaobject && metaobject.fields) {
+            const backgroundColor = metaobject.fields.find((field: any) => field.key === 'background_color')?.value || ''
+            const imageUrl = metaobject.image?.reference?.image?.url || ''
+            const link = metaobject.fields.find((field: any) => field.key === 'link')?.value || ''
+            const text = metaobject.fields.find((field: any) => field.key === 'button_text')?.value || ''
+            const title = metaobject.fields.find((field: any) => field.key === 'title')?.value || ''
+
+            const banner: BannerData = {
+              id,
+              backgroundColor,
+              image: imageUrl,
+              link,
+              text,
+              title,
+            }
+            banners.push(banner)
+          }
+        }
+        homeBannerData.value = banners
+        isDataLoaded.value = true
+      } catch (error) {
+        console.error('Error HomeBannerCarousel fetching data:', error)
+      }
+    }
+    const getCurrentHome = async () => {
+      let currentHero: any = null
+      let mostRecentActiveDate: Date | null = null
+
+      for (const id of currentHeroIds.value) {
+        try {
+          const { metaobject } = await $graphql.default.request(
+            getCurrentHero,
+            {
+              lang: i18n.locale.toUpperCase(),
+              id,
+            },
+          )
+
+          if (metaobject) {
+            const startDate = new Date(metaobject.fields.find((field: any) => field.key === 'start_date')?.value)
+            if (!mostRecentActiveDate || startDate > mostRecentActiveDate) {
+              mostRecentActiveDate = startDate
+              currentHero = metaobject
+            }
+          }
+        } catch (err) {
+          $handleApiErrors(`Catch on getCurrentHero from GraphQL: ${err}`)
+        }
+      }
+      if (currentHero) {
+        const name = currentHero.fields.find((field: any) => field.key === 'name')?.value || 'Unnamed Hero'
+        const bannerCarousels = JSON.parse(currentHero.fields.find((field: any) => field.key === 'banner_carousel')?.value || '[]')
+        const startDate = currentHero.fields.find((field: any) => field.key === 'start_date')?.value || 'No start date'
+
+        await HomeBannerCarousel(bannerCarousels)
+
+        return { bannerCarousels, name, startDate }
+      }
+
+      return null
+    }
 
     const handleMobileClick = (link: RawLocation) => {
       if (isTablet.value) {
@@ -72,6 +159,11 @@ export default defineComponent({
         return (!isBrowser.value && !OS.value) || (isBrowser.value && isTablet.value)
       }
     })
+    const init = async () => {
+      await getCurrentHome()
+    }
+
+    init()
 
     onBeforeUnmount(() => slides.value = [])
     const banners = ref([])
@@ -94,8 +186,7 @@ export default defineComponent({
       showDesktopImage,
       slides,
       banners,
-      mtdata,
-
+      homeBannerData,
     }
   },
 
@@ -168,12 +259,16 @@ export default defineComponent({
 </div> -->
 
   <div class="relative h-[505px]">
-    <div v-if="mtdata && mtdata.length">
-      <SsrCarousel ref="carousel" :key="mtdata.length" loop :show-arrows="isDesktopWide" show-dots
-        class="relative h-[505px]">
+    <div v-if="homeBannerData && homeBannerData?.length">
+      <SsrCarousel
+        ref="carousel" :key="homeBannerData?.length" loop :show-arrows="isDesktopWide" show-dots
+        class="relative h-[505px]"
+      >
         <!-- Carousel content -->
-        <div v-for="banner in mtdata" :key="banner.id" class="slide relative w-full h-[505px] overflow-hidden"
-          :style="{ backgroundColor: banner.backgroundColor }" @click="handleMobileClick(banner.link)">
+        <div
+          v-for="banner in homeBannerData" :key="banner.id" class="slide relative w-full h-[505px] overflow-hidden"
+          :style="{ backgroundColor: banner.backgroundColor }" @click="handleMobileClick(banner.link)"
+        >
           <div class="banner-container">
             <!-- Image container -->
             <div class="image-container">
@@ -181,16 +276,24 @@ export default defineComponent({
             </div>
             <!-- Content container -->
             <div class="content-container">
-              <NuxtLink class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end"
-                :to="localeRoute(banner.link)">
+              <NuxtLink
+                class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end "
+                :to="localeRoute(banner.link)"
+              >
                 {{ banner.title }}
               </NuxtLink>
-              <NuxtLink class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end"
-                :to="localeRoute(banner.link)">
+
+              <NuxtLink
+                class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end title"
+                :to="localeRoute(banner.link)"
+              >
                 {{ banner.text }}
               </NuxtLink>
-              <CmwButton v-if="banner.text" class="hidden w-max self-end mt-8 text-shadow-none md:(block self-start)"
-    variant="default-inverse" :to="localeRoute(banner.link)" :label="banner.text" />
+              <CmwButton
+                v-if="banner.text"
+                class="hidden w-max self-end mt-8 text-shadow-none md:(block self-start) mb-4 cta-button"
+                variant="default-inverse" :to="localeRoute(banner.link)" :label="banner.text"
+              />
             </div>
           </div>
           <!-- Carousel content -->
@@ -313,6 +416,8 @@ export default defineComponent({
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
+  height: 100%;
+  padding: 1rem;
 }
 
 .content-container {
@@ -335,13 +440,14 @@ export default defineComponent({
 }
 
 .title {
-  font-size: 1.5rem;
+  /* font-size: 1.5rem; */
   font-weight: bold;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem !important;
 }
 
 .cta-button {
   margin-top: 1rem;
+  margin-bottom: 2.5rem !important;
 }
 
 @media (max-width: 768px) {

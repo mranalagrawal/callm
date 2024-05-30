@@ -1,7 +1,9 @@
 <script lang="ts">
-import { defineComponent, inject, useContext, useMeta } from '@nuxtjs/composition-api'
+import { defineComponent, inject, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
 import type { Ref } from '@nuxtjs/composition-api'
 import LazyHydrate from 'vue-lazy-hydration'
+
+import { useLayout } from '~/store/layout'
 
 import { generateHeadHreflang } from '~/utilities/arrays'
 
@@ -16,7 +18,9 @@ export default defineComponent({
     HomeSelections: () => import('../components/Home/HomeSelections.vue'),
     HomeSlider: () => import('../components/Home/HomeSlider.vue'),
   },
+
   setup() {
+    const { getCurrentHome } = useLayout()
     const { $cmwStore } = useContext()
     const isTablet = inject('isTablet') as Ref<boolean>
     const hrefLang = {
@@ -26,6 +30,13 @@ export default defineComponent({
       'fr': 'https://www.callmewine.fr',
       'de': 'https://www.callmewine.de',
     }
+ useFetch(async () => {
+      const promises = [
+        getCurrentHome(),
+      ]
+
+      await Promise.all(promises)
+    })
     useMeta(() => ({
       link: generateHeadHreflang(hrefLang),
       script: [{
