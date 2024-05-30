@@ -106,7 +106,7 @@ export default defineComponent({
         console.error('Error HomeBannerCarousel fetching data:', error)
       }
     }
-    const getCurrentHome = async () => {
+    const getCurrentHomeHero = async () => {
       let currentHero: any = null
       let mostRecentActiveDate: Date | null = null
 
@@ -160,7 +160,7 @@ export default defineComponent({
       }
     })
     const init = async () => {
-      await getCurrentHome()
+      await getCurrentHomeHero()
     }
 
     init()
