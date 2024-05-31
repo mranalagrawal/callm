@@ -124,7 +124,7 @@ export default defineComponent({
             const nameFields = metaobject.fields.filter((field: any) => field.key === 'name')
 
             if (startDateField && nameFields.length > 0) {
-              const startDate = new Date(startDateField.value)
+              // const startDate = new Date(startDateField.value)
               const nameMatch = nameFields.some((nameField: any) => nameField.value === 'Current Hero')
               if (nameMatch) {
                 currentHero = metaobject
