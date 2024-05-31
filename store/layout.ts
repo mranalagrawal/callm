@@ -197,13 +197,13 @@ export const useLayout = defineStore({
           },
         })
         .then(({ metaobject }) => {
+          const homeStore = useHomeStore();
           const fields = metaobject?.fields || [];
-
+          homeStore.setMetaobject(fields);
           const idField = fields.find(
             (field: any) => field.key === "main_banner"
           );
           const ids = idField ? JSON.parse(idField.value) : [];
-          const homeStore = useHomeStore();
           homeStore.setIds(ids);
         })
         .then(() => {})

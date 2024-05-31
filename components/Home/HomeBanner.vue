@@ -108,7 +108,7 @@ export default defineComponent({
     }
     const getCurrentHomeHero = async () => {
       let currentHero: any = null
-      let mostRecentActiveDate: Date | null = null
+  
 
       for (const id of currentHeroIds.value) {
         try {
@@ -119,12 +119,16 @@ export default defineComponent({
               id,
             },
           )
-
           if (metaobject) {
-            const startDate = new Date(metaobject.fields.find((field: any) => field.key === 'start_date')?.value)
-            if (!mostRecentActiveDate || startDate > mostRecentActiveDate) {
-              mostRecentActiveDate = startDate
-              currentHero = metaobject
+            const startDateField = metaobject.fields.find((field: any) => field.key === 'start_date')
+            const nameFields = metaobject.fields.filter((field: any) => field.key === 'name')
+
+            if (startDateField && nameFields.length > 0) {
+              const startDate = new Date(startDateField.value)
+              const nameMatch = nameFields.some((nameField: any) => nameField.value === 'Current Hero')
+              if (nameMatch) {
+                currentHero = metaobject
+              }
             }
           }
         } catch (err) {
@@ -137,7 +141,6 @@ export default defineComponent({
         const startDate = currentHero.fields.find((field: any) => field.key === 'start_date')?.value || 'No start date'
 
         await HomeBannerCarousel(bannerCarousels)
-
         return { bannerCarousels, name, startDate }
       }
 
@@ -277,7 +280,7 @@ export default defineComponent({
             <!-- Content container -->
             <div class="content-container">
               <NuxtLink
-                class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end "
+                class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end"
                 :to="localeRoute(banner.link)"
               >
                 {{ banner.title }}
@@ -418,25 +421,31 @@ export default defineComponent({
   align-items: center;
   height: 100%;
   padding: 1rem;
+  width: 100%;
+
 }
 
 .content-container {
   order: 2;
   margin-top: 2vmax;
+  width: 40%;
 }
 
 .image-container {
   order: 1;
-  margin-top: 3.2vmax;
-  width: 50%;
+  margin-top: 3.0vmax;
+  width: 48%;
   height: 32vmax;
   overflow: hidden;
   position: relative;
+  margin-left: 2vmax;
+
 }
+
 .banner-image {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   position: absolute;
   top: 0;
   left: 0;
@@ -447,7 +456,6 @@ export default defineComponent({
   font-weight: bold;
   margin-bottom: 3.1rem !important;
 }
-
 .cta-button {
   margin-bottom: 3rem !important;
 }
@@ -464,13 +472,15 @@ export default defineComponent({
   .image-container {
     order: 2;
     width: 100%;
-    height: 100%;
+    /* height:auto !important; */
+    background-color: blue;
+
   }
 
   .banner-image {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
   }
 
   .cta-button {
