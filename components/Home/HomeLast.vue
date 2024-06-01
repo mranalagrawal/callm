@@ -8,7 +8,7 @@ export default {
   setup() {
     const collectionRef = ref<ICollection>(initialCollectionData)
     useFetch(async ({ $cmwRepo }) => {
-      collectionRef.value = await $cmwRepo.products.getCollectionsByHandle({ handle: 'home-shelf-2' })
+      collectionRef.value = await $cmwRepo.products.getCollectionsByHandle({ handle: '', id: 'gid://shopify/Collection/603339882843' })
     })
     return { collectionRef }
   },
@@ -17,15 +17,15 @@ export default {
 
 <template>
   <div class="my-5">
-    <CarouselProducts v-if="!!collectionRef.products?.length" :products="collectionRef.products" :title="collectionRef.description" />
-    <div class="mt-5">
-      <CmwButton
-        class="w-[min(100%,_80%)] sm:w-[min(100%,_14rem)] m-inline-auto"
-        variant="ghost"
-        :to="localePath(collectionRef.link?.value || '/catalog?favourite=true&page=1')"
-      >
-        {{ $t("viewMore") }}
-      </CmwButton>
-    </div>
+    <template v-if="!!collectionRef.products?.length">
+      <CarouselProducts v-if="!!collectionRef.products?.length" :products="collectionRef.products"
+        :title="collectionRef.title" />
+      <div class="mt-5">
+        <CmwButton class="w-[min(100%,_80%)] sm:w-[min(100%,_14rem)] m-inline-auto" variant="ghost"
+          :to="localePath(collectionRef.link?.value || '/catalog?favourite=true&page=1')">
+          {{ $t("viewMore") }}
+        </CmwButton>
+      </div>
+    </template>
   </div>
 </template>

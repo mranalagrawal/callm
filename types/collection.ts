@@ -5,7 +5,7 @@ export interface ICollection {
   description: string
   descriptionHtml: string
   handle?: string
-  // id: string
+  id?: string
   image: TImage
   // metafield: Metafield
   // metafields: Metafield[]
@@ -33,4 +33,7 @@ export const initialCollectionData: ICollection = {
     id: '',
     url: '',
   },
+  id:''
 }
+
+

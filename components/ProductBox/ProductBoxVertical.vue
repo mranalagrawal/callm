@@ -108,7 +108,6 @@ export default defineComponent({
         ? currentProduct.details.amountMax[$config.SALECHANNEL]
         : currentProduct.quantityAvailable
     })
-
     const isOnCart = computed(() => {
       const currentProduct = mappedRelatedVintage.value || props.product
       return cart.value.lines.find(el => el.merchandise.id === currentProduct.shopify_product_variant_id)
@@ -215,6 +214,7 @@ export default defineComponent({
 
       isBundle.value = templateProduct.value?.tags.includes('BUNDLE')
     }, { immediate: true })
+
 
     return {
       addIcon,
@@ -337,7 +337,7 @@ export default defineComponent({
   >
     <div class="c-productBox__grid grid h-full" :class="`-${generateKey($cmwStore.settings.store)}`">
       <div class="c-productBox__image relative">
-        <ClientOnly>
+        <ClientOnly>``
           <NuxtLink
             :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')"
             event=""

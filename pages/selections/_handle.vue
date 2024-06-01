@@ -55,6 +55,7 @@ export default defineComponent({
       await $cmwRepo.products.getCollectionsByHandle({
         handle: params.value.handle,
         sortKey: selectedSortKey.value,
+      id:params.value.id
       })
         .then((collection) => {
           collectionRef.value = collection
