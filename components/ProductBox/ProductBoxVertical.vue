@@ -337,7 +337,7 @@ export default defineComponent({
   >
     <div class="c-productBox__grid grid h-full" :class="`-${generateKey($cmwStore.settings.store)}`">
       <div class="c-productBox__image relative">
-        <ClientOnly>``
+        <ClientOnly>
           <NuxtLink
             :aria-label="$t('enums.accessibility.labels.GO_TO_PRODUCT_DETAIL_PAGE')"
             event=""

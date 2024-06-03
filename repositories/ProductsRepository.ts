@@ -67,7 +67,7 @@ export default (ctx: Context) => ({
     filters = { available: true },
     sortKey = "COLLECTION_DEFAULT",
     first = 250,
-    id="",
+    id = "",
   }: GetCollectionByHandleParams): Promise<ICollection> {
     return ctx.$graphql.default
       .request(HomeCollection, {

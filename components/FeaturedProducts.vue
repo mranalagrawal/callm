@@ -6,16 +6,19 @@ import type { ICollection } from '~/types/collection'
 import { initialCollectionData } from '~/types/collection'
 
 export default {
-
-  setup() {
-   
-   
+  props: {
+    data: {
+      type: String,
+      required: true
+    }
+  },
+  setup(props:any) {
     const collectionRef = ref<ICollection>(initialCollectionData)
 
-   
+
     useFetch(async ({ $cmwRepo }) => {
-            collectionRef.value = await $cmwRepo.products.getCollectionsByHandle({ handle: '', id: "gid://shopify/Collection/603786183003" })
-          })
+      collectionRef.value = await $cmwRepo.products.getCollectionsByHandle({ handle: '', id: props.data })
+    })
     return { collectionRef }
   },
 }

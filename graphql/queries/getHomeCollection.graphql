@@ -17,7 +17,7 @@ query HomeCollection(
       ...IMAGE_FRAGMENT
     }
     title
-    link: metafield(namespace: "custom", key: "link_home") {
+    link: metafield(namespace: "custom", key: "link") {
       value
     }
     products(first: $first, filters: $filters, sortKey: $sortKey) {

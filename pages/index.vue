@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, inject, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
+import { defineComponent, inject, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
 import type { Ref } from '@nuxtjs/composition-api'
 import LazyHydrate from 'vue-lazy-hydration'
 import classicCollection from '~/graphql/queries/getClassicCollection.graphql'
@@ -38,6 +38,7 @@ export default defineComponent({
       'de': 'https://www.callmewine.de',
     }
     const classicCollectionId = ref(null)
+    const classicCollection3Id = ref(null)
     const collectionValue = async () => {
       try {
         const classicCollectionOne = ref(homeStore.metaobject);
@@ -57,7 +58,7 @@ export default defineComponent({
           const collectionField = metaobject.fields.find((field: any) => field.key === 'collection');
           const collectionValue = collectionField ? collectionField.value : null;
 
-          classicCollectionId.value=collectionValue
+          classicCollectionId.value = collectionValue
 
         } else {
           console.error('Classic collection value is null or undefined');
@@ -66,19 +67,50 @@ export default defineComponent({
         console.error('Error collectionValue fetching data:', error);
       }
     };
-    
 
- 
- 
-    collectionValue()
- useFetch(async () => {
+
+    const collection3Value = async () => {
+      try {
+        const classicCollectionThree = ref(homeStore.metaobject);
+        const classicCollectionValue = Array.isArray(classicCollectionThree?.value)
+          ? classicCollectionThree.value.find(field => field.key === 'collection_3_classic')?.value
+          : null;
+
+        if (classicCollectionValue) {
+          const { metaobject } = await $graphql.default.request(
+            classicCollection,
+            {
+              lang: i18n.locale.toUpperCase(),
+              id: classicCollectionValue,
+            }
+          );
+
+          const collectionField = metaobject.fields.find((field: any) => field.key === 'collection');
+          const collectionValue = collectionField ? collectionField.value : null;
+
+          classicCollection3Id.value = collectionValue
+
+        } else {
+          console.error('Classic collection value is null or undefined');
+        }
+      } catch (error) {
+        console.error('Error collectionValue fetching data:', error);
+      }
+    };
+
+    onMounted(() => {
+      collectionValue();
+      collection3Value()
+    });
+
+    useFetch(async () => {
       const promises = [
         getCurrentHome(),
       ]
 
       await Promise.all(promises)
     })
-  
+
 
     useMeta(() => ({
       link: generateHeadHreflang(hrefLang),
@@ -115,7 +147,7 @@ export default defineComponent({
       __dangerouslyDisableSanitizers: ['script'],
     }))
 
-    return { isTablet }
+    return { isTablet, classicCollectionId, classicCollection3Id }
   },
   head: {},
 })
@@ -132,10 +164,8 @@ export default defineComponent({
     <HomeBoxes />
     <!-- Note: LazyHydrate is not working as expected on carousels -->
     <ClientOnly>
-      <FeaturedProducts class="px-3"/>
-
+      <FeaturedProducts v-if="classicCollectionId" class="px-3" :data="classicCollectionId" />
     </ClientOnly>
-
     <LazyHydrate :when-visible="{ rootMargin: '100px' }">
       <HomeSelections />
     </LazyHydrate>
@@ -147,7 +177,7 @@ export default defineComponent({
     <HomePartners />
 
     <ClientOnly>
-      <LazyHomeLast class="px-3" />
+      <LazyHomeLast v-if="classicCollection3Id" class="px-3" :data="classicCollection3Id" />
     </ClientOnly>
 
     <HomeProducers />

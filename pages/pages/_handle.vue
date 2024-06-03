@@ -205,13 +205,13 @@ export default defineComponent({
 
       <div v-if="isDesktop">
         <!-- Filter Components -->
-        <CategoriesFiltersComponents
+        <!-- <CategoriesFiltersComponents
           v-if="Object.keys(inputParameters).length && Object.keys(aggregationsRef).length"
           :aggregations="aggregationsRef" :input-parameters="inputParameters"
           @update-value-selections="handleUpdateValueSelections"
           @update-value="handleUpdateValue"
           @handle-on-footer-click="handleOnFooterClick"
-        />
+        /> -->
       </div>
       <div class="prose my-4 <md:hidden" v-html="shortDescription" />
       <ProductsResultsList :results="results" :total="total" @update-sort-value="handleUpdateSortValue" />
