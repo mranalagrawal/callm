@@ -261,42 +261,32 @@ export default defineComponent({
 </div>
 </div> -->
 
-  <div class="relative h-[505px]">
+ <div class="relative h-[505px]">
     <div v-if="homeBannerData && homeBannerData?.length">
-      <SsrCarousel
-        ref="carousel" :key="homeBannerData?.length" loop :show-arrows="isDesktopWide" show-dots
-        class="relative h-[505px]"
-      >
+      <SsrCarousel ref="carousel" :key="homeBannerData?.length" loop :show-arrows="isDesktopWide" show-dots
+        class="relative h-[505px]">
         <!-- Carousel content -->
-        <div
-          v-for="banner in homeBannerData" :key="banner.id" class="slide relative w-full h-[505px] overflow-hidden"
-          :style="{ backgroundColor: banner.backgroundColor }" @click="handleMobileClick(banner.link)"
-        >
-          <div class="banner-container">
+        <div v-for="banner in homeBannerData" :key="banner.id" class="slide  relative w-full h-[505px] overflow-hidden"
+          :style="{ backgroundColor: banner.backgroundColor }" @click="handleMobileClick(banner.link)">
+          <div class="banner-container max-w-screen-xl">
             <!-- Image container -->
             <div class="image-container">
               <img :src="banner.image" class="banner-image" :alt="banner.title">
             </div>
             <!-- Content container -->
             <div class="content-container">
-              <NuxtLink
-                class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end"
-                :to="localeRoute(banner.link)"
-              >
+              <NuxtLink class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end"
+                :to="localeRoute(banner.link)">
                 {{ banner.title }}
               </NuxtLink>
 
-              <NuxtLink
-                class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end title"
-                :to="localeRoute(banner.link)"
-              >
+              <NuxtLink class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end title"
+                :to="localeRoute(banner.link)">
                 {{ banner.text }}
               </NuxtLink>
-              <CmwButton
-                v-if="banner.text"
+              <CmwButton v-if="banner.text"
                 class="hidden w-max self-end mt-8 text-shadow-none md:(block self-start) mb-4 cta-button"
-                variant="default-inverse" :to="localeRoute(banner.link)" :label="banner.text"
-              />
+                variant="default-inverse" :to="localeRoute(banner.link)" :label="banner.text" />
             </div>
           </div>
           <!-- Carousel content -->
@@ -421,24 +411,24 @@ export default defineComponent({
   align-items: center;
   height: 100%;
   padding: 1rem;
-  width: 100%;
-
+  margin-left: 15vmax;
 }
 
 .content-container {
   order: 2;
   margin-top: 2vmax;
-  width: 40%;
+  width: 100%;
+  margin-left: 4vmax;
 }
 
 .image-container {
   order: 1;
   margin-top: 3.0vmax;
-  width: 48%;
+  width: 100%;
   height: 32vmax;
   overflow: hidden;
+  /* margin-left: 2vmax; */
   position: relative;
-  margin-left: 2vmax;
 
 }
 
@@ -456,6 +446,7 @@ export default defineComponent({
   font-weight: bold;
   margin-bottom: 3.1rem !important;
 }
+
 .cta-button {
   margin-bottom: 3rem !important;
 }
@@ -463,24 +454,35 @@ export default defineComponent({
 @media (max-width: 768px) {
   .banner-container {
     flex-direction: column;
+    height: 100%;
+    width: 100%;
+    margin-left: 0;
   }
 
   .content-container {
     order: 1;
+    height: 50%;
+    width: 100%;
+    margin-left: 0;
   }
+
 
   .image-container {
     order: 2;
     width: 100%;
-    /* height:auto !important; */
-    background-color: blue;
+    height: 100% !important;
+    margin-top: 3.0vmax;
+    position: relative;
 
   }
 
   .banner-image {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
+    position: absolute;
+    bottom: 0;
+    left: 0;
   }
 
   .cta-button {
@@ -488,3 +490,4 @@ export default defineComponent({
   }
 }
 </style>
+
