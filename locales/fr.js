@@ -50,7 +50,7 @@ export default {
   noteDesktop: '(At, Interne, Interphone uniquement si différent, Conciergerie)',
   country: 'Choisissez le pays',
   recentlySeen: 'Vu récemment ',
-  sameProducer: 'Du même producteur',
+  sameProducer: 'Les bouteilles de {name}',
   viewMore: 'En voir plus',
   cart: 'Panier',
   cartDetails: 'Détail du panier',
@@ -342,6 +342,10 @@ export default {
     bioInfo: 'da agricoltura Italia o EU',
     bioOperator: 'Codice Operatore nr.',
     subCategory: 'Tipologia',
+  },
+  winery: {
+    oenologist: 'Œnologue',
+    masterDistiller: 'Maître distillateur',
   },
   recoverPwd: {
     title: 'Réinitialiser le mot de passe',

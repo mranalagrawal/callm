@@ -609,7 +609,7 @@ export default defineComponent({
             >
               {{ product?.vendor }}
             </NuxtLink>
-            <CmwTextAccordion line-clamp="3">
+            <CmwTextAccordion line-clamp="3" :force-show="isDesktop">
               <div class="prose text-sm leading-snug md:(text-base leading-normal)" v-html="strippedContent" />
             </CmwTextAccordion>
             <p v-if="!product?.availableForSale" class="text-primary-400">

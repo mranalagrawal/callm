@@ -2,32 +2,28 @@
 import type { PropType } from '@nuxtjs/composition-api'
 import { defineComponent, toRefs } from '@nuxtjs/composition-api'
 
-import type { IWinery } from '~/types/winery'
+import type { IWineryMapped } from '~/types/winery/winery-front-end'
 
 export default defineComponent({
   name: 'CardBrand',
   props: {
     winery: {
-      type: Object as PropType<IWinery>,
+      type: Object as PropType<IWineryMapped>,
       required: true,
     },
   },
 
   setup(props) {
     const {
-      country,
+      address,
       handle,
       name,
-      region,
-      zone,
     } = toRefs(props.winery)
 
     return {
-      country,
+      address,
       handle,
       name,
-      region,
-      zone,
     }
   },
 
@@ -60,10 +56,10 @@ export default defineComponent({
           <div>
             <div class="cmw-font-bold text-xl mt-2" v-text="name" />
             <div class="flex gap-4 justify-center justify-items-center">
-              <div class="text-secondary-700" v-text="region" />
-              <span v-if="zone"> - {{ zone }}</span>
+              <div class="text-secondary-700" v-text="address.region" />
+              <span v-if="address.zone"> - {{ address.zone }}</span>
             </div>
-            <span class="text-secondary-700" v-text="country" />
+            <span class="text-secondary-700" v-text="address.country" />
           </div>
         </div>
       </div>

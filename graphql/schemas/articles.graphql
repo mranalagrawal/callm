@@ -1,0 +1,82 @@
+type ArticleAuthor {
+		# The author's bio.
+		bio: String
+		# The author’s email.
+		email: String
+		# The author's first name.
+		firstName: String
+		# The author's last name.
+		lastName: String
+		# The author's full name.
+		name: String
+}
+
+type Blog {
+		# Find an article by its handle.
+		articleByHandle: Article
+		# The authors who have contributed to the blog.
+		authors: [ArticleAuthor!]!
+		# A human-friendly unique string for the Blog automatically generated from its title.
+		handle: String!
+		# A globally-unique ID.
+		id: ID!
+		# Returns a metafield found by namespace and key.
+		metafield: Metafield
+		#	The metafields associated with the resource matching the supplied list of namespaces and keys.
+		metafields: [Metafield]!
+		#	The URL used for viewing the resource on the shop's Online Store. Returns null if the resource is currently not published to the Online Store sales channel.
+		onlineStoreUrl: URL
+		#	The blog's SEO information.
+		seo: SEO
+		#	The blogs’s title.
+		title: String!
+}
+
+type Article {
+		# The article's author.
+		authorV2: ArticleAuthor
+		# The blog that the article belongs to.
+		blog: Blog!
+		# Stripped content of the article, single line with HTML tags removed.
+		content: String!
+		# The content of the article, complete with HTML formatting.
+		contentHtml: HTML!
+		# Stripped excerpt of the article, single line with HTML tags removed.
+		excerpt: String
+		# The excerpt of the article, complete with HTML formatting.
+		excerptHtml: HTML
+		# A human-friendly unique string for the Article automatically generated from its title.
+		handle: String!
+		# A globally-unique ID.
+		id: ID!
+		# The image associated with the article.
+		image: Image
+		# Returns a metafield found by namespace and key.
+  #	metafield: Metafield
+  metafield(namespace:String!,key:String!): Metafield
+		# The metafields associated with the resource matching the supplied list of namespaces and keys.
+		metafields: [Metafield]!
+		# The URL used for viewing the resource on the shop's Online Store. Returns null if the resource is currently not published to the Online Store sales channel.
+		onlineStoreUrl: URL
+		# The date and time when the article was published.
+		publishedAt: DateTime!
+		# The article’s SEO information.
+		seo: SEO
+		# A categorization that a article can be tagged with.
+		tags: [String!]!
+		# The article’s name.
+		title: String!
+		# A URL parameters to be added to a page URL when it is linked from a GraphQL result. This allows for tracking the origin of the traffic.
+		trackingParameters: String
+}
+
+type ArticleEdge {
+		cursor: String
+		node: Article!
+}
+
+type ArticleConnection {
+		edges: [ArticleEdge!]!
+		nodes: [Article!]!
+		pageInfo: PageInfo!
+}
