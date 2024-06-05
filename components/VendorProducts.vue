@@ -47,7 +47,7 @@ export default {
       {{ $t("loading") }}
     </p>
     <template v-else>
-      <CarouselProducts v-if="!!productsRef.length" :products="productsRef" :title="$t('sameProducer')" />
+      <CarouselProducts v-if="!!productsRef.length" :products="productsRef" :title="$t('sameProducer', { name: vendor })" />
     </template>
   </div>
 </template>
