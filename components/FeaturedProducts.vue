@@ -1,5 +1,5 @@
 <script lang="ts">
-import { ref, useContext, useFetch, watch } from '@nuxtjs/composition-api'
+import { computed, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api'
 
 
 import type { ICollection } from '~/types/collection'
@@ -18,8 +18,14 @@ export default {
 
     useFetch(async ({ $cmwRepo }) => {
       collectionRef.value = await $cmwRepo.products.getCollectionsByHandle({ handle: '', id: props.data })
+  
+      console.log(JSON.stringify(collectionRef.value.products.length),"collectionRef.products?.length")
     })
-    return { collectionRef }
+
+     const first25Products = computed(() => {
+      return collectionRef.value.products.slice(0, 25);
+    });
+    return { collectionRef ,first25Products}
   },
 }
 </script>
@@ -27,7 +33,7 @@ export default {
 <template>
   <div class="my-5">
     <template v-if="!!collectionRef.products?.length">
-      <CarouselProducts :products="collectionRef.products" :title="collectionRef.title" />
+      <CarouselProducts :products="first25Products" :title="collectionRef.title" />
       <div class="mt-5">
         <CmwButton class="w-[min(100%,_80%)] sm:w-[min(100%,_14rem)] m-inline-auto" variant="ghost"
           :to="localePath(collectionRef.link?.value || '/catalog?favourite=true&page=1')">
