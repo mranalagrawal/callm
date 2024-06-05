@@ -68,6 +68,7 @@ export default defineComponent({
       link: string
       text: string
       title: string
+      buttontext: string
     }
     const homeBannerData = ref<BannerData[]>([])
     const isDataLoaded = ref(false)
@@ -86,7 +87,8 @@ export default defineComponent({
             const backgroundColor = metaobject.fields.find((field: any) => field.key === 'background_color')?.value || ''
             const imageUrl = metaobject.image?.reference?.image?.url || ''
             const link = metaobject.fields.find((field: any) => field.key === 'link')?.value || ''
-            const text = metaobject.fields.find((field: any) => field.key === 'button_text')?.value || ''
+            const buttontext = metaobject.fields.find((field: any) => field.key === 'button_text')?.value || ''
+            const text = metaobject.fields.find((field: any) => field.key === 'text')?.value || ''
             const title = metaobject.fields.find((field: any) => field.key === 'title')?.value || ''
 
             const banner: BannerData = {
@@ -96,6 +98,7 @@ export default defineComponent({
               link,
               text,
               title,
+              buttontext
             }
             banners.push(banner)
           }
@@ -108,7 +111,7 @@ export default defineComponent({
     }
     const getCurrentHomeHero = async () => {
       let currentHero: any = null
-  
+
 
       for (const id of currentHeroIds.value) {
         try {
@@ -261,32 +264,32 @@ export default defineComponent({
 </div>
 </div> -->
 
- <div class="relative h-[505px]">
+  <div class="relative h-[505px]">
     <div v-if="homeBannerData && homeBannerData?.length">
       <SsrCarousel ref="carousel" :key="homeBannerData?.length" loop :show-arrows="isDesktopWide" show-dots
         class="relative h-[505px]">
         <!-- Carousel content -->
         <div v-for="banner in homeBannerData" :key="banner.id" class="slide  relative w-full h-[505px] overflow-hidden"
           :style="{ backgroundColor: banner.backgroundColor }" @click="handleMobileClick(banner.link)">
-          <div class="banner-container max-w-screen-xl">
+          <div
+            class="banner-container max-w-screen-xl mx-auto grid grid-cols-1 gap-0 min-h-100px items-center lg:grid-cols-[25%_40%_35%] lg:gap-3 lg:pt-4 2xl:grid-cols-[25%_48%_32%] bg-primary">
             <!-- Image container -->
             <div class="image-container">
               <img :src="banner.image" class="banner-image" :alt="banner.title">
             </div>
-            <!-- Content container -->
             <div class="content-container">
-              <NuxtLink class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end"
+              <NuxtLink class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end title"
                 :to="localeRoute(banner.link)">
                 {{ banner.title }}
               </NuxtLink>
 
-              <NuxtLink class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end title"
+              <NuxtLink class="block w-full self-start leading-none mr-auto h1 fw !my-1 -dark md:self-end text"
                 :to="localeRoute(banner.link)">
                 {{ banner.text }}
               </NuxtLink>
-              <CmwButton v-if="banner.text"
+              <CmwButton v-if="banner.buttontext"
                 class="hidden w-max self-end mt-8 text-shadow-none md:(block self-start) mb-4 cta-button"
-                variant="default-inverse" :to="localeRoute(banner.link)" :label="banner.text" />
+                variant="default-inverse" :to="localeRoute(banner.link)" :label="banner.buttontext" />
             </div>
           </div>
           <!-- Carousel content -->
@@ -407,43 +410,33 @@ export default defineComponent({
 .banner-container {
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
-  align-items: center;
+  gap: 2vmax;
+  align-items: end;
   height: 100%;
-  padding: 1rem;
-  margin-left: 15vmax;
+  padding: 1rem 1em 0 1em;
 }
 
 .content-container {
-  order: 2;
   margin-top: 2vmax;
-  width: 100%;
+  width: 50%;
   margin-left: 4vmax;
+  align-self: center !important;
 }
 
 .image-container {
-  order: 1;
-  margin-top: 3.0vmax;
-  width: 100%;
+  width: 40vw;
   height: 32vmax;
-  overflow: hidden;
-  /* margin-left: 2vmax; */
-  position: relative;
-
+  margin-left: 2vw;
 }
 
 .banner-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  position: absolute;
-  top: 0;
-  left: 0;
+
 }
 
-.title {
-  /* font-size: 1.5rem; */
-  font-weight: bold;
+.text {
+opacity: 0.8;
   margin-bottom: 3.1rem !important;
 }
 
@@ -451,43 +444,65 @@ export default defineComponent({
   margin-bottom: 3rem !important;
 }
 
+
+@media(max-width:1240px) {
+  .text {
+    /* margin-bottom: 2.5rem; */
+    font-size: 2em;
+
+
+  }
+
+  .title {
+    font-size: 2em;
+  }
+
+  .image-container {
+    width: 50vw;
+    height: 40vmax;
+    margin-left: 2vw;
+  }
+
+}
+
+@media(max-width:960px) {
+
+  .title,
+  .text {
+    font-size: 1.5em;
+  }
+
+  
+}
 @media (max-width: 768px) {
   .banner-container {
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-    margin-left: 0;
+    flex-direction: column-reverse;
+    padding: 0;
+    padding-left: 5vw;
+    gap: 0;
+
   }
 
   .content-container {
-    order: 1;
-    height: 50%;
-    width: 100%;
-    margin-left: 0;
+    width: 95%;
+    margin: 0;
+    height: 25%;
   }
-
 
   .image-container {
-    order: 2;
     width: 100%;
-    height: 100% !important;
-    margin-top: 3.0vmax;
-    position: relative;
-
+    height: 68%;
   }
 
-  .banner-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    position: absolute;
-    bottom: 0;
-    left: 0;
+  .text {
+    font-weight: normal !important;
+ 
   }
+
+
 
   .cta-button {
     display: none;
   }
 }
 </style>
-
