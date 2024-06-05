@@ -434,10 +434,13 @@ export default defineComponent({
   height: 100%;
 
 }
-
+.title{
+  font-size: 1.5rem;
+}
 .text {
 opacity: 0.8;
   margin-bottom: 3.1rem !important;
+  font-size: 1.5rem;
 }
 
 .cta-button {
@@ -448,7 +451,7 @@ opacity: 0.8;
 @media(max-width:1240px) {
   .text {
     /* margin-bottom: 2.5rem; */
-    font-size: 2em;
+    font-size: 1.5em;
 
 
   }
