@@ -7,9 +7,8 @@ import chevronDownIcon from '~/assets/svg/chevron-down.svg'
 export default defineComponent({
   name: 'CmwTextButton',
   props: {
-    show: {
-      type: [Boolean],
-      default: false,
+    forceShow: {
+      type: Boolean,
     },
     lineClamp: {
       type: [Number, String],
@@ -33,7 +32,7 @@ export default defineComponent({
     })[props.size]
 
     const currentMinHeight = computed(() => isOpen.value
-      ? 'max-h-auto'
+      ? 'max-h-[fit-content]'
       : lineClamps.value ?? minHeights())
     const handleTriggerClick = () => {
       isOpen.value = !isOpen.value
@@ -56,15 +55,16 @@ export default defineComponent({
   <div>
     <div
       class="transition-accordion overflow-hidden"
-      :class="isOpen || isDesktop ? 'max-h-screen' : currentMinHeight"
+      :class="isOpen || forceShow ? 'max-h-[fit-content]' : currentMinHeight"
     >
       <slot />
     </div>
     <ButtonIcon
       :icon="chevronDownIcon"
       variant="filled-white"
-      class="transform w-8 h-8 m-inline-auto mt-2 md:hidden"
-      :class="[isOpen ? 'rotate-180' : 'rotate-0']" @click.native="handleTriggerClick"
+      class="transform w-8 h-8 m-inline-auto mt-2"
+      :class="[isOpen ? 'rotate-180' : 'rotate-0',
+               { hidden: forceShow }]" @click.native="handleTriggerClick"
     />
   </div>
 </template>

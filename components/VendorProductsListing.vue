@@ -17,7 +17,8 @@ import type { IProductMapped } from '~/types/product'
 import { sortArrayByNumber } from '~/utilities/arrays'
 
 export default defineComponent({
-  props: ['vendor', 'tag', 'vendorFeId'],
+  name: 'VendorProductsListing',
+  props: ['vendor', 'tag', 'vendorFeId', 'title'],
   setup(props: any) {
     const { $cmwStore, $cmwGtmUtils } = useContext()
     const route = useRoute()
@@ -104,7 +105,7 @@ export default defineComponent({
       {{ $t("loading") }}
     </p>
     <div v-else class="max-w-screen-xl mx-auto py-4 px-4 mt-4">
-      <div class="h2 text-center py-4" v-text="$t('sameProducer')" />
+      <div class="h2 text-center py-4" v-text="title" />
       <div v-if="selectedLayout === 'list'">
         <div
           v-for="(result, idx) in productRef"

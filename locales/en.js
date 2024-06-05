@@ -50,7 +50,7 @@ export default {
   noteDesktop: '(At, Internal, Intercom only if different, Concierge)',
   country: 'Choose Country',
   recentlySeen: 'Recently seen',
-  sameProducer: 'From the same producer',
+  sameProducer: 'The bottles of {name}',
   viewMore: 'View more',
   cart: 'Cart',
   cartDetails: 'Shopping cart detail',
@@ -340,6 +340,10 @@ export default {
     bioInfo: 'da agricoltura Italia o EU',
     bioOperator: 'Codice Operatore nr.',
     subCategory: 'Tipologia',
+  },
+  winery: {
+    oenologist: 'Oenologist',
+    masterDistiller: 'Master Distiller',
   },
   recoverPwd: {
     title: 'Reset password',

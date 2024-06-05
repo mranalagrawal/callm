@@ -48,10 +48,6 @@ export default defineComponent({
               <th scope="row" v-text="$t('product.vineyardHectares')" />
               <td v-text="brandMetaFields?.hectares" />
             </tr>
-            <tr v-if="brandMetaFields?.ownedGrapes">
-              <th scope="row" v-text="$t('product.ownGrapes')" />
-              <td v-text="brandMetaFields?.ownedGrapes" />
-            </tr>
             <tr v-if="brandMetaFields?.annualProduction">
               <th scope="row" v-text="$t('product.annualProduction')" />
               <td v-text="brandMetaFields?.annualProduction" />

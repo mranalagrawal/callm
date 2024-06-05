@@ -49,7 +49,7 @@ export default {
   noteDesktop: '(Presso, Interno, Citofono solo se diverso, Portineria)',
   country: 'Scegli paese',
   recentlySeen: 'Visti di recente',
-  sameProducer: 'Dallo stesso produttore',
+  sameProducer: 'Le bottiglie di {name}',
   viewMore: 'Vedi di più',
   home: 'Home',
   cart: 'Carrello',
@@ -316,7 +316,7 @@ export default {
     quote: 'Citazione',
     recommendedByCallmewine: 'Consigliato da Callmewine',
     mainWines: 'Vini principali',
-    foundation: 'Anno Fondazione',
+    foundation: 'Anno fondazione',
     vineyardHectares: 'Ettari vitati',
     ownGrapes: 'Proprietà',
     annualProduction: 'Produzione annuale',
@@ -342,6 +342,10 @@ export default {
     bioInfo: 'da agricoltura Italia o EU',
     bioOperator: 'Codice Operatore nr.',
     subCategory: 'Tipologia',
+  },
+  winery: {
+    oenologist: 'Enologo',
+    masterDistiller: 'Mastro Distillatore',
   },
   recoverPwd: {
     title: 'Reimposta password',
