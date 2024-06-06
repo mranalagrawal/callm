@@ -47,7 +47,6 @@ async function getPageProducts(lang, cursor = null) {
     .catch(() => {
       response = {}
     })
-
   return response
 }
 
