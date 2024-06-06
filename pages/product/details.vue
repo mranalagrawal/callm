@@ -162,7 +162,8 @@ export default defineComponent({
 
           if (!productDetails.value) { return }
 
-          if (route.value.params.pathMatch !== product.value.handle.toLowerCase()) {
+          // get handle directly from response products[0], because .value is asyncronous
+          if (route.value.params.pathMatch !== products[0].handle.toLowerCase()) {
             return redirect(
               301,
               localePath(`/${product.value.handle.toLowerCase()}-${productDetails.value.key}.htm`),
