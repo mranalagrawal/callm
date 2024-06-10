@@ -1,6 +1,6 @@
 import type { Context } from "@nuxt/types";
 
-import HomeCollection from "@/graphql/queries/getHomeCollection.graphql";
+import getHomeCollection from "@/graphql/queries/getHomeCollection.graphql";
 import getGiftCardQuery from "@/graphql/queries/getGiftCard.graphql";
 import getProducts from "@/graphql/queries/getProducts.graphql";
 import type {
@@ -62,36 +62,36 @@ export default (ctx: Context) => ({
     }
   },
 
-  async getCollectionsByHandle({
-    handle = "",
-    filters = { available: true },
-    sortKey = "COLLECTION_DEFAULT",
-    first = 250,
-    id = "",
-  }: GetCollectionByHandleParams): Promise<ICollection> {
-    return ctx.$graphql.default
-      .request(HomeCollection, {
-        lang: ctx.i18n.locale.toUpperCase(),
-        filters,
-        sortKey,
-        first,
-        id,
-      })
-      .then(({ collection }) => {
-        if (collection) {
-          return {
-            ...collection,
-            products: collection?.products?.nodes?.length
-              ? ctx.$productMapping.fromShopify(collection.products.nodes)
-              : [],
-          };
-        } else {
-          return {};
-        }
-      })
-      .catch((err: Error) => {
-        ctx.$handleApiErrors(`Catch getting ${handle} from Shopify: ${err}`);
-        return {};
-      });
-  },
+  // async getCollectionsByHandle({
+  //   handle = "",
+  //   filters = { available: true },
+  //   sortKey = "COLLECTION_DEFAULT",
+  //   first = 250,
+  //   id = "",
+  // }: GetCollectionByHandleParams): Promise<ICollection> {
+  //   return ctx.$graphql.default
+  //     .request(getHomeCollection, {
+  //       lang: ctx.i18n.locale.toUpperCase(),
+  //       filters,
+  //       sortKey,
+  //       first,
+  //       id,
+  //     })
+  //     .then(({ collection }) => {
+  //       if (collection) {
+  //         return {
+  //           ...collection,
+  //           products: collection?.products?.nodes?.length
+  //             ? ctx.$productMapping.fromShopify(collection.products.nodes)
+  //             : [],
+  //         };
+  //       } else {
+  //         return {};
+  //       }
+  //     })
+  //     .catch((err: Error) => {
+  //       ctx.$handleApiErrors(`Catch getting ${handle} from Shopify: ${err}`);
+  //       return {};
+  //     });
+  // },
 });

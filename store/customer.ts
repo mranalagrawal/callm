@@ -8,7 +8,12 @@ import { useCustomerWishlist } from '~/store/customerWishlist'
 import themeConfig from '~/config/themeConfig'
 import customerAccessTokenCreate from '~/graphql/mutations/authenticateUser.graphql'
 import customerAccessTokenCreateWithMultipass from '~/graphql/mutations/authenticateUserWithMultipass.graphql'
-import type { IEditingCustomer, IMappedCustomer, IShopifyCustomer } from '~/types/customer'
+import customerAccessTokenRenew from '~/graphql/mutations/customerAccessTokenRenew.graphql'
+import type {
+  IEditingCustomer,
+  IMappedCustomer,
+  IShopifyCustomer,
+} from '~/types/customer'
 import { getCustomerId } from '~/utilities/shopify'
 import { djb2Hash } from '~/utilities/strings'
 import { SweetAlertToast } from '~/utilities/Swal'
@@ -31,48 +36,53 @@ const availableUsers: { [key in availableUsersKeys]: availableUsersValues } = {
 
 export const useCustomer = defineStore({
   id: 'customer',
-  state: () => <IState>({
-    customer: {
-      acceptsMarketing: false,
-      amountSpent: '',
-      approved: false,
-      billing: null,
-      createdAt: undefined,
-      defaultAddress: null,
-      displayName: '',
-      email: '',
-      firstName: '',
-      id: '',
-      isCheckoutMigrated: false,
-      lastIncompleteCart: null,
-      lastIncompleteCheckout: '',
-      lastName: '',
-      newsletterFrequency: '',
-      numberOfOrders: '',
-      phone: '',
-      tags: [],
+  state: () =>
+    <IState>{
+      customer: {
+        acceptsMarketing: false,
+        amountSpent: '',
+        approved: false,
+        billing: null,
+        createdAt: undefined,
+        defaultAddress: null,
+        displayName: '',
+        email: '',
+        firstName: '',
+        id: '',
+        isCheckoutMigrated: false,
+        lastIncompleteCart: null,
+        lastIncompleteCheckout: '',
+        lastName: '',
+        newsletterFrequency: '',
+        numberOfOrders: '',
+        phone: '',
+        tags: [],
+      },
+      editingCustomer: {
+        acceptsMarketing: false,
+        email: '',
+        firstName: '',
+        lastName: '',
+        password: '',
+        phone: '',
+      },
     },
-    editingCustomer: {
-      acceptsMarketing: false,
-      email: '',
-      firstName: '',
-      lastName: '',
-      password: '',
-      phone: '',
-    },
-  }),
 
   getters: {
     customerId: (state) => {
-      if (!state.customer.id) { return '' }
+      if (!state.customer.id) {
+        return ''
+      }
 
       return getCustomerId(state.customer.id)
     },
 
     getCustomerType: (state) => {
       const availableUsersKeys = Object.keys(availableUsers)
-      const userType: availableUsersKeys = state.customer.tags
-        .find(k => availableUsersKeys.includes(k)) as availableUsersKeys || 'main'
+      const userType: availableUsersKeys
+        = (state.customer.tags.find(k =>
+          availableUsersKeys.includes(k),
+        ) as availableUsersKeys) || 'main'
       return availableUsers[userType]
     },
   },
@@ -110,7 +120,9 @@ export const useCustomer = defineStore({
           firstName,
           id,
           isCheckoutMigrated: isCheckoutMigrated?.value === 'true',
-          lastIncompleteCart: lastIncompleteCart?.value ? JSON.parse(lastIncompleteCart.value) : null,
+          lastIncompleteCart: lastIncompleteCart?.value
+            ? JSON.parse(lastIncompleteCart.value)
+            : null,
           lastIncompleteCheckout: lastIncompleteCheckout?.id || '',
           lastName,
           newsletterFrequency: newsletterFrequency?.value || '',
@@ -124,17 +136,24 @@ export const useCustomer = defineStore({
     async loginWithMultipass(multipassToken = '') {
       let valid = false
 
-      const data
-        = await this.$nuxt.$graphql.default.request(customerAccessTokenCreateWithMultipass, {
+      const data = await this.$nuxt.$graphql.default
+        .request(customerAccessTokenCreateWithMultipass, {
           multipassToken,
         })
-          .then(data => data && data.customerAccessTokenCreateWithMultipass)
+        .then(data => data && data.customerAccessTokenCreateWithMultipass)
 
       const { customerAccessToken, customerUserErrors } = data
-      if (customerAccessToken && customerAccessToken.accessToken && typeof customerAccessToken.accessToken === 'string') {
+      if (
+        customerAccessToken
+        && customerAccessToken.accessToken
+        && typeof customerAccessToken.accessToken === 'string'
+      ) {
         const { accessToken, expiresAt } = customerAccessToken
         this.$nuxt.$cookieHelpers.setToken(accessToken, expiresAt)
-        this.$nuxt.$graphql.default.setHeader('authorization', `Bearer ${accessToken}`)
+        this.$nuxt.$graphql.default.setHeader(
+          'authorization',
+          `Bearer ${accessToken}`,
+        )
         valid = true
       } else {
         SweetAlertToast.fire({
@@ -150,31 +169,41 @@ export const useCustomer = defineStore({
       let valid = false
 
       // call cww api before make login
-      await this.$nuxt.$cmw.$post('/customers/check-login', {
-        email,
-        password,
-      })
+      await this.$nuxt.$cmw
+        .$post('/customers/check-login', {
+          email,
+          password,
+        })
         .then(() => {})
         .catch((err) => {
-          this.$nuxt.$sentry.captureException(`Catch on check-login: ${err.response?.data?.error || err}`)
+          this.$nuxt.$sentry.captureException(
+            `Catch on check-login: ${err.response?.data?.error || err}`,
+          )
         })
 
-      const data
-        = await this.$nuxt.$graphql.default.request(customerAccessTokenCreate, {
+      const data = await this.$nuxt.$graphql.default
+        .request(customerAccessTokenCreate, {
           lang: this.$nuxt.app.i18n.locale.toUpperCase(),
           input: {
             email,
             password,
           },
         })
-          .then(data => data && data.customerAccessTokenCreate)
+        .then(data => data && data.customerAccessTokenCreate)
 
       const { customerAccessToken, customerUserErrors } = data
 
-      if (customerAccessToken && customerAccessToken.accessToken && typeof customerAccessToken.accessToken === 'string') {
+      if (
+        customerAccessToken
+        && customerAccessToken.accessToken
+        && typeof customerAccessToken.accessToken === 'string'
+      ) {
         const { accessToken, expiresAt } = customerAccessToken
         this.$nuxt.$cookieHelpers.setToken(accessToken, expiresAt)
-        this.$nuxt.$graphql.default.setHeader('authorization', `Bearer ${accessToken}`)
+        this.$nuxt.$graphql.default.setHeader(
+          'authorization',
+          `Bearer ${accessToken}`,
+        )
         valid = true
       } else {
         SweetAlertToast.fire({
@@ -211,6 +240,46 @@ export const useCustomer = defineStore({
       })
     },
 
+    async renewCustomerAccessToken(customerAccessToken: any) {
+      await this.$nuxt.$graphql.default
+        .request(customerAccessTokenRenew, {
+          customerAccessToken,
+        })
+        .then((response) => {
+          const { customerAccessTokenRenew } = response
+          if (!customerAccessTokenRenew) {
+            throw new Error('customerAccessTokenRenew is undefined.')
+            return
+          }
+          const { customerAccessToken, userErrors } = customerAccessTokenRenew
+
+          if (userErrors && userErrors.length > 0) {
+           
+            throw new Error(userErrors[0].message)
+          }
+          if (customerAccessToken && customerAccessToken.accessToken) {
+            const { accessToken, expiresAt } = customerAccessToken
+            this.$nuxt.$cookieHelpers.setToken(accessToken, expiresAt)
+            this.$nuxt.$graphql.default.setHeader(
+              'authorization',
+              `Bearer ${accessToken}`,
+            )
+            this.$nuxt.$cmw.setHeader(
+              'X-Shopify-Customer-Access-Token',
+              accessToken,
+            )
+            return customerAccessToken
+          }
+        })
+        .catch((error) => {
+          console.error('Error renewing customer access token:', error)
+          SweetAlertToast.fire({
+            icon: 'error',
+            text: 'Error renewing access token',
+          })
+        })
+    },
+
     async getCustomer() {
       // Note: this is a temporary solution, in time, the cookies flow will work as expected
       // this.removeCookies()
@@ -218,25 +287,40 @@ export const useCustomer = defineStore({
       this.$nuxt.$cookies.remove('checkoutId')
       this.$nuxt.$cookies.remove('newsletter')
 
-      await this.$nuxt.$cmwRepo.customer.getCustomer()
+      await this.$nuxt.$cmwRepo.customer
+        .getCustomer()
         .then(async ({ customer }: Record<string, any>) => {
           if (customer?.id) {
             // Todo: Implement shopify customerAccessTokenRenew
             const customerAccessToken = this.$nuxt.$cookieHelpers.getToken()
-            this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', customerAccessToken)
-            const approved = (customer.approved && customer.approved.value) ? JSON.parse(customer.approved.value) : false
+            this.renewCustomerAccessToken(customerAccessToken)
+            this.$nuxt.$cmw.setHeader(
+              'X-Shopify-Customer-Access-Token',
+              customerAccessToken,
+            )
+            const approved
+              = (customer.approved && customer.approved.value)
+                ? JSON.parse(customer.approved.value)
+                : false
 
-            this.setMappedCustomer(customer);
-
-            (this.$nuxt.$cmwStore.isB2b && approved) ? this.setB2bLogin() : this.$nuxt.$cookies.remove('b2b-approved')
+                this.setMappedCustomer(customer);
+                if (this.$nuxt.$cmwStore.isB2b && approved) {
+                  this.setB2bLogin();
+                } else {
+                  this.$nuxt.$cookies.remove('b2b-approved');
+                }
           } else {
             this.$nuxt.$cookieHelpers.onLogout()
-            await SweetAlertToast.fire({ text: this.$nuxt.app.i18n.t('common.feedback.KO.login') })
+            await SweetAlertToast.fire({
+              text: this.$nuxt.app.i18n.t('common.feedback.KO.login'),
+            })
           }
         })
         .catch(() => {
           this.$nuxt.$cookieHelpers.onLogout()
-          SweetAlertToast.fire({ text: this.$nuxt.app.i18n.t('common.feedback.KO.login') })
+          SweetAlertToast.fire({
+            text: this.$nuxt.app.i18n.t('common.feedback.KO.login'),
+          })
         })
     },
 
@@ -248,7 +332,8 @@ export const useCustomer = defineStore({
 
       this.$nuxt.$gtm.push({
         event: 'logout',
-        userType: themeConfig[this.$nuxt.$cmwStore.settings.store]?.customerType,
+        userType:
+          themeConfig[this.$nuxt.$cmwStore.settings.store]?.customerType,
         userId: this.customerId,
         userFirstName: this.customer.firstName,
         userLastName: this.customer.lastName,
@@ -266,26 +351,47 @@ export const useCustomer = defineStore({
       this.removeCookies()
       this.$nuxt.$graphql.default.setHeader('authorization', '')
       this.$nuxt.$cmw.setHeader('X-Shopify-Customer-Access-Token', undefined)
-      window.google_tag_manager && window.google_tag_manager[this.$nuxt.app.$config.gtm.id] && window.google_tag_manager[this.$nuxt.app.$config.gtm.id].dataLayer.reset()
+      window.google_tag_manager
+        && window.google_tag_manager[this.$nuxt.app.$config.gtm.id]
+        && window.google_tag_manager[
+          this.$nuxt.app.$config.gtm.id
+        ].dataLayer.reset()
       await this.$nuxt.app.router?.push(this.$nuxt.app.localePath('/'))
     },
 
     async customerUpdateData(customer = {}, feedbackOk = '', feedbackKo = '') {
-      await this.$nuxt.$cmwRepo.customer.customerUpdate(customer)
-        .then(({ customerUpdate: { customer, customerAccessToken, customerUserErrors } }: any) => {
-          if (customer && customer.id) {
-            this.setMappedCustomer(customer)
+      await this.$nuxt.$cmwRepo.customer
+        .customerUpdate(customer)
+        .then(
+          ({
+            customerUpdate: {
+              customer,
+              customerAccessToken,
+              customerUserErrors,
+            },
+          }: any) => {
+            if (customer && customer.id) {
+              this.setMappedCustomer(customer)
 
-            if (customerAccessToken && customerAccessToken.accessToken) {
-              this.$nuxt.$cookieHelpers.setToken(customerAccessToken.accessToken)
-              this.$nuxt.$graphql.default.setHeader('authorization', `Bearer ${customerAccessToken.accessToken}`)
+              if (customerAccessToken && customerAccessToken.accessToken) {
+                this.$nuxt.$cookieHelpers.setToken(
+                  customerAccessToken.accessToken,
+                )
+                this.$nuxt.$graphql.default.setHeader(
+                  'authorization',
+                  `Bearer ${customerAccessToken.accessToken}`,
+                )
+              }
+
+              SweetAlertToast.fire({ icon: 'success', text: feedbackOk })
+            } else {
+              SweetAlertToast.fire({
+                icon: 'error',
+                text: customerUserErrors[0].message,
+              })
             }
-
-            SweetAlertToast.fire({ icon: 'success', text: feedbackOk })
-          } else {
-            SweetAlertToast.fire({ icon: 'error', text: customerUserErrors[0].message })
-          }
-        })
+          },
+        )
         .catch(() => {
           SweetAlertToast.fire({ icon: 'error', text: feedbackKo })
         })

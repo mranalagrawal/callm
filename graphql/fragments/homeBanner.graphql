@@ -1,11 +1,8 @@
-query getCurrentHero($id: ID!) {
-  metaobject(id: $id) {
+
+
+fragment HOME_BANNER on Metaobject {
     id
     handle
-    fields {
-      key
-      value
-    }
     image: field(key: "image") {
       reference {
         ... on MediaImage {
@@ -18,14 +15,16 @@ query getCurrentHero($id: ID!) {
     backgroundColor: field(key: "background_color") {
       value
     }
-    link: field(key: "link_${lang}") {
+    link: field(key: "link") {
       value
     }
-    buttonText: field(key: "button_text_${lang}") {
+    buttonText: field(key: "button_text") {
       value
     }
-    title: field(key: "title_${lang}") {
+    title: field(key: "title") {
       value
     }
-  }
+    text: field(key: "text") {
+      value
+    }
 }

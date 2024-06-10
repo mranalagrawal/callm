@@ -42,7 +42,6 @@ export default defineComponent({
     const { $config, $cmwGtmUtils } = useContext()
     const isTablet = inject('isTablet')
     const route = useRoute()
-
     onMounted(() => {
       process.browser && $cmwGtmUtils.pushPage($cmwGtmUtils.getActionField(route.value), {
         event: 'productListView',

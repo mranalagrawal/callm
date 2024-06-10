@@ -280,16 +280,42 @@ export default defineComponent({
                     />
                   </template>
                   <template #prevArrow>
-                    <div class="custom-arrow absolute transform -translate-y-1/2 top-1/2 !left-8">
-                      <VueSvgIcon :data="chevronLeftIcon" width="20" height="20" />
-                    </div>
+                    <span />
                   </template>
                   <template #nextArrow>
-                    <div class="custom-arrow absolute transform -translate-y-1/2 top-1/2 !right-8">
-                      <VueSvgIcon :data="chevronRightIcon" width="20" height="20" />
-                    </div>
+                    <span />
                   </template>
                 </VueSlickCarousel>
+                <div v-if="winery.images.length > 1 && isDesktop" class="my-4">
+                  <VueSlickCarousel
+                    ref="partnerC2"
+                    class="lg:pr-3"
+                    :as-nav-for="partnerC1"
+                    :slides-to-show="5.5"
+                    :infinite="false"
+                    :focus-on-select="true"
+                  >
+                    <div
+                      v-for="(image, idx) in winery.images" :key="`thumb-${image}`"
+                      class="px-3 h-full flex"
+                    >
+                      <img
+                        class="select-none pointer-events-none flex rounded-sm h-full overflow-hidden"
+                        :src="image.url" :alt="`${winery.title} - ${idx}`"
+                      >
+                    </div>
+                    <template #prevArrow>
+                      <div class="custom-arrow absolute transform -translate-y-1/2 top-1/2 !left-8">
+                        <VueSvgIcon :data="chevronLeftIcon" width="20" height="20" />
+                      </div>
+                    </template>
+                    <template #nextArrow>
+                      <div class="custom-arrow absolute transform -translate-y-1/2 top-1/2 !right-8">
+                        <VueSvgIcon :data="chevronRightIcon" width="20" height="20" />
+                      </div>
+                    </template>
+                  </VueSlickCarousel>
+                </div>
               </ClientOnly>
             </div>
             <div class="px-4 my-4 md:(grid gap-4 grid-cols-[minmax(auto,_60%)_minmax(auto,_40%)])">

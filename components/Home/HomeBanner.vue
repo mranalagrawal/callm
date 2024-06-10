@@ -13,8 +13,6 @@ import {
 } from '@nuxtjs/composition-api'
 import type { RawLocation } from 'vue-router'
 
-import { useHomeStore } from '~/store/homeStore'
-
 import heroBannerCurveLg from '~/assets/images/hero-banner-curve-lg.png'
 import heroBannerCurveSm from '~/assets/images/hero-banner-curve-sm.png'
 import carouselCurveDesktop from '~/assets/svg/carousel-curve-desktop.svg'
@@ -24,7 +22,7 @@ import chevronRightIcon from '~/assets/svg/chevron-right.svg'
 
 import { getMobileOperatingSystem } from '@/utilities/getOS'
 import { generateKey } from '@/utilities/strings'
-import getCurrentHero from '~/graphql/queries/getCurrentHero.graphql'
+import getHomeHero from '~/graphql/queries/getHomeHero.graphql'
 
 export default defineComponent({
   setup() {
@@ -32,13 +30,12 @@ export default defineComponent({
       req,
       localeRoute,
       $cookies,
-      $handleApiErrors,
       $graphql,
       i18n,
 
     } = useContext()
     const router = useRouter()
-    const homeStore = useHomeStore()
+
 
     // Fixme: carousel is loading all images (mobile and desktop) when loading a desktop website
     const carousel = ref(null)
@@ -48,7 +45,7 @@ export default defineComponent({
     const isTablet = inject('isTablet') as Ref<boolean>
     const isDesktopWide = inject('isDesktopWide') as Ref<boolean>
     const hasBeenSet = inject('hasBeenSet') as Ref<boolean>
-    const currentHeroIds = ref(homeStore.ids)
+  
     const { fetch } = useFetch(async () => {
       if (!process.browser) {
         OS.value = getMobileOperatingSystem(req.headers['user-agent'])
@@ -68,85 +65,62 @@ export default defineComponent({
       link: string
       text: string
       title: string
+      buttontext: string
     }
     const homeBannerData = ref<BannerData[]>([])
     const isDataLoaded = ref(false)
-    const HomeBannerCarousel = async (ids: any) => {
+    const HomeBannerCarousel = async () => {
       try {
-        const banners: BannerData[] = []
-        for (const id of ids) {
-          const { metaobject } = await $graphql.default.request(
-            getCurrentHero,
-            {
-              lang: i18n.locale.toUpperCase(),
-              id,
-            },
-          )
-          if (metaobject && metaobject.fields) {
-            const backgroundColor = metaobject.fields.find((field: any) => field.key === 'background_color')?.value || ''
-            const imageUrl = metaobject.image?.reference?.image?.url || ''
-            const link = metaobject.fields.find((field: any) => field.key === 'link')?.value || ''
-            const text = metaobject.fields.find((field: any) => field.key === 'button_text')?.value || ''
-            const title = metaobject.fields.find((field: any) => field.key === 'title')?.value || ''
+        const banners: BannerData[] = [];
 
-            const banner: BannerData = {
-              id,
-              backgroundColor,
-              image: imageUrl,
-              link,
-              text,
-              title,
-            }
-            banners.push(banner)
+        // GraphQL request to fetch the hero data
+        const { metaobject } = await $graphql.default.request(
+          getHomeHero,
+          {
+            lang: i18n.locale.toUpperCase(),
+            handle: {
+              handle: "home",
+              type: "home"
+            },
+            first: 10
+          }
+        );
+        // Check if the data exists and has the necessary structure
+        if (metaobject && metaobject.hero && metaobject.hero.references) {
+          // Find the hero named "Current Hero"
+          const currentHero = metaobject.hero.references.nodes.find((hero: any) => hero.name.value === "Current Hero");
+
+          // If the "Current Hero" is found, process its banner carousel data
+          if (currentHero && currentHero.banner_carousel && currentHero.banner_carousel.references) {
+            currentHero.banner_carousel.references.nodes.forEach((banner: any) => {
+              const backgroundColor = banner.backgroundColor?.value || '';
+              const imageUrl = banner.image?.reference?.image?.url || '';
+              const link = banner.link?.value || '';
+              const buttontext = banner.buttonText?.value || '';
+              const title = banner.title?.value || '';
+              const text = banner.text.value || ""
+              const bannerData = {
+                id: banner.id,
+                backgroundColor,
+                image: imageUrl,
+                link,
+                text, // Assuming the text field does not exist in the provided data structure
+                title,
+                buttontext
+              };
+
+              banners.push(bannerData);
+            });
           }
         }
-        homeBannerData.value = banners
-        isDataLoaded.value = true
+
+        // Update the component state with the fetched banners
+        homeBannerData.value = banners;
+        isDataLoaded.value = true;
       } catch (error) {
-        console.error('Error HomeBannerCarousel fetching data:', error)
+        console.error('Error HomeBannerCarousel fetching data:', error);
       }
-    }
-    const getCurrentHomeHero = async () => {
-      let currentHero: any = null
-  
-
-      for (const id of currentHeroIds.value) {
-        try {
-          const { metaobject } = await $graphql.default.request(
-            getCurrentHero,
-            {
-              lang: i18n.locale.toUpperCase(),
-              id,
-            },
-          )
-          if (metaobject) {
-            const startDateField = metaobject.fields.find((field: any) => field.key === 'start_date')
-            const nameFields = metaobject.fields.filter((field: any) => field.key === 'name')
-
-            if (startDateField && nameFields.length > 0) {
-              // const startDate = new Date(startDateField.value)
-              const nameMatch = nameFields.some((nameField: any) => nameField.value === 'Current Hero')
-              if (nameMatch) {
-                currentHero = metaobject
-              }
-            }
-          }
-        } catch (err) {
-          $handleApiErrors(`Catch on getCurrentHero from GraphQL: ${err}`)
-        }
-      }
-      if (currentHero) {
-        const name = currentHero.fields.find((field: any) => field.key === 'name')?.value || 'Unnamed Hero'
-        const bannerCarousels = JSON.parse(currentHero.fields.find((field: any) => field.key === 'banner_carousel')?.value || '[]')
-        const startDate = currentHero.fields.find((field: any) => field.key === 'start_date')?.value || 'No start date'
-
-        await HomeBannerCarousel(bannerCarousels)
-        return { bannerCarousels, name, startDate }
-      }
-
-      return null
-    }
-
+    };
     const handleMobileClick = (link: RawLocation) => {
       if (isTablet.value) {
         return
@@ -163,7 +137,7 @@ export default defineComponent({
       }
     })
     const init = async () => {
-      await getCurrentHomeHero()
+      await HomeBannerCarousel()
     }
 
     init()
@@ -261,32 +235,32 @@ export default defineComponent({
 </div>
 </div> -->
 
- <div class="relative h-[505px]">
+  <div class="relative h-[505px]">
     <div v-if="homeBannerData && homeBannerData?.length">
       <SsrCarousel ref="carousel" :key="homeBannerData?.length" loop :show-arrows="isDesktopWide" show-dots
         class="relative h-[505px]">
         <!-- Carousel content -->
         <div v-for="banner in homeBannerData" :key="banner.id" class="slide  relative w-full h-[505px] overflow-hidden"
           :style="{ backgroundColor: banner.backgroundColor }" @click="handleMobileClick(banner.link)">
-          <div class="banner-container max-w-screen-xl">
+          <div
+            class="banner-container max-w-screen-xl mx-auto grid grid-cols-1 gap-0 min-h-100px items-center lg:grid-cols-[25%_40%_35%] lg:gap-3 lg:pt-4 2xl:grid-cols-[25%_48%_32%] ">
             <!-- Image container -->
             <div class="image-container">
               <img :src="banner.image" class="banner-image" :alt="banner.title">
             </div>
-            <!-- Content container -->
             <div class="content-container">
-              <NuxtLink class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end"
+              <NuxtLink class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end title"
                 :to="localeRoute(banner.link)">
                 {{ banner.title }}
               </NuxtLink>
 
-              <NuxtLink class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end title"
+              <NuxtLink class="block w-full self-start leading-none mr-auto h1 fw !my-1 -dark md:self-end text"
                 :to="localeRoute(banner.link)">
                 {{ banner.text }}
               </NuxtLink>
-              <CmwButton v-if="banner.text"
+              <CmwButton v-if="banner.buttontext"
                 class="hidden w-max self-end mt-8 text-shadow-none md:(block self-start) mb-4 cta-button"
-                variant="default-inverse" :to="localeRoute(banner.link)" :label="banner.text" />
+                variant="default-inverse" :to="localeRoute(banner.link)" :label="banner.buttontext" />
             </div>
           </div>
           <!-- Carousel content -->
@@ -407,87 +381,105 @@ export default defineComponent({
 .banner-container {
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
-  align-items: center;
+  gap: 2vmax;
+  align-items: flex-end;
   height: 100%;
-  padding: 1rem;
-  margin-left: 15vmax;
+  padding: 1rem 1em 0 1em;
 }
 
 .content-container {
-  order: 2;
   margin-top: 2vmax;
-  width: 100%;
+  width: 50%;
   margin-left: 4vmax;
+  align-self: center !important;
 }
 
 .image-container {
-  order: 1;
-  margin-top: 3.0vmax;
-  width: 100%;
+  width: 70vw;
   height: 32vmax;
-  overflow: hidden;
-  /* margin-left: 2vmax; */
-  position: relative;
-
+  margin-left: 2vw;
 }
 
 .banner-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  position: absolute;
-  top: 0;
-  left: 0;
+
 }
 
 .title {
-  /* font-size: 1.5rem; */
-  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.text {
+  opacity: 0.8;
   margin-bottom: 3.1rem !important;
+  font-size: 1.5rem;
 }
 
 .cta-button {
   margin-bottom: 3rem !important;
 }
 
+
+@media(max-width:1240px) {
+  .text {
+    /* margin-bottom: 2.5rem; */
+    font-size: 1.5em;
+
+
+  }
+
+  .title {
+    font-size: 2em;
+  }
+
+  .image-container {
+    width: 50vw;
+    height: 40vmax;
+    margin-left: 2vw;
+  }
+
+}
+
+@media(max-width:960px) {
+
+  .title,
+  .text {
+    font-size: 1.5em;
+  }
+
+
+}
+
 @media (max-width: 768px) {
   .banner-container {
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-    margin-left: 0;
+    flex-direction: column-reverse;
+    padding: 0;
+    padding-left: 5vw;
+    gap: 0;
+
   }
 
   .content-container {
-    order: 1;
-    height: 50%;
-    width: 100%;
-    margin-left: 0;
+    width: 95%;
+    margin: 0;
+    height: 25%;
   }
-
 
   .image-container {
-    order: 2;
     width: 100%;
-    height: 100% !important;
-    margin-top: 3.0vmax;
-    position: relative;
+    height: 68%;
+  }
+
+  .text {
+    font-weight: normal !important;
 
   }
 
-  .banner-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-  }
+
 
   .cta-button {
     display: none;
   }
 }
 </style>
-

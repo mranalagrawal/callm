@@ -51,7 +51,6 @@ export default defineComponent({
       customerId,
       getCustomerType,
     } = storeToRefs(useCustomer())
-
     const { wishlistArr } = storeToRefs(useCustomerWishlist())
     const { cart } = storeToRefs(useCart())
     const { cartCreate, cartLinesAdd, cartLinesUpdate } = useCart()

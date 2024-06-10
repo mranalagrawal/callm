@@ -41,7 +41,7 @@ export default defineComponent({
 <template>
   <span v-if="lowestPrice.amount && lowestPrice.currencyCode" class="font-sans text-gray relative">
     <button class="flex items-center gap-1" @click="handleClick">
-      <span class="text-xxs sm:text-xs text-left text-gray-dark">
+      <span class="text-xxs sm:text-xs text-left text-gray">
         {{ $t('product.lowestPrice', { price: $n(Number(lowestPrice.amount), 'currency', getLocaleFromCurrencyCode(lowestPrice.currencyCode)) }) }}
       </span>
       <VueSvgIcon
