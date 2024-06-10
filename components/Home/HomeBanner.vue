@@ -13,8 +13,6 @@ import {
 } from '@nuxtjs/composition-api'
 import type { RawLocation } from 'vue-router'
 
-import { useHomeStore } from '~/store/homeStore'
-
 import heroBannerCurveLg from '~/assets/images/hero-banner-curve-lg.png'
 import heroBannerCurveSm from '~/assets/images/hero-banner-curve-sm.png'
 import carouselCurveDesktop from '~/assets/svg/carousel-curve-desktop.svg'
@@ -24,7 +22,7 @@ import chevronRightIcon from '~/assets/svg/chevron-right.svg'
 
 import { getMobileOperatingSystem } from '@/utilities/getOS'
 import { generateKey } from '@/utilities/strings'
-import getCurrentHero from '~/graphql/queries/getCurrentHero.graphql'
+import getHomeHero from '~/graphql/queries/getHomeHero.graphql'
 
 export default defineComponent({
   setup() {
@@ -32,13 +30,12 @@ export default defineComponent({
       req,
       localeRoute,
       $cookies,
-      $handleApiErrors,
       $graphql,
       i18n,
 
     } = useContext()
     const router = useRouter()
-    const homeStore = useHomeStore()
+
 
     // Fixme: carousel is loading all images (mobile and desktop) when loading a desktop website
     const carousel = ref(null)
@@ -48,7 +45,7 @@ export default defineComponent({
     const isTablet = inject('isTablet') as Ref<boolean>
     const isDesktopWide = inject('isDesktopWide') as Ref<boolean>
     const hasBeenSet = inject('hasBeenSet') as Ref<boolean>
-    const currentHeroIds = ref(homeStore.ids)
+  
     const { fetch } = useFetch(async () => {
       if (!process.browser) {
         OS.value = getMobileOperatingSystem(req.headers['user-agent'])
@@ -72,84 +69,58 @@ export default defineComponent({
     }
     const homeBannerData = ref<BannerData[]>([])
     const isDataLoaded = ref(false)
-    const HomeBannerCarousel = async (ids: any) => {
+    const HomeBannerCarousel = async () => {
       try {
-        const banners: BannerData[] = []
-        for (const id of ids) {
-          const { metaobject } = await $graphql.default.request(
-            getCurrentHero,
-            {
-              lang: i18n.locale.toUpperCase(),
-              id,
-            },
-          )
-          if (metaobject && metaobject.fields) {
-            const backgroundColor = metaobject.fields.find((field: any) => field.key === 'background_color')?.value || ''
-            const imageUrl = metaobject.image?.reference?.image?.url || ''
-            const link = metaobject.fields.find((field: any) => field.key === 'link')?.value || ''
-            const buttontext = metaobject.fields.find((field: any) => field.key === 'button_text')?.value || ''
-            const text = metaobject.fields.find((field: any) => field.key === 'text')?.value || ''
-            const title = metaobject.fields.find((field: any) => field.key === 'title')?.value || ''
+        const banners = [];
 
-            const banner: BannerData = {
-              id,
-              backgroundColor,
-              image: imageUrl,
-              link,
-              text,
-              title,
-              buttontext
-            }
-            banners.push(banner)
+        // GraphQL request to fetch the hero data
+        const { metaobject } = await $graphql.default.request(
+          getHomeHero,
+          {
+            lang: i18n.locale.toUpperCase(),
+            handle: {
+              handle: "home",
+              type: "home"
+            },
+            first: 10
+          }
+        );
+        // Check if the data exists and has the necessary structure
+        if (metaobject && metaobject.hero && metaobject.hero.references) {
+          // Find the hero named "Current Hero"
+          const currentHero = metaobject.hero.references.nodes.find((hero: any) => hero.name.value === "Current Hero");
+
+          // If the "Current Hero" is found, process its banner carousel data
+          if (currentHero && currentHero.banner_carousel && currentHero.banner_carousel.references) {
+            currentHero.banner_carousel.references.nodes.forEach((banner: any) => {
+              const backgroundColor = banner.backgroundColor?.value || '';
+              const imageUrl = banner.image?.reference?.image?.url || '';
+              const link = banner.link?.value || '';
+              const buttontext = banner.buttonText?.value || '';
+              const title = banner.title?.value || '';
+              const text = banner.text.value || ""
+              const bannerData = {
+                id: banner.id,
+                backgroundColor,
+                image: imageUrl,
+                link,
+                text, // Assuming the text field does not exist in the provided data structure
+                title,
+                buttontext
+              };
+
+              banners.push(bannerData);
+            });
           }
         }
-        homeBannerData.value = banners
-        isDataLoaded.value = true
+
+        // Update the component state with the fetched banners
+        homeBannerData.value = banners;
+        isDataLoaded.value = true;
       } catch (error) {
-        console.error('Error HomeBannerCarousel fetching data:', error)
+        console.error('Error HomeBannerCarousel fetching data:', error);
       }
-    }
-    const getCurrentHomeHero = async () => {
-      let currentHero: any = null
-
-
-      for (const id of currentHeroIds.value) {
-        try {
-          const { metaobject } = await $graphql.default.request(
-            getCurrentHero,
-            {
-              lang: i18n.locale.toUpperCase(),
-              id,
-            },
-          )
-          if (metaobject) {
-            const startDateField = metaobject.fields.find((field: any) => field.key === 'start_date')
-            const nameFields = metaobject.fields.filter((field: any) => field.key === 'name')
-
-            if (startDateField && nameFields.length > 0) {
-              // const startDate = new Date(startDateField.value)
-              const nameMatch = nameFields.some((nameField: any) => nameField.value === 'Current Hero')
-              if (nameMatch) {
-                currentHero = metaobject
-              }
-            }
-          }
-        } catch (err) {
-          $handleApiErrors(`Catch on getCurrentHero from GraphQL: ${err}`)
-        }
-      }
-      if (currentHero) {
-        const name = currentHero.fields.find((field: any) => field.key === 'name')?.value || 'Unnamed Hero'
-        const bannerCarousels = JSON.parse(currentHero.fields.find((field: any) => field.key === 'banner_carousel')?.value || '[]')
-        const startDate = currentHero.fields.find((field: any) => field.key === 'start_date')?.value || 'No start date'
-
-        await HomeBannerCarousel(bannerCarousels)
-        return { bannerCarousels, name, startDate }
-      }
-
-      return null
-    }
-
+    };
     const handleMobileClick = (link: RawLocation) => {
       if (isTablet.value) {
         return
@@ -166,7 +137,7 @@ export default defineComponent({
       }
     })
     const init = async () => {
-      await getCurrentHomeHero()
+      await HomeBannerCarousel()
     }
 
     init()
@@ -272,7 +243,7 @@ export default defineComponent({
         <div v-for="banner in homeBannerData" :key="banner.id" class="slide  relative w-full h-[505px] overflow-hidden"
           :style="{ backgroundColor: banner.backgroundColor }" @click="handleMobileClick(banner.link)">
           <div
-            class="banner-container max-w-screen-xl mx-auto grid grid-cols-1 gap-0 min-h-100px items-center lg:grid-cols-[25%_40%_35%] lg:gap-3 lg:pt-4 2xl:grid-cols-[25%_48%_32%] bg-primary">
+            class="banner-container max-w-screen-xl mx-auto grid grid-cols-1 gap-0 min-h-100px items-center lg:grid-cols-[25%_40%_35%] lg:gap-3 lg:pt-4 2xl:grid-cols-[25%_48%_32%] ">
             <!-- Image container -->
             <div class="image-container">
               <img :src="banner.image" class="banner-image" :alt="banner.title">
@@ -424,7 +395,7 @@ export default defineComponent({
 }
 
 .image-container {
-  width: 40vw;
+  width: 70vw;
   height: 32vmax;
   margin-left: 2vw;
 }
@@ -434,11 +405,13 @@ export default defineComponent({
   height: 100%;
 
 }
-.title{
+
+.title {
   font-size: 1.5rem;
 }
+
 .text {
-opacity: 0.8;
+  opacity: 0.8;
   margin-bottom: 3.1rem !important;
   font-size: 1.5rem;
 }
@@ -475,8 +448,9 @@ opacity: 0.8;
     font-size: 1.5em;
   }
 
-  
+
 }
+
 @media (max-width: 768px) {
   .banner-container {
     flex-direction: column-reverse;
@@ -499,7 +473,7 @@ opacity: 0.8;
 
   .text {
     font-weight: normal !important;
- 
+
   }
 
 

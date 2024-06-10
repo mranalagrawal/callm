@@ -1,9 +1,7 @@
 import { defineStore } from "pinia";
 import getFooter from "~/graphql/queries/getFooter.graphql";
-import getHome from "~/graphql/queries/getHome.graphql";
 import getTopBar from "~/graphql/queries/getTopBar.graphql";
 import type { TImage } from "~/types/types";
-import { useHomeStore } from "./homeStore";
 type IFrontendImage = Pick<TImage, "altText" | "url" | "id"> & { link: string };
 
 interface ITopBarMetaObject {
@@ -185,31 +183,6 @@ export const useLayout = defineStore({
             `Catch on loadFooter from GraphQL: ${err}`
           )
         );
-    },
-
-    async getCurrentHome() {
-      await this.$nuxt.$graphql.default
-        .request(getHome, {
-          lang: this.$nuxt.app.i18n.locale.toUpperCase(),
-          handle: {
-            handle: "home",
-            type: "home",
-          },
-        })
-        .then(({ metaobject }) => {
-          const homeStore = useHomeStore();
-          const fields = metaobject?.fields || [];
-          homeStore.setMetaobject(fields);
-          const idField = fields.find(
-            (field: any) => field.key === "main_banner"
-          );
-          const ids = idField ? JSON.parse(idField.value) : [];
-          homeStore.setIds(ids);
-        })
-        .then(() => {})
-        .catch((err) => {
-          this.$nuxt.$handleApiErrors(`Catch on getHome from GraphQl: ${err}`);
-        });
     },
   },
 });

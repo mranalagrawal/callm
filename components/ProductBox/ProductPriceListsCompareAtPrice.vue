@@ -27,7 +27,7 @@ export default defineComponent({
 <template>
   <span
     v-if="compareAtPrice?.amount && compareAtPrice?.currencyCode"
-    class="line-through text-black-dark text-sm"
+    class="line-through text-gray-dark text-sm"
   >
     {{ $n(Number(compareAtPrice?.amount), 'currency', getLocaleFromCurrencyCode(compareAtPrice?.currencyCode)) }}
   </span>

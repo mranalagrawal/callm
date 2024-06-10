@@ -1,0 +1,19 @@
+#import "~/graphql/fragments/homeBanner.graphql"
+
+fragment HOME_BANNER_CAROUSEL on Metaobject{
+    name: field(key: "name") {
+        value
+    }
+    start_date: field(key: "start_date") {
+        value
+    }
+    banner_carousel: field(key: "banner_carousel") {
+        references(first: $first) {
+            nodes {
+                ... on Metaobject {
+                    ...HOME_BANNER
+                }
+            }
+        }
+    }
+}

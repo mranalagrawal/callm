@@ -1,0 +1,19 @@
+#import "~/graphql/fragments/homeBannerCarousel.graphql"
+
+query getHomeHero(
+    $lang: LanguageCode!,
+    $handle: MetaobjectHandleInput!,
+    $first: Int
+) @inContext(language: $lang) {
+    metaobject(handle: $handle) {
+      hero: field(key: "main_banner") {
+        references(first: $first)  {
+            nodes {
+                ... on Metaobject {
+                    ...HOME_BANNER_CAROUSEL
+                }
+            }
+        }
+      }
+    }
+  }
