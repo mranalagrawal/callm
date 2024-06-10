@@ -71,7 +71,7 @@ export default defineComponent({
     const isDataLoaded = ref(false)
     const HomeBannerCarousel = async () => {
       try {
-        const banners = [];
+        const banners: BannerData[] = [];
 
         // GraphQL request to fetch the hero data
         const { metaobject } = await $graphql.default.request(
@@ -382,7 +382,7 @@ export default defineComponent({
   display: flex;
   flex-direction: row;
   gap: 2vmax;
-  align-items: end;
+  align-items: flex-end;
   height: 100%;
   padding: 1rem 1em 0 1em;
 }
