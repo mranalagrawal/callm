@@ -9,10 +9,9 @@ import {
   useContext,
   useFetch,
   useRouter,
+
 } from '@nuxtjs/composition-api'
 import type { RawLocation } from 'vue-router'
-
-import { useHeroStore } from '~/store/heroStore'
 
 import heroBannerCurveLg from '~/assets/images/hero-banner-curve-lg.png'
 import heroBannerCurveSm from '~/assets/images/hero-banner-curve-sm.png'
@@ -23,6 +22,7 @@ import chevronRightIcon from '~/assets/svg/chevron-right.svg'
 
 import { getMobileOperatingSystem } from '@/utilities/getOS'
 import { generateKey } from '@/utilities/strings'
+import getHomeHero from '~/graphql/queries/getHomeHero.graphql'
 
 export default defineComponent({
   setup() {
@@ -30,9 +30,12 @@ export default defineComponent({
       req,
       localeRoute,
       $cookies,
+      $graphql,
+      i18n,
+
     } = useContext()
     const router = useRouter()
-    const heroStore = useHeroStore()
+
 
     // Fixme: carousel is loading all images (mobile and desktop) when loading a desktop website
     const carousel = ref(null)
@@ -42,9 +45,8 @@ export default defineComponent({
     const isTablet = inject('isTablet') as Ref<boolean>
     const isDesktopWide = inject('isDesktopWide') as Ref<boolean>
     const hasBeenSet = inject('hasBeenSet') as Ref<boolean>
-    const mtdata = ref(heroStore.banners)
-    const { fetch } = useFetch(async ({ $cmwRepo }) => {
-      const data = await $cmwRepo.prismic.getSingle('home-carousel')
+  
+    const { fetch } = useFetch(async () => {
       if (!process.browser) {
         OS.value = getMobileOperatingSystem(req.headers['user-agent'])
         $cookies.set('iOS', getMobileOperatingSystem(req.headers['user-agent']), {
@@ -54,9 +56,71 @@ export default defineComponent({
       }
 
       isBrowser.value = process?.browser
-      slides.value = data.body && data.body[0].items
+      // slides.value = data.body && data.body[0].items
     })
+    interface BannerData {
+      id: any
+      backgroundColor: string
+      image: string
+      link: string
+      text: string
+      title: string
+      buttontext: string
+    }
+    const homeBannerData = ref<BannerData[]>([])
+    const isDataLoaded = ref(false)
+    const HomeBannerCarousel = async () => {
+      try {
+        const banners: BannerData[] = [];
 
+        // GraphQL request to fetch the hero data
+        const { metaobject } = await $graphql.default.request(
+          getHomeHero,
+          {
+            lang: i18n.locale.toUpperCase(),
+            handle: {
+              handle: "home",
+              type: "home"
+            },
+            first: 10
+          }
+        );
+        // Check if the data exists and has the necessary structure
+        if (metaobject && metaobject.hero && metaobject.hero.references) {
+          // Find the hero named "Current Hero"
+          const currentHero = metaobject.hero.references.nodes.find((hero: any) => hero.name.value === "Current Hero");
+
+          // If the "Current Hero" is found, process its banner carousel data
+          if (currentHero && currentHero.banner_carousel && currentHero.banner_carousel.references) {
+            currentHero.banner_carousel.references.nodes.forEach((banner: any) => {
+              const backgroundColor = banner.backgroundColor?.value || '';
+              const imageUrl = banner.image?.reference?.image?.url || '';
+              const link = banner.link?.value || '';
+              const buttontext = banner.buttonText?.value || '';
+              const title = banner.title?.value || '';
+              const text = banner.text.value || ""
+              const bannerData = {
+                id: banner.id,
+                backgroundColor,
+                image: imageUrl,
+                link,
+                text, // Assuming the text field does not exist in the provided data structure
+                title,
+                buttontext
+              };
+
+              banners.push(bannerData);
+            });
+          }
+        }
+
+        // Update the component state with the fetched banners
+        homeBannerData.value = banners;
+        isDataLoaded.value = true;
+      } catch (error) {
+        console.error('Error HomeBannerCarousel fetching data:', error);
+      }
+    };
     const handleMobileClick = (link: RawLocation) => {
       if (isTablet.value) {
         return
@@ -72,6 +136,11 @@ export default defineComponent({
         return (!isBrowser.value && !OS.value) || (isBrowser.value && isTablet.value)
       }
     })
+    const init = async () => {
+      await HomeBannerCarousel()
+    }
+
+    init()
 
     onBeforeUnmount(() => slides.value = [])
     const banners = ref([])
@@ -94,8 +163,7 @@ export default defineComponent({
       showDesktopImage,
       slides,
       banners,
-      mtdata,
-
+      homeBannerData,
     }
   },
 
@@ -168,29 +236,31 @@ export default defineComponent({
 </div> -->
 
   <div class="relative h-[505px]">
-    <div v-if="mtdata && mtdata.length">
-      <SsrCarousel ref="carousel" :key="mtdata.length" loop :show-arrows="isDesktopWide" show-dots
+    <div v-if="homeBannerData && homeBannerData?.length">
+      <SsrCarousel ref="carousel" :key="homeBannerData?.length" loop :show-arrows="isDesktopWide" show-dots
         class="relative h-[505px]">
         <!-- Carousel content -->
-        <div v-for="banner in mtdata" :key="banner.id" class="slide relative w-full h-[505px] overflow-hidden"
+        <div v-for="banner in homeBannerData" :key="banner.id" class="slide  relative w-full h-[505px] overflow-hidden"
           :style="{ backgroundColor: banner.backgroundColor }" @click="handleMobileClick(banner.link)">
-          <div class="banner-container">
+          <div
+            class="banner-container max-w-screen-xl mx-auto grid grid-cols-1 gap-0 min-h-100px items-center lg:grid-cols-[25%_40%_35%] lg:gap-3 lg:pt-4 2xl:grid-cols-[25%_48%_32%] ">
             <!-- Image container -->
             <div class="image-container">
               <img :src="banner.image" class="banner-image" :alt="banner.title">
             </div>
-            <!-- Content container -->
             <div class="content-container">
-              <NuxtLink class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end"
+              <NuxtLink class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end title"
                 :to="localeRoute(banner.link)">
                 {{ banner.title }}
               </NuxtLink>
-              <NuxtLink class="block w-full self-start leading-none mr-auto h1 !my-1 -dark md:self-end"
+
+              <NuxtLink class="block w-full self-start leading-none mr-auto h1 fw !my-1 -dark md:self-end text"
                 :to="localeRoute(banner.link)">
                 {{ banner.text }}
               </NuxtLink>
-              <CmwButton v-if="banner.text" class="hidden w-max self-end mt-8 text-shadow-none md:(block self-start)"
-    variant="default-inverse" :to="localeRoute(banner.link)" :label="banner.text" />
+              <CmwButton v-if="banner.buttontext"
+                class="hidden w-max self-end mt-8 text-shadow-none md:(block self-start) mb-4 cta-button"
+                variant="default-inverse" :to="localeRoute(banner.link)" :label="banner.buttontext" />
             </div>
           </div>
           <!-- Carousel content -->
@@ -311,59 +381,102 @@ export default defineComponent({
 .banner-container {
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
-  align-items: center;
+  gap: 2vmax;
+  align-items: flex-end;
+  height: 100%;
+  padding: 1rem 1em 0 1em;
 }
 
 .content-container {
-  order: 2;
   margin-top: 2vmax;
+  width: 50%;
+  margin-left: 4vmax;
+  align-self: center !important;
 }
 
 .image-container {
-  order: 1;
-  margin-top: 3.2vmax;
-  width: 50%;
+  width: 70vw;
   height: 32vmax;
-  overflow: hidden;
+  margin-left: 2vw;
 }
 
 .banner-image {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+
 }
 
 .title {
   font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
+}
+
+.text {
+  opacity: 0.8;
+  margin-bottom: 3.1rem !important;
+  font-size: 1.5rem;
 }
 
 .cta-button {
-  margin-top: 1rem;
+  margin-bottom: 3rem !important;
+}
+
+
+@media(max-width:1240px) {
+  .text {
+    /* margin-bottom: 2.5rem; */
+    font-size: 1.5em;
+
+
+  }
+
+  .title {
+    font-size: 2em;
+  }
+
+  .image-container {
+    width: 50vw;
+    height: 40vmax;
+    margin-left: 2vw;
+  }
+
+}
+
+@media(max-width:960px) {
+
+  .title,
+  .text {
+    font-size: 1.5em;
+  }
+
+
 }
 
 @media (max-width: 768px) {
   .banner-container {
-    flex-direction: column;
+    flex-direction: column-reverse;
+    padding: 0;
+    padding-left: 5vw;
+    gap: 0;
+
   }
 
   .content-container {
-    order: 1;
+    width: 95%;
+    margin: 0;
+    height: 25%;
   }
 
   .image-container {
-    order: 2;
     width: 100%;
-    height: 100%;
+    height: 68%;
   }
 
-  .banner-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  .text {
+    font-weight: normal !important;
+
   }
+
+
 
   .cta-button {
     display: none;

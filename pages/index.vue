@@ -1,7 +1,9 @@
 <script lang="ts">
-import { defineComponent, inject, useContext, useMeta } from '@nuxtjs/composition-api'
+import { defineComponent, inject, onMounted, ref, useContext, useFetch, useMeta } from '@nuxtjs/composition-api'
 import type { Ref } from '@nuxtjs/composition-api'
 import LazyHydrate from 'vue-lazy-hydration'
+
+import { useLayout } from '~/store/layout'
 
 import { generateHeadHreflang } from '~/utilities/arrays'
 
@@ -16,7 +18,14 @@ export default defineComponent({
     HomeSelections: () => import('../components/Home/HomeSelections.vue'),
     HomeSlider: () => import('../components/Home/HomeSlider.vue'),
   },
+
   setup() {
+    const {
+      $graphql,
+      i18n,
+
+    } = useContext()
+    const { getCurrentHome } = useLayout()
     const { $cmwStore } = useContext()
     const isTablet = inject('isTablet') as Ref<boolean>
     const hrefLang = {
@@ -26,6 +35,17 @@ export default defineComponent({
       'fr': 'https://www.callmewine.fr',
       'de': 'https://www.callmewine.de',
     }
+   
+
+    useFetch(async () => {
+      const promises = [
+        getCurrentHome(),
+      ]
+
+      await Promise.all(promises)
+    })
+
+
     useMeta(() => ({
       link: generateHeadHreflang(hrefLang),
       script: [{
@@ -61,7 +81,7 @@ export default defineComponent({
       __dangerouslyDisableSanitizers: ['script'],
     }))
 
-    return { isTablet }
+    return { isTablet, }
   },
   head: {},
 })
@@ -78,9 +98,8 @@ export default defineComponent({
     <HomeBoxes />
     <!-- Note: LazyHydrate is not working as expected on carousels -->
     <ClientOnly>
-      <FeaturedProducts class="px-3" />
+      <FeaturedProducts  class="px-3"/>
     </ClientOnly>
-
     <LazyHydrate :when-visible="{ rootMargin: '100px' }">
       <HomeSelections />
     </LazyHydrate>
@@ -92,7 +111,7 @@ export default defineComponent({
     <HomePartners />
 
     <ClientOnly>
-      <LazyHomeLast class="px-3" />
+      <LazyHomeLast class="px-3"  />
     </ClientOnly>
 
     <HomeProducers />

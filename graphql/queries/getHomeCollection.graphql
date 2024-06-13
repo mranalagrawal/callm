@@ -1,0 +1,35 @@
+#import "~/graphql/fragments/collection.graphql"
+#import "~/graphql/fragments/mediaImage.graphql"
+
+query getHomeCollection($lang: LanguageCode!,
+  $id: ID,
+  $filters: [ProductFilter!],
+  $sortKey: ProductCollectionSortKeys = COLLECTION_DEFAULT,
+  $first: Int = 250
+) @inContext(language: $lang) {
+    metaobject(id: $id) {
+        name: field(key: "name") {
+            value
+        }
+        image: field(key: "image") {
+            reference {
+                ... on MediaImage {
+                    ...MEDIA_IMAGE
+                }
+            }
+        }
+        description: field(key: "description") {
+            value
+        }
+        link: field(key: "link") {
+            value
+        }
+       collection: field(key: "collection") {
+        reference {
+            ... on Collection {
+                ...COLLECTION
+            }
+        }
+       }
+    }
+}

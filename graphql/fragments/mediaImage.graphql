@@ -1,0 +1,16 @@
+fragment MEDIA_IMAGE on MediaImage {
+  alt
+  id
+  image {
+    altText
+    height
+    id
+    url
+    width
+  }
+  mediaContentType
+  previewImage {
+    url
+    altText
+  }
+}

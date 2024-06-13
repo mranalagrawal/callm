@@ -1,0 +1,9 @@
+query classicCollection($id: ID!) {
+  metaobject(id: $id) {
+    handle
+    fields {
+      key
+      value
+    }
+  }
+}

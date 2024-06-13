@@ -51,7 +51,6 @@ export default defineComponent({
       customerId,
       getCustomerType,
     } = storeToRefs(useCustomer())
-
     const { wishlistArr } = storeToRefs(useCustomerWishlist())
     const { cart } = storeToRefs(useCart())
     const { cartCreate, cartLinesAdd, cartLinesUpdate } = useCart()
@@ -108,7 +107,6 @@ export default defineComponent({
         ? currentProduct.details.amountMax[$config.SALECHANNEL]
         : currentProduct.quantityAvailable
     })
-
     const isOnCart = computed(() => {
       const currentProduct = mappedRelatedVintage.value || props.product
       return cart.value.lines.find(el => el.merchandise.id === currentProduct.shopify_product_variant_id)
@@ -215,6 +213,7 @@ export default defineComponent({
 
       isBundle.value = templateProduct.value?.tags.includes('BUNDLE')
     }, { immediate: true })
+
 
     return {
       addIcon,

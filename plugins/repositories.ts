@@ -20,6 +20,7 @@ export interface GetCollectionByHandleParams {
   first?: number
   handle: string
   sortKey?: string
+  id?:string
 }
 
 export interface ICmwRepoProducts {

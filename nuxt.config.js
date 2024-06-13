@@ -17,7 +17,7 @@ async function getPageProducts(lang, cursor = null) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      query: `query getAllProducts($lang: LanguageCode!, $first: Int = 200, $cursor: String) @inContext(language: ) {
+      query: `query getAllProducts($lang: LanguageCode!, $first: Int = 200, $cursor: String) @inContext(language:lang  ) {
                   products(first: $first, after: $cursor, query: "tag:active") {
                     pageInfo {
                       endCursor
